@@ -1,0 +1,417 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/page-header";
+import {
+  Bot,
+  Send,
+  User,
+  Sparkles,
+  Loader2,
+  Briefcase,
+  Compass,
+  GraduationCap,
+  MessageSquare,
+  Lightbulb,
+  RefreshCw,
+  ChevronRight,
+  AlertCircle,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  intent?: string;
+  sources?: {
+    careers?: { id: string; roleName: string }[];
+    helpDocs?: { id: string; title: string }[];
+    qa?: { id: string; question: string }[];
+  };
+}
+
+const suggestedPrompts = [
+  {
+    icon: Compass,
+    label: "Explore careers",
+    prompt: "What careers would suit someone who likes technology and creativity?",
+    color: "from-blue-500 to-cyan-500",
+  },
+  {
+    icon: GraduationCap,
+    label: "Getting started",
+    prompt: "How do I get started in tech without a university degree?",
+    color: "from-green-500 to-emerald-500",
+  },
+  {
+    icon: Briefcase,
+    label: "Find jobs",
+    prompt: "How can I find my first job as a teenager in Norway?",
+    color: "from-purple-500 to-pink-500",
+  },
+  {
+    icon: Lightbulb,
+    label: "Build skills",
+    prompt: "What skills should I learn to become more employable?",
+    color: "from-orange-500 to-amber-500",
+  },
+];
+
+const quickQuestions = [
+  "What does a day in the life of a developer look like?",
+  "How much can I earn as a lærling (apprentice)?",
+  "What are the fastest-growing industries in Norway?",
+  "How do I write a good job application message?",
+  "What remote jobs are available for young people?",
+  "How do I build a portfolio without experience?",
+];
+
+export default function CareerAdvisorPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const sendMessage = async (messageText: string) => {
+    if (!messageText.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: messageText.trim(),
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: messageText.trim(),
+          conversationHistory: messages.slice(-4).map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to get response");
+      }
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: data.message,
+        timestamp: new Date(),
+        intent: data.intent,
+        sources: data.sources,
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage(input);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(input);
+    }
+  };
+
+  const clearChat = () => {
+    setMessages([]);
+    setError(null);
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <PageHeader
+        title="AI Career"
+        gradientText="Advisor"
+        description="Get personalized career guidance, explore opportunities, and plan your path forward"
+        icon={Bot}
+      />
+
+      {/* Chat Container */}
+      <Card className="border-2 mt-8 overflow-hidden">
+        {/* Chat Header */}
+        <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-b px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+              <Bot className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm">Career Advisor</h3>
+              <p className="text-xs text-muted-foreground">Powered by AI</p>
+            </div>
+          </div>
+          {messages.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={clearChat} className="text-xs">
+              <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+              New Chat
+            </Button>
+          )}
+        </div>
+
+        {/* Messages Area */}
+        <div className="h-[500px] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-background to-muted/20">
+          {messages.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="h-full flex flex-col items-center justify-center text-center px-4"
+            >
+              <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 mb-4">
+                <Sparkles className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Hei! I'm your Career Advisor</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                I can help you explore careers, find jobs, build skills, and plan your path. Ask me anything about work and careers in Norway!
+              </p>
+
+              {/* Suggested Prompts */}
+              <div className="grid grid-cols-2 gap-3 w-full max-w-lg mb-6">
+                {suggestedPrompts.map((prompt, index) => {
+                  const Icon = prompt.icon;
+                  return (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      onClick={() => sendMessage(prompt.prompt)}
+                      className="flex items-center gap-2 p-3 rounded-xl border-2 hover:border-primary/50 bg-background hover:shadow-md transition-all text-left group"
+                    >
+                      <div className={`p-2 rounded-lg bg-gradient-to-br ${prompt.color}`}>
+                        <Icon className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                        {prompt.label}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              {/* Quick Questions */}
+              <div className="w-full max-w-lg">
+                <p className="text-xs text-muted-foreground mb-2">Or try asking:</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {quickQuestions.slice(0, 3).map((question, index) => (
+                    <button
+                      key={index}
+                      onClick={() => sendMessage(question)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <AnimatePresence>
+              {messages.map((message, index) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  {message.role === "assistant" && (
+                    <div className="flex-shrink-0">
+                      <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+                        <Bot className="h-4 w-4 text-white" />
+                      </div>
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                      message.role === "user"
+                        ? "bg-gradient-to-r from-primary to-blue-600 text-white"
+                        : "bg-muted"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+
+                    {/* Sources */}
+                    {message.sources && (
+                      <div className="mt-3 pt-3 border-t border-border/50">
+                        {message.sources.careers && message.sources.careers.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-2">
+                            {message.sources.careers.map((career) => (
+                              <Badge
+                                key={career.id}
+                                variant="secondary"
+                                className="text-xs cursor-pointer hover:bg-primary/20"
+                              >
+                                <Briefcase className="h-3 w-3 mr-1" />
+                                {career.roleName}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <p className="text-[10px] mt-2 opacity-60">
+                      {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                  {message.role === "user" && (
+                    <div className="flex-shrink-0">
+                      <div className="p-2 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+
+              {/* Loading indicator */}
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-3"
+                >
+                  <div className="flex-shrink-0">
+                    <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+                      <Bot className="h-4 w-4 text-white" />
+                    </div>
+                  </div>
+                  <div className="bg-muted rounded-2xl px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <span className="text-sm text-muted-foreground">Thinking...</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="px-4 py-2 bg-red-50 dark:bg-red-950/30 border-t border-red-200 dark:border-red-900">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm">
+              <AlertCircle className="h-4 w-4" />
+              {error}
+            </div>
+          </div>
+        )}
+
+        {/* Input Area */}
+        <form onSubmit={handleSubmit} className="border-t p-4 bg-background">
+          <div className="flex gap-3">
+            <div className="flex-1 relative">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask me about careers, jobs, skills..."
+                className="w-full resize-none rounded-xl border-2 border-muted bg-muted/30 px-4 py-3 pr-12 text-sm focus:border-primary focus:outline-none focus:ring-0 transition-colors min-h-[52px] max-h-[120px]"
+                rows={1}
+                disabled={isLoading}
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 px-4"
+            >
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2 text-center">
+            AI responses are for guidance only. Always verify important information.
+          </p>
+        </form>
+      </Card>
+
+      {/* Quick Actions */}
+      {messages.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6"
+        >
+          <p className="text-sm font-medium mb-3">Continue exploring:</p>
+          <div className="flex flex-wrap gap-2">
+            {quickQuestions.map((question, index) => (
+              <button
+                key={index}
+                onClick={() => sendMessage(question)}
+                disabled={isLoading}
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border hover:border-primary hover:bg-primary/5 transition-colors disabled:opacity-50"
+              >
+                <ChevronRight className="h-3 w-3" />
+                {question}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Tips Section */}
+      <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <MessageSquare className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">Tips for better answers</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Be specific about your interests and goals</li>
+                <li>• Ask follow-up questions to dig deeper</li>
+                <li>• Mention your location (Norway) for local opportunities</li>
+                <li>• Tell me about your skills or experience level</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

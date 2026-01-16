@@ -1,0 +1,2 @@
+# Run tests before commit (non-watch mode)
+npm run test:run

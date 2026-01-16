@@ -1,0 +1,671 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  YOUTH
+  EMPLOYER
+  ADMIN
+}
+
+enum AgeBracket {
+  SIXTEEN_SEVENTEEN
+  EIGHTEEN_TWENTY
+}
+
+enum JobStatus {
+  DRAFT
+  POSTED
+  ON_HOLD
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  REVIEWED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum PayType {
+  FIXED
+  HOURLY
+}
+
+enum JobCategory {
+  BABYSITTING
+  DOG_WALKING
+  SNOW_CLEARING
+  CLEANING
+  DIY_HELP
+  TECH_HELP
+  ERRANDS
+  OTHER
+}
+
+enum SwipeDirection {
+  LEFT
+  RIGHT
+  UP
+  DOWN
+}
+
+enum QuestionStatus {
+  PENDING
+  ANSWERED
+  PUBLISHED
+  REJECTED
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+enum AvailabilityStatus {
+  AVAILABLE
+  BUSY
+  NOT_LOOKING
+}
+
+enum PokeStatus {
+  PENDING
+  READ
+  ACCEPTED
+  DECLINED
+}
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  password      String?     // Hashed password (nullable for migration)
+  emailVerified DateTime?
+  role          UserRole    @default(YOUTH)
+  ageBracket    AgeBracket?
+  location      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  youthProfile    YouthProfile?
+  employerProfile EmployerProfile?
+  postedJobs      MicroJob[]
+  applications    Application[]
+  reviews         Review[]        @relation("ReviewsGiven")
+  receivedReviews Review[]        @relation("ReviewsReceived")
+  swipes          Swipe[]
+  questions       ProQuestion[]
+  answers         ProAnswer[]
+  reports         Report[]
+  aiIntentLogs    AiIntentLog[]
+  accounts        Account[]
+  sessions        Session[]
+  sentPokes       Poke[]          @relation("EmployerPokes")
+  receivedPokes   Poke[]          @relation("YouthReceivedPokes")
+  notifications   Notification[]
+  earnings        Earning[]
+  badges          Badge[]
+  recommendationsMade      Recommendation[] @relation("RecommendationsMade")
+  recommendationsReceived  Recommendation[] @relation("RecommendationsReceived")
+  recommendationsForEmployer Recommendation[] @relation("RecommendationsForEmployer")
+
+  // Messaging
+  employerConversations Conversation[] @relation("EmployerConversations")
+  youthConversations    Conversation[] @relation("YouthConversations")
+  messagesSent          Message[]      @relation("MessagesSent")
+
+  // Favorites and Notes
+  favoriteWorkers       FavoriteWorker[] @relation("EmployerFavorites")
+  favoritedBy           FavoriteWorker[] @relation("FavoritedBy")
+  workerNotes           WorkerNote[]     @relation("EmployerNotes")
+  notesAbout            WorkerNote[]     @relation("NotesAbout")
+
+  // Job Templates
+  jobTemplates          JobTemplate[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model YouthProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  displayName        String
+  avatarId           String?            @default("kawaii-star") // Fun avatar identifier
+  phoneNumber        String?            // Contact number for employers
+  bio                String?            @db.Text
+  availability       String?
+  availabilityStatus AvailabilityStatus @default(AVAILABLE)
+  interests          String[]           // Array of interest tags
+  skillTags          String[]           // Array of skill tags
+  profileVisibility  Boolean            @default(false) // OFF by default
+  publicProfileSlug  String?            @unique
+  completedJobsCount Int                @default(0)
+  averageRating      Float?
+  reliabilityScore   Int                @default(0) // 0-100
+
+  guardianEmail   String?
+  guardianConsent Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([publicProfileSlug])
+  @@index([availabilityStatus])
+}
+
+model EmployerProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  companyName    String
+  companyLogo    String?  // URL to uploaded logo/profile picture
+  phoneNumber    String?  // Contact number for youth workers
+  bio            String?  @db.Text // About the company
+  website        String?
+  verified       Boolean  @default(false)
+  ageVerified    Boolean  @default(false) // Age verification (18+)
+  dateOfBirth    DateTime? // For age verification
+  averageRating  Float?
+  totalReviews   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model MicroJob {
+  id          String      @id @default(cuid())
+  title       String
+  category    JobCategory
+  description String      @db.Text
+  payType     PayType
+  payAmount   Float
+  location    String
+  startDate   DateTime?   // When the job starts
+  endDate     DateTime?   // When the job ends
+  dateTime    DateTime?   // Legacy field - use startDate instead
+  duration    Int? // in minutes
+  status      JobStatus   @default(DRAFT)
+  statusReason String?    @db.Text // Reason for status change (e.g., ON_HOLD, CANCELLED)
+  requiredTraits String[] // e.g., "reliable", "friendly"
+  images      String[]    // Array of job photo URLs (Supabase Storage)
+  applicationDeadline DateTime? // Deadline for applications
+
+  postedById  String
+  postedBy    User        @relation(fields: [postedById], references: [id])
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  applications    Application[]
+  reviews         Review[]
+  pokes           Poke[]
+  earnings        Earning[]
+  recommendations Recommendation[]
+  conversations   Conversation[]
+
+  @@index([postedById])
+  @@index([category])
+  @@index([status])
+  @@index([location])
+  @@index([dateTime])
+  @@index([applicationDeadline])
+}
+
+model Application {
+  id        String            @id @default(cuid())
+  jobId     String
+  youthId   String
+  message   String            @db.Text
+  status    ApplicationStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  job   MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  youth User     @relation(fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, youthId])
+  @@index([jobId])
+  @@index([youthId])
+  @@index([status])
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  jobId            String
+  reviewerId       String
+  reviewedId       String
+  punctuality      Int      // 1-5
+  communication    Int      // 1-5
+  reliability      Int      // 1-5
+  overall          Int      // 1-5
+  positiveTags     String[] // e.g., "polite", "problem solver"
+  comment          String?  @db.Text // Written feedback
+  createdAt        DateTime @default(now())
+
+  job      MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  reviewer User     @relation("ReviewsGiven", fields: [reviewerId], references: [id])
+  reviewed User     @relation("ReviewsReceived", fields: [reviewedId], references: [id])
+
+  @@unique([jobId, reviewerId, reviewedId])
+  @@index([jobId])
+  @@index([reviewedId])
+}
+
+model CareerCard {
+  id             String   @id @default(cuid())
+  roleName       String   @unique
+  summary        String   @db.Text
+  traits         String[] // Key traits needed
+  dayInLife      String[] // Bullet points
+  realityCheck   String   @db.Text // What's hard / who it's not for
+  salaryBand     String // e.g., "300k-600k NOK"
+  companies      String[] // Example companies
+  nextSteps      String[] // Suggested actions/resources
+  certifications String[] // Required certifications/qualifications
+  tags           String[] // For matching with skills
+  order          Int      @default(0)
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  swipes Swipe[]
+
+  @@index([active])
+  @@index([order])
+}
+
+model Swipe {
+  id           String         @id @default(cuid())
+  youthId      String
+  careerCardId String
+  direction    SwipeDirection
+  saved        Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+
+  youth      User       @relation(fields: [youthId], references: [id], onDelete: Cascade)
+  careerCard CareerCard @relation(fields: [careerCardId], references: [id], onDelete: Cascade)
+
+  @@unique([youthId, careerCardId])
+  @@index([youthId])
+  @@index([careerCardId])
+  @@index([saved])
+}
+
+model ProQuestion {
+  id               String         @id @default(cuid())
+  youthId          String
+  question         String         @db.Text
+  category         String? // e.g., "Tech", "Healthcare", "Creative"
+  relatedCareerIds String[] // Career card IDs this relates to
+  tags             String[] // For search/filtering
+  status           QuestionStatus @default(PENDING)
+  moderatedBy      String?
+  moderatedAt      DateTime?
+  rejectionReason  String?        @db.Text
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  youth   User         @relation(fields: [youthId], references: [id], onDelete: Cascade)
+  answers ProAnswer[]
+
+  @@index([youthId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([category])
+}
+
+model ProAnswer {
+  id                 String    @id @default(cuid())
+  questionId         String
+  answeredBy         String
+  answerText         String    @db.Text
+  professionalTitle  String? // e.g., "Senior Software Engineer"
+  professionalCompany String? // e.g., "Google"
+  yearsExperience    Int?
+  publishedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  question ProQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerer User        @relation(fields: [answeredBy], references: [id])
+
+  @@index([questionId])
+  @@index([answeredBy])
+  @@index([publishedAt])
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  targetType String // "user", "job", "question", "answer"
+  targetId   String
+  reason     String       @db.Text
+  status     ReportStatus @default(PENDING)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  reporter User @relation(fields: [reporterId], references: [id])
+
+  @@index([reporterId])
+  @@index([status])
+  @@index([targetType, targetId])
+}
+
+model AiIntentLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  intentType String // "concierge", "career_explain", "next_steps", "message_draft"
+  metadata   Json? // Anonymous structured data
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([intentType])
+  @@index([createdAt])
+}
+
+model HelpDoc {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  tags      String[]
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([active])
+}
+
+model Poke {
+  id          String     @id @default(cuid())
+  employerId  String
+  youthId     String
+  jobId       String?    // Optional: if poke is for a specific job
+  message     String?    @db.Text
+  status      PokeStatus @default(PENDING)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  employer User @relation("EmployerPokes", fields: [employerId], references: [id], onDelete: Cascade)
+  youth    User @relation("YouthReceivedPokes", fields: [youthId], references: [id], onDelete: Cascade)
+  job      MicroJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@unique([employerId, youthId, jobId])
+  @@index([employerId])
+  @@index([youthId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  NEW_APPLICATION
+  APPLICATION_ACCEPTED
+  APPLICATION_REJECTED
+  JOB_COMPLETED
+  NEW_REVIEW
+  NEW_POKE
+  NEW_RECOMMENDATION
+  NEW_MESSAGE
+  SYSTEM
+}
+
+enum RecommendationStatus {
+  PENDING     // Initial state
+  VIEWED      // Employer has seen it
+  CONTACTED   // Employer contacted the recommended youth
+  HIRED       // Recommended youth got the job
+  DISMISSED   // Employer dismissed the recommendation
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?          // Optional link to navigate to
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// Earnings tracking for youth workers
+enum EarningStatus {
+  PENDING    // Job completed but not yet paid
+  CONFIRMED  // Payment confirmed by employer
+}
+
+model Earning {
+  id        String        @id @default(cuid())
+  youthId   String
+  jobId     String
+  amount    Float
+  status    EarningStatus @default(PENDING)
+  note      String?       // Optional note about the earning
+  earnedAt  DateTime      @default(now()) // When the job was completed
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  youth User     @relation(fields: [youthId], references: [id], onDelete: Cascade)
+  job   MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([youthId, jobId]) // One earning per job per youth
+  @@index([youthId])
+  @@index([status])
+  @@index([earnedAt])
+}
+
+// Achievement badges for youth workers
+enum BadgeType {
+  FIRST_JOB          // Completed first job
+  FIVE_JOBS          // Completed 5 jobs
+  TEN_JOBS           // Completed 10 jobs
+  TWENTY_FIVE_JOBS   // Completed 25 jobs
+  FIFTY_JOBS         // Completed 50 jobs
+  FIVE_STAR_RATING   // Received a 5-star rating
+  RATING_STREAK      // 3 consecutive 5-star ratings
+  QUICK_RESPONDER    // Responded to applications quickly
+  RELIABLE           // High reliability score (90%+)
+  SUPER_RELIABLE     // Perfect reliability score (100%)
+  EARLY_BIRD         // Joined in first month
+  CATEGORY_MASTER    // Completed 5+ jobs in one category
+  MULTI_TALENTED     // Completed jobs in 3+ categories
+  FIRST_REVIEW       // Received first review
+  HIGHLY_RATED       // Average rating above 4.5
+}
+
+model Badge {
+  id        String    @id @default(cuid())
+  youthId   String
+  type      BadgeType
+  earnedAt  DateTime  @default(now())
+  metadata  Json?     // Additional data (e.g., category for CATEGORY_MASTER)
+
+  youth User @relation(fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([youthId, type]) // Each badge can only be earned once per youth
+  @@index([youthId])
+  @@index([type])
+  @@index([earnedAt])
+}
+
+// Recommendations - Youth recommending other youth for jobs
+model Recommendation {
+  id              String               @id @default(cuid())
+  recommenderId   String               // Youth who made the recommendation
+  recommendedId   String               // Youth being recommended
+  jobId           String               // Job being recommended for
+  employerId      String               // Employer who owns the job
+  message         String?              @db.Text
+  status          RecommendationStatus @default(PENDING)
+  createdAt       DateTime             @default(now())
+
+  recommender     User      @relation("RecommendationsMade", fields: [recommenderId], references: [id], onDelete: Cascade)
+  recommended     User      @relation("RecommendationsReceived", fields: [recommendedId], references: [id], onDelete: Cascade)
+  job             MicroJob  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  employer        User      @relation("RecommendationsForEmployer", fields: [employerId], references: [id], onDelete: Cascade)
+
+  @@unique([recommenderId, recommendedId, jobId]) // Prevent duplicate recommendations
+  @@index([recommenderId])
+  @@index([recommendedId])
+  @@index([jobId])
+  @@index([employerId])
+}
+
+// Conversations for messaging between employers and youth
+model Conversation {
+  id            String    @id @default(cuid())
+  employerId    String
+  youthId       String
+  jobId         String?   // Optional: conversation about a specific job
+  lastMessageAt DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+
+  employer User      @relation("EmployerConversations", fields: [employerId], references: [id], onDelete: Cascade)
+  youth    User      @relation("YouthConversations", fields: [youthId], references: [id], onDelete: Cascade)
+  job      MicroJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  @@unique([employerId, youthId, jobId])
+  @@index([employerId])
+  @@index([youthId])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String   @db.Text
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+// Favorite workers for employers
+model FavoriteWorker {
+  id         String   @id @default(cuid())
+  employerId String
+  youthId    String
+  note       String?  @db.Text // Optional note about why they're favorited
+  createdAt  DateTime @default(now())
+
+  employer User @relation("EmployerFavorites", fields: [employerId], references: [id], onDelete: Cascade)
+  youth    User @relation("FavoritedBy", fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([employerId, youthId])
+  @@index([employerId])
+  @@index([youthId])
+}
+
+// Private notes on workers (for employers)
+model WorkerNote {
+  id         String   @id @default(cuid())
+  employerId String
+  youthId    String
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  employer User @relation("EmployerNotes", fields: [employerId], references: [id], onDelete: Cascade)
+  youth    User @relation("NotesAbout", fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([employerId, youthId]) // One note per youth per employer
+  @@index([employerId])
+  @@index([youthId])
+}
+
+// Job templates for quick re-posting
+model JobTemplate {
+  id             String      @id @default(cuid())
+  employerId     String
+  name           String      // Template name for easy identification
+  title          String
+  category       JobCategory
+  description    String      @db.Text
+  payType        PayType
+  payAmount      Float
+  location       String
+  duration       Int?
+  requiredTraits String[]
+  usageCount     Int         @default(0) // How many times this template was used
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  employer User @relation(fields: [employerId], references: [id], onDelete: Cascade)
+
+  @@index([employerId])
+  @@index([usageCount])
+}
