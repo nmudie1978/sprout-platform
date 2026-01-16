@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       duration,
       payAmount,
       payType,
-      requirements,
+      requiredTraits,
     } = body;
 
     if (!name || !title || !category) {
@@ -65,9 +65,9 @@ export async function POST(req: NextRequest) {
         category,
         location: location || "",
         duration: duration || null,
-        payAmount: payAmount ? parseFloat(payAmount) : null,
+        payAmount: payAmount ? parseFloat(payAmount) : 0,
         payType: payType || "FIXED",
-        requirements: requirements || [],
+        requiredTraits: requiredTraits || [],
       },
     });
 

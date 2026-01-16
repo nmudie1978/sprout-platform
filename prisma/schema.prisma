@@ -195,6 +195,7 @@ model YouthProfile {
   completedJobsCount Int                @default(0)
   averageRating      Float?
   reliabilityScore   Int                @default(0) // 0-100
+  careerAspiration   String?            // e.g., "I want to be a software developer"
 
   guardianEmail   String?
   guardianConsent Boolean @default(false)
@@ -238,6 +239,8 @@ model MicroJob {
   payType     PayType
   payAmount   Float
   location    String
+  latitude    Float?      // For map view
+  longitude   Float?      // For map view
   startDate   DateTime?   // When the job starts
   endDate     DateTime?   // When the job ends
   dateTime    DateTime?   // Legacy field - use startDate instead
@@ -658,6 +661,8 @@ model JobTemplate {
   payType        PayType
   payAmount      Float
   location       String
+  latitude       Float?      // For map view
+  longitude      Float?      // For map view
   duration       Int?
   requiredTraits String[]
   usageCount     Int         @default(0) // How many times this template was used

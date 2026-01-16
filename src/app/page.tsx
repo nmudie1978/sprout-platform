@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Briefcase, Compass, Users, TrendingUp, Sparkles, Zap, Sprout, Building2, UserPlus, ArrowRight, Search, CheckCircle, Star, Trophy, LayoutDashboard } from "lucide-react";
+import { Briefcase, Compass, Users, TrendingUp, Sparkles, Zap, Sprout, Building2, UserPlus, ArrowRight, Search, CheckCircle, Star, Trophy, LayoutDashboard, Play, Quote } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { AnimatedCounter } from "@/components/animated-counter";
@@ -333,6 +333,9 @@ export default function LandingPage() {
       {/* How It Works Section */}
       <HowItWorksSection />
 
+      {/* Success Stories Section */}
+      <SuccessStoriesSection />
+
       {/* Career Journey Section - Visual Diagram */}
       <section className="py-24 sm:py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent" />
@@ -574,6 +577,193 @@ function HowItWorksSection() {
             </Button>
           </div>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// Success Stories Section with Video Testimonial
+function SuccessStoriesSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const testimonials = [
+    {
+      name: "Emma S.",
+      age: 18,
+      role: "Pet Sitter & Dog Walker",
+      quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
+      avatar: "🐕",
+      jobsCompleted: 24,
+      rating: 4.9,
+    },
+    {
+      name: "Marcus L.",
+      age: 17,
+      role: "Tech Helper & Tutor",
+      quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
+      avatar: "💻",
+      jobsCompleted: 31,
+      rating: 5.0,
+    },
+    {
+      name: "Sofia K.",
+      age: 19,
+      role: "Event Assistant",
+      quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning - my dream career!",
+      avatar: "🎉",
+      jobsCompleted: 18,
+      rating: 4.8,
+    },
+  ];
+
+  return (
+    <section ref={ref} className="py-24 sm:py-32 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/50 to-transparent" />
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-sm font-medium mb-4">
+            <Star className="h-4 w-4" />
+            <span>Real Stories, Real Impact</span>
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
+            Hear from <span className="gradient-text">Youth Workers</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Young people just like you are building skills, earning money, and discovering their futures with Sprout.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Video Testimonial Placeholder */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="relative rounded-2xl overflow-hidden border-2 border-primary/20 shadow-2xl group cursor-pointer bg-gradient-to-br from-gray-900 to-gray-800">
+              {/* Video Thumbnail Placeholder */}
+              <div className="aspect-video relative">
+                {/* Placeholder Background with Pattern */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-pink-500/20" />
+                <div className="absolute inset-0 bg-grid-pattern opacity-10" />
+
+                {/* Placeholder Content */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
+                  {/* Play Button */}
+                  <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300 shadow-xl">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
+                      <Play className="h-8 w-8 text-white ml-1" fill="white" />
+                    </div>
+                  </div>
+
+                  {/* Placeholder Text */}
+                  <p className="text-xl font-bold text-center mb-2">
+                    Emma's Story
+                  </p>
+                  <p className="text-sm text-white/80 text-center max-w-xs">
+                    "How I turned dog walking into a business and found my passion"
+                  </p>
+                  <p className="text-xs text-white/60 mt-4">
+                    2:34 • Video coming soon
+                  </p>
+                </div>
+
+                {/* Corner Badge */}
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs font-medium flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  Featured Story
+                </div>
+              </div>
+            </div>
+
+            {/* Video Caption */}
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Watch how Emma built her pet-sitting business through Sprout
+            </p>
+          </motion.div>
+
+          {/* Text Testimonials */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="space-y-6"
+          >
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+              >
+                <Card className="border-2 hover-lift group overflow-hidden relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="pt-6 relative">
+                    <div className="flex items-start gap-4">
+                      {/* Avatar */}
+                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center text-2xl">
+                        {testimonial.avatar}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <p className="font-bold">{testimonial.name}, {testimonial.age}</p>
+                            <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                          </div>
+                          <div className="flex items-center gap-1 text-yellow-500">
+                            <Star className="h-4 w-4 fill-current" />
+                            <span className="text-sm font-medium">{testimonial.rating}</span>
+                          </div>
+                        </div>
+
+                        {/* Quote */}
+                        <div className="relative">
+                          <Quote className="absolute -top-1 -left-2 h-4 w-4 text-primary/30" />
+                          <p className="text-sm text-muted-foreground italic pl-4">
+                            {testimonial.quote}
+                          </p>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            {testimonial.jobsCompleted} jobs completed
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+
+            {/* CTA */}
+            <div className="text-center pt-4">
+              <p className="text-sm text-muted-foreground mb-3">
+                Ready to write your own success story?
+              </p>
+              <Button asChild className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg">
+                <Link href="/auth/signup">
+                  <span className="flex items-center gap-2">
+                    Get Started Free
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

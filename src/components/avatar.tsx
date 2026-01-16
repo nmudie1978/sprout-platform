@@ -10,6 +10,7 @@ interface AvatarProps {
   className?: string;
   showBorder?: boolean;
   animated?: boolean;
+  style?: React.CSSProperties;
 }
 
 const sizeClasses = {
@@ -32,6 +33,7 @@ export function Avatar({
   className,
   showBorder = true,
   animated = true,
+  style,
 }: AvatarProps) {
   const avatar = avatarId ? getAvatarById(avatarId) : getAvatarById(defaultAvatarId);
 
@@ -45,6 +47,7 @@ export function Avatar({
           showBorder && "border-2 border-white shadow-lg",
           className
         )}
+        style={style}
       >
         {fallbackInitial.charAt(0).toUpperCase()}
       </div>
@@ -64,7 +67,7 @@ export function Avatar({
         isPixel && "rounded-lg", // Pixel avatars are slightly squared
         className
       )}
-      style={isPixel ? pixelatedStyle : undefined}
+      style={{ ...(isPixel ? pixelatedStyle : {}), ...style }}
     >
       <span
         className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SkillRadar } from "@/components/skill-radar";
 import { ReviewsDisplay } from "@/components/reviews-display";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass } from "lucide-react";
 import { signOut } from "next-auth/react";
 import {
   AlertDialog,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AvatarSelector } from "@/components/avatar-selector";
 import { BadgesDisplay } from "@/components/badges-display";
+import Link from "next/link";
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -54,7 +55,9 @@ export default function ProfilePage() {
     phoneNumber: "",
     interests: [] as string[],
     guardianEmail: "",
+    careerAspiration: "",
   });
+  const formInitializedRef = useRef(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile"],
@@ -68,8 +71,10 @@ export default function ProfilePage() {
     },
   });
 
+  // Only initialize form data once when profile first loads
   useEffect(() => {
-    if (profile) {
+    if (profile && !formInitializedRef.current) {
+      formInitializedRef.current = true;
       setFormData({
         displayName: profile.displayName || "",
         bio: profile.bio || "",
@@ -77,6 +82,7 @@ export default function ProfilePage() {
         phoneNumber: profile.phoneNumber || "",
         interests: profile.interests || [],
         guardianEmail: profile.guardianEmail || "",
+        careerAspiration: profile.careerAspiration || "",
       });
     }
   }, [profile]);
@@ -97,7 +103,17 @@ export default function ProfilePage() {
 
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Sync form data with saved values
+      setFormData({
+        displayName: data.displayName || "",
+        bio: data.bio || "",
+        availability: data.availability || "",
+        phoneNumber: data.phoneNumber || "",
+        interests: data.interests || [],
+        guardianEmail: data.guardianEmail || "",
+        careerAspiration: data.careerAspiration || "",
+      });
       toast({
         title: "Profile saved!",
         description: "Your profile has been updated successfully.",
@@ -160,14 +176,14 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: (data) => {
-      const statusLabels = {
+      const statusLabels: Record<string, string> = {
         AVAILABLE: "Available for Work",
         BUSY: "Busy Right Now",
         NOT_LOOKING: "Not Looking",
       };
       toast({
         title: "Status updated!",
-        description: `You're now marked as: ${statusLabels[data.availabilityStatus]}`,
+        description: `You're now marked as: ${statusLabels[data.availabilityStatus] || data.availabilityStatus}`,
       });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
@@ -205,6 +221,36 @@ export default function ProfilePage() {
       toast({
         title: "Error",
         description: "Failed to update avatar",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateCareerAspirationMutation = useMutation({
+    mutationFn: async (careerAspiration: string) => {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ careerAspiration }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update career aspiration");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Career goal saved!",
+        description: "Your career aspiration has been updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update career aspiration",
         variant: "destructive",
       });
     },
@@ -282,7 +328,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 relative">
+    <div className="container mx-auto max-w-4xl px-4 py-8 relative z-10 isolate">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
 
@@ -295,19 +341,19 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="border-2 shadow-lg hover-lift">
+        <div className="lg:col-span-2 space-y-6 relative z-10">
+          <Card className="border-2 shadow-lg hover-lift relative z-10">
             <CardHeader>
               <CardTitle className="text-xl">Basic Information</CardTitle>
               <CardDescription>
                 This information will be shown to employers when you share your profile
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 relative z-10">
               {/* Avatar Selector */}
-              <div className="flex flex-col items-center gap-3 pb-4 border-b">
+              <div className="flex flex-col items-center gap-3 pb-4 border-b relative z-10">
                 <Label className="text-center">Your Avatar</Label>
                 <AvatarSelector
                   currentAvatarId={profile?.avatarId}
@@ -436,7 +482,7 @@ export default function ProfilePage() {
           {/* Skills & Stats */}
           {profile && (
             <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-50" />
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-50 pointer-events-none" />
               <CardHeader className="relative">
                 <CardTitle className="text-xl">Your Skills</CardTitle>
                 <CardDescription>
@@ -480,17 +526,17 @@ export default function ProfilePage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-6 relative z-10">
           {/* Privacy Controls */}
           {profile && (
-            <Card className="border-2 shadow-lg hover-lift">
-              <CardHeader>
+            <Card className="border-2 shadow-lg hover-lift relative z-10">
+              <CardHeader className="relative z-10">
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Shield className="h-5 w-5 text-primary" />
                   Privacy
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 relative z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <Label htmlFor="visibility" className="cursor-pointer">
@@ -548,9 +594,57 @@ export default function ProfilePage() {
             </Card>
           )}
 
+          {/* Career Goal */}
+          {profile && (
+            <Card className="border-2 shadow-lg hover-lift overflow-hidden relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-50 pointer-events-none" />
+              <CardHeader className="relative z-10">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Target className="h-5 w-5 text-orange-500" />
+                  Career Goal
+                </CardTitle>
+                <CardDescription>
+                  What do you want to be?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="relative z-10 space-y-4">
+                <div>
+                  <Input
+                    placeholder="e.g., Software Developer, Chef, Entrepreneur"
+                    value={formData.careerAspiration}
+                    onChange={(e) =>
+                      setFormData({ ...formData, careerAspiration: e.target.value })
+                    }
+                    maxLength={200}
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground text-right">
+                    {formData.careerAspiration.length}/200 characters
+                  </p>
+                </div>
+                <Button
+                  onClick={() => updateCareerAspirationMutation.mutate(formData.careerAspiration)}
+                  disabled={updateCareerAspirationMutation.isPending || formData.careerAspiration === (profile.careerAspiration || "")}
+                  className="w-full"
+                  size="sm"
+                >
+                  {updateCareerAspirationMutation.isPending ? "Saving..." : "Save Goal"}
+                </Button>
+                <div className="rounded-lg bg-muted p-3">
+                  <Link
+                    href="/career-explore"
+                    className="flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    <Compass className="h-4 w-4" />
+                    Need inspiration? Explore careers
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Availability Status */}
           {profile && (
-            <Card className="border-2 shadow-lg hover-lift">
+            <Card className="border-2 shadow-lg hover-lift relative z-10">
               <CardHeader>
                 <CardTitle className="text-xl">Work Availability</CardTitle>
                 <CardDescription>
@@ -559,8 +653,9 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <button
+                  type="button"
                   onClick={() => updateAvailabilityMutation.mutate("AVAILABLE")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
+                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
                     profile.availabilityStatus === "AVAILABLE"
                       ? "border-green-500 bg-green-500/10"
                       : "border-border hover:border-green-500/50"
@@ -587,8 +682,9 @@ export default function ProfilePage() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => updateAvailabilityMutation.mutate("BUSY")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
+                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
                     profile.availabilityStatus === "BUSY"
                       ? "border-yellow-500 bg-yellow-500/10"
                       : "border-border hover:border-yellow-500/50"
@@ -615,8 +711,9 @@ export default function ProfilePage() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => updateAvailabilityMutation.mutate("NOT_LOOKING")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all ${
+                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
                     profile.availabilityStatus === "NOT_LOOKING"
                       ? "border-red-500 bg-red-500/10"
                       : "border-border hover:border-red-500/50"
@@ -660,7 +757,7 @@ export default function ProfilePage() {
 
           {/* Profile Tips */}
           <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50 pointer-events-none" />
             <CardHeader className="relative">
               <CardTitle className="text-xl">Profile Tips</CardTitle>
             </CardHeader>
@@ -692,7 +789,7 @@ export default function ProfilePage() {
 
           {/* Danger Zone - Delete Account */}
           <Card className="border-2 border-red-500/20 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50 pointer-events-none" />
             <CardHeader className="relative">
               <CardTitle className="text-xl flex items-center gap-2 text-red-600">
                 <AlertTriangle className="h-5 w-5" />

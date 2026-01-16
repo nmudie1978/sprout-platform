@@ -126,29 +126,29 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
               const Icon = link.icon;
               const isActive = pathname === link.href;
               return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative group"
-                >
+                <div key={link.href} className="relative group">
                   <motion.div
-                    className={cn(
-                      "flex items-center space-x-2 rounded-xl px-4 py-2.5 text-sm transition-all duration-200",
-                      isActive
-                        ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
-                        : link.isCore
-                          ? "text-foreground font-bold hover:bg-gradient-to-r hover:from-primary/10 hover:to-blue-500/10 border-2 border-primary/20"
-                          : "text-muted-foreground font-medium hover:text-foreground hover:bg-muted/50"
-                    )}
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Icon className={cn(
-                      "h-4 w-4",
-                      isActive && "animate-pulse",
-                      link.isCore && !isActive && "text-primary"
-                    )} />
-                    <span className="hidden lg:inline">{link.label}</span>
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "flex items-center space-x-2 rounded-xl px-4 py-2.5 text-sm transition-all duration-200",
+                        isActive
+                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
+                          : link.isCore
+                            ? "text-foreground font-bold hover:bg-gradient-to-r hover:from-primary/10 hover:to-blue-500/10 border-2 border-primary/20"
+                            : "text-muted-foreground font-medium hover:text-foreground hover:bg-muted/50"
+                      )}
+                    >
+                      <Icon className={cn(
+                        "h-4 w-4",
+                        isActive && "animate-pulse",
+                        link.isCore && !isActive && "text-primary"
+                      )} />
+                      <span className="hidden lg:inline">{link.label}</span>
+                    </Link>
                   </motion.div>
 
                   {/* Active indicator dot */}
@@ -161,7 +161,7 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                </Link>
+                </div>
               );
             })}
           </div>
@@ -188,21 +188,8 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
 
             <div className="h-8 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
 
-            {/* User avatar and name */}
-            <div className="flex items-center space-x-2">
-              {userProfilePic ? (
-                <img
-                  src={userProfilePic}
-                  alt={userName || "Profile"}
-                  className="h-8 w-8 rounded-full object-cover border-2 border-primary/20"
-                />
-              ) : (
-                <div className={`h-8 w-8 rounded-full bg-gradient-to-r ${currentRole.accentColor} flex items-center justify-center text-white text-xs font-bold`}>
-                  {userName?.charAt(0).toUpperCase() || "U"}
-                </div>
-              )}
-              <span className="text-sm font-medium hidden lg:inline">{userName}</span>
-            </div>
+            {/* User name */}
+            <span className="text-sm font-medium">{userName}</span>
 
             {/* Sign out button */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -303,7 +290,7 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center space-x-3 rounded-xl px-4 py-3 text-sm transition-all",
+                        "flex items-center space-x-3 rounded-xl px-4 py-3 text-sm transition-all block",
                         isActive
                           ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
                           : link.isCore
@@ -319,12 +306,7 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
                       )} />
                       <span>{link.label}</span>
                       {isActive && (
-                        <motion.div
-                          className="ml-auto h-2 w-2 rounded-full bg-white"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: "spring" }}
-                        />
+                        <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
                     </Link>
                   </motion.div>

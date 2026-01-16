@@ -149,7 +149,8 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
   }
 
   const { reviews = [], stats } = data || {};
-  const tier = tierConfig[stats?.tier || "NONE"];
+  const tierKey = (stats?.tier || "NONE") as keyof typeof tierConfig;
+  const tier = tierConfig[tierKey];
   const TierIcon = tier.icon;
 
   // No reviews state

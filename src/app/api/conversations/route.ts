@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
             employerProfile: {
               select: {
                 companyName: true,
-                logoUrl: true,
+                companyLogo: true,
               },
             },
           },
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      orderBy: { updatedAt: "desc" },
+      orderBy: { lastMessageAt: "desc" },
     });
 
     // Format conversations with last message info and unread count
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
           : {
               id: conv.employer.id,
               name: conv.employer.employerProfile?.companyName || "Unknown",
-              logo: conv.employer.employerProfile?.logoUrl,
+              logo: conv.employer.employerProfile?.companyLogo,
             };
 
         return {
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
               }
             : null,
           unreadCount,
-          updatedAt: conv.updatedAt,
+          lastMessageAt: conv.lastMessageAt,
         };
       })
     );

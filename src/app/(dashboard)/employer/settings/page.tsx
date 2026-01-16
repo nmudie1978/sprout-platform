@@ -337,7 +337,7 @@ export default function EmployerSettingsPage() {
 
         {/* Danger Zone - Delete Account */}
         <Card className="border-2 border-red-500/20 shadow-lg overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50" />
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50 pointer-events-none" />
           <CardHeader className="relative">
             <CardTitle className="text-xl flex items-center gap-2 text-red-600">
               <AlertTriangle className="h-5 w-5" />

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { jobSchema } from "@/lib/validations/job";
 import { JobCategory, PayType, JobStatus } from "@prisma/client";
+import { geocodeAddress } from "@/lib/geocode";
 
 export async function GET(req: NextRequest) {
   try {
@@ -47,6 +48,8 @@ export async function GET(req: NextRequest) {
         payType: true,
         payAmount: true,
         location: true,
+        latitude: true,
+        longitude: true,
         startDate: true,
         endDate: true,
         dateTime: true,
@@ -133,9 +136,23 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = jobSchema.parse(body);
 
+    // Geocode the location (don't block on failure)
+    let latitude: number | null = null;
+    let longitude: number | null = null;
+
+    if (validatedData.location) {
+      const coords = await geocodeAddress(validatedData.location);
+      if (coords) {
+        latitude = coords.latitude;
+        longitude = coords.longitude;
+      }
+    }
+
     const job = await prisma.microJob.create({
       data: {
         ...validatedData,
+        latitude,
+        longitude,
         startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
         endDate: validatedData.endDate ? new Date(validatedData.endDate) : null,
         dateTime: validatedData.dateTime ? new Date(validatedData.dateTime) : null,

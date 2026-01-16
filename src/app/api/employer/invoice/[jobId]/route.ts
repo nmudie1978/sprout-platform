@@ -27,9 +27,7 @@ export async function GET(
             employerProfile: {
               select: {
                 companyName: true,
-                contactName: true,
-                phone: true,
-                address: true,
+                phoneNumber: true,
               },
             },
           },
@@ -44,8 +42,6 @@ export async function GET(
                 youthProfile: {
                   select: {
                     displayName: true,
-                    firstName: true,
-                    lastName: true,
                   },
                 },
               },
@@ -81,7 +77,7 @@ export async function GET(
     const earning = job.earnings[0];
 
     // Generate invoice number (simple format: INV-YYYYMMDD-JOBID)
-    const completedDate = job.completedAt || job.updatedAt;
+    const completedDate = job.updatedAt;
     const invoiceNumber = `INV-${new Date(completedDate).toISOString().slice(0, 10).replace(/-/g, "")}-${job.id.slice(-6).toUpperCase()}`;
 
     const invoice = {
@@ -90,19 +86,13 @@ export async function GET(
 
       employer: {
         companyName: job.postedBy.employerProfile?.companyName || "Employer",
-        contactName: job.postedBy.employerProfile?.contactName || "",
         email: job.postedBy.email,
-        phone: job.postedBy.employerProfile?.phone || "",
-        address: job.postedBy.employerProfile?.address || "",
+        phone: job.postedBy.employerProfile?.phoneNumber || "",
       },
 
       worker: worker
         ? {
             displayName: worker.youthProfile?.displayName || "Worker",
-            fullName:
-              worker.youthProfile?.firstName && worker.youthProfile?.lastName
-                ? `${worker.youthProfile.firstName} ${worker.youthProfile.lastName}`
-                : worker.youthProfile?.displayName || "Worker",
             email: worker.email,
           }
         : null,
@@ -113,10 +103,9 @@ export async function GET(
         description: job.description,
         category: job.category,
         location: job.location,
-        scheduledDate: job.scheduledDate,
-        scheduledTime: job.scheduledTime,
+        startDate: job.startDate,
         duration: job.duration,
-        completedAt: job.completedAt,
+        completedAt: job.updatedAt,
       },
 
       payment: {

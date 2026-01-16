@@ -114,12 +114,12 @@ export function formatSkillName(skill: SoftSkill): string {
 
 // Check if user has skills relevant to a career
 export function hasRelevantSkills(
-  userSkills: Record<SoftSkill, number>,
+  userSkills: Partial<Record<SoftSkill, number>>,
   careerRequiredSkills: string[],
   threshold: number = 20
 ): boolean {
   return careerRequiredSkills.some((skill) => {
     const normalizedSkill = skill.toLowerCase().replace(/\s+/g, "-") as SoftSkill;
-    return userSkills[normalizedSkill] >= threshold;
+    return (userSkills[normalizedSkill] || 0) >= threshold;
   });
 }

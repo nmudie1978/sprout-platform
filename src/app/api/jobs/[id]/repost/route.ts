@@ -28,7 +28,7 @@ export async function POST(
         duration: true,
         payAmount: true,
         payType: true,
-        requirements: true,
+        requiredTraits: true,
         images: true,
         postedById: true,
       },
@@ -43,7 +43,7 @@ export async function POST(
     }
 
     const body = await req.json().catch(() => ({}));
-    const { scheduledDate, scheduledTime, modifyTitle } = body;
+    const { startDate, modifyTitle } = body;
 
     // Create the new job with optional modifications
     const newJob = await prisma.microJob.create({
@@ -54,12 +54,11 @@ export async function POST(
         description: originalJob.description,
         category: originalJob.category,
         location: originalJob.location,
-        scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
-        scheduledTime: scheduledTime || null,
+        startDate: startDate ? new Date(startDate) : null,
         duration: originalJob.duration,
         payAmount: originalJob.payAmount,
         payType: originalJob.payType,
-        requirements: originalJob.requirements,
+        requiredTraits: originalJob.requiredTraits,
         images: originalJob.images,
         status: "POSTED",
         postedById: session.user.id,

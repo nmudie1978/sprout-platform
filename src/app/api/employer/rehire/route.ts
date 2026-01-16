@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
                 avatarId: true,
                 completedJobsCount: true,
                 averageRating: true,
-                skills: true,
+                skillTags: true,
               },
             },
           },
@@ -42,13 +42,13 @@ export async function GET(req: NextRequest) {
             title: true,
             category: true,
             payAmount: true,
-            completedAt: true,
+            updatedAt: true,
           },
         },
       },
       orderBy: {
         job: {
-          completedAt: "desc",
+          updatedAt: "desc",
         },
       },
     });
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
           avatarId: app.youth.youthProfile?.avatarId,
           completedJobsCount: app.youth.youthProfile?.completedJobsCount || 0,
           averageRating: app.youth.youthProfile?.averageRating,
-          skills: app.youth.youthProfile?.skills || [],
+          skillTags: app.youth.youthProfile?.skillTags || [],
           jobsWithYou: 0,
           lastJob: null,
           recentJobs: [],
@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
           title: app.job.title,
           category: app.job.category,
           payAmount: app.job.payAmount,
-          completedAt: app.job.completedAt,
+          completedAt: app.job.updatedAt,
         };
       }
 
@@ -125,8 +125,7 @@ export async function POST(req: NextRequest) {
       description,
       category,
       location,
-      scheduledDate,
-      scheduledTime,
+      startDate,
       duration,
       payAmount,
       payType,
@@ -157,8 +156,7 @@ export async function POST(req: NextRequest) {
         description,
         category,
         location: location || "",
-        scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
-        scheduledTime: scheduledTime || null,
+        startDate: startDate ? new Date(startDate) : null,
         duration: duration || null,
         payAmount: parseFloat(payAmount),
         payType: payType || "FIXED",
@@ -179,7 +177,7 @@ export async function POST(req: NextRequest) {
     await prisma.notification.create({
       data: {
         userId: youthId,
-        type: "JOB_ASSIGNED",
+        type: "APPLICATION_ACCEPTED",
         title: "New Job Assigned",
         message: `You've been directly hired for "${title}"`,
         link: `/jobs/${job.id}`,

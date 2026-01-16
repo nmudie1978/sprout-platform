@@ -126,7 +126,7 @@ export default function PokesPage() {
                 key={poke.id}
                 className="border-2 border-pink-500/20 hover-lift transition-all overflow-hidden relative group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 <CardHeader className="relative">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

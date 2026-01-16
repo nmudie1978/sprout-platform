@@ -30,7 +30,7 @@ export function ProfileStrengthCompact() {
   // No profile yet
   if (!profile) {
     return (
-      <Card className="border border-amber-300 bg-amber-50/50 dark:bg-amber-950/20">
+      <Card className="border border-amber-300 bg-amber-50/50 dark:bg-amber-950/20 relative z-10">
         <CardContent className="p-4">
           <div className="flex items-center gap-2 mb-3">
             <AlertCircle className="h-4 w-4 text-amber-600" />
@@ -39,12 +39,12 @@ export function ProfileStrengthCompact() {
           <p className="text-xs text-muted-foreground mb-3">
             Create your profile to apply for jobs
           </p>
-          <Button size="sm" className="w-full h-8 text-xs" asChild>
-            <Link href="/profile">
+          <Link href="/profile" className="block">
+            <Button size="sm" className="w-full h-8 text-xs pointer-events-auto">
               Create Profile
               <ChevronRight className="h-3 w-3 ml-1" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </CardContent>
       </Card>
     );
@@ -66,7 +66,7 @@ export function ProfileStrengthCompact() {
   // Complete profile
   if (completionPercentage === 100) {
     return (
-      <Card className="border border-green-300 bg-green-50/50 dark:bg-green-950/20">
+      <Card className="border border-green-300 bg-green-50/50 dark:bg-green-950/20 relative z-10">
         <CardContent className="p-4">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-green-500/20">
@@ -83,7 +83,7 @@ export function ProfileStrengthCompact() {
   }
 
   return (
-    <Card className="border hover:shadow-md transition-shadow">
+    <Card className="border hover:shadow-md transition-shadow relative z-10">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -108,12 +108,12 @@ export function ProfileStrengthCompact() {
           <span>{checks.length - completedCount} remaining</span>
         </div>
 
-        <Button size="sm" variant="outline" className="w-full h-8 text-xs" asChild>
-          <Link href="/profile">
+        <Link href="/profile" className="block">
+          <Button size="sm" variant="outline" className="w-full h-8 text-xs pointer-events-auto">
             {completionPercentage < 50 ? "Complete" : "Finish"} Profile
             <ChevronRight className="h-3 w-3 ml-1" />
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </CardContent>
     </Card>
   );

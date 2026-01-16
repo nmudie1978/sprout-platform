@@ -19,7 +19,7 @@ export function EarningsCompact() {
 
   if (isLoading) {
     return (
-      <Card className="border">
+      <Card className="border relative z-10">
         <CardContent className="p-4">
           <div className="flex items-center justify-center h-16">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -37,7 +37,7 @@ export function EarningsCompact() {
   } = summary;
 
   return (
-    <Card className="border hover:shadow-md transition-shadow">
+    <Card className="border hover:shadow-md transition-shadow relative z-10">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -47,12 +47,12 @@ export function EarningsCompact() {
             <span className="text-sm font-medium">Earnings</span>
           </div>
           {totalEarned > 0 && (
-            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-emerald-600 hover:text-emerald-700" asChild>
-              <Link href="/earnings">
+            <Link href="/earnings" className="inline-block">
+              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-emerald-600 hover:text-emerald-700 pointer-events-auto">
                 <BarChart3 className="h-3 w-3 mr-1" />
                 Chart
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           )}
         </div>
 

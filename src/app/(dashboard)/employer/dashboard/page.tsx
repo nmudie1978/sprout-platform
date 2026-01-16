@@ -636,8 +636,95 @@ export default function EmployerDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        {/* Gradient Orbs */}
+        <motion.div
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-purple-500/20 via-pink-500/15 to-transparent blur-3xl"
+          animate={{
+            x: [0, 40, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.15, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 -left-40 w-96 h-96 rounded-full bg-gradient-to-tr from-pink-500/15 via-fuchsia-500/10 to-transparent blur-3xl"
+          animate={{
+            x: [0, 30, 0],
+            y: [0, 40, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
+        <motion.div
+          className="absolute bottom-10 right-1/3 w-80 h-80 rounded-full bg-gradient-to-tl from-violet-400/10 via-purple-500/10 to-transparent blur-3xl"
+          animate={{
+            x: [0, -35, 0],
+            y: [0, 25, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Mesh Gradient Overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(168,85,247,0.05),transparent_50%),radial-gradient(ellipse_at_bottom_left,rgba(236,72,153,0.05),transparent_50%)]" />
+
+        {/* Subtle Dot Grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(168,85,247,0.08)_1px,transparent_1px)] bg-[size:40px_40px]" />
+
+        {/* Floating Shapes */}
+        <motion.div
+          className="absolute top-1/5 right-1/4 w-4 h-4 rounded-full border-2 border-purple-400/30"
+          animate={{ y: [0, -25, 0], rotate: [0, 180, 360], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/5 w-3 h-3 rounded-sm bg-pink-400/25 rotate-45"
+          animate={{ y: [0, -20, 0], rotate: [45, 90, 45], opacity: [0.25, 0.5, 0.25] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 right-1/6 w-2 h-2 rounded-full bg-violet-400/40"
+          animate={{ y: [0, -15, 0], opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+        <motion.div
+          className="absolute top-2/3 right-1/2 w-5 h-5 rounded-full border border-fuchsia-400/20"
+          animate={{ y: [0, -30, 0], scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+        />
+
+        {/* Gradient Line Accents */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+        <motion.div
+          className="absolute top-1/4 left-0 w-[200px] h-[1px] bg-gradient-to-r from-pink-500/20 to-transparent"
+          animate={{ opacity: [0.2, 0.5, 0.2], x: [0, 20, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 right-0 w-[150px] h-[1px] bg-gradient-to-l from-purple-500/20 to-transparent"
+          animate={{ opacity: [0.2, 0.5, 0.2], x: [0, -20, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>

@@ -81,7 +81,7 @@ export async function PATCH(
       duration,
       payAmount,
       payType,
-      requirements,
+      requiredTraits,
     } = body;
 
     const updatedTemplate = await prisma.jobTemplate.update({
@@ -93,11 +93,11 @@ export async function PATCH(
         ...(category !== undefined && { category }),
         ...(location !== undefined && { location }),
         ...(duration !== undefined && { duration }),
-        ...(payAmount !== undefined && {
-          payAmount: payAmount ? parseFloat(payAmount) : null,
+        ...(payAmount !== undefined && payAmount !== null && {
+          payAmount: parseFloat(payAmount),
         }),
         ...(payType !== undefined && { payType }),
-        ...(requirements !== undefined && { requirements }),
+        ...(requiredTraits !== undefined && { requiredTraits }),
       },
     });
 

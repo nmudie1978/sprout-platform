@@ -120,7 +120,7 @@ export function AiChatWidget() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
         size="icon"
       >
         <Bot className="h-6 w-6" />
@@ -131,7 +131,7 @@ export function AiChatWidget() {
   return (
     <Card
       className={cn(
-        "fixed bottom-6 right-6 flex flex-col shadow-2xl transition-all",
+        "fixed bottom-6 right-6 flex flex-col shadow-2xl transition-all z-40",
         isMinimized ? "h-16 w-80" : "h-[600px] w-96"
       )}
     >

@@ -26,19 +26,20 @@ import {
   ArrowRight,
   X,
   SlidersHorizontal,
+  Map as MapIcon,
 } from "lucide-react";
 import Link from "next/link";
 
-const categoryConfig: Record<string, { label: string; emoji: string; color: string }> = {
-  ALL: { label: "All Jobs", emoji: "🌟", color: "from-purple-500 to-pink-500" },
-  BABYSITTING: { label: "Babysitting", emoji: "👶", color: "from-pink-500 to-rose-500" },
-  DOG_WALKING: { label: "Dog Walking", emoji: "🐕", color: "from-amber-500 to-orange-500" },
-  SNOW_CLEARING: { label: "Snow Clearing", emoji: "❄️", color: "from-cyan-500 to-blue-500" },
-  CLEANING: { label: "Cleaning", emoji: "🧹", color: "from-emerald-500 to-green-500" },
-  DIY_HELP: { label: "DIY & Repairs", emoji: "🔧", color: "from-orange-500 to-red-500" },
-  TECH_HELP: { label: "Tech Help", emoji: "💻", color: "from-violet-500 to-purple-500" },
-  ERRANDS: { label: "Errands", emoji: "🏃", color: "from-blue-500 to-cyan-500" },
-  OTHER: { label: "Other", emoji: "✨", color: "from-slate-500 to-gray-500" },
+const categoryConfig: Record<string, { label: string; emoji: string }> = {
+  ALL: { label: "All Jobs", emoji: "🌟" },
+  BABYSITTING: { label: "Babysitting", emoji: "👶" },
+  DOG_WALKING: { label: "Dog Walking", emoji: "🐕" },
+  SNOW_CLEARING: { label: "Snow Clearing", emoji: "❄️" },
+  CLEANING: { label: "Cleaning", emoji: "🧹" },
+  DIY_HELP: { label: "DIY & Repairs", emoji: "🔧" },
+  TECH_HELP: { label: "Tech Help", emoji: "💻" },
+  ERRANDS: { label: "Errands", emoji: "🏃" },
+  OTHER: { label: "Other", emoji: "✨" },
 };
 
 type ViewMode = "grid" | "list";
@@ -80,46 +81,80 @@ export default function JobsPage() {
   const highPayJobs = jobs.filter((j: any) => j.payAmount >= 200).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Hero Header */}
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20 relative overflow-hidden">
+      {/* Animated Background Elements - Same as Dashboard */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative mb-6 rounded-2xl overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-600 to-cyan-600 opacity-90" />
-          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-          <div className="relative px-6 py-8 text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2.5 rounded-xl bg-white/20 backdrop-blur-sm">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Find Micro-Jobs</h1>
-                <p className="text-white/80 text-sm">Earn money while building real-world skills</p>
-              </div>
-            </div>
+          className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-blue-500/20 via-cyan-500/15 to-transparent blur-3xl"
+          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/3 -left-32 w-80 h-80 rounded-full bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl"
+          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-3 mt-4">
-              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
-                <div className="text-2xl font-bold">{totalJobs}</div>
-                <div className="text-xs text-white/70">Available Jobs</div>
-              </div>
-              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
-                <div className="text-2xl font-bold">{Object.keys(categoryConfig).length - 1}</div>
-                <div className="text-xs text-white/70">Categories</div>
-              </div>
-              <div className="p-3 rounded-xl bg-white/10 backdrop-blur-sm">
-                <div className="text-2xl font-bold flex items-center gap-1">
-                  <TrendingUp className="h-4 w-4" />
-                  {highPayJobs}
-                </div>
-                <div className="text-xs text-white/70">High Pay (200+)</div>
-              </div>
+      <div className="container mx-auto px-4 py-6 max-w-7xl relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2.5 rounded-xl bg-primary/10">
+              <Briefcase className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">Find Micro-Jobs</h1>
+              <p className="text-muted-foreground text-sm">Earn money while building real-world skills</p>
             </div>
           </div>
+        </motion.div>
+
+        {/* Stats Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="grid grid-cols-3 gap-3 mb-6"
+        >
+          <Card className="border">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <Briefcase className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{totalJobs}</p>
+                <p className="text-xs text-muted-foreground">Available</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-500/10">
+                <LayoutGrid className="h-5 w-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{Object.keys(categoryConfig).length - 1}</p>
+                <p className="text-xs text-muted-foreground">Categories</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-500/10">
+                <TrendingUp className="h-5 w-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{highPayJobs}</p>
+                <p className="text-xs text-muted-foreground">High Pay</p>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Search & View Controls */}
@@ -182,6 +217,16 @@ export default function JobsPage() {
                 >
                   <List className="h-4 w-4" />
                 </Button>
+                <Link href="/jobs/map">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded-lg"
+                    title="Map View"
+                  >
+                    <MapIcon className="h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -240,7 +285,7 @@ export default function JobsPage() {
                 onClick={() => setCategoryFilter(key)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   categoryFilter === key
-                    ? `bg-gradient-to-r ${config.color} text-white shadow-md`
+                    ? "bg-primary text-primary-foreground shadow-md"
                     : "bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -355,10 +400,10 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
         transition={{ delay: index * 0.03 }}
       >
         <Link href={`/jobs/${job.id}`} className="block group">
-          <Card className="border hover:border-purple-500/50 transition-all hover:shadow-md overflow-hidden">
+          <Card className="border hover:border-primary/30 transition-all hover:shadow-md overflow-hidden">
             <div className="flex">
-              {/* Image or Gradient */}
-              <div className="relative w-24 h-24 shrink-0">
+              {/* Image or Emoji */}
+              <div className="relative w-24 h-24 shrink-0 bg-muted flex items-center justify-center">
                 {hasImages ? (
                   <img
                     src={job.images[0]}
@@ -366,9 +411,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className={`w-full h-full bg-gradient-to-br ${category.color} flex items-center justify-center`}>
-                    <span className="text-3xl">{category.emoji}</span>
-                  </div>
+                  <span className="text-3xl">{category.emoji}</span>
                 )}
                 {hasImages && job.images.length > 1 && (
                   <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
@@ -382,7 +425,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
               <div className="flex-1 p-3 flex items-center justify-between gap-3">
                 <div className="min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold truncate group-hover:text-purple-600 transition-colors">
+                    <h3 className="font-semibold truncate group-hover:text-primary transition-colors">
                       {job.title}
                     </h3>
                     <Badge variant="secondary" className="text-[10px] shrink-0">
@@ -406,7 +449,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
                 </div>
 
                 <div className="text-right shrink-0">
-                  <div className="text-lg font-bold text-purple-600">{formatCurrency(job.payAmount)}</div>
+                  <div className="text-lg font-bold text-primary">{formatCurrency(job.payAmount)}</div>
                   <div className="text-[10px] text-muted-foreground">
                     {job.payType === "HOURLY" ? "/hr" : "fixed"}
                   </div>
@@ -427,9 +470,9 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
       transition={{ delay: index * 0.03 }}
     >
       <Link href={`/jobs/${job.id}`} className="block group h-full">
-        <Card className="border hover:border-purple-500/50 transition-all hover:shadow-lg overflow-hidden h-full flex flex-col">
+        <Card className="border hover:border-primary/30 transition-all hover:shadow-md overflow-hidden h-full flex flex-col">
           {/* Image Section */}
-          <div className="relative aspect-[4/3] overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden bg-muted">
             {hasImages ? (
               <img
                 src={job.images[0]}
@@ -437,14 +480,14 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className={`w-full h-full bg-gradient-to-br ${category.color} flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
-                <span className="text-5xl opacity-80">{category.emoji}</span>
+              <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                <span className="text-5xl">{category.emoji}</span>
               </div>
             )}
 
             {/* Overlay badges */}
             <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
-              <Badge className={`bg-gradient-to-r ${category.color} text-white border-0 text-[10px] shadow-lg`}>
+              <Badge variant="secondary" className="text-[10px] shadow-sm">
                 {category.emoji} {category.label}
               </Badge>
               {hasImages && job.images.length > 1 && (
@@ -477,7 +520,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
 
           {/* Content */}
           <CardContent className="p-3 flex-1 flex flex-col">
-            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-purple-600 transition-colors mb-2">
+            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors mb-2">
               {job.title}
             </h3>
 
@@ -520,7 +563,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
                     {applicationCount}
                   </span>
                 </div>
-                <span className="text-[10px] text-purple-600 font-medium flex items-center gap-0.5 group-hover:gap-1 transition-all">
+                <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 group-hover:gap-1 transition-all">
                   View
                   <ArrowRight className="h-3 w-3" />
                 </span>

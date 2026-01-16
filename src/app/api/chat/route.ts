@@ -14,6 +14,7 @@ import {
   getSystemPrompt,
   isResponseSafe,
   getFallbackResponse,
+  getSmartFallbackResponse,
   type IntentType,
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
@@ -62,8 +63,8 @@ export async function POST(req: NextRequest) {
     if (intent === "unsafe") {
       const fallbackResponse = getFallbackResponse(intent);
 
-      // Log intent (anonymously)
-      await logIntent(session.user.id, intent, { triggered: "unsafe_content" });
+      // Log intent (non-blocking)
+      logIntent(session.user.id, intent, { triggered: "unsafe_content" }).catch(() => {});
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -76,7 +77,8 @@ export async function POST(req: NextRequest) {
     if (intent === "off_topic") {
       const fallbackResponse = getFallbackResponse(intent);
 
-      await logIntent(session.user.id, intent, { triggered: "off_topic" });
+      // Log intent (non-blocking)
+      logIntent(session.user.id, intent, { triggered: "off_topic" }).catch(() => {});
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -85,17 +87,37 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Retrieve relevant context (RAG)
-    const [careerCards, helpDocs, qaItems] = await Promise.all([
-      retrieveRelevantCareerCards(message, 3),
-      retrieveRelevantHelpDocs(message, 2),
-      retrieveRelevantQA(message, 2),
-    ]);
+    // Fetch user's profile to get career aspiration for personalization (optional)
+    let userProfile: { careerAspiration: string | null } | null = null;
+    try {
+      userProfile = await prisma.youthProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { careerAspiration: true },
+      });
+    } catch (profileError) {
+      console.error("Profile fetch error (continuing without personalization):", profileError);
+    }
+
+    // Retrieve relevant context (RAG) - wrapped in try-catch to be resilient
+    let careerCards: any[] = [];
+    let helpDocs: any[] = [];
+    let qaItems: any[] = [];
+
+    try {
+      [careerCards, helpDocs, qaItems] = await Promise.all([
+        retrieveRelevantCareerCards(message, 3),
+        retrieveRelevantHelpDocs(message, 2),
+        retrieveRelevantQA(message, 2),
+      ]);
+    } catch (ragError) {
+      console.error("RAG retrieval error (continuing without context):", ragError);
+      // Continue without RAG context - OpenAI can still answer general questions
+    }
 
     const context = formatContextForPrompt(careerCards, helpDocs, qaItems);
 
-    // Build messages for OpenAI
-    const systemPrompt = getSystemPrompt(intent);
+    // Build messages for OpenAI with personalization based on career aspiration
+    const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration);
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
@@ -134,10 +156,11 @@ export async function POST(req: NextRequest) {
       console.warn("Unsafe response detected:", safetyCheck.reason);
       const fallbackResponse = getFallbackResponse(intent);
 
-      await logIntent(session.user.id, intent, {
+      // Log intent (non-blocking)
+      logIntent(session.user.id, intent, {
         triggered: "unsafe_response",
         reason: safetyCheck.reason,
-      });
+      }).catch(() => {});
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -146,12 +169,12 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Log intent (anonymously)
-    await logIntent(session.user.id, intent, {
+    // Log intent (anonymously) - don't await to avoid blocking the response
+    logIntent(session.user.id, intent, {
       retrieved_careers: careerCards.length,
       retrieved_docs: helpDocs.length,
       retrieved_qa: qaItems.length,
-    });
+    }).catch(() => {}); // Silently catch any logging errors
 
     // Return response with sources
     return NextResponse.json({
@@ -172,29 +195,36 @@ export async function POST(req: NextRequest) {
         })),
       },
     });
-  } catch (error) {
-    console.error("Error in chat API:", error);
+  } catch (error: any) {
+    // Log the full error for debugging
+    console.error("Error in chat API:", {
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      type: error?.type,
+      error: error?.error,
+    });
 
-    // Check if OpenAI API key is missing
-    if (error instanceof Error && error.message.includes("API key")) {
-      return NextResponse.json(
-        {
-          error: "AI service not configured. Please add OPENAI_API_KEY to .env",
-          message:
-            "I'm temporarily unavailable. Please try browsing careers or asking a question in the Q&A section!",
-        },
-        { status: 500 }
-      );
+    // Get the original message and intent for smart fallback
+    let originalMessage = "";
+    let intent: IntentType = "career_explain";
+    try {
+      const body = await req.clone().json();
+      originalMessage = body.message || "";
+      intent = classifyIntent(originalMessage);
+    } catch {
+      // If we can't get the message, use default
     }
 
-    return NextResponse.json(
-      {
-        error: "Failed to process message",
-        message:
-          "I'm having trouble right now. Please try again or explore careers and Q&A!",
-      },
-      { status: 500 }
-    );
+    // Use smart fallback based on the user's question
+    const fallbackMessage = getSmartFallbackResponse(originalMessage, intent);
+
+    return NextResponse.json({
+      message: fallbackMessage,
+      intent,
+      sources: {},
+      fallback: true,
+    });
   }
 }
 

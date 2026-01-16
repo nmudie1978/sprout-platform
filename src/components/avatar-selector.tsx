@@ -42,8 +42,9 @@ export function AvatarSelector({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
+          type="button"
           disabled={disabled}
-          className="group relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full"
+          className="group relative z-30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full cursor-pointer pointer-events-auto"
         >
           <Avatar
             avatarId={currentAvatarId}
@@ -56,8 +57,8 @@ export function AvatarSelector({
         </button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col relative z-50">
+        <DialogHeader className="relative z-10">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Sparkles className="w-5 h-5 text-primary" />
             Choose Your Avatar
@@ -65,7 +66,7 @@ export function AvatarSelector({
         </DialogHeader>
 
         {/* Preview */}
-        <div className="flex items-center justify-center py-4 border-b">
+        <div className="flex items-center justify-center py-4 border-b relative z-10">
           <div className="text-center">
             <Avatar
               avatarId={previewId || currentAvatarId}
@@ -81,13 +82,14 @@ export function AvatarSelector({
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-2 overflow-x-auto py-3 border-b scrollbar-hide">
+        <div className="flex gap-2 overflow-x-auto py-3 border-b scrollbar-hide relative z-10">
           {avatarCategories.map((category) => (
             <button
+              type="button"
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
               className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all",
+                "px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all cursor-pointer",
                 selectedCategory === category.id
                   ? "bg-primary text-white shadow-md"
                   : "bg-muted hover:bg-muted/80 text-muted-foreground"
@@ -99,25 +101,26 @@ export function AvatarSelector({
         </div>
 
         {/* Category Description */}
-        <p className="text-sm text-muted-foreground text-center py-2">
+        <p className="text-sm text-muted-foreground text-center py-2 relative z-10">
           {avatarCategories.find((c) => c.id === selectedCategory)?.description}
         </p>
 
         {/* Avatar Grid */}
-        <div className="flex-1 overflow-y-auto py-4">
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+        <div className="flex-1 overflow-y-auto py-4 relative z-10">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 relative z-10">
             {categoryAvatars.map((avatar) => {
               const isSelected = currentAvatarId === avatar.id;
               const isHovered = previewId === avatar.id;
 
               return (
                 <button
+                  type="button"
                   key={avatar.id}
                   onClick={() => handleSelect(avatar.id)}
                   onMouseEnter={() => setPreviewId(avatar.id)}
                   onMouseLeave={() => setPreviewId(null)}
                   className={cn(
-                    "relative p-2 rounded-xl transition-all hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary",
+                    "relative p-2 rounded-xl transition-all hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer",
                     isSelected && "bg-primary/10 ring-2 ring-primary"
                   )}
                 >
@@ -145,11 +148,11 @@ export function AvatarSelector({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between pt-4 border-t relative z-10">
           <p className="text-xs text-muted-foreground">
             {avatars.length} avatars available
           </p>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button type="button" variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
         </div>

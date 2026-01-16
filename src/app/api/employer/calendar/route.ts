@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     const jobs = await prisma.microJob.findMany({
       where: {
         postedById: session.user.id,
-        scheduledDate: {
+        startDate: {
           gte: start,
           lte: end,
         },
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      orderBy: { scheduledDate: "asc" },
+      orderBy: { startDate: "asc" },
     });
 
     const calendarEvents = jobs.map((job) => {
@@ -61,8 +61,7 @@ export async function GET(req: NextRequest) {
         title: job.title,
         category: job.category,
         status: job.status,
-        date: job.scheduledDate,
-        time: job.scheduledTime,
+        date: job.startDate,
         duration: job.duration,
         location: job.location,
         payAmount: job.payAmount,

@@ -26,7 +26,7 @@ export async function GET(
             employerProfile: {
               select: {
                 companyName: true,
-                logoUrl: true,
+                companyLogo: true,
               },
             },
           },
@@ -97,7 +97,7 @@ export async function GET(
       : {
           id: conversation.employer.id,
           name: conversation.employer.employerProfile?.companyName || "Unknown",
-          logo: conversation.employer.employerProfile?.logoUrl,
+          logo: conversation.employer.employerProfile?.companyLogo,
         };
 
     return NextResponse.json({
@@ -174,10 +174,10 @@ export async function POST(
       },
     });
 
-    // Update conversation's updatedAt
+    // Update conversation's lastMessageAt
     await prisma.conversation.update({
       where: { id },
-      data: { updatedAt: new Date() },
+      data: { lastMessageAt: new Date() },
     });
 
     // Create notification for the recipient

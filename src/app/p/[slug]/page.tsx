@@ -137,7 +137,7 @@ export default async function PublicProfilePage({
                         <div key={skill}>
                           <div className="mb-1 flex items-center justify-between text-sm">
                             <span className="font-medium">
-                              {formatSkillName(skill)}
+                              {formatSkillName(skill as any)}
                             </span>
                             <span className="text-muted-foreground">
                               {level}%

@@ -68,13 +68,13 @@ export async function GET(req: NextRequest) {
             job.category,
             job.status,
             `"${job.location.replace(/"/g, '""')}"`,
-            job.scheduledDate ? format(new Date(job.scheduledDate), "yyyy-MM-dd") : "",
+            job.startDate ? format(new Date(job.startDate), "yyyy-MM-dd") : "",
             job.payAmount.toString(),
             job.payType,
             `"${worker}"`,
             earning?.status || "",
             format(new Date(job.createdAt), "yyyy-MM-dd HH:mm"),
-            job.completedAt ? format(new Date(job.completedAt), "yyyy-MM-dd HH:mm") : "",
+            job.status === "COMPLETED" ? format(new Date(job.updatedAt), "yyyy-MM-dd HH:mm") : "",
           ];
         });
 
@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
             },
           },
         },
-        orderBy: { completedAt: "desc" },
+        orderBy: { updatedAt: "desc" },
       });
 
       if (formatType === "csv") {
@@ -144,7 +144,7 @@ export async function GET(req: NextRequest) {
             `"${worker}"`,
             earning?.amount?.toString() || job.payAmount.toString(),
             earning?.status || "PENDING",
-            job.completedAt ? format(new Date(job.completedAt), "yyyy-MM-dd") : "",
+            format(new Date(job.updatedAt), "yyyy-MM-dd"),
             earning?.earnedAt ? format(new Date(earning.earnedAt), "yyyy-MM-dd") : "",
           ];
         });
@@ -197,7 +197,7 @@ export async function GET(req: NextRequest) {
           job: {
             select: {
               payAmount: true,
-              completedAt: true,
+              updatedAt: true,
             },
           },
         },
@@ -221,10 +221,10 @@ export async function GET(req: NextRequest) {
         const worker = workerMap.get(youthId)!;
         worker.totalJobs += 1;
         worker.totalPaid += app.job.payAmount;
-        if (app.job.completedAt) {
-          const jobDate = new Date(app.job.completedAt);
+        if (app.job.updatedAt) {
+          const jobDate = new Date(app.job.updatedAt);
           if (!worker.lastJobDate || jobDate > new Date(worker.lastJobDate)) {
-            worker.lastJobDate = app.job.completedAt;
+            worker.lastJobDate = app.job.updatedAt;
           }
         }
       }

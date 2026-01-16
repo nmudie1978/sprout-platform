@@ -188,7 +188,7 @@ export function sanitizeSearchQuery(query: string): string {
   sanitized = sanitized.replace(/\s+/g, ' ');
 
   // Remove potentially dangerous characters for SQL
-  sanitized = sanitized.replace(/[';--]/g, '');
+  sanitized = sanitized.replace(/[';-]/g, '');
 
   // Limit length
   if (sanitized.length > 200) {

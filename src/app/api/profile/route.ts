@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { youthProfileSchema, profileVisibilitySchema } from "@/lib/validations/profile";
+import { youthProfileSchema, profileVisibilitySchema, careerAspirationSchema } from "@/lib/validations/profile";
 import { slugify } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
         interests: validatedData.interests,
         guardianEmail: validatedData.guardianEmail,
         guardianConsent: validatedData.guardianConsent || false,
+        careerAspiration: validatedData.careerAspiration || null,
         publicProfileSlug,
         profileVisibility: false, // Default to private
       },
@@ -145,6 +146,18 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json(profile);
     }
 
+    // Handle career aspiration update separately
+    if ("careerAspiration" in body && Object.keys(body).length === 1) {
+      const aspirationData = careerAspirationSchema.parse(body);
+
+      const profile = await prisma.youthProfile.update({
+        where: { userId: session.user.id },
+        data: { careerAspiration: aspirationData.careerAspiration || null },
+      });
+
+      return NextResponse.json(profile);
+    }
+
     // Handle full profile update
     const validatedData = youthProfileSchema.parse(body);
 
@@ -159,6 +172,7 @@ export async function PATCH(req: NextRequest) {
         interests: validatedData.interests,
         guardianEmail: validatedData.guardianEmail,
         guardianConsent: validatedData.guardianConsent,
+        careerAspiration: validatedData.careerAspiration || null,
       },
     });
 

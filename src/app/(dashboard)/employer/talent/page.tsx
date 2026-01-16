@@ -347,7 +347,7 @@ export default function TalentBrowsePage() {
               >
                 <Card className="h-full hover:shadow-xl hover:shadow-purple-500/10 border-2 transition-all group overflow-hidden relative">
                   {/* Hover gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                   {/* Availability indicator bar */}
                   <div className={`h-1 ${availability.color}`} />

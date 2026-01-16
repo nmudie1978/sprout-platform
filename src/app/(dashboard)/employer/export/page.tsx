@@ -112,7 +112,7 @@ export default function ExportPage() {
           >
             <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${option.color} opacity-50`}
+                className={`absolute inset-0 bg-gradient-to-br ${option.color} opacity-50 pointer-events-none`}
               />
               <CardHeader className="relative pb-2">
                 <div className="flex items-center justify-between">
