@@ -62,6 +62,7 @@ import { getCareersForCategory } from "@/lib/career-pathways";
 import { Compass, UserPlus } from "lucide-react";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
 import { JobRecommendations } from "@/components/job-recommendations";
+import { DeleteJobButton } from "@/components/delete-job-button";
 
 const categoryLabels: Record<string, string> = {
   BABYSITTING: "Babysitting",
@@ -989,14 +990,28 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="flex gap-3"
+                  className="space-y-3"
                 >
-                  <Button variant="outline" className="flex-1 h-12 rounded-xl" asChild>
-                    <Link href="/employer/dashboard">
-                      <ArrowLeft className="mr-2 h-4 w-4" />
-                      Back to Dashboard
-                    </Link>
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button variant="outline" className="flex-1 h-12 rounded-xl" asChild>
+                      <Link href="/employer/dashboard">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Dashboard
+                      </Link>
+                    </Button>
+                  </div>
+                  {job.status === "CANCELLED" && (
+                    <div className="pt-2 border-t">
+                      <p className="text-xs text-muted-foreground mb-2">
+                        This job has been cancelled. You can permanently delete it if you no longer need it.
+                      </p>
+                      <DeleteJobButton
+                        jobId={job.id}
+                        jobTitle={job.title}
+                        jobStatus={job.status}
+                      />
+                    </div>
+                  )}
                 </motion.div>
               )}
             </CardContent>

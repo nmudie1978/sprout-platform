@@ -62,6 +62,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
+import { DeleteJobButton } from "@/components/delete-job-button";
 
 type JobStatus = "ALL" | "POSTED" | "ON_HOLD" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 type ViewMode = "grid" | "list";
@@ -377,12 +378,23 @@ function JobCard({
       )}
 
       {/* No applications indicator */}
-      {(!job.applications || job.applications.length === 0) && !isInProgress && !isCompleted && (
+      {(!job.applications || job.applications.length === 0) && !isInProgress && !isCompleted && job.status !== "CANCELLED" && (
         <div className="mt-3 pt-3 border-t">
           <p className="text-xs text-muted-foreground flex items-center gap-1">
             <Clock className="h-3 w-3" />
             Awaiting applications
           </p>
+        </div>
+      )}
+
+      {/* Cancelled job - delete option */}
+      {job.status === "CANCELLED" && (
+        <div className="mt-3 pt-3 border-t border-red-500/20" onClick={(e) => e.stopPropagation()}>
+          <DeleteJobButton
+            jobId={job.id}
+            jobTitle={job.title}
+            jobStatus={job.status}
+          />
         </div>
       )}
 

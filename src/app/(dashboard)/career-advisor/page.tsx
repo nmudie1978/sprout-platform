@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +21,7 @@ import {
   RefreshCw,
   ChevronRight,
   AlertCircle,
+  LogIn,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -72,12 +75,16 @@ const quickQuestions = [
 ];
 
 export default function CareerAdvisorPage() {
+  const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const isAuthenticated = status === "authenticated";
+  const isLoadingAuth = status === "loading";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,6 +125,9 @@ export default function CareerAdvisorPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Please sign in to use the AI Advisor");
+        }
         throw new Error(data.error || "Failed to get response");
       }
 
@@ -154,6 +164,85 @@ export default function CareerAdvisorPage() {
     setMessages([]);
     setError(null);
   };
+
+  // Show loading state while checking auth
+  if (isLoadingAuth) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <PageHeader
+          title="AI Career"
+          gradientText="Advisor"
+          description="Get personalized career guidance, explore opportunities, and plan your path forward"
+          icon={Bot}
+        />
+        <Card className="border-2 mt-8">
+          <CardContent className="py-16 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary mb-4" />
+            <p className="text-muted-foreground">Loading...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <PageHeader
+          title="AI Career"
+          gradientText="Advisor"
+          description="Get personalized career guidance, explore opportunities, and plan your path forward"
+          icon={Bot}
+        />
+        <Card className="border-2 mt-8">
+          <CardContent className="py-16 text-center">
+            <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 w-fit mx-auto mb-6">
+              <LogIn className="h-10 w-10 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Sign in to use the AI Advisor</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              Create a free account or sign in to get personalized career guidance,
+              explore opportunities, and chat with our AI career advisor.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Link href="/auth/signin">
+                <Button className="bg-gradient-to-r from-primary to-purple-600">
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button variant="outline">
+                  Create Account
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Still show tips for non-authenticated users */}
+        <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Sparkles className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h4 className="font-semibold mb-1">What can the AI Advisor help with?</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Explore career options based on your interests</li>
+                  <li>• Get advice on how to start in different industries</li>
+                  <li>• Learn about job requirements and salary expectations</li>
+                  <li>• Get help writing job applications</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">

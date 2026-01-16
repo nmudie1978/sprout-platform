@@ -166,14 +166,22 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Verify job ownership and get images
+    // Verify job ownership, status, and get images
     const job = await prisma.microJob.findUnique({
       where: { id: params.id },
-      select: { postedById: true, images: true },
+      select: { postedById: true, images: true, status: true },
     });
 
     if (!job || job.postedById !== session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    // Only allow deletion of cancelled jobs
+    if (job.status !== "CANCELLED") {
+      return NextResponse.json(
+        { error: "Only cancelled jobs can be deleted. Please cancel the job first." },
+        { status: 400 }
+      );
     }
 
     // Delete images from Supabase Storage
