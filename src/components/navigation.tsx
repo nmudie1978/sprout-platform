@@ -33,12 +33,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
 import { Avatar } from "@/components/avatar";
 
-// Admin emails that can access analytics
-const ADMIN_EMAILS = [
-  process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-  "admin@sprout.no",
-].filter(Boolean);
-
 interface NavigationProps {
   userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
   userName?: string;
@@ -50,9 +44,6 @@ interface NavigationProps {
 export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Check if user has admin access (by role or email)
-  const isAdminUser = userRole === "ADMIN" || ADMIN_EMAILS.includes(userEmail || "");
 
   // Fetch avatar dynamically for youth users so it updates when changed
   const { data: profile } = useQuery({
@@ -122,10 +113,10 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
   const youthLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: false },
     { href: "/jobs", label: "Find Jobs", icon: Briefcase, isCore: true },
+    { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/pokes", label: "Pokes", icon: HandHeart, isCore: false },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/career-advisor", label: "AI Advisor", icon: MessageSquare, isCore: true },
-    { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: false },
     { href: "/profile", label: "Profile", icon: User, isCore: false },
   ];
 
@@ -143,9 +134,6 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/admin/questions", label: "Moderate Q&A", icon: MessageSquare, isCore: false },
     { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: false },
   ];
-
-  // Admin analytics link for users with admin access
-  const adminAnalyticsLink = { href: "/admin/analytics", label: "Analytics", icon: BarChart3, isCore: false };
 
   // Guardian link - shown only for users who are guardians
   const guardianLink = { href: "/guardian", label: "Guardian", icon: Shield, isCore: false };
@@ -168,11 +156,6 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
   // Add guardian link if user is a guardian (but not if their role is already COMMUNITY_GUARDIAN)
   if (isGuardian && userRole !== "COMMUNITY_GUARDIAN") {
     links.push(guardianLink);
-  }
-
-  // Add admin analytics link for users with admin access (but not if already ADMIN role - they have it in baseLinks)
-  if (isAdminUser && userRole !== "ADMIN") {
-    links.push(adminAnalyticsLink);
   }
 
   return (

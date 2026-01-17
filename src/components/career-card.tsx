@@ -17,12 +17,14 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
+import { CareerRealityCheck } from "./career-reality-check";
 
 interface CareerCardProps {
   career: Career;
   compact?: boolean;
   matchScore?: number;
   showExpandButton?: boolean;
+  showRealityCheck?: boolean;
 }
 
 const growthConfig = {
@@ -51,6 +53,7 @@ export const CareerCard = memo(function CareerCard({
   compact = false,
   matchScore,
   showExpandButton = true,
+  showRealityCheck = false,
 }: CareerCardProps) {
   const [expanded, setExpanded] = useState(false);
   const growth = growthConfig[career.growthOutlook];
@@ -241,6 +244,13 @@ export const CareerCard = memo(function CareerCard({
                         ))}
                       </ul>
                     </div>
+
+                    {/* Reality Check (if enabled) */}
+                    {showRealityCheck && (
+                      <div className="mt-4">
+                        <CareerRealityCheck roleSlug={career.id} />
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}

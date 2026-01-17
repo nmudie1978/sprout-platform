@@ -130,6 +130,36 @@ function SignUpForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* VIPPS Sign Up Button - Only shown when VIPPS is enabled */}
+          {process.env.NEXT_PUBLIC_VIPPS_ENABLED === "true" && (
+            <div className="space-y-4 mb-6">
+              <Button
+                type="button"
+                className="w-full h-12 sm:h-11 bg-[#ff5b24] hover:bg-[#e54d1c] text-white font-semibold"
+                onClick={() => signIn("vipps", { callbackUrl: "/auth/complete-profile" })}
+              >
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/>
+                </svg>
+                Sign up with Vipps
+              </Button>
+              <p className="text-xs text-center text-muted-foreground">
+                Quickest way to sign up. Your age will be verified automatically.
+              </p>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or sign up with email
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

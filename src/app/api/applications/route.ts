@@ -149,9 +149,10 @@ export async function GET(req: NextRequest) {
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        { displayOrder: { sort: "asc", nulls: "last" } },
+        { createdAt: "desc" },
+      ],
     });
 
     const response = NextResponse.json(applications);

@@ -1,4 +1,4 @@
-import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience } from '@prisma/client';
+import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory } from '@prisma/client';
 
 // Use direct connection for seeding (not pooled connection)
 process.env.DATABASE_URL = process.env.DIRECT_URL || process.env.DATABASE_URL;
@@ -503,6 +503,588 @@ const messageTemplates = [
   },
 ];
 
+// ============================================
+// SKILLS TAXONOMY (Feature 4 - Growth)
+// ============================================
+const skills = [
+  // CARE skills
+  { slug: 'babysitting', name: 'Babysitting', category: SkillCategory.CARE },
+  { slug: 'pet-sitting', name: 'Pet Sitting', category: SkillCategory.CARE },
+  { slug: 'dog-walking', name: 'Dog Walking', category: SkillCategory.CARE },
+  { slug: 'elderly-assistance', name: 'Elderly Assistance', category: SkillCategory.CARE },
+  { slug: 'child-activities', name: 'Child Activities', category: SkillCategory.CARE },
+
+  // HOME skills
+  { slug: 'house-cleaning', name: 'House Cleaning', category: SkillCategory.HOME },
+  { slug: 'organizing', name: 'Organizing', category: SkillCategory.HOME },
+  { slug: 'laundry', name: 'Laundry', category: SkillCategory.HOME },
+  { slug: 'cooking-basic', name: 'Basic Cooking', category: SkillCategory.HOME },
+  { slug: 'moving-help', name: 'Moving Help', category: SkillCategory.HOME },
+
+  // OUTDOOR skills
+  { slug: 'lawn-mowing', name: 'Lawn Mowing', category: SkillCategory.OUTDOOR },
+  { slug: 'gardening', name: 'Gardening', category: SkillCategory.OUTDOOR },
+  { slug: 'snow-clearing', name: 'Snow Clearing', category: SkillCategory.OUTDOOR },
+  { slug: 'car-washing', name: 'Car Washing', category: SkillCategory.OUTDOOR },
+  { slug: 'leaf-raking', name: 'Leaf Raking', category: SkillCategory.OUTDOOR },
+
+  // TECH skills
+  { slug: 'tech-help-basic', name: 'Basic Tech Help', category: SkillCategory.TECH },
+  { slug: 'phone-setup', name: 'Phone Setup', category: SkillCategory.TECH },
+  { slug: 'computer-help', name: 'Computer Help', category: SkillCategory.TECH },
+  { slug: 'social-media', name: 'Social Media Help', category: SkillCategory.TECH },
+
+  // SERVICE skills
+  { slug: 'grocery-shopping', name: 'Grocery Shopping', category: SkillCategory.SERVICE },
+  { slug: 'errand-running', name: 'Errand Running', category: SkillCategory.SERVICE },
+  { slug: 'event-help', name: 'Event Help', category: SkillCategory.SERVICE },
+  { slug: 'delivery', name: 'Delivery', category: SkillCategory.SERVICE },
+
+  // CREATIVE skills
+  { slug: 'tutoring', name: 'Tutoring', category: SkillCategory.CREATIVE },
+  { slug: 'music-lessons', name: 'Music Lessons', category: SkillCategory.CREATIVE },
+  { slug: 'art-crafts', name: 'Art & Crafts', category: SkillCategory.CREATIVE },
+];
+
+// ============================================
+// CAREER REALITY CHECKS (Feature 6)
+// Honest, structured information about careers
+// ============================================
+const careerRealityChecks = [
+  {
+    roleSlug: 'ai-engineer',
+    title: 'AI Engineer',
+    overview: 'AI Engineers build and deploy machine learning systems that power products like chatbots, recommendation engines, and image recognition. The role requires strong programming skills, math foundations, and continuous learning as the field evolves rapidly.',
+    dayToDay: [
+      'Writing Python code to train and fine-tune ML models',
+      'Processing and cleaning large datasets',
+      'Debugging model performance issues',
+      'Reading research papers to stay current',
+      'Collaborating with product teams on use cases',
+      'Monitoring deployed models in production',
+    ],
+    misconceptions: [
+      'AI work is not just about prompting ChatGPT',
+      'Most time is spent on data preparation, not building models',
+      'Deep math knowledge is needed for research roles',
+      'Not every company needs custom AI—many use off-the-shelf solutions',
+    ],
+    hardParts: [
+      'Explaining why a model failed to non-technical stakeholders',
+      'Dealing with biased or incomplete training data',
+      'Keeping up with extremely rapid changes in the field',
+      'Long debugging sessions with unclear causes',
+    ],
+    starterSteps: [
+      'Learn Python well—it is the language of ML',
+      'Take online courses on machine learning fundamentals',
+      'Complete personal projects using public datasets',
+      'Contribute to open-source ML projects',
+      'Build a portfolio of working projects on GitHub',
+    ],
+    typicalPath: [
+      'Computer science degree or bootcamp + self-study',
+      'Junior ML engineer or data scientist role (2-3 years)',
+      'Mid-level ML engineer with specialization',
+      'Senior engineer or team lead',
+    ],
+    skillGaps: [
+      'Math foundations (linear algebra, statistics)',
+      'Software engineering best practices',
+      'Understanding production systems',
+      'Communication skills for non-technical audiences',
+    ],
+    saturationNote: 'High demand but also high competition. Employers look for proven project experience, not just credentials.',
+  },
+  {
+    roleSlug: 'ux-designer',
+    title: 'UX Designer',
+    overview: 'UX Designers create user-friendly interfaces for apps and websites. The role combines research, psychology, and visual design to make products intuitive and accessible.',
+    dayToDay: [
+      'Conducting user interviews and usability tests',
+      'Creating wireframes and prototypes in Figma',
+      'Presenting designs to stakeholders',
+      'Analyzing user behavior data',
+      'Collaborating with developers on implementation',
+      'Iterating based on feedback',
+    ],
+    misconceptions: [
+      'UX is not just making things look pretty',
+      'You spend more time researching than designing',
+      'Not the same as graphic design—focus is on usability',
+      'You cannot ignore business constraints',
+    ],
+    hardParts: [
+      'Defending design decisions when stakeholders disagree',
+      'Balancing user needs with business goals',
+      'Working with limited research time or budget',
+      'Seeing your designs changed during development',
+    ],
+    starterSteps: [
+      'Learn design tools like Figma (free)',
+      'Study design principles and accessibility guidelines',
+      'Redesign existing apps for practice',
+      'Take UX courses or bootcamps',
+      'Build a portfolio with case studies',
+    ],
+    typicalPath: [
+      'Bootcamp or degree + portfolio',
+      'Junior UX designer role (2-3 years)',
+      'Mid-level designer with specialization',
+      'Senior designer or UX lead',
+    ],
+    skillGaps: [
+      'User research methodology',
+      'Understanding of accessibility requirements',
+      'Basic front-end knowledge (HTML/CSS)',
+      'Data analysis skills',
+    ],
+    saturationNote: 'Entry-level market is competitive. Strong portfolios with real case studies stand out.',
+  },
+  {
+    roleSlug: 'electrician',
+    title: 'Electrician',
+    overview: 'Electricians install, maintain, and repair electrical systems in buildings. The work is hands-on, requires problem-solving, and offers steady employment with good earning potential.',
+    dayToDay: [
+      'Installing wiring in new construction',
+      'Troubleshooting electrical faults',
+      'Reading blueprints and technical diagrams',
+      'Ensuring work meets safety codes',
+      'Working with clients to understand needs',
+      'Maintaining tools and equipment',
+    ],
+    misconceptions: [
+      'Not just wiring—includes smart home systems, EV chargers',
+      'Physical work but also requires technical knowledge',
+      'Licensed electricians earn competitive salaries',
+      'Job security is high—buildings always need electrical work',
+    ],
+    hardParts: [
+      'Working in uncomfortable positions (attics, crawl spaces)',
+      'Safety risks require constant attention',
+      'Keeping up with code changes and new technology',
+      'Client expectations can be unrealistic',
+    ],
+    starterSteps: [
+      'Apply for electrician apprenticeship programs',
+      'Take electrical theory courses at vocational school',
+      'Get comfortable with basic hand tools',
+      'Study electrical safety fundamentals',
+    ],
+    typicalPath: [
+      '4-5 year apprenticeship with classroom training',
+      'Journeyman electrician (certified)',
+      'Master electrician (additional experience)',
+      'Own business or specialized contractor',
+    ],
+    skillGaps: [
+      'Math skills for calculations',
+      'Reading technical drawings',
+      'Customer service skills',
+      'Business management for self-employment',
+    ],
+    saturationNote: 'Strong demand, especially for green energy and EV infrastructure. Apprenticeship spots can be competitive.',
+  },
+  {
+    roleSlug: 'nurse',
+    title: 'Nurse',
+    overview: 'Nurses provide direct patient care in hospitals, clinics, and other healthcare settings. The role requires empathy, attention to detail, and the ability to work under pressure.',
+    dayToDay: [
+      'Monitoring patient vital signs and symptoms',
+      'Administering medications and treatments',
+      'Documenting patient information',
+      'Communicating with doctors and families',
+      'Providing emotional support to patients',
+      'Handling emergencies calmly',
+    ],
+    misconceptions: [
+      'Nurses are not assistants—they make critical decisions',
+      'Shift work means irregular hours including nights and weekends',
+      'Emotional labor is a significant part of the job',
+      'Career advancement is possible (nurse practitioner, management)',
+    ],
+    hardParts: [
+      'Dealing with death and suffering',
+      'Physical demands of long shifts',
+      'Understaffed situations increase stress',
+      'Difficult patients or families',
+    ],
+    starterSteps: [
+      'Research nursing programs (bachelor or vocational)',
+      'Volunteer at hospitals or care homes',
+      'Take biology and chemistry courses',
+      'Develop strong communication skills',
+    ],
+    typicalPath: [
+      'Nursing degree (3-4 years)',
+      'Licensed nurse (hospital or clinic)',
+      'Specialization (intensive care, pediatrics, etc.)',
+      'Advanced practice or leadership roles',
+    ],
+    skillGaps: [
+      'Science foundations (biology, anatomy)',
+      'Stress management techniques',
+      'Technical medical knowledge',
+      'Communication in difficult situations',
+    ],
+    saturationNote: 'High demand in most countries. Nursing is considered a secure career choice.',
+  },
+  {
+    roleSlug: 'mechanic',
+    title: 'Automotive Mechanic',
+    overview: 'Mechanics diagnose, repair, and maintain vehicles. As cars become more computerized, the role increasingly combines mechanical skills with diagnostic technology.',
+    dayToDay: [
+      'Diagnosing vehicle problems using diagnostic tools',
+      'Performing repairs (brakes, engines, transmissions)',
+      'Conducting routine maintenance',
+      'Explaining repairs to customers',
+      'Keeping up with new vehicle technology',
+      'Maintaining shop equipment',
+    ],
+    misconceptions: [
+      'Modern mechanics need computer skills, not just wrench skills',
+      'Electric vehicles require different expertise',
+      'Not a dying trade—vehicles still need maintenance',
+      'Good mechanics are in high demand',
+    ],
+    hardParts: [
+      'Physical work in uncomfortable positions',
+      'Keeping up with rapidly changing technology',
+      'Dealing with warranty and insurance issues',
+      'Some jobs are dirty or unpleasant',
+    ],
+    starterSteps: [
+      'Work on your own car or help friends/family',
+      'Take automotive courses at vocational school',
+      'Get basic mechanic tools and practice',
+      'Apply for apprenticeships at workshops',
+    ],
+    typicalPath: [
+      'Vocational training or apprenticeship (2-4 years)',
+      'Certified mechanic',
+      'Specialization (electric vehicles, performance, etc.)',
+      'Shop manager or own business',
+    ],
+    skillGaps: [
+      'Computer diagnostic skills',
+      'Understanding electrical systems',
+      'Customer communication',
+      'Business skills for self-employment',
+    ],
+    saturationNote: 'Steady demand. EV specialists are increasingly sought after.',
+  },
+  {
+    roleSlug: 'chef',
+    title: 'Chef',
+    overview: 'Chefs prepare food in restaurants, hotels, and other food service establishments. The role requires creativity, speed, and the ability to work under pressure in hot, fast-paced environments.',
+    dayToDay: [
+      'Preparing ingredients and cooking dishes',
+      'Managing kitchen staff during service',
+      'Creating and testing new recipes',
+      'Ordering supplies and managing inventory',
+      'Ensuring food safety standards',
+      'Working dinner service (evening hours)',
+    ],
+    misconceptions: [
+      'TV shows glamorize it—real kitchens are intense',
+      'Long hours, including weekends and holidays',
+      'You start at the bottom, not running a kitchen',
+      'Business skills matter as much as cooking',
+    ],
+    hardParts: [
+      'Standing for long hours in hot kitchens',
+      'High-pressure dinner service rushes',
+      'Work-life balance is challenging',
+      'Physical injuries are common',
+    ],
+    starterSteps: [
+      'Get a kitchen job (dishwasher, prep cook)',
+      'Practice cooking at home—a lot',
+      'Consider culinary school (optional but helpful)',
+      'Learn food safety basics',
+    ],
+    typicalPath: [
+      'Entry-level kitchen position',
+      'Line cook (2-3 years)',
+      'Sous chef (kitchen second-in-command)',
+      'Head chef or own restaurant',
+    ],
+    skillGaps: [
+      'Speed and efficiency under pressure',
+      'Team management skills',
+      'Business and cost management',
+      'Creativity with limited resources',
+    ],
+    saturationNote: 'Many entry-level opportunities but advancement is competitive. Success requires dedication.',
+  },
+  {
+    roleSlug: 'teacher',
+    title: 'Teacher',
+    overview: 'Teachers educate students at various levels, from primary school to high school. The role requires patience, communication skills, and the ability to adapt to different learning needs.',
+    dayToDay: [
+      'Planning and delivering lessons',
+      'Grading assignments and exams',
+      'Managing classroom behavior',
+      'Meeting with parents and colleagues',
+      'Supporting individual student needs',
+      'Attending school meetings and training',
+    ],
+    misconceptions: [
+      'Not just summers off—teachers work during breaks',
+      'Paperwork and admin take significant time',
+      'Every class and year is different',
+      'Emotional investment is high',
+    ],
+    hardParts: [
+      'Large class sizes with diverse needs',
+      'Limited resources in some schools',
+      'Dealing with challenging behavior',
+      'Emotional exhaustion from student issues',
+    ],
+    starterSteps: [
+      'Volunteer with children or tutoring',
+      'Research teacher education programs',
+      'Develop subject expertise',
+      'Practice public speaking',
+    ],
+    typicalPath: [
+      'Teacher education degree (4-5 years)',
+      'Classroom teacher (permanent position)',
+      'Subject lead or department head',
+      'School leadership or administration',
+    ],
+    skillGaps: [
+      'Classroom management techniques',
+      'Special education awareness',
+      'Technology integration',
+      'Differentiated instruction methods',
+    ],
+    saturationNote: 'Demand varies by subject and location. STEM and special education teachers are often needed.',
+  },
+  {
+    roleSlug: 'cybersecurity-analyst',
+    title: 'Cybersecurity Analyst',
+    overview: 'Cybersecurity analysts protect organizations from digital threats. The role requires technical knowledge, analytical thinking, and staying current with evolving attack methods.',
+    dayToDay: [
+      'Monitoring security alerts and logs',
+      'Investigating potential security incidents',
+      'Conducting vulnerability assessments',
+      'Implementing security tools and policies',
+      'Educating staff on security practices',
+      'Responding to security breaches',
+    ],
+    misconceptions: [
+      'Not like movie hacking—mostly analysis and prevention',
+      'Certifications matter as much as degrees',
+      'Soft skills are important for explaining risks',
+      'Constant learning is required as threats evolve',
+    ],
+    hardParts: [
+      'On-call work for security incidents',
+      'High-stress breach situations',
+      'Keeping up with new attack methods',
+      'Convincing others to follow security policies',
+    ],
+    starterSteps: [
+      'Learn networking fundamentals',
+      'Get familiar with Linux command line',
+      'Practice with cybersecurity CTF challenges',
+      'Pursue entry-level certifications (CompTIA Security+)',
+      'Build a home lab for practice',
+    ],
+    typicalPath: [
+      'IT support or junior security role',
+      'Security analyst (2-3 years)',
+      'Senior analyst or specialist',
+      'Security architect or CISO',
+    ],
+    skillGaps: [
+      'Networking and system administration',
+      'Programming basics (Python, scripting)',
+      'Understanding of compliance requirements',
+      'Communication skills for reporting',
+    ],
+    saturationNote: 'High demand with shortage of qualified professionals. Entry-level market is more competitive.',
+  },
+  {
+    roleSlug: 'data-analyst',
+    title: 'Data Analyst',
+    overview: 'Data analysts turn data into insights that help businesses make decisions. The role requires analytical thinking, tool proficiency, and the ability to communicate findings clearly.',
+    dayToDay: [
+      'Writing SQL queries to extract data',
+      'Building dashboards and reports',
+      'Analyzing trends and patterns',
+      'Presenting findings to stakeholders',
+      'Cleaning and validating data',
+      'Collaborating with business teams',
+    ],
+    misconceptions: [
+      'Not the same as data science—less ML, more reporting',
+      'Excel skills are still valuable',
+      'Business understanding is as important as technical skills',
+      'Most time is spent on data cleaning',
+    ],
+    hardParts: [
+      'Working with messy or incomplete data',
+      'Explaining statistics to non-technical people',
+      'Tight deadlines for reports',
+      'Data access issues and tool limitations',
+    ],
+    starterSteps: [
+      'Learn SQL—it is essential',
+      'Practice with Excel and visualization tools',
+      'Take statistics courses',
+      'Work on projects with public datasets',
+      'Learn Python or R basics',
+    ],
+    typicalPath: [
+      'Entry-level analyst or internship',
+      'Data analyst (2-3 years)',
+      'Senior analyst or lead',
+      'Analytics manager or data scientist',
+    ],
+    skillGaps: [
+      'SQL proficiency',
+      'Statistics fundamentals',
+      'Data visualization best practices',
+      'Business domain knowledge',
+    ],
+    saturationNote: 'Good demand across industries. Entry-level is competitive—portfolio projects help.',
+  },
+  {
+    roleSlug: 'physiotherapist',
+    title: 'Physiotherapist',
+    overview: 'Physiotherapists help patients recover from injuries and manage physical conditions through exercise and treatment. The role requires medical knowledge, hands-on skills, and patient care.',
+    dayToDay: [
+      'Assessing patient conditions and mobility',
+      'Developing treatment plans',
+      'Performing manual therapy techniques',
+      'Teaching exercises to patients',
+      'Documenting progress and outcomes',
+      'Communicating with doctors and families',
+    ],
+    misconceptions: [
+      'Not just massage—based on medical science',
+      'Requires ongoing patient motivation',
+      'Can specialize (sports, pediatrics, elderly)',
+      'Private practice requires business skills',
+    ],
+    hardParts: [
+      'Physically demanding work',
+      'Patients who do not follow exercise plans',
+      'Seeing limited progress in some cases',
+      'Administrative paperwork',
+    ],
+    starterSteps: [
+      'Shadow physiotherapists to understand the work',
+      'Take biology and anatomy courses',
+      'Research physiotherapy degree programs',
+      'Develop communication and empathy skills',
+    ],
+    typicalPath: [
+      'Physiotherapy degree (4-5 years)',
+      'Junior physiotherapist (hospital or clinic)',
+      'Senior or specialized physiotherapist',
+      'Private practice or department lead',
+    ],
+    skillGaps: [
+      'Anatomy and physiology knowledge',
+      'Manual therapy techniques',
+      'Patient communication skills',
+      'Exercise prescription',
+    ],
+    saturationNote: 'Good demand, especially for geriatric and sports specializations.',
+  },
+  {
+    roleSlug: 'carpenter',
+    title: 'Carpenter',
+    overview: 'Carpenters build and repair structures made of wood and other materials. The work is hands-on, requires precision, and offers opportunities in construction, renovation, and custom work.',
+    dayToDay: [
+      'Measuring and cutting wood materials',
+      'Building frames, roofs, and structures',
+      'Installing fixtures and finishes',
+      'Reading blueprints and specifications',
+      'Working on construction sites',
+      'Maintaining tools and equipment',
+    ],
+    misconceptions: [
+      'Not just furniture—most work is construction',
+      'Requires math skills for measurements',
+      'Technology is increasingly used (CAD, CNC)',
+      'Good carpenters are well-compensated',
+    ],
+    hardParts: [
+      'Physical work in all weather conditions',
+      'Injuries from tools and materials',
+      'Tight project deadlines',
+      'Seasonal work fluctuations',
+    ],
+    starterSteps: [
+      'Build small projects at home',
+      'Take woodworking or construction courses',
+      'Learn to use basic power tools safely',
+      'Apply for apprenticeships',
+    ],
+    typicalPath: [
+      'Apprenticeship (3-4 years)',
+      'Journeyman carpenter',
+      'Specialized carpenter or foreman',
+      'Contractor or own business',
+    ],
+    skillGaps: [
+      'Math for measurements and estimates',
+      'Blueprint reading',
+      'Tool proficiency and safety',
+      'Business skills for self-employment',
+    ],
+    saturationNote: 'Steady demand in construction. Skilled finish carpenters are particularly valued.',
+  },
+  {
+    roleSlug: 'maritime-technician',
+    title: 'Maritime Technician',
+    overview: 'Maritime technicians maintain and repair ships and offshore equipment. The role combines mechanical, electrical, and specialized marine skills in a unique working environment.',
+    dayToDay: [
+      'Maintaining ship engines and systems',
+      'Troubleshooting mechanical and electrical issues',
+      'Conducting inspections and safety checks',
+      'Working with navigation and communication equipment',
+      'Following maritime safety regulations',
+      'Working on ships or offshore platforms',
+    ],
+    misconceptions: [
+      'Not just sailing—highly technical work',
+      'Can work onshore or offshore',
+      'Good pay but requires travel/time away',
+      'Regulated industry with certification requirements',
+    ],
+    hardParts: [
+      'Time away from home on vessels',
+      'Working in confined spaces',
+      'Demanding physical conditions',
+      'Emergency situations at sea',
+    ],
+    starterSteps: [
+      'Research maritime technical programs',
+      'Get comfortable working with machines',
+      'Consider naval or coast guard experience',
+      'Develop comfort with water and boats',
+    ],
+    typicalPath: [
+      'Maritime technical school (2-4 years)',
+      'Junior technician or crew member',
+      'Certified marine engineer or technician',
+      'Chief engineer or specialist roles',
+    ],
+    skillGaps: [
+      'Mechanical and electrical fundamentals',
+      'Maritime safety knowledge',
+      'Comfort in isolated environments',
+      'Teamwork under pressure',
+    ],
+    saturationNote: 'Demand varies with shipping and offshore industry. Norway has strong maritime sector.',
+  },
+];
+
 async function main() {
   console.log('🌱 Seeding database...');
 
@@ -559,6 +1141,60 @@ async function main() {
     });
   }
   console.log(`✅ Seeded ${lifeSkillCards.length} life skills cards`);
+
+  // Seed Skills Taxonomy
+  console.log('🎯 Seeding skills taxonomy...');
+  for (const skill of skills) {
+    await prisma.skill.upsert({
+      where: { slug: skill.slug },
+      update: {
+        name: skill.name,
+        category: skill.category,
+        isActive: true,
+      },
+      create: {
+        slug: skill.slug,
+        name: skill.name,
+        category: skill.category,
+        isActive: true,
+      },
+    });
+  }
+  console.log(`✅ Seeded ${skills.length} skills`);
+
+  // Seed Career Reality Checks
+  console.log('📋 Seeding career reality checks...');
+  for (const check of careerRealityChecks) {
+    await prisma.careerRealityCheck.upsert({
+      where: { roleSlug: check.roleSlug },
+      update: {
+        title: check.title,
+        overview: check.overview,
+        dayToDay: check.dayToDay,
+        misconceptions: check.misconceptions,
+        hardParts: check.hardParts,
+        starterSteps: check.starterSteps,
+        typicalPath: check.typicalPath,
+        skillGaps: check.skillGaps,
+        saturationNote: check.saturationNote,
+        isActive: true,
+      },
+      create: {
+        roleSlug: check.roleSlug,
+        title: check.title,
+        overview: check.overview,
+        dayToDay: check.dayToDay,
+        misconceptions: check.misconceptions,
+        hardParts: check.hardParts,
+        starterSteps: check.starterSteps,
+        typicalPath: check.typicalPath,
+        skillGaps: check.skillGaps,
+        saturationNote: check.saturationNote,
+        isActive: true,
+      },
+    });
+  }
+  console.log(`✅ Seeded ${careerRealityChecks.length} career reality checks`);
 
   // Seed Career Cards
   const careerCards = [

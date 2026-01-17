@@ -238,6 +238,11 @@ model User {
   lifeSkillViews           LifeSkillView[]
   preferences              UserPreferences?
 
+  // Growth & Skills Tracking (Features 4 & 5)
+  youthJobCompletions    JobCompletion[] @relation("YouthJobCompletions")
+  employerJobCompletions JobCompletion[] @relation("EmployerJobCompletions")
+  trustSignals           TrustSignal[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -402,6 +407,7 @@ model MicroJob {
   earnings        Earning[]
   recommendations Recommendation[]
   conversations   Conversation[]
+  jobCompletions  JobCompletion[]
 
   @@index([postedById])
   @@index([category])
@@ -419,13 +425,14 @@ model MicroJob {
 }
 
 model Application {
-  id        String            @id @default(cuid())
-  jobId     String
-  youthId   String
-  message   String            @db.Text
-  status    ApplicationStatus @default(PENDING)
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  id           String            @id @default(cuid())
+  jobId        String
+  youthId      String
+  message      String            @db.Text
+  status       ApplicationStatus @default(PENDING)
+  displayOrder Int?              // Custom display order for youth's applications view (lower = higher priority)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   job   MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
   youth User     @relation(fields: [youthId], references: [id], onDelete: Cascade)
@@ -434,6 +441,7 @@ model Application {
   @@index([jobId])
   @@index([youthId])
   @@index([status])
+  @@index([displayOrder])
 }
 
 model Review {
@@ -1302,4 +1310,181 @@ model UserPreferences {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// ============================================
+// GROWTH & SKILLS TRACKING (Features 4 & 5)
+// ============================================
+
+// Skill categories for taxonomy
+enum SkillCategory {
+  SERVICE    // Customer-facing, hospitality
+  TECH       // Technology, digital
+  CARE       // Childcare, elderly care, pet care
+  HOME       // Cleaning, organizing, home maintenance
+  OUTDOOR    // Lawn, garden, snow clearing
+  CREATIVE   // Art, crafts, content creation
+  OTHER
+}
+
+// Skill - taxonomy of demonstrable skills
+model Skill {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  name      String
+  category  SkillCategory
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([category])
+  @@index([slug])
+}
+
+// Job completion outcomes
+enum JobCompletionOutcome {
+  COMPLETED        // Job done successfully
+  NO_SHOW          // Worker didn't show up
+  CANCELLED        // Cancelled before start
+  ISSUE_REPORTED   // Completed but with issues
+}
+
+// Supervision level during job
+enum SupervisionLevel {
+  SUPERVISED       // Adult present during work
+  UNSUPERVISED     // Youth worked alone
+  UNKNOWN          // Not tracked
+}
+
+// JobCompletion - explicit tracking of completed jobs
+model JobCompletion {
+  id           String               @id @default(cuid())
+  jobId        String
+  youthId      String               // Teen who completed the job
+  employerId   String               // Adult who hired
+  outcome      JobCompletionOutcome @default(COMPLETED)
+  supervision  SupervisionLevel     @default(UNKNOWN)
+  hoursWorked  Decimal?             @db.Decimal(5, 2) // e.g., 2.50 hours
+  completedAt  DateTime             @default(now())
+  notes        String?              @db.Text // Private employer notes
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  // Relations
+  job      MicroJob            @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  youth    User                @relation("YouthJobCompletions", fields: [youthId], references: [id], onDelete: Cascade)
+  employer User                @relation("EmployerJobCompletions", fields: [employerId], references: [id], onDelete: Cascade)
+  feedback StructuredFeedback?
+
+  @@unique([jobId, youthId]) // One completion per job per youth
+  @@index([jobId])
+  @@index([youthId])
+  @@index([employerId])
+  @@index([outcome])
+  @@index([completedAt])
+}
+
+// Responsibility level demonstrated
+enum ResponsibilityLevel {
+  BASIC        // Followed basic instructions
+  INTERMEDIATE // Showed initiative, solved problems
+  ADVANCED     // Led tasks, mentored others, high autonomy
+}
+
+// StructuredFeedback - NO free text ratings (safety requirement)
+model StructuredFeedback {
+  id                  String             @id @default(cuid())
+  jobCompletionId     String             @unique
+
+  // Structured ratings (1-5 scale)
+  punctuality         Int                // 1-5: Was on time
+  communication       Int                // 1-5: Communicated clearly
+  quality             Int                // 1-5: Quality of work
+  respectfulness      Int                // 1-5: Respectful behavior
+  followedInstructions Int               // 1-5: Followed instructions
+
+  // Binary/enum fields
+  wouldRehire         Boolean            // Would hire again
+  responsibilityLevel ResponsibilityLevel @default(BASIC)
+
+  // Skills demonstrated (stored as slug array)
+  skillsDemonstrated  String[]           // Array of skill slugs
+
+  createdAt           DateTime           @default(now())
+
+  // Relations
+  jobCompletion JobCompletion @relation(fields: [jobCompletionId], references: [id], onDelete: Cascade)
+
+  @@index([jobCompletionId])
+  @@index([createdAt])
+}
+
+// Trust signal types (internal, non-public)
+enum TrustSignalType {
+  ON_TIME               // Consistently on time
+  GOOD_COMMS            // Good communication
+  REPEAT_HIRE           // Re-hired by same employer
+  HELPED_OTHER          // Helped another youth
+  COMMUNITY_REPORT_RESOLVED // Resolved a community issue positively
+  POSITIVE_TREND        // Improving scores over time
+  CONSISTENCY_STREAK    // Consistent performance
+}
+
+// Trust signal sources
+enum TrustSignalSource {
+  JOB_COMPLETION  // From completing a job
+  FEEDBACK        // From receiving feedback
+  SYSTEM          // System-generated
+  COMMUNITY       // Community guardian action
+}
+
+// TrustSignal - private indicators (NEVER public)
+model TrustSignal {
+  id         String            @id @default(cuid())
+  userId     String            // Teen who earned the signal
+  type       TrustSignalType
+  sourceType TrustSignalSource
+  sourceId   String?           // Reference to source (jobId, feedbackId, etc.)
+  weight     Int               @default(1) // Signal strength
+  expiresAt  DateTime?         // Optional expiry for temporary signals
+  createdAt  DateTime          @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([sourceType])
+  @@index([createdAt])
+}
+
+// ============================================
+// CAREER REALITY CHECKS (Feature 6)
+// ============================================
+
+// CareerRealityCheck - honest career information
+model CareerRealityCheck {
+  id              String   @id @default(cuid())
+  roleSlug        String   @unique // Matches CareerCard roleName or standalone
+  title           String
+  overview        String   @db.Text
+
+  // Structured content (stored as JSON arrays)
+  dayToDay        Json     // String[] - typical daily activities
+  misconceptions  Json     // String[] - common wrong assumptions
+  hardParts       Json     // String[] - challenges to expect
+  starterSteps    Json     // String[] - how to get started
+  typicalPath     Json     // String[] - career progression
+  skillGaps       Json     // String[] - skills youth typically lack
+
+  // Market context (neutral, factual)
+  saturationNote  String   @db.VarChar(300) // Short market note
+
+  // Metadata
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([roleSlug])
+  @@index([isActive])
 }
