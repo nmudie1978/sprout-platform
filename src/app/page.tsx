@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { PillarCard, PILLARS } from "@/components/pillar-card";
+import { HeroVideo } from "@/components/hero-video";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 
@@ -266,6 +267,47 @@ export default function LandingPage() {
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Hero Video Section
+          - Lazy-loaded for performance (IntersectionObserver)
+          - Poster image prevents video download until interaction
+          - Play button overlay with tap-to-play for mobile
+          - Keyboard accessible (Space/Enter to play, M to mute)
+          - Respects prefers-reduced-motion
+          - Supports captions/subtitles via tracks prop
+      */}
+      <section className="py-8 sm:py-12 md:py-16 border-b bg-muted/20">
+        <div className="container px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5 }}
+          >
+            <HeroVideo
+              src="VIDEO_URL_PLACEHOLDER"
+              poster="/video-poster.jpg"
+              ariaLabel="Sprout platform explainer video - See how young people find jobs and build skills"
+              caption="See how Sprout helps young people grow skills, earn trust, and take their first steps into work."
+              tracks={[
+                {
+                  src: "/captions-en.vtt",
+                  kind: "captions",
+                  srcLang: "en",
+                  label: "English",
+                },
+                {
+                  src: "/captions-no.vtt",
+                  kind: "captions",
+                  srcLang: "no",
+                  label: "Norsk",
+                  default: true,
+                },
+              ]}
+            />
           </motion.div>
         </div>
       </section>

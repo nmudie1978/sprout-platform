@@ -2,8 +2,20 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getRecommendedCareers, getCareersForCategory } from "@/lib/career-pathways";
+import { getRecommendedCareers, getCareersForCategory, type CareerCategory } from "@/lib/career-pathways";
 import { JobCategory } from "@prisma/client";
+
+// Map micro-job categories to career categories for displaying related careers
+const JOB_TO_CAREER_CATEGORY: Record<JobCategory, CareerCategory> = {
+  BABYSITTING: "EDUCATION_TRAINING",
+  DOG_WALKING: "HEALTHCARE_LIFE_SCIENCES",
+  SNOW_CLEARING: "MANUFACTURING_ENGINEERING",
+  CLEANING: "HOSPITALITY_TOURISM",
+  DIY_HELP: "MANUFACTURING_ENGINEERING",
+  TECH_HELP: "TECHNOLOGY_IT",
+  ERRANDS: "LOGISTICS_TRANSPORT",
+  OTHER: "HOSPITALITY_TOURISM",
+};
 
 // GET /api/career-insights - Get personalized career recommendations for youth
 export async function GET() {
@@ -44,15 +56,19 @@ export async function GET() {
     // Get recommended careers based on experience
     const recommendations = getRecommendedCareers(jobsByCategory);
 
-    // Get the user's top categories
+    // Get the user's top micro-job categories with related career paths
     const topCategories = Object.entries(jobsByCategory)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
-      .map(([category, count]) => ({
-        category: category as JobCategory,
-        count,
-        careers: getCareersForCategory(category as JobCategory).slice(0, 2),
-      }));
+      .map(([category, count]) => {
+        const jobCategory = category as JobCategory;
+        const relatedCareerCategory = JOB_TO_CAREER_CATEGORY[jobCategory];
+        return {
+          category: jobCategory,
+          count,
+          careers: getCareersForCategory(relatedCareerCategory).slice(0, 2),
+        };
+      });
 
     // Build insights message
     let insightsMessage = "";

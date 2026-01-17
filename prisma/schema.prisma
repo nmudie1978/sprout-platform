@@ -243,6 +243,12 @@ model User {
   employerJobCompletions JobCompletion[] @relation("EmployerJobCompletions")
   trustSignals           TrustSignal[]
 
+  // Industry Insights features
+  savedIndustries         SavedIndustry[]
+  industryProgress        IndustryProgress[]
+  careerQuizResults       CareerQuizResult[]
+  newsletterSubscriptions NewsletterSubscription[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -1487,4 +1493,71 @@ model CareerRealityCheck {
 
   @@index([roleSlug])
   @@index([isActive])
+}
+
+// ============================================
+// INDUSTRY INSIGHTS FEATURES
+// ============================================
+
+// Saved/Bookmarked Industries
+model SavedIndustry {
+  id         String   @id @default(cuid())
+  userId     String
+  industryId String   // e.g., "tech", "green", "health", "creative"
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, industryId])
+  @@index([userId])
+}
+
+// Progress tracking for "How to Get Started" steps
+model IndustryProgress {
+  id              String   @id @default(cuid())
+  userId          String
+  industryId      String
+  stepType        String   // "requirement", "resource", "certification"
+  stepId          String   // Identifier for the specific step
+  completedAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, industryId, stepType, stepId])
+  @@index([userId, industryId])
+}
+
+// Career Quiz Results
+model CareerQuizResult {
+  id              String   @id @default(cuid())
+  userId          String?  // Optional - allow anonymous quizzes
+  sessionId       String?  // For anonymous users
+  answers         Json     // Store all quiz answers
+  topIndustries   Json     // Calculated top industry matches
+  completedAt     DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
+// Newsletter Subscriptions
+model NewsletterSubscription {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  userId        String?   // Link to user if logged in
+  industries    String[]  // Industries they're interested in
+  frequency     String    @default("weekly") // "weekly", "monthly"
+  isActive      Boolean   @default(true)
+  confirmedAt   DateTime?
+  unsubscribedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([email])
 }

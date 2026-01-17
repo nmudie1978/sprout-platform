@@ -25,7 +25,6 @@ import {
   X,
   Settings,
   BarChart3,
-  Info,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -118,7 +117,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
     { href: "/career-advisor", label: "AI Advisor", icon: MessageSquare, isCore: true },
-    { href: "/profile", label: "Profile", icon: User, isCore: false },
+    { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
 
   const employerLinks = [
@@ -198,7 +197,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center space-x-2 rounded-xl px-4 py-2.5 text-sm transition-all duration-200",
+                        "flex items-center space-x-1.5 rounded-lg px-3 py-2 text-xs transition-all duration-200",
                         isActive
                           ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
                           : link.isCore
@@ -211,7 +210,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         isActive && "animate-pulse",
                         link.isCore && !isActive && "text-primary"
                       )} />
-                      <span className="hidden lg:inline">{link.label}</span>
+                      {link.label && <span className="hidden lg:inline">{link.label}</span>}
                     </Link>
                   </motion.div>
 
@@ -260,15 +259,6 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
             ) : (
               <span className="text-sm font-medium">{userName}</span>
             )}
-
-            {/* About link */}
-            <Link
-              href="/about"
-              className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-muted"
-              title="About Sprout"
-            >
-              <Info className="h-4 w-4" />
-            </Link>
 
             {/* Sign out button */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -387,7 +377,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         isActive && "animate-pulse",
                         link.isCore && !isActive && "text-primary"
                       )} />
-                      <span>{link.label}</span>
+                      {link.label && <span>{link.label}</span>}
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
@@ -395,22 +385,6 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                   </motion.div>
                 );
               })}
-
-              {/* About - Mobile */}
-              <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.1 + links.length * 0.05 }}
-              >
-                <Link
-                  href="/about"
-                  className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-muted transition-all mt-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Info className="h-5 w-5" />
-                  <span>About Sprout</span>
-                </Link>
-              </motion.div>
 
               {/* Sign Out - Mobile */}
               <motion.div

@@ -17,7 +17,7 @@ const youthNavItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/jobs", label: "Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
   { href: "/messages", label: "Messages", icon: MessageSquare, activePattern: /^\/messages/ },
-  { href: "/profile", label: "Profile", icon: User, activePattern: /^\/profile/ },
+  { href: "/profile", label: "", icon: User, activePattern: /^\/profile/ },
 ];
 
 const employerNavItems: NavItem[] = [
@@ -70,12 +70,14 @@ export function MobileBottomNav() {
               )}
             >
               <Icon className={cn("h-6 w-6", active && "text-primary")} />
-              <span className={cn(
-                "text-[10px] mt-1 font-medium",
-                active ? "text-primary" : "text-muted-foreground"
-              )}>
-                {item.label}
-              </span>
+              {item.label && (
+                <span className={cn(
+                  "text-[10px] mt-1 font-medium",
+                  active ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {item.label}
+                </span>
+              )}
             </Link>
           );
         })}

@@ -9,6 +9,7 @@ import {
   retrieveRelevantQA,
   formatContextForPrompt,
 } from "@/lib/rag-retrieval";
+import { semanticSearchCareers, semanticSearchHelpDocs } from "@/lib/semantic-search";
 import {
   classifyIntent,
   getSystemPrompt,
@@ -168,20 +169,25 @@ export async function POST(req: NextRequest) {
       console.error("Profile fetch error (continuing without personalization):", profileError);
     }
 
-    // Retrieve relevant context (RAG) - wrapped in try-catch to be resilient
+    // Retrieve relevant context using semantic search (with fallback to keyword search)
     let careerCards: any[] = [];
     let helpDocs: any[] = [];
     let qaItems: any[] = [];
 
     try {
-      [careerCards, helpDocs, qaItems] = await Promise.all([
-        retrieveRelevantCareerCards(message, 3),
-        retrieveRelevantHelpDocs(message, 2),
-        retrieveRelevantQA(message, 2),
+      // Use semantic search for better relevance (falls back to keywords if embeddings unavailable)
+      const [semanticCareers, semanticHelpDocs, keywordQA] = await Promise.all([
+        semanticSearchCareers(message, 5), // Get more careers for better context
+        semanticSearchHelpDocs(message, 3),
+        retrieveRelevantQA(message, 2), // Q&A still uses keyword search
       ]);
+
+      careerCards = semanticCareers;
+      helpDocs = semanticHelpDocs;
+      qaItems = keywordQA;
     } catch (ragError) {
       console.error("RAG retrieval error (continuing without context):", ragError);
-      // Continue without RAG context - OpenAI can still answer general questions
+      // Continue without RAG context - fallback system will handle
     }
 
     const context = formatContextForPrompt(careerCards, helpDocs, qaItems);

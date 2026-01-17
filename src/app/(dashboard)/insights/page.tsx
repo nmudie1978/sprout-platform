@@ -32,8 +32,29 @@ import {
   Star,
   ArrowRight,
   Filter,
+  Target,
+  Calculator,
+  MessageSquare,
+  Building2,
+  Mail,
 } from "lucide-react";
 import { motion } from "framer-motion";
+
+// Import new insights components
+import {
+  SkillsGapAnalyzer,
+  CareerQuiz,
+  SalaryCalculator,
+  EducationROICalculator,
+  InterviewPrepBank,
+  CompanySpotlights,
+  EventsCalendar,
+  GeographicJobMap,
+  FiveYearProjections,
+  ProgressChecklist,
+  SaveIndustryButton,
+  NewsletterSignup,
+} from "@/components/insights";
 
 type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
 
@@ -51,12 +72,22 @@ export default function IndustryInsightsPage() {
 
   const sections = [
     { id: "industries", label: "Industries", icon: TrendingUp },
+    { id: "career-quiz", label: "Career Quiz", icon: Target },
     { id: "getting-started", label: "Get Started", icon: GraduationCap },
+    { id: "progress-checklist", label: "Progress", icon: CheckCircle2 },
+    { id: "skills-gap", label: "Skills Gap", icon: Zap },
     { id: "success-stories", label: "Stories", icon: Star },
+    { id: "salary-calc", label: "Salary Calc", icon: Calculator },
+    { id: "education-roi", label: "Education ROI", icon: GraduationCap },
     { id: "remote-work", label: "Remote Work", icon: Laptop },
     { id: "apprenticeships", label: "Lærlingplass", icon: BookOpen },
+    { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
+    { id: "companies", label: "Companies", icon: Building2 },
+    { id: "events", label: "Events", icon: Calendar },
+    { id: "job-map", label: "Job Map", icon: MapPin },
+    { id: "projections", label: "5-Year Outlook", icon: TrendingUp },
     { id: "compare", label: "Compare", icon: Filter },
-    { id: "skills", label: "Skills", icon: Zap },
+    { id: "skills", label: "Top Skills", icon: Zap },
     { id: "salaries", label: "Salaries", icon: Briefcase },
     { id: "videos", label: "Videos", icon: Youtube },
   ];
@@ -468,6 +499,7 @@ export default function IndustryInsightsPage() {
                           </CardDescription>
                         </div>
                       </div>
+                      <SaveIndustryButton industryId={industry.id} industryName={industry.name} />
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -506,6 +538,17 @@ export default function IndustryInsightsPage() {
             );
           })}
         </div>
+      </motion.div>
+
+      {/* Career Quiz */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+        className="mb-12"
+        id="career-quiz"
+      >
+        <CareerQuiz />
       </motion.div>
 
       {/* How to Get Started */}
@@ -592,6 +635,28 @@ export default function IndustryInsightsPage() {
         </div>
       </motion.div>
 
+      {/* Progress Checklist */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.22 }}
+        className="mb-12"
+        id="progress-checklist"
+      >
+        <ProgressChecklist />
+      </motion.div>
+
+      {/* Skills Gap Analyzer */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.25 }}
+        className="mb-12"
+        id="skills-gap"
+      >
+        <SkillsGapAnalyzer />
+      </motion.div>
+
       {/* Success Stories */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -649,6 +714,28 @@ export default function IndustryInsightsPage() {
               </motion.div>
             ))}
         </div>
+      </motion.div>
+
+      {/* Salary Calculator */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.32 }}
+        className="mb-12"
+        id="salary-calc"
+      >
+        <SalaryCalculator />
+      </motion.div>
+
+      {/* Education ROI Calculator */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.33 }}
+        className="mb-12"
+        id="education-roi"
+      >
+        <EducationROICalculator />
       </motion.div>
 
       {/* Remote & Flexible Work */}
@@ -861,6 +948,61 @@ export default function IndustryInsightsPage() {
             {apprenticeshipData.source}
           </a>
         </p>
+      </motion.div>
+
+      {/* Interview Prep Bank */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.41 }}
+        className="mb-12"
+        id="interview-prep"
+      >
+        <InterviewPrepBank />
+      </motion.div>
+
+      {/* Company Spotlights */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.42 }}
+        className="mb-12"
+        id="companies"
+      >
+        <CompanySpotlights />
+      </motion.div>
+
+      {/* Events Calendar */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.43 }}
+        className="mb-12"
+        id="events"
+      >
+        <EventsCalendar />
+      </motion.div>
+
+      {/* Geographic Job Map */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.44 }}
+        className="mb-12"
+        id="job-map"
+      >
+        <GeographicJobMap />
+      </motion.div>
+
+      {/* 5-Year Projections */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.445 }}
+        className="mb-12"
+        id="projections"
+      >
+        <FiveYearProjections />
       </motion.div>
 
       {/* Industry Comparison Tool */}
@@ -1305,6 +1447,16 @@ export default function IndustryInsightsPage() {
             These videos open in YouTube. We've curated content from trusted sources to help you stay informed.
           </p>
         </div>
+      </motion.div>
+
+      {/* Newsletter Signup */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 1.3 }}
+        className="mb-12"
+      >
+        <NewsletterSignup />
       </motion.div>
 
       {/* Data Source Note */}
