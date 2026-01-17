@@ -124,17 +124,16 @@ export default function CareerAdvisorPage() {
 
       const data = await response.json();
 
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Please sign in to use the AI Advisor");
-        }
-        throw new Error(data.error || "Failed to get response");
+      // Check for hard errors (no message returned at all)
+      if (data.error && !data.message) {
+        throw new Error(data.error);
       }
 
+      // API now always returns a message (even on fallback), so use it
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.message,
+        content: data.message || "I'm here to help with careers and jobs! What would you like to know?",
         timestamp: new Date(),
         intent: data.intent,
         sources: data.sources,
@@ -142,7 +141,9 @@ export default function CareerAdvisorPage() {
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      // Only show error for network failures or truly broken responses
+      setError("Connection issue. Please try again.");
+      console.error("Career advisor error:", err);
     } finally {
       setIsLoading(false);
     }

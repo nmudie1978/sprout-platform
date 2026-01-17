@@ -182,16 +182,10 @@ export function VerificationStatus({ compact = false }: VerificationStatusProps)
         );
       }
     } else if (status === "ONBOARDING") {
-      actionNeeded = "Complete Your Profile";
-      actionDescription = "Finish setting up your profile to start applying for jobs.";
-      actionButton = (
-        <Link href="/profile">
-          <Button size="sm">
-            Complete Profile
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </Link>
-      );
+      // Don't show anything for ONBOARDING youth - ProfileStrengthCompact handles this
+      // Return null for compact mode, or nothing for full mode
+      if (compact) return null;
+      return null;
     }
   } else if (role === "EMPLOYER") {
     // CRITICAL: Check BankID verification first - required to contact youth

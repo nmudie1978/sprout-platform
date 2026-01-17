@@ -4,8 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // Admin emails that can access analytics (add your email here)
+// Check both ADMIN_EMAIL and NEXT_PUBLIC_ADMIN_EMAIL for consistency
 const ADMIN_EMAILS = [
   process.env.ADMIN_EMAIL,
+  process.env.NEXT_PUBLIC_ADMIN_EMAIL,
   "admin@sprout.no",
 ].filter(Boolean);
 

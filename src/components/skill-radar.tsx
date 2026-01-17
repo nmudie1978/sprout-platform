@@ -9,17 +9,22 @@ interface SkillRadarProps {
 }
 
 export function SkillRadar({ userId }: SkillRadarProps) {
-  const { data: completedJobs } = useQuery({
+  const { data: completedJobsData } = useQuery({
     queryKey: ["completed-jobs", userId],
     queryFn: async () => {
       // Get user's completed jobs
       const response = await fetch(`/api/jobs?userId=${userId}&status=COMPLETED`);
-      if (!response.ok) return [];
+      if (!response.ok) return { jobs: [] };
       return response.json();
     },
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes (completed jobs don't change often)
     gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
+
+  // Handle both paginated response { jobs: [...] } and legacy array response
+  const completedJobs = Array.isArray(completedJobsData)
+    ? completedJobsData
+    : (completedJobsData?.jobs || []);
 
   if (!completedJobs || completedJobs.length === 0) {
     return (

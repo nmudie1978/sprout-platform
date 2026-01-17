@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 
 // Admin emails that can access analytics
+// Only NEXT_PUBLIC_ vars are available on client-side
 const ADMIN_EMAILS = [
   process.env.NEXT_PUBLIC_ADMIN_EMAIL,
   "admin@sprout.no",

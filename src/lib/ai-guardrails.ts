@@ -228,12 +228,28 @@ export function getFallbackResponse(intent: IntentType): string {
 
 /**
  * Get a smart fallback response based on keywords when AI is unavailable
+ * This provides helpful responses without needing an AI API
  */
 export function getSmartFallbackResponse(message: string, intent: IntentType): string {
   const lower = message.toLowerCase();
 
+  // Handle greetings
+  if (/^(hi|hello|hey|hei|hallo|good morning|good afternoon|good evening)[\s!.?]*$/i.test(message.trim())) {
+    return "Hi there! I'm your career assistant. I can help you with:\n\n" +
+      "• **Exploring careers** - Learn about different job paths\n" +
+      "• **Finding jobs** - Tips for getting your first job\n" +
+      "• **Writing applications** - Help with job messages\n" +
+      "• **Building skills** - What employers look for\n\n" +
+      "What would you like to know about?";
+  }
+
+  // Handle thanks
+  if (/^(thanks|thank you|takk|tusen takk)[\s!.?]*$/i.test(message.trim())) {
+    return "You're welcome! Feel free to ask if you have more questions about careers, jobs, or the platform. Good luck!";
+  }
+
   // Career exploration questions
-  if (lower.includes("what career") || lower.includes("which career") || lower.includes("career for me")) {
+  if (lower.includes("what career") || lower.includes("which career") || lower.includes("career for me") || lower.includes("right career")) {
     return "Great question! Finding the right career starts with understanding your interests and strengths.\n\n" +
       "Here's how to explore:\n" +
       "1. **Browse Careers** - Check out our career cards in the Explore section to see different roles\n" +
@@ -269,7 +285,7 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
   }
 
   // Tech/developer questions
-  if (lower.includes("developer") || lower.includes("programmer") || lower.includes("coding") || lower.includes("tech")) {
+  if (lower.includes("developer") || lower.includes("programmer") || lower.includes("coding") || lower.includes("tech") || lower.includes("software") || lower.includes("it ")) {
     return "Tech careers are exciting and in high demand!\n\n" +
       "**Getting started in tech:**\n" +
       "• **Free resources** - Start with free coding courses on Codecademy, freeCodeCamp, or Khan Academy\n" +
@@ -277,6 +293,75 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
       "• **Build projects** - Create simple websites or apps to practice\n" +
       "• **Join communities** - Discord servers and local meetups can help you learn\n\n" +
       "In Norway, tech apprenticeships (lærling) are also a great path - no university required!";
+  }
+
+  // Healthcare careers
+  if (lower.includes("health") || lower.includes("nurse") || lower.includes("doctor") || lower.includes("medical") || lower.includes("hospital")) {
+    return "Healthcare is a meaningful and stable career path!\n\n" +
+      "**Healthcare careers in Norway:**\n" +
+      "• **Nurse (Sykepleier)** - 3-year bachelor's degree, great job security\n" +
+      "• **Healthcare worker (Helsefagarbeider)** - 2-year vocational training (fagbrev)\n" +
+      "• **Doctor (Lege)** - 6-year medical degree + specialization\n" +
+      "• **Paramedic (Ambulansearbeider)** - Vocational training available\n\n" +
+      "**Get started:** Volunteer at local healthcare facilities or apply for summer jobs at nursing homes to see if it's right for you!";
+  }
+
+  // Creative careers
+  if (lower.includes("design") || lower.includes("creative") || lower.includes("art") || lower.includes("music") || lower.includes("film") || lower.includes("content")) {
+    return "Creative careers let you express yourself while earning a living!\n\n" +
+      "**Popular creative paths:**\n" +
+      "• **Graphic Design** - Logos, websites, marketing materials\n" +
+      "• **UX/UI Design** - App and website user experience\n" +
+      "• **Content Creation** - Social media, video, photography\n" +
+      "• **Game Design** - Growing industry in Norway!\n\n" +
+      "**Tips:**\n" +
+      "• Build a portfolio with personal projects\n" +
+      "• Learn industry tools (Figma, Adobe Creative Suite)\n" +
+      "• Share your work online to get noticed\n\n" +
+      "Check out our career cards for more creative roles!";
+  }
+
+  // Interview questions
+  if (lower.includes("interview") || lower.includes("meeting") || lower.includes("nervous") || lower.includes("scared") || lower.includes("anxious about job")) {
+    return "Feeling nervous about interviews is totally normal!\n\n" +
+      "**Interview tips:**\n" +
+      "• **Prepare** - Know what job you applied for and why you want it\n" +
+      "• **Be yourself** - Employers want to see the real you\n" +
+      "• **Ask questions** - Shows you're interested (e.g., \"What does a typical day look like?\")\n" +
+      "• **Arrive early** - 5-10 minutes is perfect\n\n" +
+      "**Common questions to prepare for:**\n" +
+      "• \"Tell me about yourself\"\n" +
+      "• \"Why are you interested in this job?\"\n" +
+      "• \"What are your strengths?\"\n\n" +
+      "Remember: The employer already liked your application enough to meet you - that's a great sign!";
+  }
+
+  // CV/Resume questions
+  if (lower.includes("cv") || lower.includes("resume") || lower.includes("curriculum")) {
+    return "A good CV helps you stand out!\n\n" +
+      "**For first-time job seekers, include:**\n" +
+      "• **Contact info** - Name, phone, email\n" +
+      "• **About you** - 2-3 sentences about who you are\n" +
+      "• **Education** - Your school and grade level\n" +
+      "• **Skills** - Languages, computer skills, soft skills\n" +
+      "• **Experience** - Any jobs, volunteering, or school projects\n" +
+      "• **References** - A teacher or adult who can vouch for you\n\n" +
+      "**Tips:**\n" +
+      "• Keep it to 1 page\n" +
+      "• Use a clean, simple format\n" +
+      "• No spelling mistakes!";
+  }
+
+  // School/education questions
+  if (lower.includes("school") || lower.includes("university") || lower.includes("study") || lower.includes("degree") || lower.includes("education")) {
+    return "Choosing your educational path is a big decision!\n\n" +
+      "**Options in Norway:**\n" +
+      "• **Vocational (Yrkesfag)** - Learn a trade, get a fagbrev, start working sooner\n" +
+      "• **General Studies (Studiespesialisering)** - Prepares for university\n" +
+      "• **Apprenticeship (Lærling)** - Learn while earning\n" +
+      "• **Higher Education** - Universities and høgskoler\n\n" +
+      "**Remember:** Many successful people change paths! It's okay not to have it all figured out.\n\n" +
+      "Browse our career cards to see what education different jobs require!";
   }
 
   // Application/message help

@@ -78,30 +78,32 @@ export function AiChatWidget() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
-
       const data = await response.json();
 
-      // Add assistant message
+      // Check for error response (400 level errors may have messages too)
+      if (data.error && !data.message) {
+        throw new Error(data.error);
+      }
+
+      // Add assistant message (API now always returns a message, even on fallback)
       setMessages([
         ...newMessages,
         {
           role: "assistant",
-          content: data.message,
+          content: data.message || "I'm here to help with careers and jobs! What would you like to know?",
           intent: data.intent,
           sources: data.sources,
         },
       ]);
     } catch (error) {
       console.error("Chat error:", error);
+      // Only show this if we truly couldn't get any response
       setMessages([
         ...newMessages,
         {
           role: "assistant",
           content:
-            "Sorry, I'm having trouble right now. Please try exploring careers or asking in the Q&A section!",
+            "I'm having trouble connecting right now. You can still browse careers in the Explore section or check out the Q&A for common questions!",
         },
       ]);
     } finally {
