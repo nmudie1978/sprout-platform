@@ -22,7 +22,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json(profile);
+    const response = NextResponse.json(profile);
+    // Add cache headers - employer profile is user-specific
+    response.headers.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=120');
+    return response;
   } catch (error) {
     console.error("Failed to fetch employer profile:", error);
     return NextResponse.json(

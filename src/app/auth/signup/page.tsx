@@ -22,10 +22,26 @@ function SignUpForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState(isEmployer ? "EMPLOYER" : "YOUTH");
-  const [ageBracket, setAgeBracket] = useState<string>("EIGHTEEN_TWENTY");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Calculate age and bracket from date of birth
+  const calculateAgeInfo = (dob: string) => {
+    if (!dob) return { age: null, bracket: null };
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    const bracket = age >= 15 && age <= 17 ? "SIXTEEN_SEVENTEEN" : age >= 18 && age <= 20 ? "EIGHTEEN_TWENTY" : null;
+    return { age, bracket };
+  };
+
+  const ageInfo = calculateAgeInfo(dateOfBirth);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +63,16 @@ function SignUpForm() {
         throw new Error("Password must be at least 8 characters");
       }
 
+      // Validate date of birth for youth
+      if (role === "YOUTH") {
+        if (!dateOfBirth) {
+          throw new Error("Date of birth is required");
+        }
+        if (ageInfo.age === null || ageInfo.age < 15 || ageInfo.age > 20) {
+          throw new Error("Youth workers must be between 15 and 20 years old");
+        }
+      }
+
       // Create the user account with password
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -55,7 +81,10 @@ function SignUpForm() {
           email,
           password,
           role,
-          ageBracket: role === "YOUTH" ? ageBracket : null,
+          dateOfBirth: role === "YOUTH" ? dateOfBirth : undefined,
+          ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
+          acceptedTerms,
+          acceptedPrivacy,
         }),
       });
 
@@ -83,13 +112,14 @@ function SignUpForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-blue-500/5" />
-      <div className="absolute top-20 -left-4 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-      <div className="absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+      {/* Blobs hidden on mobile for performance */}
+      <div className="hidden sm:block absolute top-20 -left-4 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+      <div className="hidden sm:block absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
 
-      <Card className="w-full max-w-md shadow-2xl border-2 hover-lift">
+      <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
             <Sprout className="h-10 w-10 text-green-600" />
@@ -106,10 +136,13 @@ function SignUpForm() {
               <Input
                 id="email"
                 type="email"
+                inputMode="email"
+                autoComplete="email"
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-11 sm:h-10"
               />
             </div>
 
@@ -118,11 +151,13 @@ function SignUpForm() {
               <Input
                 id="password"
                 type="password"
+                autoComplete="new-password"
                 placeholder="At least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
+                className="h-11 sm:h-10"
               />
             </div>
 
@@ -131,11 +166,13 @@ function SignUpForm() {
               <Input
                 id="confirmPassword"
                 type="password"
+                autoComplete="new-password"
                 placeholder="Re-enter your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={8}
+                className="h-11 sm:h-10"
               />
             </div>
 
@@ -143,77 +180,87 @@ function SignUpForm() {
               <Label htmlFor="role">I am a...</Label>
               <select
                 id="role"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex h-11 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
-                <option value="YOUTH">Youth (looking for jobs & careers)</option>
-                <option value="EMPLOYER">Employer (posting jobs)</option>
+                <option value="YOUTH">Youth Worker (looking for jobs)</option>
+                <option value="EMPLOYER">Job Poster (posting tasks)</option>
               </select>
             </div>
 
             {role === "YOUTH" && (
               <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
-                <select
-                  id="age"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  value={ageBracket}
-                  onChange={(e) => setAgeBracket(e.target.value)}
-                >
-                  <option value="SIXTEEN_SEVENTEEN">16-17 years old</option>
-                  <option value="EIGHTEEN_TWENTY">18-20 years old</option>
-                </select>
+                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  required
+                  className="h-11 sm:h-10"
+                />
+                {dateOfBirth && ageInfo.age !== null && (
+                  <p className={`text-xs ${ageInfo.age >= 15 && ageInfo.age <= 20 ? "text-green-600" : "text-red-500"}`}>
+                    {ageInfo.age >= 15 && ageInfo.age <= 20
+                      ? `You are ${ageInfo.age} years old - eligible to join!`
+                      : ageInfo.age < 15
+                        ? "You must be at least 15 years old to register"
+                        : "Youth workers must be 20 or younger. Consider registering as a job poster."}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Terms & Conditions */}
+            {/* Terms & Privacy - Combined Checkbox */}
             <div className="space-y-3 pt-2">
               <div className="flex items-start space-x-3">
                 <Checkbox
-                  id="terms"
-                  checked={acceptedTerms}
-                  onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+                  id="terms-privacy"
+                  checked={acceptedTerms && acceptedPrivacy}
+                  onCheckedChange={(checked) => {
+                    const isChecked = checked === true;
+                    setAcceptedTerms(isChecked);
+                    setAcceptedPrivacy(isChecked);
+                  }}
                   className="mt-0.5"
                 />
                 <label
-                  htmlFor="terms"
+                  htmlFor="terms-privacy"
                   className="text-sm leading-relaxed cursor-pointer"
                 >
                   I agree to the{" "}
                   <Link href="/legal/terms" className="text-primary hover:underline font-medium" target="_blank">
                     Terms of Service
-                  </Link>
-                </label>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="privacy"
-                  checked={acceptedPrivacy}
-                  onCheckedChange={(checked) => setAcceptedPrivacy(checked === true)}
-                  className="mt-0.5"
-                />
-                <label
-                  htmlFor="privacy"
-                  className="text-sm leading-relaxed cursor-pointer"
-                >
-                  I agree to the{" "}
-                  <Link href="/legal/privacy" className="text-primary hover:underline font-medium" target="_blank">
-                    Privacy Policy
                   </Link>{" "}
                   and{" "}
-                  <Link href="/legal/cookies" className="text-primary hover:underline font-medium" target="_blank">
-                    Cookie Policy
+                  <Link href="/legal/privacy" className="text-primary hover:underline font-medium" target="_blank">
+                    Privacy Policy
                   </Link>
                 </label>
               </div>
 
-              {role === "YOUTH" && ageBracket === "SIXTEEN_SEVENTEEN" && (
+              <p className="text-xs text-muted-foreground pl-7">
+                Also see our{" "}
+                <Link href="/legal/safety" className="text-primary hover:underline" target="_blank">
+                  Safety Guidelines
+                </Link>
+                ,{" "}
+                <Link href="/legal/eligibility" className="text-primary hover:underline" target="_blank">
+                  Age & Eligibility
+                </Link>
+                , and{" "}
+                <Link href="/legal/disclaimer" className="text-primary hover:underline" target="_blank">
+                  Disclaimer
+                </Link>
+              </p>
+
+              {role === "YOUTH" && ageInfo.age !== null && ageInfo.age < 18 && (
                 <div className="flex items-start space-x-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
                   <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
                   <p className="text-xs text-amber-700 dark:text-amber-400">
-                    If you're under 16, a parent or guardian must consent to these terms on your behalf.
+                    <strong>Guardian consent required.</strong> Since you're under 18, a parent or guardian will need to approve your account before you can apply for jobs.
                   </p>
                 </div>
               )}
@@ -221,7 +268,7 @@ function SignUpForm() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-11 sm:h-10"
               disabled={loading || !acceptedTerms || !acceptedPrivacy}
             >
               {loading ? "Creating Account..." : "Create Account"}

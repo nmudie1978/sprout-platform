@@ -48,6 +48,10 @@ import {
   Download,
   DollarSign,
   StickyNote,
+  ArrowUp,
+  ArrowDown,
+  ChevronsUp,
+  GripVertical,
 } from "lucide-react";
 import Link from "next/link";
 import { DashboardReviews } from "@/components/dashboard-reviews";
@@ -165,11 +169,19 @@ function JobCard({
   onDoubleClick,
   onUpdateApplication,
   isUpdating,
+  onReorder,
+  isReordering,
+  isFirst,
+  isLast,
 }: {
   job: any;
   onDoubleClick: () => void;
   onUpdateApplication: (appId: string, status: string) => void;
   isUpdating: boolean;
+  onReorder?: (jobId: string, direction: "up" | "down" | "top" | "bottom") => void;
+  isReordering?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) {
   const acceptedWorker = job.applications?.find((app: any) => app.status === "ACCEPTED");
   const isInProgress = job.status === "IN_PROGRESS" || job.status === "ASSIGNED";
@@ -237,6 +249,67 @@ function JobCard({
 
         {/* Quick Actions - visible on hover */}
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onReorder && (
+            <div className="flex items-center border rounded-md mr-1">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-r-none"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReorder(job.id, "top");
+                      }}
+                      disabled={isReordering || isFirst}
+                    >
+                      <ChevronsUp className="h-3 w-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Move to top</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-none border-x"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReorder(job.id, "up");
+                      }}
+                      disabled={isReordering || isFirst}
+                    >
+                      <ArrowUp className="h-3 w-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Move up</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-l-none"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReorder(job.id, "down");
+                      }}
+                      disabled={isReordering || isLast}
+                    >
+                      <ArrowDown className="h-3 w-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">Move down</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          )}
           <JobEditDialog
             job={job}
             trigger={
@@ -414,11 +487,19 @@ function JobRow({
   onDoubleClick,
   onUpdateApplication,
   isUpdating,
+  onReorder,
+  isReordering,
+  isFirst,
+  isLast,
 }: {
   job: any;
   onDoubleClick: () => void;
   onUpdateApplication: (appId: string, status: string) => void;
   isUpdating: boolean;
+  onReorder?: (jobId: string, direction: "up" | "down" | "top" | "bottom") => void;
+  isReordering?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) {
   const pendingApplications = job.applications?.filter((app: any) => app.status === "PENDING") || [];
   const acceptedWorker = job.applications?.find((app: any) => app.status === "ACCEPTED");
@@ -508,6 +589,36 @@ function JobRow({
 
       {/* Actions */}
       <div className="col-span-2 flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {onReorder && (
+          <div className="flex items-center border rounded-md mr-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 rounded-r-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                onReorder(job.id, "up");
+              }}
+              disabled={isReordering || isFirst}
+              title="Move up"
+            >
+              <ArrowUp className="h-3 w-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 rounded-l-none border-l"
+              onClick={(e) => {
+                e.stopPropagation();
+                onReorder(job.id, "down");
+              }}
+              disabled={isReordering || isLast}
+              title="Move down"
+            >
+              <ArrowDown className="h-3 w-3" />
+            </Button>
+          </div>
+        )}
         <JobEditDialog
           job={job}
           trigger={
@@ -536,7 +647,7 @@ export default function EmployerDashboardPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: myJobs, refetch: refetchJobs } = useQuery({
+  const { data: jobsData, refetch: refetchJobs } = useQuery({
     queryKey: ["employer-jobs"],
     queryFn: async () => {
       const response = await fetch("/api/jobs?my=true");
@@ -544,10 +655,14 @@ export default function EmployerDashboardPage() {
       return response.json();
     },
     enabled: !!session?.user.id,
-    refetchInterval: 30000,
+    refetchInterval: 30000, // Poll every 30 seconds
+    staleTime: 15000, // Consider data fresh for 15 seconds
     refetchOnWindowFocus: true,
-    staleTime: 10000,
+    refetchIntervalInBackground: false, // Don't poll when tab is in background
   });
+
+  // Handle both old array format and new paginated format
+  const myJobs = Array.isArray(jobsData) ? jobsData : (jobsData?.jobs || []);
 
   const { data: profile } = useQuery({
     queryKey: ["employer-profile"],
@@ -575,6 +690,24 @@ export default function EmployerDashboardPage() {
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to update application", variant: "destructive" });
+    },
+  });
+
+  const reorderJobMutation = useMutation({
+    mutationFn: async ({ jobId, direction }: { jobId: string; direction: "up" | "down" | "top" | "bottom" }) => {
+      const response = await fetch("/api/jobs/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, direction }),
+      });
+      if (!response.ok) throw new Error("Failed to reorder job");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employer-jobs"] });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to reorder job", variant: "destructive" });
     },
   });
 
@@ -916,7 +1049,7 @@ export default function EmployerDashboardPage() {
               {filteredJobs.length > 0 ? (
                 viewMode === "grid" ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filteredJobs.map((job: any) => (
+                    {filteredJobs.map((job: any, index: number) => (
                       <JobCard
                         key={job.id}
                         job={job}
@@ -925,6 +1058,12 @@ export default function EmployerDashboardPage() {
                           updateApplicationMutation.mutate({ applicationId: appId, status })
                         }
                         isUpdating={updateApplicationMutation.isPending}
+                        onReorder={(jobId, direction) =>
+                          reorderJobMutation.mutate({ jobId, direction })
+                        }
+                        isReordering={reorderJobMutation.isPending}
+                        isFirst={index === 0}
+                        isLast={index === filteredJobs.length - 1}
                       />
                     ))}
                   </div>
@@ -941,7 +1080,7 @@ export default function EmployerDashboardPage() {
                       <div className="col-span-2 text-right">Actions</div>
                     </div>
                     {/* Table rows */}
-                    {filteredJobs.map((job: any) => (
+                    {filteredJobs.map((job: any, index: number) => (
                       <JobRow
                         key={job.id}
                         job={job}
@@ -950,6 +1089,12 @@ export default function EmployerDashboardPage() {
                           updateApplicationMutation.mutate({ applicationId: appId, status })
                         }
                         isUpdating={updateApplicationMutation.isPending}
+                        onReorder={(jobId, direction) =>
+                          reorderJobMutation.mutate({ jobId, direction })
+                        }
+                        isReordering={reorderJobMutation.isPending}
+                        isFirst={index === 0}
+                        isLast={index === filteredJobs.length - 1}
                       />
                     ))}
                   </div>

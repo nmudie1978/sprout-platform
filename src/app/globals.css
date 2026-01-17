@@ -30,25 +30,25 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 222 20% 12%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 6%;
+    --card: 222 20% 14%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 6%;
+    --popover: 222 20% 14%;
     --popover-foreground: 0 0% 98%;
-    --primary: 262 80% 58%;
+    --primary: 142 70% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 222 15% 20%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
+    --muted: 222 15% 18%;
+    --muted-foreground: 220 10% 65%;
+    --accent: 222 15% 20%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 262 80% 58%;
+    --border: 222 15% 22%;
+    --input: 222 15% 22%;
+    --ring: 142 70% 45%;
   }
 }
 
@@ -324,12 +324,12 @@
   }
 
   .dark .bg-gradient-mesh {
-    background-color: hsl(240 10% 3.9%);
+    background-color: hsl(222 20% 12%);
     background-image:
-      radial-gradient(at 40% 20%, hsl(262 80% 58% / 0.2) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(200 80% 55% / 0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(280 80% 65% / 0.12) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsl(340 80% 60% / 0.1) 0px, transparent 50%);
+      radial-gradient(at 40% 20%, hsl(142 70% 45% / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(200 80% 55% / 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(142 70% 45% / 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsl(200 70% 55% / 0.08) 0px, transparent 50%);
   }
 
   /* Noise texture overlay */
@@ -353,5 +353,64 @@
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     @apply bg-primary/40;
+  }
+
+  /* Mobile-specific utilities */
+
+  /* Safe area padding for iOS devices with notch/home indicator */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 1rem);
+  }
+
+  /* Touch-friendly tap targets (minimum 44px) */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .touch-target-lg {
+    @apply min-h-[48px] min-w-[48px];
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Prevent text selection on interactive elements */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent double-tap zoom on buttons */
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Mobile-optimized touch scrolling */
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* Prevent body scroll when modal is open */
+  .body-scroll-lock {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
 }

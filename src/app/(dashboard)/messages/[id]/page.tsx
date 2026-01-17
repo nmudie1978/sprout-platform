@@ -11,7 +11,7 @@ export default function ConversationPage({
   const { id } = use(params);
 
   return (
-    <div className="container max-w-2xl py-6">
+    <div className="sm:container sm:max-w-2xl sm:py-6 sm:px-4">
       <ChatView conversationId={id} />
     </div>
   );

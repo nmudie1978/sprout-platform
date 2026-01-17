@@ -5,6 +5,7 @@ import { Navigation } from "@/components/navigation";
 import { AiChatWidget } from "@/components/ai-chat-widget";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import Link from "next/link";
 
 export default async function DashboardLayout({
   children,
@@ -15,6 +16,15 @@ export default async function DashboardLayout({
 
   if (!session) {
     redirect("/auth/signin");
+  }
+
+  // Check if user has accepted legal terms
+  const legalAcceptance = await prisma.legalAcceptance.findUnique({
+    where: { userId: session.user.id },
+  });
+
+  if (!legalAcceptance) {
+    redirect("/legal/accept");
   }
 
   // Get current pathname to avoid redirect loops
@@ -48,15 +58,43 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navigation
         userRole={session.user.role}
         userName={displayName || session.user.email || "User"}
+        userEmail={session.user.email || undefined}
         userAvatarId={userAvatarId}
         userProfilePic={userProfilePic}
       />
-      <main>{children}</main>
+      {/* Main content with bottom padding for mobile nav */}
+      <main className="flex-1 pb-20 md:pb-0">{children}</main>
       <AiChatWidget />
+
+      {/* Footer with legal links - hidden on mobile since we have bottom nav */}
+      <footer className="hidden md:block border-t py-6 mt-8 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
+            <Link href="/legal/terms" className="hover:text-foreground transition-colors">
+              Terms
+            </Link>
+            <Link href="/legal/privacy" className="hover:text-foreground transition-colors">
+              Privacy
+            </Link>
+            <Link href="/legal/safety" className="hover:text-foreground transition-colors">
+              Safety
+            </Link>
+            <Link href="/legal/eligibility" className="hover:text-foreground transition-colors">
+              Eligibility
+            </Link>
+            <Link href="/legal/disclaimer" className="hover:text-foreground transition-colors">
+              Disclaimer
+            </Link>
+          </div>
+          <p className="text-center text-xs text-muted-foreground mt-3">
+            © {new Date().getFullYear()} Sprout. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

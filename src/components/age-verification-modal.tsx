@@ -95,7 +95,7 @@ export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModa
             </div>
           </div>
           <DialogDescription>
-            To ensure the safety of our youth workers, all employers must verify they are 18 years or older.
+            To ensure the safety of our youth workers, all job posters must verify they are 18 years or older.
           </DialogDescription>
         </DialogHeader>
 

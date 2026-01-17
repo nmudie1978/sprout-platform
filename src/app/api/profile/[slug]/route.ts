@@ -101,8 +101,20 @@ export async function GET(
       .slice(0, 10)
       .map(([tag, count]) => ({ tag, count }));
 
+    // Get badges for this user
+    const badges = await prisma.badge.findMany({
+      where: { youthId: profile.userId },
+      select: {
+        id: true,
+        type: true,
+        earnedAt: true,
+      },
+      orderBy: { earnedAt: "desc" },
+    });
+
     // Return public profile data
     return NextResponse.json({
+      userId: profile.userId,
       displayName: profile.displayName,
       avatarId: profile.avatarId,
       bio: profile.bio,
@@ -117,6 +129,7 @@ export async function GET(
       topSkills,
       reviews: reviews.length,
       topTags,
+      badges,
     });
   } catch (error) {
     console.error("Failed to fetch public profile:", error);

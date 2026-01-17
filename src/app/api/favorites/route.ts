@@ -60,7 +60,10 @@ export async function GET(req: NextRequest) {
       addedAt: fav.createdAt,
     }));
 
-    return NextResponse.json(formattedFavorites);
+    const response = NextResponse.json(formattedFavorites);
+    // Cache favorites for 60 seconds
+    response.headers.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=120');
+    return response;
   } catch (error) {
     console.error("Failed to fetch favorites:", error);
     return NextResponse.json(

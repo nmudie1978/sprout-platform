@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { LifeSkillsProvider } from "@/components/life-skills-provider";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -31,6 +32,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <LifeSkillsProvider>
             {children}
+            <MobileBottomNav />
           </LifeSkillsProvider>
           <Toaster />
         </QueryClientProvider>

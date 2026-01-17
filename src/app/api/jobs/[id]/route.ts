@@ -49,6 +49,16 @@ export async function GET(
                     availabilityStatus: true,
                   },
                 },
+                badges: {
+                  select: {
+                    id: true,
+                    type: true,
+                    earnedAt: true,
+                  },
+                  orderBy: {
+                    earnedAt: "desc",
+                  },
+                },
               },
             },
           },

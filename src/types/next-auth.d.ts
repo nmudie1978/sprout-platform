@@ -1,4 +1,4 @@
-import { UserRole, AgeBracket } from "@prisma/client";
+import { UserRole, AgeBracket, AccountStatus } from "@prisma/client";
 import { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
@@ -7,12 +7,17 @@ declare module "next-auth" {
       id: string;
       role: UserRole;
       ageBracket?: AgeBracket | null;
+      accountStatus?: AccountStatus;
+      isVerifiedAdult?: boolean;
       youthProfile?: {
         displayName: string;
         profileVisibility: boolean;
+        guardianConsent: boolean;
       } | null;
       employerProfile?: {
         companyName: string;
+        eidVerified: boolean;
+        ageVerified: boolean;
       } | null;
     } & DefaultSession["user"];
   }
@@ -22,6 +27,7 @@ declare module "next-auth" {
     email: string;
     role: UserRole;
     ageBracket?: AgeBracket | null;
+    accountStatus?: AccountStatus;
   }
 }
 
@@ -30,5 +36,6 @@ declare module "next-auth/jwt" {
     id: string;
     role: UserRole;
     email: string;
+    accountStatus?: AccountStatus;
   }
 }

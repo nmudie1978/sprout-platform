@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 
 // GET - Fetch pokes (for youth to see who's interested)
 export async function GET(req: NextRequest) {
@@ -47,7 +48,9 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
       });
 
-      return NextResponse.json(pokes);
+      const response = NextResponse.json(pokes);
+      response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
+      return response;
     } else if (session.user.role === "EMPLOYER") {
       // Employer sees pokes they've sent
       const pokes = await prisma.poke.findMany({
@@ -79,7 +82,9 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
       });
 
-      return NextResponse.json(pokes);
+      const response = NextResponse.json(pokes);
+      response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
+      return response;
     }
 
     return NextResponse.json({ error: "Invalid role" }, { status: 403 });
@@ -99,6 +104,22 @@ export async function POST(req: NextRequest) {
 
     if (!session || session.user.role !== "EMPLOYER") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate limit: 30 pokes per hour to prevent spam
+    const rateLimit = checkRateLimit(
+      `poke:${session.user.id}`,
+      { interval: 3600000, maxRequests: 30 }
+    );
+
+    if (!rateLimit.success) {
+      const response = NextResponse.json(
+        { error: "Too many pokes. Please try again later." },
+        { status: 429 }
+      );
+      const headers = getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
+      Object.entries(headers).forEach(([key, value]) => response.headers.set(key, value));
+      return response;
     }
 
     const body = await req.json();

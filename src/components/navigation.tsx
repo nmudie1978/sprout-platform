@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
@@ -22,22 +24,66 @@ import {
   Sprout,
   X,
   Settings,
+  BarChart3,
+  Info,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
+import { Avatar } from "@/components/avatar";
+
+// Admin emails that can access analytics
+const ADMIN_EMAILS = [
+  process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+  "admin@sprout.no",
+].filter(Boolean);
 
 interface NavigationProps {
-  userRole: "YOUTH" | "EMPLOYER" | "ADMIN";
+  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
   userName?: string;
+  userEmail?: string;
   userAvatarId?: string | null;
   userProfilePic?: string | null;
 }
 
-export function Navigation({ userRole, userName, userAvatarId, userProfilePic }: NavigationProps) {
+export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check if user has admin access (by role or email)
+  const isAdminUser = userRole === "ADMIN" || ADMIN_EMAILS.includes(userEmail || "");
+
+  // Fetch avatar dynamically for youth users so it updates when changed
+  const { data: profile } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile");
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error("Failed to fetch profile");
+      }
+      return response.json();
+    },
+    enabled: userRole === "YOUTH",
+    staleTime: 0, // Always check for fresh data
+  });
+
+  // Check if user is a guardian (for any role)
+  const { data: guardianInfo } = useQuery({
+    queryKey: ["my-guardian-status"],
+    queryFn: async () => {
+      const response = await fetch("/api/guardian");
+      if (!response.ok) return null;
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const isGuardian = guardianInfo?.isGuardian || guardianInfo?.isAdmin;
+
+  // Use fetched avatar if available, otherwise fall back to initial
+  const userAvatarId = userRole === "YOUTH" ? (profile?.avatarId ?? initialAvatarId) : initialAvatarId;
 
   // Role badge configuration with accent colors
   const roleConfig = {
@@ -49,7 +95,7 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
       iconColor: "text-blue-500",
     },
     EMPLOYER: {
-      label: "Employer",
+      label: "Job Poster",
       icon: Building2,
       className: "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0",
       accentColor: "from-purple-500 to-pink-500",
@@ -61,6 +107,13 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
       className: "bg-gradient-to-r from-orange-500 to-red-500 text-white border-0",
       accentColor: "from-orange-500 to-red-500",
       iconColor: "text-orange-500",
+    },
+    COMMUNITY_GUARDIAN: {
+      label: "Guardian",
+      icon: Shield,
+      className: "bg-gradient-to-r from-emerald-500 to-green-500 text-white border-0",
+      accentColor: "from-emerald-500 to-green-500",
+      iconColor: "text-emerald-500",
     },
   };
 
@@ -85,15 +138,42 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
   ];
 
   const adminLinks = [
+    { href: "/admin/analytics", label: "Analytics", icon: BarChart3, isCore: true },
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: false },
     { href: "/admin/questions", label: "Moderate Q&A", icon: MessageSquare, isCore: false },
     { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: false },
   ];
 
-  const links =
+  // Admin analytics link for users with admin access
+  const adminAnalyticsLink = { href: "/admin/analytics", label: "Analytics", icon: BarChart3, isCore: false };
+
+  // Guardian link - shown only for users who are guardians
+  const guardianLink = { href: "/guardian", label: "Guardian", icon: Shield, isCore: false };
+
+  // Guardian-only links (when user's primary role is COMMUNITY_GUARDIAN)
+  const guardianOnlyLinks = [
+    { href: "/guardian", label: "Guardian Dashboard", icon: Shield, isCore: true },
+    { href: "/jobs", label: "Browse Jobs", icon: Briefcase, isCore: false },
+  ];
+
+  const baseLinks =
     userRole === "YOUTH" ? youthLinks :
     userRole === "ADMIN" ? adminLinks :
+    userRole === "COMMUNITY_GUARDIAN" ? guardianOnlyLinks :
     employerLinks;
+
+  // Build final links list with optional guardian and admin links
+  let links = [...baseLinks];
+
+  // Add guardian link if user is a guardian (but not if their role is already COMMUNITY_GUARDIAN)
+  if (isGuardian && userRole !== "COMMUNITY_GUARDIAN") {
+    links.push(guardianLink);
+  }
+
+  // Add admin analytics link for users with admin access (but not if already ADMIN role - they have it in baseLinks)
+  if (isAdminUser && userRole !== "ADMIN") {
+    links.push(adminAnalyticsLink);
+  }
 
   return (
     <nav className="sticky top-0 z-50 border-b backdrop-blur-lg bg-background/80 shadow-sm">
@@ -188,8 +268,23 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
 
             <div className="h-8 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
 
-            {/* User name */}
-            <span className="text-sm font-medium">{userName}</span>
+            {/* User avatar (for youth) or name (for others) */}
+            {userRole === "YOUTH" && userAvatarId ? (
+              <Link href="/profile" className="hover:opacity-80 transition-opacity">
+                <Avatar avatarId={userAvatarId} size="sm" />
+              </Link>
+            ) : (
+              <span className="text-sm font-medium">{userName}</span>
+            )}
+
+            {/* About link */}
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-muted"
+              title="About Sprout"
+            >
+              <Info className="h-4 w-4" />
+            </Link>
 
             {/* Sign out button */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -257,10 +352,14 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
                 transition={{ delay: 0.1 }}
               >
                 <div className="flex items-center gap-3">
-                  {userProfilePic ? (
-                    <img
+                  {userRole === "YOUTH" && userAvatarId ? (
+                    <Avatar avatarId={userAvatarId} size="sm" className="border-2 border-white/30" />
+                  ) : userProfilePic ? (
+                    <Image
                       src={userProfilePic}
                       alt={userName || "Profile"}
+                      width={40}
+                      height={40}
                       className="h-10 w-10 rounded-full object-cover border-2 border-white/30"
                     />
                   ) : (
@@ -313,11 +412,27 @@ export function Navigation({ userRole, userName, userAvatarId, userProfilePic }:
                 );
               })}
 
-              {/* Sign Out - Mobile */}
+              {/* About - Mobile */}
               <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1 + links.length * 0.05 }}
+              >
+                <Link
+                  href="/about"
+                  className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground hover:bg-muted transition-all mt-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Info className="h-5 w-5" />
+                  <span>About Sprout</span>
+                </Link>
+              </motion.div>
+
+              {/* Sign Out - Mobile */}
+              <motion.div
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.15 + links.length * 0.05 }}
               >
                 <button
                   className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-all mt-2"

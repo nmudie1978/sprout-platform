@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ interface CareerSwipeCardProps {
   onShowDetails: () => void;
 }
 
-export function CareerSwipeCard({
+export const CareerSwipeCard = memo(function CareerSwipeCard({
   card,
   matchedSkills = [],
   onShowDetails,
@@ -165,4 +166,4 @@ export function CareerSwipeCard({
       </CardContent>
     </Card>
   );
-}
+});

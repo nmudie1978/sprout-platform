@@ -103,7 +103,10 @@ export function JobHeatMap({ onCategoryClick, selectedCategory }: JobHeatMapProp
       if (!response.ok) throw new Error("Failed to fetch job stats");
       return response.json();
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 60000, // Refresh every 60 seconds (stats don't change that fast)
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: false, // Don't poll when tab is in background
   });
 
   if (isLoading) {

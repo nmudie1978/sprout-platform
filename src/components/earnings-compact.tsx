@@ -15,6 +15,8 @@ export function EarningsCompact() {
       if (!response.ok) throw new Error("Failed to fetch earnings");
       return response.json();
     },
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes (earnings don't change often)
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   if (isLoading) {

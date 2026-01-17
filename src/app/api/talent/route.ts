@@ -18,6 +18,11 @@ export async function GET(req: NextRequest) {
     const location = searchParams.get("location");
     const ageBracket = searchParams.get("ageBracket");
 
+    // Pagination parameters
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
+    const skip = (page - 1) * limit;
+
     const where: any = {
       profileVisibility: true, // Only show public profiles
     };
@@ -56,13 +61,27 @@ export async function GET(req: NextRequest) {
       where.user = userWhere;
     }
 
+    // Get total count for pagination metadata
+    const totalCount = await prisma.youthProfile.count({ where });
+
     const youthProfiles = await prisma.youthProfile.findMany({
       where,
-      include: {
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        displayName: true,
+        avatarId: true,
+        bio: true,
+        skillTags: true,
+        interests: true,
+        availabilityStatus: true,
+        completedJobsCount: true,
+        averageRating: true,
+        profileVisibility: true,
         user: {
           select: {
             id: true,
-            email: true,
             location: true,
             ageBracket: true,
           },
@@ -75,7 +94,22 @@ export async function GET(req: NextRequest) {
       ],
     });
 
-    return NextResponse.json(youthProfiles);
+    // Return with pagination metadata
+    const response = NextResponse.json({
+      talent: youthProfiles,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: page * limit < totalCount,
+      },
+    });
+
+    // Add cache headers for talent listings
+    response.headers.set('Cache-Control', 'private, s-maxage=60, stale-while-revalidate=120');
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch talent:", error);
     return NextResponse.json(

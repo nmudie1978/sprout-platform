@@ -35,15 +35,24 @@ export default function LegalLayout({
       {/* Footer */}
       <footer className="border-t py-8 mt-12">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
+            <Link href="/about" className="hover:text-foreground transition-colors font-medium">
+              About
+            </Link>
             <Link href="/legal/terms" className="hover:text-foreground transition-colors">
               Terms of Service
             </Link>
             <Link href="/legal/privacy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/legal/cookies" className="hover:text-foreground transition-colors">
-              Cookie Policy
+            <Link href="/legal/safety" className="hover:text-foreground transition-colors">
+              Safety Guidelines
+            </Link>
+            <Link href="/legal/eligibility" className="hover:text-foreground transition-colors">
+              Age & Eligibility
+            </Link>
+            <Link href="/legal/disclaimer" className="hover:text-foreground transition-colors">
+              Disclaimer
             </Link>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">

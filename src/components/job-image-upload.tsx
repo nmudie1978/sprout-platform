@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -215,10 +216,12 @@ export function JobImageUpload({
               key={url}
               className="relative aspect-square rounded-lg overflow-hidden border bg-muted group"
             >
-              <img
+              <Image
                 src={url}
                 alt={`Job photo ${index + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
+                className="object-cover"
               />
               {!disabled && (
                 <Button

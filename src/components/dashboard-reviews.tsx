@@ -24,9 +24,9 @@ const categoryLabels: Record<string, string> = {
   OTHER: "Other",
 };
 
-const getTierConfig = (isEmployer: boolean) => ({
+const getTierConfig = (isJobPoster: boolean) => ({
   GOLD: {
-    label: isEmployer ? "Gold Employer" : "Gold Worker",
+    label: isJobPoster ? "Gold Poster" : "Gold Worker",
     icon: Trophy,
     bgGradient: "from-yellow-400 via-yellow-500 to-amber-500",
     borderColor: "border-yellow-400",
@@ -35,7 +35,7 @@ const getTierConfig = (isEmployer: boolean) => ({
     requirement: "10+ reviews with 4.5+ avg",
   },
   SILVER: {
-    label: isEmployer ? "Silver Employer" : "Silver Worker",
+    label: isJobPoster ? "Silver Poster" : "Silver Worker",
     icon: Medal,
     bgGradient: "from-slate-300 via-slate-400 to-slate-500",
     borderColor: "border-slate-400",
@@ -44,7 +44,7 @@ const getTierConfig = (isEmployer: boolean) => ({
     requirement: "5+ reviews with 4.0+ avg",
   },
   BRONZE: {
-    label: isEmployer ? "Bronze Employer" : "Bronze Worker",
+    label: isJobPoster ? "Bronze Poster" : "Bronze Worker",
     icon: Award,
     bgGradient: "from-amber-600 via-amber-700 to-orange-700",
     borderColor: "border-amber-600",
@@ -53,13 +53,13 @@ const getTierConfig = (isEmployer: boolean) => ({
     requirement: "2+ reviews with 3.5+ avg",
   },
   NONE: {
-    label: isEmployer ? "New Employer" : "New Worker",
+    label: isJobPoster ? "New Poster" : "New Worker",
     icon: Star,
     bgGradient: "from-gray-400 to-gray-500",
     borderColor: "border-gray-300",
     textColor: "text-gray-600",
     bgColor: "bg-gradient-to-br from-gray-50 to-slate-50",
-    requirement: isEmployer ? "Get more reviews to earn a tier" : "Complete more jobs to earn a tier",
+    requirement: isJobPoster ? "Get more reviews to earn a tier" : "Complete more jobs to earn a tier",
   },
 });
 
@@ -113,8 +113,8 @@ function RatingBar({ count, total, stars }: { count: number; total: number; star
 
 export function DashboardReviews({ className }: DashboardReviewsProps) {
   const { data: session } = useSession();
-  const isEmployer = session?.user?.role === "EMPLOYER";
-  const tierConfig = getTierConfig(isEmployer);
+  const isJobPoster = session?.user?.role === "EMPLOYER";
+  const tierConfig = getTierConfig(isJobPoster);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["my-reviews-stats"],
@@ -163,7 +163,7 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
             Your Reviews
           </CardTitle>
           <CardDescription>
-            {isEmployer
+            {isJobPoster
               ? "Build your reputation by treating workers well"
               : "Build your reputation by completing jobs"}
           </CardDescription>
@@ -175,7 +175,7 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
             </div>
             <p className="text-muted-foreground mb-2">No reviews yet</p>
             <p className="text-sm text-muted-foreground">
-              {isEmployer
+              {isJobPoster
                 ? "Workers will leave reviews after completing jobs for you"
                 : "Complete jobs to start building your reputation"}
             </p>
@@ -268,7 +268,7 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
           {stats.tier !== "GOLD" && (
             <div className="mt-4 pt-4 border-t text-center">
               <p className="text-xs text-muted-foreground">
-                {stats.tier === "NONE" && (isEmployer
+                {stats.tier === "NONE" && (isJobPoster
                   ? "Get 2+ reviews with 3.5+ rating to earn Bronze tier"
                   : "Complete 2+ jobs with 3.5+ rating to earn Bronze tier")}
                 {stats.tier === "BRONZE" && "Get 5+ reviews with 4.0+ avg to reach Silver tier"}
@@ -302,7 +302,7 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
         <Card className="border-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">
-              {isEmployer ? "What Workers Say" : "What Employers Say"}
+              {isJobPoster ? "What Workers Say" : "What Job Posters Say"}
             </CardTitle>
           </CardHeader>
           <CardContent>

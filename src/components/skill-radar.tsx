@@ -17,6 +17,8 @@ export function SkillRadar({ userId }: SkillRadarProps) {
       if (!response.ok) return [];
       return response.json();
     },
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes (completed jobs don't change often)
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   if (!completedJobs || completedJobs.length === 0) {

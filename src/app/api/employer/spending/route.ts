@@ -134,9 +134,10 @@ export async function GET(req: NextRequest) {
         },
         status: "ACCEPTED",
       },
-      include: {
+      select: {
+        youthId: true,
         youth: {
-          include: {
+          select: {
             youthProfile: {
               select: {
                 displayName: true,

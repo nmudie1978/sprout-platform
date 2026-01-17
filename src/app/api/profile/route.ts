@@ -21,12 +21,16 @@ export async function GET(req: NextRequest) {
             email: true,
             ageBracket: true,
             location: true,
+            doNotDisturb: true,
           },
         },
       },
     });
 
-    return NextResponse.json(profile);
+    const response = NextResponse.json(profile);
+    // Add short cache for profile data - user-specific, private
+    response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
+    return response;
   } catch (error) {
     console.error("Failed to fetch profile:", error);
     return NextResponse.json(
@@ -106,6 +110,17 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
+
+    // Handle doNotDisturb toggle (on User model, not YouthProfile)
+    if ("doNotDisturb" in body && Object.keys(body).length === 1) {
+      const user = await prisma.user.update({
+        where: { id: session.user.id },
+        data: { doNotDisturb: Boolean(body.doNotDisturb) },
+        select: { doNotDisturb: true },
+      });
+
+      return NextResponse.json(user);
+    }
 
     // Handle visibility toggle separately
     if ("profileVisibility" in body) {

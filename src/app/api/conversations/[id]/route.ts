@@ -11,6 +11,7 @@ import {
   TemplateAllowedFields,
 } from "@/lib/safety-messaging";
 import { recordLifeSkillEvent } from "@/lib/life-skills";
+import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 
 // GET /api/conversations/[id] - Get conversation with messages
 export async function GET(
@@ -181,9 +182,26 @@ export async function POST(
     }
 
     const { id } = await params;
+    const userId = session.user.id;
+
+    // Rate limit: 60 messages per hour to prevent spam
+    const rateLimit = checkRateLimit(
+      `message:${userId}`,
+      { interval: 3600000, maxRequests: 60 }
+    );
+
+    if (!rateLimit.success) {
+      const response = NextResponse.json(
+        { error: "Too many messages. Please try again later." },
+        { status: 429 }
+      );
+      const headers = getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
+      Object.entries(headers).forEach(([key, value]) => response.headers.set(key, value));
+      return response;
+    }
+
     const body = await req.json();
     const { templateKey, payload } = body;
-    const userId = session.user.id;
 
     // Phase 1 Safety: Template is REQUIRED - no free-text
     if (!templateKey) {

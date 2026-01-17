@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const unreadOnly = searchParams.get("unread") === "true";
-    const limit = parseInt(searchParams.get("limit") || "20");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
+    const page = parseInt(searchParams.get("page") || "1");
+    const skip = (page - 1) * limit;
 
     const where: any = {
       userId: session.user.id,
@@ -23,12 +25,14 @@ export async function GET(req: NextRequest) {
       where.read = false;
     }
 
-    const [notifications, unreadCount] = await Promise.all([
+    const [notifications, totalCount, unreadCount] = await Promise.all([
       prisma.notification.findMany({
         where,
         orderBy: { createdAt: "desc" },
         take: limit,
+        skip,
       }),
+      prisma.notification.count({ where }),
       prisma.notification.count({
         where: {
           userId: session.user.id,
@@ -37,7 +41,21 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    return NextResponse.json({ notifications, unreadCount });
+    const response = NextResponse.json({
+      notifications,
+      unreadCount,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: skip + notifications.length < totalCount,
+      },
+    });
+
+    // Short cache for notifications (they change frequently)
+    response.headers.set('Cache-Control', 'private, max-age=10, stale-while-revalidate=30');
+    return response;
   } catch (error) {
     console.error("Failed to fetch notifications:", error);
     return NextResponse.json(

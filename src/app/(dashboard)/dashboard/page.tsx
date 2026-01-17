@@ -32,6 +32,7 @@ import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
 import { ProfileStrengthCompact } from "@/components/profile-strength-compact";
 import { BadgesDisplay } from "@/components/badges-display";
+import { VerificationStatus } from "@/components/verification-status";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "👶",
@@ -51,13 +52,38 @@ function ApplicationCard({ app }: { app: any }) {
   const isPending = app.status === "PENDING";
   const jobStatus = app.job.status;
 
+  // Determine the most relevant status to display
+  const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
+  const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+
   const getStatusColor = () => {
+    if (isJobDone) return "border-l-green-500 bg-green-50/50 dark:bg-green-950/20";
+    if (isJobInProgress) return "border-l-purple-500 bg-purple-50/50 dark:bg-purple-950/20";
     if (isAccepted) return "border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20";
     if (isRejected) return "border-l-red-400 bg-red-50/30 dark:bg-red-950/10 opacity-60";
     return "border-l-blue-400 bg-blue-50/30 dark:bg-blue-950/10";
   };
 
+  // Single badge showing the most relevant status
   const getStatusBadge = () => {
+    // Job completed - show "Done" in green
+    if (isJobDone) {
+      return (
+        <Badge className="h-5 text-[10px] bg-green-600 text-white px-1.5">
+          <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
+          Done
+        </Badge>
+      );
+    }
+    // Job in progress - show "In Progress"
+    if (isJobInProgress) {
+      return (
+        <Badge className="h-5 text-[10px] bg-purple-500 text-white px-1.5">
+          In Progress
+        </Badge>
+      );
+    }
+    // Accepted but not started yet - show "Accepted"
     if (isAccepted) {
       return (
         <Badge className="h-5 text-[10px] bg-emerald-500 text-white px-1.5">
@@ -66,6 +92,7 @@ function ApplicationCard({ app }: { app: any }) {
         </Badge>
       );
     }
+    // Rejected
     if (isRejected) {
       return (
         <Badge variant="destructive" className="h-5 text-[10px] px-1.5">
@@ -74,34 +101,13 @@ function ApplicationCard({ app }: { app: any }) {
         </Badge>
       );
     }
+    // Pending
     return (
       <Badge variant="secondary" className="h-5 text-[10px] px-1.5">
         <Clock className="h-2.5 w-2.5 mr-0.5" />
         Pending
       </Badge>
     );
-  };
-
-  const getJobStatusBadge = () => {
-    if (!isAccepted) return null;
-    switch (jobStatus) {
-      case "IN_PROGRESS":
-        return (
-          <Badge className="h-5 text-[10px] bg-purple-500 text-white px-1.5">
-            <Loader2 className="h-2.5 w-2.5 mr-0.5 animate-spin" />
-            Active
-          </Badge>
-        );
-      case "COMPLETED":
-        return (
-          <Badge className="h-5 text-[10px] bg-green-600 text-white px-1.5">
-            <CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />
-            Done
-          </Badge>
-        );
-      default:
-        return null;
-    }
   };
 
   return (
@@ -127,7 +133,6 @@ function ApplicationCard({ app }: { app: any }) {
           </div>
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
             {getStatusBadge()}
-            {getJobStatusBadge()}
           </div>
         </div>
 
@@ -158,27 +163,40 @@ function JobCardCompact({ job }: { job: any }) {
       <motion.div
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className="p-3 rounded-xl border bg-card hover:shadow-md hover:border-primary/30 transition-all cursor-pointer relative z-10"
+        className="p-3 rounded-xl border-l-4 border-l-amber-600 border bg-amber-50/50 dark:bg-amber-950/20 hover:shadow-md hover:border-amber-400 transition-all cursor-pointer relative z-10"
       >
         <div className="flex items-start gap-2 mb-2">
           <span className="text-lg">{categoryEmojis[job.category] || "✨"}</span>
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-sm truncate">{job.title}</h4>
-            <p className="text-xs text-muted-foreground truncate">
-              {job.postedBy?.employerProfile?.companyName || "Employer"}
-            </p>
           </div>
           <span className="font-bold text-sm text-primary whitespace-nowrap">
             {formatCurrency(job.payAmount)}
           </span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
-            {job.location?.split(",")[0] || "TBC"}
-          </span>
-          <span>•</span>
-          <span>{job.startDate ? formatDate(job.startDate).split(",")[0] : "Flexible"}</span>
+        <div className="space-y-1 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Building2 className="h-3 w-3 flex-shrink-0" />
+            <span className="font-medium text-foreground/70">Employer:</span>
+            <span className="truncate">{job.postedBy?.employerProfile?.companyName || "TBC"}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <MapPin className="h-3 w-3 flex-shrink-0" />
+            <span className="font-medium text-foreground/70">Location:</span>
+            <span className="truncate">{job.location?.split(",")[0] || "TBC"}</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3 w-3 flex-shrink-0" />
+              <span className="font-medium text-foreground/70">Start:</span>
+              <span>{job.startDate ? formatDate(job.startDate).split(",")[0] : "Flexible"}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3 flex-shrink-0" />
+              <span className="font-medium text-foreground/70">Posted:</span>
+              <span>{formatDate(job.createdAt).split(",")[0]}</span>
+            </div>
+          </div>
         </div>
       </motion.div>
     </Link>
@@ -196,16 +214,23 @@ export default function DashboardPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
+    staleTime: 30 * 1000, // Cache for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
-  const { data: jobs } = useQuery({
+  const { data: jobsData } = useQuery({
     queryKey: ["nearby-jobs"],
     queryFn: async () => {
       const response = await fetch("/api/jobs?status=POSTED&limit=6");
       if (!response.ok) throw new Error("Failed to fetch jobs");
       return response.json();
     },
+    staleTime: 60 * 1000, // Cache for 1 minute
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
+
+  // Handle both old array format and new paginated format
+  const jobs = Array.isArray(jobsData) ? jobsData : (jobsData?.jobs || []);
 
   const pendingApps = applications?.filter((app: any) => app.status === "PENDING") || [];
   const acceptedApps = applications?.filter((app: any) => app.status === "ACCEPTED") || [];
@@ -230,147 +255,80 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Base gradient background layer */}
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-violet-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/50" />
+      {/* Multi-layered gradient background */}
+      <div className="fixed inset-0 -z-20">
+        {/* Base gradient - blue to cyan transition */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/40 to-cyan-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30" />
 
-      {/* Animated Mesh Gradient Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Large animated gradient blob - top right (purple/blue) */}
+        {/* Secondary gradient overlay - adds depth */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-sky-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-cyan-900/20" />
+
+        {/* Radial highlight in center-top */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-blue-100/50 via-cyan-50/20 to-transparent dark:from-blue-900/20 dark:via-cyan-950/10 dark:to-transparent blur-2xl" />
+
+        {/* Bottom fade to darker */}
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-slate-100/80 via-slate-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
+      </div>
+
+      {/* Animated Background - Gradient Blobs */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(139,92,246,0.4) 0%, rgba(59,130,246,0.25) 40%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-          animate={{
-            x: [0, 60, 0],
-            y: [0, 40, 0],
-            scale: [1, 1.15, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-blue-400/25 via-cyan-300/20 to-transparent blur-3xl"
+          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
-
-        {/* Large animated gradient blob - left side (emerald/teal) */}
         <motion.div
-          className="absolute top-[15%] -left-[15%] w-[50%] h-[50%] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(16,185,129,0.35) 0%, rgba(20,184,166,0.2) 40%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-          animate={{
-            x: [0, 50, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 3,
-          }}
+          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/20 via-emerald-300/15 to-transparent blur-3xl"
+          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
-
-        {/* Animated gradient blob - bottom right (pink/purple) */}
         <motion.div
-          className="absolute bottom-[5%] right-[10%] w-[45%] h-[45%] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(236,72,153,0.3) 0%, rgba(168,85,247,0.2) 40%, transparent 70%)",
-            filter: "blur(40px)",
-          }}
-          animate={{
-            x: [0, -40, 0],
-            y: [0, 60, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 22,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 5,
-          }}
+          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-indigo-400/20 via-blue-300/15 to-transparent blur-3xl"
+          animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-
-        {/* Center floating blob (blue/cyan) */}
+        {/* Additional accent blob */}
         <motion.div
-          className="absolute top-[40%] left-[35%] w-[35%] h-[35%] rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(59,130,246,0.35) 0%, rgba(6,182,212,0.2) 40%, transparent 70%)",
-            filter: "blur(35px)",
-          }}
-          animate={{
-            x: [0, -30, 30, 0],
-            y: [0, 30, -30, 0],
-            scale: [1, 1.08, 0.95, 1],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-blue-200/10 via-cyan-100/15 to-teal-200/10 dark:from-blue-800/10 dark:via-cyan-900/10 dark:to-teal-800/10 blur-3xl"
+          animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
 
-        {/* Subtle grid overlay */}
-        <div
-          className="absolute inset-0 opacity-30 dark:opacity-20"
-          style={{
-            backgroundImage: `linear-gradient(rgba(139,92,246,0.15) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(139,92,246,0.15) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
+      {/* Floating Bubbles - Discreet and light */}
+      <div className="fixed inset-0 z-30 overflow-hidden pointer-events-none">
+        {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
             style={{
               width: `${6 + (i % 3) * 4}px`,
               height: `${6 + (i % 3) * 4}px`,
-              left: `${10 + i * 11}%`,
-              top: `${15 + (i % 4) * 20}%`,
+              left: `${10 + i * 15}%`,
+              top: `${15 + (i % 3) * 25}%`,
               background: i % 2 === 0
-                ? "rgba(139,92,246,0.6)"
-                : i % 3 === 0
-                  ? "rgba(16,185,129,0.6)"
-                  : "rgba(59,130,246,0.6)",
+                ? "radial-gradient(circle, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.2) 50%, transparent 70%)"
+                : "radial-gradient(circle, rgba(6,182,212,0.5) 0%, rgba(6,182,212,0.2) 50%, transparent 70%)",
+              boxShadow: i % 2 === 0
+                ? "0 0 12px rgba(59,130,246,0.3)"
+                : "0 0 12px rgba(6,182,212,0.3)",
             }}
             animate={{
-              y: [0, -40, 0],
-              x: [0, i % 2 === 0 ? 15 : -15, 0],
-              opacity: [0.4, 0.9, 0.4],
-              scale: [1, 1.3, 1],
+              y: [0, -25 - (i % 3) * 10, 0],
+              x: [0, i % 2 === 0 ? 10 : -10, 0],
+              opacity: [0.3, 0.6, 0.3],
+              scale: [1, 1.15, 1],
             }}
             transition={{
-              duration: 5 + i * 0.7,
+              duration: 8 + i * 1.5,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.6,
+              delay: i * 1.5,
             }}
           />
         ))}
-
-        {/* Top gradient line accent */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
-
-        {/* Animated shimmer line */}
-        <motion.div
-          className="absolute top-[30%] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"
-          animate={{
-            opacity: [0.3, 0.6, 0.3],
-            scaleX: [0.8, 1, 0.8],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
       </div>
 
       <div className="container mx-auto px-4 py-6 max-w-6xl relative z-10">
@@ -497,9 +455,20 @@ export default function DashboardPage() {
 
               {applications && applications.length > 0 ? (
                 <div className="grid sm:grid-cols-2 gap-3">
-                  {applications.slice(0, 6).map((app: any) => (
-                    <ApplicationCard key={app.id} app={app} />
-                  ))}
+                  {[...applications]
+                    .sort((a: any, b: any) => {
+                      // Done jobs go last
+                      const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
+                      const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
+                      if (aIsDone && !bIsDone) return 1;
+                      if (!aIsDone && bIsDone) return -1;
+                      // Then sort by createdAt (most recent first)
+                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                    })
+                    .slice(0, 6)
+                    .map((app: any) => (
+                      <ApplicationCard key={app.id} app={app} />
+                    ))}
                 </div>
               ) : (
                 <Card className="border">
@@ -562,6 +531,16 @@ export default function DashboardPage() {
           {/* Right Column - Sidebar Widgets */}
           <div className="space-y-4 relative z-20">
             {/* Profile Strength */}
+            {/* Account Verification Status */}
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <VerificationStatus compact />
+            </motion.div>
+
+            {/* Profile Strength */}
             <motion.div
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
@@ -593,9 +572,10 @@ export default function DashboardPage() {
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
+              className="relative z-30"
             >
-              <Link href="/careers">
-                <Card className="border hover:shadow-md hover:border-purple-300 transition-all cursor-pointer group">
+              <Link href="/careers" className="block">
+                <Card className="border hover:shadow-md hover:border-purple-300 transition-all cursor-pointer group relative z-30">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
@@ -617,9 +597,10 @@ export default function DashboardPage() {
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.35 }}
+              className="relative z-30"
             >
-              <Link href="/career-advisor">
-                <Card className="border hover:shadow-md hover:border-primary/50 transition-all cursor-pointer group bg-gradient-to-r from-primary/5 to-purple-500/5">
+              <Link href="/career-advisor" className="block">
+                <Card className="border hover:shadow-md hover:border-primary/50 transition-all cursor-pointer group bg-gradient-to-r from-primary/5 to-purple-500/5 relative z-30">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg bg-gradient-to-br from-primary/20 to-purple-500/20 group-hover:from-primary/30 group-hover:to-purple-500/30 transition-colors">

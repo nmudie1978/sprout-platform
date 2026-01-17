@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, Check, CheckCheck, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,8 +34,10 @@ export function NotificationBell() {
       if (!response.ok) throw new Error("Failed to fetch notifications");
       return response.json();
     },
-    refetchInterval: 10000, // Poll every 10 seconds for real-time updates
-    refetchOnWindowFocus: true,
+    refetchInterval: 20000, // Poll every 20 seconds - balance between freshness and performance
+    staleTime: 10000, // Consider data fresh for 10 seconds (reduces redundant requests)
+    refetchOnWindowFocus: true, // Always refresh when user returns to tab
+    refetchIntervalInBackground: false, // Don't poll when tab is in background
   });
 
   const markAsReadMutation = useMutation({
@@ -215,7 +217,7 @@ export function NotificationBell() {
   );
 }
 
-function NotificationContent({
+const NotificationContent = memo(function NotificationContent({
   notification,
   formatTime,
   getIcon,
@@ -238,4 +240,4 @@ function NotificationContent({
       </div>
     </div>
   );
-}
+});

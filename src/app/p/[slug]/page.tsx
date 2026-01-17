@@ -1,9 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatSkillName } from "@/lib/skills-mapping";
-import { MapPin, Star, Award, Calendar, Shield } from "lucide-react";
+import { MapPin, Star, Award, Calendar, Shield, Trophy } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
+import { ProfileReportButton } from "@/components/profile-report-button";
+import { UserBadgesDisplay } from "@/components/user-badges-display";
 
 async function getPublicProfile(slug: string) {
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -183,6 +185,14 @@ export default async function PublicProfilePage({
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Achievement Badges */}
+            {profile.badges && profile.badges.length > 0 && (
+              <UserBadgesDisplay
+                badges={profile.badges}
+                variant="full"
+              />
+            )}
+
             {/* Availability */}
             {profile.availability && (
               <Card>
@@ -234,13 +244,21 @@ export default async function PublicProfilePage({
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>
-            This is a public profile on{" "}
-            <a href="/" className="text-primary hover:underline">
-              Sprout
-            </a>
-          </p>
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="text-center text-sm text-muted-foreground">
+            <p>
+              This is a public profile on{" "}
+              <a href="/" className="text-primary hover:underline">
+                Sprout
+              </a>
+            </p>
+          </div>
+          {profile.userId && (
+            <ProfileReportButton
+              userId={profile.userId}
+              displayName={profile.displayName}
+            />
+          )}
         </div>
       </div>
     </div>

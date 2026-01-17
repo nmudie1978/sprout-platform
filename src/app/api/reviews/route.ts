@@ -188,7 +188,10 @@ export async function GET(req: NextRequest) {
       return getReviewsWithStats(userId);
     }
 
-    return NextResponse.json(reviews);
+    const response = NextResponse.json(reviews);
+    // Add cache headers - reviews don't change frequently
+    response.headers.set('Cache-Control', 'private, max-age=120, stale-while-revalidate=300');
+    return response;
   } catch (error) {
     console.error("Failed to fetch reviews:", error);
     return NextResponse.json(
@@ -283,7 +286,7 @@ async function getReviewsWithStats(userId: string) {
     tier = "BRONZE";
   }
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     reviews,
     stats: {
       totalReviews,
@@ -296,4 +299,7 @@ async function getReviewsWithStats(userId: string) {
       tier,
     },
   });
+  // Add cache headers for reviews with stats
+  response.headers.set('Cache-Control', 'private, max-age=120, stale-while-revalidate=300');
+  return response;
 }

@@ -17,7 +17,10 @@ export async function GET(req: NextRequest) {
       orderBy: { earnedAt: "desc" },
     });
 
-    return NextResponse.json(badges);
+    const response = NextResponse.json(badges);
+    // Add cache headers - badges don't change frequently
+    response.headers.set('Cache-Control', 'private, max-age=120, stale-while-revalidate=300');
+    return response;
   } catch (error) {
     console.error("Failed to fetch badges:", error);
     return NextResponse.json(

@@ -12,6 +12,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { searchParams } = new URL(req.url);
+
+    // Pagination parameters
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
+
     // Get all workers who have completed jobs for this employer
     const completedApplications = await prisma.application.findMany({
       where: {
@@ -95,11 +101,31 @@ export async function GET(req: NextRequest) {
     }
 
     // Sort by jobs completed with this employer
-    const workers = Array.from(workerMap.values()).sort(
+    const allWorkers = Array.from(workerMap.values()).sort(
       (a, b) => b.jobsWithYou - a.jobsWithYou
     );
 
-    return NextResponse.json(workers);
+    // Apply pagination
+    const totalCount = allWorkers.length;
+    const skip = (page - 1) * limit;
+    const workers = allWorkers.slice(skip, skip + limit);
+
+    // Return with pagination metadata
+    const response = NextResponse.json({
+      workers,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: page * limit < totalCount,
+      },
+    });
+
+    // Add cache headers
+    response.headers.set('Cache-Control', 'private, s-maxage=120, stale-while-revalidate=300');
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch rehire workers:", error);
     return NextResponse.json(

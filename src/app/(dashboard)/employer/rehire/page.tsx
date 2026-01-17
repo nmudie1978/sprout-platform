@@ -61,14 +61,18 @@ const categoryEmojis: Record<string, string> = {
 };
 
 export default function RehirePage() {
-  const { data: workers, isLoading } = useQuery<RehireWorker[]>({
+  const { data: workersData, isLoading } = useQuery({
     queryKey: ["rehire-workers"],
     queryFn: async () => {
       const response = await fetch("/api/employer/rehire");
       if (!response.ok) throw new Error("Failed to fetch workers");
       return response.json();
     },
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
+
+  // Handle both old array format and new paginated format
+  const workers: RehireWorker[] = Array.isArray(workersData) ? workersData : (workersData?.workers || []);
 
   return (
     <div className="container max-w-4xl py-6 space-y-6">

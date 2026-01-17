@@ -3,961 +3,656 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Briefcase, Compass, Users, TrendingUp, Sparkles, Zap, Sprout, Building2, UserPlus, ArrowRight, Search, CheckCircle, Star, Trophy, LayoutDashboard, Play, Quote } from "lucide-react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { AnimatedCounter } from "@/components/animated-counter";
-import { CareerJourney } from "@/components/career-journey";
+import {
+  Briefcase,
+  Compass,
+  Users,
+  TrendingUp,
+  Sparkles,
+  Sprout,
+  Building2,
+  UserPlus,
+  ArrowRight,
+  Search,
+  CheckCircle,
+  Star,
+  Trophy,
+  LayoutDashboard,
+  Quote,
+  Zap,
+  Shield,
+  Clock,
+  MapPin,
+  Heart,
+  GraduationCap,
+  Award,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
-
-// Fade-in animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
   const { data: session } = useSession();
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <Sprout className="h-6 w-6 text-green-600" />
-              <span className="font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                Sprout
-              </span>
-            </Link>
+      {/* Multi-layered gradient background */}
+      <div className="fixed inset-0 -z-20">
+        {/* Base gradient - warm to cool transition */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-green-50/30 to-emerald-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/30" />
 
-            {/* Auth Buttons */}
+        {/* Secondary gradient overlay - adds depth */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-teal-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-emerald-900/20" />
+
+        {/* Radial highlight in center-top */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/50 via-emerald-50/20 to-transparent dark:from-green-900/20 dark:via-emerald-950/10 dark:to-transparent blur-2xl" />
+
+        {/* Bottom fade to darker */}
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-slate-100/80 via-slate-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
+      </div>
+
+      {/* Animated Background - Gradient Blobs (hidden on mobile for performance) */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
+        <motion.div
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/25 via-emerald-300/20 to-transparent blur-3xl"
+          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/20 via-cyan-300/15 to-transparent blur-3xl"
+          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-emerald-400/20 via-green-300/15 to-transparent blur-3xl"
+          animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+        {/* Additional accent blob */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-green-200/10 via-emerald-100/15 to-teal-200/10 dark:from-green-800/10 dark:via-emerald-900/10 dark:to-teal-800/10 blur-3xl"
+          animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Subtle grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.04)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
+
+      {/* Floating Bubbles - Visible and animated (hidden on mobile for performance) */}
+      <div className="fixed inset-0 z-20 overflow-hidden pointer-events-none hidden sm:block">
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: `${12 + (i % 4) * 8}px`,
+              height: `${12 + (i % 4) * 8}px`,
+              left: `${5 + i * 8}%`,
+              top: `${10 + (i % 5) * 18}%`,
+              background: i % 3 === 0
+                ? "radial-gradient(circle, rgba(34,197,94,0.7) 0%, rgba(34,197,94,0.4) 40%, rgba(34,197,94,0.1) 70%, transparent 100%)"
+                : i % 3 === 1
+                  ? "radial-gradient(circle, rgba(16,185,129,0.7) 0%, rgba(16,185,129,0.4) 40%, rgba(16,185,129,0.1) 70%, transparent 100%)"
+                  : "radial-gradient(circle, rgba(5,150,105,0.6) 0%, rgba(5,150,105,0.3) 40%, rgba(5,150,105,0.1) 70%, transparent 100%)",
+              boxShadow: i % 3 === 0
+                ? "0 0 20px rgba(34,197,94,0.5), inset 0 0 10px rgba(255,255,255,0.3)"
+                : i % 3 === 1
+                  ? "0 0 20px rgba(16,185,129,0.5), inset 0 0 10px rgba(255,255,255,0.3)"
+                  : "0 0 20px rgba(5,150,105,0.4), inset 0 0 10px rgba(255,255,255,0.3)",
+            }}
+            animate={{
+              y: [0, -40 - (i % 4) * 15, 0],
+              x: [0, i % 2 === 0 ? 20 : -20, 0],
+              opacity: [0.5, 0.9, 0.5],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 6 + i * 1.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.8,
+            }}
+          />
+        ))}
+      </div>
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 sm:h-16 items-center justify-between px-4">
+          <Link href="/" className="flex items-center gap-2">
+            <Sprout className="h-6 w-6 sm:h-7 sm:w-7 text-green-600" />
+            <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
+              Sprout
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
+              About
+            </Link>
             {session ? (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-muted-foreground hidden sm:inline">
+              <>
+                <span className="text-sm text-muted-foreground hidden lg:inline">
                   {session.user.email}
                 </span>
-                <Button asChild size="sm" className="shadow-sm hover:shadow-md transition-all">
+                <Button asChild className="h-10 sm:h-9 px-3 sm:px-4">
                   <Link href={session.user.role === "EMPLOYER" ? "/employer/dashboard" : "/dashboard"}>
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
+                    <LayoutDashboard className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Dashboard</span>
                   </Link>
                 </Button>
-              </div>
+              </>
             ) : (
-              <Button asChild variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-all">
-                <Link href="/auth/signin">
-                  Sign In
-                </Link>
-              </Button>
+              <>
+                <Button variant="ghost" asChild className="h-10 sm:h-9 px-3 sm:px-4 hidden sm:inline-flex">
+                  <Link href="/auth/signin">Sign In</Link>
+                </Button>
+                <Button asChild className="bg-green-600 hover:bg-green-700 h-10 sm:h-9 px-4">
+                  <Link href="/auth/signup">
+                    <span className="sm:hidden">Start</span>
+                    <span className="hidden sm:inline">Get Started</span>
+                  </Link>
+                </Button>
+              </>
             )}
           </div>
         </div>
       </nav>
 
-      {/* Multi-layer animated background */}
-      <div className="fixed inset-0 -z-10">
-        {/* Gradient mesh base - colorful and visible */}
-        <div className="absolute inset-0 bg-gradient-mesh" />
+      {/* Hero Section */}
+      <section className="relative overflow-hidden border-b">
+        <div className="container px-4 py-12 sm:py-20 md:py-32">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 mb-4 sm:mb-6"
+            >
+              <Sprout className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Growth from Small Beginnings
+            </motion.div>
 
-        {/* Dot pattern overlay - visible */}
-        <div className="absolute inset-0 bg-dot-pattern" />
-
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-grid-pattern" />
-
-        {/* Hexagon pattern for texture */}
-        <div className="absolute inset-0 bg-hexagon-pattern opacity-60" />
-
-        {/* Radial gradient spotlight from top */}
-        <div className="absolute inset-0 bg-radial-gradient" />
-
-        {/* Animated gradient blobs - larger and more colorful */}
-        <div className="absolute top-0 -left-4 w-[600px] h-[600px] bg-purple-500/30 rounded-full mix-blend-multiply filter blur-3xl opacity-80 animate-blob" />
-        <div className="absolute top-0 -right-4 w-[600px] h-[600px] bg-blue-500/25 rounded-full mix-blend-multiply filter blur-3xl opacity-80 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-[600px] h-[600px] bg-pink-500/25 rounded-full mix-blend-multiply filter blur-3xl opacity-80 animate-blob animation-delay-4000" />
-        <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-green-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
-        <div className="absolute top-1/3 left-1/3 w-[400px] h-[400px] bg-cyan-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-blob animation-delay-4000" />
-
-        {/* Floating decorative shapes - more visible */}
-        <div className="absolute top-20 left-[10%] w-10 h-10 border-2 border-purple-400/40 rounded-lg rotate-12 animate-float-slow" />
-        <div className="absolute top-40 right-[15%] w-8 h-8 bg-blue-500/30 rounded-full animate-float-medium" />
-        <div className="absolute top-60 left-[20%] w-6 h-6 bg-pink-500/30 rounded animate-float-fast" />
-        <div className="absolute top-[30%] right-[10%] w-12 h-12 border-2 border-green-400/30 rounded-full animate-float-slow animation-delay-2000" />
-        <div className="absolute top-[50%] left-[5%] w-8 h-8 border-2 border-purple-400/30 rounded rotate-45 animate-float-medium animation-delay-4000" />
-        <div className="absolute top-[70%] right-[20%] w-10 h-10 bg-blue-500/25 rounded-lg animate-float-fast animation-delay-2000" />
-        <div className="absolute top-[80%] left-[15%] w-6 h-6 bg-green-500/30 rounded-full animate-float-slow" />
-        <div className="absolute top-[45%] left-[50%] w-4 h-4 bg-purple-500/35 rounded-full animate-float-medium" />
-        <div className="absolute top-[25%] left-[75%] w-5 h-5 border-2 border-pink-400/40 rounded animate-float-fast" />
-        <div className="absolute top-[65%] left-[8%] w-7 h-7 bg-cyan-500/25 rounded-lg rotate-12 animate-float-medium animation-delay-2000" />
-
-        {/* Large decorative rings - more visible */}
-        <div className="absolute -top-20 -right-20 w-[500px] h-[500px] border-2 border-purple-300/30 rounded-full animate-spin-slow" />
-        <div className="absolute -bottom-40 -left-40 w-[700px] h-[700px] border-2 border-blue-300/20 rounded-full animate-spin-slow" style={{ animationDirection: 'reverse' }} />
-        <div className="absolute top-1/4 -right-32 w-[300px] h-[300px] border border-pink-300/25 rounded-full animate-spin-slow animation-delay-4000" />
-      </div>
-
-      {/* Hero Section - Title & Purpose */}
-      <section className="relative px-6 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            {/* Logo */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 blur-2xl opacity-20 animate-pulse" />
-                <Sprout className="h-20 w-20 text-green-600 relative" />
-              </div>
-            </div>
-
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 text-sm font-medium mb-6 hover-lift">
-              <Sparkles className="h-4 w-4" />
-              <span>Growth from Small Beginnings</span>
-            </div>
-
-            <h1 className="text-5xl font-bold tracking-tight sm:text-7xl mb-6">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6">
+              Where Young Talent{" "}
               <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                Sprout
-              </span>{" "}
-              <br className="sm:hidden" />
-              <span className="gradient-text inline-block">
-                Your Future
+                Takes Root
               </span>
             </h1>
 
-            {/* Purpose Statement */}
-            <div className="mt-8 max-w-4xl mx-auto">
-              <p className="text-2xl sm:text-3xl font-semibold leading-relaxed mb-6">
-                Connecting young people with meaningful work experiences<br className="hidden sm:block" /> that shape their future
-              </p>
-              <p className="text-lg leading-8 text-foreground/80 max-w-3xl mx-auto bg-background/60 backdrop-blur-sm rounded-xl px-6 py-4">
-                We bridge the gap between local community needs and young people ready to contribute.
-                Build real-world skills, earn money, and explore career paths—all while making a difference in your community.
-              </p>
-            </div>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
+              Sprout connects Norwegian neighborhoods with young talent. Find local micro-jobs,
+              build real skills, and discover your career path—all in a safe, legally compliant platform for ages 15–20.
+            </p>
 
-            {/* Animated Stats */}
             <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{
-                visible: {
-                  transition: {
-                    staggerChildren: 0.1,
-                  },
-                },
-              }}
-              className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
             >
-              <motion.div
-                variants={fadeInUp}
-                className="space-y-2 p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20 hover-lift"
-              >
-                <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-400 bg-clip-text text-transparent">
-                  <AnimatedCounter end={1247} suffix="+" />
-                </div>
-                <div className="text-xs text-muted-foreground">Active Jobs</div>
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="space-y-2 p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover-lift"
-              >
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                  <AnimatedCounter end={892} suffix="+" />
-                </div>
-                <div className="text-xs text-muted-foreground">Youth Workers</div>
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="space-y-2 p-4 rounded-xl bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/20 hover-lift"
-              >
-                <div className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">
-                  <AnimatedCounter end={4.8} decimals={1} />
-                  <span className="text-yellow-500">★</span>
-                </div>
-                <div className="text-xs text-muted-foreground">Avg Rating</div>
-              </motion.div>
-              <motion.div
-                variants={fadeInUp}
-                className="space-y-2 p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 hover-lift"
-              >
-                <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-                  <AnimatedCounter end={95} suffix="%" />
-                </div>
-                <div className="text-xs text-muted-foreground">Jobs Completed</div>
-              </motion.div>
+              <Button size="lg" asChild className="bg-green-600 hover:bg-green-700 text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
+                <Link href="/auth/signup">
+                  Start Growing
+                  <Sprout className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
+                <Link href="/auth/signup?role=employer">
+                  Hire Young Talent
+                </Link>
+              </Button>
             </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6"
+            >
+              <Link
+                href="/about"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+              >
+                Learn more about Sprout
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="border-b py-8 sm:py-12 bg-muted/30">
+        <div className="container px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-1">1,200+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Active Jobs</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-1">890+</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Youth Workers</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-purple-600 mb-1">4.8★</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Avg Rating</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-600 mb-1">95%</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Completion</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Role-Based Signup Section */}
-      <section className="relative py-20 sm:py-24">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/50 to-transparent" />
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-              Join <span className="gradient-text">Sprout</span> Today
+      {/* Join Section - Role-Based Cards */}
+      <section className="py-20 md:py-28">
+        <div className="container">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Be Part of <span className="text-green-600">Your Community</span>
             </h2>
-            <p className="text-lg text-muted-foreground">Choose the path that's right for you</p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-            {/* Youth Worker Card */}
-            <Card className="border-2 hover-lift group overflow-hidden relative transition-all hover:shadow-2xl hover:border-blue-500/50">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-transparent blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <CardHeader className="relative">
-                <div className="mb-4">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 group-hover:scale-110 transition-transform shadow-lg">
-                    <UserPlus className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl sm:text-3xl">I'm a Youth Worker</CardTitle>
-                <CardDescription className="text-base mt-2">
-                  Ages 16-20 looking to earn money, gain experience, and explore career paths
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="relative space-y-6">
-                <ul className="space-y-3 text-sm">
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    </div>
-                    <span className="text-muted-foreground">Find local jobs and gigs in your area</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    </div>
-                    <span className="text-muted-foreground">Build a verified portfolio of work experience</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    </div>
-                    <span className="text-muted-foreground">Explore careers through swipeable career cards</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                    </div>
-                    <span className="text-muted-foreground">Connect with professionals for career advice</span>
-                  </li>
-                </ul>
-
-                <Button asChild size="lg" className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl group-hover:shadow-2xl transition-all">
-                  <Link href="/auth/signup">
-                    <span className="flex items-center gap-2">
-                      Sign Up as Youth Worker
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Employer Card */}
-            <Card className="border-2 hover-lift group overflow-hidden relative transition-all hover:shadow-2xl hover:border-purple-500/50">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-transparent blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <CardHeader className="relative">
-                <div className="mb-4">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 group-hover:scale-110 transition-transform shadow-lg">
-                    <Building2 className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-2xl sm:text-3xl">I'm an Employer</CardTitle>
-                <CardDescription className="text-base mt-2">
-                  Looking to hire motivated young people for local jobs and projects
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="relative space-y-6">
-                <ul className="space-y-3 text-sm">
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                    </div>
-                    <span className="text-muted-foreground">Post jobs and find qualified youth workers</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                    </div>
-                    <span className="text-muted-foreground">Browse talent profiles with verified reviews</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                    </div>
-                    <span className="text-muted-foreground">Send "pokes" to connect with workers you like</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center mt-0.5">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                    </div>
-                    <span className="text-muted-foreground">Invest in your community's future workforce</span>
-                  </li>
-                </ul>
-
-                <Button asChild size="lg" className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-xl group-hover:shadow-2xl transition-all">
-                  <Link href="/auth/signup?role=employer">
-                    <span className="flex items-center gap-2">
-                      Sign Up as Employer
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Already have an account */}
-          <div className="text-center mt-8">
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Link href="/auth/signin" className="text-primary hover:underline font-medium">
-                Sign in here
-              </Link>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Whether you&apos;re looking to earn or looking to hire—Sprout connects neighbors who want to help each other succeed
             </p>
           </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Youth Worker Card */}
+            <Card className="relative overflow-hidden border-2 hover:border-blue-300 hover:shadow-xl transition-all group">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-bl-full -z-10 transition-transform group-hover:scale-125" />
+              <CardHeader>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4">
+                  <UserPlus className="h-7 w-7 text-white" />
+                </div>
+                <CardTitle className="text-2xl">I&apos;m a Youth Worker</CardTitle>
+                <CardDescription className="text-base">
+                  Ages 15–20 looking to earn, help neighbors, and build real-world experience
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <ul className="space-y-3">
+                  {[
+                    "Find local jobs and gigs in your area",
+                    "Build a verified portfolio of work experience",
+                    "Explore careers through swipeable career cards",
+                    "Connect with professionals for career advice",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                  <Link href="/auth/signup">
+                    Sign Up as Youth Worker
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Job Poster Card */}
+            <Card className="relative overflow-hidden border-2 hover:border-purple-300 hover:shadow-xl transition-all group">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-bl-full -z-10 transition-transform group-hover:scale-125" />
+              <CardHeader>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4">
+                  <Building2 className="h-7 w-7 text-white" />
+                </div>
+                <CardTitle className="text-2xl">I&apos;m a Job Poster</CardTitle>
+                <CardDescription className="text-base">
+                  Families and neighbors looking for reliable young help in the community
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <ul className="space-y-3">
+                  {[
+                    "Post jobs and find eager local youth workers",
+                    "Browse profiles with verified reviews and ratings",
+                    "Labor law compliance handled automatically",
+                    "Support young people in your community",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                  <Link href="/auth/signup?role=employer">
+                    Sign Up as Job Poster
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          <p className="text-center text-sm text-muted-foreground mt-8">
+            Already have an account?{" "}
+            <Link href="/auth/signin" className="text-primary hover:underline font-medium">
+              Sign in here
+            </Link>
+          </p>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <HowItWorksSection />
+      <section className="py-20 md:py-28 bg-muted/30 border-y">
+        <div className="container">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              How <span className="text-green-600">Sprout</span> Works
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Getting started is simple. Choose your path and start growing today.
+            </p>
+          </div>
 
-      {/* Success Stories Section */}
-      <SuccessStoriesSection />
+          <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* For Youth Workers */}
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 dark:bg-blue-900/30 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-400 mb-6">
+                <UserPlus className="h-4 w-4" />
+                For Youth Workers
+              </div>
+              <div className="space-y-6">
+                {[
+                  { step: 1, title: "Sign Up Free", desc: "Create your profile in minutes. Add your skills, interests, and availability.", icon: UserPlus, color: "from-blue-500 to-cyan-500" },
+                  { step: 2, title: "Browse Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", icon: Search, color: "from-purple-500 to-pink-500" },
+                  { step: 3, title: "Get Hired", desc: "Apply with one click or get 'poked' by interested job posters. Start working fast.", icon: CheckCircle, color: "from-pink-500 to-rose-500" },
+                  { step: 4, title: "Earn & Grow", desc: "Complete jobs, collect reviews, and build your verified portfolio.", icon: Star, color: "from-green-500 to-emerald-500" },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
+                      {item.step}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-      {/* Career Journey Section - Visual Diagram */}
-      <section className="py-24 sm:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent" />
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-          <CareerJourney />
+            {/* For Job Posters */}
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-purple-100 dark:bg-purple-900/30 px-4 py-2 text-sm font-medium text-purple-700 dark:text-purple-400 mb-6">
+                <Building2 className="h-4 w-4" />
+                For Job Posters
+              </div>
+              <div className="space-y-6">
+                {[
+                  { step: 1, title: "Post Your Job", desc: "Describe what you need done. Set your budget and requirements in minutes.", icon: Building2, color: "from-purple-500 to-pink-500" },
+                  { step: 2, title: "Find Talent", desc: "Browse youth profiles with verified reviews and ratings. Find the perfect match.", icon: Users, color: "from-blue-500 to-cyan-500" },
+                  { step: 3, title: "Hire & Connect", desc: "Send 'pokes' to workers you like or review applications. Start chatting instantly.", icon: Zap, color: "from-pink-500 to-rose-500" },
+                  { step: 4, title: "Review & Repeat", desc: "Leave feedback after completion. Build relationships with reliable youth workers.", icon: Trophy, color: "from-green-500 to-emerald-500" },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
+                      {item.step}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section - Deep Dive */}
-      <FeaturesSection />
+      {/* Features Section */}
+      <section className="py-20 md:py-28">
+        <div className="container">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Your Journey from <span className="text-green-600">Today&apos;s Jobs</span> to{" "}
+              <span className="text-orange-600">Tomorrow&apos;s Career</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Each step builds on the last. Start with small wins, discover your passions, and watch your future take shape.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {[
+              {
+                icon: Briefcase,
+                title: "Earn",
+                subtitle: "Short-term wins",
+                description: "Start earning today with local micro-jobs. Build confidence and pocket money while discovering what you enjoy.",
+                color: "from-green-500 to-emerald-600",
+                benefits: ["Immediate income", "Flexible hours", "Discover strengths"],
+              },
+              {
+                icon: Compass,
+                title: "Explore",
+                subtitle: "Future possibilities",
+                description: "Turn your job experiences into career clarity. Swipe through career cards to discover paths that match your interests.",
+                color: "from-blue-500 to-cyan-600",
+                benefits: ["30+ career paths", "Match jobs to careers", "Real salary info"],
+              },
+              {
+                icon: Users,
+                title: "Connect",
+                subtitle: "Learn from pros",
+                description: "Bridge the gap between today and tomorrow. Ask real professionals about their careers and build your network.",
+                color: "from-purple-500 to-pink-600",
+                benefits: ["Ask-a-Pro Q&A", "Get 'pokes' from job posters", "Build network early"],
+              },
+              {
+                icon: TrendingUp,
+                title: "Grow",
+                subtitle: "Long-term success",
+                description: "Your verified portfolio of jobs, skills, and connections becomes the foundation of your professional future.",
+                color: "from-orange-500 to-red-600",
+                benefits: ["Verified work history", "Tier badges", "Stand out to job posters"],
+              },
+            ].map((feature, index) => (
+              <Card key={feature.title} className="relative overflow-hidden group hover:shadow-xl transition-all">
+                <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center text-white font-bold text-sm shadow-lg z-10`}>
+                  {index + 1}
+                </div>
+                <CardContent className="pt-8 pb-6">
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
+                    <feature.icon className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="font-bold text-xl mb-1">{feature.title}</h3>
+                  <p className={`text-xs font-semibold bg-gradient-to-r ${feature.color} bg-clip-text text-transparent mb-3`}>
+                    {feature.subtitle}
+                  </p>
+                  <p className="text-sm text-muted-foreground mb-4">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.benefits.map((benefit, i) => (
+                      <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 md:py-28 bg-muted/30 border-y">
+        <div className="container">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-4 py-2 text-sm font-medium text-yellow-700 dark:text-yellow-400 mb-4">
+              <Star className="h-4 w-4" />
+              Real Stories, Real Impact
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Hear from <span className="text-green-600">Youth Workers</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Young people just like you are building skills, earning money, and discovering their futures with Sprout.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                name: "Emma S.",
+                age: 18,
+                role: "Pet Sitter & Dog Walker",
+                quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
+                avatar: "🐕",
+                jobs: 24,
+                rating: 4.9,
+              },
+              {
+                name: "Marcus L.",
+                age: 17,
+                role: "Tech Helper & Tutor",
+                quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
+                avatar: "💻",
+                jobs: 31,
+                rating: 5.0,
+              },
+              {
+                name: "Sofia K.",
+                age: 19,
+                role: "Event Assistant",
+                quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning!",
+                avatar: "🎉",
+                jobs: 18,
+                rating: 4.8,
+              },
+            ].map((testimonial) => (
+              <Card key={testimonial.name} className="hover:shadow-lg transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center text-2xl flex-shrink-0">
+                      {testimonial.avatar}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-semibold">{testimonial.name}, {testimonial.age}</p>
+                          <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                        </div>
+                        <div className="flex items-center gap-1 text-yellow-500">
+                          <Star className="h-4 w-4 fill-current" />
+                          <span className="text-sm font-medium">{testimonial.rating}</span>
+                        </div>
+                      </div>
+                      <div className="relative mb-3">
+                        <Quote className="absolute -top-1 -left-2 h-4 w-4 text-primary/30" />
+                        <p className="text-sm text-muted-foreground italic pl-4">
+                          {testimonial.quote}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                        {testimonial.jobs} jobs completed
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Safety Section */}
+      <section className="py-20 md:py-28">
+        <div className="container">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-4 py-2 text-sm font-medium text-green-700 dark:text-green-400 mb-4">
+              <Shield className="h-4 w-4" />
+              Built for Norway
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Safe, Legal, <span className="text-green-600">Community-First</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              The only youth job platform with Norwegian labor law compliance built in.
+              Guardian consent for minors, verified job posters, and AI career guidance.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {[
+              { icon: Shield, title: "Legal Compliance", desc: "Arbeidsmiljøloven rules enforced automatically—working hours, pay minimums, age restrictions" },
+              { icon: GraduationCap, title: "Guardian Consent", desc: "Parents approve before minors can work. Full visibility and peace of mind" },
+              { icon: Award, title: "Verified Posters", desc: "Age verification required. Optional BankID/Vipps for highest trust" },
+              { icon: MapPin, title: "Local Community", desc: "Neighbors helping neighbors. Build relationships that last beyond single jobs" },
+            ].map((item) => (
+              <div key={item.title} className="text-center p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
+                <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-12 sm:py-20 md:py-28 bg-gradient-to-br from-green-600 to-emerald-700 text-white">
+        <div className="container px-4 text-center">
+          <Sprout className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 sm:mb-6 opacity-90" />
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+            Join Your Local Community
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-green-100 max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
+            Neighbors across Norway are already connecting through Sprout—young people finding their first jobs,
+            families finding reliable help. Be part of something that strengthens communities.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+            <Button size="lg" variant="secondary" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
+              <Link href="/auth/signup">
+                Sign Up as Youth
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11 border-white text-white hover:bg-white/10">
+              <Link href="/auth/signup?role=employer">
+                Sign Up as Employer
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/30 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-          <div className="flex flex-col items-center gap-4">
-            <p className="text-center text-sm text-muted-foreground">
-              &copy; 2024 Sprout. Growth from small beginnings.
-            </p>
-            <div className="flex gap-6 text-sm text-muted-foreground">
-              <Link href="/help" className="hover:text-primary transition-colors">Help</Link>
-              <Link href="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-primary transition-colors">Terms</Link>
+      <footer className="border-t bg-background py-8 sm:py-12">
+        <div className="container px-4">
+          <div className="flex flex-col items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-2">
+              <Sprout className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+              <span className="font-bold text-base sm:text-lg">Sprout</span>
             </div>
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 text-xs sm:text-sm text-muted-foreground">
+              <Link href="/about" className="hover:text-primary transition-colors font-medium">About</Link>
+              <Link href="/legal/terms" className="hover:text-primary transition-colors">Terms</Link>
+              <Link href="/legal/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+              <Link href="/legal/safety" className="hover:text-primary transition-colors">Safety</Link>
+              <Link href="/legal/eligibility" className="hover:text-primary transition-colors">Eligibility</Link>
+              <Link href="/legal/disclaimer" className="hover:text-primary transition-colors">Disclaimer</Link>
+            </div>
+            <p className="text-xs sm:text-sm text-muted-foreground text-center px-4">
+              &copy; {new Date().getFullYear()} Sprout. Connecting Norwegian neighborhoods with young talent.
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  );
-}
-
-// How It Works Section Component
-function HowItWorksSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const youthSteps = [
-    {
-      number: 1,
-      icon: UserPlus,
-      title: "Sign Up Free",
-      description: "Create your profile in minutes. Add your skills, interests, and availability.",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      number: 2,
-      icon: Search,
-      title: "Browse Jobs",
-      description: "Find local gigs that match your schedule. Filter by category, pay, and location.",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      number: 3,
-      icon: CheckCircle,
-      title: "Get Hired",
-      description: "Apply with one click or get 'poked' by interested employers. Start working fast.",
-      color: "from-pink-500 to-rose-500",
-    },
-    {
-      number: 4,
-      icon: Star,
-      title: "Earn & Grow",
-      description: "Complete jobs, collect reviews, and build your verified portfolio for future opportunities.",
-      color: "from-green-500 to-emerald-500",
-    },
-  ];
-
-  const employerSteps = [
-    {
-      number: 1,
-      icon: Building2,
-      title: "Post Your Job",
-      description: "Describe what you need done. Set your budget and requirements in minutes.",
-      color: "from-purple-500 to-pink-500",
-    },
-    {
-      number: 2,
-      icon: Users,
-      title: "Find Talent",
-      description: "Browse youth profiles with verified reviews and ratings. Find the perfect match.",
-      color: "from-blue-500 to-cyan-500",
-    },
-    {
-      number: 3,
-      icon: Zap,
-      title: "Hire & Connect",
-      description: "Send 'pokes' to workers you like or review applications. Start chatting instantly.",
-      color: "from-pink-500 to-rose-500",
-    },
-    {
-      number: 4,
-      icon: Trophy,
-      title: "Review & Repeat",
-      description: "Leave feedback after completion. Build relationships with reliable youth workers.",
-      color: "from-green-500 to-emerald-500",
-    },
-  ];
-
-  return (
-    <section ref={ref} className="py-24 sm:py-32 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-muted/30 via-background to-muted/30" />
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
-            How <span className="gradient-text">Sprout</span> Works
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Getting started is simple. Choose your path and start growing today.
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* For Youth Workers */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-medium mb-4">
-                <UserPlus className="h-4 w-4" />
-                <span>For Youth Workers</span>
-              </div>
-              <h3 className="text-2xl font-bold">Start Earning in 4 Easy Steps</h3>
-            </div>
-
-            <div className="space-y-6">
-              {youthSteps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <motion.div
-                    key={step.number}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    className="flex gap-4 group"
-                  >
-                    <div className="flex-shrink-0">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform`}>
-                        {step.number}
-                      </div>
-                    </div>
-                    <div className="flex-1 pb-6 border-l-2 border-dashed border-muted-foreground/20 pl-6 relative">
-                      <div className={`absolute -left-[9px] top-8 w-4 h-4 rounded-full bg-gradient-to-br ${step.color}`} />
-                      <div className="flex items-start gap-3 mb-2">
-                        <Icon className={`h-5 w-5 mt-0.5 bg-gradient-to-br ${step.color} bg-clip-text text-transparent`} />
-                        <h4 className="font-bold text-lg">{step.title}</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* For Employers */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">
-                <Building2 className="h-4 w-4" />
-                <span>For Employers</span>
-              </div>
-              <h3 className="text-2xl font-bold">Find Great Workers in 4 Steps</h3>
-            </div>
-
-            <div className="space-y-6">
-              {employerSteps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <motion.div
-                    key={step.number}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    className="flex gap-4 group"
-                  >
-                    <div className="flex-shrink-0">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform`}>
-                        {step.number}
-                      </div>
-                    </div>
-                    <div className="flex-1 pb-6 border-l-2 border-dashed border-muted-foreground/20 pl-6 relative">
-                      <div className={`absolute -left-[9px] top-8 w-4 h-4 rounded-full bg-gradient-to-br ${step.color}`} />
-                      <div className="flex items-start gap-3 mb-2">
-                        <Icon className={`h-5 w-5 mt-0.5 bg-gradient-to-br ${step.color} bg-clip-text text-transparent`} />
-                        <h4 className="font-bold text-lg">{step.title}</h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <p className="text-lg text-muted-foreground mb-6">
-            Ready to get started? Join thousands already using Sprout.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button asChild size="lg" className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-xl hover:shadow-2xl transition-all">
-              <Link href="/auth/signup">
-                <span className="flex items-center gap-2">
-                  Start as Youth Worker
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-            </Button>
-            <Button asChild size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all">
-              <Link href="/auth/signup?role=employer">
-                <span className="flex items-center gap-2">
-                  Start as Employer
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// Success Stories Section with Video Testimonial
-function SuccessStoriesSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const testimonials = [
-    {
-      name: "Emma S.",
-      age: 18,
-      role: "Pet Sitter & Dog Walker",
-      quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
-      avatar: "🐕",
-      jobsCompleted: 24,
-      rating: 4.9,
-    },
-    {
-      name: "Marcus L.",
-      age: 17,
-      role: "Tech Helper & Tutor",
-      quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
-      avatar: "💻",
-      jobsCompleted: 31,
-      rating: 5.0,
-    },
-    {
-      name: "Sofia K.",
-      age: 19,
-      role: "Event Assistant",
-      quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning - my dream career!",
-      avatar: "🎉",
-      jobsCompleted: 18,
-      rating: 4.8,
-    },
-  ];
-
-  return (
-    <section ref={ref} className="py-24 sm:py-32 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/50 to-transparent" />
-
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400 text-sm font-medium mb-4">
-            <Star className="h-4 w-4" />
-            <span>Real Stories, Real Impact</span>
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
-            Hear from <span className="gradient-text">Youth Workers</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Young people just like you are building skills, earning money, and discovering their futures with Sprout.
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Video Testimonial Placeholder */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="relative rounded-2xl overflow-hidden border-2 border-primary/20 shadow-2xl group cursor-pointer bg-gradient-to-br from-gray-900 to-gray-800">
-              {/* Video Thumbnail Placeholder */}
-              <div className="aspect-video relative">
-                {/* Placeholder Background with Pattern */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-purple-500/20 to-pink-500/20" />
-                <div className="absolute inset-0 bg-grid-pattern opacity-10" />
-
-                {/* Placeholder Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8">
-                  {/* Play Button */}
-                  <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300 shadow-xl">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
-                      <Play className="h-8 w-8 text-white ml-1" fill="white" />
-                    </div>
-                  </div>
-
-                  {/* Placeholder Text */}
-                  <p className="text-xl font-bold text-center mb-2">
-                    Emma's Story
-                  </p>
-                  <p className="text-sm text-white/80 text-center max-w-xs">
-                    "How I turned dog walking into a business and found my passion"
-                  </p>
-                  <p className="text-xs text-white/60 mt-4">
-                    2:34 • Video coming soon
-                  </p>
-                </div>
-
-                {/* Corner Badge */}
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-xs font-medium flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  Featured Story
-                </div>
-              </div>
-            </div>
-
-            {/* Video Caption */}
-            <p className="text-sm text-muted-foreground text-center mt-4">
-              Watch how Emma built her pet-sitting business through Sprout
-            </p>
-          </motion.div>
-
-          {/* Text Testimonials */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="space-y-6"
-          >
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={testimonial.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
-              >
-                <Card className="border-2 hover-lift group overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="pt-6 relative">
-                    <div className="flex items-start gap-4">
-                      {/* Avatar */}
-                      <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center text-2xl">
-                        {testimonial.avatar}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <p className="font-bold">{testimonial.name}, {testimonial.age}</p>
-                            <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                          </div>
-                          <div className="flex items-center gap-1 text-yellow-500">
-                            <Star className="h-4 w-4 fill-current" />
-                            <span className="text-sm font-medium">{testimonial.rating}</span>
-                          </div>
-                        </div>
-
-                        {/* Quote */}
-                        <div className="relative">
-                          <Quote className="absolute -top-1 -left-2 h-4 w-4 text-primary/30" />
-                          <p className="text-sm text-muted-foreground italic pl-4">
-                            {testimonial.quote}
-                          </p>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
-                            {testimonial.jobsCompleted} jobs completed
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-
-            {/* CTA */}
-            <div className="text-center pt-4">
-              <p className="text-sm text-muted-foreground mb-3">
-                Ready to write your own success story?
-              </p>
-              <Button asChild className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg">
-                <Link href="/auth/signup">
-                  <span className="flex items-center gap-2">
-                    Get Started Free
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Features Section Component with Scroll Animations
-function FeaturesSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const features = [
-    {
-      icon: Briefcase,
-      title: "Earn",
-      subtitle: "Short-term wins",
-      description: "Start earning today with local micro-jobs. From babysitting to tech help—build confidence and pocket money while discovering what you enjoy.",
-      color: "from-green-500 to-emerald-600",
-      benefits: [
-        "Immediate income opportunities",
-        "Flexible hours that work for you",
-        "Discover your strengths"
-      ],
-      nextStep: "Use your experience to...",
-    },
-    {
-      icon: Compass,
-      title: "Explore",
-      subtitle: "Future possibilities",
-      description: "Turn your job experiences into career clarity. Swipe through career cards to discover paths that match your interests and the skills you're building.",
-      color: "from-blue-500 to-cyan-600",
-      benefits: [
-        "30+ career pathways to explore",
-        "Match jobs to future careers",
-        "See real salary & requirements"
-      ],
-      nextStep: "Get insider knowledge from...",
-    },
-    {
-      icon: Users,
-      title: "Connect",
-      subtitle: "Learn from pros",
-      description: "Bridge the gap between today and tomorrow. Ask real professionals about their careers, get mentorship, and build relationships that open doors.",
-      color: "from-purple-500 to-pink-600",
-      benefits: [
-        "Ask-a-Pro Q&A feature",
-        "Get 'poked' by employers",
-        "Build your network early"
-      ],
-      nextStep: "All of this fuels your...",
-    },
-    {
-      icon: TrendingUp,
-      title: "Grow",
-      subtitle: "Long-term success",
-      description: "Everything comes together in your growth story. Your verified portfolio of jobs, skills, and connections becomes the foundation of your professional future.",
-      color: "from-orange-500 to-red-600",
-      benefits: [
-        "Verified work history",
-        "Bronze → Silver → Gold tiers",
-        "Stand out to future employers"
-      ],
-      nextStep: null,
-    }
-  ];
-
-  return (
-    <section ref={ref} className="py-24 sm:py-32 gradient-bg">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mx-auto max-w-2xl text-center mb-16"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            <Sparkles className="h-4 w-4" />
-            Your Connected Journey
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-4">
-            From <span className="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">today's jobs</span> to{" "}
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">tomorrow's career</span>
-          </h2>
-          <p className="text-lg leading-8 text-foreground/70 bg-background/50 backdrop-blur-sm rounded-xl px-4 py-3">
-            Each step builds on the last. Start with small wins, discover your passions, connect with mentors, and watch your future take shape.
-          </p>
-        </motion.div>
-
-        <div className="mx-auto mt-16 max-w-7xl">
-          <motion.div
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
-            className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={feature.title}
-                  variants={fadeInUp}
-                  transition={{ duration: 0.5 }}
-                  className="relative"
-                >
-                  {/* Step number badge */}
-                  <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center text-white font-bold text-sm shadow-lg z-10`}>
-                    {index + 1}
-                  </div>
-
-                  <Card className="hover-lift border-2 group overflow-hidden relative h-full">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity`} />
-                    <CardContent className="pt-6 relative">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className={`rounded-xl bg-gradient-to-br ${feature.color} p-3 group-hover:scale-110 transition-transform shadow-lg`}>
-                          <Icon className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-xl">{feature.title}</h3>
-                          <p className={`text-xs font-semibold bg-gradient-to-r ${feature.color} bg-clip-text text-transparent`}>
-                            {feature.subtitle}
-                          </p>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                        {feature.description}
-                      </p>
-                      <ul className="space-y-2 text-xs text-muted-foreground mb-4">
-                        {feature.benefits.map((benefit, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <CheckCircle className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 bg-gradient-to-br ${feature.color} text-green-500`} />
-                            <span>{benefit}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      {/* Flow connector */}
-                      {feature.nextStep && (
-                        <div className={`pt-3 border-t border-dashed border-muted-foreground/30`}>
-                          <p className={`text-xs font-medium bg-gradient-to-r ${feature.color} bg-clip-text text-transparent flex items-center gap-1`}>
-                            {feature.nextStep}
-                            <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                          </p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {/* Arrow connector between cards (hidden on mobile and last item) */}
-                  {index < features.length - 1 && (
-                    <div className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20">
-                      <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center shadow-lg`}>
-                        <ArrowRight className="h-4 w-4 text-white" />
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-
-        {/* Additional Benefits with Animated Counters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-20 text-center"
-        >
-          <h3 className="text-2xl font-bold mb-8">Everything you need to succeed</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="space-y-2">
-              <div className="text-3xl font-bold gradient-text">100%</div>
-              <div className="text-sm text-muted-foreground">Free for Youth</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold gradient-text">Safe</div>
-              <div className="text-sm text-muted-foreground">Verified Jobs</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold gradient-text">24/7</div>
-              <div className="text-sm text-muted-foreground">Support</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold gradient-text">Local</div>
-              <div className="text-sm text-muted-foreground">In Your Area</div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
   );
 }

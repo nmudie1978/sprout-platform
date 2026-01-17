@@ -321,6 +321,9 @@ model YouthProfile {
   @@index([publicProfileSlug])
   @@index([availabilityStatus])
   @@index([guardianToken])
+  @@index([profileVisibility])
+  @@index([averageRating])
+  @@index([completedJobsCount])
 }
 
 model EmployerProfile {
@@ -409,6 +412,10 @@ model MicroJob {
   @@index([displayOrder])
   @@index([communityId])
   @@index([isPaused])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([status, category]) // Composite for filtered job listings
+  @@index([status, createdAt]) // Composite for sorted job listings
 }
 
 model Application {
@@ -669,6 +676,7 @@ model Earning {
 
   @@unique([youthId, jobId]) // One earning per job per youth
   @@index([youthId])
+  @@index([jobId])
   @@index([status])
   @@index([earnedAt])
 }
@@ -854,6 +862,8 @@ model Message {
   @@index([senderId])
   @@index([templateId])
   @@index([createdAt])
+  @@index([read])
+  @@index([conversationId, senderId, read]) // Composite for unread count queries
 }
 
 // User blocks - prevents messaging and conversation creation

@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
       return acc;
     }, {} as Record<string, number>);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       earnings,
       summary: {
         totalEarned,
@@ -90,6 +90,9 @@ export async function GET(req: NextRequest) {
         byCategory,
       },
     });
+    // Add cache headers - earnings data is user-specific
+    response.headers.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=120');
+    return response;
   } catch (error) {
     console.error("Failed to fetch earnings:", error);
     return NextResponse.json(

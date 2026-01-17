@@ -94,7 +94,7 @@ export default function TalentBrowsePage() {
     return params.toString();
   };
 
-  const { data: talent, isLoading, refetch } = useQuery({
+  const { data: talentData, isLoading, refetch } = useQuery({
     queryKey: ["talent", availabilityFilter, locationFilter, ageBracketFilter, interestsFilter],
     queryFn: async () => {
       const queryString = buildQueryParams();
@@ -102,7 +102,11 @@ export default function TalentBrowsePage() {
       if (!response.ok) throw new Error("Failed to fetch talent");
       return response.json();
     },
+    staleTime: 60 * 1000, // Cache for 1 minute
   });
+
+  // Handle both old array format and new paginated format
+  const talent = Array.isArray(talentData) ? talentData : (talentData?.talent || []);
 
   // Fetch existing pokes to check who has already been poked
   const { data: existingPokes } = useQuery({

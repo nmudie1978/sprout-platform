@@ -30,6 +30,8 @@ export function ReviewsDisplay({ userId, userRole }: ReviewsDisplayProps) {
       if (!response.ok) throw new Error("Failed to fetch reviews");
       return response.json();
     },
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   if (isLoading) {

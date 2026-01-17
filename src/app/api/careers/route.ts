@@ -39,7 +39,10 @@ export async function GET(req: NextRequest) {
       careerCards = careerCards.filter((card) => !seenCardIds.includes(card.id));
     }
 
-    return NextResponse.json(careerCards);
+    const response = NextResponse.json(careerCards);
+    // Add cache headers - careers data doesn't change often
+    response.headers.set('Cache-Control', 'private, s-maxage=300, stale-while-revalidate=600');
+    return response;
   } catch (error) {
     console.error("Failed to fetch career cards:", error);
     return NextResponse.json(

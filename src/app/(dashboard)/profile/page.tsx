@@ -377,8 +377,8 @@ export default function ProfilePage() {
         />
       </div>
 
-      {/* Animated Morphing Shapes Layer */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      {/* Animated Morphing Shapes Layer - hidden on mobile for performance */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
         {/* Large morphing blob - top right */}
         <motion.div
           className="absolute -top-20 -right-20 w-[600px] h-[600px]"
@@ -530,8 +530,8 @@ export default function ProfilePage() {
         />
       </div>
 
-      {/* Accent glow spots */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* Accent glow spots - hidden on mobile for performance */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none hidden sm:block">
         <motion.div
           className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-amber-400/10 dark:bg-amber-600/5 blur-3xl"
           animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -544,21 +544,21 @@ export default function ProfilePage() {
         />
       </div>
 
-      <div className="container mx-auto max-w-4xl px-4 py-8 relative z-10 isolate">
+      <div className="container mx-auto max-w-4xl px-4 py-4 sm:py-8 relative z-10 isolate">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2.5 rounded-xl bg-amber-500/10">
-              <User className="h-6 w-6 text-amber-600" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-amber-500/10 flex-shrink-0">
+              <User className="h-5 w-5 sm:h-6 sm:w-6 text-amber-600" />
             </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
                 My <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">Profile</span>
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm sm:text-base truncate">
                 Build your profile to stand out to job posters
               </p>
             </div>
@@ -681,7 +681,7 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, displayName: e.target.value })
                   }
-                  className={!formData.displayName && profile ? "border-red-300 focus:border-red-500" : ""}
+                  className={`h-11 sm:h-10 ${!formData.displayName && profile ? "border-red-300 focus:border-red-500" : ""}`}
                 />
                 {!formData.displayName && profile ? (
                   <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
@@ -732,6 +732,7 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, availability: e.target.value })
                   }
+                  className="h-11 sm:h-10"
                 />
                 {!formData.availability ? (
                   <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
@@ -753,12 +754,14 @@ export default function ProfilePage() {
                 <Input
                   id="phoneNumber"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   placeholder="+47 123 45 678"
                   value={formData.phoneNumber}
                   onChange={(e) =>
                     setFormData({ ...formData, phoneNumber: e.target.value })
                   }
-                  className={!formData.phoneNumber && profile ? "border-red-300 focus:border-red-500" : ""}
+                  className={`h-11 sm:h-10 ${!formData.phoneNumber && profile ? "border-red-300 focus:border-red-500" : ""}`}
                 />
                 {!formData.phoneNumber && profile ? (
                   <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
@@ -811,11 +814,14 @@ export default function ProfilePage() {
                   <Input
                     id="guardianEmail"
                     type="email"
+                    inputMode="email"
+                    autoComplete="email"
                     placeholder="parent@example.com"
                     value={formData.guardianEmail}
                     onChange={(e) =>
                       setFormData({ ...formData, guardianEmail: e.target.value })
                     }
+                    className="h-11 sm:h-10"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
                     We'll keep them informed about your activity
@@ -828,7 +834,7 @@ export default function ProfilePage() {
                 disabled={
                   !formData.displayName || saveProfileMutation.isPending
                 }
-                className="w-full shadow-lg"
+                className="w-full h-11 sm:h-10 shadow-lg"
               >
                 {saveProfileMutation.isPending ? "Saving..." : "Save Profile"}
               </Button>
@@ -848,31 +854,31 @@ export default function ProfilePage() {
               <CardContent className="relative">
                 <SkillRadar userId={session.user.id} />
 
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div className="text-center p-3 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20">
-                    <div className="text-3xl font-bold gradient-text">
+                <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20">
+                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
                       {profile.completedJobsCount || 0}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Jobs Completed
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                      Jobs Done
                     </div>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20">
-                    <div className="text-3xl font-bold gradient-text">
+                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20">
+                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
                       {profile.averageRating
                         ? profile.averageRating.toFixed(1)
                         : "N/A"}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Avg Rating
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                      Rating
                     </div>
                   </div>
-                  <div className="text-center p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20">
-                    <div className="text-3xl font-bold gradient-text">
+                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20">
+                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
                       {profile.reliabilityScore || 0}%
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Reliability
+                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                      Reliable
                     </div>
                   </div>
                 </div>
@@ -1016,6 +1022,7 @@ export default function ProfilePage() {
                       setFormData({ ...formData, careerAspiration: e.target.value })
                     }
                     maxLength={200}
+                    className="h-11 sm:h-10"
                   />
                   <p className="mt-1 text-xs text-muted-foreground text-right">
                     {formData.careerAspiration.length}/200 characters
@@ -1277,14 +1284,14 @@ export default function ProfilePage() {
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="destructive"
-                    className="w-full"
+                    className="w-full h-11 sm:h-10"
                     disabled={deleteAccountMutation.isPending}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete My Account
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -1298,11 +1305,11 @@ export default function ProfilePage() {
                       </ul>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                    <AlertDialogCancel className="h-11 sm:h-10 w-full sm:w-auto">Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={() => deleteAccountMutation.mutate()}
-                      className="bg-red-600 hover:bg-red-700"
+                      className="bg-red-600 hover:bg-red-700 h-11 sm:h-10 w-full sm:w-auto"
                     >
                       Yes, delete my account
                     </AlertDialogAction>

@@ -29,6 +29,7 @@ import {
   Rocket,
   Zap,
   Star,
+  Shield,
 } from "lucide-react";
 import { JobImageUpload } from "@/components/job-image-upload";
 
@@ -124,7 +125,7 @@ function FloatingShapes() {
 }
 
 // Progress indicator component
-function ProgressIndicator({ progress }: { progress: number }) {
+function ProgressIndicator({ progress, missingItems }: { progress: number; missingItems: string[] }) {
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-2">
@@ -141,7 +142,7 @@ function ProgressIndicator({ progress }: { progress: number }) {
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </div>
-      {progress === 100 && (
+      {progress === 100 ? (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -149,6 +150,27 @@ function ProgressIndicator({ progress }: { progress: number }) {
         >
           <Sparkles className="w-4 h-4" />
           Ready to post!
+        </motion.div>
+      ) : missingItems.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20"
+        >
+          <p className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-1.5">
+            Still needed to post:
+          </p>
+          <ul className="text-xs text-amber-600 dark:text-amber-500 space-y-0.5">
+            {missingItems.slice(0, 4).map((item, i) => (
+              <li key={i} className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-500" />
+                {item}
+              </li>
+            ))}
+            {missingItems.length > 4 && (
+              <li className="text-amber-500">+{missingItems.length - 4} more...</li>
+            )}
+          </ul>
         </motion.div>
       )}
     </div>
@@ -235,7 +257,7 @@ export default function PostJobPage() {
 
   const hasErrors = Object.values(errors).some(error => error !== "");
 
-  // Calculate form progress
+  // Calculate form progress (includes verification status)
   const progress = useMemo(() => {
     const fields = [
       formData.title.length >= 5,
@@ -245,12 +267,28 @@ export default function PostJobPage() {
       formData.startDate !== "",
       formData.endDate !== "",
       formData.applicationDeadline !== "",
+      employerProfile?.ageVerified === true, // Age verification is required
     ];
     return (fields.filter(Boolean).length / fields.length) * 100;
-  }, [formData]);
+  }, [formData, employerProfile?.ageVerified]);
+
+  // What's still needed to post
+  const missingRequirements = useMemo(() => {
+    const missing: string[] = [];
+    if (!employerProfile?.ageVerified) missing.push("Age verification");
+    if (formData.title.length < 5) missing.push("Job title (min 5 characters)");
+    if (formData.description.length < 20) missing.push("Description (min 20 characters)");
+    if (!formData.location) missing.push("Location");
+    if (!formData.payAmount) missing.push("Pay amount");
+    if (!formData.startDate) missing.push("Start date & time");
+    if (!formData.endDate) missing.push("End date & time");
+    if (!formData.applicationDeadline) missing.push("Application deadline");
+    return missing;
+  }, [formData, employerProfile?.ageVerified]);
 
   const postJobMutation = useMutation({
     mutationFn: async () => {
+      console.log("Submitting job:", formData);
       const response = await fetch("/api/jobs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -265,25 +303,43 @@ export default function PostJobPage() {
         }),
       });
 
+      const data = await response.json();
+      console.log("API Response:", response.status, data);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to post job");
+        // Handle compliance violations with detailed message
+        if (data.code === "COMPLIANCE_VIOLATION" && data.violations) {
+          const violations = [
+            ...(data.violations.minors || []),
+            ...(data.violations.youngAdults || []),
+          ].filter((v: string, i: number, arr: string[]) => arr.indexOf(v) === i);
+          const message = violations.length > 0
+            ? `Compliance issues: ${violations.join("; ")}`
+            : data.error;
+          throw new Error(message);
+        }
+        throw new Error(data.error || "Failed to post job");
       }
 
-      return response.json();
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Job posted successfully:", data);
       toast({
         title: "Job posted successfully!",
         description: "Youth can now apply to your job posting.",
       });
-      router.push("/employer/dashboard");
+      // Use router.replace to prevent back navigation to form
+      router.replace("/employer/dashboard");
+      router.refresh();
     },
     onError: (error: Error) => {
+      console.error("Job posting error:", error);
       toast({
-        title: "Error",
+        title: "Failed to post job",
         description: error.message,
         variant: "destructive",
+        duration: 10000, // Show error for 10 seconds
       });
     },
   });
@@ -369,7 +425,7 @@ export default function PostJobPage() {
           className="mb-6"
         >
           <div className="p-4 rounded-2xl bg-background/60 backdrop-blur-xl border border-purple-500/20 shadow-lg shadow-purple-500/5">
-            <ProgressIndicator progress={progress} />
+            <ProgressIndicator progress={progress} missingItems={missingRequirements} />
           </div>
         </motion.div>
 
@@ -379,17 +435,21 @@ export default function PostJobPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Alert className="mb-6 border-yellow-500/50 bg-yellow-500/10 backdrop-blur-sm">
-              <AlertCircle className="h-4 w-4 text-yellow-600" />
-              <AlertDescription className="text-yellow-600">
-                Age verification required before posting jobs.{" "}
-                <button
+            <Alert className="mb-6 border-red-500/50 bg-red-500/10 backdrop-blur-sm">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-600 flex items-center justify-between gap-4">
+                <span>
+                  <strong>Age verification required.</strong> You must verify your age (18+) before posting jobs to protect our youth workers.
+                </span>
+                <Button
                   type="button"
+                  size="sm"
                   onClick={() => setShowAgeVerification(true)}
-                  className="underline font-medium hover:text-yellow-700"
+                  className="shrink-0 bg-red-600 hover:bg-red-700 text-white"
                 >
-                  Verify now
-                </button>
+                  <Shield className="w-4 h-4 mr-1" />
+                  Verify Now
+                </Button>
               </AlertDescription>
             </Alert>
           </motion.div>
@@ -736,6 +796,28 @@ export default function PostJobPage() {
                 </div>
               </CardContent>
             </Card>
+          </motion.div>
+
+          {/* Safety Reminder */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="text-sm text-muted-foreground bg-muted/50 rounded-xl p-4 border"
+          >
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-green-600 shrink-0" />
+              <span>
+                Please post only safe, appropriate tasks.{" "}
+                <a
+                  href="/legal/safety"
+                  target="_blank"
+                  className="text-primary hover:underline font-medium"
+                >
+                  Read our Safety Guidelines
+                </a>
+              </span>
+            </div>
           </motion.div>
 
           {/* Submit Buttons */}

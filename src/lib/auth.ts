@@ -81,15 +81,20 @@ export const authOptions: NextAuthOptions = {
           select: {
             role: true,
             ageBracket: true,
+            accountStatus: true,
+            isVerifiedAdult: true,
             youthProfile: {
               select: {
                 displayName: true,
                 profileVisibility: true,
+                guardianConsent: true,
               },
             },
             employerProfile: {
               select: {
                 companyName: true,
+                eidVerified: true,
+                ageVerified: true,
               },
             },
           },
@@ -98,6 +103,8 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           session.user.role = dbUser.role;
           session.user.ageBracket = dbUser.ageBracket;
+          session.user.accountStatus = dbUser.accountStatus;
+          session.user.isVerifiedAdult = dbUser.isVerifiedAdult;
           session.user.youthProfile = dbUser.youthProfile || null;
           session.user.employerProfile = dbUser.employerProfile || null;
         }

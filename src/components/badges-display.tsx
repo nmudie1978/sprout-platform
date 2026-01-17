@@ -137,6 +137,8 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
       if (!response.ok) throw new Error("Failed to fetch badges");
       return response.json();
     },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes (badges rarely change)
+    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
   });
 
   if (isLoading) {
@@ -157,7 +159,7 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
     ...BADGE_DEFINITIONS[b.type as BadgeType],
   }));
 
-  // For compact mode, just show earned badges
+  // For compact mode, just show earned badges in a minimal format
   if (compact) {
     if (earnedBadges.length === 0) {
       return null; // Don't show anything if no badges in compact mode
@@ -168,30 +170,23 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="border-2 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5" />
-          <CardHeader className="relative pb-2">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20">
-                <Trophy className="h-5 w-5 text-amber-600" />
-              </div>
-              <div>
-                <CardTitle className="text-lg">Achievements</CardTitle>
-                <CardDescription>{earnedBadges.length} badge{earnedBadges.length !== 1 ? 's' : ''} earned</CardDescription>
-              </div>
+        <Card className="border overflow-hidden">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Trophy className="h-4 w-4 text-amber-600" />
+              <span className="text-sm font-medium">Achievements</span>
+              <span className="text-xs text-muted-foreground">({earnedBadges.length})</span>
             </div>
-          </CardHeader>
-          <CardContent className="relative">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               <TooltipProvider>
-                {earnedBadges.slice(0, 6).map((badge: any, index: number) => (
+                {earnedBadges.slice(0, 8).map((badge: any, index: number) => (
                   <Tooltip key={badge.id}>
                     <TooltipTrigger asChild>
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`h-12 w-12 rounded-xl bg-gradient-to-br ${badge.color} flex items-center justify-center text-2xl cursor-pointer shadow-lg hover:scale-110 transition-transform`}
+                        transition={{ delay: index * 0.05 }}
+                        className={`h-8 w-8 rounded-lg bg-gradient-to-br ${badge.color} flex items-center justify-center text-base cursor-pointer shadow hover:scale-110 transition-transform`}
                       >
                         {badge.emoji}
                       </motion.div>
@@ -204,9 +199,9 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
                     </TooltipContent>
                   </Tooltip>
                 ))}
-                {earnedBadges.length > 6 && (
-                  <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center text-sm font-medium">
-                    +{earnedBadges.length - 6}
+                {earnedBadges.length > 8 && (
+                  <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-xs font-medium">
+                    +{earnedBadges.length - 8}
                   </div>
                 )}
               </TooltipProvider>

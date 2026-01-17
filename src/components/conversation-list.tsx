@@ -8,6 +8,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { getAvatarById } from "@/lib/avatars";
 
 interface Conversation {
   id: string;
@@ -16,6 +17,7 @@ interface Conversation {
     name: string;
     avatar?: string;
     logo?: string;
+    role: "YOUTH" | "EMPLOYER";
   };
   job: {
     id: string;
@@ -28,19 +30,8 @@ interface Conversation {
     isFromMe: boolean;
   } | null;
   unreadCount: number;
-  updatedAt: string;
+  lastMessageAt: string;
 }
-
-const avatarOptions: Record<string, string> = {
-  avatar1: "😊",
-  avatar2: "😎",
-  avatar3: "🤓",
-  avatar4: "😄",
-  avatar5: "🙂",
-  avatar6: "🌟",
-  avatar7: "💪",
-  avatar8: "🎯",
-};
 
 export function ConversationList() {
   const { data: conversations, isLoading } = useQuery<Conversation[]>({
@@ -50,6 +41,8 @@ export function ConversationList() {
       if (!response.ok) throw new Error("Failed to fetch conversations");
       return response.json();
     },
+    staleTime: 15 * 1000, // Cache for 15 seconds (messages update more frequently)
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
   if (isLoading) {
@@ -71,7 +64,7 @@ export function ConversationList() {
           <div className="text-4xl mb-4">💬</div>
           <h3 className="font-semibold text-lg mb-2">No conversations yet</h3>
           <p className="text-muted-foreground">
-            Start a conversation by messaging someone about a job
+            Start a conversation by messaging someone
           </p>
         </CardContent>
       </Card>
@@ -108,13 +101,13 @@ export function ConversationList() {
                 )}
               >
                 <div className="flex items-start gap-3">
-                  {/* Avatar */}
+                  {/* Avatar - show based on role */}
                   <div className="flex-shrink-0">
-                    {conversation.otherParty.avatar ? (
+                    {conversation.otherParty.role === "YOUTH" && conversation.otherParty.avatar ? (
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xl">
-                        {avatarOptions[conversation.otherParty.avatar] || "😊"}
+                        {getAvatarById(conversation.otherParty.avatar)?.emoji || "⭐"}
                       </div>
-                    ) : conversation.otherParty.logo ? (
+                    ) : conversation.otherParty.role === "EMPLOYER" ? (
                       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                         <Building2 className="h-5 w-5 text-muted-foreground" />
                       </div>
@@ -128,16 +121,23 @@ export function ConversationList() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span
-                        className={cn(
-                          "font-medium truncate",
-                          conversation.unreadCount > 0 && "font-semibold"
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "font-medium truncate",
+                            conversation.unreadCount > 0 && "font-semibold"
+                          )}
+                        >
+                          {conversation.otherParty.name}
+                        </span>
+                        {conversation.otherParty.role === "EMPLOYER" && (
+                          <Badge variant="secondary" className="text-xs">
+                            Job Poster
+                          </Badge>
                         )}
-                      >
-                        {conversation.otherParty.name}
-                      </span>
+                      </div>
                       <span className="text-xs text-muted-foreground flex-shrink-0">
-                        {formatDistanceToNow(new Date(conversation.updatedAt), {
+                        {formatDistanceToNow(new Date(conversation.lastMessageAt), {
                           addSuffix: true,
                         })}
                       </span>

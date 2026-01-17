@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,14 +9,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Sprout } from "lucide-react";
+import { Sprout, Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
+  const { data: session, status, update } = useSession();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // Handle redirect when session becomes available
+  useEffect(() => {
+    if (redirecting && status === "authenticated" && session?.user?.role) {
+      const destination = session.user.role === "EMPLOYER"
+        ? "/employer/dashboard"
+        : "/dashboard";
+      router.push(destination);
+      router.refresh();
+    }
+  }, [session, status, redirecting, router]);
+
+  // If already authenticated, redirect immediately
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role && !loading) {
+      const destination = session.user.role === "EMPLOYER"
+        ? "/employer/dashboard"
+        : "/dashboard";
+      router.push(destination);
+    }
+  }, [session, status, loading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,22 +62,30 @@ export default function SignInPage() {
           description: "You have successfully signed in.",
         });
 
-        // Wait a moment for session to be fully established
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Trigger session update and set redirecting flag
+        setRedirecting(true);
 
-        // Fetch user data with retry to determine correct dashboard
-        let sessionData = null;
-        for (let i = 0; i < 3; i++) {
-          const response = await fetch("/api/auth/session");
-          sessionData = await response.json();
-          if (sessionData?.user?.role) break;
-          await new Promise(resolve => setTimeout(resolve, 300));
-        }
+        // Force session update - this is key to getting fresh session data
+        await update();
 
-        // Redirect based on role
-        if (sessionData?.user?.role === "EMPLOYER") {
-          window.location.href = "/employer/dashboard";
+        // Give a small delay for the session to propagate
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Fetch fresh session to get role
+        const response = await fetch("/api/auth/session", {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" }
+        });
+        const sessionData = await response.json();
+
+        if (sessionData?.user?.role) {
+          const destination = sessionData.user.role === "EMPLOYER"
+            ? "/employer/dashboard"
+            : "/dashboard";
+          router.push(destination);
+          router.refresh();
         } else {
+          // Fallback: if we still don't have role, do a hard refresh
           window.location.href = "/dashboard";
         }
       }
@@ -64,19 +95,30 @@ export default function SignInPage() {
         description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
+      setRedirecting(false);
     } finally {
       setLoading(false);
     }
   };
 
+  // Show loading state while checking session
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-blue-500/5" />
-      <div className="absolute top-20 -left-4 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-      <div className="absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+      {/* Blobs hidden on mobile for performance */}
+      <div className="hidden sm:block absolute top-20 -left-4 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+      <div className="hidden sm:block absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
 
-      <Card className="w-full max-w-md shadow-2xl border-2 hover-lift">
+      <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
             <Sprout className="h-10 w-10 text-green-600" />
@@ -93,10 +135,13 @@ export default function SignInPage() {
               <Input
                 id="email"
                 type="email"
+                inputMode="email"
+                autoComplete="email"
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-11 sm:h-10"
               />
             </div>
 
@@ -105,14 +150,16 @@ export default function SignInPage() {
               <Input
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="h-11 sm:h-10"
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full h-11 sm:h-10" disabled={loading}>
               {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>

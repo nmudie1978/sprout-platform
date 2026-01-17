@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ const growthConfig = {
   },
 };
 
-export function CareerCard({
+export const CareerCard = memo(function CareerCard({
   career,
   compact = false,
   matchScore,
@@ -268,4 +268,4 @@ export function CareerCard({
       </CardContent>
     </Card>
   );
-}
+});

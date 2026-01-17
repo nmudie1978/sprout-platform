@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { applicationSchema } from "@/lib/validations/job";
+import { canYouthApplyToJobs } from "@/lib/safety";
+import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,6 +12,34 @@ export async function POST(req: NextRequest) {
 
     if (!session || session.user.role !== "YOUTH") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate limit: 20 applications per hour to prevent spam
+    const rateLimit = checkRateLimit(
+      `application:${session.user.id}`,
+      { interval: 3600000, maxRequests: 20 }
+    );
+
+    if (!rateLimit.success) {
+      const response = NextResponse.json(
+        { error: "Too many applications. Please try again later." },
+        { status: 429 }
+      );
+      const headers = getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
+      Object.entries(headers).forEach(([key, value]) => response.headers.set(key, value));
+      return response;
+    }
+
+    // Safety gate: Check if youth can apply to jobs (guardian consent if under 18)
+    const safetyCheck = await canYouthApplyToJobs(session.user.id);
+    if (!safetyCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: safetyCheck.reason || "Not authorized to apply",
+          code: safetyCheck.code,
+        },
+        { status: 403 }
+      );
     }
 
     const body = await req.json();
@@ -124,7 +154,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(applications);
+    const response = NextResponse.json(applications);
+    // Add short cache for applications - user-specific, needs to stay fresh
+    response.headers.set('Cache-Control', 'private, max-age=15, stale-while-revalidate=30');
+    return response;
   } catch (error) {
     console.error("Failed to fetch applications:", error);
     return NextResponse.json(
