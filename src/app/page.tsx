@@ -4,11 +4,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
-  Briefcase,
-  Compass,
-  Users,
-  TrendingUp,
-  Sparkles,
   Sprout,
   Building2,
   UserPlus,
@@ -21,12 +16,12 @@ import {
   Quote,
   Zap,
   Shield,
-  Clock,
   MapPin,
-  Heart,
   GraduationCap,
   Award,
+  Users,
 } from "lucide-react";
+import { PillarCard, PILLARS } from "@/components/pillar-card";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 
@@ -37,17 +32,23 @@ export default function LandingPage() {
     <div className="min-h-screen relative overflow-hidden">
       {/* Multi-layered gradient background */}
       <div className="fixed inset-0 -z-20">
-        {/* Base gradient - warm to cool transition */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-green-50/30 to-emerald-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/30" />
+        {/* Base gradient - warm to cool transition with more color */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50/60 via-emerald-50/40 to-teal-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/30" />
 
-        {/* Secondary gradient overlay - adds depth */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-teal-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-emerald-900/20" />
+        {/* Secondary gradient overlay - adds depth and color */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/30 via-white/30 to-purple-50/20 dark:from-transparent dark:via-slate-800/20 dark:to-emerald-900/20" />
+
+        {/* Left side color accent */}
+        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/40 to-transparent dark:from-green-950/20 dark:to-transparent" />
+
+        {/* Right side color accent */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/30 to-transparent dark:from-emerald-950/20 dark:to-transparent" />
 
         {/* Radial highlight in center-top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/50 via-emerald-50/20 to-transparent dark:from-green-900/20 dark:via-emerald-950/10 dark:to-transparent blur-2xl" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/60 via-emerald-50/30 to-transparent dark:from-green-900/20 dark:via-emerald-950/10 dark:to-transparent blur-2xl" />
 
-        {/* Bottom fade to darker */}
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-slate-100/80 via-slate-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
+        {/* Bottom fade with subtle color */}
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-50/60 via-green-50/30 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
       </div>
 
       {/* Animated Background - Gradient Blobs (hidden on mobile for performance) */}
@@ -73,43 +74,87 @@ export default function LandingPage() {
           animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Subtle grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.04)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        {/* Animated grid - subtle but visible */}
+        <motion.div
+          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.08)_1px,transparent_1px)] bg-[size:40px_40px]"
+          animate={{
+            opacity: [0.4, 0.7, 0.4],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        {/* Secondary offset grid for depth */}
+        <motion.div
+          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"
+          style={{ transform: "translate(20px, 20px)" }}
+          animate={{
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+        />
       </div>
 
-      {/* Floating Bubbles - Visible and animated (hidden on mobile for performance) */}
-      <div className="fixed inset-0 z-20 overflow-hidden pointer-events-none hidden sm:block">
-        {[...Array(12)].map((_, i) => (
+      {/* Floating Bubbles - Subtle, on sides only, behind content (hidden on mobile for performance) */}
+      <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none hidden sm:block">
+        {/* Left side bubbles */}
+        {[...Array(5)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`left-${i}`}
             className="absolute rounded-full"
             style={{
-              width: `${12 + (i % 4) * 8}px`,
-              height: `${12 + (i % 4) * 8}px`,
-              left: `${5 + i * 8}%`,
-              top: `${10 + (i % 5) * 18}%`,
-              background: i % 3 === 0
-                ? "radial-gradient(circle, rgba(34,197,94,0.7) 0%, rgba(34,197,94,0.4) 40%, rgba(34,197,94,0.1) 70%, transparent 100%)"
-                : i % 3 === 1
-                  ? "radial-gradient(circle, rgba(16,185,129,0.7) 0%, rgba(16,185,129,0.4) 40%, rgba(16,185,129,0.1) 70%, transparent 100%)"
-                  : "radial-gradient(circle, rgba(5,150,105,0.6) 0%, rgba(5,150,105,0.3) 40%, rgba(5,150,105,0.1) 70%, transparent 100%)",
-              boxShadow: i % 3 === 0
-                ? "0 0 20px rgba(34,197,94,0.5), inset 0 0 10px rgba(255,255,255,0.3)"
-                : i % 3 === 1
-                  ? "0 0 20px rgba(16,185,129,0.5), inset 0 0 10px rgba(255,255,255,0.3)"
-                  : "0 0 20px rgba(5,150,105,0.4), inset 0 0 10px rgba(255,255,255,0.3)",
+              width: `${6 + (i % 3) * 4}px`,
+              height: `${6 + (i % 3) * 4}px`,
+              left: `${3 + (i % 3) * 4}%`,
+              top: `${12 + i * 18}%`,
+              background: "radial-gradient(circle, rgba(34,197,94,0.5) 0%, rgba(34,197,94,0.2) 50%, transparent 70%)",
+              boxShadow: "0 0 10px rgba(34,197,94,0.25)",
             }}
             animate={{
-              y: [0, -40 - (i % 4) * 15, 0],
-              x: [0, i % 2 === 0 ? 20 : -20, 0],
-              opacity: [0.5, 0.9, 0.5],
-              scale: [1, 1.2, 1],
+              y: [0, -25 - (i % 3) * 10, 0],
+              x: [0, 8 + (i % 2) * 4, 0],
+              opacity: [0.3, 0.5, 0.3],
+              scale: [1, 1.1, 1],
             }}
             transition={{
-              duration: 6 + i * 1.2,
+              duration: 10 + i * 2,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.8,
+              delay: i * 1.5,
+            }}
+          />
+        ))}
+        {/* Right side bubbles */}
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={`right-${i}`}
+            className="absolute rounded-full"
+            style={{
+              width: `${6 + (i % 3) * 4}px`,
+              height: `${6 + (i % 3) * 4}px`,
+              right: `${3 + (i % 3) * 4}%`,
+              top: `${18 + i * 16}%`,
+              background: "radial-gradient(circle, rgba(16,185,129,0.5) 0%, rgba(16,185,129,0.2) 50%, transparent 70%)",
+              boxShadow: "0 0 10px rgba(16,185,129,0.25)",
+            }}
+            animate={{
+              y: [0, -20 - (i % 3) * 8, 0],
+              x: [0, -8 - (i % 2) * 4, 0],
+              opacity: [0.3, 0.5, 0.3],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 11 + i * 1.8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 1.3 + 0.5,
             }}
           />
         ))}
@@ -245,6 +290,36 @@ export default function LandingPage() {
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-600 mb-1">95%</div>
               <div className="text-xs sm:text-sm text-muted-foreground">Completion</div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4 Pillars Section */}
+      <section id="pillars" className="py-16 sm:py-20 md:py-28 scroll-mt-20">
+        <div className="container px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10 sm:mb-14"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 mb-4">
+              <Sprout className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              How Sprout Helps You Grow
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              The 4 Pillars of <span className="text-green-600">Sprout</span>
+            </h2>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+              Everything you need to go from first job to first career - safely, practically, and at your own pace.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
+            {PILLARS.map((pillar, index) => (
+              <PillarCard key={pillar.key} pillar={pillar} index={index} />
+            ))}
           </div>
         </div>
       </section>
@@ -406,82 +481,6 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 md:py-28">
-        <div className="container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Your Journey from <span className="text-green-600">Today&apos;s Jobs</span> to{" "}
-              <span className="text-orange-600">Tomorrow&apos;s Career</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Each step builds on the last. Start with small wins, discover your passions, and watch your future take shape.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {[
-              {
-                icon: Briefcase,
-                title: "Earn",
-                subtitle: "Short-term wins",
-                description: "Start earning today with local micro-jobs. Build confidence and pocket money while discovering what you enjoy.",
-                color: "from-green-500 to-emerald-600",
-                benefits: ["Immediate income", "Flexible hours", "Discover strengths"],
-              },
-              {
-                icon: Compass,
-                title: "Explore",
-                subtitle: "Future possibilities",
-                description: "Turn your job experiences into career clarity. Swipe through career cards to discover paths that match your interests.",
-                color: "from-blue-500 to-cyan-600",
-                benefits: ["30+ career paths", "Match jobs to careers", "Real salary info"],
-              },
-              {
-                icon: Users,
-                title: "Connect",
-                subtitle: "Learn from pros",
-                description: "Bridge the gap between today and tomorrow. Ask real professionals about their careers and build your network.",
-                color: "from-purple-500 to-pink-600",
-                benefits: ["Ask-a-Pro Q&A", "Get 'pokes' from job posters", "Build network early"],
-              },
-              {
-                icon: TrendingUp,
-                title: "Grow",
-                subtitle: "Long-term success",
-                description: "Your verified portfolio of jobs, skills, and connections becomes the foundation of your professional future.",
-                color: "from-orange-500 to-red-600",
-                benefits: ["Verified work history", "Tier badges", "Stand out to job posters"],
-              },
-            ].map((feature, index) => (
-              <Card key={feature.title} className="relative overflow-hidden group hover:shadow-xl transition-all">
-                <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center text-white font-bold text-sm shadow-lg z-10`}>
-                  {index + 1}
-                </div>
-                <CardContent className="pt-8 pb-6">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                    <feature.icon className="h-7 w-7 text-white" />
-                  </div>
-                  <h3 className="font-bold text-xl mb-1">{feature.title}</h3>
-                  <p className={`text-xs font-semibold bg-gradient-to-r ${feature.color} bg-clip-text text-transparent mb-3`}>
-                    {feature.subtitle}
-                  </p>
-                  <p className="text-sm text-muted-foreground mb-4">{feature.description}</p>
-                  <ul className="space-y-2">
-                    {feature.benefits.map((benefit, i) => (
-                      <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </div>
       </section>
