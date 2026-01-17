@@ -18,6 +18,46 @@ import {
   type IntentType,
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { aiRecommendCard } from "@/lib/life-skills";
+
+// Valid Life Skills card keys the AI can recommend
+const LIFE_SKILL_CARD_KEYS = [
+  "FIRST_JOB_ACCEPTED",
+  "FIRST_MESSAGE_TO_ADULT",
+  "ARRIVING_ON_TIME",
+  "RUNNING_LATE",
+  "CLARIFY_THE_TASK",
+  "DECLINING_A_JOB",
+  "PRICE_AND_PAYMENT",
+  "SAFETY_BOUNDARIES",
+  "AFTER_THE_JOB",
+  "WHEN_SOMETHING_FEELS_OFF",
+];
+
+// Life Skills tool definition for OpenAI function calling
+const lifeSkillsTool: OpenAI.Chat.ChatCompletionTool = {
+  type: "function",
+  function: {
+    name: "recommendLifeSkillCard",
+    description: "Recommend a helpful life skill tip to the user when you detect a teachable moment. Use this when the user is discussing job-related situations where a tip would be supportive.",
+    parameters: {
+      type: "object",
+      properties: {
+        cardKey: {
+          type: "string",
+          enum: LIFE_SKILL_CARD_KEYS,
+          description: "The key of the life skill card to recommend",
+        },
+        reason: {
+          type: "string",
+          maxLength: 140,
+          description: "A brief reason why this tip is being recommended (max 140 chars)",
+        },
+      },
+      required: ["cardKey", "reason"],
+    },
+  },
+};
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -140,15 +180,42 @@ export async function POST(req: NextRequest) {
       content: message,
     });
 
-    // Call OpenAI
+    // Check if Life Skills AI is enabled
+    const lifeSkillsAIEnabled = process.env.LIFE_SKILLS_AI_ENABLED === "true";
+    const isYouth = session.user.role === "YOUTH";
+
+    // Call OpenAI with optional Life Skills tool
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and affordable
       messages,
       temperature: 0.7,
       max_tokens: 300, // Keep responses concise
+      ...(lifeSkillsAIEnabled && isYouth && { tools: [lifeSkillsTool] }),
     });
 
-    const assistantMessage = completion.choices[0]?.message?.content || "";
+    let assistantMessage = completion.choices[0]?.message?.content || "";
+    let lifeSkillRecommended: { cardKey: string; reason: string } | null = null;
+
+    // Handle tool calls if any (Life Skills recommendation)
+    const toolCalls = completion.choices[0]?.message?.tool_calls;
+    if (toolCalls && toolCalls.length > 0) {
+      for (const toolCall of toolCalls) {
+        if (toolCall.function.name === "recommendLifeSkillCard") {
+          try {
+            const args = JSON.parse(toolCall.function.arguments);
+            const { cardKey, reason } = args;
+
+            // Call the AI recommend function (validates and creates recommendation)
+            const result = await aiRecommendCard(session.user.id, cardKey, reason);
+            if (result.success) {
+              lifeSkillRecommended = { cardKey, reason };
+            }
+          } catch (toolError) {
+            console.error("Life Skills tool call error:", toolError);
+          }
+        }
+      }
+    }
 
     // Safety check on response
     const safetyCheck = isResponseSafe(assistantMessage);
@@ -176,7 +243,7 @@ export async function POST(req: NextRequest) {
       retrieved_qa: qaItems.length,
     }).catch(() => {}); // Silently catch any logging errors
 
-    // Return response with sources
+    // Return response with sources and optional life skill recommendation
     return NextResponse.json({
       message: assistantMessage,
       intent,
@@ -194,6 +261,7 @@ export async function POST(req: NextRequest) {
           question: q.question,
         })),
       },
+      ...(lifeSkillRecommended && { lifeSkillRecommended }),
     });
   } catch (error: any) {
     // Log the full error for debugging

@@ -14,11 +14,39 @@ enum UserRole {
   YOUTH
   EMPLOYER
   ADMIN
+  COMMUNITY_GUARDIAN
+}
+
+// Authentication provider used for sign-up/login
+enum AuthProvider {
+  EMAIL        // Email + password (legacy/fallback)
+  VIPPS        // Vipps Login (recommended for youth)
+  BANKID       // BankID verification (required for adults)
+}
+
+// Youth age bands - expanded to include under 16
+enum YouthAgeBand {
+  UNDER_SIXTEEN      // Under 16 (restricted job types)
+  SIXTEEN_SEVENTEEN  // 16-17 (most jobs, guardian consent required)
+  EIGHTEEN_TWENTY    // 18-20 (adult, no consent needed)
 }
 
 enum AgeBracket {
   SIXTEEN_SEVENTEEN
   EIGHTEEN_TWENTY
+}
+
+// Payment methods for informational agreements (NO money through platform)
+enum PaymentMethod {
+  VIPPS          // Vipps mobile payment
+  CASH           // Cash payment
+  BANK_TRANSFER  // Bank transfer
+}
+
+// Payment agreement status (informational only - no transactions)
+enum PaymentAgreementStatus {
+  AGREED       // Both parties agreed on terms
+  MARKED_PAID  // One party marked as paid (informational)
 }
 
 enum JobStatus {
@@ -76,6 +104,21 @@ enum ReportStatus {
   DISMISSED
 }
 
+// Community Guardian Report system
+enum CommunityReportTargetType {
+  JOB_POST
+  USER
+}
+
+enum CommunityReportStatus {
+  OPEN
+  UNDER_REVIEW
+  ACTION_TAKEN
+  ESCALATED
+  RESOLVED
+  DISMISSED
+}
+
 enum AvailabilityStatus {
   AVAILABLE
   BUSY
@@ -89,16 +132,54 @@ enum PokeStatus {
   DECLINED
 }
 
+// Account status for safety controls
+enum AccountStatus {
+  ONBOARDING           // Just signed up, needs to complete setup
+  PENDING_VERIFICATION // Youth: awaiting guardian consent, Employer: awaiting EID
+  ACTIVE               // Fully verified and active
+  SUSPENDED            // Temporarily suspended (can be reinstated)
+  BANNED               // Permanently banned
+}
+
 model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  password      String?     // Hashed password (nullable for migration)
+  id            String        @id @default(cuid())
+  email         String        @unique
+  password      String?       // Hashed password (nullable for OAuth/Vipps users)
   emailVerified DateTime?
-  role          UserRole    @default(YOUTH)
+  role          UserRole      @default(YOUTH)
   ageBracket    AgeBracket?
+  dateOfBirth   DateTime?     // For age verification (all users)
   location      String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  doNotDisturb  Boolean       @default(false) // Prevents new conversations
+  accountStatus AccountStatus @default(ONBOARDING) // Safety status
+  suspendedAt   DateTime?     // When account was suspended/banned
+  suspensionReason String?    @db.Text // Why account was suspended/banned
+
+  // ============================================
+  // SAFETY: Authentication & Identity Fields
+  // ============================================
+  authProvider      AuthProvider  @default(EMAIL)     // How user signed up
+  fullName          String?       // Full legal name from Vipps/BankID
+  phoneNumber       String?       // Phone number (from Vipps or manual)
+  phoneVerified     Boolean       @default(false)     // Phone verified via Vipps/SMS
+  phoneVerifiedAt   DateTime?
+
+  // Adult verification (REQUIRED for adults to contact youth)
+  isVerifiedAdult   Boolean       @default(false)     // BankID verified adult
+  verificationProvider String?    // 'BANKID' | 'VIPPS' (for audit)
+  verifiedAt        DateTime?     // When identity was verified
+
+  // Youth age band (more granular than AgeBracket)
+  youthAgeBand      YouthAgeBand? // UNDER_SIXTEEN, SIXTEEN_SEVENTEEN, EIGHTEEN_TWENTY
+
+  // Community Guardian moderation (soft freeze)
+  isPaused      Boolean       @default(false)
+  pausedAt      DateTime?
+  pausedReason  String?       @db.Text
+  pausedById    String?       // Who paused this user (guardian or admin)
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   // Relations
   youthProfile    YouthProfile?
@@ -123,10 +204,10 @@ model User {
   recommendationsReceived  Recommendation[] @relation("RecommendationsReceived")
   recommendationsForEmployer Recommendation[] @relation("RecommendationsForEmployer")
 
-  // Messaging
-  employerConversations Conversation[] @relation("EmployerConversations")
-  youthConversations    Conversation[] @relation("YouthConversations")
-  messagesSent          Message[]      @relation("MessagesSent")
+  // Messaging (universal - any user can message any user)
+  conversationsAsParticipant1 Conversation[] @relation("ConversationParticipant1")
+  conversationsAsParticipant2 Conversation[] @relation("ConversationParticipant2")
+  messagesSent                Message[]      @relation("MessagesSent")
 
   // Favorites and Notes
   favoriteWorkers       FavoriteWorker[] @relation("EmployerFavorites")
@@ -137,8 +218,32 @@ model User {
   // Job Templates
   jobTemplates          JobTemplate[]
 
+  // Community Guardian system
+  guardianAssignments   CommunityGuardian[] @relation("GuardianUser")
+  communityReports      CommunityReport[]   @relation("CommunityReporter")
+  assignedReports       CommunityReport[]   @relation("AssignedGuardian")
+
+  // Safety messaging (Phase 1)
+  blocksMade            UserBlock[]            @relation("BlocksMade")
+  blocksReceived        UserBlock[]            @relation("BlocksReceived")
+  conversationReportsMade     ConversationReport[] @relation("ReportsMade")
+  conversationReportsReceived ConversationReport[] @relation("ReportsReceived")
+
+  // Payment agreements (informational only - NO transactions)
+  paymentAgreementsMarked PaymentAgreement[] @relation("PaymentMarkedBy")
+
+  // Life Skills Track
+  lifeSkillEvents          LifeSkillEvent[]
+  lifeSkillRecommendations LifeSkillRecommendation[]
+  lifeSkillViews           LifeSkillView[]
+  preferences              UserPreferences?
+
   @@index([email])
   @@index([role])
+  @@index([accountStatus])
+  @@index([isPaused])
+  @@index([isVerifiedAdult])
+  @@index([authProvider])
 }
 
 model Account {
@@ -197,8 +302,15 @@ model YouthProfile {
   reliabilityScore   Int                @default(0) // 0-100
   careerAspiration   String?            // e.g., "I want to be a software developer"
 
-  guardianEmail   String?
-  guardianConsent Boolean @default(false)
+  // Guardian consent (required for under-18)
+  guardianEmail     String?
+  guardianConsent   Boolean   @default(false)
+  guardianConsentAt DateTime? // When consent was given
+  guardianToken     String?   @unique // Token for guardian consent link
+
+  // Phone verification
+  phoneVerified     Boolean   @default(false)
+  phoneVerifiedAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -208,6 +320,7 @@ model YouthProfile {
   @@index([userId])
   @@index([publicProfileSlug])
   @@index([availabilityStatus])
+  @@index([guardianToken])
 }
 
 model EmployerProfile {
@@ -219,8 +332,16 @@ model EmployerProfile {
   bio            String?  @db.Text // About the company
   website        String?
   verified       Boolean  @default(false)
-  ageVerified    Boolean  @default(false) // Age verification (18+)
-  dateOfBirth    DateTime? // For age verification
+
+  // Age verification (must be 18+ to hire minors)
+  ageVerified    Boolean   @default(false)
+  dateOfBirth    DateTime? // Deprecated: use User.dateOfBirth instead
+
+  // EID (Norwegian BankID/Vipps) verification
+  eidVerified    Boolean   @default(false)
+  eidVerifiedAt  DateTime?
+  eidProvider    String?   // e.g., "bankid", "vipps" (for future use)
+
   averageRating  Float?
   totalReviews   Int      @default(0)
   createdAt      DateTime @default(now())
@@ -229,6 +350,7 @@ model EmployerProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([eidVerified])
 }
 
 model MicroJob {
@@ -250,9 +372,23 @@ model MicroJob {
   requiredTraits String[] // e.g., "reliable", "friendly"
   images      String[]    // Array of job photo URLs (Supabase Storage)
   applicationDeadline DateTime? // Deadline for applications
+  displayOrder Int?       // Custom display order for employer dashboard (lower = higher priority)
+
+  // Norwegian labor law compliance fields
+  eligibleAgeGroups String[] @default([]) // Which age groups can apply: "15-17", "18-20"
+
+  // Community Guardian moderation
+  isPaused     Boolean   @default(false) // Soft freeze by guardian
+  pausedAt     DateTime?
+  pausedReason String?   @db.Text
+  pausedById   String?   // Who paused it (guardian or admin)
+
+  // Optional community association (derived from location if not set)
+  communityId  String?
 
   postedById  String
   postedBy    User        @relation(fields: [postedById], references: [id])
+  community   Community?  @relation(fields: [communityId], references: [id])
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -270,6 +406,9 @@ model MicroJob {
   @@index([location])
   @@index([dateTime])
   @@index([applicationDeadline])
+  @@index([displayOrder])
+  @@index([communityId])
+  @@index([isPaused])
 }
 
 model Application {
@@ -471,6 +610,16 @@ enum NotificationType {
   NEW_RECOMMENDATION
   NEW_MESSAGE
   SYSTEM
+  // Safety & verification
+  GUARDIAN_CONSENT_REQUESTED  // Sent to youth when guardian consent email is sent
+  GUARDIAN_CONSENT_RECEIVED   // Sent to youth when guardian gives consent
+  ACCOUNT_VERIFIED            // Account fully verified and active
+  ACCOUNT_SUSPENDED           // Account suspended
+  VERIFICATION_REMINDER       // Reminder to complete verification
+  // Community Guardian
+  COMMUNITY_REPORT_RECEIVED   // Guardian receives new report
+  COMMUNITY_ACTION_TAKEN      // User notified of guardian action (post/account paused)
+  REPORT_ESCALATED            // Admin notified of escalation
 }
 
 enum RecommendationStatus {
@@ -581,39 +730,195 @@ model Recommendation {
   @@index([employerId])
 }
 
-// Conversations for messaging between employers and youth
+// Conversation status for safety controls
+enum ConversationStatus {
+  ACTIVE        // Normal active conversation
+  FROZEN        // Frozen due to report - no new messages allowed
+  CLOSED        // Conversation ended normally
+}
+
+// Conversations for messaging between any users (universal messaging)
+// Phase 1 Safety: Conversations must be job-related and use structured messages
 model Conversation {
-  id            String    @id @default(cuid())
-  employerId    String
-  youthId       String
-  jobId         String?   // Optional: conversation about a specific job
-  lastMessageAt DateTime  @default(now())
-  createdAt     DateTime  @default(now())
+  id             String             @id @default(cuid())
+  participant1Id String             // First participant (any user - smaller ID for normalization)
+  participant2Id String             // Second participant (any user - larger ID for normalization)
+  jobId          String             // REQUIRED: conversation must be tied to a job (Phase 1 Safety)
+  status         ConversationStatus @default(ACTIVE) // Safety status
+  frozenAt       DateTime?          // When conversation was frozen
+  frozenReason   String?            @db.Text // Why it was frozen
+  lastMessageAt  DateTime           @default(now())
+  createdAt      DateTime           @default(now())
 
-  employer User      @relation("EmployerConversations", fields: [employerId], references: [id], onDelete: Cascade)
-  youth    User      @relation("YouthConversations", fields: [youthId], references: [id], onDelete: Cascade)
-  job      MicroJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
-  messages Message[]
+  participant1 User               @relation("ConversationParticipant1", fields: [participant1Id], references: [id], onDelete: Cascade)
+  participant2 User               @relation("ConversationParticipant2", fields: [participant2Id], references: [id], onDelete: Cascade)
+  job          MicroJob           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  messages     Message[]
+  reports      ConversationReport[]
+  paymentAgreement PaymentAgreement? // Informational payment agreement
 
-  @@unique([employerId, youthId, jobId])
-  @@index([employerId])
-  @@index([youthId])
+  @@unique([participant1Id, participant2Id, jobId])
+  @@index([participant1Id])
+  @@index([participant2Id])
+  @@index([jobId])
+  @@index([status])
   @@index([lastMessageAt])
 }
 
+// ============================================
+// PAYMENT AGREEMENT (INFORMATIONAL ONLY - NO TRANSACTIONS)
+// ============================================
+// This table records agreed payment terms ONLY.
+// NO money moves through the platform.
+// Payments happen externally (Vipps, cash, bank transfer).
+// This is for transparency and dispute prevention only.
+
+model PaymentAgreement {
+  id             String                 @id @default(cuid())
+  conversationId String                 @unique // One agreement per conversation
+  paymentMethod  PaymentMethod          // VIPPS, CASH, BANK_TRANSFER
+  agreedAmount   Float?                 // Optional: agreed amount in NOK
+  currency       String                 @default("NOK") // Always NOK for Norway
+  status         PaymentAgreementStatus @default(AGREED)
+
+  // Tracking (informational only)
+  markedPaidById String?                // User who marked as paid (optional)
+  markedPaidAt   DateTime?              // When marked as paid
+  notes          String?                @db.VarChar(200) // Short note (max 200 chars)
+
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  conversation   Conversation           @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  markedPaidBy   User?                  @relation("PaymentMarkedBy", fields: [markedPaidById], references: [id])
+
+  @@index([conversationId])
+  @@index([status])
+}
+
+// Message template direction - who can use this template
+enum MessageTemplateDirection {
+  ANY              // Either party can use
+  ADULT_TO_YOUTH   // Only adults/employers can send to youth
+  YOUTH_TO_ADULT   // Only youth can send to adults/employers
+}
+
+// Message templates for structured messaging (Phase 1 Safety)
+// No free-text allowed - messages must use approved templates
+model MessageTemplate {
+  id            String                   @id @default(cuid())
+  key           String                   @unique // e.g., "ASK_AVAILABILITY"
+  label         String                   // Shown in UI
+  description   String?                  // Help text for users
+  allowedFields Json                     // Structured input fields
+  direction     MessageTemplateDirection @default(ANY)
+  isActive      Boolean                  @default(true)
+  category      String?                  // Group templates (e.g., "scheduling", "payment")
+  sortOrder     Int                      @default(0)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+
+  messages Message[]
+
+  @@index([key])
+  @@index([isActive])
+  @@index([direction])
+  @@index([category])
+}
+
+// Messages - Phase 1 Safety: Only structured messages via templates
+// IMPORTANT: Free-text messaging is DISABLED for safety.
+// All new messages MUST use templates (enforced at API level).
 model Message {
   id             String   @id @default(cuid())
   conversationId String
   senderId       String
-  content        String   @db.Text
+
+  // Structured messaging (REQUIRED for all new messages)
+  templateId     String?  // Template used (nullable for legacy messages only)
+  payload        Json?    // Validated fields from template
+  renderedText   String?  @db.Text // Server-generated safe text
+
+  // Legacy field - DO NOT USE for new messages
+  // Kept for backward compatibility with existing data
+  content        String?  @db.Text // @deprecated - use templateId + payload instead
+
   read           Boolean  @default(false)
   createdAt      DateTime @default(now())
 
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender       User         @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  conversation Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User             @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  template     MessageTemplate? @relation(fields: [templateId], references: [id])
 
   @@index([conversationId])
   @@index([senderId])
+  @@index([templateId])
+  @@index([createdAt])
+}
+
+// User blocks - prevents messaging and conversation creation
+model UserBlock {
+  id         String   @id @default(cuid())
+  blockerId  String   // User who created the block
+  blockedId  String   // User who is blocked
+  reason     String?  @db.Text // Optional reason (private)
+  createdAt  DateTime @default(now())
+
+  blocker User @relation("BlocksMade", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+// Conversation report categories (Phase 1 Safety)
+enum ConversationReportCategory {
+  GROOMING          // Predatory behavior
+  SEXUAL_CONTENT    // Inappropriate sexual content
+  OFF_PLATFORM      // Attempting to move off platform
+  HARASSMENT        // Bullying or harassment
+  INAPPROPRIATE_JOB // Job posting is inappropriate for minors
+  OTHER             // Other safety concern
+}
+
+// Conversation report status
+enum ConversationReportStatus {
+  OPEN        // New report, not yet reviewed
+  IN_REVIEW   // Being reviewed by admin/guardian
+  RESOLVED    // Action taken and resolved
+  DISMISSED   // Reviewed but no action needed
+}
+
+// Conversation reports - safety reporting system
+// On insert: auto-freezes the conversation
+model ConversationReport {
+  id             String                     @id @default(cuid())
+  reporterId     String                     // User who made the report
+  reportedId     String                     // User being reported
+  conversationId String                     // Conversation where issue occurred
+  category       ConversationReportCategory
+  details        String?                    @db.VarChar(500) // Short details (max 500 chars)
+  status         ConversationReportStatus   @default(OPEN)
+
+  // Review tracking
+  reviewerId     String?                    // Admin/Guardian who reviewed
+  reviewerNote   String?                    @db.Text // Internal note
+  reviewedAt     DateTime?
+  actionTaken    String?                    // What action was taken
+
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
+
+  reporter     User         @relation("ReportsMade", fields: [reporterId], references: [id], onDelete: Cascade)
+  reported     User         @relation("ReportsReceived", fields: [reportedId], references: [id], onDelete: Cascade)
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([reportedId])
+  @@index([conversationId])
+  @@index([status])
+  @@index([category])
   @@index([createdAt])
 }
 
@@ -673,4 +978,318 @@ model JobTemplate {
 
   @@index([employerId])
   @@index([usageCount])
+}
+
+// Audit log for safety-critical actions (GDPR compliance)
+enum AuditAction {
+  // Account lifecycle
+  ACCOUNT_CREATED
+  ACCOUNT_VERIFIED
+  ACCOUNT_SUSPENDED
+  ACCOUNT_BANNED
+  ACCOUNT_REINSTATED
+  ACCOUNT_DELETED
+  // Consent
+  GUARDIAN_CONSENT_REQUESTED
+  GUARDIAN_CONSENT_GRANTED
+  GUARDIAN_CONSENT_REVOKED
+  TERMS_ACCEPTED
+  PRIVACY_CONSENT_GRANTED
+  // Verification
+  EID_VERIFICATION_STARTED
+  EID_VERIFICATION_COMPLETED
+  EID_VERIFICATION_FAILED
+  AGE_VERIFIED
+  EMAIL_VERIFIED
+  PHONE_VERIFIED
+  // Data access
+  DATA_EXPORT_REQUESTED
+  DATA_EXPORT_COMPLETED
+  DATA_DELETION_REQUESTED
+  DATA_DELETION_COMPLETED
+  // Safety actions
+  USER_REPORTED
+  CONTENT_MODERATED
+  MESSAGE_FLAGGED
+  // Community Guardian actions
+  COMMUNITY_REPORT_CREATED
+  COMMUNITY_REPORT_CLAIMED
+  COMMUNITY_REPORT_ESCALATED
+  COMMUNITY_REPORT_RESOLVED
+  JOB_PAUSED
+  JOB_UNPAUSED
+  USER_PAUSED
+  USER_UNPAUSED
+  GUARDIAN_ASSIGNED
+  GUARDIAN_DEACTIVATED
+  // Safety messaging actions (Phase 1)
+  CONVERSATION_CREATED
+  CONVERSATION_FROZEN
+  CONVERSATION_UNFROZEN
+  CONVERSATION_CLOSED
+  STRUCTURED_MESSAGE_SENT
+  USER_BLOCKED
+  USER_UNBLOCKED
+  CONVERSATION_REPORTED
+  REPORT_REVIEWED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  userId      String?     // User who performed or is subject of action
+  actorId     String?     // Admin/system who performed action (if different)
+  action      AuditAction
+  targetType  String?     // e.g., "user", "job", "message"
+  targetId    String?     // ID of affected resource
+  metadata    Json?       // Additional context (IP, reason, etc.)
+  ipAddress   String?     // For security auditing
+  userAgent   String?     // For security auditing
+  createdAt   DateTime    @default(now())
+
+  @@index([userId])
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([targetType, targetId])
+}
+
+// Consent records (GDPR Article 7)
+model ConsentRecord {
+  id          String   @id @default(cuid())
+  userId      String
+  consentType String   // e.g., "terms", "privacy", "marketing", "guardian"
+  version     String   // Version of terms/policy consented to
+  granted     Boolean  @default(true)
+  grantedAt   DateTime @default(now())
+  revokedAt   DateTime?
+  ipAddress   String?
+  userAgent   String?
+
+  @@index([userId])
+  @@index([consentType])
+  @@index([grantedAt])
+}
+
+// Legal acceptance records for Terms of Service and Privacy Policy
+// Required at sign-up and tracked for compliance
+model LegalAcceptance {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  acceptedTermsAt    DateTime
+  acceptedPrivacyAt  DateTime
+  termsVersion       String   @default("v1")
+  privacyVersion     String   @default("v1")
+  ipAddress          String?
+  userAgent          String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ============================================
+// COMMUNITY GUARDIAN SYSTEM (Optional Safety Layer)
+// ============================================
+
+// Community - represents a local area/group
+model Community {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "Oslo Central", "Bergen North"
+  description String?  @db.Text
+  location    String?  // General location/area
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  guardians   CommunityGuardian[]
+  reports     CommunityReport[]
+  jobs        MicroJob[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+// CommunityGuardian - assigns a user as guardian for a community
+// A community may have 0 or 1 active guardian (for MVP)
+model CommunityGuardian {
+  id              String   @id @default(cuid())
+  communityId     String
+  guardianUserId  String
+  isActive        Boolean  @default(true)
+  assignedAt      DateTime @default(now())
+  deactivatedAt   DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  community       Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  guardian        User      @relation("GuardianUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, guardianUserId])
+  @@index([guardianUserId])
+  @@index([communityId])
+  @@index([isActive])
+}
+
+// CommunityReport - reports submitted for community guardian review
+// Reports work even if no guardian exists (visible to admins)
+model CommunityReport {
+  id                      String                   @id @default(cuid())
+  communityId             String
+  reporterUserId          String
+  targetType              CommunityReportTargetType
+  targetId                String                   // Job ID or User ID
+  reason                  String                   // Short reason code
+  details                 String?                  @db.Text // Optional additional details
+  status                  CommunityReportStatus    @default(OPEN)
+
+  // Guardian handling
+  assignedGuardianUserId  String?                  // Guardian who claimed this report
+  guardianNote            String?                  @db.Text
+  escalatedToAdmin        Boolean                  @default(false)
+
+  // Action tracking
+  actionTaken             String?                  // What action was taken (e.g., "paused_post")
+  actionTakenAt           DateTime?
+
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+
+  // Relations
+  community               Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  reporter                User      @relation("CommunityReporter", fields: [reporterUserId], references: [id], onDelete: Cascade)
+  assignedGuardian        User?     @relation("AssignedGuardian", fields: [assignedGuardianUserId], references: [id])
+
+  @@index([communityId, status])
+  @@index([reporterUserId])
+  @@index([targetType, targetId])
+  @@index([assignedGuardianUserId])
+  @@index([status])
+}
+
+// ============================================
+// LIFE SKILLS TRACK (Contextual Micro-Guidance)
+// ============================================
+
+// Audience for life skill cards
+enum LifeSkillAudience {
+  YOUTH
+}
+
+// Source of recommendation (rules-based or AI)
+enum LifeSkillRecommendationSource {
+  RULES
+  AI
+}
+
+// View status for life skill cards
+enum LifeSkillViewStatus {
+  SHOWN
+  DISMISSED
+  SAVED
+}
+
+// Life Skill Cards - approved micro-guidance content
+// Only 10 cards in v1, strictly controlled content
+model LifeSkillCard {
+  id        String            @id @default(cuid())
+  key       String            @unique // e.g., "FIRST_JOB_ACCEPTED"
+  title     String            // Short title
+  body      String            @db.Text // 2-5 sentences of guidance
+  tags      String[]          // e.g., ['communication', 'boundaries']
+  audience  LifeSkillAudience @default(YOUTH)
+  isActive  Boolean           @default(true)
+  version   String            @default("v1")
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  // Relations
+  recommendations LifeSkillRecommendation[]
+  views           LifeSkillView[]
+
+  @@index([key])
+  @@index([isActive])
+  @@index([audience])
+}
+
+// Life Skill Events - tracks when trigger events occur
+// Used for analytics, idempotency, and linking recommendations
+model LifeSkillEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  eventType String   // e.g., "JOB_ACCEPTED", "MESSAGE_SENT_FIRST"
+  entityId  String?  // Optional: jobId, conversationId, etc.
+  metadata  Json?    // Minimal metadata (no sensitive content)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user            User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recommendation  LifeSkillRecommendation?
+
+  @@unique([userId, eventType, entityId]) // Prevent duplicate events
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// Life Skill Recommendations - links events to card recommendations
+// One recommendation per event
+model LifeSkillRecommendation {
+  id       String                         @id @default(cuid())
+  userId   String
+  eventId  String                         @unique // One recommendation per event
+  cardId   String
+  source   LifeSkillRecommendationSource  @default(RULES)
+  reason   String?                        @db.VarChar(140) // Short reason (<= 140 chars)
+  createdAt DateTime                      @default(now())
+
+  // Relations
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event LifeSkillEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  card  LifeSkillCard  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  views LifeSkillView[]
+
+  @@index([userId])
+  @@index([cardId])
+  @@index([source])
+  @@index([createdAt])
+}
+
+// Life Skill Views - tracks user interactions with cards
+model LifeSkillView {
+  id               String              @id @default(cuid())
+  userId           String
+  cardId           String
+  recommendationId String?             // Optional: linked recommendation
+  status           LifeSkillViewStatus @default(SHOWN)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  // Relations
+  user           User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card           LifeSkillCard            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  recommendation LifeSkillRecommendation? @relation(fields: [recommendationId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, cardId, recommendationId]) // One view per card per recommendation
+  @@index([userId])
+  @@index([cardId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// User Preferences - stores user settings
+model UserPreferences {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  showLifeSkills  Boolean  @default(true) // Toggle for life skills tips
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

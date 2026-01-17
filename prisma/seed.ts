@@ -1,12 +1,564 @@
-import { PrismaClient, JobCategory, PayType } from '@prisma/client';
+import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience } from '@prisma/client';
 
 // Use direct connection for seeding (not pooled connection)
 process.env.DATABASE_URL = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
 const prisma = new PrismaClient();
 
+// ============================================
+// LIFE SKILLS CARDS - Contextual Micro-Guidance
+// Version 1.0 - Approved content only
+// ============================================
+const lifeSkillCards = [
+  {
+    key: 'FIRST_JOB_ACCEPTED',
+    title: 'Your first job',
+    body: "Congratulations! You're about to earn your first income. A few things help: confirm the time and place in writing, arrive 5 minutes early, and if anything is unclear—just ask. Employers appreciate questions more than mistakes.",
+    tags: ['first-time', 'preparation', 'communication'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'FIRST_MESSAGE_TO_ADULT',
+    title: 'Keep it simple',
+    body: "When messaging an employer, be polite and to the point. Start with a greeting, state your question or confirmation clearly, and sign off with your name. You don't need to be formal—just respectful.",
+    tags: ['communication', 'messaging', 'first-time'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'ARRIVING_ON_TIME',
+    title: 'Being on time',
+    body: "Punctuality builds trust. Plan to arrive 5–10 minutes before the agreed time. If you're using public transport, check the route the night before. Being early shows you take the job seriously.",
+    tags: ['punctuality', 'preparation', 'reliability'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'RUNNING_LATE',
+    title: "If you're running late",
+    body: "Things happen! If you're going to be late, send a message as soon as you know—don't wait. Say when you expect to arrive. Most people are understanding if you communicate early.",
+    tags: ['communication', 'punctuality', 'problem-solving'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'CLARIFY_THE_TASK',
+    title: "Agree what 'done' means",
+    body: "Before you start, make sure you and the employer agree on what a finished job looks like. 'Clean the garden' can mean many things. A quick check at the start avoids confusion later.",
+    tags: ['communication', 'expectations', 'preparation'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'DECLINING_A_JOB',
+    title: 'Saying no politely',
+    body: "It's OK to decline a job if it doesn't suit you. A short, polite message works best: 'Thanks for the offer, but I'm not available for this one.' You don't need to over-explain.",
+    tags: ['communication', 'boundaries', 'professionalism'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'PRICE_AND_PAYMENT',
+    title: 'Money talk (no stress)',
+    body: "If the pay wasn't clear upfront, it's fine to ask politely before starting: 'Just to confirm, is the pay [amount] as listed?' Most payment is via Vipps after the job. Never feel awkward checking.",
+    tags: ['payment', 'communication', 'expectations'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'SAFETY_BOUNDARIES',
+    title: 'Your boundaries matter',
+    body: "You never have to do something that feels unsafe. If a job turns out to be different from what was described—or someone asks you to do something you're uncomfortable with—it's OK to leave and tell an adult you trust.",
+    tags: ['safety', 'boundaries', 'wellbeing'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'AFTER_THE_JOB',
+    title: 'Wrap up well',
+    body: "When you finish, let the employer know and ask if there's anything else they'd like. A quick 'Thanks for having me!' leaves a good impression—and might lead to more work.",
+    tags: ['communication', 'professionalism', 'follow-up'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+  {
+    key: 'WHEN_SOMETHING_FEELS_OFF',
+    title: 'Trust your gut',
+    body: "If something about a job or a person doesn't feel right, pay attention to that feeling. You can always leave, and you can always talk to a parent, guardian, or use the report feature in the app.",
+    tags: ['safety', 'wellbeing', 'boundaries'],
+    audience: LifeSkillAudience.YOUTH,
+    version: 'v1',
+  },
+];
+
+// ============================================
+// MESSAGE TEMPLATES FOR SAFETY MESSAGING
+// Phase 1: No free-text allowed
+// ============================================
+const messageTemplates = [
+  // Scheduling category
+  {
+    key: 'ASK_AVAILABILITY',
+    label: 'Ask About Availability',
+    description: 'Ask if the other person is available for the job',
+    category: 'scheduling',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 1,
+    allowedFields: {
+      fields: [
+        { name: 'date', type: 'date', required: false, label: 'Preferred Date' },
+        {
+          name: 'time_window',
+          type: 'select',
+          options: ['Morning (8-12)', 'Afternoon (12-17)', 'Evening (17-21)', 'Flexible'],
+          required: false,
+          label: 'Preferred Time',
+        },
+      ],
+      renderTemplate: 'Are you available{date ? ` on ${date}` : \'\'}{time_window ? ` in the ${time_window}` : \'\'}?',
+    },
+  },
+  {
+    key: 'CONFIRM_AVAILABILITY',
+    label: 'Confirm Availability',
+    description: 'Confirm that you are available',
+    category: 'scheduling',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 2,
+    allowedFields: {
+      fields: [
+        { name: 'date', type: 'date', required: false, label: 'Date' },
+        {
+          name: 'time_window',
+          type: 'select',
+          options: ['Morning (8-12)', 'Afternoon (12-17)', 'Evening (17-21)', 'All day'],
+          required: false,
+          label: 'Available Time',
+        },
+      ],
+      renderTemplate: '[Confirmed] Yes, I am available{date ? ` on ${date}` : \'\'}{time_window ? ` (${time_window})` : \'\'}.',
+    },
+  },
+  {
+    key: 'CONFIRM_HOURS',
+    label: 'Confirm Working Hours',
+    description: 'Confirm the specific working hours',
+    category: 'scheduling',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 3,
+    allowedFields: {
+      fields: [
+        { name: 'start_time', type: 'time', required: true, label: 'Start Time' },
+        { name: 'end_time', type: 'time', required: true, label: 'End Time' },
+        { name: 'date', type: 'date', required: false, label: 'Date' },
+      ],
+      renderTemplate: '[Hours Confirmed] Working from {start_time} to {end_time}{date ? ` on ${date}` : \'\'}.',
+    },
+  },
+
+  // Location category
+  {
+    key: 'CONFIRM_LOCATION',
+    label: 'Confirm Location',
+    description: 'Confirm where the job will take place',
+    category: 'location',
+    direction: MessageTemplateDirection.ADULT_TO_YOUTH,
+    sortOrder: 10,
+    allowedFields: {
+      fields: [
+        {
+          name: 'location_type',
+          type: 'select',
+          options: ['My home', 'Public place', 'Business premises', 'Outdoor area'],
+          required: true,
+          label: 'Location Type',
+        },
+        {
+          name: 'general_area',
+          type: 'text',
+          maxLength: 60,
+          required: false,
+          label: 'General Area (e.g., Frogner, City Center)',
+        },
+      ],
+      renderTemplate: '[Location] The job will be at {location_type}{general_area ? ` in the ${general_area} area` : \'\'}. Full address will be shared closer to the date.',
+    },
+  },
+  {
+    key: 'ASK_LOCATION',
+    label: 'Ask About Location',
+    description: 'Ask where the job will take place',
+    category: 'location',
+    direction: MessageTemplateDirection.YOUTH_TO_ADULT,
+    sortOrder: 11,
+    allowedFields: {
+      fields: [
+        {
+          name: 'question_type',
+          type: 'select',
+          options: ['What area is the job in?', 'Is this at your home or a public place?', 'How will I get the address?'],
+          required: true,
+          label: 'Question',
+        },
+      ],
+      renderTemplate: '[Location Question] {question_type}',
+    },
+  },
+
+  // Payment category
+  {
+    key: 'CONFIRM_PAYMENT',
+    label: 'Confirm Payment Details',
+    description: 'Confirm payment method and amount',
+    category: 'payment',
+    direction: MessageTemplateDirection.ADULT_TO_YOUTH,
+    sortOrder: 20,
+    allowedFields: {
+      fields: [
+        {
+          name: 'method',
+          type: 'select',
+          options: ['Vipps', 'Bank transfer', 'Cash'],
+          required: true,
+          label: 'Payment Method',
+        },
+        {
+          name: 'amount',
+          type: 'number',
+          min: 0,
+          max: 10000,
+          required: false,
+          label: 'Amount (NOK)',
+        },
+        {
+          name: 'when',
+          type: 'select',
+          options: ['After job completion', 'Same day', 'Within 3 days'],
+          required: false,
+          label: 'Payment Timing',
+        },
+      ],
+      renderTemplate: '[Payment Confirmed] Payment will be via {method}{amount ? ` (${amount} NOK)` : \'\'}{when ? `, ${when}` : \'\'}.',
+    },
+  },
+  {
+    key: 'ASK_PAYMENT',
+    label: 'Ask About Payment',
+    description: 'Ask about payment details',
+    category: 'payment',
+    direction: MessageTemplateDirection.YOUTH_TO_ADULT,
+    sortOrder: 21,
+    allowedFields: {
+      fields: [
+        {
+          name: 'question',
+          type: 'select',
+          options: [
+            'How will I be paid?',
+            'When will I receive payment?',
+            'Can you confirm the agreed amount?',
+          ],
+          required: true,
+          label: 'Question',
+        },
+      ],
+      renderTemplate: '[Payment Question] {question}',
+    },
+  },
+
+  // Job details category
+  {
+    key: 'ASK_JOB_DETAILS',
+    label: 'Ask for More Details',
+    description: 'Request more information about the job',
+    category: 'job_details',
+    direction: MessageTemplateDirection.YOUTH_TO_ADULT,
+    sortOrder: 30,
+    allowedFields: {
+      fields: [
+        {
+          name: 'topic',
+          type: 'select',
+          options: [
+            'What tasks will I be doing?',
+            'What tools/equipment do I need to bring?',
+            'Is there a dress code?',
+            'How many people will be there?',
+            'Will there be other workers?',
+          ],
+          required: true,
+          label: 'What would you like to know?',
+        },
+      ],
+      renderTemplate: '[Question] {topic}',
+    },
+  },
+  {
+    key: 'PROVIDE_JOB_DETAILS',
+    label: 'Provide Job Details',
+    description: 'Share more details about the job',
+    category: 'job_details',
+    direction: MessageTemplateDirection.ADULT_TO_YOUTH,
+    sortOrder: 31,
+    allowedFields: {
+      fields: [
+        {
+          name: 'detail_type',
+          type: 'select',
+          options: ['Task description', 'Equipment needed', 'Dress code', 'Additional info'],
+          required: true,
+          label: 'Detail Type',
+        },
+        {
+          name: 'details',
+          type: 'text',
+          maxLength: 120,
+          required: true,
+          label: 'Details (max 120 characters)',
+        },
+      ],
+      renderTemplate: '[{detail_type}] {details}',
+    },
+  },
+
+  // Safety category
+  {
+    key: 'REQUEST_PARENT_PRESENT',
+    label: 'Request Parent/Guardian Present',
+    description: 'Ask for a parent/guardian to be present',
+    category: 'safety',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 40,
+    allowedFields: {
+      fields: [
+        {
+          name: 'reason',
+          type: 'select',
+          options: [
+            'First time meeting - would be more comfortable',
+            'Job is at a private residence',
+            'Platform guidelines recommend it',
+            'Would like them to see the workplace',
+          ],
+          required: false,
+          label: 'Reason',
+        },
+      ],
+      renderTemplate: '[Safety Request] I would prefer to have a parent/guardian present for this job.{reason ? ` Reason: ${reason}` : \'\'}',
+    },
+  },
+  {
+    key: 'SAFETY_REMINDER',
+    label: 'Safety Reminder',
+    description: 'Send a safety reminder',
+    category: 'safety',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 41,
+    allowedFields: {
+      fields: [],
+      renderTemplate: '[Safety Reminder] Please remember: Always meet in safe locations, inform someone about your whereabouts, and trust your instincts. If anything feels wrong, leave immediately and report it.',
+    },
+  },
+  {
+    key: 'CONFIRM_SUPERVISION',
+    label: 'Confirm Adult Supervision',
+    description: 'Confirm that an adult will be present',
+    category: 'safety',
+    direction: MessageTemplateDirection.ADULT_TO_YOUTH,
+    sortOrder: 42,
+    allowedFields: {
+      fields: [
+        {
+          name: 'supervisor',
+          type: 'select',
+          options: ['I will be present', 'Another adult will be present', 'Work is in public area'],
+          required: true,
+          label: 'Supervision',
+        },
+      ],
+      renderTemplate: '[Supervision Confirmed] {supervisor} during the job.',
+    },
+  },
+
+  // General communication
+  {
+    key: 'DECLINE_POLITELY',
+    label: 'Decline Politely',
+    description: 'Politely decline or withdraw',
+    category: 'general',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 50,
+    allowedFields: {
+      fields: [
+        {
+          name: 'reason',
+          type: 'select',
+          options: [
+            'Schedule conflict',
+            'Found another opportunity',
+            'Not the right fit',
+            'Personal reasons',
+            'Distance/location issue',
+          ],
+          required: true,
+          label: 'Reason',
+        },
+      ],
+      renderTemplate: '[Declined] I\'m sorry, but I won\'t be able to proceed with this job. Reason: {reason}. Best of luck finding someone!',
+    },
+  },
+  {
+    key: 'EXPRESS_INTEREST',
+    label: 'Express Interest',
+    description: 'Express interest in the job',
+    category: 'general',
+    direction: MessageTemplateDirection.YOUTH_TO_ADULT,
+    sortOrder: 51,
+    allowedFields: {
+      fields: [
+        {
+          name: 'experience',
+          type: 'select',
+          options: [
+            'I have experience with this type of work',
+            'I am eager to learn',
+            'I have relevant skills',
+            'This matches my interests',
+          ],
+          required: false,
+          label: 'Why are you interested?',
+        },
+      ],
+      renderTemplate: '[Interested] I am interested in this job opportunity!{experience ? ` ${experience}.` : \'\'}',
+    },
+  },
+  {
+    key: 'CONFIRM_JOB',
+    label: 'Confirm Job',
+    description: 'Confirm the job is agreed upon',
+    category: 'general',
+    direction: MessageTemplateDirection.ADULT_TO_YOUTH,
+    sortOrder: 52,
+    allowedFields: {
+      fields: [
+        { name: 'date', type: 'date', required: false, label: 'Job Date' },
+        { name: 'time', type: 'time', required: false, label: 'Start Time' },
+      ],
+      renderTemplate: '[Job Confirmed] Great! The job is confirmed{date ? ` for ${date}` : \'\'}{time ? ` at ${time}` : \'\'}. Looking forward to it!',
+    },
+  },
+  {
+    key: 'SAY_THANKS',
+    label: 'Say Thank You',
+    description: 'Thank the other person',
+    category: 'general',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 53,
+    allowedFields: {
+      fields: [
+        {
+          name: 'for_what',
+          type: 'select',
+          options: [
+            'the opportunity',
+            'the quick response',
+            'your help',
+            'the great work',
+            'being flexible',
+          ],
+          required: false,
+          label: 'Thank you for...',
+        },
+      ],
+      renderTemplate: '[Thanks] Thank you{for_what ? ` for ${for_what}` : \'\'}! 🙏',
+    },
+  },
+  {
+    key: 'RUNNING_LATE',
+    label: 'Running Late',
+    description: 'Notify that you will be late',
+    category: 'general',
+    direction: MessageTemplateDirection.ANY,
+    sortOrder: 54,
+    allowedFields: {
+      fields: [
+        {
+          name: 'delay',
+          type: 'select',
+          options: ['5-10 minutes', '10-15 minutes', '15-30 minutes'],
+          required: true,
+          label: 'How late?',
+        },
+        {
+          name: 'reason',
+          type: 'select',
+          options: ['Traffic', 'Public transport delay', 'Unforeseen circumstances'],
+          required: false,
+          label: 'Reason',
+        },
+      ],
+      renderTemplate: '[Running Late] I will be approximately {delay} late{reason ? ` due to ${reason}` : \'\'}. Sorry for the inconvenience!',
+    },
+  },
+];
+
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // Seed Message Templates (Safety Messaging Phase 1)
+  console.log('📝 Seeding message templates...');
+  for (const template of messageTemplates) {
+    await prisma.messageTemplate.upsert({
+      where: { key: template.key },
+      update: {
+        label: template.label,
+        description: template.description,
+        category: template.category,
+        direction: template.direction,
+        sortOrder: template.sortOrder,
+        allowedFields: template.allowedFields,
+        isActive: true,
+      },
+      create: {
+        key: template.key,
+        label: template.label,
+        description: template.description,
+        category: template.category,
+        direction: template.direction,
+        sortOrder: template.sortOrder,
+        allowedFields: template.allowedFields,
+        isActive: true,
+      },
+    });
+  }
+  console.log(`✅ Seeded ${messageTemplates.length} message templates`);
+
+  // Seed Life Skills Cards
+  console.log('🌱 Seeding life skills cards...');
+  for (const card of lifeSkillCards) {
+    await prisma.lifeSkillCard.upsert({
+      where: { key: card.key },
+      update: {
+        title: card.title,
+        body: card.body,
+        tags: card.tags,
+        audience: card.audience,
+        version: card.version,
+        isActive: true,
+      },
+      create: {
+        key: card.key,
+        title: card.title,
+        body: card.body,
+        tags: card.tags,
+        audience: card.audience,
+        version: card.version,
+        isActive: true,
+      },
+    });
+  }
+  console.log(`✅ Seeded ${lifeSkillCards.length} life skills cards`);
 
   // Seed Career Cards
   const careerCards = [
@@ -590,7 +1142,34 @@ This platform helps you earn money through micro-jobs while discovering potentia
 
   console.log('✅ Created demo employer');
 
+  // Helper function to generate dates for future jobs
+  const getJobDates = (daysFromNow: number, durationHours: number = 2) => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + daysFromNow);
+    startDate.setHours(10 + Math.floor(Math.random() * 8), 0, 0, 0); // Random hour between 10am-6pm
+
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + durationHours);
+
+    return { startDate, endDate };
+  };
+
+  // Helper function to generate dates for completed jobs (in the past)
+  const getPastJobDates = (daysAgo: number, durationHours: number = 2) => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - daysAgo);
+    startDate.setHours(10 + Math.floor(Math.random() * 8), 0, 0, 0);
+
+    const endDate = new Date(startDate);
+    endDate.setHours(endDate.getHours() + durationHours);
+
+    return { startDate, endDate };
+  };
+
   // Seed 20 demo micro-jobs
+  // All jobs are eligible for both age groups (15-17 and 18-20) unless otherwise specified
+  const eligibleForAll = ['15-17', '18-20'];
+
   const demoJobs = [
     {
       title: 'Dog Walking - Friendly Golden Retriever',
@@ -601,7 +1180,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Majorstuen',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'loves animals'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 1),
     },
     {
       title: 'Babysitting - Two Kids (Ages 4 and 7)',
@@ -612,7 +1193,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Frogner',
       status: 'POSTED' as const,
       requiredTraits: ['patient', 'responsible', 'energetic'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 4),
     },
     {
       title: 'Snow Clearing - Driveway and Walkway',
@@ -623,7 +1206,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Holmenkollen',
       status: 'POSTED' as const,
       requiredTraits: ['physically fit', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(1, 2),
     },
     {
       title: 'Tech Help - Computer Setup and WiFi',
@@ -634,7 +1219,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Sentrum',
       status: 'POSTED' as const,
       requiredTraits: ['tech-savvy', 'patient'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 2),
     },
     {
       title: 'House Cleaning - Deep Clean',
@@ -645,7 +1232,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar',
       status: 'POSTED' as const,
       requiredTraits: ['detail-oriented', 'thorough'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(5, 4),
     },
     {
       title: 'Garden Help - Weeding and Planting',
@@ -656,7 +1245,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Skøyen',
       status: 'POSTED' as const,
       requiredTraits: ['outdoor work', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(6, 3),
     },
     {
       title: 'Dog Walking - Two Small Dogs',
@@ -667,7 +1258,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Grünerløkka',
       status: 'POSTED' as const,
       requiredTraits: ['loves animals', 'punctual'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(1, 1),
     },
     {
       title: 'Grocery Shopping and Delivery',
@@ -678,7 +1271,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Tøyen',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'organized'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 1),
     },
     {
       title: 'Babysitting - Infant (6 months)',
@@ -689,7 +1284,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Skårer',
       status: 'POSTED' as const,
       requiredTraits: ['experienced', 'caring', 'responsible'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 3),
     },
     {
       title: 'Car Washing - Inside and Out',
@@ -700,7 +1297,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Nordstrand',
       status: 'POSTED' as const,
       requiredTraits: ['detail-oriented', 'thorough'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 2),
     },
     {
       title: 'Furniture Assembly - IKEA Bookshelf',
@@ -711,7 +1310,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Majorstuen',
       status: 'POSTED' as const,
       requiredTraits: ['handy', 'patient'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 1),
     },
     {
       title: 'Tech Help - Smartphone Training for Elderly',
@@ -722,7 +1323,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Aker Brygge',
       status: 'POSTED' as const,
       requiredTraits: ['patient', 'friendly', 'tech-savvy'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(5, 2),
     },
     {
       title: 'Window Cleaning - Ground Floor',
@@ -733,7 +1336,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar, Rælingen',
       status: 'POSTED' as const,
       requiredTraits: ['thorough', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(7, 2),
     },
     {
       title: 'Pet Sitting - Cat for Weekend',
@@ -744,7 +1349,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, St. Hanshaugen',
       status: 'POSTED' as const,
       requiredTraits: ['loves animals', 'responsible'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 48),
     },
     {
       title: 'Moving Help - Small Items',
@@ -755,7 +1362,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Kurland',
       status: 'POSTED' as const,
       requiredTraits: ['physically fit', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(6, 3),
     },
     {
       title: 'Leaf Raking - Front and Back Yard',
@@ -766,7 +1375,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Oppegård',
       status: 'POSTED' as const,
       requiredTraits: ['outdoor work', 'energetic'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 2),
     },
     {
       title: 'Babysitting - After School Care',
@@ -777,7 +1388,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Romsås',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'patient', 'homework help'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 3),
     },
     {
       title: 'Package Pickup and Delivery',
@@ -788,7 +1401,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Storo',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'punctual'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(1, 1),
     },
     {
       title: 'Garage Organization - Sort and Clean',
@@ -799,7 +1414,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Solheim',
       status: 'POSTED' as const,
       requiredTraits: ['organized', 'physically fit'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(8, 4),
     },
     {
       title: 'Painting Help - Small Bedroom',
@@ -810,7 +1427,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Sagene',
       status: 'POSTED' as const,
       requiredTraits: ['careful', 'detail-oriented'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(9, 5),
     },
     // Additional 20 jobs focused on babysitting, cleaning, cooking, gardening
     {
@@ -822,7 +1441,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Ullern',
       status: 'POSTED' as const,
       requiredTraits: ['patient', 'energetic', 'good with kids'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 4),
     },
     {
       title: 'Deep Kitchen Cleaning',
@@ -833,7 +1454,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Sentrum',
       status: 'POSTED' as const,
       requiredTraits: ['detail-oriented', 'thorough'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 3),
     },
     {
       title: 'Meal Prep Assistant - Weekly Cooking',
@@ -844,7 +1467,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Frogner',
       status: 'POSTED' as const,
       requiredTraits: ['cooking skills', 'organized', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(5, 4),
     },
     {
       title: 'Garden Maintenance - Lawn and Hedges',
@@ -855,7 +1480,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar',
       status: 'POSTED' as const,
       requiredTraits: ['outdoor work', 'reliable', 'physically fit'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(6, 3),
     },
     {
       title: 'Babysitting - Three Siblings (5, 8, 11)',
@@ -866,7 +1493,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Vinderen',
       status: 'POSTED' as const,
       requiredTraits: ['responsible', 'patient', 'homework help'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 3),
     },
     {
       title: 'Bathroom Deep Clean - Two Bathrooms',
@@ -877,7 +1506,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Skårer',
       status: 'POSTED' as const,
       requiredTraits: ['thorough', 'detail-oriented'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(7, 2),
     },
     {
       title: 'Cooking Help - Dinner Party Prep',
@@ -888,7 +1519,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Majorstuen',
       status: 'POSTED' as const,
       requiredTraits: ['cooking skills', 'organized', 'calm under pressure'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 4),
     },
     {
       title: 'Garden Planting - Flower Beds',
@@ -899,7 +1532,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar, Rælingen',
       status: 'POSTED' as const,
       requiredTraits: ['outdoor work', 'careful', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(8, 3),
     },
     {
       title: 'Babysitting - Newborn Twins',
@@ -910,7 +1545,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Holmenkollen',
       status: 'POSTED' as const,
       requiredTraits: ['experienced', 'calm', 'responsible', 'caring'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(5, 4),
     },
     {
       title: 'Spring Cleaning - Entire Apartment',
@@ -921,7 +1558,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Grünerløkka',
       status: 'POSTED' as const,
       requiredTraits: ['thorough', 'organized', 'energetic'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(9, 8),
     },
     {
       title: 'Baking Assistant - Birthday Cakes',
@@ -932,7 +1571,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Kurland',
       status: 'POSTED' as const,
       requiredTraits: ['creative', 'patient', 'detail-oriented'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 4),
     },
     {
       title: 'Vegetable Garden Help - Weeding & Harvesting',
@@ -943,7 +1584,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Nordstrand',
       status: 'POSTED' as const,
       requiredTraits: ['outdoor work', 'careful', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(2, 3),
     },
     {
       title: 'Babysitting - Special Needs Child',
@@ -954,7 +1597,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Lambertseter',
       status: 'POSTED' as const,
       requiredTraits: ['patient', 'experienced', 'calm', 'caring'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 4),
     },
     {
       title: 'Post-Party Cleanup',
@@ -965,7 +1610,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Solheim',
       status: 'POSTED' as const,
       requiredTraits: ['efficient', 'thorough'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(6, 3),
     },
     {
       title: 'Cooking Lessons Assistant',
@@ -976,7 +1623,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Tøyen',
       status: 'POSTED' as const,
       requiredTraits: ['cooking skills', 'good with kids', 'patient'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(7, 3),
     },
     {
       title: 'Garden Renovation - Clearing & Prep',
@@ -987,7 +1636,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar',
       status: 'POSTED' as const,
       requiredTraits: ['physically fit', 'hardworking', 'outdoor work'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(10, 4),
     },
     {
       title: 'Babysitting - Movie Night',
@@ -998,7 +1649,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, St. Hanshaugen',
       status: 'POSTED' as const,
       requiredTraits: ['fun', 'responsible', 'good with kids'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(5, 5),
     },
     {
       title: 'Office Cleaning - Small Business',
@@ -1009,7 +1662,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Aker Brygge',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'thorough', 'trustworthy'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(3, 2),
     },
     {
       title: 'Healthy Meal Prep - Senior Citizen',
@@ -1020,7 +1675,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Sentrum',
       status: 'POSTED' as const,
       requiredTraits: ['cooking skills', 'caring', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(4, 4),
     },
     {
       title: 'Lawn Care - Mowing & Edging',
@@ -1031,7 +1688,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Oppegård',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'outdoor work', 'punctual'],
+      eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
+      ...getJobDates(8, 2),
     },
   ];
 
@@ -1046,21 +1705,43 @@ This platform helps you earn money through micro-jobs while discovering potentia
   // Create demo youth worker with reviews
   const ryanYouth = await prisma.user.upsert({
     where: { email: 'ryanmudie1982@gmail.com' },
-    update: {},
+    update: { role: 'YOUTH' },
     create: {
       email: 'ryanmudie1982@gmail.com',
       role: 'YOUTH',
-      youthProfile: {
-        create: {
-          displayName: 'Ryan Mudie',
-          completedJobsCount: 0,
-          averageRating: null,
-        },
-      },
     },
   });
 
-  console.log('✅ Created/found Ryan youth worker');
+  // Upsert Ryan's youth profile with all required fields
+  await prisma.youthProfile.upsert({
+    where: { userId: ryanYouth.id },
+    update: {
+      displayName: 'Ryan Mudie',
+      avatarId: 'avatar-casual-1',
+      phoneNumber: '+47 912 34 567',
+      bio: 'Reliable and hardworking student looking for part-time work. I enjoy helping people and learning new skills.',
+      availability: 'Weekends and after 4pm on weekdays',
+      interests: ['Technology', 'Helping Others', 'Learning'],
+      profileVisibility: true,
+      availabilityStatus: 'AVAILABLE',
+    },
+    create: {
+      userId: ryanYouth.id,
+      displayName: 'Ryan Mudie',
+      avatarId: 'avatar-casual-1',
+      phoneNumber: '+47 912 34 567',
+      bio: 'Reliable and hardworking student looking for part-time work. I enjoy helping people and learning new skills.',
+      availability: 'Weekends and after 4pm on weekdays',
+      interests: ['Technology', 'Helping Others', 'Learning'],
+      completedJobsCount: 0,
+      averageRating: null,
+      publicProfileSlug: 'ryan-mudie',
+      profileVisibility: true,
+      availabilityStatus: 'AVAILABLE',
+    },
+  });
+
+  console.log('✅ Created/updated Ryan youth worker profile');
 
   // Create multiple employer reviewers
   const reviewerEmployers = [
@@ -1092,7 +1773,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
 
   console.log('✅ Created reviewer employers');
 
-  // Create completed jobs for reviews
+  // Create completed jobs for reviews (using dynamic past dates)
   const completedJobsData = [
     {
       title: 'Weekend Babysitting - Two Kids',
@@ -1103,7 +1784,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Frogner',
       status: 'COMPLETED' as const,
       requiredTraits: ['patient', 'responsible'],
-      dateTime: new Date('2025-01-05T18:00:00'),
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(14, 4), // 2 weeks ago
     },
     {
       title: 'Dog Walking - Morning Routine',
@@ -1114,7 +1796,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Majorstuen',
       status: 'COMPLETED' as const,
       requiredTraits: ['loves animals', 'punctual'],
-      dateTime: new Date('2025-01-08T08:00:00'),
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(10, 1), // 10 days ago
     },
     {
       title: 'Garden Cleanup and Weeding',
@@ -1125,7 +1808,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Lørenskog, Skårer',
       status: 'COMPLETED' as const,
       requiredTraits: ['outdoor work', 'reliable'],
-      dateTime: new Date('2025-01-10T10:00:00'),
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(7, 3), // 1 week ago
     },
     {
       title: 'Computer Setup and Training',
@@ -1136,7 +1820,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Oslo, Nordstrand',
       status: 'COMPLETED' as const,
       requiredTraits: ['patient', 'tech-savvy'],
-      dateTime: new Date('2025-01-12T14:00:00'),
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(5, 2), // 5 days ago
     },
     {
       title: 'Deep House Cleaning',
@@ -1147,7 +1832,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       location: 'Fjellhamar',
       status: 'COMPLETED' as const,
       requiredTraits: ['thorough', 'detail-oriented'],
-      dateTime: new Date('2025-01-14T09:00:00'),
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(3, 4), // 3 days ago
     },
   ];
 
@@ -1246,6 +1932,231 @@ This platform helps you earn money through micro-jobs while discovering potentia
   });
 
   console.log('✅ Updated Ryan profile with stats');
+
+  // Create nickymudie@hotmail.com employer with jobs and reviews
+  const nickyEmployer = await prisma.user.upsert({
+    where: { email: 'nickymudie@hotmail.com' },
+    update: {
+      role: 'EMPLOYER',
+      ageBracket: 'EIGHTEEN_TWENTY',
+      accountStatus: 'ACTIVE',
+      dateOfBirth: new Date('1990-01-15'), // Set DOB for age verification
+    },
+    create: {
+      email: 'nickymudie@hotmail.com',
+      role: 'EMPLOYER',
+      ageBracket: 'EIGHTEEN_TWENTY',
+      accountStatus: 'ACTIVE',
+      dateOfBirth: new Date('1990-01-15'), // Set DOB for age verification
+      employerProfile: {
+        create: {
+          companyName: 'Nicky\'s Services',
+          bio: 'Local family services offering various jobs for youth workers.',
+          verified: true,
+          ageVerified: true,
+        },
+      },
+    },
+  });
+
+  // Ensure employer profile exists and has correct settings
+  await prisma.employerProfile.upsert({
+    where: { userId: nickyEmployer.id },
+    update: {
+      verified: true,
+      ageVerified: true,
+    },
+    create: {
+      userId: nickyEmployer.id,
+      companyName: 'Nicky\'s Services',
+      bio: 'Local family services offering various jobs for youth workers.',
+      verified: true,
+      ageVerified: true,
+    },
+  });
+
+  console.log('✅ Created/found nickymudie@hotmail.com employer');
+
+  // Create jobs for Nicky's employer account
+  const nickyJobsData = [
+    {
+      title: 'Afternoon Dog Walking - Border Collie',
+      category: JobCategory.DOG_WALKING,
+      description: 'Need someone to walk our energetic Border Collie, Luna, for 45 minutes in the afternoon. She loves to play fetch!',
+      payType: PayType.FIXED,
+      payAmount: 180,
+      location: 'Oslo, Grünerløkka',
+      status: 'POSTED' as const,
+      requiredTraits: ['loves animals', 'energetic', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: nickyEmployer.id,
+      ...getJobDates(3, 1),
+    },
+    {
+      title: 'Weekend Babysitting - Twins (Age 6)',
+      category: JobCategory.BABYSITTING,
+      description: 'Looking for a fun and responsible babysitter for our 6-year-old twins. Saturday evening from 6pm-10pm.',
+      payType: PayType.HOURLY,
+      payAmount: 190,
+      location: 'Oslo, Frogner',
+      status: 'POSTED' as const,
+      requiredTraits: ['patient', 'fun', 'responsible'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: nickyEmployer.id,
+      ...getJobDates(5, 4),
+    },
+    {
+      title: 'Tech Help - Smart Home Setup',
+      category: JobCategory.TECH_HELP,
+      description: 'Need help setting up smart home devices (lights, thermostat, speakers). Should take 2-3 hours.',
+      payType: PayType.HOURLY,
+      payAmount: 220,
+      location: 'Lørenskog, Sentrum',
+      status: 'POSTED' as const,
+      requiredTraits: ['tech-savvy', 'patient', 'problem-solver'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: nickyEmployer.id,
+      ...getJobDates(4, 3),
+    },
+    {
+      title: 'Garden Spring Cleanup',
+      category: JobCategory.DIY_HELP,
+      description: 'Help with spring garden cleanup - raking leaves, clearing beds, preparing soil for planting. Tools provided.',
+      payType: PayType.FIXED,
+      payAmount: 400,
+      location: 'Fjellhamar',
+      status: 'POSTED' as const,
+      requiredTraits: ['outdoor work', 'hardworking', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: nickyEmployer.id,
+      ...getJobDates(7, 4),
+    },
+    {
+      title: 'Weekly House Cleaning',
+      category: JobCategory.CLEANING,
+      description: 'Regular weekly cleaning of 3-bedroom house. Vacuuming, mopping, bathrooms, kitchen. All supplies provided.',
+      payType: PayType.FIXED,
+      payAmount: 450,
+      location: 'Oslo, Majorstuen',
+      status: 'POSTED' as const,
+      requiredTraits: ['thorough', 'reliable', 'detail-oriented'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: nickyEmployer.id,
+      ...getJobDates(2, 3),
+    },
+  ];
+
+  for (const job of nickyJobsData) {
+    await prisma.microJob.create({
+      data: job,
+    });
+  }
+
+  console.log('✅ Created jobs for nickymudie@hotmail.com');
+
+  // Create completed jobs that Nicky posted and Ryan completed (for reviews)
+  const nickyCompletedJobsData = [
+    {
+      title: 'Evening Dog Sitting',
+      category: JobCategory.DOG_WALKING,
+      description: 'Watched our dogs for the evening while we were at dinner.',
+      payType: PayType.FIXED,
+      payAmount: 250,
+      location: 'Oslo, Grünerløkka',
+      status: 'COMPLETED' as const,
+      requiredTraits: ['loves animals', 'responsible'],
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(2, 5), // 2 days ago
+      postedById: nickyEmployer.id,
+    },
+    {
+      title: 'Birthday Party Help',
+      category: JobCategory.BABYSITTING,
+      description: 'Helped supervise kids birthday party and assisted with cleanup.',
+      payType: PayType.HOURLY,
+      payAmount: 180,
+      location: 'Oslo, Frogner',
+      status: 'COMPLETED' as const,
+      requiredTraits: ['energetic', 'fun', 'responsible'],
+      eligibleAgeGroups: eligibleForAll,
+      ...getPastJobDates(1, 4), // Yesterday
+      postedById: nickyEmployer.id,
+    },
+  ];
+
+  const nickyCompletedJobs = [];
+  for (const jobData of nickyCompletedJobsData) {
+    const job = await prisma.microJob.create({
+      data: jobData,
+    });
+    nickyCompletedJobs.push(job);
+
+    // Create accepted application
+    await prisma.application.create({
+      data: {
+        jobId: job.id,
+        youthId: ryanYouth.id,
+        message: 'Happy to help!',
+        status: 'ACCEPTED',
+      },
+    });
+  }
+
+  // Create reviews from Nicky to Ryan
+  const nickyReviewsData = [
+    {
+      punctuality: 5,
+      communication: 5,
+      reliability: 5,
+      overall: 5,
+      positiveTags: ['Punctual', 'Great with animals', 'Trustworthy', 'Friendly'],
+      comment: 'Ryan was amazing with our dogs! They absolutely loved him. He sent us updates and photos throughout the evening. Highly recommend!',
+    },
+    {
+      punctuality: 5,
+      communication: 5,
+      reliability: 5,
+      overall: 5,
+      positiveTags: ['Great with kids', 'Energetic', 'Helpful', 'Professional'],
+      comment: 'Ryan was a lifesaver at our kids birthday party! He kept all the children entertained and happy. Helped with cleanup without being asked. Will definitely hire again!',
+    },
+  ];
+
+  for (let i = 0; i < nickyReviewsData.length; i++) {
+    await prisma.review.create({
+      data: {
+        jobId: nickyCompletedJobs[i].id,
+        reviewerId: nickyEmployer.id,
+        reviewedId: ryanYouth.id,
+        ...nickyReviewsData[i],
+      },
+    });
+  }
+
+  console.log('✅ Created completed jobs and reviews from nickymudie@hotmail.com');
+
+  // Update Ryan's profile with new stats
+  const allReviews = await prisma.review.findMany({
+    where: { reviewedId: ryanYouth.id },
+  });
+  const newAvgRating = allReviews.reduce((sum, r) => sum + r.overall, 0) / allReviews.length;
+  const totalCompletedJobs = await prisma.application.count({
+    where: {
+      youthId: ryanYouth.id,
+      status: 'ACCEPTED',
+      job: { status: 'COMPLETED' },
+    },
+  });
+
+  await prisma.youthProfile.update({
+    where: { userId: ryanYouth.id },
+    data: {
+      completedJobsCount: totalCompletedJobs,
+      averageRating: newAvgRating,
+    },
+  });
+
+  console.log('✅ Updated Ryan profile with new stats');
   console.log('✅ Database seeded successfully!');
 }
 

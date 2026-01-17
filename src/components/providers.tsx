@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { LifeSkillsProvider } from "@/components/life-skills-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -22,13 +23,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="light"
       enableSystem
       disableTransitionOnChange
     >
       <SessionProvider>
         <QueryClientProvider client={queryClient}>
-          {children}
+          <LifeSkillsProvider>
+            {children}
+          </LifeSkillsProvider>
           <Toaster />
         </QueryClientProvider>
       </SessionProvider>

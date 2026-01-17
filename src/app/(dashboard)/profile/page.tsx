@@ -13,7 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { SkillRadar } from "@/components/skill-radar";
 import { ReviewsDisplay } from "@/components/reviews-display";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
   AlertDialog,
@@ -26,8 +27,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AvatarSelector } from "@/components/avatar-selector";
+import { AvatarSelectorInline } from "@/components/avatar-selector-inline";
 import { BadgesDisplay } from "@/components/badges-display";
+import { LifeSkillsSettings } from "@/components/life-skills-settings";
+import { SavedLifeSkills } from "@/components/saved-life-skills";
 import Link from "next/link";
 
 const INTEREST_OPTIONS = [
@@ -69,6 +72,8 @@ export default function ProfilePage() {
       }
       return response.json();
     },
+    staleTime: 30 * 1000, // Cache for 30 seconds before refetching
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
   // Only initialize form data once when profile first loads
@@ -256,6 +261,38 @@ export default function ProfilePage() {
     },
   });
 
+  const toggleDoNotDisturbMutation = useMutation({
+    mutationFn: async (doNotDisturb: boolean) => {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ doNotDisturb }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update Do Not Disturb");
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: data.doNotDisturb ? "Do Not Disturb enabled" : "Do Not Disturb disabled",
+        description: data.doNotDisturb
+          ? "Others cannot start new conversations with you"
+          : "Others can now message you",
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update Do Not Disturb setting",
+        variant: "destructive",
+      });
+    },
+  });
+
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch("/api/account/delete", {
@@ -328,18 +365,279 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 relative z-10 isolate">
-      {/* Subtle background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Funky Modern Background - Warm muted tones */}
+      <div className="fixed inset-0 -z-20">
+        {/* Base gradient - warm terracotta to sage */}
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/30 to-emerald-50/40 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/20" />
 
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          My <span className="gradient-text">Profile</span>
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Build your profile to stand out to employers
-        </p>
+        {/* Noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03]"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+        />
       </div>
+
+      {/* Animated Morphing Shapes Layer */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        {/* Large morphing blob - top right */}
+        <motion.div
+          className="absolute -top-20 -right-20 w-[600px] h-[600px]"
+          animate={{
+            rotate: [0, 360],
+          }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+        >
+          <motion.div
+            className="w-full h-full bg-gradient-to-br from-amber-300/20 via-orange-200/15 to-rose-200/10 dark:from-amber-700/10 dark:via-orange-800/8 dark:to-rose-900/5"
+            style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
+            animate={{
+              borderRadius: [
+                "60% 40% 30% 70% / 60% 30% 70% 40%",
+                "30% 60% 70% 40% / 50% 60% 30% 60%",
+                "60% 40% 30% 70% / 60% 30% 70% 40%",
+              ],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
+
+        {/* Medium morphing blob - bottom left */}
+        <motion.div
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px]"
+          animate={{ rotate: [360, 0] }}
+          transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+        >
+          <motion.div
+            className="w-full h-full bg-gradient-to-tr from-emerald-300/15 via-teal-200/12 to-cyan-200/8 dark:from-emerald-800/10 dark:via-teal-900/8 dark:to-cyan-950/5"
+            style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
+            animate={{
+              borderRadius: [
+                "40% 60% 70% 30% / 40% 50% 60% 50%",
+                "70% 30% 50% 50% / 30% 30% 70% 70%",
+                "40% 60% 70% 30% / 40% 50% 60% 50%",
+              ],
+              scale: [1, 1.15, 1],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+        </motion.div>
+
+        {/* Flowing wave lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08] dark:opacity-[0.04]" preserveAspectRatio="none">
+          <motion.path
+            d="M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="2"
+            animate={{
+              d: [
+                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
+                "M0,200 Q200,300 400,200 T800,200 T1200,200 T1600,200",
+                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
+              ],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="1.5"
+            animate={{
+              d: [
+                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
+                "M0,400 Q200,500 400,400 T800,400 T1200,400 T1600,400",
+                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
+              ],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          />
+          <motion.path
+            d="M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="1"
+            animate={{
+              d: [
+                "M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600",
+                "M0,600 Q200,700 400,600 T800,600 T1200,600 T1600,600",
+                "M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600",
+              ],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+          <defs>
+            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#d97706" />
+              <stop offset="50%" stopColor="#059669" />
+              <stop offset="100%" stopColor="#0891b2" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* Geometric floating shapes */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute"
+            style={{
+              left: `${10 + (i * 12)}%`,
+              top: `${15 + ((i * 17) % 60)}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, i % 2 === 0 ? 15 : -15, 0],
+              rotate: [0, i % 2 === 0 ? 180 : -180, 0],
+              opacity: [0.15, 0.3, 0.15],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.8,
+            }}
+          >
+            {i % 3 === 0 ? (
+              // Hexagon
+              <div
+                className="w-8 h-8 bg-gradient-to-br from-amber-400/20 to-orange-300/10 dark:from-amber-600/15 dark:to-orange-700/8"
+                style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
+              />
+            ) : i % 3 === 1 ? (
+              // Triangle
+              <div
+                className="w-6 h-6 bg-gradient-to-br from-emerald-400/20 to-teal-300/10 dark:from-emerald-600/15 dark:to-teal-700/8"
+                style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+              />
+            ) : (
+              // Diamond
+              <div
+                className="w-5 h-5 bg-gradient-to-br from-rose-400/20 to-pink-300/10 dark:from-rose-600/15 dark:to-pink-700/8"
+                style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
+              />
+            )}
+          </motion.div>
+        ))}
+
+        {/* Subtle dot grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]"
+          style={{
+            backgroundImage: `radial-gradient(circle, #78716c 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
+      </div>
+
+      {/* Accent glow spots */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-amber-400/10 dark:bg-amber-600/5 blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 rounded-full bg-emerald-400/10 dark:bg-emerald-600/5 blur-3xl"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+      </div>
+
+      <div className="container mx-auto max-w-4xl px-4 py-8 relative z-10 isolate">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2.5 rounded-xl bg-amber-500/10">
+              <User className="h-6 w-6 text-amber-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold">
+                My <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">Profile</span>
+              </h1>
+              <p className="text-muted-foreground">
+                Build your profile to stand out to job posters
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+      {/* Profile Completion Status */}
+      {profile && (() => {
+        const missingRequired: string[] = [];
+        const missingRecommended: string[] = [];
+
+        // Required fields
+        if (!profile.avatarId) missingRequired.push("Avatar");
+        if (!profile.displayName) missingRequired.push("Display Name");
+        if (!profile.phoneNumber) missingRequired.push("Phone Number");
+
+        // Recommended fields
+        if (!profile.bio) missingRecommended.push("About Me (bio)");
+        if (!profile.availability) missingRecommended.push("Availability");
+        if (!profile.interests || profile.interests.length === 0) missingRecommended.push("Interests");
+
+        const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
+        const hasRequiredMissing = missingRequired.length > 0;
+
+        return (
+          <Card className={`mb-6 border-2 ${hasRequiredMissing ? 'border-red-500/50 bg-red-50/50 dark:bg-red-950/20' : isComplete ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : 'border-amber-500/50 bg-amber-50/50 dark:bg-amber-950/20'}`}>
+            <CardContent className="py-4">
+              <div className="flex items-start gap-3">
+                {hasRequiredMissing ? (
+                  <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                ) : isComplete ? (
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                ) : (
+                  <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                )}
+                <div className="flex-1">
+                  <h3 className={`font-semibold ${hasRequiredMissing ? 'text-red-700 dark:text-red-400' : isComplete ? 'text-green-700 dark:text-green-400' : 'text-amber-700 dark:text-amber-400'}`}>
+                    {hasRequiredMissing ? 'Profile Incomplete - Required Fields Missing' : isComplete ? 'Profile Complete!' : 'Profile Almost Complete'}
+                  </h3>
+
+                  {missingRequired.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-red-600 dark:text-red-400 mb-1">Required fields missing:</p>
+                      <ul className="text-sm text-red-600/80 dark:text-red-400/80 space-y-0.5">
+                        {missingRequired.map((field) => (
+                          <li key={field} className="flex items-center gap-1">
+                            <XCircle className="h-3 w-3" />
+                            {field}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {missingRecommended.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-amber-600 dark:text-amber-400 mb-1">Recommended to complete:</p>
+                      <ul className="text-sm text-amber-600/80 dark:text-amber-400/80 space-y-0.5">
+                        {missingRecommended.map((field) => (
+                          <li key={field} className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {field}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {isComplete && (
+                    <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
+                      Great job! Your profile has all the information employers need.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })()}
 
       <div className="grid gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
@@ -353,20 +651,29 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-4 relative z-10">
               {/* Avatar Selector */}
-              <div className="flex flex-col items-center gap-3 pb-4 border-b relative z-10">
-                <Label className="text-center">Your Avatar</Label>
-                <AvatarSelector
+              <div className="pb-4 border-b">
+                <Label className="text-center block mb-3 flex items-center justify-center gap-2">
+                  Your Avatar
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                </Label>
+                <AvatarSelectorInline
                   currentAvatarId={profile?.avatarId}
                   onSelect={(avatarId) => updateAvatarMutation.mutate(avatarId)}
                   disabled={updateAvatarMutation.isPending}
                 />
-                <p className="text-xs text-muted-foreground text-center">
-                  Click to choose from 30+ fun avatars
-                </p>
+                {!profile?.avatarId && (
+                  <p className="mt-2 text-xs text-red-500 text-center flex items-center justify-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Required: Choose an avatar to represent you
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="displayName">Display Name *</Label>
+                <Label htmlFor="displayName" className="flex items-center gap-2">
+                  Display Name
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                </Label>
                 <Input
                   id="displayName"
                   placeholder="Your name or nickname"
@@ -374,11 +681,25 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, displayName: e.target.value })
                   }
+                  className={!formData.displayName && profile ? "border-red-300 focus:border-red-500" : ""}
                 />
+                {!formData.displayName && profile ? (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Required: Employers need to know what to call you
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    This is how employers will address you
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="bio">About Me</Label>
+                <Label htmlFor="bio" className="flex items-center gap-2">
+                  About Me
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
+                </Label>
                 <Textarea
                   id="bio"
                   placeholder="Tell employers a bit about yourself..."
@@ -388,13 +709,22 @@ export default function ProfilePage() {
                   }
                   rows={4}
                 />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {formData.bio.length}/500 characters
-                </p>
+                {!formData.bio ? (
+                  <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                    Add a short bio to help employers understand your personality and strengths
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {formData.bio.length}/500 characters
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="availability">Availability</Label>
+                <Label htmlFor="availability" className="flex items-center gap-2">
+                  Availability
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
+                </Label>
                 <Input
                   id="availability"
                   placeholder="e.g., Weekends, After 4pm on weekdays"
@@ -403,12 +733,22 @@ export default function ProfilePage() {
                     setFormData({ ...formData, availability: e.target.value })
                   }
                 />
+                {!formData.availability ? (
+                  <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                    Let employers know when you're free to work
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Employers can see when you're available
+                  </p>
+                )}
               </div>
 
               <div>
                 <Label htmlFor="phoneNumber" className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
-                  Phone Number *
+                  Phone Number
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
                 </Label>
                 <Input
                   id="phoneNumber"
@@ -418,14 +758,25 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, phoneNumber: e.target.value })
                   }
+                  className={!formData.phoneNumber && profile ? "border-red-300 focus:border-red-500" : ""}
                 />
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Employers will see this when you're assigned to their job
-                </p>
+                {!formData.phoneNumber && profile ? (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Required: Employers need a way to contact you about jobs
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Only shown to employers when you're assigned to their job
+                  </p>
+                )}
               </div>
 
               <div>
-                <Label>Interests</Label>
+                <Label className="flex items-center gap-2">
+                  Interests
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
+                </Label>
                 <p className="mb-2 text-xs text-muted-foreground">
                   Select topics you're interested in
                 </p>
@@ -445,6 +796,11 @@ export default function ProfilePage() {
                     </Badge>
                   ))}
                 </div>
+                {formData.interests.length === 0 && (
+                  <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                    Select at least one interest to help match you with relevant jobs
+                  </p>
+                )}
               </div>
 
               {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
@@ -590,9 +946,53 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 )}
+
+                {/* Do Not Disturb Toggle */}
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <Label htmlFor="doNotDisturb" className="cursor-pointer flex items-center gap-2">
+                        <MessageCircleOff className="h-4 w-4 text-muted-foreground" />
+                        Do Not Disturb
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        {profile.user?.doNotDisturb
+                          ? "Others cannot start new conversations"
+                          : "Others can message you"}
+                      </p>
+                    </div>
+                    <Switch
+                      id="doNotDisturb"
+                      checked={profile.user?.doNotDisturb || false}
+                      onCheckedChange={(checked) =>
+                        toggleDoNotDisturbMutation.mutate(checked)
+                      }
+                    />
+                  </div>
+
+                  {profile.user?.doNotDisturb && (
+                    <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3 mt-3">
+                      <div className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
+                        <Moon className="h-4 w-4" />
+                        Do Not Disturb is On
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        You won't appear in user searches and others can't start new conversations with you. Existing conversations will still work.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Life Skills Tips Toggle */}
+                <div className="border-t pt-4 mt-4">
+                  <LifeSkillsSettings />
+                </div>
               </CardContent>
             </Card>
           )}
+
+          {/* Saved Life Skills */}
+          {profile && <SavedLifeSkills />}
 
           {/* Career Goal */}
           {profile && (
@@ -787,6 +1187,79 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
+          {/* Legal & Safety */}
+          <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 pointer-events-none" />
+            <CardHeader className="relative">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Scale className="h-5 w-5 text-blue-500" />
+                Legal & Safety
+              </CardTitle>
+              <CardDescription>
+                Our policies and guidelines
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="relative">
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/legal/terms"
+                    target="_blank"
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
+                  >
+                    <FileText className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    <span className="flex-1">Terms of Service</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/legal/privacy"
+                    target="_blank"
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
+                  >
+                    <Shield className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    <span className="flex-1">Privacy Policy</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/legal/safety"
+                    target="_blank"
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    <span className="flex-1">Safety Guidelines</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/legal/eligibility"
+                    target="_blank"
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
+                  >
+                    <Users className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    <span className="flex-1">Age & Eligibility</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/legal/disclaimer"
+                    target="_blank"
+                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
+                  >
+                    <AlertOctagon className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    <span className="flex-1">Disclaimer</span>
+                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+
           {/* Danger Zone - Delete Account */}
           <Card className="border-2 border-red-500/20 shadow-lg hover-lift overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-50 pointer-events-none" />
@@ -839,6 +1312,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );

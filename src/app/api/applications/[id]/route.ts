@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { recordLifeSkillEvent } from "@/lib/life-skills";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,12 +15,13 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await req.json();
     const { status } = body;
 
     // Get application with job details
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         job: true,
       },
@@ -49,7 +51,7 @@ export async function PATCH(
     }
 
     const updatedApplication = await prisma.application.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
     });
 
@@ -80,6 +82,14 @@ export async function PATCH(
           link: "/dashboard",
         },
       });
+
+      // Record life skill event for JOB_ACCEPTED
+      await recordLifeSkillEvent(
+        application.youthId,
+        "JOB_ACCEPTED",
+        application.jobId,
+        { jobTitle: application.job.title }
+      );
     }
 
     // If rejected, notify the youth
