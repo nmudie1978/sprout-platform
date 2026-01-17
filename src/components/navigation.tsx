@@ -116,6 +116,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/pokes", label: "Pokes", icon: HandHeart, isCore: false },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
+    { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
     { href: "/career-advisor", label: "AI Advisor", icon: MessageSquare, isCore: true },
     { href: "/profile", label: "Profile", icon: User, isCore: false },
   ];

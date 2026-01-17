@@ -59,35 +59,43 @@ const lifeSkillsTool: OpenAI.Chat.ChatCompletionTool = {
   },
 };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+/**
+ * Check if OpenAI is properly configured
+ */
+function isOpenAIConfigured(): boolean {
+  const apiKey = process.env.OPENAI_API_KEY;
+  return !!(
+    apiKey &&
+    apiKey.length > 10 &&
+    apiKey !== "sk-your-openai-api-key-here" &&
+    apiKey.startsWith("sk-")
+  );
+}
+
+/**
+ * Create OpenAI client lazily (only when needed and configured)
+ */
+function getOpenAIClient(): OpenAI | null {
+  if (!isOpenAIConfigured()) {
+    return null;
+  }
+  return new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 // POST /api/chat - Send a message to the AI assistant
 export async function POST(req: NextRequest) {
+  // Parse these early so they're available in error handling
+  let message = "";
+  let conversationHistory: any[] = [];
+  let intent: IntentType = "career_explain";
+
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Rate limiting: 20 messages per hour
-    const rateLimit = checkRateLimit(`chat:${session.user.id}`, RateLimits.AI_CHAT);
-    if (!rateLimit.success) {
-      return NextResponse.json(
-        {
-          error: "Too many messages. Please try again later.",
-          resetAt: rateLimit.reset,
-        },
-        {
-          status: 429,
-          headers: getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset),
-        }
-      );
-    }
-
+    // Parse request body first
     const body = await req.json();
-    const { message, conversationHistory = [] } = body;
+    message = body.message || "";
+    conversationHistory = body.conversationHistory || [];
 
     if (!message || message.length < 1) {
       return NextResponse.json(
@@ -96,8 +104,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Classify intent
-    const intent = classifyIntent(message);
+    // Classify intent early so it's available throughout
+    intent = classifyIntent(message);
+
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      // Return a helpful response instead of 401 error
+      return NextResponse.json({
+        message: "Please sign in to chat with the AI assistant. You can still browse careers and jobs without an account!",
+        intent,
+        sources: {},
+        requiresAuth: true,
+      });
+    }
+
+    // Rate limiting: 20 messages per hour
+    const rateLimit = checkRateLimit(`chat:${session.user.id}`, RateLimits.AI_CHAT);
+    if (!rateLimit.success) {
+      return NextResponse.json({
+        message: "You've sent a lot of messages! Take a short break and try again soon. In the meantime, browse careers or check the Q&A section.",
+        intent,
+        sources: {},
+        rateLimited: true,
+      });
+    }
 
     // Check for unsafe content immediately
     if (intent === "unsafe") {
@@ -184,6 +214,30 @@ export async function POST(req: NextRequest) {
     const lifeSkillsAIEnabled = process.env.LIFE_SKILLS_AI_ENABLED === "true";
     const isYouth = session.user.role === "YOUTH";
 
+    // Get OpenAI client - returns null if not configured
+    const openai = getOpenAIClient();
+    if (!openai) {
+      // OpenAI is not configured - use smart fallback
+      const fallbackResponse = getSmartFallbackResponse(message, intent);
+
+      // Log that we're using fallback mode
+      logIntent(session.user.id, intent, {
+        mode: "fallback",
+        reason: "openai_not_configured",
+        retrieved_careers: careerCards.length,
+      }).catch(() => {});
+
+      return NextResponse.json({
+        message: fallbackResponse,
+        intent,
+        sources: {
+          careers: careerCards.map((c) => ({ id: c.id, roleName: c.roleName })),
+          helpDocs: helpDocs.map((d) => ({ id: d.id, title: d.title })),
+          qa: qaItems.map((q) => ({ id: q.id, question: q.question })),
+        },
+      });
+    }
+
     // Call OpenAI with optional Life Skills tool
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and affordable
@@ -264,34 +318,16 @@ export async function POST(req: NextRequest) {
       ...(lifeSkillRecommended && { lifeSkillRecommended }),
     });
   } catch (error: any) {
-    // Log the full error for debugging
-    console.error("Error in chat API:", {
-      message: error?.message,
-      status: error?.status,
-      code: error?.code,
-      type: error?.type,
-      error: error?.error,
-    });
+    // Log error for debugging (in development/staging)
+    console.error("Chat API error:", error?.message || error);
 
-    // Get the original message and intent for smart fallback
-    let originalMessage = "";
-    let intent: IntentType = "career_explain";
-    try {
-      const body = await req.clone().json();
-      originalMessage = body.message || "";
-      intent = classifyIntent(originalMessage);
-    } catch {
-      // If we can't get the message, use default
-    }
-
-    // Use smart fallback based on the user's question
-    const fallbackMessage = getSmartFallbackResponse(originalMessage, intent);
+    // Use smart fallback - we have message and intent from early parsing
+    const fallbackMessage = getSmartFallbackResponse(message, intent);
 
     return NextResponse.json({
       message: fallbackMessage,
       intent,
       sources: {},
-      fallback: true,
     });
   }
 }

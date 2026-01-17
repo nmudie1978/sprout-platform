@@ -173,6 +173,66 @@ export default function GrowthPage() {
           </Card>
         </motion.div>
 
+        {/* Community Contributions Section */}
+        {recentSignals && recentSignals.some((s: any) => s.type === "HELPED_OTHER" || s.type === "COMMUNITY_REPORT_RESOLVED") && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-8"
+          >
+            <Card className="border-pink-500/20 bg-gradient-to-br from-pink-500/5 to-purple-500/5">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Users className="h-5 w-5 text-pink-600" />
+                  Community Contributions
+                </CardTitle>
+                <CardDescription>
+                  You're making a positive impact! These signal your contributions to the community.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3">
+                  {recentSignals
+                    .filter((s: any) => s.type === "HELPED_OTHER" || s.type === "COMMUNITY_REPORT_RESOLVED")
+                    .map((signal: any) => {
+                      const config = trustSignalConfig[signal.type] || {
+                        icon: Star,
+                        color: "text-gray-600",
+                        bg: "bg-gray-100",
+                      };
+                      const Icon = config.icon;
+
+                      return (
+                        <div
+                          key={signal.id}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-pink-500/10"
+                        >
+                          <div className={`p-2 rounded-lg ${config.bg}`}>
+                            <Icon className={`h-4 w-4 ${config.color}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm">{signal.label}</div>
+                            <div className="text-xs text-muted-foreground">{signal.description}</div>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {new Date(signal.earnedAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div className="mt-4 p-3 rounded-lg bg-pink-500/10 border border-pink-500/20">
+                  <p className="text-sm text-pink-700 dark:text-pink-300">
+                    <Sparkles className="h-4 w-4 inline mr-1" />
+                    Community contributions show employers you're a team player who helps others succeed.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Trust Signals Section */}
         {recentSignals && recentSignals.length > 0 && (
           <motion.div
