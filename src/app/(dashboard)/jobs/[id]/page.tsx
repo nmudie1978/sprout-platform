@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { playSound } from "@/lib/sounds";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MapPin,
@@ -326,6 +327,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       return response.json();
     },
     onSuccess: () => {
+      // Play funky success sound
+      playSound("apply");
       toast({
         title: "Application submitted!",
         description: "The employer will review your application.",
