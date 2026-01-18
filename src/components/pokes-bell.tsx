@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,33 +45,35 @@ export function PokesBell({ userRole }: PokesBellProps) {
     : pokes.filter((p: { status: string }) => p.status === "ACCEPTED" || p.status === "READ").length;
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Link href="/pokes">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="relative hover:bg-muted rounded-lg"
-          >
-            <HandHeart className="h-5 w-5" />
-            <AnimatePresence>
-              {pendingCount > 0 && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-[10px] font-bold text-white flex items-center justify-center shadow-lg"
-                >
-                  {pendingCount > 9 ? "9+" : pendingCount}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </Button>
-        </Link>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{userRole === "YOUTH" ? "Employer Pokes" : "Poke Responses"}</p>
-      </TooltipContent>
-    </Tooltip>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link href="/pokes">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="relative hover:bg-muted rounded-lg"
+            >
+              <HandHeart className="h-5 w-5" />
+              <AnimatePresence>
+                {pendingCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-[10px] font-bold text-white flex items-center justify-center shadow-lg"
+                  >
+                    {pendingCount > 9 ? "9+" : pendingCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{userRole === "YOUTH" ? "Employer Pokes" : "Poke Responses"}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
