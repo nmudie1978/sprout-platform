@@ -10,12 +10,14 @@ import {
   AlertCircle,
   Banknote,
   Sparkles,
-  MapPin,
   Brain,
   Rocket,
   ArrowRight,
   Briefcase,
-  CheckCircle,
+  TrendingUp,
+  Target,
+  Compass,
+  Zap,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -23,81 +25,55 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Multi-layered gradient background */}
+      {/* Multi-layered gradient background - darker for visible grid */}
       <div className="fixed inset-0 -z-20">
-        {/* Base gradient - slightly darker for visible lines */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/70 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/30" />
-
-        {/* Secondary gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/40 via-white/20 to-purple-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-emerald-900/20" />
-
-        {/* Left side color accent */}
-        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/50 to-transparent dark:from-green-950/20 dark:to-transparent" />
-
-        {/* Right side color accent */}
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/40 to-transparent dark:from-emerald-950/20 dark:to-transparent" />
-
-        {/* Radial highlight in center-top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/60 via-emerald-50/30 to-transparent dark:from-green-900/20 dark:via-emerald-950/10 dark:to-transparent blur-2xl" />
-
-        {/* Bottom fade with subtle color */}
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-50/70 via-green-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-100/90 via-emerald-50/80 to-teal-100/90 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/50 via-transparent to-purple-50/40 dark:from-transparent dark:via-slate-800/30 dark:to-emerald-900/30" />
+        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/60 to-transparent dark:from-green-950/30 dark:to-transparent" />
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/50 to-transparent dark:from-emerald-950/30 dark:to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/70 via-emerald-50/40 to-transparent dark:from-green-900/30 dark:via-emerald-950/20 dark:to-transparent blur-2xl" />
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-100/80 via-green-50/50 to-transparent dark:from-slate-950/90 dark:via-slate-900/60 dark:to-transparent" />
       </div>
 
-      {/* Animated Background - Gradient Blobs (hidden on mobile for performance) */}
+      {/* Animated gradient blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
         <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/25 via-emerald-300/20 to-transparent blur-3xl"
+          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/30 via-emerald-300/25 to-transparent blur-3xl"
           animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/20 via-cyan-300/15 to-transparent blur-3xl"
+          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/25 via-cyan-300/20 to-transparent blur-3xl"
           animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-emerald-400/20 via-green-300/15 to-transparent blur-3xl"
+          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-emerald-400/25 via-green-300/20 to-transparent blur-3xl"
           animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-        {/* Additional accent blob */}
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-green-200/10 via-emerald-100/15 to-teal-200/10 dark:from-green-800/10 dark:via-emerald-900/10 dark:to-teal-800/10 blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-green-200/15 via-emerald-100/20 to-teal-200/15 dark:from-green-800/15 dark:via-emerald-900/15 dark:to-teal-800/15 blur-3xl"
           animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Animated grid - more visible with higher opacity */}
+
+        {/* Animated grid - higher opacity for visibility */}
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.12)_1px,transparent_1px)] bg-[size:40px_40px]"
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.15)_1px,transparent_1px)] bg-[size:40px_40px]"
+          animate={{ opacity: [0.6, 0.9, 0.6] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Secondary offset grid for depth */}
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.08)_1px,transparent_1px)] bg-[size:40px_40px]"
+          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"
           style={{ transform: "translate(20px, 20px)" }}
-          animate={{
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
+          animate={{ opacity: [0.5, 0.7, 0.5] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
       </div>
 
-      {/* Floating Bubbles - Subtle, on sides only (hidden on mobile for performance) */}
+      {/* Floating bubbles */}
       <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none hidden sm:block">
-        {/* Left side bubbles */}
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={`left-${i}`}
@@ -107,24 +83,13 @@ export default function AboutPage() {
               height: `${6 + (i % 3) * 4}px`,
               left: `${3 + (i % 3) * 4}%`,
               top: `${12 + i * 18}%`,
-              background: "radial-gradient(circle, rgba(34,197,94,0.5) 0%, rgba(34,197,94,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(34,197,94,0.25)",
+              background: "radial-gradient(circle, rgba(34,197,94,0.6) 0%, rgba(34,197,94,0.2) 50%, transparent 70%)",
+              boxShadow: "0 0 10px rgba(34,197,94,0.3)",
             }}
-            animate={{
-              y: [0, -25 - (i % 3) * 10, 0],
-              x: [0, 8 + (i % 2) * 4, 0],
-              opacity: [0.3, 0.5, 0.3],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 10 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.5,
-            }}
+            animate={{ y: [0, -25 - (i % 3) * 10, 0], x: [0, 8 + (i % 2) * 4, 0], opacity: [0.4, 0.6, 0.4], scale: [1, 1.1, 1] }}
+            transition={{ duration: 10 + i * 2, repeat: Infinity, ease: "easeInOut", delay: i * 1.5 }}
           />
         ))}
-        {/* Right side bubbles */}
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={`right-${i}`}
@@ -134,336 +99,370 @@ export default function AboutPage() {
               height: `${6 + (i % 3) * 4}px`,
               right: `${3 + (i % 3) * 4}%`,
               top: `${18 + i * 16}%`,
-              background: "radial-gradient(circle, rgba(16,185,129,0.5) 0%, rgba(16,185,129,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(16,185,129,0.25)",
+              background: "radial-gradient(circle, rgba(16,185,129,0.6) 0%, rgba(16,185,129,0.2) 50%, transparent 70%)",
+              boxShadow: "0 0 10px rgba(16,185,129,0.3)",
             }}
-            animate={{
-              y: [0, -20 - (i % 3) * 8, 0],
-              x: [0, -8 - (i % 2) * 4, 0],
-              opacity: [0.3, 0.5, 0.3],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 11 + i * 1.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.3 + 0.5,
-            }}
+            animate={{ y: [0, -20 - (i % 3) * 8, 0], x: [0, -8 - (i % 2) * 4, 0], opacity: [0.4, 0.6, 0.4], scale: [1, 1.1, 1] }}
+            transition={{ duration: 11 + i * 1.8, repeat: Infinity, ease: "easeInOut", delay: i * 1.3 + 0.5 }}
           />
         ))}
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-4 py-12 max-w-3xl space-y-12">
+      <div className="relative z-10">
         {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-4 py-2 text-sm font-medium text-green-700 dark:text-green-400 mb-6">
-            <Sprout className="h-4 w-4" />
-            About Sprout
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Not just a jobs app.{" "}
-            <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              A head start on life.
-            </span>
-          </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Sprout helps you make money fast — but it&apos;s really about building your future.
-          </p>
-        </motion.div>
+        <section className="container mx-auto px-4 pt-16 pb-12 sm:pt-24 sm:pb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 rounded-full bg-green-500/10 backdrop-blur-sm border border-green-500/20 px-4 py-2 text-sm font-medium text-green-700 dark:text-green-400 mb-8"
+            >
+              <Sprout className="h-4 w-4" />
+              About Sprout
+            </motion.div>
 
-        {/* Intro Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="space-y-4"
-        >
-          <p className="text-muted-foreground leading-relaxed">
-            Yes, you can pick up local, real-world jobs near you. Babysitting. Pet sitting. Errands. Tech help.
-            Small practical tasks that people genuinely need done. You get paid quickly, on your terms, and you stay in control.
-          </p>
-          <div className="text-foreground font-medium space-y-1">
-            <p>That money isn&apos;t just pocket change.</p>
-            <p>It&apos;s independence.</p>
-            <p>It&apos;s paying for certifications, courses, travel, university, or whatever you decide matters.</p>
-          </div>
-          <p className="text-muted-foreground leading-relaxed">
-            But Sprout doesn&apos;t stop at &quot;get a job, get paid.&quot;
-          </p>
-        </motion.section>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[1.1] tracking-tight">
+              Not just a jobs app.
+              <br />
+              <span className="bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                A head start on life.
+              </span>
+            </h1>
 
-        {/* Why Sprout is Different */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
-              <Sparkles className="h-5 w-5 text-purple-600" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold">Why Sprout is different</h2>
-          </div>
-          <div className="space-y-4">
-            <p className="text-muted-foreground leading-relaxed">
-              Most apps help you earn today.<br />
-              Sprout helps you understand what&apos;s next.
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Sprout helps you make money fast — but it&apos;s really about building your future.
             </p>
-            <p className="text-foreground font-medium">
-              Young people aren&apos;t short on ambition — they&apos;re short on insight.
-            </p>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                What jobs actually exist beyond the obvious ones?
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                What do those jobs really involve day-to-day?
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                What skills do they need?
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                What&apos;s changing because of AI and technology?
-              </li>
-              <li className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                Which paths are growing — and which aren&apos;t?
-              </li>
-            </ul>
-            <p className="text-muted-foreground leading-relaxed">
-              Sprout gives you clear, up-to-date insight into the real world of work — without lectures, pressure, or fake hype.
-            </p>
-          </div>
-        </motion.section>
+          </motion.div>
+        </section>
 
-        {/* Your Path, Mapped Out */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/20">
-              <MapPin className="h-5 w-5 text-blue-600" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold">Your path, mapped out</h2>
-          </div>
-          <div className="space-y-4">
-            <p className="text-muted-foreground leading-relaxed">
-              Inside Sprout, everything you do builds your <span className="font-semibold text-foreground">My Path</span>:
-            </p>
-            <ul className="space-y-1 text-muted-foreground pl-4">
-              <li>• The jobs you&apos;ve done</li>
-              <li>• The skills you&apos;re picking up</li>
-              <li>• What you&apos;re naturally good at</li>
-              <li>• Where those strengths could take you next</li>
-            </ul>
-            <div className="text-foreground font-medium space-y-1">
-              <p>Small jobs turn into real experience.</p>
-              <p>Experience turns into clarity.</p>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              Over time, you don&apos;t just earn — you start to see a direction.
-            </p>
-          </div>
-        </motion.section>
+        {/* Value Props - Bento Grid */}
+        <section className="container mx-auto px-4 pb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Main Feature Card */}
+              <Card className="md:col-span-2 border-0 bg-gradient-to-br from-white/80 to-white/60 dark:from-slate-900/80 dark:to-slate-800/60 backdrop-blur-xl shadow-xl overflow-hidden">
+                <CardContent className="p-8 sm:p-10">
+                  <div className="flex flex-col sm:flex-row gap-6 items-start">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+                      <Briefcase className="h-8 w-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-2xl font-bold mb-3">Real jobs. Real money. Your terms.</h2>
+                      <p className="text-muted-foreground text-lg leading-relaxed">
+                        Pick up local jobs near you — babysitting, pet sitting, errands, tech help.
+                        Small practical tasks that people genuinely need done. You get paid quickly,
+                        stay in control, and build independence on your own schedule.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-        {/* AI Guide */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/20">
-              <Brain className="h-5 w-5 text-amber-600" />
+              {/* Independence Card */}
+              <Card className="border-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-900/30 dark:to-pink-900/30 backdrop-blur-xl shadow-lg">
+                <CardContent className="p-6 sm:p-8 h-full flex flex-col">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 w-fit mb-4">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">More than pocket change</h3>
+                  <p className="text-muted-foreground flex-1">
+                    That money is independence. It&apos;s certifications, courses, travel, university —
+                    whatever you decide matters.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Insight Card */}
+              <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:from-blue-900/30 dark:to-cyan-900/30 backdrop-blur-xl shadow-lg">
+                <CardContent className="p-6 sm:p-8 h-full flex flex-col">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 w-fit mb-4">
+                    <Compass className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Beyond "get a job"</h3>
+                  <p className="text-muted-foreground flex-1">
+                    Most apps help you earn today. Sprout helps you understand what&apos;s next —
+                    with real insight into careers, skills, and where work is heading.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold">An AI guide that actually helps</h2>
-          </div>
-          <div className="space-y-4">
-            <p className="text-muted-foreground leading-relaxed">
-              Sprout includes an AI agent designed to guide, not judge.
-            </p>
-            <p className="text-muted-foreground">You can ask things like:</p>
-            <Card className="border bg-muted/30 backdrop-blur-sm">
-              <CardContent className="p-4 space-y-2 text-sm">
-                <p className="italic text-foreground">&quot;What jobs suit me?&quot;</p>
-                <p className="italic text-foreground">&quot;What could I work towards next?&quot;</p>
-                <p className="italic text-foreground">&quot;What skills should I build?&quot;</p>
-                <p className="italic text-foreground">&quot;What&apos;s the reality of this career?&quot;</p>
+          </motion.div>
+        </section>
+
+        {/* Pull Quote */}
+        <section className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <div className="relative">
+              <Sparkles className="absolute -top-4 -left-4 h-8 w-8 text-purple-400/50" />
+              <blockquote className="text-2xl sm:text-3xl font-medium text-foreground leading-relaxed">
+                Young people aren&apos;t short on ambition —
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> they&apos;re short on insight.</span>
+              </blockquote>
+              <Sparkles className="absolute -bottom-4 -right-4 h-8 w-8 text-pink-400/50" />
+            </div>
+          </motion.div>
+        </section>
+
+        {/* My Path Section */}
+        <section className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <Card className="border-0 bg-gradient-to-r from-emerald-500/10 via-green-500/10 to-teal-500/10 dark:from-emerald-900/30 dark:via-green-900/30 dark:to-teal-900/30 backdrop-blur-xl shadow-xl overflow-hidden">
+              <CardContent className="p-0">
+                <div className="grid md:grid-cols-2">
+                  <div className="p-8 sm:p-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600">
+                        <Target className="h-6 w-6 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold">Your path, mapped out</h2>
+                    </div>
+                    <p className="text-muted-foreground text-lg mb-6">
+                      Everything you do builds your <span className="font-semibold text-foreground">My Path</span> —
+                      a living record of where you&apos;ve been and where you could go.
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span className="text-muted-foreground">Jobs completed → Experience gained</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-green-500" />
+                        <span className="text-muted-foreground">Skills identified → Strengths revealed</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-teal-500" />
+                        <span className="text-muted-foreground">Direction emerging → Future forming</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 p-8 sm:p-10 flex items-center justify-center">
+                    <div className="text-center">
+                      <TrendingUp className="h-16 w-16 mx-auto mb-4 text-emerald-600 dark:text-emerald-400" />
+                      <p className="text-lg font-medium text-foreground">Small jobs → Real experience</p>
+                      <p className="text-lg font-medium text-foreground">Experience → Clarity</p>
+                      <p className="text-lg font-medium text-emerald-600 dark:text-emerald-400 mt-2">Clarity → Direction</p>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-            <p className="text-muted-foreground leading-relaxed">
-              It uses the latest information about jobs, skills, pay, and industry changes — including how AI is reshaping work — to help you make smarter choices, earlier.
-            </p>
-          </div>
-        </motion.section>
+          </motion.div>
+        </section>
 
-        {/* Built for This Generation */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/20">
-              <Rocket className="h-5 w-5 text-green-600" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold">Built for this generation</h2>
-          </div>
-          <div className="space-y-4">
-            <p className="text-muted-foreground">Sprout is for people who want:</p>
-            <ul className="space-y-1 text-muted-foreground pl-4">
-              <li>• Easy access to paid work</li>
-              <li>• Real independence</li>
-              <li>• Honest insight into careers</li>
-              <li>• A clearer path forward — without being boxed in</li>
-            </ul>
-            <div className="text-foreground font-medium space-y-1">
-              <p>You start by earning.</p>
-              <p>You grow by learning.</p>
-              <p>You move forward with confidence.</p>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              Sprout isn&apos;t just about your first job.<br />
-              It&apos;s about helping you build what comes after.
-            </p>
-          </div>
-        </motion.section>
-
-        {/* Safety and Trust Section - Preserved */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/20">
-              <Shield className="h-5 w-5 text-green-600" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold">Safety and Trust — Built In</h2>
-          </div>
-
-          <Card className="border-2 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-5 sm:p-6 space-y-6">
-              <p className="text-muted-foreground">
-                Sprout is designed around safety. It shapes every decision we make.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="flex gap-3">
-                  <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 h-fit">
-                    <UserCheck className="h-4 w-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm mb-1">Verified adults</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Adults complete identity verification before they can message you.
+        {/* AI Guide Section */}
+        <section className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <Card className="border-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 dark:from-amber-900/30 dark:to-orange-900/30 backdrop-blur-xl shadow-xl">
+              <CardContent className="p-8 sm:p-10">
+                <div className="flex flex-col lg:flex-row gap-8 items-center">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500">
+                        <Brain className="h-6 w-6 text-white" />
+                      </div>
+                      <h2 className="text-2xl font-bold">An AI guide that actually helps</h2>
+                    </div>
+                    <p className="text-muted-foreground text-lg mb-6">
+                      Sprout includes an AI agent designed to guide, not judge. Ask anything about careers,
+                      skills, or your next move — and get honest, up-to-date answers.
+                    </p>
+                    <p className="text-muted-foreground">
+                      It knows about jobs, pay, industry changes, and how AI is reshaping work —
+                      helping you make smarter choices, earlier.
                     </p>
                   </div>
+                  <div className="lg:w-80 w-full">
+                    <div className="bg-white/50 dark:bg-slate-800/50 rounded-2xl p-5 space-y-3 backdrop-blur-sm border border-amber-500/20">
+                      <div className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2">Ask things like:</div>
+                      {[
+                        "What jobs suit me?",
+                        "What could I work towards?",
+                        "What skills should I build?",
+                        "What's the reality of this career?",
+                      ].map((q, i) => (
+                        <div key={i} className="bg-white/80 dark:bg-slate-700/80 rounded-lg px-4 py-2.5 text-sm">
+                          "{q}"
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </section>
 
-                <div className="flex gap-3">
-                  <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 h-fit">
-                    <MessageSquare className="h-4 w-4 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm mb-1">Structured messaging</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Conversations stay focused on jobs with moderation tools.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 h-fit">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm mb-1">Report & block</h3>
-                    <p className="text-xs text-muted-foreground">
-                      If something feels off, report or block anyone immediately.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30 h-fit">
-                    <Banknote className="h-4 w-4 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm mb-1">Direct payment</h3>
-                    <p className="text-xs text-muted-foreground">
-                      You agree on pay, then handle payment directly — Sprout doesn&apos;t touch your money.
-                    </p>
-                  </div>
-                </div>
+        {/* Built For This Generation */}
+        <section className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600">
+                <Rocket className="h-6 w-6 text-white" />
               </div>
+              <h2 className="text-2xl font-bold">Built for this generation</h2>
+            </div>
 
-              <div className="border-l-4 border-green-500 pl-4 text-sm text-muted-foreground">
-                <p>
-                  These aren&apos;t restrictions — they&apos;re protections. Parents can feel comfortable knowing safety is built in, not bolted on.
-                </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+              {[
+                { icon: Briefcase, text: "Easy access to paid work" },
+                { icon: Zap, text: "Real independence" },
+                { icon: Compass, text: "Honest career insight" },
+                { icon: Target, text: "A path forward" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-5 border border-green-500/10"
+                >
+                  <item.icon className="h-6 w-6 mx-auto mb-3 text-green-600 dark:text-green-400" />
+                  <p className="text-sm font-medium">{item.text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-10 space-y-2 text-lg">
+              <p className="text-muted-foreground">You start by <span className="font-semibold text-foreground">earning</span>.</p>
+              <p className="text-muted-foreground">You grow by <span className="font-semibold text-foreground">learning</span>.</p>
+              <p className="text-muted-foreground">You move forward with <span className="font-semibold text-green-600 dark:text-green-400">confidence</span>.</p>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Safety Section */}
+        <section className="container mx-auto px-4 py-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600">
+                <Shield className="h-6 w-6 text-white" />
               </div>
-            </CardContent>
-          </Card>
-        </motion.section>
+              <h2 className="text-2xl font-bold">Safety built in, not bolted on</h2>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { icon: UserCheck, color: "blue", title: "Verified adults", desc: "Identity verification before any messaging" },
+                { icon: MessageSquare, color: "purple", title: "Structured chat", desc: "Conversations stay focused on jobs" },
+                { icon: AlertCircle, color: "red", title: "Report & block", desc: "Instant tools if something feels off" },
+                { icon: Banknote, color: "green", title: "Direct payment", desc: "You handle money directly — we don't touch it" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Card className="border-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm h-full">
+                    <CardContent className="p-5 flex gap-4">
+                      <div className={`p-2.5 rounded-lg bg-${item.color}-100 dark:bg-${item.color}-900/30 h-fit`}>
+                        <item.icon className={`h-5 w-5 text-${item.color}-600`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold mb-1">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            <p className="text-center text-muted-foreground mt-6 text-sm">
+              Parents can feel comfortable knowing safety is a foundation, not an afterthought.
+            </p>
+          </motion.div>
+        </section>
 
         {/* CTA Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center pt-4"
-        >
-          <Card className="border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 backdrop-blur-sm">
-            <CardContent className="p-6 sm:p-8">
-              <Sprout className="h-10 w-10 mx-auto mb-4 text-green-600" />
-              <h3 className="text-xl font-bold mb-2">Ready to get started?</h3>
-              <p className="text-muted-foreground mb-6">
-                Join thousands of young people already earning and growing with Sprout.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
-                  <Link href="/auth/signup">
-                    Get started
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/jobs">
-                    <Briefcase className="mr-2 h-4 w-4" />
-                    Browse jobs
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.section>
-
-        {/* Footer Note */}
-        <section className="border-t pt-6 text-center">
-          <p className="text-xs text-muted-foreground">
-            This page is accessible at <code className="bg-muted px-1.5 py-0.5 rounded">/about</code> and linked from the main navigation.
-          </p>
+        <section className="container mx-auto px-4 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto"
+          >
+            <Card className="border-0 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-2xl overflow-hidden">
+              <CardContent className="p-8 sm:p-12 text-center relative">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px] opacity-30" />
+                <div className="relative">
+                  <Sprout className="h-12 w-12 mx-auto mb-6 opacity-90" />
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-3">Ready to start growing?</h3>
+                  <p className="text-green-100 mb-8 text-lg">
+                    Join thousands of young people already building their future with Sprout.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button asChild size="lg" variant="secondary" className="text-green-700 font-semibold">
+                      <Link href="/auth/signup">
+                        Get started
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                      <Link href="/jobs">
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        Browse jobs
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         </section>
+
+        {/* Footer */}
+        <footer className="container mx-auto px-4 py-8 border-t border-green-500/10">
+          <p className="text-center text-xs text-muted-foreground">
+            This page is accessible at <code className="bg-muted px-1.5 py-0.5 rounded">/about</code>
+          </p>
+        </footer>
       </div>
     </div>
   );

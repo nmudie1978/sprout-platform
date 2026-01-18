@@ -32,25 +32,14 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Multi-layered gradient background */}
+      {/* Multi-layered gradient background - darker for visible grid */}
       <div className="fixed inset-0 -z-20">
-        {/* Base gradient - slightly darker for visible lines */}
-        <div className="absolute inset-0 bg-gradient-to-br from-green-50/80 via-emerald-50/60 to-teal-50/70 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/30" />
-
-        {/* Secondary gradient overlay - adds depth and color */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/40 via-white/20 to-purple-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-emerald-900/20" />
-
-        {/* Left side color accent */}
-        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/50 to-transparent dark:from-green-950/20 dark:to-transparent" />
-
-        {/* Right side color accent */}
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/40 to-transparent dark:from-emerald-950/20 dark:to-transparent" />
-
-        {/* Radial highlight in center-top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/60 via-emerald-50/30 to-transparent dark:from-green-900/20 dark:via-emerald-950/10 dark:to-transparent blur-2xl" />
-
-        {/* Bottom fade with subtle color */}
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-50/70 via-green-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-100/90 via-emerald-50/80 to-teal-100/90 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/50 via-transparent to-purple-50/40 dark:from-transparent dark:via-slate-800/30 dark:to-emerald-900/30" />
+        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/60 to-transparent dark:from-green-950/30 dark:to-transparent" />
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/50 to-transparent dark:from-emerald-950/30 dark:to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/70 via-emerald-50/40 to-transparent dark:from-green-900/30 dark:via-emerald-950/20 dark:to-transparent blur-2xl" />
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-100/80 via-green-50/50 to-transparent dark:from-slate-950/90 dark:via-slate-900/60 dark:to-transparent" />
       </div>
 
       {/* Animated Background - Gradient Blobs (hidden on mobile for performance) */}
@@ -76,31 +65,18 @@ export default function LandingPage() {
           animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Animated grid - more visible with higher opacity */}
+        {/* Animated grid - higher opacity for visibility */}
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.12)_1px,transparent_1px)] bg-[size:40px_40px]"
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.15)_1px,transparent_1px)] bg-[size:40px_40px]"
+          animate={{ opacity: [0.6, 0.9, 0.6] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         {/* Secondary offset grid for depth */}
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.08)_1px,transparent_1px)] bg-[size:40px_40px]"
+          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"
           style={{ transform: "translate(20px, 20px)" }}
-          animate={{
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
+          animate={{ opacity: [0.5, 0.7, 0.5] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
       </div>
 
