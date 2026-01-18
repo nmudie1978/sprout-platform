@@ -444,7 +444,7 @@ export default function LandingPage() {
               <div className="space-y-6">
                 {[
                   { step: 1, title: "Sign Up Free", desc: "Create your profile in minutes. Add your skills, interests, and availability.", icon: UserPlus, color: "from-blue-500 to-cyan-500" },
-                  { step: 2, title: "Browse Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", icon: Search, color: "from-purple-500 to-pink-500" },
+                  { step: 2, title: "Browse Small Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", icon: Search, color: "from-purple-500 to-pink-500" },
                   { step: 3, title: "Get Hired", desc: "Apply with one click or get 'poked' by interested job posters. Start working fast.", icon: CheckCircle, color: "from-pink-500 to-rose-500" },
                   { step: 4, title: "Earn & Grow", desc: "Complete jobs, collect reviews, and build your verified portfolio.", icon: Star, color: "from-green-500 to-emerald-500" },
                 ].map((item) => (

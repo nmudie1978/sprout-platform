@@ -527,12 +527,12 @@ export default function ApplicationsPage() {
                 <div className="text-4xl mb-3">📋</div>
                 <p className="text-muted-foreground mb-4">
                   {filter === "all"
-                    ? "You haven't applied to any jobs yet"
+                    ? "You haven't applied to any small jobs yet"
                     : `No ${filter.replace("_", " ")} applications`}
                 </p>
                 {filter === "all" ? (
                   <Button asChild>
-                    <Link href="/jobs">Browse Jobs</Link>
+                    <Link href="/jobs">Browse Small Jobs</Link>
                   </Button>
                 ) : (
                   <Button variant="outline" onClick={() => setFilter("all")}>

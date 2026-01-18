@@ -23,7 +23,7 @@ import { JobsMap } from "@/components/jobs-map";
 import { useToast } from "@/hooks/use-toast";
 
 const categoryConfig: Record<string, { label: string; emoji: string; color: string }> = {
-  ALL: { label: "All Jobs", emoji: "🌟", color: "from-purple-500 to-pink-500" },
+  ALL: { label: "All Small Jobs", emoji: "🌟", color: "from-purple-500 to-pink-500" },
   BABYSITTING: { label: "Babysitting", emoji: "👶", color: "from-pink-500 to-rose-500" },
   DOG_WALKING: { label: "Dog Walking", emoji: "🐕", color: "from-amber-500 to-orange-500" },
   SNOW_CLEARING: { label: "Snow Clearing", emoji: "❄️", color: "from-cyan-500 to-blue-500" },

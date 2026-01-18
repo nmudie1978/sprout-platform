@@ -34,7 +34,7 @@ import Link from "next/link";
 import { JobCard as JobCardComponent } from "@/components/job-card";
 
 const categoryConfig: Record<string, { label: string; emoji: string }> = {
-  ALL: { label: "All Jobs", emoji: "🌟" },
+  ALL: { label: "All Small Jobs", emoji: "🌟" },
   BABYSITTING: { label: "Babysitting", emoji: "👶" },
   DOG_WALKING: { label: "Dog Walking", emoji: "🐕" },
   SNOW_CLEARING: { label: "Snow Clearing", emoji: "❄️" },

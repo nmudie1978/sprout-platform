@@ -53,7 +53,7 @@ const suggestedPrompts = [
   },
   {
     icon: Briefcase,
-    label: "Find jobs",
+    label: "Find small jobs",
     prompt: "How can I find my first job as a teenager in Norway?",
     color: "from-purple-500 to-pink-500",
   },

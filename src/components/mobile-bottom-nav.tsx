@@ -16,7 +16,7 @@ interface NavItem {
 const youthNavItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/growth", label: "Growth", icon: TrendingUp, activePattern: /^\/growth/ },
-  { href: "/jobs", label: "Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
+  { href: "/jobs", label: "Small Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
   { href: "/messages", label: "Messages", icon: MessageSquare, activePattern: /^\/messages/ },
   { href: "/profile", label: "", icon: User, activePattern: /^\/profile/ },
 ];

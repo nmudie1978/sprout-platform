@@ -127,7 +127,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const youthLinks: NavLink[] = [
     { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-blue-500" },
-    { href: "/jobs", label: "Find Jobs", icon: Briefcase, isCore: true },
+    { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
@@ -155,7 +155,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
   // Guardian-only links (when user's primary role is COMMUNITY_GUARDIAN)
   const guardianOnlyLinks: NavLink[] = [
     { href: "/guardian", label: "Guardian Dashboard", icon: Shield, isCore: true },
-    { href: "/jobs", label: "Browse Jobs", icon: Briefcase, isCore: false },
+    { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: false },
   ];
 
   const baseLinks =

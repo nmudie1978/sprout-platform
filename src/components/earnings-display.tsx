@@ -176,11 +176,11 @@ export function EarningsDisplay() {
             <div className="text-center py-4">
               <div className="text-4xl mb-2">💰</div>
               <p className="text-sm text-muted-foreground">
-                Complete jobs to start earning!
+                Complete small jobs to start earning!
               </p>
               <Button asChild variant="outline" size="sm" className="mt-2">
                 <Link href="/jobs">
-                  Find Jobs
+                  Find Small Jobs
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>

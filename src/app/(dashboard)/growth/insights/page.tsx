@@ -225,7 +225,7 @@ export default function InsightsPage() {
                 <Link href="/profile">Set career goal</Link>
               </Button>
               <Button asChild>
-                <Link href="/jobs">Browse Jobs</Link>
+                <Link href="/jobs">Browse Small Jobs</Link>
               </Button>
             </div>
           </CardContent>

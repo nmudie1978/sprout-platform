@@ -124,7 +124,7 @@ function StatusTabs({
   counts: Record<JobStatus, number>;
 }) {
   const tabs: { status: JobStatus; label: string; color: string; icon: React.ReactNode }[] = [
-    { status: "ALL", label: "All Jobs", color: "bg-slate-500", icon: <LayoutGrid className="h-4 w-4" /> },
+    { status: "ALL", label: "All Small Jobs", color: "bg-slate-500", icon: <LayoutGrid className="h-4 w-4" /> },
     { status: "POSTED", label: "Open", color: "bg-blue-500", icon: <Zap className="h-4 w-4" /> },
     { status: "ON_HOLD", label: "Paused", color: "bg-yellow-500", icon: <AlertCircle className="h-4 w-4" /> },
     { status: "IN_PROGRESS", label: "Assigned", color: "bg-emerald-500", icon: <Clock className="h-4 w-4" /> },

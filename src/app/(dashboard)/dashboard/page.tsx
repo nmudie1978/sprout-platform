@@ -275,31 +275,31 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="grid grid-cols-3 gap-4 mb-8"
+        className="grid grid-cols-3 gap-2 mb-6"
       >
-        <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{pendingApps.length}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Clock className="h-3 w-3" />
+        <Card className="border bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
+          <CardContent className="py-3 px-2 text-center">
+            <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{pendingApps.length}</div>
+            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+              <Clock className="h-2.5 w-2.5" />
               Pending
             </p>
           </CardContent>
         </Card>
-        <Card className="border-2 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{acceptedApps.length}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <CheckCircle2 className="h-3 w-3" />
+        <Card className="border bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
+          <CardContent className="py-3 px-2 text-center">
+            <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{acceptedApps.length}</div>
+            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+              <CheckCircle2 className="h-2.5 w-2.5" />
               Accepted
             </p>
           </CardContent>
         </Card>
-        <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">{completedJobs}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Star className="h-3 w-3" />
+        <Card className="border bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
+          <CardContent className="py-3 px-2 text-center">
+            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{completedJobs}</div>
+            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+              <Star className="h-2.5 w-2.5" />
               Completed
             </p>
           </CardContent>
@@ -317,7 +317,7 @@ export default function DashboardPage() {
           <CardContent className="p-3">
             <div className="grid grid-cols-4 gap-1">
               {[
-                { href: "/jobs", label: "Find Jobs", icon: Search, color: "text-blue-500" },
+                { href: "/jobs", label: "Small Jobs", icon: Search, color: "text-blue-500" },
                 { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
                 { href: "/pokes", label: "Pokes", icon: HandHeart, color: "text-pink-500" },
                 { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
@@ -365,7 +365,7 @@ export default function DashboardPage() {
                   </div>
                   <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
                     <Link href="/jobs">
-                      Find Jobs <ArrowRight className="h-3 w-3 ml-1" />
+                      Find Small Jobs <ArrowRight className="h-3 w-3 ml-1" />
                     </Link>
                   </Button>
                 </div>
@@ -392,7 +392,7 @@ export default function DashboardPage() {
                     <div className="text-3xl mb-2">📋</div>
                     <p className="text-sm text-muted-foreground mb-3">No applications yet</p>
                     <Button size="sm" asChild>
-                      <Link href="/jobs">Browse Jobs</Link>
+                      <Link href="/jobs">Browse Small Jobs</Link>
                     </Button>
                   </div>
                 )}
@@ -422,7 +422,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <MapPin className="h-5 w-5 text-blue-500" />
-                    <h2 className="font-semibold">Jobs Near You</h2>
+                    <h2 className="font-semibold">Small Jobs Near You</h2>
                   </div>
                   <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
                     <Link href="/jobs">

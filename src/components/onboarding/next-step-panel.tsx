@@ -51,139 +51,86 @@ export function NextStepPanel() {
       transition={{ delay: 0.05 }}
       className="mb-6"
     >
-      <Card className="border-2 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 overflow-hidden">
-        <CardContent className="p-0">
-          {/* Header */}
-          <div className="px-3 py-2 border-b bg-gradient-to-r from-primary/10 to-purple-500/10">
-            <div className="flex items-center gap-2">
-              <div className="p-1 rounded-md bg-primary/10">
-                <Target className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <h2 className="font-semibold text-sm">Your Next Step</h2>
-              {careerAspiration && (
-                <Badge variant="secondary" className="ml-auto text-[10px] px-2 py-0.5">
-                  Career goal: {careerAspiration}
-                </Badge>
-              )}
+      {/* Outer neon frame */}
+      <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 p-3 shadow-[0_0_15px_rgba(124,58,237,0.15)]">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1 rounded-md bg-primary/10">
+              <Target className="h-3.5 w-3.5 text-primary" />
             </div>
+            <span className="font-semibold text-sm">Your Next Step</span>
           </div>
+          {careerAspiration && (
+            <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+              Career goal: {careerAspiration}
+            </Badge>
+          )}
+        </div>
 
-          <div className="p-3 space-y-3">
-            {/* Primary Suggestion */}
-            <div className="flex items-start gap-2">
-              <div className="p-1.5 rounded-md bg-primary/10 flex-shrink-0">
-                <Sparkles className="h-4 w-4 text-primary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm">{suggestion.suggestion}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {suggestion.reason}
-                </p>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="mt-2 h-7 text-xs px-3"
-                  asChild
-                >
-                  <Link href={suggestion.action.href}>
-                    {suggestion.action.label}
-                    <ArrowRight className="h-3 w-3 ml-1" />
-                  </Link>
-                </Button>
-              </div>
+        {/* 4 columns */}
+        <div className="grid grid-cols-4 gap-2">
+          {/* 1. Suggested Action */}
+          <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 flex flex-col">
+            <div className="flex items-center gap-1.5 text-primary mb-1.5">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="text-[10px] font-medium uppercase tracking-wide">Do This</span>
             </div>
-
-            {/* Bottom row: Job + Growth link */}
-            <div className="grid sm:grid-cols-2 gap-2">
-              {/* Top Job Pick */}
-              {topJob ? (
-                <Link href={`/jobs/${topJob.id}`} className="block group">
-                  <div className="p-2.5 rounded-lg border bg-card hover:bg-muted/50 transition-all h-full">
-                    <div className="flex items-start gap-2">
-                      <span className="text-base">
-                        {categoryEmojis[topJob.category] || "✨"}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1">
-                          <Briefcase className="h-2.5 w-2.5 text-muted-foreground" />
-                          <span className="text-[10px] text-muted-foreground">
-                            Top job match
-                          </span>
-                        </div>
-                        <p className="font-medium text-sm truncate">
-                          {topJob.title}
-                        </p>
-                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                          <span className="flex items-center gap-0.5">
-                            <MapPin className="h-2.5 w-2.5" />
-                            {topJob.location?.split(",")[0] || "Nearby"}
-                          </span>
-                          <span className="font-medium text-gray-600 dark:text-gray-400">
-                            {formatCurrency(topJob.payAmount)}
-                          </span>
-                        </div>
-                        {topJob.reasons.length > 0 && (
-                          <p className="text-[10px] text-primary mt-0.5">
-                            {topJob.reasons[0]}
-                          </p>
-                        )}
-                      </div>
-                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
-                    </div>
-                  </div>
-                </Link>
-              ) : (
-                <Link href="/jobs" className="block group">
-                  <div className="p-2.5 rounded-lg border bg-card hover:bg-muted/50 transition-all h-full flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-blue-50 dark:bg-blue-950/30">
-                      <Briefcase className="h-3.5 w-3.5 text-blue-500" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">Find your first job</p>
-                      <p className="text-[10px] text-muted-foreground">
-                        Browse opportunities near you
-                      </p>
-                    </div>
-                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </div>
-                </Link>
-              )}
-
-              {/* Growth Anchor */}
-              <Link href="/growth" className="block group">
-                <div className="p-2.5 rounded-lg border bg-card hover:bg-muted/50 transition-all h-full flex items-center gap-2">
-                  <div className="p-1.5 rounded-md bg-purple-50 dark:bg-purple-950/30">
-                    <TrendingUp className="h-3.5 w-3.5 text-purple-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">See My Growth</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      Track your progress
-                    </p>
-                  </div>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-purple-500 transition-colors" />
-                </div>
+            <p className="text-xs font-medium flex-1">{suggestion.suggestion}</p>
+            <Button size="sm" className="w-full h-6 text-[10px] mt-2" asChild>
+              <Link href={suggestion.action.href}>
+                {suggestion.action.label}
+                <ArrowRight className="h-2.5 w-2.5 ml-1" />
               </Link>
-            </div>
-
-            {/* AI Advisor Link */}
-            <Link href="/career-advisor" className="block group">
-              <div className="p-2.5 rounded-lg border border-dashed border-primary/30 bg-gradient-to-r from-primary/5 to-purple-500/5 hover:from-primary/10 hover:to-purple-500/10 transition-all flex items-center gap-2">
-                <div className="p-1.5 rounded-md bg-gradient-to-br from-primary/20 to-purple-500/20">
-                  <Bot className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Ask Sprout AI</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    Get personalised career advice
-                  </p>
-                </div>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-            </Link>
+            </Button>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* 2. Top Job */}
+          <Link href={topJob ? `/jobs/${topJob.id}` : "/jobs"} className="block group">
+            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-blue-300 transition-colors">
+              <div className="flex items-center gap-1.5 text-blue-500 mb-1.5">
+                <Briefcase className="h-3.5 w-3.5" />
+                <span className="text-[10px] font-medium uppercase tracking-wide">Top Small Job</span>
+                <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              {topJob ? (
+                <>
+                  <p className="text-xs font-medium truncate">{topJob.title}</p>
+                  <p className="text-[10px] text-muted-foreground">{topJob.location?.split(",")[0]} · {formatCurrency(topJob.payAmount)}</p>
+                </>
+              ) : (
+                <p className="text-xs text-muted-foreground">Find small jobs near you</p>
+              )}
+            </div>
+          </Link>
+
+          {/* 3. My Growth */}
+          <Link href="/growth" className="block group">
+            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-purple-300 transition-colors">
+              <div className="flex items-center gap-1.5 text-purple-500 mb-1.5">
+                <TrendingUp className="h-3.5 w-3.5" />
+                <span className="text-[10px] font-medium uppercase tracking-wide">Growth</span>
+                <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-xs font-medium">Track progress</p>
+              <p className="text-[10px] text-muted-foreground">Skills & achievements</p>
+            </div>
+          </Link>
+
+          {/* 4. Ask AI */}
+          <Link href="/career-advisor" className="block group">
+            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-primary/50 transition-colors">
+              <div className="flex items-center gap-1.5 text-primary mb-1.5">
+                <Bot className="h-3.5 w-3.5" />
+                <span className="text-[10px] font-medium uppercase tracking-wide">Ask AI</span>
+                <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <p className="text-xs font-medium">Career advice</p>
+              <p className="text-[10px] text-muted-foreground">Personalised guidance</p>
+            </div>
+          </Link>
+        </div>
+      </div>
     </motion.div>
   );
 }

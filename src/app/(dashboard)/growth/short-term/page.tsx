@@ -272,10 +272,10 @@ export default function ShortTermGrowthPage() {
           <Briefcase className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
           <h3 className="font-semibold text-lg mb-2">No growth data yet</h3>
           <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-            Complete your first job to start tracking your progress and building trust signals.
+            Complete your first small job to start tracking your progress and building trust signals.
           </p>
           <Button asChild className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700">
-            <Link href="/jobs">Browse Jobs</Link>
+            <Link href="/jobs">Browse Small Jobs</Link>
           </Button>
         </CardContent>
       </Card>

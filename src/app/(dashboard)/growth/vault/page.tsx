@@ -158,12 +158,12 @@ export default function VaultPage() {
             <Card className="border-2 border-dashed">
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                <h3 className="font-semibold mb-2">No saved jobs yet</h3>
+                <h3 className="font-semibold mb-2">No saved small jobs yet</h3>
                 <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
-                  When browsing jobs, click the heart icon to save opportunities you're interested in.
+                  When browsing small jobs, click the heart icon to save opportunities you're interested in.
                 </p>
                 <Button asChild>
-                  <Link href="/jobs">Browse Jobs</Link>
+                  <Link href="/jobs">Browse Small Jobs</Link>
                 </Button>
               </CardContent>
             </Card>

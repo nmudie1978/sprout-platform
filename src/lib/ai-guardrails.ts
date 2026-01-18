@@ -431,7 +431,7 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
   if (lower.includes("how do i") || lower.includes("where") || lower.includes("find")) {
     return "I can help you navigate the platform!\n\n" +
       "**Key areas:**\n" +
-      "• **Find Jobs** - Browse available jobs and apply\n" +
+      "• **Small Jobs** - Browse available small jobs and apply\n" +
       "• **My Profile** - Update your info and track your skills\n" +
       "• **Messages** - Chat with employers about jobs\n" +
       "• **Explore Careers** - Discover different career paths\n\n" +
