@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { applicationSchema } from "@/lib/validations/job";
 import { canYouthApplyToJobs } from "@/lib/safety";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
+import { canApplyToJob, logAgeEligibilityEvent } from "@/lib/age-policy/utils";
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,6 +45,30 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const validatedData = applicationSchema.parse(body);
+
+    // Age eligibility check - server-side enforcement
+    const ageCheck = await canApplyToJob(session.user.id, validatedData.jobId);
+    if (!ageCheck.allowed) {
+      // Log the blocked application attempt
+      await logAgeEligibilityEvent({
+        workerId: session.user.id,
+        jobId: validatedData.jobId,
+        action: "APPLY_BLOCKED",
+        reason: ageCheck.reason,
+        requiredMinAge: ageCheck.requiredAge ?? 0,
+        userAgeYears: ageCheck.userAge,
+      });
+
+      return NextResponse.json(
+        {
+          error: ageCheck.reason,
+          code: "AGE_INELIGIBLE",
+          userAge: ageCheck.userAge,
+          requiredAge: ageCheck.requiredAge,
+        },
+        { status: 403 }
+      );
+    }
 
     // Check if already applied
     const existingApplication = await prisma.application.findUnique({
@@ -98,6 +123,16 @@ export async function POST(req: NextRequest) {
         message: `${youthProfile?.displayName || "A youth worker"} applied for "${job.title}"`,
         link: `/employer/dashboard`,
       },
+    });
+
+    // Log successful application for audit
+    await logAgeEligibilityEvent({
+      workerId: session.user.id,
+      jobId: validatedData.jobId,
+      action: "APPLY_ALLOWED",
+      reason: "Age eligibility check passed",
+      requiredMinAge: ageCheck.requiredAge ?? 0,
+      userAgeYears: ageCheck.userAge,
     });
 
     return NextResponse.json(application, { status: 201 });

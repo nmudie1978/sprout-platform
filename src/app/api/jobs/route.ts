@@ -12,6 +12,12 @@ import {
   type JobInput,
 } from "@/lib/compliance";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
+import {
+  applyAgePolicyToJob,
+  logAgeEligibilityEvent,
+  buildAgeEligibilityFilter,
+  getUserAge,
+} from "@/lib/age-policy/utils";
 
 export async function GET(req: NextRequest) {
   try {
@@ -55,13 +61,20 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    // Age-based filtering for youth users
-    // Only show jobs that match the user's age bracket
-    if (session?.user?.role === "YOUTH" && session.user.ageBracket) {
-      const ageGroup = session.user.ageBracket === "SIXTEEN_SEVENTEEN" ? "15-17" : "18-20";
-      where.eligibleAgeGroups = {
-        has: ageGroup,
-      };
+    // Age-based filtering for youth users using minimumAge field
+    // includeIneligible=true shows all jobs (for "Next" unlock feature)
+    const includeIneligible = searchParams.get("includeIneligible") === "true";
+    let userAge: number | null = null;
+
+    if (session?.user?.role === "YOUTH" && session.user.id) {
+      // Get the user's actual age from database
+      userAge = await getUserAge(session.user.id);
+
+      if (userAge !== null) {
+        // Apply age eligibility filter based on minimumAge
+        const ageFilter = buildAgeEligibilityFilter(userAge, includeIneligible);
+        Object.assign(where, ageFilter);
+      }
     }
 
     // Include full applications data if employer is fetching their own jobs
@@ -99,6 +112,11 @@ export async function GET(req: NextRequest) {
         updatedAt: true,
         standardCategoryId: true,
         standardTemplateId: true,
+        // Age safety policy fields
+        riskCategory: true,
+        minimumAge: true,
+        requiresAdultPresent: true,
+        agePolicyVersion: true,
         standardCategory: {
           select: {
             id: true,
@@ -190,7 +208,7 @@ export async function GET(req: NextRequest) {
         })
       : jobs;
 
-    // Return with pagination metadata
+    // Return with pagination metadata and age context
     const response = NextResponse.json({
       jobs: sortedJobs,
       pagination: {
@@ -200,6 +218,11 @@ export async function GET(req: NextRequest) {
         totalPages: Math.ceil(totalCount / limit),
         hasMore: page * limit < totalCount,
       },
+      // Include age context for frontend to show unlock messages
+      ageContext: userAge !== null ? {
+        userAge,
+        includeIneligible,
+      } : undefined,
     });
 
     // Add cache headers for public job listings (not employer's own jobs)
@@ -312,6 +335,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Apply age policy to derive risk category and enforce minimum age floor
+    // Employer can specify a higher minimum age but never lower than baseline
+    const requestedMinAge = body.minimumAge ? parseInt(body.minimumAge, 10) : undefined;
+    const agePolicyResult = applyAgePolicyToJob({
+      category: validatedData.category,
+      requestedMinAge,
+      requestedRequiresAdult: body.requiresAdultPresent,
+    });
+
     // Geocode the location (don't block on failure)
     let latitude: number | null = null;
     let longitude: number | null = null;
@@ -348,8 +380,23 @@ export async function POST(req: NextRequest) {
         // Standard taxonomy fields (optional)
         standardCategoryId: validatedData.standardCategoryId || null,
         standardTemplateId: validatedData.standardTemplateId || null,
+        // Age safety policy fields
+        riskCategory: agePolicyResult.riskCategory,
+        minimumAge: agePolicyResult.minimumAge,
+        requiresAdultPresent: agePolicyResult.requiresAdultPresent,
+        agePolicyVersion: agePolicyResult.agePolicyVersion,
       },
     });
+
+    // Log age policy adjustment if minimum age was raised to baseline
+    if (agePolicyResult.wasMinAgeAdjusted && requestedMinAge !== undefined) {
+      await logAgeEligibilityEvent({
+        jobId: job.id,
+        action: "JOB_PUBLISH_ADJUSTED",
+        reason: `Employer requested minimum age ${requestedMinAge}, adjusted to baseline ${agePolicyResult.minimumAge} for ${validatedData.category} category`,
+        requiredMinAge: agePolicyResult.minimumAge,
+      });
+    }
 
     // Include compliance warnings in response
     const warnings = [
@@ -365,6 +412,13 @@ export async function POST(req: NextRequest) {
           warnings: warnings.length > 0 ? warnings : undefined,
           minorsCompliant: isCompliantForMinors,
           youngAdultsCompliant: isCompliantForYoungAdults,
+        },
+        agePolicy: {
+          riskCategory: agePolicyResult.riskCategory,
+          minimumAge: agePolicyResult.minimumAge,
+          requiresAdultPresent: agePolicyResult.requiresAdultPresent,
+          policyVersion: agePolicyResult.agePolicyVersion,
+          wasMinAgeAdjusted: agePolicyResult.wasMinAgeAdjusted,
         },
       },
       { status: 201 }
