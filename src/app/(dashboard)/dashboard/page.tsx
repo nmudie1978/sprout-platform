@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,6 +38,8 @@ import { ProfileStrengthCompact } from "@/components/profile-strength-compact";
 import { BadgesDisplay } from "@/components/badges-display";
 import { VerificationStatus } from "@/components/verification-status";
 import { JobCardSimple } from "@/components/job-card";
+import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { NextStepPanel } from "@/components/onboarding/next-step-panel";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "👶",
@@ -163,6 +166,37 @@ function ApplicationCard({ app }: { app: any }) {
 
 export default function DashboardPage() {
   const { data: session } = useSession();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+
+  // Query onboarding status
+  const { data: onboardingStatus } = useQuery({
+    queryKey: ["onboarding-status"],
+    queryFn: async () => {
+      const response = await fetch("/api/onboarding");
+      if (!response.ok) throw new Error("Failed to fetch onboarding status");
+      return response.json();
+    },
+    enabled: session?.user.role === "YOUTH",
+    staleTime: 60 * 1000,
+  });
+
+  // Show onboarding modal if needed
+  useEffect(() => {
+    if (onboardingStatus) {
+      if (onboardingStatus.needsOnboarding) {
+        setShowOnboarding(true);
+        setOnboardingComplete(false);
+      } else {
+        setOnboardingComplete(true);
+      }
+    }
+  }, [onboardingStatus]);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    setOnboardingComplete(true);
+  };
 
   const { data: applicationsData } = useQuery({
     queryKey: ["my-applications"],
@@ -226,6 +260,15 @@ export default function DashboardPage() {
         description="Here's your job activity overview"
         icon={LayoutDashboard}
       />
+
+      {/* Onboarding Modal */}
+      <OnboardingWizard
+        open={showOnboarding}
+        onComplete={handleOnboardingComplete}
+      />
+
+      {/* Next Step Panel - shows after onboarding */}
+      {onboardingComplete && <NextStepPanel />}
 
       {/* Stats Bar */}
       <motion.div
