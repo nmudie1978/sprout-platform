@@ -224,6 +224,11 @@ export async function POST(req: NextRequest) {
     const openai = getOpenAIClient();
     if (!openai) {
       // OpenAI is not configured - use smart fallback
+      console.log("[Chat API] OpenAI not configured, using fallback. Key check:", {
+        hasKey: !!process.env.OPENAI_API_KEY,
+        keyLength: process.env.OPENAI_API_KEY?.length || 0,
+        startsWithSk: process.env.OPENAI_API_KEY?.startsWith("sk-") || false,
+      });
       const fallbackResponse = getSmartFallbackResponse(message, intent);
 
       // Log that we're using fallback mode
@@ -245,15 +250,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Call OpenAI with optional Life Skills tool
+    console.log("[Chat API] Calling OpenAI with intent:", intent, "message:", message.substring(0, 50));
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and affordable
       messages,
       temperature: 0.7,
-      max_tokens: 300, // Keep responses concise
+      max_tokens: 600, // Allow detailed responses for questions like "day in the life"
       ...(lifeSkillsAIEnabled && isYouth && { tools: [lifeSkillsTool] }),
     });
 
     let assistantMessage = completion.choices[0]?.message?.content || "";
+    console.log("[Chat API] OpenAI response received, length:", assistantMessage.length);
     let lifeSkillRecommended: { cardKey: string; reason: string } | null = null;
 
     // Handle tool calls if any (Life Skills recommendation)
@@ -325,9 +332,15 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     // Log error for debugging (in development/staging)
-    console.error("Chat API error:", error?.message || error);
+    console.error("[Chat API] Error occurred:", {
+      message: error?.message || error,
+      name: error?.name,
+      status: error?.status,
+      code: error?.code,
+    });
 
     // Use smart fallback - we have message and intent from early parsing
+    console.log("[Chat API] Using fallback due to error");
     const fallbackMessage = getSmartFallbackResponse(message, intent);
 
     return NextResponse.json({

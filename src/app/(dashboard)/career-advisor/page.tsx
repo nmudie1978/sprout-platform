@@ -173,7 +173,7 @@ export default function CareerAdvisorPage() {
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
-          description="Get personalized career guidance, explore opportunities, and plan your path forward"
+          description="Get personalised career guidance, explore opportunities, and plan your path forward"
           icon={Bot}
         />
         <Card className="border-2 mt-8">
@@ -193,7 +193,7 @@ export default function CareerAdvisorPage() {
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
-          description="Get personalized career guidance, explore opportunities, and plan your path forward"
+          description="Get personalised career guidance, explore opportunities, and plan your path forward"
           icon={Bot}
         />
         <Card className="border-2 mt-8">
@@ -203,7 +203,7 @@ export default function CareerAdvisorPage() {
             </div>
             <h3 className="text-xl font-bold mb-2">Sign in to use the AI Advisor</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Create a free account or sign in to get personalized career guidance,
+              Create a free account or sign in to get personalised career guidance,
               explore opportunities, and chat with our AI career advisor.
             </p>
             <div className="flex gap-3 justify-center">
@@ -250,7 +250,7 @@ export default function CareerAdvisorPage() {
       <PageHeader
         title="AI Career"
         gradientText="Advisor"
-        description="Get personalized career guidance, explore opportunities, and plan your path forward"
+        description="Get personalised career guidance, explore opportunities, and plan your path forward"
         icon={Bot}
       />
 

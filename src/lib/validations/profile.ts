@@ -6,6 +6,7 @@ export const youthProfileSchema = z.object({
   phoneNumber: z.string().max(20).optional().or(z.literal("")),
   bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
   availability: z.string().max(200).optional(),
+  city: z.string().min(1, "City is required").max(100, "City must be less than 100 characters"),
   interests: z.array(z.string()).default([]),
   guardianEmail: z.string().email("Invalid email").optional().or(z.literal("")),
   guardianConsent: z.boolean().optional(),

@@ -201,7 +201,7 @@ export function CareerQuiz() {
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
-              Get personalized industry recommendations
+              Get personalised industry recommendations
             </div>
           </div>
           <Button

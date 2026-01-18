@@ -80,7 +80,7 @@ export default function CareersPage() {
     transition: { duration: 0.5 },
   };
 
-  // Fetch career insights for personalized match scores
+  // Fetch career insights for personalised match scores
   const { data: insightsData } = useQuery({
     queryKey: ["career-insights"],
     queryFn: async () => {
@@ -321,7 +321,7 @@ export default function CareersPage() {
                 {isYouth && recommendationMap.size > 0 && (
                   <Badge variant="secondary" className="bg-purple-500/10 text-purple-600">
                     <Sparkles className="h-3 w-3 mr-1" />
-                    Personalized
+                    Personalised
                   </Badge>
                 )}
                 <Badge variant="outline" className="text-xs">
@@ -392,7 +392,7 @@ export default function CareersPage() {
           <Card className="border-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
             <CardContent className="py-8 text-center">
               <h3 className="text-lg font-semibold mb-2">
-                Get Personalized Career Recommendations
+                Get Personalised Career Recommendations
               </h3>
               <p className="text-muted-foreground mb-4">
                 Sign up as a youth worker to get career matches based on your job experience

@@ -62,9 +62,10 @@ export default function ProfilePage() {
     careerAspiration: "",
   });
   const formInitializedRef = useRef(false);
+  const lastUserIdRef = useRef<string | null>(null);
 
   const { data: profile, isLoading } = useQuery({
-    queryKey: ["my-profile"],
+    queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
       const response = await fetch("/api/profile");
       if (!response.ok) {
@@ -73,9 +74,18 @@ export default function ProfilePage() {
       }
       return response.json();
     },
+    enabled: !!session?.user?.id && session?.user?.role === "YOUTH",
     staleTime: 30 * 1000, // Cache for 30 seconds before refetching
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
+
+  // Reset form initialization when user changes (sign out/in)
+  useEffect(() => {
+    if (session?.user?.id && session.user.id !== lastUserIdRef.current) {
+      formInitializedRef.current = false;
+      lastUserIdRef.current = session.user.id;
+    }
+  }, [session?.user?.id]);
 
   // Only initialize form data once when profile first loads
   useEffect(() => {

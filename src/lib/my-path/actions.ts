@@ -5,6 +5,15 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { skillsPerJobCategory } from "../../../prisma/seed";
 import type { JobCategory, Prisma } from "@prisma/client";
+import {
+  getRecommendationsFromAspiration,
+  calculateCareerMatch,
+  getCareerById,
+  getCategoryForCareer,
+  getCareersForCategory,
+  type Career,
+  type CareerCategory,
+} from "@/lib/career-pathways";
 
 // Types for My Path data
 export interface PathOverview {
@@ -104,6 +113,130 @@ export interface AlertEvent {
   reason: string;
   seenAt: Date | null;
   createdAt: Date;
+}
+
+// Career Journey types for long-term career planning
+export interface CareerJourneyData {
+  targetCareer: Career | null;
+  careerAspiration: string | null;
+  educationPath: string | null;
+  skillsNeeded: string[];
+  skillsYouHave: string[];
+  skillsToGain: string[];
+  skillMatchPercent: number;
+  relatedCareers: Career[];
+  category: CareerCategory | null;
+  completedJobsCount: number;
+  totalEarnings: number;
+}
+
+// Get Career Journey - the user's long-term career path
+export async function getCareerJourney(): Promise<CareerJourneyData | null> {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "YOUTH") return null;
+
+  const userId = session.user.id;
+
+  // Fetch user profile and skill data
+  const [youthProfile, skillSignals, completedJobs] = await Promise.all([
+    prisma.youthProfile.findUnique({
+      where: { userId },
+      select: {
+        careerAspiration: true,
+        desiredRoles: true,
+      },
+    }),
+    prisma.userSkillSignal.findMany({
+      where: { userId },
+      include: { skill: true },
+    }),
+    prisma.jobCompletion.findMany({
+      where: {
+        youthId: userId,
+        outcome: "COMPLETED",
+      },
+      include: {
+        job: {
+          select: { payAmount: true },
+        },
+      },
+    }),
+  ]);
+
+  // Extract user's skills
+  const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
+
+  // Find target career from aspiration
+  let targetCareer: Career | null = null;
+  let category: CareerCategory | null = null;
+
+  if (youthProfile?.careerAspiration) {
+    const recommendations = getRecommendationsFromAspiration(youthProfile.careerAspiration);
+    if (recommendations.length > 0) {
+      targetCareer = recommendations[0].career;
+      category = getCategoryForCareer(targetCareer.id) || null;
+    }
+  }
+
+  // If no aspiration, try to match from desiredRoles
+  if (!targetCareer && youthProfile?.desiredRoles?.length) {
+    const roleAspiration = youthProfile.desiredRoles.join(" ");
+    const recommendations = getRecommendationsFromAspiration(roleAspiration);
+    if (recommendations.length > 0) {
+      targetCareer = recommendations[0].career;
+      category = getCategoryForCareer(targetCareer.id) || null;
+    }
+  }
+
+  // Calculate skills analysis
+  const skillsNeeded = targetCareer?.keySkills || [];
+  const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
+
+  const skillsYouHave = userSkills.filter((skill) =>
+    skillsNeededLower.some(
+      (needed) => needed.includes(skill) || skill.includes(needed)
+    )
+  );
+
+  const skillsToGain = skillsNeeded.filter(
+    (skill) =>
+      !userSkills.some(
+        (userSkill) =>
+          userSkill.includes(skill.toLowerCase()) ||
+          skill.toLowerCase().includes(userSkill)
+      )
+  );
+
+  const skillMatchPercent = targetCareer
+    ? calculateCareerMatch(userSkills, targetCareer)
+    : 0;
+
+  // Get related careers in same category
+  const relatedCareers = category
+    ? getCareersForCategory(category)
+        .filter((c) => c.id !== targetCareer?.id)
+        .slice(0, 4)
+    : [];
+
+  // Calculate total earnings
+  const totalEarnings = completedJobs.reduce(
+    (sum, app) => sum + (app.job.payAmount || 0),
+    0
+  );
+
+  return {
+    targetCareer,
+    careerAspiration: youthProfile?.careerAspiration || null,
+    educationPath: targetCareer?.educationPath || null,
+    skillsNeeded,
+    skillsYouHave,
+    skillsToGain,
+    skillMatchPercent,
+    relatedCareers,
+    category,
+    completedJobsCount: completedJobs.length,
+    totalEarnings,
+  };
 }
 
 // Get My Path Overview

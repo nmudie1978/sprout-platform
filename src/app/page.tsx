@@ -92,7 +92,7 @@ export default function LandingPage() {
       </div>
 
       {/* Floating Bubbles - Subtle, on sides only, behind content (hidden on mobile for performance) */}
-      <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none hidden sm:block">
+      <div className="fixed inset-0 z-[1] overflow-hidden pointer-events-none hidden sm:block">
         {/* Left side bubbles */}
         {[...Array(5)].map((_, i) => (
           <motion.div
@@ -595,7 +595,7 @@ export default function LandingPage() {
               { icon: GraduationCap, title: "Guardian Consent", desc: "Parents approve before minors can work. Full visibility and peace of mind" },
               { icon: Award, title: "Verified Posters", desc: "Age verification required. Optional BankID/Vipps for highest trust" },
               { icon: MapPin, title: "Local Community", desc: "Neighbors helping neighbors. Build relationships that last beyond single jobs" },
-              { icon: Sparkles, title: "AI Career Advisor", desc: "Your dedicated AI agent provides personalized career guidance based on your goals and interests" },
+              { icon: Sparkles, title: "AI Career Advisor", desc: "Your dedicated AI agent provides personalised career guidance based on your goals and interests" },
             ].map((item) => (
               <div key={item.title} className="text-center p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">

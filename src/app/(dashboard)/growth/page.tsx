@@ -5,346 +5,147 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { PageHeader } from "@/components/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import {
-  TrendingUp,
-  TrendingDown,
-  Award,
+  Target,
   Briefcase,
-  Star,
-  Shield,
-  Clock,
-  MessageSquare,
-  Users,
-  Sparkles,
-  ChevronRight,
+  BookOpen,
+  ArrowRight,
   Loader2,
   Lock,
-  AlertTriangle,
-  Lightbulb,
-  ThumbsUp,
-  Target,
-  RefreshCw,
+  Settings,
+  Zap,
+  TrendingUp,
+  GraduationCap,
+  Sparkles,
+  CheckCircle2,
+  ChevronRight,
+  Bot,
 } from "lucide-react";
 import Link from "next/link";
+import { getCareerJourney, type CareerJourneyData } from "@/lib/my-path/actions";
+import { formatCurrency } from "@/lib/utils";
 
-// Trust signal type to icon/color mapping
-const trustSignalConfig: Record<string, { icon: typeof Star; color: string; bg: string }> = {
-  ON_TIME: { icon: Clock, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30" },
-  GOOD_COMMS: { icon: MessageSquare, color: "text-green-600", bg: "bg-green-100 dark:bg-green-900/30" },
-  REPEAT_HIRE: { icon: Users, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30" },
-  HELPED_OTHER: { icon: Sparkles, color: "text-pink-600", bg: "bg-pink-100 dark:bg-pink-900/30" },
-  COMMUNITY_REPORT_RESOLVED: { icon: Shield, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30" },
-  POSITIVE_TREND: { icon: TrendingUp, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
-  CONSISTENCY_STREAK: { icon: Award, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-900/30" },
-};
-
-// Skill category colors
-const skillCategoryColors: Record<string, string> = {
-  CARE: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
-  HOME: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  OUTDOOR: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  TECH: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
-  SERVICE: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
-  CREATIVE: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
-  OTHER: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-};
-
-// ============================================
-// CONSTRUCTIVE FEEDBACK SYSTEM
-// Analyzes stats and provides balanced, actionable feedback
-// ============================================
-
-interface FeedbackItem {
-  type: "success" | "warning" | "improvement" | "tip";
-  title: string;
-  message: string;
-  actionTip?: string;
-}
-
-function analyzeGrowthStats(growth: any): FeedbackItem[] {
-  const feedback: FeedbackItem[] = [];
-
-  if (!growth || growth.totalJobsCompleted === 0) {
-    return feedback;
+// North Star Banner Component
+function NorthStarBanner({ journey }: { journey: CareerJourneyData | null }) {
+  if (!journey?.targetCareer) {
+    return (
+      <Card className="border-2 border-dashed border-emerald-300 dark:border-emerald-700 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
+        <CardContent className="py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <Target className="h-6 w-6 text-emerald-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Set your career goal</h3>
+                <p className="text-sm text-muted-foreground">
+                  Tell us your dream career and we'll tailor everything to help you get there.
+                </p>
+              </div>
+            </div>
+            <Link href="/profile">
+              <Button variant="outline" className="border-emerald-300 hover:bg-emerald-50">
+                <Settings className="h-4 w-4 mr-2" />
+                Set goal
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
-
-  const { totalJobsCompleted, totalWouldRehire, monthlyProgress, skillsDemonstrated } = growth;
-
-  // 1. Analyze Would-Rehire Rate
-  const rehireRate = totalJobsCompleted > 0 ? (totalWouldRehire / totalJobsCompleted) * 100 : 0;
-
-  if (totalJobsCompleted >= 3) { // Only show after enough data
-    if (rehireRate >= 80) {
-      feedback.push({
-        type: "success",
-        title: "Employers love working with you",
-        message: `${Math.round(rehireRate)}% of employers said they'd hire you again. That's excellent!`,
-      });
-    } else if (rehireRate >= 60) {
-      feedback.push({
-        type: "tip",
-        title: "Good rehire rate, room to grow",
-        message: `${Math.round(rehireRate)}% would rehire you. A few small improvements could push this higher.`,
-        actionTip: "Try asking employers for specific feedback after each job to understand what went well.",
-      });
-    } else if (rehireRate >= 40) {
-      feedback.push({
-        type: "warning",
-        title: "Your rehire rate needs attention",
-        message: `Only ${Math.round(rehireRate)}% of employers said they'd hire you again. This is below average.`,
-        actionTip: "Before each job, clarify expectations. After, ask: 'What could I have done better?' Small changes add up.",
-      });
-    } else {
-      feedback.push({
-        type: "improvement",
-        title: "Let's work on this together",
-        message: `Your rehire rate is ${Math.round(rehireRate)}%. This is a signal that something's not clicking.`,
-        actionTip: "Consider: Are you arriving on time? Communicating clearly? Completing tasks fully? Pick one area to focus on for your next 3 jobs.",
-      });
-    }
-  }
-
-  // 2. Analyze Monthly Trends (if we have enough months)
-  if (monthlyProgress && monthlyProgress.length >= 2) {
-    const recentMonths = monthlyProgress.slice(-3);
-    const olderMonths = monthlyProgress.slice(-6, -3);
-
-    if (recentMonths.length > 0 && olderMonths.length > 0) {
-      const recentAvg = recentMonths.reduce((sum: number, m: any) => sum + m.jobsCompleted, 0) / recentMonths.length;
-      const olderAvg = olderMonths.reduce((sum: number, m: any) => sum + m.jobsCompleted, 0) / olderMonths.length;
-
-      if (recentAvg < olderAvg * 0.5 && olderAvg >= 2) {
-        feedback.push({
-          type: "warning",
-          title: "Your activity has dropped",
-          message: "You're completing fewer jobs recently compared to before.",
-          actionTip: "If you're busy with school or life, that's okay! When ready, try setting a goal of just 1 job per week to rebuild momentum.",
-        });
-      } else if (recentAvg > olderAvg * 1.5) {
-        feedback.push({
-          type: "success",
-          title: "You're picking up steam",
-          message: "Great job! You're completing more work recently. Keep it up!",
-        });
-      }
-    }
-
-    // Check most recent month's scores if available
-    const lastMonth = monthlyProgress[monthlyProgress.length - 1];
-    if (lastMonth) {
-      // Check punctuality trend
-      if (lastMonth.avgPunctuality > 0 && lastMonth.avgPunctuality < 3.5) {
-        feedback.push({
-          type: "improvement",
-          title: "Punctuality needs work",
-          message: `Your recent punctuality score is ${lastMonth.avgPunctuality.toFixed(1)}/5.`,
-          actionTip: "Try arriving 10 minutes early. Set a phone alarm for 30 minutes before you need to leave. Employers really value reliability.",
-        });
-      }
-
-      // Check communication trend
-      if (lastMonth.avgCommunication > 0 && lastMonth.avgCommunication < 3.5) {
-        feedback.push({
-          type: "improvement",
-          title: "Communication could improve",
-          message: `Your recent communication score is ${lastMonth.avgCommunication.toFixed(1)}/5.`,
-          actionTip: "Send a quick message when you're on your way. If something comes up, let them know immediately. Silence creates anxiety.",
-        });
-      }
-
-      // Check quality trend
-      if (lastMonth.avgQuality > 0 && lastMonth.avgQuality < 3.5) {
-        feedback.push({
-          type: "improvement",
-          title: "Quality of work needs attention",
-          message: `Your recent quality score is ${lastMonth.avgQuality.toFixed(1)}/5.`,
-          actionTip: "Before finishing, ask yourself: 'Would I be happy if someone did this for me?' Take an extra 5 minutes to double-check your work.",
-        });
-      }
-
-      // Celebrate high scores
-      if (lastMonth.avgPunctuality >= 4.5 && lastMonth.avgCommunication >= 4.5 && lastMonth.avgQuality >= 4.5) {
-        feedback.push({
-          type: "success",
-          title: "Outstanding recent performance",
-          message: "Your punctuality, communication, and quality scores are all excellent!",
-        });
-      }
-    }
-  }
-
-  // 3. Skill Development
-  if (skillsDemonstrated && skillsDemonstrated.length === 0 && totalJobsCompleted >= 2) {
-    feedback.push({
-      type: "tip",
-      title: "No verified skills yet",
-      message: "Employers haven't tagged specific skills from your work yet.",
-      actionTip: "When completing jobs, try to go above and beyond in one specific area. This makes it easier for employers to recognize your strengths.",
-    });
-  } else if (skillsDemonstrated && skillsDemonstrated.length >= 5) {
-    feedback.push({
-      type: "success",
-      title: "Building a diverse skillset",
-      message: `You've demonstrated ${skillsDemonstrated.length} different skills. This versatility is valuable!`,
-    });
-  }
-
-  // 4. Responsibility Level Progression
-  if (monthlyProgress && monthlyProgress.length >= 2) {
-    const recentMonth = monthlyProgress[monthlyProgress.length - 1];
-    const hasAdvanced = recentMonth?.responsibilityDistribution?.ADVANCED > 0;
-    const hasIntermediate = recentMonth?.responsibilityDistribution?.INTERMEDIATE > 0;
-    const onlyBasic = !hasAdvanced && !hasIntermediate && recentMonth?.responsibilityDistribution?.BASIC > 0;
-
-    if (onlyBasic && totalJobsCompleted >= 5) {
-      feedback.push({
-        type: "tip",
-        title: "Ready for more responsibility?",
-        message: "You've been doing mostly basic-level tasks. Consider taking on something more challenging.",
-        actionTip: "Look for jobs marked as 'intermediate' or ask employers if there's additional responsibility you could take on.",
-      });
-    }
-  }
-
-  // Limit to most relevant feedback (max 4 items)
-  return feedback.slice(0, 4);
-}
-
-// Feedback Card Component
-function FeedbackCard({ feedback }: { feedback: FeedbackItem[] }) {
-  if (feedback.length === 0) return null;
-
-  const getIcon = (type: FeedbackItem["type"]) => {
-    switch (type) {
-      case "success": return ThumbsUp;
-      case "warning": return AlertTriangle;
-      case "improvement": return Target;
-      case "tip": return Lightbulb;
-    }
-  };
-
-  const getColors = (type: FeedbackItem["type"]) => {
-    switch (type) {
-      case "success": return {
-        border: "border-emerald-500/30",
-        bg: "bg-emerald-50/50 dark:bg-emerald-950/20",
-        icon: "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600",
-        title: "text-emerald-700 dark:text-emerald-400",
-      };
-      case "warning": return {
-        border: "border-amber-500/30",
-        bg: "bg-amber-50/50 dark:bg-amber-950/20",
-        icon: "bg-amber-100 dark:bg-amber-900/50 text-amber-600",
-        title: "text-amber-700 dark:text-amber-400",
-      };
-      case "improvement": return {
-        border: "border-red-500/30",
-        bg: "bg-red-50/50 dark:bg-red-950/20",
-        icon: "bg-red-100 dark:bg-red-900/50 text-red-600",
-        title: "text-red-700 dark:text-red-400",
-      };
-      case "tip": return {
-        border: "border-blue-500/30",
-        bg: "bg-blue-50/50 dark:bg-blue-950/20",
-        icon: "bg-blue-100 dark:bg-blue-900/50 text-blue-600",
-        title: "text-blue-700 dark:text-blue-400",
-      };
-    }
-  };
-
-  // Separate into positive and needs-work
-  const positiveItems = feedback.filter(f => f.type === "success");
-  const needsWorkItems = feedback.filter(f => f.type !== "success");
 
   return (
-    <Card className="border-2">
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <RefreshCw className="h-5 w-5 text-primary" />
-          Reality Check
-        </CardTitle>
-        <CardDescription>
-          Honest feedback based on your actual performance. Use this to grow.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {/* Show needs-work items first (more important) */}
-        {needsWorkItems.map((item, i) => {
-          const Icon = getIcon(item.type);
-          const colors = getColors(item.type);
-          return (
-            <div
-              key={i}
-              className={`p-4 rounded-lg border ${colors.border} ${colors.bg}`}
-            >
-              <div className="flex gap-3">
-                <div className={`p-2 rounded-lg ${colors.icon} h-fit`}>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className={`font-medium text-sm ${colors.title}`}>
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {item.message}
-                  </p>
-                  {item.actionTip && (
-                    <div className="mt-2 p-2 rounded bg-white/50 dark:bg-black/20 border border-current/10">
-                      <p className="text-xs text-foreground/80">
-                        <Lightbulb className="h-3 w-3 inline mr-1" />
-                        <strong>Tip:</strong> {item.actionTip}
-                      </p>
-                    </div>
-                  )}
-                </div>
+    <Card className="border-2 border-emerald-200 dark:border-emerald-800/50 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950/30 dark:via-green-950/20 dark:to-teal-950/30">
+      <CardContent className="py-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">{journey.targetCareer.emoji}</div>
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+                  <Target className="h-3 w-3 mr-1" />
+                  North Star
+                </Badge>
               </div>
+              <h3 className="font-bold text-xl mt-1">{journey.targetCareer.title}</h3>
+              <p className="text-sm text-muted-foreground">
+                Everything below is tailored to help you reach this goal.
+              </p>
             </div>
-          );
-        })}
-
-        {/* Show positive items */}
-        {positiveItems.map((item, i) => {
-          const Icon = getIcon(item.type);
-          const colors = getColors(item.type);
-          return (
-            <div
-              key={`pos-${i}`}
-              className={`p-4 rounded-lg border ${colors.border} ${colors.bg}`}
-            >
-              <div className="flex gap-3">
-                <div className={`p-2 rounded-lg ${colors.icon} h-fit`}>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className={`font-medium text-sm ${colors.title}`}>
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {item.message}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-
-        {feedback.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            Complete a few more jobs to get personalized feedback.
-          </p>
-        )}
+          </div>
+          <Link href="/profile">
+            <Button variant="ghost" size="sm">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </CardContent>
     </Card>
+  );
+}
+
+// Next Action Card Component
+function NextActionCard({
+  icon: Icon,
+  iconColor,
+  iconBg,
+  title,
+  description,
+  reason,
+  href,
+  actionLabel,
+}: {
+  icon: React.ElementType;
+  iconColor: string;
+  iconBg: string;
+  title: string;
+  description: string;
+  reason?: string;
+  href: string;
+  actionLabel: string;
+}) {
+  return (
+    <Link href={href}>
+      <Card className="border-2 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors group cursor-pointer">
+        <CardContent className="py-5">
+          <div className="flex items-start gap-4">
+            <div className={`p-3 rounded-xl ${iconBg}`}>
+              <Icon className={`h-5 w-5 ${iconColor}`} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-semibold text-base mb-1">{title}</h4>
+              <p className="text-sm text-muted-foreground line-clamp-2">{description}</p>
+              {reason && (
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
+                  {reason}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground group-hover:text-emerald-600 transition-colors">
+              <span className="hidden sm:inline">{actionLabel}</span>
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
 export default function GrowthPage() {
   const { data: session, status: sessionStatus } = useSession();
 
-  const { data, isLoading, error } = useQuery({
+  const { data: journey, isLoading: journeyLoading } = useQuery<CareerJourneyData | null>({
+    queryKey: ["career-journey"],
+    queryFn: () => getCareerJourney(),
+    enabled: session?.user?.role === "YOUTH",
+  });
+
+  const { data: growthData, isLoading: growthLoading } = useQuery({
     queryKey: ["growth-data"],
     queryFn: async () => {
       const response = await fetch("/api/growth");
@@ -354,12 +155,16 @@ export default function GrowthPage() {
     enabled: session?.user?.role === "YOUTH",
   });
 
-  if (sessionStatus === "loading" || isLoading) {
+  const isLoading = sessionStatus === "loading" || journeyLoading || growthLoading;
+
+  if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="space-y-6">
+        <Skeleton className="h-24 w-full" />
+        <div className="grid gap-4">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
         </div>
       </div>
     );
@@ -367,339 +172,236 @@ export default function GrowthPage() {
 
   if (session?.user?.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8 relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
-        <Card className="border-2">
-          <CardContent className="py-12 text-center">
-            <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">This page is only available for youth workers.</p>
-            <Button className="mt-4" asChild>
-              <Link href="/dashboard">Go to Dashboard</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="border-2">
+        <CardContent className="py-12 text-center">
+          <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <p className="text-muted-foreground">This page is only available for youth workers.</p>
+          <Button className="mt-4" asChild>
+            <Link href="/dashboard">Go to Dashboard</Link>
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
-  if (!data?.hasData) {
-    return (
-      <div className="container mx-auto px-4 py-8 relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
+  const hasCareerGoal = journey?.targetCareer;
+  const skillsToGain = journey?.skillsToGain || [];
+  const skillMatchPercent = journey?.skillMatchPercent || 0;
 
-        <PageHeader
-          title="Your"
-          gradientText="Growth"
-          description="Track your progress and build trust over time"
-          icon={TrendingUp}
-        />
+  // Generate personalised next steps based on North Star
+  const nextSteps = [];
 
-        <Card className="border-2 border-dashed">
-          <CardContent className="py-16 text-center">
-            <Briefcase className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">No growth data yet</h3>
-            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-              Complete your first job to start tracking your progress and earning trust signals.
-            </p>
-            <Button asChild className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700">
-              <Link href="/jobs">Browse Jobs</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  // 1. Skill to build next
+  if (skillsToGain.length > 0) {
+    const nextSkill = skillsToGain[0];
+    nextSteps.push({
+      icon: Target,
+      iconColor: "text-purple-600",
+      iconBg: "bg-purple-100 dark:bg-purple-900/30",
+      title: `Build "${nextSkill}" skill`,
+      description: hasCareerGoal
+        ? `This skill is essential for becoming a ${journey?.targetCareer?.title}. Look for jobs that help you practice it.`
+        : "Building diverse skills makes you more attractive to employers.",
+      reason: hasCareerGoal ? `Required for ${journey?.targetCareer?.title}` : undefined,
+      href: "/jobs",
+      actionLabel: "Find jobs",
+    });
   }
 
-  const { growth, recentSignals } = data;
+  // 2. Relevant job suggestion
+  nextSteps.push({
+    icon: Briefcase,
+    iconColor: "text-green-600",
+    iconBg: "bg-green-100 dark:bg-green-900/30",
+    title: "Complete a skill-building job",
+    description: hasCareerGoal
+      ? `Even small jobs help build skills for your ${journey?.targetCareer?.title} goal. Every job is a step forward.`
+      : "Every job you complete adds to your experience and builds trust with employers.",
+    reason: hasCareerGoal ? "Builds toward your career goal" : undefined,
+    href: "/jobs",
+    actionLabel: "Browse jobs",
+  });
 
-  // Analyze stats for constructive feedback
-  const feedbackItems = analyzeGrowthStats(growth);
+  // 3. Learning suggestion
+  if (hasCareerGoal) {
+    nextSteps.push({
+      icon: BookOpen,
+      iconColor: "text-blue-600",
+      iconBg: "bg-blue-100 dark:bg-blue-900/30",
+      title: "Explore learning resources",
+      description: `Discover courses and certifications that will help you on your path to ${journey?.targetCareer?.title}.`,
+      reason: `Aligned to ${journey?.targetCareer?.title} requirements`,
+      href: "/growth/career-path",
+      actionLabel: "View path",
+    });
+  }
+
+  // 4. Career exploration
+  nextSteps.push({
+    icon: GraduationCap,
+    iconColor: "text-amber-600",
+    iconBg: "bg-amber-100 dark:bg-amber-900/30",
+    title: hasCareerGoal ? "Review your career path" : "Explore career options",
+    description: hasCareerGoal
+      ? `See what steps lie ahead on your journey to ${journey?.targetCareer?.title}.`
+      : "Discover careers that match your interests and set a goal to work towards.",
+    href: hasCareerGoal ? "/growth/career-path" : "/careers",
+    actionLabel: hasCareerGoal ? "View path" : "Explore",
+  });
 
   return (
-    <div className="container mx-auto px-4 py-8 relative">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-emerald-500/5 pointer-events-none" />
-
-      <PageHeader
-        title="Your"
-        gradientText="Growth"
-        description="Private view of your progress and achievements"
-        icon={TrendingUp}
-      />
-
-      {/* Stats Overview */}
+    <div className="space-y-6">
+      {/* North Star Banner */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+        transition={{ duration: 0.3 }}
       >
-        <Card className="border-2 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{growth.totalJobsCompleted}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Briefcase className="h-3 w-3" />
-              Jobs Completed
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{growth.totalWouldRehire}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Star className="h-3 w-3" />
-              Would Rehire
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{growth.skillsDemonstrated.length}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Award className="h-3 w-3" />
-              Skills Shown
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="border-2 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
-              {growth.trustSignals.reduce((sum: number, s: any) => sum + s.count, 0)}
+        <NorthStarBanner journey={journey ?? null} />
+      </motion.div>
+
+      {/* Progress Summary */}
+      {growthData?.hasData && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+        >
+          <Card className="border">
+            <CardContent className="py-4 text-center">
+              <p className="text-2xl font-bold text-emerald-600">{growthData.growth.totalJobsCompleted}</p>
+              <p className="text-xs text-muted-foreground">Jobs Done</p>
+            </CardContent>
+          </Card>
+          <Card className="border">
+            <CardContent className="py-4 text-center">
+              <p className="text-2xl font-bold text-purple-600">{growthData.growth.skillsDemonstrated?.length || 0}</p>
+              <p className="text-xs text-muted-foreground">Skills Built</p>
+            </CardContent>
+          </Card>
+          <Card className="border">
+            <CardContent className="py-4 text-center">
+              <p className="text-2xl font-bold text-blue-600">{skillMatchPercent}%</p>
+              <p className="text-xs text-muted-foreground">Career Match</p>
+            </CardContent>
+          </Card>
+          <Card className="border">
+            <CardContent className="py-4 text-center">
+              <p className="text-2xl font-bold text-amber-600">{formatCurrency(journey?.totalEarnings || 0)}</p>
+              <p className="text-xs text-muted-foreground">Earned</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Personalised Next Steps */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-emerald-600" />
+            <h2 className="font-semibold text-lg">Your next steps</h2>
+          </div>
+          {hasCareerGoal && (
+            <Badge variant="outline" className="text-xs">
+              Tailored to {journey?.targetCareer?.title}
+            </Badge>
+          )}
+        </div>
+        <div className="grid gap-4">
+          {nextSteps.map((step, i) => (
+            <NextActionCard key={i} {...step} />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* AI Assistant Prompt */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.3 }}
+      >
+        <Card className="border-2 border-purple-200 dark:border-purple-800/50 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+          <CardContent className="py-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30">
+                  <Bot className="h-5 w-5 text-purple-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold">Ask Sprout AI</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Get personalised advice based on your goals and progress
+                  </p>
+                </div>
+              </div>
+              <Link href="/career-advisor">
+                <Button variant="outline" className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30">
+                  <Bot className="h-4 w-4 mr-2" />
+                  Chat
+                </Button>
+              </Link>
             </div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <Shield className="h-3 w-3" />
-              Trust Signals
-            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link href="/career-advisor?prompt=What%20should%20I%20do%20next%3F">
+                <Button variant="secondary" size="sm" className="text-xs">
+                  What should I do next?
+                </Button>
+              </Link>
+              <Link href="/career-advisor?prompt=What%20skills%20should%20I%20build%3F">
+                <Button variant="secondary" size="sm" className="text-xs">
+                  What skills should I build?
+                </Button>
+              </Link>
+              <Link href={`/career-advisor?prompt=Reality%20check%3A%20what%20is%20${encodeURIComponent(journey?.targetCareer?.title || 'my career goal')}%20like%3F`}>
+                <Button variant="secondary" size="sm" className="text-xs">
+                  Reality check
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Reality Check - Constructive Feedback Section */}
-      {feedbackItems.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12 }}
-          className="mb-8"
-        >
-          <FeedbackCard feedback={feedbackItems} />
-        </motion.div>
-      )}
-
-      {/* Community Contributions Section */}
-      {recentSignals && recentSignals.some((s: any) => s.type === "HELPED_OTHER" || s.type === "COMMUNITY_REPORT_RESOLVED") && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mb-8"
-        >
-          <Card className="border-2 border-pink-500/20 bg-gradient-to-br from-pink-500/5 to-purple-500/5">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-5 w-5 text-pink-600" />
-                  Community Contributions
-                </CardTitle>
-                <CardDescription>
-                  You're making a positive impact! These signal your contributions to the community.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3">
-                  {recentSignals
-                    .filter((s: any) => s.type === "HELPED_OTHER" || s.type === "COMMUNITY_REPORT_RESOLVED")
-                    .map((signal: any) => {
-                      const config = trustSignalConfig[signal.type] || {
-                        icon: Star,
-                        color: "text-gray-600",
-                        bg: "bg-gray-100",
-                      };
-                      const Icon = config.icon;
-
-                      return (
-                        <div
-                          key={signal.id}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-white/50 dark:bg-white/5 border border-pink-500/10"
-                        >
-                          <div className={`p-2 rounded-lg ${config.bg}`}>
-                            <Icon className={`h-4 w-4 ${config.color}`} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">{signal.label}</div>
-                            <div className="text-xs text-muted-foreground">{signal.description}</div>
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {new Date(signal.earnedAt).toLocaleDateString()}
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-                <div className="mt-4 p-3 rounded-lg bg-pink-500/10 border border-pink-500/20">
-                  <p className="text-sm text-pink-700 dark:text-pink-300">
-                    <Sparkles className="h-4 w-4 inline mr-1" />
-                    Community contributions show employers you're a team player who helps others succeed.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-      {/* Trust Signals Section */}
-      {recentSignals && recentSignals.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
-        >
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Shield className="h-5 w-5 text-emerald-600" />
-                Trust Signals
-              </CardTitle>
-              <CardDescription>
-                Private indicators that help Sprout match you to safer, better opportunities.
-                These are never shown to employers.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-3">
-                {recentSignals.slice(0, 6).map((signal: any) => {
-                  const config = trustSignalConfig[signal.type] || {
-                    icon: Star,
-                    color: "text-gray-600",
-                    bg: "bg-gray-100",
-                  };
-                  const Icon = config.icon;
-
-                  return (
-                    <div
-                      key={signal.id}
-                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/50"
-                    >
-                      <div className={`p-2 rounded-lg ${config.bg}`}>
-                        <Icon className={`h-4 w-4 ${config.color}`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm">{signal.label}</div>
-                        <div className="text-xs text-muted-foreground">{signal.description}</div>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(signal.earnedAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Skills Demonstrated */}
-      {growth.skillsDemonstrated && growth.skillsDemonstrated.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-8"
-        >
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Award className="h-5 w-5 text-amber-600" />
-                Skills You've Demonstrated
-                </CardTitle>
-                <CardDescription>
-                  Skills verified through completed jobs and employer feedback
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {growth.skillsDemonstrated.map((skill: any) => (
-                    <Badge
-                      key={skill.slug}
-                      variant="secondary"
-                      className={skillCategoryColors[skill.category] || skillCategoryColors.OTHER}
-                    >
-                      {skill.name}
-                      {skill.count > 1 && (
-                        <span className="ml-1 opacity-70">x{skill.count}</span>
-                      )}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-      {/* Monthly Progress */}
-      {growth.monthlyProgress && growth.monthlyProgress.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-blue-600" />
-                Responsibility Over Time
-              </CardTitle>
-              <CardDescription>
-                Your growth in taking on more responsibility
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {growth.monthlyProgress.slice(-6).reverse().map((month: any) => (
-                  <div key={month.month} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium">
-                        {new Date(month.month + "-01").toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                        })}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {month.jobsCompleted} job{month.jobsCompleted !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        Basic: {month.responsibilityDistribution.BASIC}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/20">
-                        Intermediate: {month.responsibilityDistribution.INTERMEDIATE}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs bg-purple-50 dark:bg-purple-900/20">
-                        Advanced: {month.responsibilityDistribution.ADVANCED}
-                      </Badge>
-                    </div>
-                    <Separator className="mt-3" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Privacy Note */}
+      {/* Quick Links */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8 p-4 rounded-xl bg-gradient-to-r from-primary/5 to-purple-500/5 border border-primary/10 text-center"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.3 }}
+        className="grid grid-cols-2 gap-4"
       >
-        <Lock className="h-4 w-4 inline mr-2 text-muted-foreground" />
-        <span className="text-sm text-muted-foreground">
-          This data is private to you and helps Sprout match you to better opportunities.
-        </span>
+        <Link href="/growth/short-term">
+          <Card className="border hover:border-emerald-300 transition-colors cursor-pointer h-full">
+            <CardContent className="py-4">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="h-5 w-5 text-emerald-600" />
+                <div>
+                  <p className="font-medium text-sm">Short-term Growth</p>
+                  <p className="text-xs text-muted-foreground">Skills & reliability</p>
+                </div>
+                <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/growth/vault">
+          <Card className="border hover:border-emerald-300 transition-colors cursor-pointer h-full">
+            <CardContent className="py-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                <div>
+                  <p className="font-medium text-sm">Your Vault</p>
+                  <p className="text-xs text-muted-foreground">Saved items</p>
+                </div>
+                <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </motion.div>
     </div>
   );

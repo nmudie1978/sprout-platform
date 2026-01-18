@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Home, Briefcase, MessageSquare, User, PlusCircle, LayoutDashboard } from "lucide-react";
+import { Home, Briefcase, MessageSquare, User, PlusCircle, LayoutDashboard, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -15,6 +15,7 @@ interface NavItem {
 
 const youthNavItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/growth", label: "Growth", icon: TrendingUp, activePattern: /^\/growth/ },
   { href: "/jobs", label: "Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
   { href: "/messages", label: "Messages", icon: MessageSquare, activePattern: /^\/messages/ },
   { href: "/profile", label: "", icon: User, activePattern: /^\/profile/ },

@@ -152,7 +152,7 @@ LANGUAGE:
     ? `\n\nUSER CONTEXT:
 - Career Goal: ${careerAspiration}
 
-When relevant, connect your advice to how it helps them achieve their goal of becoming ${careerAspiration}. Reference their career goal naturally in your responses to make the advice feel personalized.`
+When relevant, connect your advice to how it helps them achieve their goal of becoming ${careerAspiration}. Reference their career goal naturally in your responses to make the advice feel personalised.`
     : "";
 
   switch (intent) {
@@ -163,7 +163,15 @@ When relevant, connect your advice to how it helps them achieve their goal of be
       return `${basePrompt}${personalizationPrompt}\n\nFocus on explaining platform features and navigation. Guide the user to the right page or feature.`;
 
     case "career_explain":
-      return `${basePrompt}${personalizationPrompt}\n\nUse the provided career card information to explain the role. Highlight key traits, salary, and day-to-day activities.`;
+      return `${basePrompt}${personalizationPrompt}\n\nIMPORTANT: Answer the user's SPECIFIC question. If they ask "what does a day look like", describe a typical workday in detail. If they ask about skills, focus on skills. If they ask about salary, focus on salary.
+
+When describing a career:
+- If asked about "a day in the life": Describe morning routines, typical tasks, meetings, lunch, afternoon work, end of day
+- If asked about skills: List specific technical and soft skills needed
+- If asked about salary: Give Norwegian salary ranges in NOK
+- If asked about how to get started: Give actionable first steps
+
+Use the provided career card information to make your answer specific and accurate. Don't give generic "getting started" advice unless that's what they asked for.`;
 
     case "next_steps":
       return `${basePrompt}${personalizationPrompt}\n\nProvide actionable, realistic steps. Reference platform features like micro-jobs for skill building.`;
@@ -296,8 +304,27 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
       "Your completed jobs here automatically build your skill profile!";
   }
 
-  // Tech/developer questions
+  // Tech/developer questions - check what type of question
   if (lower.includes("developer") || lower.includes("programmer") || lower.includes("coding") || lower.includes("tech") || lower.includes("software") || lower.includes("it ")) {
+    // Check if asking about "day in the life" or typical day
+    if (lower.includes("day") || lower.includes("typical") || lower.includes("look like") || lower.includes("daily") || lower.includes("routine")) {
+      return "**A typical day as a developer:**\n\n" +
+        "**Morning (9:00-12:00)**\n" +
+        "• Check emails and Slack messages\n" +
+        "• Daily standup meeting (15 min) - share what you're working on\n" +
+        "• Focus time: writing code, fixing bugs, or reviewing others' code\n\n" +
+        "**Afternoon (12:00-17:00)**\n" +
+        "• Lunch break (often with colleagues)\n" +
+        "• Meetings: planning features, discussing solutions with the team\n" +
+        "• More coding and problem-solving\n" +
+        "• Code reviews and helping teammates\n\n" +
+        "**What developers actually do:**\n" +
+        "• ~50% writing and reviewing code\n" +
+        "• ~30% meetings and collaboration\n" +
+        "• ~20% debugging and research\n\n" +
+        "Most developers work normal office hours (flexible start times are common) and can often work remotely!";
+    }
+    // Default to getting started advice
     return "Tech careers are exciting and in high demand!\n\n" +
       "**Getting started in tech:**\n" +
       "• **Free resources** - Start with free coding courses on Codecademy, freeCodeCamp, or Khan Academy\n" +

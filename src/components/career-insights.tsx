@@ -91,7 +91,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
               <div className="text-center py-4">
                 <div className="text-4xl mb-2">🎯</div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Set your career aspiration in your profile to get personalized recommendations!
+                  Set your career aspiration in your profile to get personalised recommendations!
                 </p>
                 <Button asChild variant="outline" size="sm">
                   <Link href="/profile">
@@ -268,7 +268,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
               <div className="text-4xl mb-3">🎯</div>
               <h3 className="text-lg font-semibold mb-2">Set Your Career Goal</h3>
               <p className="text-muted-foreground mb-4">
-                Tell us what career you're interested in to get personalized recommendations!
+                Tell us what career you're interested in to get personalised recommendations!
               </p>
               <Button asChild>
                 <Link href="/profile">

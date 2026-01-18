@@ -249,6 +249,13 @@ model User {
   careerQuizResults       CareerQuizResult[]
   newsletterSubscriptions NewsletterSubscription[]
 
+  // My Path features
+  userSkillSignals        UserSkillSignal[]
+  vaultItems              VaultItem[]
+  alertPreference         OpportunityAlertPreference?
+  alertEvents             OpportunityAlertEvent[]
+  pathSnapshots           PathSnapshot[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -313,6 +320,23 @@ model YouthProfile {
   reliabilityScore   Int                @default(0) // 0-100
   careerAspiration   String?            // e.g., "I want to be a software developer"
 
+  // Location fields (explicit city for easier filtering)
+  city                 String?          // City name for job matching (e.g., "Oslo", "Fjellhamar")
+  address              String?          // Full address (optional, more specific)
+
+  // My Path personalization fields
+  desiredRoles         String[]         // Top role interests (max 3)
+  desiredSectors       String[]         // Optional sector preferences
+  learningPreferences  String[]         // e.g., "video", "hands-on", "reading"
+  availabilityTags     String[]         // e.g., "weekends", "after-school", "summer"
+  locationBase         String?          // City/area for job matching (legacy, prefer city field)
+  pathUpdatedAt        DateTime?        // Last time path preferences were updated
+
+  // Onboarding fields
+  onboardingCompletedAt  DateTime?           // When onboarding was completed
+  currentPriorities      String[]            // ["earn", "skills", "explore", "prepare"]
+  availabilityLevel      String?             // "busy", "some", "plenty"
+
   // Guardian consent (required for under-18)
   guardianEmail     String?
   guardianConsent   Boolean   @default(false)
@@ -335,6 +359,7 @@ model YouthProfile {
   @@index([profileVisibility])
   @@index([averageRating])
   @@index([completedJobsCount])
+  @@index([city])
 }
 
 model EmployerProfile {
@@ -420,6 +445,7 @@ model MicroJob {
   recommendations Recommendation[]
   conversations   Conversation[]
   jobCompletions  JobCompletion[]
+  vaultItems      VaultItem[]
 
   @@index([postedById])
   @@index([category])
@@ -1354,8 +1380,30 @@ model Skill {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
+  // Relations
+  userSignals UserSkillSignal[]
+
   @@index([category])
   @@index([slug])
+}
+
+// UserSkillSignal - tracks skill signals from various sources
+model UserSkillSignal {
+  id        String   @id @default(cuid())
+  userId    String
+  skillId   String
+  source    String   // "job_completed", "review", "self_select", "feedback"
+  strength  Int      @default(0) // 0-100 signal strength
+  evidence  String?  // Short reason/context for the signal
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@index([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@index([source])
 }
 
 // Job completion outcomes
@@ -1626,4 +1674,117 @@ model StandardJobTemplate {
   @@index([categoryId])
   @@index([isActive])
   @@index([sortOrder])
+}
+
+// ============================================
+// MY PATH - PERSONALIZED JOURNEY HUB
+// ============================================
+
+// VaultItem - Portfolio evidence and proof
+model VaultItem {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // "job", "feedback", "certificate", "photo", "note", "milestone"
+  title       String
+  description String?  @db.Text
+  jobId       String?  // Link to completed job if applicable
+  url         String?  // URL for stored files (Supabase Storage)
+  metadata    Json?    // Additional structured data
+  isPrivate   Boolean  @default(true) // MVP: always private, future: sharing support
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  MicroJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([userId, type])
+  @@index([jobId])
+}
+
+// OpportunityAlertPreference - User preferences for job/course alerts
+model OpportunityAlertPreference {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  enabled     Boolean  @default(true)
+  radiusKm    Int      @default(10)
+  categories  String[] // Job category slugs
+  roles       String[] // Role slugs/names of interest
+  notifyEmail Boolean  @default(false)
+  notifyPush  Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([enabled])
+}
+
+// OpportunityAlertEvent - Individual alert events for a user
+model OpportunityAlertEvent {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String    // "job_match", "course_match"
+  entityId  String    // jobId or courseId
+  title     String
+  reason    String    // Why it matched (2-3 bullet reasons)
+  seenAt    DateTime? // When user saw this alert
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, seenAt])
+  @@index([userId, createdAt])
+  @@index([type])
+}
+
+// PathSnapshot - Point-in-time career direction report
+model PathSnapshot {
+  id          String   @id @default(cuid())
+  userId      String
+  headline    String   // "Your current direction" - 1 line summary
+  direction   String[] // 1-3 recommended roles
+  nextActions Json     // Array of 3-7 actionable steps
+  confidence  String   // "low" | "medium" | "high"
+  rationale   String?  @db.Text // Short explanation grounded in user activity
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId])
+}
+
+// ============================================
+// PROFESSIONAL INSIGHTS (Phase 2 Feature)
+// One-way career insights from real professionals
+// ============================================
+
+// Media type for professional insights
+enum ProfessionalInsightMediaType {
+  VIDEO
+  AUDIO
+  TEXT
+}
+
+// ProfessionalInsight - Real career insights from professionals
+// Phase 2 feature - placeholder in MVP, curated content later
+model ProfessionalInsight {
+  id          String                       @id @default(cuid())
+  careerTag   String                       // Career/role tag (e.g., "software-engineer", "lawyer")
+  title       String                       // Insight title
+  mediaType   ProfessionalInsightMediaType // Type of media
+  mediaUrl    String?                      // URL to video/audio (nullable for text-only)
+  transcript  String?                      @db.Text // Text content or video/audio transcript
+  authorName  String?                      // Optional: professional's name (if consented)
+  authorRole  String?                      // Job title/role
+  authorYears Int?                         // Years of experience
+  isPublished Boolean                      @default(false) // Admin approval required
+  createdAt   DateTime                     @default(now())
+  updatedAt   DateTime                     @updatedAt
+
+  @@index([careerTag])
+  @@index([isPublished])
+  @@index([createdAt])
 }

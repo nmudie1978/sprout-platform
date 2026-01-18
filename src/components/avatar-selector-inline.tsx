@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { avatars, avatarCategories, getAvatarById, isAvatarUnlocked, type AvatarDefinition } from "@/lib/avatars";
 import { Avatar } from "@/components/avatar";
@@ -19,6 +20,7 @@ export function AvatarSelectorInline({
   onSelect,
   disabled = false,
 }: AvatarSelectorInlineProps) {
+  const { data: session } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("pixel");
 
@@ -27,7 +29,7 @@ export function AvatarSelectorInline({
 
   // Fetch user stats for unlock checking
   const { data: profile } = useQuery({
-    queryKey: ["my-profile"],
+    queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
       const response = await fetch("/api/profile");
       if (!response.ok) {
@@ -36,6 +38,7 @@ export function AvatarSelectorInline({
       }
       return response.json();
     },
+    enabled: !!session?.user?.id,
   });
 
   // Calculate user stats for avatar unlocking

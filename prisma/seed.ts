@@ -1,4 +1,4 @@
-import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory } from '@prisma/client';
+import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory, TrustSignalType, TrustSignalSource, ResponsibilityLevel, SupervisionLevel, JobCompletionOutcome } from '@prisma/client';
 import { seedYouthCareers } from './seed-youth-careers';
 import { seedJobCategories } from './seed-job-categories';
 
@@ -506,47 +506,86 @@ const messageTemplates = [
 ];
 
 // ============================================
-// SKILLS TAXONOMY (Feature 4 - Growth)
+// SKILLS TAXONOMY (Feature 4 - Growth + My Path)
 // ============================================
 const skills = [
-  // CARE skills
+  // CARE skills (job-specific)
   { slug: 'babysitting', name: 'Babysitting', category: SkillCategory.CARE },
   { slug: 'pet-sitting', name: 'Pet Sitting', category: SkillCategory.CARE },
   { slug: 'dog-walking', name: 'Dog Walking', category: SkillCategory.CARE },
   { slug: 'elderly-assistance', name: 'Elderly Assistance', category: SkillCategory.CARE },
   { slug: 'child-activities', name: 'Child Activities', category: SkillCategory.CARE },
+  { slug: 'first-aid', name: 'First Aid', category: SkillCategory.CARE },
+  { slug: 'patience', name: 'Patience', category: SkillCategory.CARE },
 
-  // HOME skills
+  // HOME skills (job-specific)
   { slug: 'house-cleaning', name: 'House Cleaning', category: SkillCategory.HOME },
   { slug: 'organizing', name: 'Organizing', category: SkillCategory.HOME },
   { slug: 'laundry', name: 'Laundry', category: SkillCategory.HOME },
   { slug: 'cooking-basic', name: 'Basic Cooking', category: SkillCategory.HOME },
   { slug: 'moving-help', name: 'Moving Help', category: SkillCategory.HOME },
+  { slug: 'decluttering', name: 'Decluttering', category: SkillCategory.HOME },
 
-  // OUTDOOR skills
+  // OUTDOOR skills (job-specific)
   { slug: 'lawn-mowing', name: 'Lawn Mowing', category: SkillCategory.OUTDOOR },
   { slug: 'gardening', name: 'Gardening', category: SkillCategory.OUTDOOR },
   { slug: 'snow-clearing', name: 'Snow Clearing', category: SkillCategory.OUTDOOR },
   { slug: 'car-washing', name: 'Car Washing', category: SkillCategory.OUTDOOR },
   { slug: 'leaf-raking', name: 'Leaf Raking', category: SkillCategory.OUTDOOR },
+  { slug: 'physical-stamina', name: 'Physical Stamina', category: SkillCategory.OUTDOOR },
 
-  // TECH skills
+  // TECH skills (job-specific)
   { slug: 'tech-help-basic', name: 'Basic Tech Help', category: SkillCategory.TECH },
   { slug: 'phone-setup', name: 'Phone Setup', category: SkillCategory.TECH },
   { slug: 'computer-help', name: 'Computer Help', category: SkillCategory.TECH },
   { slug: 'social-media', name: 'Social Media Help', category: SkillCategory.TECH },
+  { slug: 'troubleshooting', name: 'Troubleshooting', category: SkillCategory.TECH },
 
-  // SERVICE skills
+  // SERVICE skills (job-specific)
   { slug: 'grocery-shopping', name: 'Grocery Shopping', category: SkillCategory.SERVICE },
   { slug: 'errand-running', name: 'Errand Running', category: SkillCategory.SERVICE },
   { slug: 'event-help', name: 'Event Help', category: SkillCategory.SERVICE },
   { slug: 'delivery', name: 'Delivery', category: SkillCategory.SERVICE },
+  { slug: 'customer-service', name: 'Customer Service', category: SkillCategory.SERVICE },
 
-  // CREATIVE skills
+  // CREATIVE skills (job-specific)
   { slug: 'tutoring', name: 'Tutoring', category: SkillCategory.CREATIVE },
   { slug: 'music-lessons', name: 'Music Lessons', category: SkillCategory.CREATIVE },
   { slug: 'art-crafts', name: 'Art & Crafts', category: SkillCategory.CREATIVE },
+  { slug: 'photography', name: 'Photography', category: SkillCategory.CREATIVE },
+
+  // OTHER / SOFT SKILLS (transferable)
+  { slug: 'communication', name: 'Communication', category: SkillCategory.OTHER },
+  { slug: 'punctuality', name: 'Punctuality', category: SkillCategory.OTHER },
+  { slug: 'teamwork', name: 'Teamwork', category: SkillCategory.OTHER },
+  { slug: 'problem-solving', name: 'Problem Solving', category: SkillCategory.OTHER },
+  { slug: 'time-management', name: 'Time Management', category: SkillCategory.OTHER },
+  { slug: 'attention-to-detail', name: 'Attention to Detail', category: SkillCategory.OTHER },
+  { slug: 'reliability', name: 'Reliability', category: SkillCategory.OTHER },
+  { slug: 'adaptability', name: 'Adaptability', category: SkillCategory.OTHER },
+  { slug: 'initiative', name: 'Initiative', category: SkillCategory.OTHER },
+  { slug: 'following-instructions', name: 'Following Instructions', category: SkillCategory.OTHER },
+  { slug: 'professionalism', name: 'Professionalism', category: SkillCategory.OTHER },
+  { slug: 'respectfulness', name: 'Respectfulness', category: SkillCategory.OTHER },
+  { slug: 'safety-awareness', name: 'Safety Awareness', category: SkillCategory.OTHER },
+  { slug: 'money-handling', name: 'Money Handling', category: SkillCategory.OTHER },
+  { slug: 'independence', name: 'Working Independently', category: SkillCategory.OTHER },
 ];
+
+// ============================================
+// SKILL-TO-JOB-CATEGORY MAPPING (for My Path)
+// Maps job categories to skills typically developed
+// ============================================
+export const skillsPerJobCategory: Record<string, string[]> = {
+  BABYSITTING: ['babysitting', 'child-activities', 'patience', 'first-aid', 'communication', 'reliability', 'safety-awareness'],
+  DOG_WALKING: ['dog-walking', 'pet-sitting', 'punctuality', 'reliability', 'physical-stamina', 'time-management'],
+  SNOW_CLEARING: ['snow-clearing', 'physical-stamina', 'punctuality', 'reliability', 'independence', 'safety-awareness'],
+  CLEANING: ['house-cleaning', 'organizing', 'attention-to-detail', 'time-management', 'following-instructions', 'reliability'],
+  DIY_HELP: ['moving-help', 'problem-solving', 'following-instructions', 'physical-stamina', 'safety-awareness', 'teamwork'],
+  TECH_HELP: ['tech-help-basic', 'troubleshooting', 'communication', 'patience', 'problem-solving', 'customer-service'],
+  ERRANDS: ['errand-running', 'grocery-shopping', 'time-management', 'reliability', 'money-handling', 'independence'],
+  OTHER: ['communication', 'reliability', 'punctuality', 'following-instructions', 'adaptability'],
+};
 
 // ============================================
 // CAREER REALITY CHECKS (Feature 6)
@@ -2579,40 +2618,20 @@ This platform helps you earn money through micro-jobs while discovering potentia
     return { startDate, endDate };
   };
 
-  // Seed 20 demo micro-jobs
+  // Seed 20 demo micro-jobs distributed across all 12 new StandardJobCategories
   // All jobs are eligible for both age groups (15-17 and 18-20) unless otherwise specified
   const eligibleForAll = ['15-17', '18-20'];
 
+  // Fetch all StandardJobCategories to link jobs to them
+  const standardCategories = await prisma.standardJobCategory.findMany();
+  const categoryMap = new Map(standardCategories.map(c => [c.slug, c.id]));
+
   const demoJobs = [
-    {
-      title: 'Dog Walking - Friendly Golden Retriever',
-      category: JobCategory.DOG_WALKING,
-      description: 'Need someone to walk our 3-year-old Golden Retriever, Max, for 30 minutes. He is very friendly and well-behaved. Park nearby.',
-      payType: PayType.FIXED,
-      payAmount: 150,
-      location: 'Oslo, Majorstuen',
-      status: 'POSTED' as const,
-      requiredTraits: ['reliable', 'loves animals'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(2, 1),
-    },
-    {
-      title: 'Babysitting - Two Kids (Ages 4 and 7)',
-      category: JobCategory.BABYSITTING,
-      description: 'Looking for a responsible babysitter for Friday evening (6pm-10pm). Two well-behaved children. Experience required.',
-      payType: PayType.HOURLY,
-      payAmount: 180,
-      location: 'Oslo, Frogner',
-      status: 'POSTED' as const,
-      requiredTraits: ['patient', 'responsible', 'energetic'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(3, 4),
-    },
+    // 1. home-yard-help - Home & Yard Help (2 jobs)
     {
       title: 'Snow Clearing - Driveway and Walkway',
       category: JobCategory.SNOW_CLEARING,
+      standardCategoryId: categoryMap.get('home-yard-help'),
       description: 'Need help clearing snow from driveway and front walkway. Shovel provided. Should take 1-2 hours.',
       payType: PayType.FIXED,
       payAmount: 300,
@@ -2624,138 +2643,69 @@ This platform helps you earn money through micro-jobs while discovering potentia
       ...getJobDates(1, 2),
     },
     {
-      title: 'Tech Help - Computer Setup and WiFi',
-      category: JobCategory.TECH_HELP,
-      description: 'Need help setting up a new laptop and connecting it to WiFi. Also install some basic software. 1-2 hours.',
-      payType: PayType.HOURLY,
-      payAmount: 200,
-      location: 'Lørenskog, Sentrum',
+      title: 'Lawn Mowing and Leaf Raking',
+      category: JobCategory.DIY_HELP,
+      standardCategoryId: categoryMap.get('home-yard-help'),
+      description: 'Help with lawn mowing and raking leaves in front and back yard. Equipment provided. About 2 hours.',
+      payType: PayType.FIXED,
+      payAmount: 280,
+      location: 'Oslo, Oppegård',
       status: 'POSTED' as const,
-      requiredTraits: ['tech-savvy', 'patient'],
+      requiredTraits: ['outdoor work', 'energetic'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(4, 2),
     },
+
+    // 2. child-family-support - Child & Family Support (2 jobs)
     {
-      title: 'House Cleaning - Deep Clean',
-      category: JobCategory.CLEANING,
-      description: 'Looking for help with a deep clean of our 2-bedroom apartment. Kitchen, bathrooms, and living areas. Supplies provided.',
-      payType: PayType.FIXED,
-      payAmount: 500,
-      location: 'Fjellhamar',
-      status: 'POSTED' as const,
-      requiredTraits: ['detail-oriented', 'thorough'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(5, 4),
-    },
-    {
-      title: 'Garden Help - Weeding and Planting',
-      category: JobCategory.DIY_HELP,
-      description: 'Need help weeding garden beds and planting some new flowers. About 3 hours of work. Gloves and tools provided.',
-      payType: PayType.HOURLY,
-      payAmount: 160,
-      location: 'Oslo, Skøyen',
-      status: 'POSTED' as const,
-      requiredTraits: ['outdoor work', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(6, 3),
-    },
-    {
-      title: 'Dog Walking - Two Small Dogs',
-      category: JobCategory.DOG_WALKING,
-      description: 'Walk two friendly Chihuahuas for 20 minutes. They are small and easy to handle. Weekday mornings preferred.',
-      payType: PayType.FIXED,
-      payAmount: 120,
-      location: 'Oslo, Grünerløkka',
-      status: 'POSTED' as const,
-      requiredTraits: ['loves animals', 'punctual'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(1, 1),
-    },
-    {
-      title: 'Grocery Shopping and Delivery',
-      category: JobCategory.ERRANDS,
-      description: 'Need someone to pick up groceries from local store and deliver to my apartment. Shopping list provided. About 1 hour total.',
-      payType: PayType.FIXED,
-      payAmount: 200,
-      location: 'Oslo, Tøyen',
-      status: 'POSTED' as const,
-      requiredTraits: ['reliable', 'organized'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(2, 1),
-    },
-    {
-      title: 'Babysitting - Infant (6 months)',
+      title: 'Babysitting - Two Kids (Ages 4 and 7)',
       category: JobCategory.BABYSITTING,
-      description: 'Experienced babysitter needed for our 6-month-old baby. References required. Saturday afternoon, 2-5pm.',
+      standardCategoryId: categoryMap.get('child-family-support'),
+      description: 'Looking for a responsible babysitter for Friday evening (6pm-10pm). Two well-behaved children. Experience required.',
       payType: PayType.HOURLY,
-      payAmount: 200,
-      location: 'Lørenskog, Skårer',
-      status: 'POSTED' as const,
-      requiredTraits: ['experienced', 'caring', 'responsible'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(4, 3),
-    },
-    {
-      title: 'Car Washing - Inside and Out',
-      category: JobCategory.CLEANING,
-      description: 'Looking for help washing and detailing my car. Vacuum inside, wash exterior, clean windows. Supplies provided.',
-      payType: PayType.FIXED,
-      payAmount: 250,
-      location: 'Oslo, Nordstrand',
-      status: 'POSTED' as const,
-      requiredTraits: ['detail-oriented', 'thorough'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(3, 2),
-    },
-    {
-      title: 'Furniture Assembly - IKEA Bookshelf',
-      category: JobCategory.DIY_HELP,
-      description: 'Need help assembling an IKEA bookshelf. All parts and tools included. Should take about 1 hour.',
-      payType: PayType.FIXED,
       payAmount: 180,
+      location: 'Oslo, Frogner',
+      status: 'POSTED' as const,
+      requiredTraits: ['patient', 'responsible', 'energetic'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(3, 4),
+    },
+    {
+      title: 'Homework Helper - Primary School',
+      category: JobCategory.BABYSITTING,
+      standardCategoryId: categoryMap.get('child-family-support'),
+      description: 'Help 8-year-old with homework and reading practice. Mon-Thu 3:30-5pm. Patient and encouraging person needed.',
+      payType: PayType.HOURLY,
+      payAmount: 170,
+      location: 'Oslo, Romsås',
+      status: 'POSTED' as const,
+      requiredTraits: ['patient', 'good with kids', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(2, 2),
+    },
+
+    // 3. pet-animal-care - Pet & Animal Care (2 jobs)
+    {
+      title: 'Dog Walking - Friendly Golden Retriever',
+      category: JobCategory.DOG_WALKING,
+      standardCategoryId: categoryMap.get('pet-animal-care'),
+      description: 'Need someone to walk our 3-year-old Golden Retriever, Max, for 30 minutes. He is very friendly and well-behaved.',
+      payType: PayType.FIXED,
+      payAmount: 150,
       location: 'Oslo, Majorstuen',
       status: 'POSTED' as const,
-      requiredTraits: ['handy', 'patient'],
+      requiredTraits: ['reliable', 'loves animals'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(2, 1),
-    },
-    {
-      title: 'Tech Help - Smartphone Training for Elderly',
-      category: JobCategory.TECH_HELP,
-      description: 'Help my elderly mother learn to use her new smartphone. Need patient person to teach basics like calls, messages, photos.',
-      payType: PayType.HOURLY,
-      payAmount: 220,
-      location: 'Oslo, Aker Brygge',
-      status: 'POSTED' as const,
-      requiredTraits: ['patient', 'friendly', 'tech-savvy'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(5, 2),
-    },
-    {
-      title: 'Window Cleaning - Ground Floor',
-      category: JobCategory.CLEANING,
-      description: 'Clean windows on ground floor of house (8 windows). Equipment provided. About 2 hours work.',
-      payType: PayType.FIXED,
-      payAmount: 280,
-      location: 'Fjellhamar, Rælingen',
-      status: 'POSTED' as const,
-      requiredTraits: ['thorough', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(7, 2),
     },
     {
       title: 'Pet Sitting - Cat for Weekend',
       category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('pet-animal-care'),
       description: 'Need someone to check on and feed my cat twice daily while I am away this weekend. Very friendly cat!',
       payType: PayType.FIXED,
       payAmount: 400,
@@ -2766,51 +2716,89 @@ This platform helps you earn money through micro-jobs while discovering potentia
       postedById: demoEmployer.id,
       ...getJobDates(3, 48),
     },
+
+    // 4. cleaning-organizing - Cleaning & Organizing (2 jobs)
     {
-      title: 'Moving Help - Small Items',
-      category: JobCategory.DIY_HELP,
-      description: 'Need help moving boxes and small furniture items to new apartment (same building, different floor). About 2-3 hours.',
-      payType: PayType.HOURLY,
-      payAmount: 180,
-      location: 'Lørenskog, Kurland',
-      status: 'POSTED' as const,
-      requiredTraits: ['physically fit', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(6, 3),
-    },
-    {
-      title: 'Leaf Raking - Front and Back Yard',
-      category: JobCategory.DIY_HELP,
-      description: 'Help rake leaves in front and back yard. Bags and rake provided. Approximately 2 hours of work.',
+      title: 'Room Tidying and Closet Organization',
+      category: JobCategory.CLEANING,
+      standardCategoryId: categoryMap.get('cleaning-organizing'),
+      description: 'Help organize and tidy bedroom and closet. Sorting clothes, arranging shelves. About 2-3 hours.',
       payType: PayType.FIXED,
       payAmount: 300,
-      location: 'Oslo, Oppegård',
+      location: 'Fjellhamar',
       status: 'POSTED' as const,
-      requiredTraits: ['outdoor work', 'energetic'],
+      requiredTraits: ['organized', 'detail-oriented'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(5, 3),
+    },
+    {
+      title: 'Car Interior Cleaning',
+      category: JobCategory.CLEANING,
+      standardCategoryId: categoryMap.get('cleaning-organizing'),
+      description: 'Looking for help cleaning car interior. Vacuum seats, wipe surfaces, clean windows. Supplies provided.',
+      payType: PayType.FIXED,
+      payAmount: 200,
+      location: 'Oslo, Nordstrand',
+      status: 'POSTED' as const,
+      requiredTraits: ['detail-oriented', 'thorough'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(3, 2),
+    },
+
+    // 5. tech-digital-help - Tech & Digital Help (2 jobs)
+    {
+      title: 'Phone Setup for Grandparents',
+      category: JobCategory.TECH_HELP,
+      standardCategoryId: categoryMap.get('tech-digital-help'),
+      description: 'Help my elderly mother learn to use her new smartphone. Need patient person to teach basics like calls, messages, photos.',
+      payType: PayType.HOURLY,
+      payAmount: 200,
+      location: 'Oslo, Aker Brygge',
+      status: 'POSTED' as const,
+      requiredTraits: ['patient', 'friendly', 'tech-savvy'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(5, 2),
+    },
+    {
+      title: 'App Installation and Email Setup',
+      category: JobCategory.TECH_HELP,
+      standardCategoryId: categoryMap.get('tech-digital-help'),
+      description: 'Need help installing apps and setting up email on tablet. Also organize photos in cloud storage. 1-2 hours.',
+      payType: PayType.HOURLY,
+      payAmount: 180,
+      location: 'Lørenskog, Sentrum',
+      status: 'POSTED' as const,
+      requiredTraits: ['tech-savvy', 'patient'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(4, 2),
     },
+
+    // 6. errands-local-tasks - Errands & Local Tasks (2 jobs)
     {
-      title: 'Babysitting - After School Care',
-      category: JobCategory.BABYSITTING,
-      description: 'Pick up 8-year-old from school at 3pm and supervise until 5:30pm. Mon-Thu. Help with homework.',
-      payType: PayType.HOURLY,
-      payAmount: 170,
-      location: 'Oslo, Romsås',
+      title: 'Grocery Pickup and Delivery',
+      category: JobCategory.ERRANDS,
+      standardCategoryId: categoryMap.get('errands-local-tasks'),
+      description: 'Need someone to pick up groceries from local store and deliver to my apartment. Shopping list provided.',
+      payType: PayType.FIXED,
+      payAmount: 180,
+      location: 'Oslo, Tøyen',
       status: 'POSTED' as const,
-      requiredTraits: ['reliable', 'patient', 'homework help'],
+      requiredTraits: ['reliable', 'organized'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
-      ...getJobDates(2, 3),
+      ...getJobDates(2, 1),
     },
     {
-      title: 'Package Pickup and Delivery',
+      title: 'Return Packages to Post Office',
       category: JobCategory.ERRANDS,
-      description: 'Pick up package from post office and deliver to my office. Simple errand, about 30 minutes total.',
+      standardCategoryId: categoryMap.get('errands-local-tasks'),
+      description: 'Drop off 3 packages at the local post office. Simple errand, about 30 minutes total.',
       payType: PayType.FIXED,
-      payAmount: 150,
+      payAmount: 120,
       location: 'Oslo, Storo',
       status: 'POSTED' as const,
       requiredTraits: ['reliable', 'punctual'],
@@ -2818,292 +2806,129 @@ This platform helps you earn money through micro-jobs while discovering potentia
       postedById: demoEmployer.id,
       ...getJobDates(1, 1),
     },
+
+    // 7. events-community-help - Events & Community Help (2 jobs)
     {
-      title: 'Garage Organization - Sort and Clean',
-      category: JobCategory.CLEANING,
-      description: 'Help organize and clean out garage. Sorting, sweeping, arranging items. About 3-4 hours.',
-      payType: PayType.HOURLY,
-      payAmount: 170,
-      location: 'Lørenskog, Solheim',
-      status: 'POSTED' as const,
-      requiredTraits: ['organized', 'physically fit'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(8, 4),
-    },
-    {
-      title: 'Painting Help - Small Bedroom',
-      category: JobCategory.DIY_HELP,
-      description: 'Need help painting one small bedroom. All supplies provided. Previous painting experience preferred but not required.',
-      payType: PayType.FIXED,
-      payAmount: 600,
-      location: 'Oslo, Sagene',
-      status: 'POSTED' as const,
-      requiredTraits: ['careful', 'detail-oriented'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(9, 5),
-    },
-    // Additional 20 jobs focused on babysitting, cleaning, cooking, gardening
-    {
-      title: 'Babysitting - Toddler (2 years)',
-      category: JobCategory.BABYSITTING,
-      description: 'Looking for a patient babysitter for our energetic 2-year-old. Saturday morning 9am-1pm. Experience with toddlers preferred.',
-      payType: PayType.HOURLY,
-      payAmount: 175,
-      location: 'Oslo, Ullern',
-      status: 'POSTED' as const,
-      requiredTraits: ['patient', 'energetic', 'good with kids'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(3, 4),
-    },
-    {
-      title: 'Deep Kitchen Cleaning',
-      category: JobCategory.CLEANING,
-      description: 'Need thorough cleaning of kitchen including oven, fridge interior, cabinets, and floors. All cleaning supplies provided.',
-      payType: PayType.FIXED,
-      payAmount: 450,
-      location: 'Lørenskog, Sentrum',
-      status: 'POSTED' as const,
-      requiredTraits: ['detail-oriented', 'thorough'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(4, 3),
-    },
-    {
-      title: 'Meal Prep Assistant - Weekly Cooking',
+      title: 'Birthday Party Helper',
       category: JobCategory.OTHER,
-      description: 'Help prepare meals for the week. Chopping vegetables, cooking basics, and packaging. Sunday afternoons, 3-4 hours.',
-      payType: PayType.HOURLY,
-      payAmount: 180,
-      location: 'Oslo, Frogner',
-      status: 'POSTED' as const,
-      requiredTraits: ['cooking skills', 'organized', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(5, 4),
-    },
-    {
-      title: 'Garden Maintenance - Lawn and Hedges',
-      category: JobCategory.DIY_HELP,
-      description: 'Regular garden maintenance needed: mow lawn, trim hedges, and general tidying. Equipment provided. About 2-3 hours.',
-      payType: PayType.HOURLY,
-      payAmount: 165,
-      location: 'Fjellhamar',
-      status: 'POSTED' as const,
-      requiredTraits: ['outdoor work', 'reliable', 'physically fit'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(6, 3),
-    },
-    {
-      title: 'Babysitting - Three Siblings (5, 8, 11)',
-      category: JobCategory.BABYSITTING,
-      description: 'Need reliable sitter for three well-behaved kids. Help with homework and prepare simple dinner. Weekday evenings 4pm-7pm.',
-      payType: PayType.HOURLY,
-      payAmount: 200,
-      location: 'Oslo, Vinderen',
-      status: 'POSTED' as const,
-      requiredTraits: ['responsible', 'patient', 'homework help'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(2, 3),
-    },
-    {
-      title: 'Bathroom Deep Clean - Two Bathrooms',
-      category: JobCategory.CLEANING,
-      description: 'Thorough cleaning of two bathrooms. Scrubbing tiles, cleaning fixtures, mirrors, and floors. Supplies provided.',
+      standardCategoryId: categoryMap.get('events-community-help'),
+      description: 'Help with kids birthday party - setting up decorations, serving food, organizing games, and cleanup. 3pm-7pm Saturday.',
       payType: PayType.FIXED,
       payAmount: 350,
-      location: 'Lørenskog, Skårer',
+      location: 'Oslo, Vinderen',
       status: 'POSTED' as const,
-      requiredTraits: ['thorough', 'detail-oriented'],
+      requiredTraits: ['energetic', 'good with kids', 'organized'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
-      ...getJobDates(7, 2),
+      ...getJobDates(6, 4),
     },
     {
-      title: 'Cooking Help - Dinner Party Prep',
+      title: 'Community Cleanup Event Assistant',
       category: JobCategory.OTHER,
-      description: 'Assist with preparing food for a dinner party. Need help with chopping, basic cooking, and kitchen cleanup. Friday 2pm-6pm.',
-      payType: PayType.HOURLY,
-      payAmount: 190,
-      location: 'Oslo, Majorstuen',
-      status: 'POSTED' as const,
-      requiredTraits: ['cooking skills', 'organized', 'calm under pressure'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(4, 4),
-    },
-    {
-      title: 'Garden Planting - Flower Beds',
-      category: JobCategory.DIY_HELP,
-      description: 'Help plant seasonal flowers in garden beds. Soil preparation, planting, and mulching. Gloves and tools provided.',
+      standardCategoryId: categoryMap.get('events-community-help'),
+      description: 'Help organize and participate in local park cleanup. Picking up litter, sorting recyclables. Equipment provided.',
       payType: PayType.FIXED,
-      payAmount: 400,
-      location: 'Fjellhamar, Rælingen',
-      status: 'POSTED' as const,
-      requiredTraits: ['outdoor work', 'careful', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(8, 3),
-    },
-    {
-      title: 'Babysitting - Newborn Twins',
-      category: JobCategory.BABYSITTING,
-      description: 'Experienced sitter needed for 4-month-old twins. Help with feeding, changing, and soothing. Must have infant experience.',
-      payType: PayType.HOURLY,
-      payAmount: 220,
-      location: 'Oslo, Holmenkollen',
-      status: 'POSTED' as const,
-      requiredTraits: ['experienced', 'calm', 'responsible', 'caring'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(5, 4),
-    },
-    {
-      title: 'Spring Cleaning - Entire Apartment',
-      category: JobCategory.CLEANING,
-      description: 'Full spring cleaning of 3-bedroom apartment. Windows, floors, dusting, and organizing. Full day job, supplies provided.',
-      payType: PayType.FIXED,
-      payAmount: 800,
+      payAmount: 200,
       location: 'Oslo, Grünerløkka',
       status: 'POSTED' as const,
-      requiredTraits: ['thorough', 'organized', 'energetic'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(9, 8),
-    },
-    {
-      title: 'Baking Assistant - Birthday Cakes',
-      category: JobCategory.OTHER,
-      description: 'Help bake and decorate birthday cakes for a small home bakery. Some baking experience helpful but not required.',
-      payType: PayType.HOURLY,
-      payAmount: 170,
-      location: 'Lørenskog, Kurland',
-      status: 'POSTED' as const,
-      requiredTraits: ['creative', 'patient', 'detail-oriented'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(3, 4),
-    },
-    {
-      title: 'Vegetable Garden Help - Weeding & Harvesting',
-      category: JobCategory.DIY_HELP,
-      description: 'Help maintain vegetable garden. Weeding between rows, harvesting ripe vegetables, and light watering. 2-3 hours weekly.',
-      payType: PayType.HOURLY,
-      payAmount: 160,
-      location: 'Oslo, Nordstrand',
-      status: 'POSTED' as const,
-      requiredTraits: ['outdoor work', 'careful', 'reliable'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(2, 3),
-    },
-    {
-      title: 'Babysitting - Special Needs Child',
-      category: JobCategory.BABYSITTING,
-      description: 'Caring sitter needed for 9-year-old with autism. Experience with special needs children required. Weekend afternoons.',
-      payType: PayType.HOURLY,
-      payAmount: 230,
-      location: 'Oslo, Lambertseter',
-      status: 'POSTED' as const,
-      requiredTraits: ['patient', 'experienced', 'calm', 'caring'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(4, 4),
-    },
-    {
-      title: 'Post-Party Cleanup',
-      category: JobCategory.CLEANING,
-      description: 'Need help cleaning up after birthday party. Dishes, vacuuming, taking out trash, and general tidying. Sunday morning.',
-      payType: PayType.FIXED,
-      payAmount: 300,
-      location: 'Lørenskog, Solheim',
-      status: 'POSTED' as const,
-      requiredTraits: ['efficient', 'thorough'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(6, 3),
-    },
-    {
-      title: 'Cooking Lessons Assistant',
-      category: JobCategory.OTHER,
-      description: 'Help teach basic cooking to kids aged 8-12. Assist with prep, supervision, and cleanup during cooking class.',
-      payType: PayType.HOURLY,
-      payAmount: 185,
-      location: 'Oslo, Tøyen',
-      status: 'POSTED' as const,
-      requiredTraits: ['cooking skills', 'good with kids', 'patient'],
+      requiredTraits: ['outdoor work', 'community-minded', 'reliable'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(7, 3),
     },
+
+    // 8. creative-media-gigs - Creative & Media Gigs (2 jobs)
     {
-      title: 'Garden Renovation - Clearing & Prep',
-      category: JobCategory.DIY_HELP,
-      description: 'Help clear overgrown garden area. Removing weeds, old plants, and preparing soil for new planting. Hard work but rewarding!',
-      payType: PayType.HOURLY,
-      payAmount: 175,
-      location: 'Fjellhamar',
-      status: 'POSTED' as const,
-      requiredTraits: ['physically fit', 'hardworking', 'outdoor work'],
-      eligibleAgeGroups: eligibleForAll,
-      postedById: demoEmployer.id,
-      ...getJobDates(10, 4),
-    },
-    {
-      title: 'Babysitting - Movie Night',
-      category: JobCategory.BABYSITTING,
-      description: 'Fun babysitter needed for two kids (6 and 9) during parents date night. Make popcorn, watch movies, bedtime at 9pm.',
+      title: 'Simple Logo Design in Canva',
+      category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('creative-media-gigs'),
+      description: 'Create a simple logo for my small bakery business using Canva. Need 2-3 design options.',
       payType: PayType.FIXED,
-      payAmount: 400,
-      location: 'Oslo, St. Hanshaugen',
+      payAmount: 300,
+      location: 'Oslo, Sentrum',
       status: 'POSTED' as const,
-      requiredTraits: ['fun', 'responsible', 'good with kids'],
+      requiredTraits: ['creative', 'design skills', 'reliable'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
-      ...getJobDates(5, 5),
+      ...getJobDates(5, 3),
     },
     {
-      title: 'Office Cleaning - Small Business',
-      category: JobCategory.CLEANING,
-      description: 'Weekly cleaning of small office space. Vacuuming, dusting desks, cleaning kitchen area, and emptying bins. After hours.',
-      payType: PayType.HOURLY,
-      payAmount: 180,
-      location: 'Oslo, Aker Brygge',
+      title: 'Event Photo Taking',
+      category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('creative-media-gigs'),
+      description: 'Take photos at family reunion gathering. No professional equipment needed - smartphone is fine. 2-3 hours.',
+      payType: PayType.FIXED,
+      payAmount: 250,
+      location: 'Lørenskog, Skårer',
       status: 'POSTED' as const,
-      requiredTraits: ['reliable', 'thorough', 'trustworthy'],
+      requiredTraits: ['creative', 'friendly', 'reliable'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(8, 3),
+    },
+
+    // 9. education-learning-support - Education & Learning Support (1 job)
+    {
+      title: 'Tutoring - Math for 7th Grader',
+      category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('education-learning-support'),
+      description: 'Help 12-year-old with math homework and test preparation. Weekly sessions, 1-2 hours. Must be good at explaining concepts.',
+      payType: PayType.HOURLY,
+      payAmount: 200,
+      location: 'Oslo, Ullern',
+      status: 'POSTED' as const,
+      requiredTraits: ['patient', 'good at math', 'reliable'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(3, 2),
     },
+
+    // 10. retail-microbusiness-help - Retail & Micro-Business Help (1 job)
     {
-      title: 'Healthy Meal Prep - Senior Citizen',
+      title: 'Market Stall Helper - Weekend',
       category: JobCategory.OTHER,
-      description: 'Prepare healthy, easy-to-eat meals for elderly person. Cook 5 meals to be refrigerated for the week. Must follow dietary guidelines.',
+      standardCategoryId: categoryMap.get('retail-microbusiness-help'),
+      description: 'Help at farmers market stall on Saturday. Setting up, serving customers, packing up. 8am-3pm.',
       payType: PayType.FIXED,
-      payAmount: 500,
-      location: 'Lørenskog, Sentrum',
+      payAmount: 400,
+      location: 'Oslo, Mathallen',
       status: 'POSTED' as const,
-      requiredTraits: ['cooking skills', 'caring', 'reliable'],
+      requiredTraits: ['friendly', 'reliable', 'energetic'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
-      ...getJobDates(4, 4),
+      ...getJobDates(5, 7),
     },
+
+    // 11. fitness-activity-help - Fitness & Activity Help (1 job)
     {
-      title: 'Lawn Care - Mowing & Edging',
-      category: JobCategory.DIY_HELP,
-      description: 'Regular lawn mowing and edging needed. Large garden with front and back lawns. Mower provided. Every 2 weeks.',
+      title: 'Walking Companion for Elderly',
+      category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('fitness-activity-help'),
+      description: 'Accompany my grandmother on her daily 30-minute walk around the neighborhood. Companionship and safety.',
       payType: PayType.FIXED,
-      payAmount: 350,
-      location: 'Oslo, Oppegård',
+      payAmount: 120,
+      location: 'Oslo, Lambertseter',
       status: 'POSTED' as const,
-      requiredTraits: ['reliable', 'outdoor work', 'punctual'],
+      requiredTraits: ['patient', 'caring', 'reliable'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
-      ...getJobDates(8, 2),
+      ...getJobDates(2, 1),
+    },
+
+    // 12. online-ai-age-jobs - Online & AI-Age Jobs (1 job)
+    {
+      title: 'AI Chatbot Testing and Feedback',
+      category: JobCategory.OTHER,
+      standardCategoryId: categoryMap.get('online-ai-age-jobs'),
+      description: 'Test a new AI chatbot and provide detailed feedback. Try different questions and report any issues. Remote work.',
+      payType: PayType.HOURLY,
+      payAmount: 180,
+      location: 'Remote',
+      status: 'POSTED' as const,
+      requiredTraits: ['detail-oriented', 'tech-savvy', 'good communicator'],
+      eligibleAgeGroups: eligibleForAll,
+      postedById: demoEmployer.id,
+      ...getJobDates(4, 2),
     },
   ];
 
@@ -3113,7 +2938,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
     });
   }
 
-  console.log('✅ Created 40 demo jobs');
+  console.log('✅ Created 20 demo jobs distributed across 12 categories');
 
   // Create demo youth worker with reviews
   const ryanYouth = await prisma.user.upsert({
@@ -3137,6 +2962,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       interests: ['Technology', 'Helping Others', 'Learning'],
       profileVisibility: true,
       availabilityStatus: 'AVAILABLE',
+      city: 'Fjellhamar',
+      address: 'Fjellhamar, Norway',
     },
     create: {
       userId: ryanYouth.id,
@@ -3151,6 +2978,8 @@ This platform helps you earn money through micro-jobs while discovering potentia
       publicProfileSlug: 'ryan-mudie',
       profileVisibility: true,
       availabilityStatus: 'AVAILABLE',
+      city: 'Fjellhamar',
+      address: 'Fjellhamar, Norway',
     },
   });
 
@@ -3570,6 +3399,255 @@ This platform helps you earn money through micro-jobs while discovering potentia
   });
 
   console.log('✅ Updated Ryan profile with new stats');
+
+  // ============================================
+  // GROWTH DATA - JobCompletions, StructuredFeedback, TrustSignals, UserSkillSignals
+  // This enables the "My Growth" page to display sample data
+  // ============================================
+  console.log('📈 Seeding growth tracking data for Ryan...');
+
+  // Get all of Ryan's completed jobs (both from original employers and Nicky)
+  const allRyanCompletedJobs = [...completedJobs, ...nickyCompletedJobs];
+
+  // Create JobCompletion records for each completed job
+  const jobCompletionData = [
+    // Original 5 completed jobs
+    {
+      jobIndex: 0,
+      employerIndex: 0,
+      supervision: SupervisionLevel.SUPERVISED,
+      hoursWorked: 4,
+      skillsDemonstrated: ['babysitting', 'child-activities', 'patience', 'communication', 'reliability'],
+      ratings: { punctuality: 5, communication: 5, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.INTERMEDIATE,
+      wouldRehire: true,
+      daysAgo: 14,
+    },
+    {
+      jobIndex: 1,
+      employerIndex: 1,
+      supervision: SupervisionLevel.UNSUPERVISED,
+      hoursWorked: 1,
+      skillsDemonstrated: ['dog-walking', 'pet-sitting', 'punctuality', 'reliability'],
+      ratings: { punctuality: 5, communication: 4, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.BASIC,
+      wouldRehire: true,
+      daysAgo: 10,
+    },
+    {
+      jobIndex: 2,
+      employerIndex: 2,
+      supervision: SupervisionLevel.UNSUPERVISED,
+      hoursWorked: 3,
+      skillsDemonstrated: ['gardening', 'physical-stamina', 'reliability', 'following-instructions'],
+      ratings: { punctuality: 4, communication: 5, quality: 4, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.INTERMEDIATE,
+      wouldRehire: true,
+      daysAgo: 7,
+    },
+    {
+      jobIndex: 3,
+      employerIndex: 3,
+      supervision: SupervisionLevel.SUPERVISED,
+      hoursWorked: 2,
+      skillsDemonstrated: ['tech-help-basic', 'computer-help', 'patience', 'communication', 'customer-service'],
+      ratings: { punctuality: 5, communication: 5, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.ADVANCED,
+      wouldRehire: true,
+      daysAgo: 5,
+    },
+    {
+      jobIndex: 4,
+      employerIndex: 4,
+      supervision: SupervisionLevel.UNSUPERVISED,
+      hoursWorked: 4,
+      skillsDemonstrated: ['house-cleaning', 'organizing', 'attention-to-detail', 'time-management'],
+      ratings: { punctuality: 5, communication: 4, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.INTERMEDIATE,
+      wouldRehire: true,
+      daysAgo: 3,
+    },
+    // Nicky's completed jobs (indices 5, 6)
+    {
+      jobIndex: 5,
+      employerId: nickyEmployer.id,
+      supervision: SupervisionLevel.UNSUPERVISED,
+      hoursWorked: 5,
+      skillsDemonstrated: ['dog-walking', 'pet-sitting', 'communication', 'reliability', 'initiative'],
+      ratings: { punctuality: 5, communication: 5, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.ADVANCED,
+      wouldRehire: true,
+      daysAgo: 2,
+    },
+    {
+      jobIndex: 6,
+      employerId: nickyEmployer.id,
+      supervision: SupervisionLevel.SUPERVISED,
+      hoursWorked: 4,
+      skillsDemonstrated: ['babysitting', 'child-activities', 'event-help', 'teamwork', 'adaptability'],
+      ratings: { punctuality: 5, communication: 5, quality: 5, respectfulness: 5, followedInstructions: 5 },
+      responsibilityLevel: ResponsibilityLevel.ADVANCED,
+      wouldRehire: true,
+      daysAgo: 1,
+    },
+  ];
+
+  // Create JobCompletions and StructuredFeedback
+  const createdCompletions = [];
+  for (let i = 0; i < jobCompletionData.length; i++) {
+    const data = jobCompletionData[i];
+    const job = allRyanCompletedJobs[data.jobIndex];
+    const employerId = data.employerId || employers[data.employerIndex!].id;
+
+    const completedAt = new Date();
+    completedAt.setDate(completedAt.getDate() - data.daysAgo);
+
+    // Create JobCompletion
+    const completion = await prisma.jobCompletion.upsert({
+      where: { jobId_youthId: { jobId: job.id, youthId: ryanYouth.id } },
+      update: {
+        outcome: JobCompletionOutcome.COMPLETED,
+        supervision: data.supervision,
+        hoursWorked: data.hoursWorked,
+        completedAt,
+      },
+      create: {
+        jobId: job.id,
+        youthId: ryanYouth.id,
+        employerId: employerId,
+        outcome: JobCompletionOutcome.COMPLETED,
+        supervision: data.supervision,
+        hoursWorked: data.hoursWorked,
+        completedAt,
+      },
+    });
+    createdCompletions.push(completion);
+
+    // Create StructuredFeedback for this completion
+    await prisma.structuredFeedback.upsert({
+      where: { jobCompletionId: completion.id },
+      update: {
+        punctuality: data.ratings.punctuality,
+        communication: data.ratings.communication,
+        quality: data.ratings.quality,
+        respectfulness: data.ratings.respectfulness,
+        followedInstructions: data.ratings.followedInstructions,
+        wouldRehire: data.wouldRehire,
+        responsibilityLevel: data.responsibilityLevel,
+        skillsDemonstrated: data.skillsDemonstrated,
+      },
+      create: {
+        jobCompletionId: completion.id,
+        punctuality: data.ratings.punctuality,
+        communication: data.ratings.communication,
+        quality: data.ratings.quality,
+        respectfulness: data.ratings.respectfulness,
+        followedInstructions: data.ratings.followedInstructions,
+        wouldRehire: data.wouldRehire,
+        responsibilityLevel: data.responsibilityLevel,
+        skillsDemonstrated: data.skillsDemonstrated,
+      },
+    });
+  }
+  console.log(`✅ Created ${createdCompletions.length} job completions with structured feedback`);
+
+  // Create TrustSignals for Ryan based on his performance
+  const trustSignalsData = [
+    // ON_TIME signals (from good punctuality ratings)
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 14 },
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 10 },
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 5 },
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 3 },
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 2 },
+    { type: TrustSignalType.ON_TIME, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 1 },
+
+    // GOOD_COMMS signals (from good communication ratings)
+    { type: TrustSignalType.GOOD_COMMS, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 14 },
+    { type: TrustSignalType.GOOD_COMMS, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 7 },
+    { type: TrustSignalType.GOOD_COMMS, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 5 },
+    { type: TrustSignalType.GOOD_COMMS, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 2 },
+    { type: TrustSignalType.GOOD_COMMS, sourceType: TrustSignalSource.FEEDBACK, weight: 1, daysAgo: 1 },
+
+    // REPEAT_HIRE signal (hired by Nicky twice)
+    { type: TrustSignalType.REPEAT_HIRE, sourceType: TrustSignalSource.JOB_COMPLETION, weight: 2, daysAgo: 1, sourceId: nickyEmployer.id },
+
+    // CONSISTENCY_STREAK (7 jobs completed successfully in a row)
+    { type: TrustSignalType.CONSISTENCY_STREAK, sourceType: TrustSignalSource.SYSTEM, weight: 3, daysAgo: 1 },
+
+    // POSITIVE_TREND (improving scores over time - last 3 feedback all high)
+    { type: TrustSignalType.POSITIVE_TREND, sourceType: TrustSignalSource.SYSTEM, weight: 2, daysAgo: 1 },
+  ];
+
+  // Delete existing trust signals for Ryan to avoid duplicates
+  await prisma.trustSignal.deleteMany({ where: { userId: ryanYouth.id } });
+
+  for (const signal of trustSignalsData) {
+    const createdAt = new Date();
+    createdAt.setDate(createdAt.getDate() - signal.daysAgo);
+
+    await prisma.trustSignal.create({
+      data: {
+        userId: ryanYouth.id,
+        type: signal.type,
+        sourceType: signal.sourceType,
+        sourceId: signal.sourceId || null,
+        weight: signal.weight,
+        createdAt,
+      },
+    });
+  }
+  console.log(`✅ Created ${trustSignalsData.length} trust signals for Ryan`);
+
+  // Create UserSkillSignals (aggregate skills demonstrated across all jobs)
+  // First, get all skill IDs from the database
+  const allSkills = await prisma.skill.findMany();
+  const skillMap = new Map(allSkills.map(s => [s.slug, s.id]));
+
+  // Aggregate all skills demonstrated across jobs
+  const skillStrengths = new Map<string, { count: number; lastDaysAgo: number }>();
+  for (const data of jobCompletionData) {
+    for (const skillSlug of data.skillsDemonstrated) {
+      const existing = skillStrengths.get(skillSlug) || { count: 0, lastDaysAgo: 999 };
+      skillStrengths.set(skillSlug, {
+        count: existing.count + 1,
+        lastDaysAgo: Math.min(existing.lastDaysAgo, data.daysAgo),
+      });
+    }
+  }
+
+  // Delete existing skill signals for Ryan to avoid duplicates
+  await prisma.userSkillSignal.deleteMany({ where: { userId: ryanYouth.id } });
+
+  // Create skill signals
+  let skillSignalCount = 0;
+  for (const [slug, data] of skillStrengths) {
+    const skillId = skillMap.get(slug);
+    if (!skillId) {
+      console.log(`⚠️ Skill not found: ${slug}`);
+      continue;
+    }
+
+    // Calculate strength (0-100) based on count (more times = stronger signal)
+    const strength = Math.min(100, data.count * 25 + 25);
+
+    const createdAt = new Date();
+    createdAt.setDate(createdAt.getDate() - data.lastDaysAgo);
+
+    await prisma.userSkillSignal.create({
+      data: {
+        userId: ryanYouth.id,
+        skillId: skillId,
+        source: 'feedback',
+        strength: strength,
+        evidence: `Demonstrated ${data.count} time(s) in completed jobs`,
+        createdAt,
+      },
+    });
+    skillSignalCount++;
+  }
+  console.log(`✅ Created ${skillSignalCount} skill signals for Ryan`);
+
+  console.log('✅ Growth tracking data seeded successfully!');
   console.log('✅ Database seeded successfully!');
 }
 

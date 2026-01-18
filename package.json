@@ -15,6 +15,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed-help": "tsx prisma/seed-help-docs.ts",
+    "db:seed-demo": "tsx prisma/seed-demo-data.ts",
     "db:studio": "prisma studio",
     "prepare": "husky"
   },

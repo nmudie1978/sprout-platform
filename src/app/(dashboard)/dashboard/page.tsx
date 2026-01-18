@@ -26,6 +26,10 @@ import {
   Search,
   ChevronRight,
   HandHeart,
+  LayoutDashboard,
+  User,
+  Bot,
+  Bell,
 } from "lucide-react";
 import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
@@ -480,7 +484,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-sm">AI Career Advisor</p>
-                        <p className="text-xs text-muted-foreground">Get personalized guidance</p>
+                        <p className="text-xs text-muted-foreground">Get personalised guidance</p>
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     </div>

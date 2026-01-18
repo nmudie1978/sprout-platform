@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getRecommendationsFromAspiration, getCareersForCategory, getCategoryForCareer, type CareerCategory } from "@/lib/career-pathways";
 
-// GET /api/career-insights - Get personalized career recommendations for youth based on their career aspiration
+// GET /api/career-insights - Get personalised career recommendations for youth based on their career aspiration
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -49,7 +49,7 @@ export async function GET() {
     // Build insights message
     let insightsMessage = "";
     if (!careerAspiration) {
-      insightsMessage = "Set your career aspiration in your profile to get personalized recommendations!";
+      insightsMessage = "Set your career aspiration in your profile to get personalised recommendations!";
     } else if (recommendations.length === 0) {
       insightsMessage = "Try updating your career aspiration for better matches.";
     } else {

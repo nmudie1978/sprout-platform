@@ -107,7 +107,7 @@ export function NewsletterSignup() {
           Industry Newsletter
         </CardTitle>
         <CardDescription>
-          Get personalized job market updates delivered to your inbox
+          Get personalised job market updates delivered to your inbox
         </CardDescription>
       </CardHeader>
       <CardContent>

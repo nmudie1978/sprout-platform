@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,6 @@ import {
   CalendarDays,
   ImageIcon,
   Sparkles,
-  TrendingUp,
   ArrowRight,
   X,
   SlidersHorizontal,
@@ -72,6 +72,7 @@ interface StandardCategory {
 }
 
 export default function JobsPage() {
+  const { data: session } = useSession();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL"); // Legacy category
   const [standardCategoryFilter, setStandardCategoryFilter] = useState<string>(""); // New taxonomy
@@ -81,6 +82,21 @@ export default function JobsPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   const [page, setPage] = useState(1);
+
+  // Fetch user's city from their youth profile
+  const { data: profileData } = useQuery({
+    queryKey: ["user-profile-city"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile");
+      if (!response.ok) return null;
+      return response.json();
+    },
+    enabled: session?.user?.role === "YOUTH",
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  // Profile API returns the YouthProfile object directly (not nested)
+  const userCity = profileData?.city || null;
 
   // Fetch standard job categories
   const { data: categoriesData } = useQuery({
@@ -164,7 +180,10 @@ export default function JobsPage() {
 
   // Stats
   const totalJobs = jobs.length;
-  const highPayJobs = jobs.filter((j: any) => j.payAmount >= 200).length;
+  // Count jobs near user's city (case-insensitive partial match on location field)
+  const jobsNearYou = userCity
+    ? jobs.filter((j: any) => j.location?.toLowerCase().includes(userCity.toLowerCase())).length
+    : 0;
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -203,15 +222,47 @@ export default function JobsPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border-2 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 col-span-2 sm:col-span-1">
-          <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-1">{highPayJobs}</div>
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              High Pay Jobs
-            </p>
-          </CardContent>
-        </Card>
+        {userCity ? (
+          <Card
+            className={`border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 col-span-2 sm:col-span-1 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md ${
+              locationFilter.toLowerCase() === userCity.toLowerCase() ? 'ring-2 ring-purple-500 ring-offset-2' : ''
+            }`}
+            onClick={() => {
+              if (locationFilter.toLowerCase() === userCity.toLowerCase()) {
+                setLocationFilter("");
+              } else {
+                setLocationFilter(userCity);
+              }
+            }}
+          >
+            <CardContent className="pt-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                {jobsNearYou}
+              </div>
+              <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                <MapPin className="h-3 w-3" />
+                Jobs in {userCity}
+              </p>
+              {locationFilter.toLowerCase() === userCity.toLowerCase() && (
+                <Badge className="mt-2 bg-purple-500 text-white text-xs">Filter Active</Badge>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Link href="/profile" className="col-span-2 sm:col-span-1">
+            <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md h-full">
+              <CardContent className="pt-6 text-center">
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                  —
+                </div>
+                <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  Set your city in profile
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
       </motion.div>
 
       {/* Search & View Controls */}
@@ -427,7 +478,7 @@ export default function JobsPage() {
               }
             >
               {filteredJobs.map((job: any, index: number) => (
-                <JobCard key={job.id} job={job} index={index} viewMode={viewMode} />
+                <JobCard key={job.id} job={job} index={index} viewMode={viewMode} userCity={userCity} />
               ))}
             </motion.div>
 
@@ -538,7 +589,7 @@ export default function JobsPage() {
 }
 
 // Job Card wrapper for animation and view mode
-function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: ViewMode }) {
+function JobCard({ job, index, viewMode, userCity }: { job: any; index: number; viewMode: ViewMode; userCity?: string | null }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 5 }}
@@ -549,6 +600,7 @@ function JobCard({ job, index, viewMode }: { job: any; index: number; viewMode: 
       <JobCardComponent
         job={job}
         variant={viewMode === "list" ? "compact" : "default"}
+        userCity={userCity}
       />
     </motion.div>
   );

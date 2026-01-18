@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -24,12 +24,18 @@ import {
   X,
   Settings,
   BarChart3,
+  Bot,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
-import { PokesBell } from "@/components/pokes-bell";
 import { Avatar } from "@/components/avatar";
 
 interface NavigationProps {
@@ -52,10 +58,11 @@ interface NavLink {
 export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   // Fetch avatar dynamically for youth users so it updates when changed
   const { data: profile } = useQuery({
-    queryKey: ["my-profile"],
+    queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
       const response = await fetch("/api/profile");
       if (!response.ok) {
@@ -64,7 +71,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
       }
       return response.json();
     },
-    enabled: userRole === "YOUTH",
+    enabled: userRole === "YOUTH" && !!session?.user?.id,
     staleTime: 0, // Always check for fresh data
   });
 
@@ -124,7 +131,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
-    { href: "/career-advisor", label: "AI Advisor", icon: MessageSquare, isCore: true },
+    { href: "/career-advisor", label: "", icon: Bot, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
     { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
 
@@ -191,29 +198,41 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-2">
-            {links.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-              return (
-                <div key={link.href} className="relative group">
+          <TooltipProvider delayDuration={200}>
+            <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
+              {links.map((link) => {
+                const Icon = link.icon;
+                const isActive = pathname === link.href;
+                const isProfile = link.href === "/profile";
+                const isAiAdvisor = link.href === "/career-advisor";
+                const isDashboard = link.href === "/dashboard" || link.href === "/employer/dashboard";
+
+                // Get tooltip text for icon-only items
+                const getTooltipText = () => {
+                  if (isProfile) return "My Profile";
+                  if (isAiAdvisor) return "AI Career Advisor";
+                  if (isDashboard) return "Dashboard";
+                  return link.label;
+                };
+
+                const linkContent = (
                   <motion.div
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.03, y: -1 }}
+                    whileTap={{ scale: 0.97 }}
                   >
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center space-x-1.5 rounded-lg px-3 py-2 text-xs transition-all duration-200",
+                        "flex items-center space-x-1 rounded-lg px-2 py-1.5 text-xs transition-all duration-200",
                         isActive
                           ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
                           : link.isCore
-                            ? "text-foreground font-bold hover:bg-gradient-to-r hover:from-primary/10 hover:to-blue-500/10 border-2 border-primary/20"
+                            ? "text-foreground font-medium hover:bg-primary/10 border border-primary/20"
                             : "text-muted-foreground font-medium hover:text-foreground hover:bg-muted/50"
                       )}
                     >
                       <Icon className={cn(
-                        "h-4 w-4",
+                        isProfile ? "h-5 w-5" : "h-4 w-4",
                         isActive && "animate-pulse",
                         link.isCore && !isActive && "text-primary",
                         !isActive && link.iconColor
@@ -221,27 +240,41 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       {link.label && <span className="hidden lg:inline">{link.label}</span>}
                     </Link>
                   </motion.div>
+                );
 
-                  {/* Active indicator dot */}
-                  {isActive && (
-                    <motion.div
-                      className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
-                      layoutId="activeIndicator"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <div key={link.href} className="relative group">
+                    {link.iconOnly ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          {linkContent}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{getTooltipText()}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      linkContent
+                    )}
+
+                    {/* Active indicator dot */}
+                    {isActive && (
+                      <motion.div
+                        className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
+                        layoutId="activeIndicator"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </TooltipProvider>
 
           {/* User Menu */}
           <div className="hidden md:flex md:items-center md:space-x-3">
-            {/* Pokes Bell - for Youth and Employer */}
-            <PokesBell userRole={userRole} />
-
             {/* Notification Bell */}
             <NotificationBell />
 
@@ -389,7 +422,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         link.isCore && !isActive && "text-primary",
                         !isActive && link.iconColor
                       )} />
-                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : "")}</span>
+                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : "")}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
