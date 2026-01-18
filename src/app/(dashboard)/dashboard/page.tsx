@@ -163,7 +163,7 @@ function ApplicationCard({ app }: { app: any }) {
 export default function DashboardPage() {
   const { data: session } = useSession();
 
-  const { data: applications } = useQuery({
+  const { data: applicationsData } = useQuery({
     queryKey: ["my-applications"],
     queryFn: async () => {
       const response = await fetch("/api/applications");
@@ -189,13 +189,16 @@ export default function DashboardPage() {
   // Handle both old array format and new paginated format
   const jobs = Array.isArray(jobsData) ? jobsData : (jobsData?.jobs || []);
 
-  const pendingApps = applications?.filter((app: any) => app.status === "PENDING") || [];
-  const acceptedApps = applications?.filter((app: any) => app.status === "ACCEPTED") || [];
+  // Extract applications array from paginated response
+  const applications = Array.isArray(applicationsData) ? applicationsData : (applicationsData?.applications || []);
+
+  const pendingApps = applications.filter((app: any) => app.status === "PENDING");
+  const acceptedApps = applications.filter((app: any) => app.status === "ACCEPTED");
   // Count completed jobs from applications where the job status is COMPLETED or REVIEWED
-  const completedJobs = applications?.filter((app: any) =>
+  const completedJobs = applications.filter((app: any) =>
     app.status === "ACCEPTED" &&
     (app.job?.status === "COMPLETED" || app.job?.status === "REVIEWED")
-  )?.length || 0;
+  ).length;
 
   if (session?.user.role !== "YOUTH") {
     return (

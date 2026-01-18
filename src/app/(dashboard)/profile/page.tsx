@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SkillRadar } from "@/components/skill-radar";
 import { ReviewsDisplay } from "@/components/reviews-display";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
@@ -56,6 +56,7 @@ export default function ProfilePage() {
     bio: "",
     availability: "",
     phoneNumber: "",
+    city: "",
     interests: [] as string[],
     guardianEmail: "",
     careerAspiration: "",
@@ -85,6 +86,7 @@ export default function ProfilePage() {
         bio: profile.bio || "",
         availability: profile.availability || "",
         phoneNumber: profile.phoneNumber || "",
+        city: profile.city || "",
         interests: profile.interests || [],
         guardianEmail: profile.guardianEmail || "",
         careerAspiration: profile.careerAspiration || "",
@@ -115,6 +117,7 @@ export default function ProfilePage() {
         bio: data.bio || "",
         availability: data.availability || "",
         phoneNumber: data.phoneNumber || "",
+        city: data.city || "",
         interests: data.interests || [],
         guardianEmail: data.guardianEmail || "",
         careerAspiration: data.careerAspiration || "",
@@ -369,11 +372,20 @@ export default function ProfilePage() {
       {/* Funky Modern Background - Warm muted tones */}
       <div className="fixed inset-0 -z-20">
         {/* Base gradient - warm terracotta to sage */}
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/30 to-emerald-50/40 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/50 to-emerald-50/60 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/30" />
 
         {/* Noise texture overlay */}
-        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03]"
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+        />
+
+        {/* Dot grid pattern - always visible */}
+        <div
+          className="absolute inset-0 opacity-[0.06] dark:opacity-[0.04]"
+          style={{
+            backgroundImage: `radial-gradient(circle, #78716c 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+          }}
         />
       </div>
 
@@ -574,6 +586,7 @@ export default function ProfilePage() {
         if (!profile.avatarId) missingRequired.push("Avatar");
         if (!profile.displayName) missingRequired.push("Display Name");
         if (!profile.phoneNumber) missingRequired.push("Phone Number");
+        if (!profile.city) missingRequired.push("City");
 
         // Recommended fields
         if (!profile.bio) missingRecommended.push("About Me (bio)");
@@ -776,6 +789,33 @@ export default function ProfilePage() {
               </div>
 
               <div>
+                <Label htmlFor="city" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  City
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                </Label>
+                <Input
+                  id="city"
+                  placeholder="e.g., Oslo, Fjellhamar, Bergen"
+                  value={formData.city}
+                  onChange={(e) =>
+                    setFormData({ ...formData, city: e.target.value })
+                  }
+                  className={`h-11 sm:h-10 ${!formData.city && profile ? "border-red-300 focus:border-red-500" : ""}`}
+                />
+                {!formData.city && profile ? (
+                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Required: We use your city to show you nearby jobs
+                  </p>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Used to show you jobs in your area
+                  </p>
+                )}
+              </div>
+
+              <div>
                 <Label className="flex items-center gap-2">
                   Interests
                   <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
@@ -832,7 +872,7 @@ export default function ProfilePage() {
               <Button
                 onClick={() => saveProfileMutation.mutate()}
                 disabled={
-                  !formData.displayName || saveProfileMutation.isPending
+                  !formData.displayName || !formData.city || saveProfileMutation.isPending
                 }
                 className="w-full h-11 sm:h-10 shadow-lg"
               >

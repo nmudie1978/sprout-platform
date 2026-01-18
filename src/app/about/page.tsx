@@ -25,87 +25,183 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Multi-layered gradient background - darker for visible grid */}
+      {/* Funky Modern Background - Warm muted tones (matching profile page) */}
       <div className="fixed inset-0 -z-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-100/90 via-emerald-50/80 to-teal-100/90 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/40" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/50 via-transparent to-purple-50/40 dark:from-transparent dark:via-slate-800/30 dark:to-emerald-900/30" />
-        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-green-100/60 to-transparent dark:from-green-950/30 dark:to-transparent" />
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-100/50 to-transparent dark:from-emerald-950/30 dark:to-transparent" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-green-100/70 via-emerald-50/40 to-transparent dark:from-green-900/30 dark:via-emerald-950/20 dark:to-transparent blur-2xl" />
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-100/80 via-green-50/50 to-transparent dark:from-slate-950/90 dark:via-slate-900/60 dark:to-transparent" />
+        {/* Base gradient - warm terracotta to sage - more saturated */}
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/50 to-emerald-50/60 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/30" />
+
+        {/* Noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")` }}
+        />
+
+        {/* Dot grid pattern - always visible */}
+        <div
+          className="absolute inset-0 opacity-[0.06] dark:opacity-[0.04]"
+          style={{
+            backgroundImage: `radial-gradient(circle, #78716c 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
       </div>
 
-      {/* Animated gradient blobs */}
+      {/* Animated Morphing Shapes Layer - hidden on mobile for performance */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
+        {/* Large morphing blob - top right */}
         <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/30 via-emerald-300/25 to-transparent blur-3xl"
-          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/25 via-cyan-300/20 to-transparent blur-3xl"
-          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-emerald-400/25 via-green-300/20 to-transparent blur-3xl"
-          animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-green-200/15 via-emerald-100/20 to-teal-200/15 dark:from-green-800/15 dark:via-emerald-900/15 dark:to-teal-800/15 blur-3xl"
-          animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
+          className="absolute -top-20 -right-20 w-[600px] h-[600px]"
+          animate={{
+            rotate: [0, 360],
+          }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+        >
+          <motion.div
+            className="w-full h-full bg-gradient-to-br from-amber-300/20 via-orange-200/15 to-rose-200/10 dark:from-amber-700/10 dark:via-orange-800/8 dark:to-rose-900/5"
+            style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
+            animate={{
+              borderRadius: [
+                "60% 40% 30% 70% / 60% 30% 70% 40%",
+                "30% 60% 70% 40% / 50% 60% 30% 60%",
+                "60% 40% 30% 70% / 60% 30% 70% 40%",
+              ],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.div>
 
-        {/* Animated grid - higher opacity for visibility */}
+        {/* Medium morphing blob - bottom left */}
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.15)_1px,transparent_1px)] bg-[size:40px_40px]"
-          animate={{ opacity: [0.6, 0.9, 0.6] }}
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px]"
+          animate={{ rotate: [360, 0] }}
+          transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+        >
+          <motion.div
+            className="w-full h-full bg-gradient-to-tr from-emerald-300/15 via-teal-200/12 to-cyan-200/8 dark:from-emerald-800/10 dark:via-teal-900/8 dark:to-cyan-950/5"
+            style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
+            animate={{
+              borderRadius: [
+                "40% 60% 70% 30% / 40% 50% 60% 50%",
+                "70% 30% 50% 50% / 30% 30% 70% 70%",
+                "40% 60% 70% 30% / 40% 50% 60% 50%",
+              ],
+              scale: [1, 1.15, 1],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+        </motion.div>
+
+        {/* Flowing wave lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-[0.08] dark:opacity-[0.04]" preserveAspectRatio="none">
+          <motion.path
+            d="M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="2"
+            animate={{
+              d: [
+                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
+                "M0,200 Q200,300 400,200 T800,200 T1200,200 T1600,200",
+                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
+              ],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="1.5"
+            animate={{
+              d: [
+                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
+                "M0,400 Q200,500 400,400 T800,400 T1200,400 T1600,400",
+                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
+              ],
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          />
+          <motion.path
+            d="M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600"
+            fill="none"
+            stroke="url(#wave-gradient)"
+            strokeWidth="1"
+            animate={{
+              d: [
+                "M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600",
+                "M0,600 Q200,700 400,600 T800,600 T1200,600 T1600,600",
+                "M0,600 Q200,500 400,600 T800,600 T1200,600 T1600,600",
+              ],
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          />
+          <defs>
+            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#d97706" />
+              <stop offset="50%" stopColor="#059669" />
+              <stop offset="100%" stopColor="#0891b2" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* Geometric floating shapes */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute"
+            style={{
+              left: `${10 + (i * 12)}%`,
+              top: `${15 + ((i * 17) % 60)}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, i % 2 === 0 ? 15 : -15, 0],
+              rotate: [0, i % 2 === 0 ? 180 : -180, 0],
+              opacity: [0.15, 0.3, 0.15],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: i * 0.8,
+            }}
+          >
+            {i % 3 === 0 ? (
+              // Hexagon
+              <div
+                className="w-8 h-8 bg-gradient-to-br from-amber-400/20 to-orange-300/10 dark:from-amber-600/15 dark:to-orange-700/8"
+                style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
+              />
+            ) : i % 3 === 1 ? (
+              // Triangle
+              <div
+                className="w-6 h-6 bg-gradient-to-br from-emerald-400/20 to-teal-300/10 dark:from-emerald-600/15 dark:to-teal-700/8"
+                style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+              />
+            ) : (
+              // Diamond
+              <div
+                className="w-5 h-5 bg-gradient-to-br from-rose-400/20 to-pink-300/10 dark:from-rose-600/15 dark:to-pink-700/8"
+                style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
+              />
+            )}
+          </motion.div>
+        ))}
+
+      </div>
+
+      {/* Accent glow spots - hidden on mobile for performance */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none hidden sm:block">
+        <motion.div
+          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-amber-400/10 dark:bg-amber-600/5 blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"
-          style={{ transform: "translate(20px, 20px)" }}
-          animate={{ opacity: [0.5, 0.7, 0.5] }}
+          className="absolute bottom-1/3 left-1/4 w-48 h-48 rounded-full bg-emerald-400/10 dark:bg-emerald-600/5 blur-3xl"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-      </div>
-
-      {/* Floating bubbles */}
-      <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none hidden sm:block">
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={`left-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: `${6 + (i % 3) * 4}px`,
-              height: `${6 + (i % 3) * 4}px`,
-              left: `${3 + (i % 3) * 4}%`,
-              top: `${12 + i * 18}%`,
-              background: "radial-gradient(circle, rgba(34,197,94,0.6) 0%, rgba(34,197,94,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(34,197,94,0.3)",
-            }}
-            animate={{ y: [0, -25 - (i % 3) * 10, 0], x: [0, 8 + (i % 2) * 4, 0], opacity: [0.4, 0.6, 0.4], scale: [1, 1.1, 1] }}
-            transition={{ duration: 10 + i * 2, repeat: Infinity, ease: "easeInOut", delay: i * 1.5 }}
-          />
-        ))}
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={`right-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: `${6 + (i % 3) * 4}px`,
-              height: `${6 + (i % 3) * 4}px`,
-              right: `${3 + (i % 3) * 4}%`,
-              top: `${18 + i * 16}%`,
-              background: "radial-gradient(circle, rgba(16,185,129,0.6) 0%, rgba(16,185,129,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(16,185,129,0.3)",
-            }}
-            animate={{ y: [0, -20 - (i % 3) * 8, 0], x: [0, -8 - (i % 2) * 4, 0], opacity: [0.4, 0.6, 0.4], scale: [1, 1.1, 1] }}
-            transition={{ duration: 11 + i * 1.8, repeat: Infinity, ease: "easeInOut", delay: i * 1.3 + 0.5 }}
-          />
-        ))}
       </div>
 
       {/* Main Content */}
