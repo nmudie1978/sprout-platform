@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
+import { getMultipleCareerJourneys, type MultipleCareerJourneys } from "@/lib/my-path/actions";
 import {
   TrendingUp,
   Sparkles,
@@ -17,40 +20,28 @@ import {
   Heart,
   Code,
   ChevronRight,
+  Filter,
   Youtube,
   Play,
   ExternalLink,
   GraduationCap,
   Clock,
   BookOpen,
-  Quote,
-  Laptop,
-  Home,
   Calendar,
   MapPin,
   CheckCircle2,
-  Star,
-  ArrowRight,
-  Filter,
   Target,
-  Calculator,
   MessageSquare,
   Building2,
-  Mail,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 // Import new insights components
 import {
-  SkillsGapAnalyzer,
   CareerQuiz,
-  SalaryCalculator,
-  EducationROICalculator,
   InterviewPrepBank,
   CompanySpotlights,
   EventsCalendar,
-  GeographicJobMap,
-  FiveYearProjections,
   ProgressChecklist,
   SaveIndustryButton,
   NewsletterSignup,
@@ -59,10 +50,50 @@ import {
 type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
 
 export default function IndustryInsightsPage() {
+  const { data: session } = useSession();
   const [activeSection, setActiveSection] = useState("industries");
   const [industryFilter, setIndustryFilter] = useState<IndustryFilter>("all");
-  const [compareMode, setCompareMode] = useState(false);
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+
+  // Fetch user's career goals
+  const { data: careerData } = useQuery<MultipleCareerJourneys | null>({
+    queryKey: ["multiple-career-journeys"],
+    queryFn: () => getMultipleCareerJourneys(),
+    enabled: session?.user?.role === "YOUTH",
+  });
+
+  // Extract career goal titles for filtering
+  const userCareerGoals = careerData?.journeys?.map(j => j.targetCareer.title) || [];
+
+  // Map career goals to industry types based on career category
+  const getIndustryFromCareer = (careerTitle: string): IndustryFilter => {
+    const lowerTitle = careerTitle.toLowerCase();
+    if (lowerTitle.includes("developer") || lowerTitle.includes("software") ||
+        lowerTitle.includes("data") || lowerTitle.includes("tech") ||
+        lowerTitle.includes("engineer") || lowerTitle.includes("it ") ||
+        lowerTitle.includes("cyber") || lowerTitle.includes("ai")) {
+      return "tech";
+    }
+    if (lowerTitle.includes("energy") || lowerTitle.includes("wind") ||
+        lowerTitle.includes("solar") || lowerTitle.includes("electric") ||
+        lowerTitle.includes("green") || lowerTitle.includes("sustain")) {
+      return "green";
+    }
+    if (lowerTitle.includes("health") || lowerTitle.includes("nurse") ||
+        lowerTitle.includes("medical") || lowerTitle.includes("care") ||
+        lowerTitle.includes("doctor") || lowerTitle.includes("pharmacy")) {
+      return "health";
+    }
+    if (lowerTitle.includes("design") || lowerTitle.includes("creative") ||
+        lowerTitle.includes("content") || lowerTitle.includes("market") ||
+        lowerTitle.includes("media") || lowerTitle.includes("video") ||
+        lowerTitle.includes("art") || lowerTitle.includes("music")) {
+      return "creative";
+    }
+    return "tech"; // Default fallback
+  };
+
+  // Get user's industry types from their career goals
+  const userIndustryTypes = [...new Set(userCareerGoals.map(getIndustryFromCareer))];
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -75,29 +106,19 @@ export default function IndustryInsightsPage() {
     { id: "career-quiz", label: "Career Quiz", icon: Target },
     { id: "getting-started", label: "Get Started", icon: GraduationCap },
     { id: "progress-checklist", label: "Progress", icon: CheckCircle2 },
-    { id: "skills-gap", label: "Skills Gap", icon: Zap },
-    { id: "success-stories", label: "Stories", icon: Star },
-    { id: "salary-calc", label: "Salary Calc", icon: Calculator },
-    { id: "education-roi", label: "Education ROI", icon: GraduationCap },
-    { id: "remote-work", label: "Remote Work", icon: Laptop },
-    { id: "apprenticeships", label: "Lærlingplass", icon: BookOpen },
     { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
     { id: "companies", label: "Companies", icon: Building2 },
     { id: "events", label: "Events", icon: Calendar },
-    { id: "job-map", label: "Job Map", icon: MapPin },
-    { id: "projections", label: "5-Year Outlook", icon: TrendingUp },
-    { id: "compare", label: "Compare", icon: Filter },
     { id: "skills", label: "Top Skills", icon: Zap },
-    { id: "salaries", label: "Salaries", icon: Briefcase },
     { id: "videos", label: "Videos", icon: Youtube },
   ];
 
   const industryFilters = [
-    { id: "all" as IndustryFilter, label: "Alle", icon: null },
+    { id: "all" as IndustryFilter, label: "All", icon: null },
     { id: "tech" as IndustryFilter, label: "Tech & AI", icon: Code },
-    { id: "green" as IndustryFilter, label: "Grønn Energi", icon: Wrench },
-    { id: "health" as IndustryFilter, label: "Helse", icon: Heart },
-    { id: "creative" as IndustryFilter, label: "Kreativ", icon: Sparkles },
+    { id: "green" as IndustryFilter, label: "Green Energy", icon: Wrench },
+    { id: "health" as IndustryFilter, label: "Healthcare", icon: Heart },
+    { id: "creative" as IndustryFilter, label: "Creative", icon: Sparkles },
   ];
 
   const growingIndustries = [
@@ -108,18 +129,18 @@ export default function IndustryInsightsPage() {
       icon: Code,
       color: "from-blue-500 to-cyan-500",
       bgColor: "from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30",
-      jobs: ["Utvikler", "Data Analyst", "AI-spesialist", "IT-support"],
+      jobs: ["Developer", "Data Analyst", "AI Specialist", "IT Support"],
       articleLink: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/digest/",
       articleLabel: "Read about tech job trends",
-      lastUpdated: "Januar 2025",
-      source: "NAV Arbeidsmarkedsstatistikk",
-      sourceLink: "https://www.nav.no/arbeid",
+      lastUpdated: "January 2025",
+      source: "Labor Market Statistics",
+      sourceLink: "https://www.bls.gov",
       remoteScore: 95,
       entryDifficulty: "Medium",
-      avgSalary: "450-650k",
+      avgSalary: "$60-90k",
       howToStart: {
-        requirements: ["Grunnleggende programmering", "Engelsk", "Problemløsning"],
-        timeline: "6-12 måneder selvstudium eller bootcamp",
+        requirements: ["Basic programming", "English", "Problem solving"],
+        timeline: "6-12 months self-study or bootcamp",
         freeResources: [
           { name: "freeCodeCamp", url: "https://www.freecodecamp.org" },
           { name: "Codecademy", url: "https://www.codecademy.com" },
@@ -130,77 +151,77 @@ export default function IndustryInsightsPage() {
     },
     {
       id: "green",
-      name: "Grønn Energi & Maritim",
+      name: "Green Energy & Maritime",
       growth: "+20%",
       icon: Wrench,
       color: "from-green-500 to-teal-500",
       bgColor: "from-green-50 to-teal-50 dark:from-green-950/30 dark:to-teal-950/30",
-      jobs: ["Havvind-tekniker", "Elektriker", "Skipsmekaniker", "Energirådgiver"],
+      jobs: ["Wind Turbine Technician", "Electrician", "Marine Mechanic", "Energy Advisor"],
       articleLink: "https://www.irena.org/Publications/2026/Jan/Renewable-energy-and-jobs-Annual-review-2025",
       articleLabel: "Read about green energy jobs",
-      lastUpdated: "Januar 2025",
-      source: "SSB Energistatistikk",
-      sourceLink: "https://www.ssb.no/energi-og-industri",
+      lastUpdated: "January 2025",
+      source: "Energy Statistics",
+      sourceLink: "https://www.eia.gov",
       remoteScore: 20,
       entryDifficulty: "Medium-High",
-      avgSalary: "420-580k",
+      avgSalary: "$55-75k",
       howToStart: {
-        requirements: ["Fagbrev i relevant fag", "HMS-kurs", "Fysisk god form"],
-        timeline: "2-4 år lærlingløp",
+        requirements: ["Trade certification", "Safety training", "Physical fitness"],
+        timeline: "2-4 year apprenticeship",
         freeResources: [
-          { name: "Vilbli.no", url: "https://www.vilbli.no" },
-          { name: "Energi Norge", url: "https://www.energinorge.no" },
-          { name: "Offshore.no", url: "https://www.offshore.no" },
+          { name: "Energy.gov", url: "https://www.energy.gov/eere/wind/wind-energy-technologies-office" },
+          { name: "OSHA Training", url: "https://www.osha.gov/training" },
+          { name: "Trade Schools", url: "https://www.trade-schools.net" },
         ],
-        certifications: ["Fagbrev Energimontør", "Havvind-sertifisering", "GWO Basic Safety"],
+        certifications: ["Journeyman Electrician", "Wind Turbine Certification", "GWO Basic Safety"],
       },
     },
     {
       id: "health",
-      name: "Helse & Omsorg",
+      name: "Healthcare",
       growth: "+18%",
       icon: Heart,
       color: "from-red-500 to-pink-500",
       bgColor: "from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30",
-      jobs: ["Helsefagarbeider", "Sykepleier", "Apotek-assistent", "Psykisk helse"],
+      jobs: ["Healthcare Worker", "Nurse", "Pharmacy Assistant", "Mental Health"],
       articleLink: "https://www.bls.gov/ooh/healthcare/",
       articleLabel: "Read about healthcare careers",
-      lastUpdated: "Desember 2024",
-      source: "SSB Helsepersonellstatistikk",
-      sourceLink: "https://www.ssb.no/helse",
+      lastUpdated: "December 2024",
+      source: "Bureau of Labor Statistics",
+      sourceLink: "https://www.bls.gov/ooh/healthcare/",
       remoteScore: 15,
       entryDifficulty: "Medium",
-      avgSalary: "380-550k",
+      avgSalary: "$45-70k",
       howToStart: {
-        requirements: ["Helse- og oppvekstfag VG1", "Empati og kommunikasjon", "Norskkunnskaper"],
-        timeline: "2-4 år videregående + praksis",
+        requirements: ["Healthcare education", "Empathy and communication", "Language skills"],
+        timeline: "2-4 years education + practice",
         freeResources: [
-          { name: "Helsedirektoratet", url: "https://www.helsedirektoratet.no" },
-          { name: "Utdanning.no - Helse", url: "https://utdanning.no/tema/helse" },
-          { name: "NSF (Sykepleierforbundet)", url: "https://www.nsf.no" },
+          { name: "Khan Academy Health", url: "https://www.khanacademy.org/science/health-and-medicine" },
+          { name: "Coursera Healthcare", url: "https://www.coursera.org/browse/health" },
+          { name: "Red Cross Training", url: "https://www.redcross.org/take-a-class" },
         ],
-        certifications: ["Fagbrev Helsefagarbeider", "Autorisasjon Helsepersonell"],
+        certifications: ["CNA Certification", "Healthcare License"],
       },
     },
     {
       id: "creative",
-      name: "Kreative Tjenester",
+      name: "Creative Services",
       growth: "+14%",
       icon: Sparkles,
       color: "from-purple-500 to-pink-500",
       bgColor: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30",
-      jobs: ["Innholdsskaper", "Grafisk designer", "Videoredigerer", "Sosiale medier"],
+      jobs: ["Content Creator", "Graphic Designer", "Video Editor", "Social Media"],
       articleLink: "https://www.skillshare.com/en/blog/creative-jobs-2025/",
       articleLabel: "Read about creative careers",
-      lastUpdated: "Januar 2025",
-      source: "Kreativt Forum Bransjeanalyse",
-      sourceLink: "https://www.kreativtforum.no",
+      lastUpdated: "January 2025",
+      source: "Creative Industry Report",
+      sourceLink: "https://www.adobe.com/creativecloud",
       remoteScore: 85,
       entryDifficulty: "Low-Medium",
-      avgSalary: "350-550k",
+      avgSalary: "$40-65k",
       howToStart: {
-        requirements: ["Portefølje med arbeid", "Kreative verktøy (Adobe, Figma)", "Selvpromotering"],
-        timeline: "3-6 måneder for å bygge portefølje",
+        requirements: ["Portfolio of work", "Creative tools (Adobe, Figma)", "Self-promotion"],
+        timeline: "3-6 months to build portfolio",
         freeResources: [
           { name: "Skillshare", url: "https://www.skillshare.com" },
           { name: "Canva Design School", url: "https://www.canva.com/designschool" },
@@ -210,102 +231,6 @@ export default function IndustryInsightsPage() {
       },
     },
   ];
-
-  const successStories = [
-    {
-      name: "Emma (22)",
-      role: "Junior Frontend Utvikler",
-      company: "Teknologibedrift i Oslo",
-      industry: "tech",
-      image: "👩‍💻",
-      quote: "Jeg lærte meg koding gjennom gratis nettkurs mens jeg jobbet deltid på kafe. Etter 8 måneder fikk jeg min første tech-jobb.",
-      path: "Selvlært → Bootcamp → Junior stilling",
-      tip: "Start med ett språk (JavaScript) og bygg prosjekter du kan vise frem.",
-    },
-    {
-      name: "Lars (24)",
-      role: "Havvind-tekniker",
-      company: "Equinor",
-      industry: "green",
-      image: "👷",
-      quote: "Fagbrevet mitt åpnet dører jeg ikke visste fantes. Nå jobber jeg offshore med god lønn og meningsfylt arbeid.",
-      path: "VGS Elektro → Lærling → Fagbrev → Havvind",
-      tip: "Fagbrev er gull verdt. Ikke undervurder yrkesfag!",
-    },
-    {
-      name: "Amina (21)",
-      role: "Helsefagarbeider",
-      company: "Oslo Universitetssykehus",
-      industry: "health",
-      image: "👩‍⚕️",
-      quote: "Jeg visste jeg ville jobbe med mennesker. Helsefagutdanningen ga meg både trygghet og mening i jobben.",
-      path: "Helse VGS → Lærling → Fast stilling",
-      tip: "Sommerjobber og frivillighet på sykehjem gir verdifull erfaring.",
-    },
-    {
-      name: "Oliver (23)",
-      role: "Innholdsskaper & Designer",
-      company: "Frilanser",
-      industry: "creative",
-      image: "🎨",
-      quote: "Jeg startet med å lage grafikk for venners småbedrifter gratis. Nå har jeg egen kundeliste og setter mine egne priser.",
-      path: "Hobby → Portefølje → Frilanser",
-      tip: "Del arbeidet ditt på sosiale medier. Kunder finner deg når de ser hva du kan.",
-    },
-  ];
-
-  const remoteWorkData = {
-    lastUpdated: "Januar 2025",
-    source: "NAV & Finn.no jobbstatistikk",
-    stats: [
-      { label: "Remote-vennlige stillinger", value: "34%", change: "+12% fra 2023" },
-      { label: "Hybrid-jobber tilgjengelig", value: "48%", change: "+8% fra 2023" },
-      { label: "Unge som foretrekker fleksibilitet", value: "78%", change: "" },
-    ],
-    topRemoteJobs: [
-      { role: "Utvikler / Programmerer", remoteScore: 95, avgPay: "450-650k" },
-      { role: "Digital Markedsfører", remoteScore: 90, avgPay: "380-500k" },
-      { role: "Grafisk Designer", remoteScore: 85, avgPay: "350-480k" },
-      { role: "Kundeservice (chat/telefon)", remoteScore: 80, avgPay: "320-420k" },
-      { role: "Tekstforfatter / Content", remoteScore: 85, avgPay: "380-520k" },
-    ],
-    tips: [
-      "Bygg en sterk digital tilstedeværelse (LinkedIn, portefølje)",
-      "Lær deg samarbeidsverktøy (Slack, Teams, Notion)",
-      "Vis selvstendighet og kommunikasjonsevner i søknaden",
-      "Vurder å starte som frilanser for å bygge erfaring",
-    ],
-  };
-
-  const apprenticeshipData = {
-    lastUpdated: "Januar 2025",
-    source: "Utdanningsdirektoratet",
-    sourceLink: "https://www.udir.no",
-    stats: {
-      openPositions: "12 500+",
-      avgMonthlyPay: "8 000 - 14 000 kr",
-      completionRate: "72%",
-    },
-    topFields: [
-      { field: "Elektrofag", positions: 2800, growth: "+15%" },
-      { field: "Helse- og oppvekstfag", positions: 3200, growth: "+22%" },
-      { field: "Bygg- og anleggsteknikk", positions: 2100, growth: "+10%" },
-      { field: "Teknikk og industriell produksjon", positions: 1900, growth: "+18%" },
-      { field: "Restaurant- og matfag", positions: 1400, growth: "+5%" },
-    ],
-    benefits: [
-      "Lønn under opplæring",
-      "Praktisk erfaring fra dag én",
-      "Høy sannsynlighet for fast jobb",
-      "Fagbrev er etterspurt i arbeidsmarkedet",
-      "Mulighet for videreutdanning senere",
-    ],
-    resources: [
-      { name: "Lærlingportalen", url: "https://www.larlingportalen.no" },
-      { name: "Vilbli.no", url: "https://www.vilbli.no" },
-      { name: "Finn.no Lærlingplasser", url: "https://www.finn.no/job/browse.html?occupation=0.81" },
-    ],
-  };
 
   const inDemandSkills = [
     { skill: "Digital Literacy", demand: 95, category: "Essential", source: "NAV Kompetansebarometer" },
@@ -320,45 +245,38 @@ export default function IndustryInsightsPage() {
 
   const aiImpact = [
     {
-      title: "AI Skaper Nye Jobber",
-      description: "70% av norske bedrifter ansetter for AI-relaterte roller som ikke fantes for 3 år siden.",
-      stat: "15 000+",
-      statLabel: "nye tech-jobber i Norge årlig",
+      title: "AI Creates New Jobs",
+      description: "70% of companies are hiring for AI-related roles that didn't exist 3 years ago.",
+      stat: "150,000+",
+      statLabel: "new tech jobs annually",
       icon: Brain,
-      source: "Abelia",
-      sourceLink: "https://www.abelia.no",
+      source: "World Economic Forum",
+      sourceLink: "https://www.weforum.org",
     },
     {
-      title: "Automatisering = Flere Menneskelige Roller",
-      description: "Når AI tar over rutineoppgaver, øker etterspørselen etter kreative og sosiale ferdigheter.",
+      title: "Automation = More Human Roles",
+      description: "As AI takes over routine tasks, demand increases for creative and social skills.",
       stat: "45%",
-      statLabel: "økning i omsorgsyrker",
+      statLabel: "increase in care professions",
       icon: Users,
-      source: "SSB",
-      sourceLink: "https://www.ssb.no",
+      source: "Bureau of Labor Statistics",
+      sourceLink: "https://www.bls.gov",
     },
     {
-      title: "Kompetanse Over Utdanning",
-      description: "Norske arbeidsgivere verdsetter praktiske ferdigheter og fagbrev mer enn før.",
+      title: "Skills Over Degrees",
+      description: "Employers increasingly value practical skills and certifications over traditional degrees.",
       stat: "3x",
-      statLabel: "raskere ansettelse med fagbrev",
+      statLabel: "faster hiring with trade certs",
       icon: Zap,
-      source: "NAV",
-      sourceLink: "https://www.nav.no",
+      source: "LinkedIn",
+      sourceLink: "https://www.linkedin.com/pulse/skills-first",
     },
-  ];
-
-  const salaryTrends = [
-    { role: "Junior Utvikler", avgPay: "450-600k kr", demand: "Very High", entry: "Bootcamp/Selvlært", source: "Kode24 Lønnsundersøkelse" },
-    { role: "Fagarbeider", avgPay: "420-580k kr", demand: "High", entry: "Lærlingplass", source: "SSB Lønnsstatistikk" },
-    { role: "Helsefagarbeider", avgPay: "380-500k kr", demand: "Very High", entry: "Fagbrev", source: "KS Tariffstatistikk" },
-    { role: "Innholdsskaper", avgPay: "350-550k kr", demand: "Growing", entry: "Portefølje", source: "Kreativt Forum" },
   ];
 
   const regionalInsights = {
-    hotSectors: ["Tech i Oslo", "Havvind & Energi", "Havbruk & Sjømat", "Turisme & Reiseliv"],
-    avgYouthPay: "150-250 kr/time",
-    topEmployers: "Norske SMB-er ansetter 60% av ungdomsarbeidere",
+    hotSectors: ["Tech Hubs", "Renewable Energy", "Healthcare", "Tourism & Hospitality"],
+    avgYouthPay: "$15-25/hour",
+    topEmployers: "Small & medium businesses employ 60% of young workers",
   };
 
   const featuredVideos = [
@@ -376,6 +294,11 @@ export default function IndustryInsightsPage() {
     ? growingIndustries
     : growingIndustries.filter(i => i.id === industryFilter);
 
+  // Industries filtered by user's career goals for the "How to Get Started" section
+  const careerGoalIndustries = userIndustryTypes.length > 0
+    ? growingIndustries.filter(i => userIndustryTypes.includes(i.id as IndustryFilter))
+    : growingIndustries;
+
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
@@ -384,15 +307,6 @@ export default function IndustryInsightsPage() {
     }
   };
 
-  const toggleIndustryCompare = (industryId: string) => {
-    if (selectedIndustries.includes(industryId)) {
-      setSelectedIndustries(selectedIndustries.filter(id => id !== industryId));
-    } else if (selectedIndustries.length < 3) {
-      setSelectedIndustries([...selectedIndustries, industryId]);
-    }
-  };
-
-  const comparedIndustries = growingIndustries.filter(i => selectedIndustries.includes(i.id));
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -431,12 +345,12 @@ export default function IndustryInsightsPage() {
 
       {/* Personalization Filter */}
       <motion.div {...fadeInUp} className="mb-8">
-        <Card className="border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <Card className="border bg-muted/30">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-primary" />
-                <span className="font-semibold">Hva interesserer deg?</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">What interests you?</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {industryFilters.map((filter) => (
@@ -468,7 +382,7 @@ export default function IndustryInsightsPage() {
           </div>
           <Badge variant="outline" className="text-xs">
             <Clock className="h-3 w-3 mr-1" />
-            Oppdatert: Januar 2025
+            Updated: January 2025
           </Badge>
         </div>
 
@@ -528,7 +442,7 @@ export default function IndustryInsightsPage() {
                           rel="noopener noreferrer"
                           className="text-xs text-muted-foreground hover:underline"
                         >
-                          Kilde: {industry.source}
+                          Source: {industry.source}
                         </a>
                       </div>
                     </div>
@@ -548,10 +462,13 @@ export default function IndustryInsightsPage() {
         className="mb-12"
         id="career-quiz"
       >
-        <CareerQuiz />
+        <CareerQuiz
+          careerGoals={userCareerGoals}
+          industryTypes={userIndustryTypes}
+        />
       </motion.div>
 
-      {/* How to Get Started */}
+      {/* How to Get Started - Filtered by user's career goals */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -561,11 +478,15 @@ export default function IndustryInsightsPage() {
       >
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-2">How to Get Started</h2>
-          <p className="text-muted-foreground">Your roadmap into each industry</p>
+          <p className="text-muted-foreground">
+            {userCareerGoals.length > 0
+              ? `Your roadmap based on your career goals: ${userCareerGoals.join(", ")}`
+              : "Your roadmap into each industry"}
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {filteredIndustries.map((industry) => {
+          {careerGoalIndustries.map((industry) => {
             const Icon = industry.icon;
             return (
               <Card key={industry.id} className="border-2">
@@ -581,7 +502,7 @@ export default function IndustryInsightsPage() {
                   <div>
                     <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Krav for å starte:
+                      Requirements to start:
                     </p>
                     <ul className="text-sm text-muted-foreground space-y-1 ml-6">
                       {industry.howToStart.requirements.map((req) => (
@@ -592,14 +513,14 @@ export default function IndustryInsightsPage() {
                   <div>
                     <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                       <Clock className="h-4 w-4 text-blue-600" />
-                      Tidsramme:
+                      Timeline:
                     </p>
                     <p className="text-sm text-muted-foreground ml-6">{industry.howToStart.timeline}</p>
                   </div>
                   <div>
                     <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                       <BookOpen className="h-4 w-4 text-purple-600" />
-                      Gratis ressurser:
+                      Free resources:
                     </p>
                     <div className="flex flex-wrap gap-2 ml-6">
                       {industry.howToStart.freeResources.map((resource) => (
@@ -618,7 +539,7 @@ export default function IndustryInsightsPage() {
                   <div>
                     <p className="text-sm font-semibold mb-2 flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-orange-600" />
-                      Anbefalte sertifiseringer:
+                      Recommended certifications:
                     </p>
                     <div className="flex flex-wrap gap-1 ml-6">
                       {industry.howToStart.certifications.map((cert) => (
@@ -646,311 +567,7 @@ export default function IndustryInsightsPage() {
         <ProgressChecklist />
       </motion.div>
 
-      {/* Skills Gap Analyzer */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.25 }}
-        className="mb-12"
-        id="skills-gap"
-      >
-        <SkillsGapAnalyzer />
-      </motion.div>
-
-      {/* Success Stories */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mb-12"
-        id="success-stories"
-      >
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">Success Stories</h2>
-          <p className="text-muted-foreground">Real journeys from young Norwegians who made it</p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {successStories
-            .filter(story => industryFilter === "all" || story.industry === industryFilter)
-            .map((story, index) => (
-              <motion.div
-                key={story.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="border-2 hover:shadow-lg transition-shadow h-full">
-                  <CardContent className="pt-6">
-                    <div className="flex items-start gap-4">
-                      <div className="text-4xl">{story.image}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold">{story.name}</h3>
-                          <Badge variant="secondary" className="text-xs">{story.role}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{story.company}</p>
-                        <div className="relative pl-4 border-l-2 border-primary/30 mb-4">
-                          <Quote className="absolute -left-2.5 -top-1 h-5 w-5 text-primary/50 bg-background" />
-                          <p className="text-sm italic">{story.quote}</p>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm">
-                            <ArrowRight className="h-4 w-4 text-green-600" />
-                            <span className="font-medium">Veien:</span>
-                            <span className="text-muted-foreground">{story.path}</span>
-                          </div>
-                          <div className="p-3 rounded-lg bg-primary/5 border">
-                            <p className="text-sm">
-                              <span className="font-semibold">Tips: </span>
-                              {story.tip}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-        </div>
-      </motion.div>
-
-      {/* Salary Calculator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.32 }}
-        className="mb-12"
-        id="salary-calc"
-      >
-        <SalaryCalculator />
-      </motion.div>
-
-      {/* Education ROI Calculator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.33 }}
-        className="mb-12"
-        id="education-roi"
-      >
-        <EducationROICalculator />
-      </motion.div>
-
-      {/* Remote & Flexible Work */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-        className="mb-12"
-        id="remote-work"
-      >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <Laptop className="h-6 w-6" />
-              Remote & Flexible Work
-            </h2>
-            <p className="text-muted-foreground">Work from anywhere opportunities in Norway</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            {remoteWorkData.lastUpdated}
-          </Badge>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3 mb-6">
-          {remoteWorkData.stats.map((stat) => (
-            <Card key={stat.label} className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
-              <CardContent className="pt-6 text-center">
-                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">{stat.value}</div>
-                <p className="text-sm font-medium">{stat.label}</p>
-                {stat.change && (
-                  <p className="text-xs text-green-600 mt-1">{stat.change}</p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Home className="h-5 w-5" />
-                Topp Remote-Jobber
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {remoteWorkData.topRemoteJobs.map((job) => (
-                  <div key={job.role} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div>
-                      <p className="font-medium text-sm">{job.role}</p>
-                      <p className="text-xs text-muted-foreground">{job.avgPay} årlig</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
-                          style={{ width: `${job.remoteScore}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-medium w-8">{job.remoteScore}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Star className="h-5 w-5" />
-                Tips for Remote-Jobber
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {remoteWorkData.tips.map((tip, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-xs font-bold text-primary">{index + 1}</span>
-                    </div>
-                    <p className="text-sm">{tip}</p>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-        <p className="text-xs text-muted-foreground mt-4 text-right">
-          Kilde: {remoteWorkData.source}
-        </p>
-      </motion.div>
-
-      {/* Apprenticeships */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mb-12"
-        id="apprenticeships"
-      >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <BookOpen className="h-6 w-6" />
-              Lærlingplasser i Norge
-            </h2>
-            <p className="text-muted-foreground">Få lønn mens du lærer et fag</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            {apprenticeshipData.lastUpdated}
-          </Badge>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3 mb-6">
-          <Card className="border-2 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
-            <CardContent className="pt-6 text-center">
-              <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
-                {apprenticeshipData.stats.openPositions}
-              </div>
-              <p className="text-sm font-medium">Ledige lærlingplasser</p>
-            </CardContent>
-          </Card>
-          <Card className="border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
-            <CardContent className="pt-6 text-center">
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">
-                {apprenticeshipData.stats.avgMonthlyPay}
-              </div>
-              <p className="text-sm font-medium">Lærlinglønn per måned</p>
-            </CardContent>
-          </Card>
-          <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
-            <CardContent className="pt-6 text-center">
-              <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                {apprenticeshipData.stats.completionRate}
-              </div>
-              <p className="text-sm font-medium">Fullfører fagbrev</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="border-2">
-            <CardHeader>
-              <CardTitle className="text-lg">Populære Fagområder</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {apprenticeshipData.topFields.map((field) => (
-                  <div key={field.field} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div>
-                      <p className="font-medium text-sm">{field.field}</p>
-                      <p className="text-xs text-muted-foreground">{field.positions.toLocaleString()} plasser</p>
-                    </div>
-                    <Badge variant="outline" className="text-green-600 border-green-600">
-                      {field.growth}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-6">
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="text-lg">Fordeler med Lærlingplass</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {apprenticeshipData.benefits.map((benefit, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 bg-gradient-to-br from-primary/5 to-purple-500/5">
-              <CardHeader>
-                <CardTitle className="text-lg">Finn Lærlingplass</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {apprenticeshipData.resources.map((resource) => (
-                    <a
-                      key={resource.name}
-                      href={resource.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-background border hover:border-primary transition-colors text-sm font-medium"
-                    >
-                      {resource.name}
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground mt-4 text-right">
-          Kilde:{" "}
-          <a href={apprenticeshipData.sourceLink} target="_blank" rel="noopener noreferrer" className="hover:underline">
-            {apprenticeshipData.source}
-          </a>
-        </p>
-      </motion.div>
-
-      {/* Interview Prep Bank */}
+      {/* Interview Prep Bank - Filtered by user's career goals */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -958,7 +575,10 @@ export default function IndustryInsightsPage() {
         className="mb-12"
         id="interview-prep"
       >
-        <InterviewPrepBank />
+        <InterviewPrepBank
+          careerGoals={userCareerGoals}
+          industryTypes={userIndustryTypes}
+        />
       </motion.div>
 
       {/* Company Spotlights */}
@@ -983,152 +603,6 @@ export default function IndustryInsightsPage() {
         <EventsCalendar />
       </motion.div>
 
-      {/* Geographic Job Map */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.44 }}
-        className="mb-12"
-        id="job-map"
-      >
-        <GeographicJobMap />
-      </motion.div>
-
-      {/* 5-Year Projections */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.445 }}
-        className="mb-12"
-        id="projections"
-      >
-        <FiveYearProjections />
-      </motion.div>
-
-      {/* Industry Comparison Tool */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45 }}
-        className="mb-12"
-        id="compare"
-      >
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Filter className="h-6 w-6" />
-            Compare Industries
-          </h2>
-          <p className="text-muted-foreground">Select up to 3 industries to compare side by side</p>
-        </div>
-
-        <Card className="border-2 mb-6">
-          <CardContent className="pt-6">
-            <div className="flex flex-wrap gap-3">
-              {growingIndustries.map((industry) => {
-                const Icon = industry.icon;
-                const isSelected = selectedIndustries.includes(industry.id);
-                return (
-                  <button
-                    key={industry.id}
-                    onClick={() => toggleIndustryCompare(industry.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all ${
-                      isSelected
-                        ? "border-primary bg-primary/10"
-                        : "border-muted hover:border-primary/50"
-                    }`}
-                  >
-                    <div className={`p-1.5 rounded-md bg-gradient-to-br ${industry.color}`}>
-                      <Icon className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="font-medium text-sm">{industry.name}</span>
-                    {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {comparedIndustries.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="text-left p-4 bg-muted/50 rounded-tl-lg">Kategori</th>
-                  {comparedIndustries.map((industry) => {
-                    const Icon = industry.icon;
-                    return (
-                      <th key={industry.id} className="p-4 bg-muted/50 last:rounded-tr-lg">
-                        <div className="flex items-center gap-2 justify-center">
-                          <div className={`p-1.5 rounded-md bg-gradient-to-br ${industry.color}`}>
-                            <Icon className="h-4 w-4 text-white" />
-                          </div>
-                          <span className="font-medium">{industry.name}</span>
-                        </div>
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">Vekst</td>
-                  {comparedIndustries.map((industry) => (
-                    <td key={industry.id} className="p-4 text-center">
-                      <span className="text-green-600 font-bold">{industry.growth}</span>
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-muted/20">
-                  <td className="p-4 font-medium">Gjennomsnittslønn</td>
-                  {comparedIndustries.map((industry) => (
-                    <td key={industry.id} className="p-4 text-center">{industry.avgSalary}</td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">Remote-vennlig</td>
-                  {comparedIndustries.map((industry) => (
-                    <td key={industry.id} className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
-                            style={{ width: `${industry.remoteScore}%` }}
-                          />
-                        </div>
-                        <span className="text-sm">{industry.remoteScore}%</span>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b bg-muted/20">
-                  <td className="p-4 font-medium">Inngangsbarriere</td>
-                  {comparedIndustries.map((industry) => (
-                    <td key={industry.id} className="p-4 text-center">
-                      <Badge variant="outline">{industry.entryDifficulty}</Badge>
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="p-4 font-medium">Tidsramme</td>
-                  {comparedIndustries.map((industry) => (
-                    <td key={industry.id} className="p-4 text-center text-sm text-muted-foreground">
-                      {industry.howToStart.timeline}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {comparedIndustries.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            Velg bransjer ovenfor for å sammenligne
-          </div>
-        )}
-      </motion.div>
-
       {/* AI Impact */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -1143,7 +617,7 @@ export default function IndustryInsightsPage() {
           </div>
           <Badge variant="outline" className="text-xs">
             <Clock className="h-3 w-3 mr-1" />
-            Januar 2025
+            January 2025
           </Badge>
         </div>
 
@@ -1178,7 +652,7 @@ export default function IndustryInsightsPage() {
                     rel="noopener noreferrer"
                     className="text-xs text-muted-foreground hover:underline mt-3 block"
                   >
-                    Kilde: {item.source}
+                    Source: {item.source}
                   </a>
                 </CardContent>
               </Card>
@@ -1202,7 +676,7 @@ export default function IndustryInsightsPage() {
           </div>
           <Badge variant="outline" className="text-xs">
             <Clock className="h-3 w-3 mr-1" />
-            Januar 2025
+            January 2025
           </Badge>
         </div>
 
@@ -1246,65 +720,6 @@ export default function IndustryInsightsPage() {
         </Card>
       </motion.div>
 
-      {/* Salary Trends */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
-        className="mb-12"
-        id="salaries"
-      >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Entry-Level Salary Trends</h2>
-            <p className="text-muted-foreground">What you can expect to earn starting out</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            2024/2025
-          </Badge>
-        </div>
-
-        <Card className="border-2">
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              {salaryTrends.map((role) => (
-                <div
-                  key={role.role}
-                  className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-green-500 to-emerald-500">
-                      <Briefcase className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">{role.role}</p>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-muted-foreground">{role.entry}</p>
-                        <span className="text-xs text-muted-foreground">• {role.source}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-green-700 dark:text-green-400">{role.avgPay}</p>
-                    <Badge
-                      variant="outline"
-                      className={
-                        role.demand === "Very High"
-                          ? "border-green-500 text-green-700 dark:text-green-400"
-                          : "border-blue-500 text-blue-700 dark:text-blue-400"
-                      }
-                    >
-                      {role.demand} Demand
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
       {/* Regional Insights */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -1316,20 +731,20 @@ export default function IndustryInsightsPage() {
           <div>
             <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
               <MapPin className="h-6 w-6" />
-              Det Norske Markedet
+              Regional Market Insights
             </h2>
-            <p className="text-muted-foreground">Hva som skjer i arbeidsmarkedet i Norge</p>
+            <p className="text-muted-foreground">What's happening in the local job market</p>
           </div>
           <Badge variant="outline" className="text-xs">
             <Clock className="h-3 w-3 mr-1" />
-            Januar 2025
+            January 2025
           </Badge>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
             <CardHeader>
-              <CardTitle className="text-lg">Populære Bransjer</CardTitle>
+              <CardTitle className="text-lg">Popular Sectors</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -1345,21 +760,21 @@ export default function IndustryInsightsPage() {
 
           <Card className="border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
             <CardHeader>
-              <CardTitle className="text-lg">Ungdomslønn</CardTitle>
+              <CardTitle className="text-lg">Youth Wages</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center">
                 <div className="text-4xl font-bold text-green-600 dark:text-green-400">
                   {regionalInsights.avgYouthPay}
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">Gjennomsnittlig timelønn for ungdomsarbeidere</p>
+                <p className="text-sm text-muted-foreground mt-2">Average hourly wage for young workers</p>
               </div>
             </CardContent>
           </Card>
 
           <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
             <CardHeader>
-              <CardTitle className="text-lg">Arbeidsgivere</CardTitle>
+              <CardTitle className="text-lg">Employers</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-3">
@@ -1372,7 +787,7 @@ export default function IndustryInsightsPage() {
           </Card>
         </div>
         <p className="text-xs text-muted-foreground mt-4 text-right">
-          Kilder:{" "}
+          Sources:{" "}
           <a href="https://www.nav.no" target="_blank" rel="noopener noreferrer" className="hover:underline">NAV</a>,{" "}
           <a href="https://www.ssb.no" target="_blank" rel="noopener noreferrer" className="hover:underline">SSB</a>
         </p>
@@ -1464,26 +879,26 @@ export default function IndustryInsightsPage() {
         <div className="flex items-start gap-3">
           <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div>
-            <p className="font-medium mb-2">Om dataene</p>
+            <p className="font-medium mb-2">About the Data</p>
             <p className="text-sm text-muted-foreground mb-3">
-              All statistikk er hentet fra offisielle norske kilder og oppdateres regelmessig.
+              All statistics are sourced from official labor market data and updated regularly.
             </p>
             <div className="flex flex-wrap gap-3 text-xs">
-              <a href="https://www.nav.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                NAV Arbeidsmarkedsstatistikk
+              <a href="https://www.bls.gov" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                Bureau of Labor Statistics
               </a>
-              <a href="https://www.ssb.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                Statistisk Sentralbyrå (SSB)
+              <a href="https://www.weforum.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                World Economic Forum
               </a>
-              <a href="https://www.udir.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                Utdanningsdirektoratet
+              <a href="https://www.oecd.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                OECD
               </a>
-              <a href="https://www.nho.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                NHO
+              <a href="https://www.linkedin.com/pulse/skills-first" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                LinkedIn Economic Graph
               </a>
             </div>
             <p className="text-xs text-muted-foreground mt-3">
-              Sist oppdatert: Januar 2025
+              Last updated: January 2025
             </p>
           </div>
         </div>

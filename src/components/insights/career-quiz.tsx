@@ -16,6 +16,7 @@ import {
   Wrench,
   Heart,
   Palette,
+  Target,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,6 +27,11 @@ interface Question {
     text: string;
     scores: { tech: number; green: number; health: number; creative: number };
   }[];
+}
+
+interface CareerQuizProps {
+  careerGoals?: string[];
+  industryTypes?: string[];
 }
 
 const questions: Question[] = [
@@ -99,19 +105,19 @@ const industryInfo = {
     description: "Build apps, analyze data, and shape the digital future.",
   },
   green: {
-    name: "Grønn Energi & Maritim",
+    name: "Green Energy",
     icon: Wrench,
     color: "from-green-500 to-teal-500",
-    description: "Power Norway's sustainable future with hands-on technical work.",
+    description: "Power the sustainable future with hands-on technical work.",
   },
   health: {
-    name: "Helse & Omsorg",
+    name: "Healthcare",
     icon: Heart,
     color: "from-red-500 to-pink-500",
     description: "Make a real difference in people's lives through care and support.",
   },
   creative: {
-    name: "Kreative Tjenester",
+    name: "Creative Services",
     icon: Palette,
     color: "from-purple-500 to-pink-500",
     description: "Express yourself through design, content, and visual storytelling.",
@@ -120,11 +126,12 @@ const industryInfo = {
 
 type IndustryKey = keyof typeof industryInfo;
 
-export function CareerQuiz() {
+export function CareerQuiz({ careerGoals = [], industryTypes = [] }: CareerQuizProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+  const [showFullQuiz, setShowFullQuiz] = useState(false);
 
   const handleAnswer = (optionIndex: number) => {
     const newAnswers = [...answers, optionIndex];
@@ -167,6 +174,7 @@ export function CareerQuiz() {
     setAnswers([]);
     setShowResults(false);
     setIsStarted(false);
+    setShowFullQuiz(false);
   };
 
   const goBack = () => {
@@ -175,6 +183,66 @@ export function CareerQuiz() {
       setAnswers(answers.slice(0, -1));
     }
   };
+
+  // If user has career goals, show a summary of their current path instead of the quiz start
+  if (!isStarted && !showFullQuiz && careerGoals.length > 0) {
+    return (
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-emerald-500 to-cyan-500" />
+        <CardHeader className="text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
+            <Target className="h-8 w-8 text-white" />
+          </div>
+          <CardTitle>Your Career Path</CardTitle>
+          <CardDescription>
+            You've already set your career goals
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-center mb-4">Your Career Goals:</p>
+            {careerGoals.map((goal, index) => {
+              const industryType = industryTypes[index] as IndustryKey | undefined;
+              const industry = industryType ? industryInfo[industryType] : null;
+              const Icon = industry?.icon || Target;
+
+              return (
+                <div
+                  key={goal}
+                  className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30"
+                >
+                  <div className={`p-2 rounded-md bg-gradient-to-br ${industry?.color || "from-emerald-500 to-cyan-500"}`}>
+                    <Icon className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{goal}</p>
+                    {industry && (
+                      <p className="text-xs text-muted-foreground">{industry.name}</p>
+                    )}
+                  </div>
+                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-4 border-t">
+            <p className="text-sm text-muted-foreground text-center mb-4">
+              Want to explore other career options?
+            </p>
+            <Button
+              onClick={() => setShowFullQuiz(true)}
+              variant="outline"
+              className="w-full"
+            >
+              <Brain className="mr-2 h-4 w-4" />
+              Take Career Discovery Quiz
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!isStarted) {
     return (
@@ -201,7 +269,7 @@ export function CareerQuiz() {
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
-              Get personalised industry recommendations
+              Get personalized industry recommendations
             </div>
           </div>
           <Button

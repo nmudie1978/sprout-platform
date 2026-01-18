@@ -6,10 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   Building2,
   MapPin,
-  Users,
   ExternalLink,
   Star,
-  Briefcase,
   TrendingUp,
 } from "lucide-react";
 
@@ -19,108 +17,80 @@ interface Company {
   industry: string;
   logo: string;
   location: string;
-  size: string;
-  youthFriendly: boolean;
   hiring: boolean;
-  description: string;
-  perks: string[];
   website: string;
   roles: string[];
 }
 
 const companies: Company[] = [
   {
-    id: "equinor",
-    name: "Equinor",
+    id: "google",
+    name: "Google",
+    industry: "tech",
+    logo: "🔍",
+    location: "Global",
+    hiring: true,
+    website: "https://careers.google.com",
+    roles: ["Developer", "Data Analyst", "UX Designer"],
+  },
+  {
+    id: "microsoft",
+    name: "Microsoft",
+    industry: "tech",
+    logo: "💻",
+    location: "Global",
+    hiring: true,
+    website: "https://careers.microsoft.com",
+    roles: ["Software Engineer", "Cloud Architect", "PM"],
+  },
+  {
+    id: "siemens",
+    name: "Siemens",
     industry: "green",
     logo: "⚡",
-    location: "Stavanger, Bergen, Oslo",
-    size: "21,000+ ansatte",
-    youthFriendly: true,
+    location: "Europe",
     hiring: true,
-    description: "Norges ledende energiselskap med fokus på fornybar energi og offshore vind.",
-    perks: ["Lærlingprogram", "Graduate program", "Konkurransedyktig lønn"],
-    website: "https://www.equinor.com/careers",
-    roles: ["Energimontør", "Prosesstekniker", "Ingeniør", "IT"],
+    website: "https://www.siemens.com/careers",
+    roles: ["Engineer", "Technician", "Energy Specialist"],
   },
   {
-    id: "dnb",
-    name: "DNB",
-    industry: "tech",
-    logo: "🏦",
-    location: "Oslo, Bergen, Trondheim",
-    size: "9,000+ ansatte",
-    youthFriendly: true,
-    hiring: true,
-    description: "Norges største bank med stor satsing på teknologi og digitalisering.",
-    perks: ["Tech-akademi", "Fleksibel arbeidstid", "Sommerjobber"],
-    website: "https://www.dnb.no/karriere",
-    roles: ["Utvikler", "Data Analyst", "UX Designer", "Kundeservice"],
-  },
-  {
-    id: "oda",
-    name: "Oda (kolonial.no)",
-    industry: "tech",
-    logo: "🛒",
-    location: "Oslo",
-    size: "2,000+ ansatte",
-    youthFriendly: true,
-    hiring: true,
-    description: "Europas mest effektive nettbutikk for dagligvarer, bygget på teknologi.",
-    perks: ["Startup-kultur", "Moderne tech-stack", "Gratis lunsj"],
-    website: "https://careers.oda.com",
-    roles: ["Utvikler", "Lagermedarbeider", "Sjåfør", "Data Engineer"],
-  },
-  {
-    id: "oslo-universitetssykehus",
-    name: "Oslo Universitetssykehus",
+    id: "philips",
+    name: "Philips",
     industry: "health",
-    logo: "🏥",
-    location: "Oslo",
-    size: "24,000+ ansatte",
-    youthFriendly: true,
+    logo: "💡",
+    location: "Europe",
     hiring: true,
-    description: "Et av Europas største universitetssykehus med mange karrieremuligheter.",
-    perks: ["Lærlingplasser", "Videreutdanning", "Stabil arbeidsgiver"],
-    website: "https://oslo-universitetssykehus.no/jobb",
-    roles: ["Helsefagarbeider", "Sykepleier", "Portør", "IT-support"],
+    website: "https://www.careers.philips.com",
+    roles: ["Healthcare Tech", "Engineer", "Designer"],
   },
   {
-    id: "vg-schibsted",
-    name: "Schibsted / VG",
+    id: "spotify",
+    name: "Spotify",
     industry: "creative",
-    logo: "📰",
-    location: "Oslo",
-    size: "5,000+ ansatte",
-    youthFriendly: true,
+    logo: "🎵",
+    location: "Stockholm",
     hiring: true,
-    description: "Nordens største mediekonsern med fokus på innovasjon og digitale medier.",
-    perks: ["Kreativt miljø", "Graduate program", "Moderne kontorer"],
-    website: "https://schibsted.com/career",
-    roles: ["Journalist", "Designer", "Utvikler", "Markedsfører"],
+    website: "https://www.lifeatspotify.com",
+    roles: ["Developer", "Designer", "Content"],
   },
   {
-    id: "statkraft",
-    name: "Statkraft",
+    id: "vestas",
+    name: "Vestas",
     industry: "green",
-    logo: "💧",
-    location: "Oslo, Bergen + distrikter",
-    size: "5,000+ ansatte",
-    youthFriendly: true,
+    logo: "🌬️",
+    location: "Denmark",
     hiring: true,
-    description: "Europas største produsent av fornybar energi med hovedkontor i Norge.",
-    perks: ["Internasjonale muligheter", "Trainee-program", "Bærekraft fokus"],
-    website: "https://www.statkraft.com/careers",
-    roles: ["Tekniker", "Ingeniør", "Analytiker", "IT"],
+    website: "https://www.vestas.com/en/careers",
+    roles: ["Wind Technician", "Engineer", "Analyst"],
   },
 ];
 
 const industryFilters = [
-  { id: "all", label: "Alle", color: "from-primary to-purple-500" },
+  { id: "all", label: "All", color: "from-primary to-purple-500" },
   { id: "tech", label: "Tech", color: "from-blue-500 to-cyan-500" },
-  { id: "green", label: "Grønn Energi", color: "from-green-500 to-teal-500" },
-  { id: "health", label: "Helse", color: "from-red-500 to-pink-500" },
-  { id: "creative", label: "Kreativ", color: "from-purple-500 to-pink-500" },
+  { id: "green", label: "Green Energy", color: "from-green-500 to-teal-500" },
+  { id: "health", label: "Healthcare", color: "from-red-500 to-pink-500" },
+  { id: "creative", label: "Creative", color: "from-purple-500 to-pink-500" },
 ];
 
 export function CompanySpotlights() {
@@ -133,21 +103,21 @@ export function CompanySpotlights() {
   return (
     <Card className="border-2 overflow-hidden">
       <div className="h-1.5 bg-gradient-to-r from-primary to-purple-500" />
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Building2 className="h-5 w-5 text-primary" />
           Company Spotlights
         </CardTitle>
-        <CardDescription>Top employers actively hiring young talent in Norway</CardDescription>
+        <CardDescription>Top employers actively hiring young talent</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Filter */}
         <div className="flex flex-wrap gap-2">
           {industryFilters.map((ind) => (
             <button
               key={ind.id}
               onClick={() => setFilter(ind.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
                 filter === ind.id
                   ? `bg-gradient-to-r ${ind.color} text-white`
                   : "bg-muted hover:bg-muted/80"
@@ -158,83 +128,42 @@ export function CompanySpotlights() {
           ))}
         </div>
 
-        {/* Company Grid */}
-        <div className="grid gap-4 md:grid-cols-2">
+        {/* Company Grid - Compact Cards */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCompanies.map((company) => (
-            <div
+            <a
               key={company.id}
-              className="p-4 rounded-xl border-2 hover:border-primary/50 transition-all hover:shadow-md"
+              href={company.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-lg border hover:border-primary/50 hover:shadow-sm transition-all group"
             >
-              <div className="flex items-start gap-3">
-                <div className="text-3xl">{company.logo}</div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">{company.logo}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-semibold">{company.name}</h3>
-                    {company.youthFriendly && (
-                      <Badge className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400 text-[10px]">
-                        <Star className="h-3 w-3 mr-0.5" />
-                        Youth-Friendly
-                      </Badge>
-                    )}
-                    {company.hiring && (
-                      <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400 text-[10px]">
-                        <TrendingUp className="h-3 w-3 mr-0.5" />
-                        Hiring
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {company.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3 w-3" />
-                      {company.size}
-                    </span>
+                  <h3 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                    {company.name}
+                  </h3>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <MapPin className="h-2.5 w-2.5" />
+                    {company.location}
                   </div>
                 </div>
+                {company.hiring && (
+                  <Badge className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400 text-[9px] px-1.5 py-0">
+                    <TrendingUp className="h-2.5 w-2.5 mr-0.5" />
+                    Hiring
+                  </Badge>
+                )}
               </div>
-
-              <p className="text-sm text-muted-foreground mt-3">
-                {company.description}
-              </p>
-
-              <div className="mt-3">
-                <p className="text-xs font-semibold mb-1.5 flex items-center gap-1">
-                  <Briefcase className="h-3 w-3" />
-                  Aktuelle roller:
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {company.roles.map((role) => (
-                    <Badge key={role} variant="secondary" className="text-[10px]">
-                      {role}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-3 flex flex-wrap gap-1">
-                {company.perks.map((perk) => (
-                  <span
-                    key={perk}
-                    className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary"
-                  >
-                    {perk}
-                  </span>
+              <div className="flex flex-wrap gap-1">
+                {company.roles.slice(0, 3).map((role) => (
+                  <Badge key={role} variant="secondary" className="text-[9px] px-1.5 py-0">
+                    {role}
+                  </Badge>
                 ))}
               </div>
-
-              <a
-                href={company.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-              >
-                Se ledige stillinger
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </div>
+            </a>
           ))}
         </div>
       </CardContent>

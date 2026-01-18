@@ -32,101 +32,102 @@ interface Event {
 const events: Event[] = [
   {
     id: "1",
-    title: "NAV Jobbmesse Oslo 2025",
+    title: "Web Summit 2025",
     type: "jobfair",
-    industry: ["all"],
-    date: "2025-02-15",
-    time: "10:00 - 16:00",
-    location: "Oslo Spektrum",
+    industry: ["tech"],
+    date: "2025-11-10",
+    time: "09:00 - 18:00",
+    location: "Lisbon, Portugal",
     isOnline: false,
-    organizer: "NAV",
-    description: "Norges største jobbmesse med over 100 arbeidsgivere. Gratis inngang for arbeidssøkere.",
-    registrationUrl: "https://www.nav.no",
-    spots: 5000,
+    organizer: "Web Summit",
+    description: "Europe's largest tech conference with career opportunities and networking with top companies.",
+    registrationUrl: "https://websummit.com",
+    spots: 70000,
   },
   {
     id: "2",
-    title: "Tech Karriere Webinar: Kom i gang med koding",
+    title: "Tech Career Webinar: Getting Started in Coding",
     type: "webinar",
     industry: ["tech"],
-    date: "2025-02-08",
+    date: "2025-02-15",
     time: "18:00 - 19:30",
     location: "Online (Zoom)",
     isOnline: true,
-    organizer: "Kode24",
-    description: "Lær hvordan du kan starte en karriere i tech uten formell utdanning. Tips til selvlæring og bootcamps.",
-    registrationUrl: "https://www.kode24.no",
+    organizer: "FreeCodeCamp",
+    description: "Learn how to start a career in tech without formal education. Tips for self-learning and bootcamps.",
+    registrationUrl: "https://www.freecodecamp.org",
   },
   {
     id: "3",
-    title: "Bergen Tech Meetup",
+    title: "Berlin Tech Meetup",
     type: "meetup",
     industry: ["tech"],
-    date: "2025-02-20",
+    date: "2025-03-20",
     time: "18:00 - 21:00",
-    location: "Media City Bergen",
+    location: "Berlin, Germany",
     isOnline: false,
-    organizer: "Bergen Tech Community",
-    description: "Nettverkskveld for tech-interesserte i Bergen. Presentasjoner og mingling.",
+    organizer: "Berlin Tech Community",
+    description: "Networking evening for tech enthusiasts in Berlin. Presentations and mingling.",
     registrationUrl: "https://www.meetup.com",
-    spots: 100,
+    spots: 150,
   },
   {
     id: "4",
-    title: "Lærling i energibransjen - Informasjonsmøte",
-    type: "webinar",
+    title: "European Green Energy Summit",
+    type: "jobfair",
     industry: ["green"],
-    date: "2025-02-12",
-    time: "14:00 - 15:00",
-    location: "Online (Teams)",
-    isOnline: true,
-    organizer: "Energi Norge",
-    description: "Alt du trenger å vite om lærlingplasser i energibransjen. Q&A med nåværende lærlinger.",
-    registrationUrl: "https://www.energinorge.no",
+    date: "2025-04-12",
+    time: "09:00 - 17:00",
+    location: "Amsterdam, Netherlands",
+    isOnline: false,
+    organizer: "EU Energy Council",
+    description: "Connect with leading renewable energy companies. Learn about career paths in the green sector.",
+    registrationUrl: "https://www.euenergycouncil.com",
+    spots: 2000,
   },
   {
     id: "5",
-    title: "Healthcare Karrieredag Trondheim",
-    type: "jobfair",
+    title: "Healthcare Innovation Conference",
+    type: "workshop",
     industry: ["health"],
-    date: "2025-03-01",
-    time: "09:00 - 15:00",
-    location: "St. Olavs Hospital",
+    date: "2025-05-01",
+    time: "10:00 - 16:00",
+    location: "Copenhagen, Denmark",
     isOnline: false,
-    organizer: "Helse Midt-Norge",
-    description: "Møt arbeidsgivere i helsesektoren. Lær om utdanningsveier og jobbmuligheter.",
-    registrationUrl: "https://www.helse-midt.no",
-    spots: 300,
+    organizer: "EU Healthcare Alliance",
+    description: "Meet healthcare employers and learn about education pathways and job opportunities.",
+    registrationUrl: "https://www.healthcarealliance.eu",
+    spots: 500,
   },
   {
     id: "6",
-    title: "Kreativ Bransje Workshop: Bygg din portefølje",
+    title: "Creative Portfolio Workshop",
     type: "workshop",
     industry: ["creative"],
     date: "2025-02-25",
     time: "17:00 - 20:00",
-    location: "Kulturhuset, Oslo",
-    isOnline: false,
-    organizer: "Grafill",
-    description: "Praktisk workshop om hvordan du bygger en portefølje som skiller seg ut.",
-    registrationUrl: "https://www.grafill.no",
-    spots: 30,
+    location: "Online (Zoom)",
+    isOnline: true,
+    organizer: "Behance",
+    description: "Practical workshop on how to build a portfolio that stands out to employers.",
+    registrationUrl: "https://www.behance.net",
+    spots: 100,
   },
 ];
 
 const typeConfig = {
-  jobfair: { label: "Jobbmesse", color: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400", icon: Building2 },
+  jobfair: { label: "Job Fair", color: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400", icon: Building2 },
   webinar: { label: "Webinar", color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400", icon: Video },
   meetup: { label: "Meetup", color: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400", icon: Users },
   workshop: { label: "Workshop", color: "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400", icon: Clock },
 };
 
 const industryFilters = [
-  { id: "all", label: "Alle" },
+  { id: "all", label: "All" },
   { id: "tech", label: "Tech" },
-  { id: "green", label: "Grønn Energi" },
-  { id: "health", label: "Helse" },
-  { id: "creative", label: "Kreativ" },
+  { id: "green", label: "Green Energy" },
+  { id: "health", label: "Healthcare" },
+  { id: "creative", label: "Creative" },
 ];
 
 export function EventsCalendar() {
@@ -138,7 +139,7 @@ export function EventsCalendar() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("nb-NO", {
+    return date.toLocaleDateString("en-US", {
       weekday: "short",
       day: "numeric",
       month: "short",
@@ -163,7 +164,7 @@ export function EventsCalendar() {
           <Calendar className="h-5 w-5 text-primary" />
           Events & Job Fairs
         </CardTitle>
-        <CardDescription>Upcoming career events, webinars, and networking opportunities</CardDescription>
+        <CardDescription>Upcoming career events, webinars, and networking opportunities across Europe</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Filter */}
@@ -197,7 +198,7 @@ export function EventsCalendar() {
                     {/* Date Box */}
                     <div className="flex-shrink-0 w-16 text-center p-2 rounded-lg bg-primary/10">
                       <div className="text-xs text-muted-foreground uppercase">
-                        {new Date(event.date).toLocaleDateString("nb-NO", { month: "short" })}
+                        {new Date(event.date).toLocaleDateString("en-US", { month: "short" })}
                       </div>
                       <div className="text-2xl font-bold text-primary">
                         {new Date(event.date).getDate()}
@@ -233,7 +234,7 @@ export function EventsCalendar() {
                         {event.spots && (
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
-                            {event.spots} plasser
+                            {event.spots.toLocaleString()} spots
                           </span>
                         )}
                       </div>
@@ -244,7 +245,7 @@ export function EventsCalendar() {
 
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-muted-foreground">
-                          Arrangør: {event.organizer}
+                          Organizer: {event.organizer}
                         </span>
                         <Button size="sm" variant="outline" asChild>
                           <a
@@ -252,7 +253,7 @@ export function EventsCalendar() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Registrer deg
+                            Register
                             <ExternalLink className="ml-1 h-3 w-3" />
                           </a>
                         </Button>
@@ -265,15 +266,15 @@ export function EventsCalendar() {
           ) : (
             <div className="text-center py-8 text-muted-foreground">
               <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>Ingen kommende arrangementer i denne kategorien</p>
+              <p>No upcoming events in this category</p>
             </div>
           )}
         </div>
 
         {/* Tip */}
         <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-          💡 <span className="font-semibold">Tips:</span> Jobbmesser er en flott måte å møte
-          arbeidsgivere ansikt til ansikt. Ta med CV og vær forberedt på å presentere deg selv!
+          <span className="font-semibold">Tip:</span> Job fairs are a great way to meet
+          employers face to face. Bring your CV and be prepared to introduce yourself!
         </div>
       </CardContent>
     </Card>

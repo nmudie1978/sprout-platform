@@ -175,9 +175,13 @@ export const CareerCard = memo(function CareerCard({
               </AnimatePresence>
 
               <Button
+                type="button"
                 variant="ghost"
                 className="w-full rounded-none border-t h-8 text-xs"
-                onClick={() => setExpanded(!expanded)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(!expanded);
+                }}
               >
                 {expanded ? (
                   <>
@@ -199,15 +203,15 @@ export const CareerCard = memo(function CareerCard({
   }
 
   return (
-    <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors">
+    <Card className="overflow-hidden border hover:border-purple-500/30 transition-colors">
       <CardContent className="p-0">
         {/* Header */}
-        <div className="p-4 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
+        <div className="p-4 bg-purple-50/30 dark:bg-purple-950/10">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3">
               <span className="text-3xl">{career.emoji}</span>
               <div>
-                <h3 className="font-bold text-lg">{career.title}</h3>
+                <h3 className="font-semibold text-lg tracking-tight">{career.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   {career.description}
                 </p>
@@ -335,9 +339,13 @@ export const CareerCard = memo(function CareerCard({
             </AnimatePresence>
 
             <Button
+              type="button"
               variant="ghost"
               className="w-full rounded-none border-t h-10 text-sm"
-              onClick={() => setExpanded(!expanded)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(!expanded);
+              }}
             >
               {expanded ? (
                 <>

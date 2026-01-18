@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   MessageSquare,
   ChevronDown,
@@ -31,6 +30,11 @@ interface IndustryQuestions {
   icon: React.ComponentType<{ className?: string }>;
   color: string;
   questions: Question[];
+}
+
+interface InterviewPrepBankProps {
+  careerGoals?: string[];
+  industryTypes?: string[];
 }
 
 const industryQuestions: IndustryQuestions[] = [
@@ -121,7 +125,7 @@ const industryQuestions: IndustryQuestions[] = [
       {
         id: "gr1",
         question: "Why are you interested in the energy sector?",
-        tip: "Show genuine passion for sustainability and Norway's energy transition. Mention specific projects.",
+        tip: "Show genuine passion for sustainability and the energy transition. Mention specific projects or technologies.",
         difficulty: "easy",
       },
       {
@@ -139,7 +143,7 @@ const industryQuestions: IndustryQuestions[] = [
       {
         id: "gr4",
         question: "Tell me about your technical certifications",
-        tip: "List relevant certs (fagbrev, safety courses). If you don't have them yet, show your plan to get them.",
+        tip: "List relevant certs (trade certificates, safety courses). If you don't have them yet, show your plan to get them.",
         difficulty: "easy",
       },
       {
@@ -234,11 +238,25 @@ const difficultyColors = {
   hard: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400",
 };
 
-export function InterviewPrepBank() {
+export function InterviewPrepBank({ careerGoals = [], industryTypes = [] }: InterviewPrepBankProps) {
+  // Filter industries based on career goals - always include general
+  const relevantIndustries = industryTypes.length > 0
+    ? industryQuestions.filter(
+        (i) => i.id === "general" || industryTypes.includes(i.id)
+      )
+    : industryQuestions;
+
   const [selectedIndustry, setSelectedIndustry] = useState<string>("general");
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
 
-  const currentIndustry = industryQuestions.find((i) => i.id === selectedIndustry);
+  // Auto-select first industry-specific category if user has career goals
+  useEffect(() => {
+    if (industryTypes.length > 0 && industryTypes[0] !== "general") {
+      setSelectedIndustry(industryTypes[0]);
+    }
+  }, [industryTypes]);
+
+  const currentIndustry = relevantIndustries.find((i) => i.id === selectedIndustry);
 
   return (
     <Card className="border-2 overflow-hidden">
@@ -248,12 +266,16 @@ export function InterviewPrepBank() {
           <MessageSquare className="h-5 w-5 text-primary" />
           Interview Prep Bank
         </CardTitle>
-        <CardDescription>Practice common interview questions with tips</CardDescription>
+        <CardDescription>
+          {careerGoals.length > 0
+            ? `Questions tailored for: ${careerGoals.join(", ")}`
+            : "Practice common interview questions with tips"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Industry Selector */}
         <div className="flex flex-wrap gap-2">
-          {industryQuestions.map((industry) => {
+          {relevantIndustries.map((industry) => {
             const Icon = industry.icon;
             return (
               <button

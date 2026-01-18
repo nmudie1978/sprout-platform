@@ -44,7 +44,7 @@ export default function JobsMapPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: jobs = [], isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["jobs-map", categoryFilter === "ALL" ? "" : categoryFilter, locationFilter],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -56,6 +56,8 @@ export default function JobsMapPage() {
       return response.json();
     },
   });
+
+  const jobs = data?.jobs || [];
 
   // Filter by search query
   const filteredJobs = jobs.filter((job: any) => {
