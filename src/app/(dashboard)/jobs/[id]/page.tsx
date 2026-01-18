@@ -64,7 +64,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
 import { CareerCard } from "@/components/career-card";
-import { getCareersForCategory } from "@/lib/career-pathways";
+import { getCareersForJobCategory, getPrimaryCareerCategory } from "@/lib/career-pathways";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";
@@ -1048,13 +1048,13 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                 </CardHeader>
                 <CardContent className="pt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {getCareersForCategory(job.category).slice(0, 4).map((career) => (
+                    {getCareersForJobCategory(job.category).slice(0, 4).map((career) => (
                       <CareerCard key={career.id} career={career} compact />
                     ))}
                   </div>
                   <div className="mt-4">
                     <Button variant="link" className="p-0 h-auto text-orange-600" asChild>
-                      <Link href={`/careers?category=${job.category}`}>
+                      <Link href={`/careers?category=${getPrimaryCareerCategory(job.category) || "ALL"}`}>
                         Explore all related careers
                         <ChevronRightIcon className="ml-1 h-4 w-4" />
                       </Link>

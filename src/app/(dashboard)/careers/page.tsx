@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,12 +58,21 @@ type ViewMode = "grid" | "list";
 
 export default function CareersPage() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [growthFilter, setGrowthFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const isYouth = session?.user?.role === "YOUTH";
+
+  // Read category from URL params on mount
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam && categoryConfig[categoryParam]) {
+      setSelectedCategory(categoryParam);
+    }
+  }, [searchParams]);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },

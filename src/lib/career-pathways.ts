@@ -1040,28 +1040,54 @@ export function getCareersByGrowth(outlook: "high" | "medium" | "stable"): Caree
 }
 
 /**
+ * Maps JobCategory (micro-jobs) to CareerCategory (career pathways)
+ * Used to link job types to related career exploration
+ */
+export const JOB_TO_CAREER_MAPPING: Record<string, CareerCategory[]> = {
+  BABYSITTING: ["EDUCATION_TRAINING", "HEALTHCARE_LIFE_SCIENCES"],
+  DOG_WALKING: ["HEALTHCARE_LIFE_SCIENCES", "HOSPITALITY_TOURISM"],
+  SNOW_CLEARING: ["MANUFACTURING_ENGINEERING", "LOGISTICS_TRANSPORT"],
+  CLEANING: ["HOSPITALITY_TOURISM", "BUSINESS_MANAGEMENT"],
+  DIY_HELP: ["MANUFACTURING_ENGINEERING", "LOGISTICS_TRANSPORT"],
+  TECH_HELP: ["TECHNOLOGY_IT", "BUSINESS_MANAGEMENT"],
+  ERRANDS: ["LOGISTICS_TRANSPORT", "SALES_MARKETING"],
+  OTHER: ["BUSINESS_MANAGEMENT", "HOSPITALITY_TOURISM"],
+};
+
+/**
+ * Get the primary career category for a job category
+ */
+export function getPrimaryCareerCategory(jobCategory: string): CareerCategory | null {
+  const mapping = JOB_TO_CAREER_MAPPING[jobCategory];
+  return mapping?.[0] || null;
+}
+
+/**
+ * Get careers related to a job category (micro-job)
+ * Returns careers from all mapped career categories
+ */
+export function getCareersForJobCategory(jobCategory: string): Career[] {
+  const careerCategories = JOB_TO_CAREER_MAPPING[jobCategory] || [];
+  const careers: Career[] = [];
+
+  for (const careerCategory of careerCategories) {
+    careers.push(...(CAREER_PATHWAYS[careerCategory] || []));
+  }
+
+  return careers;
+}
+
+/**
  * Get recommended careers based on user's job history categories
  * Maps JobCategory (micro-jobs) to CareerCategory (career pathways)
  */
 export function getRecommendedCareers(
   jobCategories: Record<string, number>
 ): { career: Career; matchScore: number }[] {
-  // Map micro-job categories to career categories
-  const categoryMapping: Record<string, CareerCategory[]> = {
-    BABYSITTING: ["EDUCATION_TRAINING", "HEALTHCARE_LIFE_SCIENCES"],
-    DOG_WALKING: ["HEALTHCARE_LIFE_SCIENCES", "HOSPITALITY_TOURISM"],
-    SNOW_CLEARING: ["MANUFACTURING_ENGINEERING", "LOGISTICS_TRANSPORT"],
-    CLEANING: ["HOSPITALITY_TOURISM", "BUSINESS_MANAGEMENT"],
-    DIY_HELP: ["MANUFACTURING_ENGINEERING", "LOGISTICS_TRANSPORT"],
-    TECH_HELP: ["TECHNOLOGY_IT", "BUSINESS_MANAGEMENT"],
-    ERRANDS: ["LOGISTICS_TRANSPORT", "SALES_MARKETING"],
-    OTHER: ["BUSINESS_MANAGEMENT", "HOSPITALITY_TOURISM"],
-  };
-
   const recommendations: { career: Career; matchScore: number }[] = [];
 
   for (const [jobCategory, count] of Object.entries(jobCategories)) {
-    const relevantCareerCategories = categoryMapping[jobCategory] || [];
+    const relevantCareerCategories = JOB_TO_CAREER_MAPPING[jobCategory] || [];
 
     for (const careerCategory of relevantCareerCategories) {
       const careers = CAREER_PATHWAYS[careerCategory] || [];
