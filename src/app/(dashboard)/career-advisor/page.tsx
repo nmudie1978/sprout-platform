@@ -25,7 +25,16 @@ import {
   LogIn,
   Target,
   TrendingUp,
+  Trash2,
+  MoreVertical,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
@@ -128,9 +137,43 @@ export default function CareerAdvisorPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Fetch chat history on mount
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setIsLoadingHistory(false);
+      return;
+    }
+
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("/api/chat/history");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.messages && data.messages.length > 0) {
+            const loadedMessages: Message[] = data.messages.map((msg: any) => ({
+              id: msg.id,
+              role: msg.role,
+              content: msg.content,
+              timestamp: new Date(msg.createdAt),
+              intent: msg.intent,
+            }));
+            setMessages(loadedMessages);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    fetchHistory();
+  }, [status]);
 
   // Compute goal-specific content
   const suggestedPrompts = useMemo(
@@ -226,15 +269,31 @@ export default function CareerAdvisorPage() {
     }
   };
 
+  // Clear local chat state only (keeps history in DB for AI context)
   const clearChat = () => {
     setMessages([]);
     setError(null);
   };
 
+  // Clear all history including database
+  const clearAllHistory = async () => {
+    try {
+      const response = await fetch("/api/chat/history", { method: "DELETE" });
+      if (response.ok) {
+        setMessages([]);
+        setError(null);
+      }
+    } catch (err) {
+      console.error("Failed to clear history:", err);
+    }
+  };
+
   // Show loading state while checking auth
   if (isLoadingAuth) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+        {/* Background gradient - matches Industry Insights */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
@@ -254,7 +313,9 @@ export default function CareerAdvisorPage() {
   // Show login prompt if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+        {/* Background gradient - matches Industry Insights */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
@@ -311,7 +372,10 @@ export default function CareerAdvisorPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+      {/* Background gradient - matches Industry Insights */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+
       <PageHeader
         title="AI Career"
         gradientText="Advisor"
@@ -331,20 +395,39 @@ export default function CareerAdvisorPage() {
             </div>
             <div>
               <h3 className="font-semibold text-sm">Career Advisor</h3>
-              <p className="text-xs text-muted-foreground">Powered by AI</p>
+              <p className="text-xs text-muted-foreground">Powered by AI • Remembers your conversations</p>
             </div>
           </div>
           {messages.length > 0 && (
-            <Button variant="ghost" size="sm" onClick={clearChat} className="text-xs">
-              <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-              New Chat
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-xs">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={clearChat}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  New Chat
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={clearAllHistory} className="text-red-600">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Clear All History
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
 
         {/* Messages Area */}
         <div className="h-[500px] overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-background to-muted/20">
-          {messages.length === 0 ? (
+          {isLoadingHistory ? (
+            <div className="h-full flex flex-col items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+              <p className="text-sm text-muted-foreground">Loading conversation history...</p>
+            </div>
+          ) : messages.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

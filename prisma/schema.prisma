@@ -184,6 +184,7 @@ model User {
   // Relations
   youthProfile    YouthProfile?
   employerProfile EmployerProfile?
+  careerSnapshot  WorkerCareerSnapshot?
   postedJobs      MicroJob[]
   applications    Application[]
   reviews         Review[]        @relation("ReviewsGiven")
@@ -193,6 +194,7 @@ model User {
   answers         ProAnswer[]
   reports         Report[]
   aiIntentLogs    AiIntentLog[]
+  aiChatMessages  AiChatMessage[]
   accounts        Account[]
   sessions        Session[]
   sentPokes       Poke[]          @relation("EmployerPokes")
@@ -361,6 +363,22 @@ model YouthProfile {
   @@index([averageRating])
   @@index([completedJobsCount])
   @@index([city])
+}
+
+// Career Interests Snapshot - Optional, privacy-controlled career interests
+model WorkerCareerSnapshot {
+  id                 String   @id @default(cuid())
+  workerId           String   @unique
+  shareWithEmployers Boolean  @default(false)
+  primaryInterest    String?  @db.VarChar(60)
+  exploring          String[] @default([])
+  learningGoals      String[] @default([])
+  createdAt          DateTime @default(now())
+  lastUpdatedAt      DateTime @updatedAt
+
+  worker             User     @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  @@index([workerId])
 }
 
 model EmployerProfile {
@@ -1788,4 +1806,21 @@ model ProfessionalInsight {
   @@index([careerTag])
   @@index([isPublished])
   @@index([createdAt])
+}
+
+// ============================================
+// AI CHAT MEMORY (Persistent Conversation History)
+// ============================================
+
+model AiChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String   // "user" or "assistant"
+  content   String   @db.Text
+  intent    String?  // Optional: store classified intent
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

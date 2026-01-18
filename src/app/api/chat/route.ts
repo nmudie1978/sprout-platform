@@ -130,6 +130,25 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Fetch persistent chat history for context (last 20 messages)
+    let persistentHistory: { role: string; content: string; createdAt: Date }[] = [];
+    try {
+      persistentHistory = await prisma.aiChatMessage.findMany({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+        select: {
+          role: true,
+          content: true,
+          createdAt: true,
+        },
+      });
+      // Reverse to get chronological order
+      persistentHistory = persistentHistory.reverse();
+    } catch (historyError) {
+      console.error("Failed to fetch chat history (continuing without):", historyError);
+    }
+
     // Check for unsafe content immediately
     if (intent === "unsafe") {
       const fallbackResponse = getFallbackResponse(intent);
@@ -192,20 +211,37 @@ export async function POST(req: NextRequest) {
 
     const context = formatContextForPrompt(careerCards, helpDocs, qaItems);
 
+    // Build a summary of conversation history for context
+    let historyContext = "";
+    if (persistentHistory.length > 4) {
+      // Summarize older messages (beyond the last 4)
+      const olderMessages = persistentHistory.slice(0, -4);
+      const topics = olderMessages
+        .filter((m) => m.role === "user")
+        .map((m) => m.content.slice(0, 100))
+        .slice(-5); // Last 5 topics from older history
+      if (topics.length > 0) {
+        historyContext = `\n\nYou have previously discussed these topics with this user: ${topics.join("; ")}. Use this context naturally if relevant.`;
+      }
+    }
+
     // Build messages for OpenAI with personalization based on career aspiration
     const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration);
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: systemPrompt + (context ? `\n\n${context}` : ""),
+        content: systemPrompt + (context ? `\n\n${context}` : "") + historyContext,
       },
     ];
 
-    // Add conversation history (last 4 messages only to keep context window small)
-    const recentHistory = conversationHistory.slice(-4);
+    // Add persistent conversation history (last 4 messages for immediate context)
+    // Prefer persistent history over client-provided history
+    const recentHistory = persistentHistory.length > 0
+      ? persistentHistory.slice(-4)
+      : conversationHistory.slice(-4);
     recentHistory.forEach((msg: any) => {
       messages.push({
-        role: msg.role,
+        role: msg.role as "user" | "assistant",
         content: msg.content,
       });
     });
@@ -310,6 +346,11 @@ export async function POST(req: NextRequest) {
       retrieved_qa: qaItems.length,
     }).catch(() => {}); // Silently catch any logging errors
 
+    // Save messages to persistent history (non-blocking)
+    saveMessages(session.user.id, message, assistantMessage, intent).catch((err) => {
+      console.error("Failed to save chat messages:", err);
+    });
+
     // Return response with sources and optional life skill recommendation
     return NextResponse.json({
       message: assistantMessage,
@@ -370,5 +411,39 @@ async function logIntent(
   } catch (error) {
     console.error("Failed to log intent:", error);
     // Don't fail the request if logging fails
+  }
+}
+
+/**
+ * Save user and assistant messages to persistent chat history
+ */
+async function saveMessages(
+  userId: string,
+  userMessage: string,
+  assistantMessage: string,
+  intent?: string
+) {
+  try {
+    // Save both messages in a transaction
+    await prisma.$transaction([
+      prisma.aiChatMessage.create({
+        data: {
+          userId,
+          role: "user",
+          content: userMessage,
+        },
+      }),
+      prisma.aiChatMessage.create({
+        data: {
+          userId,
+          role: "assistant",
+          content: assistantMessage,
+          intent,
+        },
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to save chat messages:", error);
+    // Don't fail the request if saving fails
   }
 }
