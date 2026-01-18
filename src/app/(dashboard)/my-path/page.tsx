@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   Compass,
-  Target,
   Briefcase,
   Archive,
   Bell,
@@ -84,105 +84,111 @@ export default function MyPathOverviewPage() {
 
   const { snapshot, topSkills, recentVault, recommendedJobs, alertCount } = overview;
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5 },
+  };
+
   return (
     <div className="space-y-6">
-      {/* Right Now Card */}
-      <Card className="border-2 border-orange-200 dark:border-orange-800/50 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="h-5 w-5 text-orange-600" />
-              <CardTitle className="text-lg">Right now</CardTitle>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => generateMutation.mutate()}
-              disabled={generateMutation.isPending}
-            >
-              {generateMutation.isPending ? (
-                <RefreshCw className="h-4 w-4 animate-spin mr-1" />
-              ) : (
-                <RefreshCw className="h-4 w-4 mr-1" />
-              )}
-              Update
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {snapshot ? (
-            <>
-              <div>
-                <h3 className="font-semibold text-xl mb-1">{snapshot.headline}</h3>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {snapshot.direction.map((dir, i) => (
-                    <Badge key={i} variant="secondary" className="bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300">
-                      {dir}
-                    </Badge>
-                  ))}
-                  <Badge
-                    variant="outline"
-                    className={
-                      snapshot.confidence === "high"
-                        ? "border-green-500 text-green-600"
-                        : snapshot.confidence === "medium"
-                          ? "border-amber-500 text-amber-600"
-                          : "border-slate-400 text-slate-500"
-                    }
-                  >
-                    {snapshot.confidence} confidence
-                  </Badge>
-                </div>
+      {/* Right Now Card - only show full card when snapshot exists */}
+      <motion.div {...fadeInUp}>
+      {snapshot ? (
+        <Card className="border-2 border-purple-200 dark:border-purple-800/50 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Compass className="h-5 w-5 text-purple-600" />
+                <CardTitle className="text-lg">Right now</CardTitle>
               </div>
-
-              {snapshot.rationale && (
-                <p className="text-sm text-muted-foreground">{snapshot.rationale}</p>
-              )}
-
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Next steps</p>
-                <div className="grid gap-2">
-                  {snapshot.nextActions.slice(0, 3).map((action, i) => {
-                    const config = actionTypeConfig[action.type];
-                    const Icon = config.icon;
-                    return (
-                      <Link
-                        key={i}
-                        href={action.link || "#"}
-                        className="flex items-center gap-3 p-3 rounded-lg bg-background hover:bg-muted/50 border transition-colors group"
-                      >
-                        <div className={`p-2 rounded-lg ${config.bg}`}>
-                          <Icon className={`h-4 w-4 ${config.color}`} />
-                        </div>
-                        <span className="text-sm flex-1">{action.action}</span>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-4">
-              <p className="text-muted-foreground mb-3">
-                Generate your personalized path to get started
-              </p>
-              <Button onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => generateMutation.mutate()}
+                disabled={generateMutation.isPending}
+              >
                 {generateMutation.isPending ? (
-                  <RefreshCw className="h-4 w-4 animate-spin mr-2" />
+                  <RefreshCw className="h-4 w-4 animate-spin mr-1" />
                 ) : (
-                  <Zap className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-4 w-4 mr-1" />
                 )}
-                Generate My Path
+                Update
               </Button>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h3 className="font-semibold text-xl mb-1">{snapshot.headline}</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                {snapshot.direction.map((dir, i) => (
+                  <Badge key={i} variant="secondary" className="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
+                    {dir}
+                  </Badge>
+                ))}
+                <Badge
+                  variant="outline"
+                  className={
+                    snapshot.confidence === "high"
+                      ? "border-green-500 text-green-600"
+                      : snapshot.confidence === "medium"
+                        ? "border-amber-500 text-amber-600"
+                        : "border-slate-400 text-slate-500"
+                  }
+                >
+                  {snapshot.confidence} confidence
+                </Badge>
+              </div>
+            </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+            {snapshot.rationale && (
+              <p className="text-sm text-muted-foreground">{snapshot.rationale}</p>
+            )}
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Next steps</p>
+              <div className="grid gap-2">
+                {snapshot.nextActions.slice(0, 3).map((action, i) => {
+                  const config = actionTypeConfig[action.type];
+                  const Icon = config.icon;
+                  return (
+                    <Link
+                      key={i}
+                      href={action.link || "#"}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-background hover:bg-muted/50 border transition-colors group"
+                    >
+                      <div className={`p-2 rounded-lg ${config.bg}`}>
+                        <Icon className={`h-4 w-4 ${config.color}`} />
+                      </div>
+                      <span className="text-sm flex-1">{action.action}</span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg border bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/50">
+          <Zap className="h-4 w-4 text-purple-600" />
+          <span className="text-sm text-muted-foreground">Get started:</span>
+          <Button size="sm" onClick={() => generateMutation.mutate()} disabled={generateMutation.isPending}>
+            {generateMutation.isPending && <RefreshCw className="h-3 w-3 animate-spin mr-1" />}
+            Generate My Path
+          </Button>
+        </div>
+      )}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className="grid gap-6 md:grid-cols-2"
+      >
         {/* Next Best Jobs */}
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -236,7 +242,7 @@ export default function MyPathOverviewPage() {
         </Card>
 
         {/* Your Strengths */}
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -279,11 +285,16 @@ export default function MyPathOverviewPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="grid gap-6 md:grid-cols-2"
+      >
         {/* Vault Highlights */}
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -331,7 +342,7 @@ export default function MyPathOverviewPage() {
         </Card>
 
         {/* Alerts */}
-        <Card>
+        <Card className="border-2">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -365,7 +376,7 @@ export default function MyPathOverviewPage() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     </div>
   );
 }
