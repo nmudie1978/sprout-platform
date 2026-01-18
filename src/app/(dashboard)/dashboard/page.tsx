@@ -31,6 +31,9 @@ import {
   User,
   Bot,
   Bell,
+  LayoutGrid,
+  List,
+  GitCommitHorizontal,
 } from "lucide-react";
 import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
@@ -163,10 +166,117 @@ function ApplicationCard({ app }: { app: any }) {
   );
 }
 
+// List View Application Row
+function ApplicationListItem({ app }: { app: any }) {
+  const isAccepted = app.status === "ACCEPTED";
+  const isRejected = app.status === "REJECTED";
+  const isPending = app.status === "PENDING";
+  const jobStatus = app.job.status;
+  const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
+  const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+
+  const getStatusBadge = () => {
+    if (isJobDone) return <Badge className="h-5 text-[10px] bg-green-600 text-white px-1.5">Done</Badge>;
+    if (isJobInProgress) return <Badge className="h-5 text-[10px] bg-purple-500 text-white px-1.5">In Progress</Badge>;
+    if (isAccepted) return <Badge className="h-5 text-[10px] bg-emerald-500 text-white px-1.5">Accepted</Badge>;
+    if (isRejected) return <Badge variant="destructive" className="h-5 text-[10px] px-1.5">Declined</Badge>;
+    return <Badge variant="secondary" className="h-5 text-[10px] px-1.5">Pending</Badge>;
+  };
+
+  return (
+    <Link href={`/jobs/${app.job.id}`} className="block">
+      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors border-b last:border-b-0">
+        <span className="text-lg">{categoryEmojis[app.job.category] || "✨"}</span>
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-sm truncate">{app.job.title}</p>
+          <p className="text-xs text-muted-foreground truncate">
+            {app.job.postedBy?.employerProfile?.companyName || "Employer"} • {app.job.location?.split(",")[0] || "TBC"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs font-medium text-muted-foreground">{formatCurrency(app.job.payAmount)}</span>
+          {getStatusBadge()}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// Timeline View Application Item
+function ApplicationTimelineItem({ app, isLast }: { app: any; isLast: boolean }) {
+  const isAccepted = app.status === "ACCEPTED";
+  const isRejected = app.status === "REJECTED";
+  const jobStatus = app.job.status;
+  const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
+  const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+
+  const getTimelineColor = () => {
+    if (isJobDone) return "bg-green-500";
+    if (isJobInProgress) return "bg-purple-500";
+    if (isAccepted) return "bg-emerald-500";
+    if (isRejected) return "bg-red-400";
+    return "bg-blue-400";
+  };
+
+  const getStatusLabel = () => {
+    if (isJobDone) return "Completed";
+    if (isJobInProgress) return "In Progress";
+    if (isAccepted) return "Accepted";
+    if (isRejected) return "Declined";
+    return "Pending";
+  };
+
+  return (
+    <Link href={`/jobs/${app.job.id}`} className="block">
+      <div className="flex gap-3 group">
+        {/* Timeline line and dot */}
+        <div className="flex flex-col items-center">
+          <div className={`w-3 h-3 rounded-full ${getTimelineColor()} ring-4 ring-background`} />
+          {!isLast && <div className="w-0.5 flex-1 bg-border mt-1" />}
+        </div>
+        {/* Content */}
+        <div className="flex-1 pb-4 group-hover:bg-muted/30 -ml-1 pl-2 pr-2 py-1 rounded-lg transition-colors">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-base">{categoryEmojis[app.job.category] || "✨"}</span>
+                <p className="font-medium text-sm truncate">{app.job.title}</p>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {app.job.postedBy?.employerProfile?.companyName || "Employer"}
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              <span className="text-[10px] text-muted-foreground">{formatDate(app.createdAt).split(",")[0]}</span>
+              <span className={`text-[10px] font-medium ${
+                isJobDone ? "text-green-600" :
+                isJobInProgress ? "text-purple-600" :
+                isAccepted ? "text-emerald-600" :
+                isRejected ? "text-red-500" : "text-blue-600"
+              }`}>
+                {getStatusLabel()}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {app.job.location?.split(",")[0] || "TBC"}
+            </span>
+            <span className="font-medium text-foreground">{formatCurrency(app.job.payAmount)}</span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+type ApplicationView = "cards" | "list" | "timeline";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [applicationView, setApplicationView] = useState<ApplicationView>("cards");
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
 
   // Query onboarding status
@@ -270,35 +380,35 @@ export default function DashboardPage() {
       {/* Next Step Panel - shows after onboarding */}
       {onboardingComplete && <NextStepPanel />}
 
-      {/* Stats Bar */}
+      {/* Stats Bar - Subtle informational cards */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
         className="grid grid-cols-3 gap-2 mb-6"
       >
-        <Card className="border bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
+        <Card className="border bg-blue-50/40 dark:bg-blue-950/20">
           <CardContent className="py-3 px-2 text-center">
-            <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{pendingApps.length}</div>
-            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+            <div className="text-lg font-semibold text-blue-600 dark:text-blue-400">{pendingApps.length}</div>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1">
               <Clock className="h-2.5 w-2.5" />
               Pending
             </p>
           </CardContent>
         </Card>
-        <Card className="border bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
+        <Card className="border bg-emerald-50/40 dark:bg-emerald-950/20">
           <CardContent className="py-3 px-2 text-center">
-            <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{acceptedApps.length}</div>
-            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+            <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">{acceptedApps.length}</div>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1">
               <CheckCircle2 className="h-2.5 w-2.5" />
               Accepted
             </p>
           </CardContent>
         </Card>
-        <Card className="border bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
+        <Card className="border bg-purple-50/40 dark:bg-purple-950/20">
           <CardContent className="py-3 px-2 text-center">
-            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{completedJobs}</div>
-            <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+            <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">{completedJobs}</div>
+            <p className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1">
               <Star className="h-2.5 w-2.5" />
               Completed
             </p>
@@ -313,7 +423,7 @@ export default function DashboardPage() {
         transition={{ delay: 0.1 }}
         className="mb-8"
       >
-        <Card className="border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <Card className="border bg-muted/30">
           <CardContent className="p-3">
             <div className="grid grid-cols-4 gap-1">
               {[
@@ -363,30 +473,103 @@ export default function DashboardPage() {
                       </Badge>
                     )}
                   </div>
-                  <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
-                    <Link href="/jobs">
-                      Find Small Jobs <ArrowRight className="h-3 w-3 ml-1" />
-                    </Link>
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {/* View Toggle */}
+                    {applications?.length > 0 && (
+                      <div className="flex items-center bg-slate-800 dark:bg-slate-900 rounded-xl p-1.5 gap-1">
+                        <button
+                          onClick={() => setApplicationView("cards")}
+                          className={`p-2.5 rounded-full transition-all ${
+                            applicationView === "cards"
+                              ? "bg-slate-600/80 text-white ring-2 ring-slate-500/50"
+                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+                          }`}
+                          title="Card view"
+                        >
+                          <LayoutGrid className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => setApplicationView("list")}
+                          className={`p-2.5 rounded-full transition-all ${
+                            applicationView === "list"
+                              ? "bg-slate-600/80 text-white ring-2 ring-slate-500/50"
+                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+                          }`}
+                          title="List view"
+                        >
+                          <List className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => setApplicationView("timeline")}
+                          className={`p-2.5 rounded-full transition-all ${
+                            applicationView === "timeline"
+                              ? "bg-slate-600/80 text-white ring-2 ring-slate-500/50"
+                              : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+                          }`}
+                          title="Timeline view"
+                        >
+                          <GitCommitHorizontal className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
+                    <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+                      <Link href="/jobs">
+                        Find Small Jobs <ArrowRight className="h-3 w-3 ml-1" />
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
 
                 {applications && applications.length > 0 ? (
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {[...applications]
-                      .sort((a: any, b: any) => {
-                        // Done jobs go last
-                        const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
-                        const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
-                        if (aIsDone && !bIsDone) return 1;
-                        if (!aIsDone && bIsDone) return -1;
-                        // Then sort by createdAt (most recent first)
-                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                      })
-                      .slice(0, 6)
-                      .map((app: any) => (
-                        <ApplicationCard key={app.id} app={app} />
-                      ))}
-                  </div>
+                  <>
+                    {/* Cards View */}
+                    {applicationView === "cards" && (
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        {[...applications]
+                          .sort((a: any, b: any) => {
+                            const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
+                            const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
+                            if (aIsDone && !bIsDone) return 1;
+                            if (!aIsDone && bIsDone) return -1;
+                            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                          })
+                          .slice(0, 6)
+                          .map((app: any) => (
+                            <ApplicationCard key={app.id} app={app} />
+                          ))}
+                      </div>
+                    )}
+
+                    {/* List View */}
+                    {applicationView === "list" && (
+                      <div className="border rounded-lg divide-y">
+                        {[...applications]
+                          .sort((a: any, b: any) => {
+                            const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
+                            const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
+                            if (aIsDone && !bIsDone) return 1;
+                            if (!aIsDone && bIsDone) return -1;
+                            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                          })
+                          .slice(0, 8)
+                          .map((app: any) => (
+                            <ApplicationListItem key={app.id} app={app} />
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Timeline View */}
+                    {applicationView === "timeline" && (
+                      <div className="pl-1">
+                        {[...applications]
+                          .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                          .slice(0, 8)
+                          .map((app: any, index: number, arr: any[]) => (
+                            <ApplicationTimelineItem key={app.id} app={app} isLast={index === arr.length - 1} />
+                          ))}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="py-8 text-center border rounded-lg bg-muted/30">
                     <div className="text-3xl mb-2">📋</div>
