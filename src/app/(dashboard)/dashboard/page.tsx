@@ -23,14 +23,9 @@ import {
   Loader2,
   MessageCircle,
   Compass,
-  User,
   Search,
-  Bot,
   ChevronRight,
-  DollarSign,
-  LayoutDashboard,
   HandHeart,
-  Bell,
 } from "lucide-react";
 import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
@@ -273,56 +268,27 @@ export default function DashboardPage() {
       >
         <Card className="border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
           <CardContent className="p-3">
-            <div className="flex items-center gap-2">
-              {/* Main Actions */}
-              <div className="flex-1 grid grid-cols-4 gap-1">
-                {[
-                  { href: "/jobs", label: "Find Jobs", icon: Search, color: "text-blue-500" },
-                  { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
-                  { href: "/pokes", label: "Pokes", icon: HandHeart, color: "text-pink-500" },
-                  { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
-                ].map((action) => {
-                  const IconComponent = action.icon;
-                  return (
-                    <Link
-                      key={action.href}
-                      href={action.href}
-                      className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors group cursor-pointer"
-                    >
-                      <IconComponent className={`h-5 w-5 ${action.color} group-hover:scale-110 transition-transform`} />
-                      <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
-                        {action.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Divider */}
-              <div className="w-px h-12 bg-border" />
-
-              {/* Personal Actions */}
-              <div className="flex gap-1 px-1 py-1 rounded-lg border bg-white/50 dark:bg-slate-800/50">
-                {[
-                  { href: "/career-advisor", label: "AI", icon: Bot, color: "text-indigo-500" },
-                  { href: "/profile", label: "Profile", icon: User, color: "text-amber-500" },
-                  { href: "/notifications", label: "Alerts", icon: Bell, color: "text-rose-500" },
-                ].map((action) => {
-                  const IconComponent = action.icon;
-                  return (
-                    <Link
-                      key={action.href}
-                      href={action.href}
-                      className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors group cursor-pointer"
-                    >
-                      <IconComponent className={`h-5 w-5 ${action.color} group-hover:scale-110 transition-transform`} />
-                      <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
-                        {action.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
+            <div className="grid grid-cols-4 gap-1">
+              {[
+                { href: "/jobs", label: "Find Jobs", icon: Search, color: "text-blue-500" },
+                { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
+                { href: "/pokes", label: "Pokes", icon: HandHeart, color: "text-pink-500" },
+                { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
+              ].map((action) => {
+                const IconComponent = action.icon;
+                return (
+                  <Link
+                    key={action.href}
+                    href={action.href}
+                    className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors group cursor-pointer"
+                  >
+                    <IconComponent className={`h-5 w-5 ${action.color} group-hover:scale-110 transition-transform`} />
+                    <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
+                      {action.label}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
