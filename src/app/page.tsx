@@ -22,13 +22,24 @@ import {
   Users,
   Sparkles,
 } from "lucide-react";
-import { PillarCard, PILLARS } from "@/components/pillar-card";
+import { PillarsSection } from "@/components/pillar-card";
 import { HeroVideo } from "@/components/hero-video";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { Suspense } from "react";
+
+// Loading skeleton for session-dependent content
+function NavSkeleton() {
+  return (
+    <div className="flex items-center gap-2 sm:gap-4">
+      <div className="h-9 w-20 bg-muted/50 rounded animate-pulse hidden sm:block" />
+      <div className="h-10 w-24 bg-green-600/50 rounded animate-pulse" />
+    </div>
+  );
+}
 
 export default function LandingPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -151,7 +162,9 @@ export default function LandingPage() {
             <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
               About
             </Link>
-            {session ? (
+            {status === "loading" ? (
+              <NavSkeleton />
+            ) : session ? (
               <>
                 <span className="text-sm text-muted-foreground hidden lg:inline">
                   {session.user.email}
@@ -313,35 +326,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 4 Pillars Section */}
-      <section id="pillars" className="py-16 sm:py-20 md:py-28 scroll-mt-20">
-        <div className="container px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-10 sm:mb-14"
-          >
-            <div className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 mb-4">
-              <Sprout className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              How Sprout Helps You Grow
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-              The 4 Pillars of <span className="text-green-600">Sprout</span>
-            </h2>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-              Everything you need to go from first job to first career - safely, practically, and at your own pace.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto">
-            {PILLARS.map((pillar, index) => (
-              <PillarCard key={pillar.key} pillar={pillar} index={index} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 4 Pillars Section - with enhanced animations */}
+      <PillarsSection />
 
       {/* Join Section - Role-Based Cards */}
       <section className="py-20 md:py-28">
