@@ -42,6 +42,7 @@ interface JobCardProps {
   };
   variant?: "default" | "compact";
   showDeadline?: boolean;
+  userCity?: string | null; // User's city for highlighting nearby jobs
 }
 
 // Format date to readable string
@@ -55,6 +56,16 @@ function formatJobDate(date: string | null | undefined): string {
   });
 }
 
+// Format date compactly (e.g., "Mon 15 Jan")
+function formatDateCompact(date: string | null | undefined): string {
+  if (!date) return "TBC";
+  const d = new Date(date);
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+}
+
 // Format time
 function formatTime(date: string | null | undefined): string {
   if (!date) return "";
@@ -63,6 +74,12 @@ function formatTime(date: string | null | undefined): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+// Check if job location matches user's city
+function isJobNearby(jobLocation: string | undefined, userCity: string | null | undefined): boolean {
+  if (!jobLocation || !userCity) return false;
+  return jobLocation.toLowerCase().includes(userCity.toLowerCase());
 }
 
 // Calculate days until deadline
@@ -88,17 +105,32 @@ function formatDuration(minutes: number | null | undefined): string {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
 }
 
-export const JobCard = memo(function JobCard({ job, variant = "default", showDeadline = true }: JobCardProps) {
+export const JobCard = memo(function JobCard({ job, variant = "default", showDeadline = true, userCity }: JobCardProps) {
   const category = categoryConfig[job.category] || categoryConfig.OTHER;
   const employer = job.postedBy?.employerProfile;
   const startDate = job.startDate || job.dateTime;
   const deadline = getDaysUntilDeadline(job.applicationDeadline);
+  const isNearby = isJobNearby(job.location, userCity);
 
   if (variant === "compact") {
     // Compact variant for dashboard widgets
     return (
       <Link href={`/jobs/${job.id}`} className="block group">
-        <Card className="p-3 border hover:border-primary/30 hover:shadow-md transition-all">
+        <Card className={`p-3 border hover:shadow-md transition-all relative ${
+          isNearby
+            ? "border-2 border-emerald-400 dark:border-emerald-500 shadow-[0_0_12px_rgba(52,211,153,0.25)] hover:shadow-[0_0_15px_rgba(52,211,153,0.35)]"
+            : "hover:border-primary/30"
+        }`}>
+          {/* Nearby indicator */}
+          {isNearby && (
+            <div className="absolute -top-1.5 -right-1.5 z-10">
+              <span className="flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+            </div>
+          )}
+
           {/* Header: Title + Pay */}
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-2 min-w-0">
@@ -115,28 +147,26 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
                 </p>
               </div>
             </div>
-            <span className="font-bold text-sm text-primary shrink-0">
+            <span className="font-bold text-sm text-gray-600 dark:text-gray-400 shrink-0">
               {formatCurrency(job.payAmount)}
             </span>
           </div>
 
           {/* Location */}
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
-            <MapPin className="h-3 w-3 shrink-0" />
+            <MapPin className={`h-3 w-3 shrink-0 ${isNearby ? "text-emerald-500" : ""}`} />
             <span className="truncate">{job.location?.split(",")[0] || "Location TBC"}</span>
           </div>
 
-          {/* Dates Row */}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3 shrink-0" />
-              <span>{formatJobDate(startDate)}</span>
-            </div>
+          {/* Dates Row - Compact */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+            <Calendar className="h-3 w-3 shrink-0" />
+            <span>
+              {formatDateCompact(startDate)}
+              {job.endDate && startDate !== job.endDate && ` - ${formatDateCompact(job.endDate)}`}
+            </span>
             {job.duration && (
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 shrink-0" />
-                <span>{formatDuration(job.duration)}</span>
-              </div>
+              <span className="text-muted-foreground/60">• {formatDuration(job.duration)}</span>
             )}
           </div>
 
@@ -152,12 +182,12 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
               {deadline.passed ? (
                 <span className="flex items-center gap-1">
                   <AlertCircle className="h-3 w-3" />
-                  Applications closed
+                  Closed
                 </span>
               ) : (
                 <span>
-                  Apply by {formatJobDate(job.applicationDeadline)}
-                  {deadline.urgent && ` (${deadline.days === 0 ? "Today" : deadline.days === 1 ? "Tomorrow" : `${deadline.days} days`})`}
+                  Apply by {formatDateCompact(job.applicationDeadline)}
+                  {deadline.urgent && ` (${deadline.days === 0 ? "Today" : deadline.days === 1 ? "Tomorrow" : `${deadline.days}d`})`}
                 </span>
               )}
             </div>
@@ -170,7 +200,20 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
   // Default variant - full card with all details
   return (
     <Link href={`/jobs/${job.id}`} className="block group">
-      <Card className="overflow-hidden border hover:border-primary/30 hover:shadow-lg transition-all">
+      <Card className={`overflow-hidden border hover:shadow-lg transition-all relative ${
+        isNearby
+          ? "border-2 border-emerald-400 dark:border-emerald-500 shadow-[0_0_15px_rgba(52,211,153,0.3)] dark:shadow-[0_0_20px_rgba(52,211,153,0.25)] hover:shadow-[0_0_20px_rgba(52,211,153,0.4)]"
+          : "hover:border-primary/30"
+      }`}>
+        {/* Nearby badge */}
+        {isNearby && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] px-1.5 py-0.5 shadow-sm">
+              Near you
+            </Badge>
+          </div>
+        )}
+
         {/* Header */}
         <div className="p-4 pb-3">
           <div className="flex items-start justify-between gap-3 mb-3">
@@ -191,12 +234,12 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
               </div>
             </div>
             <div className="text-right shrink-0">
-              <span className="font-bold text-lg text-primary">
+              <span className="font-bold text-lg text-gray-600 dark:text-gray-400">
                 {formatCurrency(job.payAmount)}
               </span>
               {job.payType && (
                 <p className="text-xs text-muted-foreground">
-                  {job.payType === "HOURLY" ? "per hour" : "fixed"}
+                  {job.payType === "HOURLY" ? "/hr" : "fixed"}
                 </p>
               )}
             </div>
@@ -204,64 +247,39 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
 
           {/* Location */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="h-4 w-4 shrink-0" />
+            <MapPin className={`h-4 w-4 shrink-0 ${isNearby ? "text-emerald-500" : ""}`} />
             <span className="truncate">{job.location || "Location to be confirmed"}</span>
           </div>
         </div>
 
-        {/* Schedule Section */}
-        <div className="px-4 py-3 bg-muted/30 border-y">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-            Schedule
-          </p>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Start</span>
-              <span className="font-medium">
-                {startDate ? (
-                  <>
-                    {formatJobDate(startDate)}
-                    {formatTime(startDate) && (
-                      <span className="text-muted-foreground ml-1">
-                        {formatTime(startDate)}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-muted-foreground">TBC</span>
-                )}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">End</span>
-              <span className="font-medium">
-                {job.endDate ? (
-                  <>
-                    {formatJobDate(job.endDate)}
-                    {formatTime(job.endDate) && (
-                      <span className="text-muted-foreground ml-1">
-                        {formatTime(job.endDate)}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-muted-foreground">TBC</span>
-                )}
-              </span>
-            </div>
-            {job.duration && (
-              <div className="flex items-center justify-between col-span-2 pt-1">
-                <span className="text-muted-foreground">Duration</span>
-                <span className="font-medium">{formatDuration(job.duration)}</span>
-              </div>
-            )}
+        {/* Compact Schedule Row */}
+        <div className="px-4 py-2 bg-muted/30 border-y flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-muted-foreground">
+              {startDate ? formatDateCompact(startDate) : "TBC"}
+              {job.endDate && startDate !== job.endDate && (
+                <span> - {formatDateCompact(job.endDate)}</span>
+              )}
+            </span>
           </div>
+          {formatTime(startDate) && (
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-muted-foreground">{formatTime(startDate)}</span>
+            </div>
+          )}
+          {job.duration && (
+            <div className="text-muted-foreground">
+              {formatDuration(job.duration)}
+            </div>
+          )}
         </div>
 
         {/* Footer with Deadline */}
         <div className="p-4 pt-3 flex items-center justify-between">
           {showDeadline && job.applicationDeadline ? (
-            <div className={`text-sm flex items-center gap-1.5 ${
+            <div className={`text-xs flex items-center gap-1.5 ${
               deadline.passed
                 ? "text-red-500"
                 : deadline.urgent
@@ -270,17 +288,17 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
             }`}>
               {deadline.passed ? (
                 <>
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className="h-3.5 w-3.5" />
                   <span>Applications closed</span>
                 </>
               ) : (
                 <>
-                  <Clock className="h-4 w-4" />
+                  <Clock className="h-3.5 w-3.5" />
                   <span>
-                    Apply by {formatJobDate(job.applicationDeadline)}
+                    Apply by {formatDateCompact(job.applicationDeadline)}
                     {deadline.urgent && (
-                      <Badge variant="outline" className="ml-2 text-xs border-amber-500 text-amber-600">
-                        {deadline.days === 0 ? "Today!" : deadline.days === 1 ? "Tomorrow" : `${deadline.days} days left`}
+                      <Badge variant="outline" className="ml-1.5 text-[10px] px-1.5 py-0 border-amber-500 text-amber-600">
+                        {deadline.days === 0 ? "Today!" : deadline.days === 1 ? "Tomorrow" : `${deadline.days}d left`}
                       </Badge>
                     )}
                   </span>
@@ -292,7 +310,7 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
               {category.label}
             </Badge>
           )}
-          <span className="text-sm text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+          <span className="text-xs text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
             View details
             <ChevronRight className="h-4 w-4" />
           </span>
@@ -328,7 +346,7 @@ export const JobCardSimple = memo(function JobCardSimple({ job }: { job: any }) 
               )}
             </p>
           </div>
-          <span className="font-bold text-primary shrink-0">
+          <span className="font-bold text-gray-600 dark:text-gray-400 shrink-0">
             {formatCurrency(job.payAmount)}
           </span>
         </div>

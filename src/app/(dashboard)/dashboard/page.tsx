@@ -150,7 +150,7 @@ function ApplicationCard({ app }: { app: any }) {
               {app.job.startDate ? formatDate(app.job.startDate).split(",")[0] : "TBC"}
             </span>
           </div>
-          <span className="font-bold text-primary">
+          <span className="font-bold text-gray-600 dark:text-gray-400">
             {formatCurrency(app.job.payAmount)}
           </span>
         </div>

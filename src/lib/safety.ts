@@ -48,6 +48,7 @@ export async function requiresGuardianConsent(userId: string): Promise<{
     where: { id: userId },
     select: {
       dateOfBirth: true,
+      youthAgeBand: true,
       youthProfile: {
         select: {
           guardianConsent: true,
@@ -57,18 +58,37 @@ export async function requiresGuardianConsent(userId: string): Promise<{
     },
   });
 
-  if (!user || !user.dateOfBirth) {
+  if (!user) {
     return { required: true, hasConsent: false, age: null };
   }
 
-  const age = calculateAge(user.dateOfBirth);
-  const isUnder18 = age < ADULT_AGE;
   const hasConsent = user.youthProfile?.guardianConsent ?? false;
 
+  // If dateOfBirth is available, use it to determine age
+  if (user.dateOfBirth) {
+    const age = calculateAge(user.dateOfBirth);
+    const isUnder18 = age < ADULT_AGE;
+
+    return {
+      required: isUnder18,
+      hasConsent,
+      age,
+    };
+  }
+
+  // Fallback to youthAgeBand if dateOfBirth is not set
+  // EIGHTEEN_TWENTY = 18-20 years old, no guardian consent needed
+  // SIXTEEN_SEVENTEEN or UNDER_SIXTEEN = under 18, guardian consent required
+  if (user.youthAgeBand === "EIGHTEEN_TWENTY") {
+    return { required: false, hasConsent, age: null };
+  }
+
+  // For UNDER_SIXTEEN, SIXTEEN_SEVENTEEN, or unknown age band
+  const isUnder18AgeBand = user.youthAgeBand === "UNDER_SIXTEEN" || user.youthAgeBand === "SIXTEEN_SEVENTEEN";
   return {
-    required: isUnder18,
+    required: isUnder18AgeBand,
     hasConsent,
-    age,
+    age: null
   };
 }
 
@@ -162,7 +182,7 @@ export async function isAccountActive(userId: string): Promise<{
   if (!active) {
     switch (user.accountStatus) {
       case AccountStatus.ONBOARDING:
-        reason = "Please complete your account setup";
+        reason = "Please complete your profile setup first";
         break;
       case AccountStatus.PENDING_VERIFICATION:
         reason = "Your account is pending verification";
@@ -329,18 +349,74 @@ export async function canUserContactUser(
 /**
  * Check if a youth user can apply to jobs
  * Requirements:
- * - Account is ACTIVE
+ * - Account is ACTIVE (or ONBOARDING with complete profile - will auto-activate)
  * - If under 18: guardian consent received
  */
 export async function canYouthApplyToJobs(userId: string): Promise<SafetyGateResult> {
   // Check account status
   const accountCheck = await isAccountActive(userId);
+
+  // If account is not active, check if we can auto-activate
   if (!accountCheck.active) {
-    return {
-      allowed: false,
-      reason: accountCheck.reason,
-      code: "ACCOUNT_INACTIVE",
-    };
+    // Only try to auto-activate if in ONBOARDING status
+    if (accountCheck.status === AccountStatus.ONBOARDING) {
+      // Check if profile is complete
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          youthAgeBand: true,
+          youthProfile: {
+            select: {
+              displayName: true,
+              city: true,
+              guardianConsent: true,
+            },
+          },
+        },
+      });
+
+      const profile = user?.youthProfile;
+      const hasRequiredFields = profile?.displayName && profile?.city;
+
+      if (hasRequiredFields) {
+        // Auto-activate the user
+        const needsGuardianConsent = user?.youthAgeBand === "UNDER_SIXTEEN" || user?.youthAgeBand === "SIXTEEN_SEVENTEEN";
+
+        if (needsGuardianConsent && !profile?.guardianConsent) {
+          // Under 18 without guardian consent -> PENDING_VERIFICATION
+          await prisma.user.update({
+            where: { id: userId },
+            data: { accountStatus: AccountStatus.PENDING_VERIFICATION },
+          });
+          return {
+            allowed: false,
+            reason: "Guardian consent is required for users under 18",
+            code: "GUARDIAN_CONSENT_REQUIRED",
+          };
+        } else {
+          // 18+ or has guardian consent -> ACTIVE
+          await prisma.user.update({
+            where: { id: userId },
+            data: { accountStatus: AccountStatus.ACTIVE },
+          });
+          // Continue to guardian consent check below
+        }
+      } else {
+        // Profile incomplete
+        return {
+          allowed: false,
+          reason: "Please complete your profile first (display name and city are required)",
+          code: "ACCOUNT_INACTIVE",
+        };
+      }
+    } else {
+      // Not in ONBOARDING - return the original error
+      return {
+        allowed: false,
+        reason: accountCheck.reason,
+        code: "ACCOUNT_INACTIVE",
+      };
+    }
   }
 
   // Check guardian consent for minors

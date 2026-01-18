@@ -61,7 +61,7 @@ export function EarningsCompact() {
         <div className="space-y-2">
           <div className="flex items-baseline justify-between">
             <span className="text-xs text-muted-foreground">Total</span>
-            <span className="text-lg font-bold text-emerald-600">
+            <span className="text-lg font-bold text-gray-600 dark:text-gray-400">
               {formatCurrency(totalEarned)}
             </span>
           </div>
@@ -72,7 +72,7 @@ export function EarningsCompact() {
           {pendingAmount > 0 && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Pending</span>
-              <span className="font-medium text-amber-600">{formatCurrency(pendingAmount)}</span>
+              <span className="font-medium text-gray-600 dark:text-gray-400">{formatCurrency(pendingAmount)}</span>
             </div>
           )}
         </div>

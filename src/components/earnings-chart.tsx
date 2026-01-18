@@ -158,7 +158,7 @@ export function EarningsChart() {
                     <Wallet className="h-4 w-4" />
                     Total Earned
                   </div>
-                  <div className="text-2xl font-bold text-emerald-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.totalEarnings || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -173,7 +173,7 @@ export function EarningsChart() {
                     <Calendar className="h-4 w-4" />
                     Monthly Avg
                   </div>
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.avgMonthly || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">per month</div>
@@ -186,7 +186,7 @@ export function EarningsChart() {
                     <Trophy className="h-4 w-4" />
                     Best Month
                   </div>
-                  <div className="text-2xl font-bold text-amber-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.bestMonthAmount || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">

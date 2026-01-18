@@ -622,7 +622,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                       <DollarSign className={`h-3.5 w-3.5 text-${colors.accent}-600 dark:text-${colors.accent}-400`} />
                       Payment
                     </div>
-                    <div className={`text-xl font-bold bg-gradient-to-r ${colors.from} ${colors.to} bg-clip-text text-transparent`}>
+                    <div className="text-xl font-bold text-gray-600 dark:text-gray-400">
                       {formatCurrency(job.payAmount)}
                     </div>
                     <div className="text-xs text-muted-foreground">

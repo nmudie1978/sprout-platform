@@ -170,7 +170,7 @@ export function SpendingChart() {
                     <Wallet className="h-4 w-4" />
                     Total Spent
                   </div>
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.totalSpent || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -185,7 +185,7 @@ export function SpendingChart() {
                     <Briefcase className="h-4 w-4" />
                     Avg per Job
                   </div>
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.avgPerJob || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -200,7 +200,7 @@ export function SpendingChart() {
                     <Calendar className="h-4 w-4" />
                     Monthly Avg
                   </div>
-                  <div className="text-2xl font-bold text-emerald-600">
+                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                     {formatCurrency(summary?.avgMonthly || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">per month</div>

@@ -212,7 +212,7 @@ const ApplicationCard = memo(function ApplicationCard({ app, onReorder, isFirst,
                 {app.job.startDate ? formatDate(app.job.startDate).split(",")[0] : "TBC"}
               </span>
             </div>
-            <span className="font-bold text-primary text-base">
+            <span className="font-bold text-gray-600 dark:text-gray-400 text-base">
               {formatCurrency(app.job.payAmount)}
             </span>
           </div>

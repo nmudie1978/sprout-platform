@@ -97,7 +97,7 @@ export function EarningsDisplay() {
                 <Banknote className="h-4 w-4" />
                 Total Earned
               </div>
-              <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+              <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                 {formatCurrency(totalEarned)}
               </div>
             </div>
@@ -106,7 +106,7 @@ export function EarningsDisplay() {
                 <Calendar className="h-4 w-4" />
                 This Month
               </div>
-              <div className="text-2xl font-bold text-amber-700 dark:text-amber-400">
+              <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                 {formatCurrency(thisMonthEarnings)}
               </div>
             </div>
@@ -117,12 +117,12 @@ export function EarningsDisplay() {
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="h-4 w-4 text-green-500" />
               <span className="text-muted-foreground">Confirmed:</span>
-              <span className="font-medium">{formatCurrency(confirmedAmount)}</span>
+              <span className="font-medium text-gray-600 dark:text-gray-400">{formatCurrency(confirmedAmount)}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="h-4 w-4 text-amber-500" />
               <span className="text-muted-foreground">Pending:</span>
-              <span className="font-medium">{formatCurrency(pendingAmount)}</span>
+              <span className="font-medium text-gray-600 dark:text-gray-400">{formatCurrency(pendingAmount)}</span>
             </div>
           </div>
 

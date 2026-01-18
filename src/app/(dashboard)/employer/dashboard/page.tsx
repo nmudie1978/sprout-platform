@@ -336,7 +336,7 @@ function JobCard({
 
       {/* Pay amount - highlighted */}
       <div className="mt-3 flex items-center justify-between">
-        <span className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <span className="text-lg font-bold text-gray-600 dark:text-gray-400">
           {formatCurrency(job.payAmount)}
         </span>
         {job.payType === "HOURLY" && (
@@ -556,7 +556,7 @@ function JobRow({
 
       {/* Pay */}
       <div className="col-span-1">
-        <span className="font-semibold text-sm">{formatCurrency(job.payAmount)}</span>
+        <span className="font-semibold text-sm text-gray-600 dark:text-gray-400">{formatCurrency(job.payAmount)}</span>
       </div>
 
       {/* Status */}

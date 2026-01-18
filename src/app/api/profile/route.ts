@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { youthProfileSchema, profileVisibilitySchema, careerAspirationSchema } from "@/lib/validations/profile";
 import { slugify } from "@/lib/utils";
+import { AccountStatus } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -82,6 +83,7 @@ export async function POST(req: NextRequest) {
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,
+        city: validatedData.city || null,
         interests: validatedData.interests,
         guardianEmail: validatedData.guardianEmail,
         guardianConsent: validatedData.guardianConsent || false,
@@ -176,6 +178,16 @@ export async function PATCH(req: NextRequest) {
     // Handle full profile update
     const validatedData = youthProfileSchema.parse(body);
 
+    // Check if user is in ONBOARDING status and should be activated
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { accountStatus: true, youthAgeBand: true },
+    });
+
+    // Profile is complete if required fields are filled
+    const hasRequiredFields = validatedData.displayName && validatedData.city;
+
+    // Update profile
     const profile = await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
@@ -184,12 +196,33 @@ export async function PATCH(req: NextRequest) {
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,
+        city: validatedData.city || null,
         interests: validatedData.interests,
         guardianEmail: validatedData.guardianEmail,
         guardianConsent: validatedData.guardianConsent,
         careerAspiration: validatedData.careerAspiration || null,
       },
     });
+
+    // If user is in ONBOARDING and has completed required fields, activate them
+    if (user?.accountStatus === AccountStatus.ONBOARDING && hasRequiredFields) {
+      // Check if under 18 (needs guardian consent first)
+      const needsGuardianConsent = user.youthAgeBand === "UNDER_SIXTEEN" || user.youthAgeBand === "SIXTEEN_SEVENTEEN";
+
+      if (needsGuardianConsent && !validatedData.guardianConsent) {
+        // Under 18 without guardian consent -> PENDING_VERIFICATION
+        await prisma.user.update({
+          where: { id: session.user.id },
+          data: { accountStatus: AccountStatus.PENDING_VERIFICATION },
+        });
+      } else {
+        // 18+ or has guardian consent -> ACTIVE
+        await prisma.user.update({
+          where: { id: session.user.id },
+          data: { accountStatus: AccountStatus.ACTIVE },
+        });
+      }
+    }
 
     return NextResponse.json(profile);
   } catch (error: any) {
