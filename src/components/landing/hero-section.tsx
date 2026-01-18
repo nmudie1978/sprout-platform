@@ -58,67 +58,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* CSS animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .animate-fade-in-scale {
-          animation: fadeInScale 0.5s ease-out forwards;
-        }
-
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-          opacity: 0;
-        }
-
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-          opacity: 0;
-        }
-
-        .animation-delay-600 {
-          animation-delay: 0.6s;
-          opacity: 0;
-        }
-      `}</style>
     </section>
   );
 }
