@@ -18,37 +18,14 @@ import Link from "next/link";
 import { CareerCard } from "@/components/career-card";
 import type { Career } from "@/lib/career-pathways";
 
-const categoryEmojis: Record<string, string> = {
-  BABYSITTING: "👶",
-  DOG_WALKING: "🐕",
-  SNOW_CLEARING: "❄️",
-  CLEANING: "🧹",
-  DIY_HELP: "🔧",
-  TECH_HELP: "💻",
-  ERRANDS: "🏃",
-  OTHER: "✨",
-};
-
-const categoryLabels: Record<string, string> = {
-  BABYSITTING: "Babysitting",
-  DOG_WALKING: "Dog Walking",
-  SNOW_CLEARING: "Snow Clearing",
-  CLEANING: "Cleaning",
-  DIY_HELP: "DIY Help",
-  TECH_HELP: "Tech Help",
-  ERRANDS: "Errands",
-  OTHER: "Other",
-};
-
 interface CareerInsight {
   career: Career;
   matchScore: number;
-  fromCategory: string;
 }
 
 interface CareerInsightsData {
   totalCompletedJobs: number;
-  jobsByCategory: Record<string, number>;
+  careerAspiration?: string;
   topCategories: {
     category: string;
     count: number;
@@ -84,7 +61,8 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
     );
   }
 
-  const { totalCompletedJobs = 0, recommendations = [], insightsMessage = "", topCategories = [] } = data || {};
+  const { totalCompletedJobs = 0, careerAspiration = "", recommendations = [], insightsMessage = "", topCategories = [] } = data || {};
+  const hasAspiration = careerAspiration && careerAspiration.trim().length > 0;
 
   // Compact view for dashboard
   if (compact) {
@@ -103,21 +81,21 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Career Paths</CardTitle>
-                  <CardDescription>Based on your experience</CardDescription>
+                  <CardDescription>Based on your career goal</CardDescription>
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent className="relative space-y-4">
-            {totalCompletedJobs === 0 ? (
+            {!hasAspiration ? (
               <div className="text-center py-4">
                 <div className="text-4xl mb-2">🎯</div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Complete jobs to discover career paths that match your skills!
+                  Set your career aspiration in your profile to get personalized recommendations!
                 </p>
                 <Button asChild variant="outline" size="sm">
-                  <Link href="/jobs">
-                    Find Jobs
+                  <Link href="/profile">
+                    Update Profile
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
@@ -147,9 +125,8 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                         <span className="text-xl">{rec.career.emoji}</span>
                         <div>
                           <div className="font-medium text-sm">{rec.career.title}</div>
-                          <div className="text-xs text-muted-foreground flex items-center gap-1">
-                            <span>{categoryEmojis[rec.fromCategory]}</span>
-                            {categoryLabels[rec.fromCategory]}
+                          <div className="text-xs text-muted-foreground">
+                            {rec.career.growthOutlook === "high" ? "High growth" : rec.career.growthOutlook === "medium" ? "Medium growth" : "Stable"}
                           </div>
                         </div>
                       </div>
@@ -157,7 +134,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                         variant="secondary"
                         className="bg-purple-500/10 text-purple-600 border-purple-500/20"
                       >
-                        {rec.matchScore}%
+                        {Math.min(Math.round(rec.matchScore), 100)}%
                       </Badge>
                     </motion.div>
                   ))}
@@ -243,50 +220,6 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
         </CardContent>
       </Card>
 
-      {/* Top Category Experience */}
-      {topCategories.length > 0 && (
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle className="text-lg">Your Experience Areas</CardTitle>
-            <CardDescription>
-              Categories where you've built the most skills
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {topCategories.map((cat, index) => (
-                <motion.div
-                  key={cat.category}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="p-4 rounded-xl border bg-muted/30"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">{categoryEmojis[cat.category]}</span>
-                    <div>
-                      <div className="font-semibold">{categoryLabels[cat.category]}</div>
-                      <div className="text-sm text-muted-foreground">
-                        {cat.count} job{cat.count > 1 ? "s" : ""} completed
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm text-muted-foreground mb-2">Related careers:</div>
-                  <div className="space-y-1">
-                    {cat.careers.map((career) => (
-                      <div key={career.id} className="flex items-center gap-2 text-sm">
-                        <span>{career.emoji}</span>
-                        <span>{career.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Recommended Careers */}
       {recommendations.length > 0 && (
         <Card className="border-2">
@@ -295,7 +228,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
               <div>
                 <CardTitle className="text-lg">Recommended Careers</CardTitle>
                 <CardDescription>
-                  Based on your job experience and skills
+                  Based on your career aspiration
                 </CardDescription>
               </div>
               <Button asChild variant="outline">
@@ -317,11 +250,32 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                 >
                   <CareerCard
                     career={rec.career}
-                    matchScore={rec.matchScore}
+                    matchScore={Math.min(Math.round(rec.matchScore), 100)}
                     showExpandButton
                   />
                 </motion.div>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* No aspiration set */}
+      {!hasAspiration && (
+        <Card className="border-2">
+          <CardContent className="py-8">
+            <div className="text-center">
+              <div className="text-4xl mb-3">🎯</div>
+              <h3 className="text-lg font-semibold mb-2">Set Your Career Goal</h3>
+              <p className="text-muted-foreground mb-4">
+                Tell us what career you're interested in to get personalized recommendations!
+              </p>
+              <Button asChild>
+                <Link href="/profile">
+                  Update Profile
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </CardContent>
         </Card>

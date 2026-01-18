@@ -1084,6 +1084,71 @@ export function getRecommendedCareers(
 }
 
 /**
+ * Get recommended careers based on user's career aspiration text
+ * Searches careers by matching the aspiration text against career titles, descriptions, and skills
+ */
+export function getRecommendationsFromAspiration(
+  aspiration: string
+): { career: Career; matchScore: number }[] {
+  if (!aspiration || !aspiration.trim()) {
+    return [];
+  }
+
+  const allCareers = getAllCareers();
+  const aspirationLower = aspiration.toLowerCase();
+
+  // Extract meaningful words from aspiration (filter out common words)
+  const commonWords = new Set([
+    "i", "want", "to", "be", "a", "an", "the", "become", "work", "as",
+    "in", "with", "for", "and", "or", "my", "is", "am", "like", "would",
+    "love", "interested", "career", "job", "profession", "future", "dream"
+  ]);
+
+  const aspirationWords = aspiration
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !commonWords.has(word));
+
+  const recommendations: { career: Career; matchScore: number }[] = [];
+
+  for (const career of allCareers) {
+    let matchScore = 0;
+    const titleLower = career.title.toLowerCase();
+    const descLower = career.description.toLowerCase();
+    const skillsLower = career.keySkills.map(s => s.toLowerCase());
+
+    // Check for exact title match (highest priority)
+    if (aspirationLower.includes(titleLower) || titleLower.includes(aspirationLower)) {
+      matchScore += 100;
+    }
+
+    // Check for word matches in title
+    for (const word of aspirationWords) {
+      if (titleLower.includes(word)) {
+        matchScore += 50;
+      }
+      if (descLower.includes(word)) {
+        matchScore += 20;
+      }
+      if (skillsLower.some(skill => skill.includes(word))) {
+        matchScore += 10;
+      }
+    }
+
+    // Boost entry-level careers slightly
+    if (career.entryLevel && matchScore > 0) {
+      matchScore *= 1.2;
+    }
+
+    if (matchScore > 0) {
+      recommendations.push({ career, matchScore });
+    }
+  }
+
+  return recommendations.sort((a, b) => b.matchScore - a.matchScore);
+}
+
+/**
  * Calculate how well a user's skills match a career
  */
 export function calculateCareerMatch(

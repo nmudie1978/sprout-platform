@@ -339,6 +339,7 @@ export default function CareersPage() {
                     career={career}
                     matchScore={recommendationMap.get(career.id)}
                     compact={viewMode === "list"}
+                    showExpandButton={true}
                     showRealityCheck={true}
                   />
                 </motion.div>

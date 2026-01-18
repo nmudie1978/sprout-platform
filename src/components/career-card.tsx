@@ -61,62 +61,140 @@ export const CareerCard = memo(function CareerCard({
 
   if (compact) {
     return (
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        className="p-3 rounded-xl border bg-card hover:shadow-md transition-all cursor-pointer"
-      >
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">{career.emoji}</span>
-          <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-sm truncate">{career.title}</h4>
-            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-              {career.description}
-            </p>
-            <div className="flex items-center gap-2 mt-2">
-              <Badge variant="secondary" className="text-xs px-1.5 py-0">
-                <Banknote className="h-3 w-3 mr-1" />
-                {career.avgSalary.split(" ")[0]}
-              </Badge>
-              <Badge variant="outline" className={`text-xs px-1.5 py-0 ${growth.bg}`}>
-                <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />
-                <span className={growth.color}>{career.growthOutlook}</span>
-              </Badge>
-            </div>
-          </div>
-          {matchScore !== undefined && (
-            <div className="flex flex-col items-center">
-              <div className="relative w-10 h-10">
-                <svg className="w-10 h-10 transform -rotate-90">
-                  <circle
-                    cx="20"
-                    cy="20"
-                    r="16"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    fill="none"
-                    className="text-muted/30"
-                  />
-                  <circle
-                    cx="20"
-                    cy="20"
-                    r="16"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    fill="none"
-                    strokeDasharray={`${matchScore} 100`}
-                    className="text-purple-500"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                  {matchScore}%
-                </span>
+      <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors">
+        <CardContent className="p-0">
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            className="p-3"
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">{career.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-sm truncate">{career.title}</h4>
+                <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                  {career.description}
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0">
+                    <Banknote className="h-3 w-3 mr-1" />
+                    {career.avgSalary.split(" ")[0]}
+                  </Badge>
+                  <Badge variant="outline" className={`text-xs px-1.5 py-0 ${growth.bg}`}>
+                    <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />
+                    <span className={growth.color}>{career.growthOutlook}</span>
+                  </Badge>
+                </div>
               </div>
-              <span className="text-[10px] text-muted-foreground">Match</span>
+              {matchScore !== undefined && (
+                <div className="flex flex-col items-center">
+                  <div className="relative w-10 h-10">
+                    <svg className="w-10 h-10 transform -rotate-90">
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="16"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        fill="none"
+                        className="text-muted/30"
+                      />
+                      <circle
+                        cx="20"
+                        cy="20"
+                        r="16"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        fill="none"
+                        strokeDasharray={`${matchScore} 100`}
+                        className="text-purple-500"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                      {matchScore}%
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">Match</span>
+                </div>
+              )}
             </div>
+          </motion.div>
+
+          {/* Expandable Details for compact mode */}
+          {showExpandButton && (
+            <>
+              <AnimatePresence>
+                {expanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-3 py-3 border-t space-y-3">
+                      {/* Key Skills */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <Sparkles className="h-3 w-3 text-purple-500" />
+                          <span className="text-xs font-medium">Key Skills</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {career.keySkills.slice(0, 4).map((skill) => (
+                            <Badge
+                              key={skill}
+                              variant="outline"
+                              className="text-[10px] capitalize bg-purple-500/5 border-purple-500/20"
+                            >
+                              {skill.replace("-", " ")}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Education Path */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <GraduationCap className="h-3 w-3 text-blue-500" />
+                          <span className="text-xs font-medium">Education</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {career.educationPath}
+                        </p>
+                      </div>
+
+                      {/* Reality Check */}
+                      {showRealityCheck && (
+                        <div className="mt-2">
+                          <CareerRealityCheck roleSlug={career.id} />
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <Button
+                variant="ghost"
+                className="w-full rounded-none border-t h-8 text-xs"
+                onClick={() => setExpanded(!expanded)}
+              >
+                {expanded ? (
+                  <>
+                    <ChevronUp className="h-3 w-3 mr-1" />
+                    Show Less
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-3 w-3 mr-1" />
+                    Learn More
+                  </>
+                )}
+              </Button>
+            </>
           )}
-        </div>
-      </motion.div>
+        </CardContent>
+      </Card>
     );
   }
 

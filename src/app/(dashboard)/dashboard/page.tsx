@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/page-header";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
@@ -27,12 +28,14 @@ import {
   Bot,
   ChevronRight,
   DollarSign,
+  LayoutDashboard,
 } from "lucide-react";
 import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
 import { ProfileStrengthCompact } from "@/components/profile-strength-compact";
 import { BadgesDisplay } from "@/components/badges-display";
 import { VerificationStatus } from "@/components/verification-status";
+import { JobCardSimple } from "@/components/job-card";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "👶",
@@ -156,52 +159,6 @@ function ApplicationCard({ app }: { app: any }) {
   );
 }
 
-// Compact Job Card for "Jobs Near You"
-function JobCardCompact({ job }: { job: any }) {
-  return (
-    <Link href={`/jobs/${job.id}`} className="block">
-      <motion.div
-        whileHover={{ scale: 1.02, y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        className="p-3 rounded-xl border-l-4 border-l-amber-600 border bg-amber-50/50 dark:bg-amber-950/20 hover:shadow-md hover:border-amber-400 transition-all cursor-pointer relative z-10"
-      >
-        <div className="flex items-start gap-2 mb-2">
-          <span className="text-lg">{categoryEmojis[job.category] || "✨"}</span>
-          <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-sm truncate">{job.title}</h4>
-          </div>
-          <span className="font-bold text-sm text-primary whitespace-nowrap">
-            {formatCurrency(job.payAmount)}
-          </span>
-        </div>
-        <div className="space-y-1 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Building2 className="h-3 w-3 flex-shrink-0" />
-            <span className="font-medium text-foreground/70">Employer:</span>
-            <span className="truncate">{job.postedBy?.employerProfile?.companyName || "TBC"}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-3 w-3 flex-shrink-0" />
-            <span className="font-medium text-foreground/70">Location:</span>
-            <span className="truncate">{job.location?.split(",")[0] || "TBC"}</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3 flex-shrink-0" />
-              <span className="font-medium text-foreground/70">Start:</span>
-              <span>{job.startDate ? formatDate(job.startDate).split(",")[0] : "Flexible"}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3 flex-shrink-0" />
-              <span className="font-medium text-foreground/70">Posted:</span>
-              <span>{formatDate(job.createdAt).split(",")[0]}</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    </Link>
-  );
-}
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -242,8 +199,9 @@ export default function DashboardPage() {
 
   if (session?.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
+      <div className="container mx-auto px-4 py-8 relative">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
+        <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
             <p>Loading dashboard...</p>
@@ -254,282 +212,197 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Multi-layered gradient background */}
-      <div className="fixed inset-0 -z-20">
-        {/* Base gradient - blue to cyan transition */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/40 to-cyan-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30" />
+    <div className="container mx-auto px-4 py-8 relative">
+      {/* Background gradient - matches Industry Insights */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5 pointer-events-none" />
 
-        {/* Secondary gradient overlay - adds depth */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-sky-50/30 dark:from-transparent dark:via-slate-800/20 dark:to-cyan-900/20" />
+      <PageHeader
+        title="Welcome back"
+        gradientText={session?.user?.youthProfile?.displayName || ""}
+        description="Here's your job activity overview"
+        icon={LayoutDashboard}
+      />
 
-        {/* Radial highlight in center-top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-blue-100/50 via-cyan-50/20 to-transparent dark:from-blue-900/20 dark:via-cyan-950/10 dark:to-transparent blur-2xl" />
+      {/* Stats Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="grid grid-cols-3 gap-4 mb-8"
+      >
+        <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{pendingApps.length}</div>
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+              <Clock className="h-3 w-3" />
+              Pending
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{acceptedApps.length}</div>
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+              <CheckCircle2 className="h-3 w-3" />
+              Accepted
+            </p>
+          </CardContent>
+        </Card>
+        <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">{completedJobs}</div>
+            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+              <Star className="h-3 w-3" />
+              Completed
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-        {/* Bottom fade to darker */}
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-slate-100/80 via-slate-50/40 to-transparent dark:from-slate-950/90 dark:via-slate-900/50 dark:to-transparent" />
-      </div>
-
-      {/* Animated Background - Gradient Blobs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-blue-400/25 via-cyan-300/20 to-transparent blur-3xl"
-          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/20 via-emerald-300/15 to-transparent blur-3xl"
-          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-indigo-400/20 via-blue-300/15 to-transparent blur-3xl"
-          animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-        {/* Additional accent blob */}
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-blue-200/10 via-cyan-100/15 to-teal-200/10 dark:from-blue-800/10 dark:via-cyan-900/10 dark:to-teal-800/10 blur-3xl"
-          animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Subtle grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-[size:50px_50px]" />
-      </div>
-
-      {/* Floating Bubbles - Discreet and light */}
-      <div className="fixed inset-0 z-30 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: `${6 + (i % 3) * 4}px`,
-              height: `${6 + (i % 3) * 4}px`,
-              left: `${10 + i * 15}%`,
-              top: `${15 + (i % 3) * 25}%`,
-              background: i % 2 === 0
-                ? "radial-gradient(circle, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.2) 50%, transparent 70%)"
-                : "radial-gradient(circle, rgba(6,182,212,0.5) 0%, rgba(6,182,212,0.2) 50%, transparent 70%)",
-              boxShadow: i % 2 === 0
-                ? "0 0 12px rgba(59,130,246,0.3)"
-                : "0 0 12px rgba(6,182,212,0.3)",
-            }}
-            animate={{
-              y: [0, -25 - (i % 3) * 10, 0],
-              x: [0, i % 2 === 0 ? 10 : -10, 0],
-              opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.15, 1],
-            }}
-            transition={{
-              duration: 8 + i * 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.5,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="container mx-auto px-4 py-6 max-w-6xl relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <h1 className="text-2xl font-bold">
-            Welcome back
-            {session?.user?.youthProfile?.displayName && (
-              <span className="text-primary">, {session.user.youthProfile.displayName}</span>
-            )}
-            !
-          </h1>
-          <p className="text-sm text-muted-foreground">Here's your job activity overview</p>
-        </motion.div>
-
-        {/* Stats Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="grid grid-cols-3 gap-3 mb-6 relative z-20"
-        >
-          <Card className="border">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Clock className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{pendingApps.length}</p>
-                <p className="text-xs text-muted-foreground">Pending</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{acceptedApps.length}</p>
-                <p className="text-xs text-muted-foreground">Accepted</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="border">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Star className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{completedJobs}</p>
-                <p className="text-xs text-muted-foreground">Completed</p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6 relative z-20"
-        >
-          <Card className="border bg-gradient-to-r from-slate-50 to-slate-100/50 dark:from-slate-900/50 dark:to-slate-800/50">
-            <CardContent className="p-3">
-              <div className="grid grid-cols-5 gap-1">
-                {[
-                  { href: "/jobs", label: "Find Jobs", icon: Search, color: "text-blue-500" },
-                  { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
-                  { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
-                  { href: "/profile", label: "Profile", icon: User, color: "text-amber-500" },
-                  { href: "/career-advisor", label: "AI Advisor", icon: Bot, color: "text-purple-500" },
-                ].map((action) => {
-                  const IconComponent = action.icon;
-                  return (
-                    <Link
-                      key={action.href}
-                      href={action.href}
-                      className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors group cursor-pointer"
-                    >
-                      <IconComponent className={`h-5 w-5 ${action.color} group-hover:scale-110 transition-transform`} />
-                      <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
-                        {action.label}
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 relative z-20">
-          {/* Left Column - Applications & Jobs */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* My Applications */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-primary" />
-                  <h2 className="font-semibold">My Applications</h2>
-                  {applications?.length > 0 && (
-                    <Badge variant="secondary" className="text-xs">
-                      {applications.length}
-                    </Badge>
-                  )}
-                </div>
-                <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
-                  <Link href="/jobs">
-                    Find Jobs <ArrowRight className="h-3 w-3 ml-1" />
+      {/* Quick Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-8"
+      >
+        <Card className="border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+          <CardContent className="p-3">
+            <div className="grid grid-cols-5 gap-1">
+              {[
+                { href: "/jobs", label: "Find Jobs", icon: Search, color: "text-blue-500" },
+                { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
+                { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
+                { href: "/profile", label: "Profile", icon: User, color: "text-amber-500" },
+                { href: "/career-advisor", label: "AI Advisor", icon: Bot, color: "text-purple-500" },
+              ].map((action) => {
+                const IconComponent = action.icon;
+                return (
+                  <Link
+                    key={action.href}
+                    href={action.href}
+                    className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors group cursor-pointer"
+                  >
+                    <IconComponent className={`h-5 w-5 ${action.color} group-hover:scale-110 transition-transform`} />
+                    <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
+                      {action.label}
+                    </span>
                   </Link>
-                </Button>
-              </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-              {applications && applications.length > 0 ? (
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {[...applications]
-                    .sort((a: any, b: any) => {
-                      // Done jobs go last
-                      const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
-                      const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
-                      if (aIsDone && !bIsDone) return 1;
-                      if (!aIsDone && bIsDone) return -1;
-                      // Then sort by createdAt (most recent first)
-                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                    })
-                    .slice(0, 6)
-                    .map((app: any) => (
-                      <ApplicationCard key={app.id} app={app} />
-                    ))}
+      {/* Main Content Grid */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Left Column - Applications & Jobs */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* My Applications */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <Card className="border-2">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Briefcase className="h-5 w-5 text-primary" />
+                    <h2 className="font-semibold">My Applications</h2>
+                    {applications?.length > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {applications.length}
+                      </Badge>
+                    )}
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+                    <Link href="/jobs">
+                      Find Jobs <ArrowRight className="h-3 w-3 ml-1" />
+                    </Link>
+                  </Button>
                 </div>
-              ) : (
-                <Card className="border">
-                  <CardContent className="py-8 text-center">
+
+                {applications && applications.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {[...applications]
+                      .sort((a: any, b: any) => {
+                        // Done jobs go last
+                        const aIsDone = a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED");
+                        const bIsDone = b.status === "ACCEPTED" && (b.job?.status === "COMPLETED" || b.job?.status === "REVIEWED");
+                        if (aIsDone && !bIsDone) return 1;
+                        if (!aIsDone && bIsDone) return -1;
+                        // Then sort by createdAt (most recent first)
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                      })
+                      .slice(0, 6)
+                      .map((app: any) => (
+                        <ApplicationCard key={app.id} app={app} />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="py-8 text-center border rounded-lg bg-muted/30">
                     <div className="text-3xl mb-2">📋</div>
                     <p className="text-sm text-muted-foreground mb-3">No applications yet</p>
                     <Button size="sm" asChild>
                       <Link href="/jobs">Browse Jobs</Link>
                     </Button>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                )}
 
-              {applications?.length > 6 && (
-                <div className="text-center mt-3">
-                  <Button variant="outline" size="sm" className="text-xs" asChild>
-                    <Link href="/applications">
-                      View all {applications.length} applications
-                      <ChevronRight className="h-3 w-3 ml-1" />
+                {applications?.length > 6 && (
+                  <div className="text-center mt-3">
+                    <Button variant="outline" size="sm" className="text-xs" asChild>
+                      <Link href="/applications">
+                        View all {applications.length} applications
+                        <ChevronRight className="h-3 w-3 ml-1" />
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Jobs Near You */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Card className="border-2">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-blue-500" />
+                    <h2 className="font-semibold">Jobs Near You</h2>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
+                    <Link href="/jobs">
+                      View All <ArrowRight className="h-3 w-3 ml-1" />
                     </Link>
                   </Button>
                 </div>
-              )}
-            </motion.div>
 
-            {/* Jobs Near You */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-blue-500" />
-                  <h2 className="font-semibold">Jobs Near You</h2>
-                </div>
-                <Button variant="ghost" size="sm" className="text-xs h-7" asChild>
-                  <Link href="/jobs">
-                    View All <ArrowRight className="h-3 w-3 ml-1" />
-                  </Link>
-                </Button>
-              </div>
-
-              {jobs && jobs.length > 0 ? (
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {jobs.slice(0, 4).map((job: any) => (
-                    <JobCardCompact key={job.id} job={job} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="border">
-                  <CardContent className="py-6 text-center">
+                {jobs && jobs.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {jobs.slice(0, 4).map((job: any) => (
+                      <JobCardSimple key={job.id} job={job} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-6 text-center border rounded-lg bg-muted/30">
                     <p className="text-sm text-muted-foreground">No jobs available right now</p>
-                  </CardContent>
-                </Card>
-              )}
-            </motion.div>
-          </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
 
-          {/* Right Column - Sidebar Widgets */}
-          <div className="space-y-4 relative z-20">
+        {/* Right Column - Sidebar Widgets */}
+        <div className="space-y-4">
             {/* Profile Strength */}
             {/* Account Verification Status */}
             <motion.div
@@ -618,7 +491,6 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </div>
-      </div>
     </div>
   );
 }

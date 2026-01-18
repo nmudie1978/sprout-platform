@@ -20,6 +20,7 @@ import {
   GraduationCap,
   Award,
   Users,
+  Sparkles,
 } from "lucide-react";
 import { PillarCard, PILLARS } from "@/components/pillar-card";
 import { HeroVideo } from "@/components/hero-video";
@@ -396,8 +397,8 @@ export default function LandingPage() {
                   {[
                     "Find local jobs and gigs in your area",
                     "Build a verified portfolio of work experience",
-                    "Explore careers through swipeable career cards",
-                    "Connect with professionals for career advice",
+                    "AI-powered career guidance from your own dedicated advisor",
+                    "Explore 100+ career paths matched to your goals",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
@@ -622,16 +623,17 @@ export default function LandingPage() {
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               The only youth job platform with Norwegian labor law compliance built in.
-              Guardian consent for minors, verified job posters, and AI career guidance.
+              Guardian consent for minors, verified job posters, and your own AI career advisor.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
             {[
               { icon: Shield, title: "Legal Compliance", desc: "Arbeidsmiljøloven rules enforced automatically—working hours, pay minimums, age restrictions" },
               { icon: GraduationCap, title: "Guardian Consent", desc: "Parents approve before minors can work. Full visibility and peace of mind" },
               { icon: Award, title: "Verified Posters", desc: "Age verification required. Optional BankID/Vipps for highest trust" },
               { icon: MapPin, title: "Local Community", desc: "Neighbors helping neighbors. Build relationships that last beyond single jobs" },
+              { icon: Sparkles, title: "AI Career Advisor", desc: "Your dedicated AI agent provides personalized career guidance based on your goals and interests" },
             ].map((item) => (
               <div key={item.title} className="text-center p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
