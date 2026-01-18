@@ -1,56 +1,115 @@
 import { prisma } from "@/lib/prisma";
+import { getAllCareers, getCategoryForCareer, type Career } from "./career-pathways";
+
+/**
+ * Convert static Career to context format for AI
+ */
+function staticCareerToContextFormat(career: Career): any {
+  const category = getCategoryForCareer(career.id);
+  return {
+    id: career.id,
+    roleName: career.title,
+    summary: career.description,
+    traits: career.keySkills,
+    salaryBand: career.avgSalary,
+    tags: [category || "", career.growthOutlook, career.entryLevel ? "entry-level" : ""].filter(Boolean),
+  };
+}
 
 /**
  * Simple keyword-based retrieval for career cards
- * In production, use vector embeddings with Pinecone/Weaviate
+ * Searches BOTH database and static career-pathways data
  */
 export async function retrieveRelevantCareerCards(query: string, limit = 3) {
-  const keywords = query.toLowerCase().split(" ");
+  const keywords = query.toLowerCase().split(" ").filter(k => k.length > 2);
+  const queryLower = query.toLowerCase();
 
-  const careerCards = await prisma.careerCard.findMany({
-    where: {
-      active: true,
-      OR: [
-        {
-          roleName: {
-            contains: keywords.join(" "),
-            mode: "insensitive",
-          },
-        },
-        {
-          summary: {
-            contains: keywords.join(" "),
-            mode: "insensitive",
-          },
-        },
-        {
-          tags: {
-            hasSome: keywords,
-          },
-        },
-      ],
-    },
-    take: limit,
-  });
-
-  // If no results, try individual keywords
-  if (careerCards.length === 0) {
-    const careerCardsKeyword = await prisma.careerCard.findMany({
+  // Search database career cards
+  let dbCareers: any[] = [];
+  try {
+    dbCareers = await prisma.careerCard.findMany({
       where: {
         active: true,
-        OR: keywords.map((keyword) => ({
-          OR: [
-            { roleName: { contains: keyword, mode: "insensitive" } },
-            { summary: { contains: keyword, mode: "insensitive" } },
-          ],
-        })),
+        OR: [
+          {
+            roleName: {
+              contains: keywords.join(" "),
+              mode: "insensitive",
+            },
+          },
+          {
+            summary: {
+              contains: keywords.join(" "),
+              mode: "insensitive",
+            },
+          },
+          {
+            tags: {
+              hasSome: keywords,
+            },
+          },
+        ],
       },
       take: limit,
     });
-    return careerCardsKeyword;
+
+    // If no results, try individual keywords
+    if (dbCareers.length === 0) {
+      dbCareers = await prisma.careerCard.findMany({
+        where: {
+          active: true,
+          OR: keywords.map((keyword) => ({
+            OR: [
+              { roleName: { contains: keyword, mode: "insensitive" } },
+              { summary: { contains: keyword, mode: "insensitive" } },
+            ],
+          })),
+        },
+        take: limit,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to fetch DB careers:", error);
   }
 
-  return careerCards;
+  // Search static careers from career-pathways.ts
+  const staticCareers = getAllCareers();
+  const scoredStaticCareers = staticCareers
+    .map((career) => {
+      const category = getCategoryForCareer(career.id) || "";
+      const searchText = `${career.title} ${career.description} ${career.keySkills.join(" ")} ${category}`.toLowerCase();
+      let score = 0;
+
+      // Full query match
+      if (searchText.includes(queryLower)) score += 10;
+
+      // Individual keyword matches
+      for (const keyword of keywords) {
+        if (searchText.includes(keyword)) score += 1;
+        if (career.title.toLowerCase().includes(keyword)) score += 3;
+        if (category.toLowerCase().includes(keyword)) score += 2;
+      }
+
+      return { career: staticCareerToContextFormat(career), score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.career);
+
+  // Merge results, prioritizing static careers (more comprehensive)
+  const mergedResults = [...scoredStaticCareers, ...dbCareers];
+
+  // Dedupe by roleName and return top results
+  const seen = new Set<string>();
+  return mergedResults
+    .filter((career) => {
+      const name = career.roleName.toLowerCase();
+      if (seen.has(name)) return false;
+      seen.add(name);
+      return true;
+    })
+    .slice(0, limit);
 }
 
 /**

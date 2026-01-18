@@ -10,6 +10,7 @@ export interface Pillar {
   title: string;
   tagline: string;
   description: string;
+  subtext?: string;
   icon: LucideIcon;
   gradient: string;
   iconBg: string;
@@ -52,7 +53,8 @@ export const PILLARS: Pillar[] = [
     title: "GROW",
     tagline: "Build proof of who you're becoming.",
     description:
-      "Every job completed adds to your private skill graph. Build trust signals that compound over time and unlock better opportunities - no gamification, just real progress.",
+      "Every job completed adds to your private skill graph. Build trust signals that compound over time and unlock better opportunities. Get guidance when you need it — from understanding what a job really involves to choosing a smart next step.",
+    subtext: "Ask questions about roles, skills, or courses — and get clear, practical answers.",
     icon: TrendingUp,
     gradient: "from-orange-500 to-red-600",
     iconBg: "bg-orange-500/10 dark:bg-orange-500/20",
@@ -99,6 +101,13 @@ export function PillarCard({ pillar, index }: PillarCardProps) {
           <p className="text-sm text-muted-foreground leading-relaxed">
             {pillar.description}
           </p>
+
+          {/* Subtext (micro-copy) */}
+          {pillar.subtext && (
+            <p className="text-xs text-muted-foreground/70 mt-3 italic">
+              {pillar.subtext}
+            </p>
+          )}
         </CardContent>
       </Card>
     </motion.div>

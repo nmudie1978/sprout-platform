@@ -1,5 +1,6 @@
 import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory } from '@prisma/client';
 import { seedYouthCareers } from './seed-youth-careers';
+import { seedJobCategories } from './seed-job-categories';
 
 // Use direct connection for seeding (not pooled connection)
 process.env.DATABASE_URL = process.env.DIRECT_URL || process.env.DATABASE_URL;
@@ -1649,6 +1650,9 @@ async function main() {
     });
   }
   console.log(`✅ Seeded ${careerRealityChecks.length} career reality checks`);
+
+  // Seed Job Categories and Templates
+  await seedJobCategories(prisma);
 
   // Seed Career Cards
   const careerCards = [

@@ -5,6 +5,7 @@
 
 import OpenAI from "openai";
 import { prisma } from "./prisma";
+import { getAllCareers, getCategoryForCareer, type Career } from "./career-pathways";
 
 // Cache for embeddings to avoid recomputing
 const embeddingsCache = new Map<string, number[]>();
@@ -74,9 +75,9 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 /**
- * Create a searchable text from a career card
+ * Create a searchable text from a database career card
  */
-function careerToSearchText(career: any): string {
+function careerCardToSearchText(career: any): string {
   return [
     career.roleName,
     career.summary,
@@ -90,77 +91,134 @@ function careerToSearchText(career: any): string {
 }
 
 /**
+ * Create a searchable text from a static Career (career-pathways.ts)
+ */
+function staticCareerToSearchText(career: Career): string {
+  const category = getCategoryForCareer(career.id) || "";
+  return [
+    career.title,
+    career.description,
+    career.keySkills?.join(", ") || "",
+    career.educationPath || "",
+    career.growthOutlook || "",
+    category,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * Convert static Career to a format similar to CareerCard for context
+ */
+function staticCareerToContextFormat(career: Career): any {
+  const category = getCategoryForCareer(career.id) || "";
+  return {
+    id: career.id,
+    roleName: career.title,
+    summary: career.description,
+    traits: career.keySkills,
+    salaryBand: career.avgSalary,
+    tags: [category, career.growthOutlook, career.entryLevel ? "entry-level" : ""].filter(Boolean),
+  };
+}
+
+/**
  * Semantic search for career cards
+ * Searches BOTH database CareerCard table AND static career-pathways data
  * Falls back to keyword search if embeddings not available
  */
 export async function semanticSearchCareers(
   query: string,
   limit: number = 5
 ): Promise<any[]> {
-  // Get all career cards
-  const careers = await prisma.careerCard.findMany({
-    orderBy: { order: "asc" },
-  });
+  // Get careers from both sources
+  let dbCareers: any[] = [];
+  try {
+    dbCareers = await prisma.careerCard.findMany({
+      orderBy: { order: "asc" },
+    });
+  } catch (error) {
+    console.error("Failed to fetch DB careers (continuing with static data):", error);
+  }
+
+  // Get all static careers from career-pathways.ts
+  const staticCareers = getAllCareers();
 
   // Try semantic search first
   const queryEmbedding = await getEmbedding(query);
 
   if (queryEmbedding) {
-    // Compute embeddings for all careers and rank by similarity
-    const scoredCareers = await Promise.all(
-      careers.map(async (career) => {
-        const careerText = careerToSearchText(career);
+    // Score database careers
+    const scoredDbCareers = await Promise.all(
+      dbCareers.map(async (career) => {
+        const careerText = careerCardToSearchText(career);
         const careerEmbedding = await getEmbedding(careerText);
-
-        if (!careerEmbedding) {
-          return { career, score: 0 };
-        }
-
+        if (!careerEmbedding) return { career, score: 0, source: "db" };
         const score = cosineSimilarity(queryEmbedding, careerEmbedding);
-        return { career, score };
+        return { career, score, source: "db" };
       })
     );
 
-    // Sort by score and return top results
-    scoredCareers.sort((a, b) => b.score - a.score);
-    return scoredCareers.slice(0, limit).map((item) => item.career);
+    // Score static careers
+    const scoredStaticCareers = await Promise.all(
+      staticCareers.map(async (career) => {
+        const careerText = staticCareerToSearchText(career);
+        const careerEmbedding = await getEmbedding(careerText);
+        if (!careerEmbedding) return { career: staticCareerToContextFormat(career), score: 0, source: "static" };
+        const score = cosineSimilarity(queryEmbedding, careerEmbedding);
+        return { career: staticCareerToContextFormat(career), score, source: "static" };
+      })
+    );
+
+    // Merge, sort by score, and return top results
+    const allScored = [...scoredDbCareers, ...scoredStaticCareers];
+    allScored.sort((a, b) => b.score - a.score);
+    return allScored.slice(0, limit).map((item) => item.career);
   }
 
   // Fallback: keyword-based search
   const queryLower = query.toLowerCase();
   const keywords = queryLower.split(/\s+/).filter((w) => w.length > 2);
 
-  const scoredCareers = careers.map((career) => {
-    const searchText = careerToSearchText(career).toLowerCase();
+  // Score database careers
+  const scoredDbCareers = dbCareers.map((career) => {
+    const searchText = careerCardToSearchText(career).toLowerCase();
     let score = 0;
-
-    // Full phrase match
-    if (searchText.includes(queryLower)) {
-      score += 10;
-    }
-
-    // Individual keyword matches
+    if (searchText.includes(queryLower)) score += 10;
     for (const keyword of keywords) {
-      if (searchText.includes(keyword)) {
-        score += 1;
-      }
+      if (searchText.includes(keyword)) score += 1;
     }
-
-    // Tag matches (bonus)
     if (career.tags) {
       for (const tag of career.tags) {
-        if (keywords.some((k) => tag.toLowerCase().includes(k))) {
-          score += 2;
-        }
+        if (keywords.some((k) => tag.toLowerCase().includes(k))) score += 2;
       }
     }
-
     return { career, score };
   });
 
-  // Sort by score and return top results
-  scoredCareers.sort((a, b) => b.score - a.score);
-  return scoredCareers
+  // Score static careers
+  const scoredStaticCareers = staticCareers.map((career) => {
+    const searchText = staticCareerToSearchText(career).toLowerCase();
+    const category = getCategoryForCareer(career.id) || "";
+    let score = 0;
+    if (searchText.includes(queryLower)) score += 10;
+    for (const keyword of keywords) {
+      if (searchText.includes(keyword)) score += 1;
+    }
+    // Bonus for category/skills matches
+    if (career.keySkills) {
+      for (const skill of career.keySkills) {
+        if (keywords.some((k) => skill.toLowerCase().includes(k))) score += 2;
+      }
+    }
+    if (keywords.some((k) => category.toLowerCase().includes(k))) score += 3;
+    return { career: staticCareerToContextFormat(career), score };
+  });
+
+  // Merge, sort by score, and return top results
+  const allScored = [...scoredDbCareers, ...scoredStaticCareers];
+  allScored.sort((a, b) => b.score - a.score);
+  return allScored
     .filter((item) => item.score > 0)
     .slice(0, limit)
     .map((item) => item.career);

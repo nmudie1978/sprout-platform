@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category") as JobCategory | null;
+    const standardCategorySlug = searchParams.get("standardCategory"); // New: filter by standard category slug
     const location = searchParams.get("location");
     const status = (searchParams.get("status") as JobStatus) || "POSTED";
     const myJobs = searchParams.get("my") === "true"; // For employer to get their own jobs
@@ -38,6 +39,13 @@ export async function GET(req: NextRequest) {
 
     if (category) {
       where.category = category;
+    }
+
+    // Filter by standard category slug
+    if (standardCategorySlug) {
+      where.standardCategory = {
+        slug: standardCategorySlug,
+      };
     }
 
     if (location) {
@@ -89,6 +97,16 @@ export async function GET(req: NextRequest) {
         postedById: true,
         createdAt: true,
         updatedAt: true,
+        standardCategoryId: true,
+        standardTemplateId: true,
+        standardCategory: {
+          select: {
+            id: true,
+            slug: true,
+            name: true,
+            icon: true,
+          },
+        },
         postedBy: {
           select: {
             id: true,
@@ -308,17 +326,28 @@ export async function POST(req: NextRequest) {
 
     const job = await prisma.microJob.create({
       data: {
-        ...validatedData,
+        title: validatedData.title,
+        category: validatedData.category,
+        description: validatedData.description,
+        payType: validatedData.payType,
+        payAmount: validatedData.payAmount,
+        location: validatedData.location,
         latitude,
         longitude,
         startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
         endDate: validatedData.endDate ? new Date(validatedData.endDate) : null,
         dateTime: validatedData.dateTime ? new Date(validatedData.dateTime) : null,
+        duration: validatedData.duration,
         applicationDeadline: validatedData.applicationDeadline ? new Date(validatedData.applicationDeadline) : null,
+        requiredTraits: validatedData.requiredTraits,
+        images: validatedData.images,
         status: "POSTED",
         postedById: session.user.id,
         // Store eligible age groups as JSON
         eligibleAgeGroups: eligibleAgeGroups,
+        // Standard taxonomy fields (optional)
+        standardCategoryId: validatedData.standardCategoryId || null,
+        standardTemplateId: validatedData.standardTemplateId || null,
       },
     });
 

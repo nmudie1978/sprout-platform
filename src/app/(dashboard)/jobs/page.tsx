@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,9 +47,34 @@ const categoryConfig: Record<string, { label: string; emoji: string }> = {
 
 type ViewMode = "grid" | "list";
 
+// Icon mapping for standard categories
+const categoryIconMap: Record<string, string> = {
+  "home-yard-help": "🏠",
+  "child-family-support": "👶",
+  "pet-animal-care": "🐕",
+  "cleaning-organizing": "🧹",
+  "tech-digital-help": "💻",
+  "errands-local-tasks": "🏃",
+  "events-community-help": "🎉",
+  "creative-media-gigs": "🎨",
+  "education-learning-support": "📚",
+  "retail-microbusiness-help": "🏪",
+  "fitness-activity-help": "💪",
+  "online-ai-age-jobs": "🤖",
+};
+
+interface StandardCategory {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string | null;
+  jobCount?: number;
+}
+
 export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+  const [categoryFilter, setCategoryFilter] = useState<string>("ALL"); // Legacy category
+  const [standardCategoryFilter, setStandardCategoryFilter] = useState<string>(""); // New taxonomy
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [startDateFilter, setStartDateFilter] = useState<string>("");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
@@ -57,11 +82,30 @@ export default function JobsPage() {
 
   const [page, setPage] = useState(1);
 
+  // Fetch standard job categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ["standard-job-categories-browse"],
+    queryFn: async () => {
+      const response = await fetch("/api/job-categories?includeJobCounts=true");
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const standardCategories: StandardCategory[] = categoriesData?.categories || [];
+
   const { data, isLoading } = useQuery({
-    queryKey: ["jobs", categoryFilter === "ALL" ? "" : categoryFilter, locationFilter, page],
+    queryKey: ["jobs", categoryFilter === "ALL" ? "" : categoryFilter, standardCategoryFilter, locationFilter, page],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (categoryFilter && categoryFilter !== "ALL") params.set("category", categoryFilter);
+      // Support both legacy and new category filtering
+      if (categoryFilter && categoryFilter !== "ALL" && !standardCategoryFilter) {
+        params.set("category", categoryFilter);
+      }
+      if (standardCategoryFilter) {
+        params.set("standardCategory", standardCategoryFilter);
+      }
       if (locationFilter) params.set("location", locationFilter);
       params.set("page", page.toString());
       params.set("limit", "20");
@@ -72,6 +116,19 @@ export default function JobsPage() {
     },
     staleTime: 60 * 1000, // Cache for 1 minute
   });
+
+  // Handle category selection (new taxonomy)
+  const handleStandardCategorySelect = (slug: string) => {
+    if (slug === standardCategoryFilter) {
+      // Toggle off - go back to all
+      setStandardCategoryFilter("");
+      setCategoryFilter("ALL");
+    } else {
+      setStandardCategoryFilter(slug);
+      setCategoryFilter("ALL"); // Clear legacy filter
+    }
+    setPage(1); // Reset to first page
+  };
 
   const jobs = data?.jobs || [];
   const pagination = data?.pagination;
@@ -139,7 +196,7 @@ export default function JobsPage() {
         </Card>
         <Card className="border-2 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{Object.keys(categoryConfig).length - 1}</div>
+            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{standardCategories.length || 12}</div>
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
               <LayoutGrid className="h-3 w-3" />
               Categories
@@ -193,9 +250,9 @@ export default function JobsPage() {
             >
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               Filters
-              {(categoryFilter !== "ALL" || locationFilter || startDateFilter) && (
+              {(categoryFilter !== "ALL" || standardCategoryFilter || locationFilter || startDateFilter) && (
                 <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-purple-500 text-white">
-                  {(categoryFilter !== "ALL" ? 1 : 0) + (locationFilter ? 1 : 0) + (startDateFilter ? 1 : 0)}
+                  {(categoryFilter !== "ALL" ? 1 : 0) + (standardCategoryFilter ? 1 : 0) + (locationFilter ? 1 : 0) + (startDateFilter ? 1 : 0)}
                 </Badge>
               )}
             </Button>
@@ -264,12 +321,13 @@ export default function JobsPage() {
                       <span className="text-xs text-muted-foreground hidden sm:inline">onwards</span>
                     )}
                   </div>
-                  {(categoryFilter !== "ALL" || locationFilter || startDateFilter) && (
+                  {(categoryFilter !== "ALL" || standardCategoryFilter || locationFilter || startDateFilter) && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => {
                         setCategoryFilter("ALL");
+                        setStandardCategoryFilter("");
                         setLocationFilter("");
                         setStartDateFilter("");
                       }}
@@ -289,18 +347,41 @@ export default function JobsPage() {
       {/* Category Pills - Sticky Navigation */}
       <div className="sticky top-0 z-40 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b mb-6">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {Object.entries(categoryConfig).map(([key, config]) => (
+          {/* All Jobs button */}
+          <button
+            onClick={() => {
+              setStandardCategoryFilter("");
+              setCategoryFilter("ALL");
+              setPage(1);
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              !standardCategoryFilter && categoryFilter === "ALL"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted hover:bg-muted/80"
+            }`}
+          >
+            <span>🌟</span>
+            <span>All Jobs</span>
+          </button>
+
+          {/* Standard taxonomy categories */}
+          {standardCategories.map((cat) => (
             <button
-              key={key}
-              onClick={() => setCategoryFilter(key)}
+              key={cat.id}
+              onClick={() => handleStandardCategorySelect(cat.slug)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                categoryFilter === key
+                standardCategoryFilter === cat.slug
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted hover:bg-muted/80"
               }`}
             >
-              <span>{config.emoji}</span>
-              <span>{config.label}</span>
+              <span>{categoryIconMap[cat.slug] || "📋"}</span>
+              <span>{cat.name}</span>
+              {cat.jobCount !== undefined && cat.jobCount > 0 && (
+                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                  {cat.jobCount}
+                </Badge>
+              )}
             </button>
           ))}
         </div>
@@ -441,6 +522,7 @@ export default function JobsPage() {
                   onClick={() => {
                     setSearchQuery("");
                     setCategoryFilter("ALL");
+                    setStandardCategoryFilter("");
                     setLocationFilter("");
                     setStartDateFilter("");
                   }}

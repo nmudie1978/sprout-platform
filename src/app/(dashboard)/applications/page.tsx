@@ -28,7 +28,7 @@ import {
   ChevronsUp,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "👶",
@@ -51,7 +51,8 @@ interface ApplicationCardProps {
   isReordering?: boolean;
 }
 
-function ApplicationCard({ app, onReorder, isFirst, isLast, isReordering }: ApplicationCardProps) {
+// Memoized ApplicationCard to prevent unnecessary re-renders
+const ApplicationCard = memo(function ApplicationCard({ app, onReorder, isFirst, isLast, isReordering }: ApplicationCardProps) {
   const isAccepted = app.status === "ACCEPTED";
   const isRejected = app.status === "REJECTED";
   const isPending = app.status === "PENDING";
@@ -223,6 +224,22 @@ function ApplicationCard({ app, onReorder, isFirst, isLast, isReordering }: Appl
       </Link>
     </div>
   );
+});
+
+// Type for API response
+interface ApplicationsResponse {
+  applications: any[];
+  pagination: {
+    total: number;
+    nextCursor: string | null;
+    hasMore: boolean;
+  };
+  counts: {
+    pending: number;
+    accepted: number;
+    rejected: number;
+    withdrawn: number;
+  };
 }
 
 export default function ApplicationsPage() {
@@ -230,7 +247,8 @@ export default function ApplicationsPage() {
   const [filter, setFilter] = useState<FilterType>("all");
   const queryClient = useQueryClient();
 
-  const { data: applications, isLoading } = useQuery({
+  // Optimized query with staleTime to reduce unnecessary refetches
+  const { data, isLoading } = useQuery<ApplicationsResponse>({
     queryKey: ["my-applications"],
     queryFn: async () => {
       const response = await fetch("/api/applications");
@@ -238,8 +256,15 @@ export default function ApplicationsPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
+    staleTime: 30 * 1000, // Data considered fresh for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes (formerly cacheTime)
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 
+  // Extract applications from response
+  const applications = data?.applications || [];
+
+  // Optimistic update for reordering
   const reorderMutation = useMutation({
     mutationFn: async ({ applicationId, direction }: { applicationId: string; direction: "up" | "down" | "top" | "bottom" }) => {
       const response = await fetch("/api/applications/reorder", {
@@ -250,14 +275,58 @@ export default function ApplicationsPage() {
       if (!response.ok) throw new Error("Failed to reorder application");
       return response.json();
     },
-    onSuccess: () => {
+    // Optimistic update for instant UI feedback
+    onMutate: async ({ applicationId, direction }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["my-applications"] });
+
+      // Snapshot previous value
+      const previousData = queryClient.getQueryData<ApplicationsResponse>(["my-applications"]);
+
+      // Optimistically update the cache
+      if (previousData?.applications) {
+        const apps = [...previousData.applications];
+        const currentIndex = apps.findIndex((a) => a.id === applicationId);
+
+        if (currentIndex !== -1) {
+          let newIndex: number;
+          switch (direction) {
+            case "up": newIndex = Math.max(0, currentIndex - 1); break;
+            case "down": newIndex = Math.min(apps.length - 1, currentIndex + 1); break;
+            case "top": newIndex = 0; break;
+            case "bottom": newIndex = apps.length - 1; break;
+            default: newIndex = currentIndex;
+          }
+
+          if (newIndex !== currentIndex) {
+            const [movedApp] = apps.splice(currentIndex, 1);
+            apps.splice(newIndex, 0, movedApp);
+            queryClient.setQueryData<ApplicationsResponse>(["my-applications"], {
+              ...previousData,
+              applications: apps,
+            });
+          }
+        }
+      }
+
+      return { previousData };
+    },
+    // Rollback on error
+    onError: (err, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(["my-applications"], context.previousData);
+      }
+    },
+    // Always refetch after success or error to ensure consistency
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["my-applications"] });
     },
   });
 
-  const handleReorder = (applicationId: string, direction: "up" | "down" | "top" | "bottom") => {
+  // Memoized reorder handler
+  const handleReorder = useCallback((applicationId: string, direction: "up" | "down" | "top" | "bottom") => {
     reorderMutation.mutate({ applicationId, direction });
-  };
+  }, [reorderMutation]);
 
   if (sessionStatus === "loading" || isLoading) {
     return (
@@ -287,41 +356,75 @@ export default function ApplicationsPage() {
     );
   }
 
-  // Filter applications based on selected filter - preserve API order (displayOrder)
-  const filteredApplications = applications?.filter((app: any) => {
-    const isAccepted = app.status === "ACCEPTED";
-    const jobStatus = app.job?.status;
-    const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
-    const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+  // Memoized filter and sort function for better performance
+  // Sorts applications so that incomplete/in-progress jobs appear first, done jobs last
+  const filteredApplications = useMemo(() => {
+    if (!applications) return [];
 
-    switch (filter) {
-      case "pending":
-        return app.status === "PENDING";
-      case "accepted":
-        return isAccepted && !isJobInProgress && !isJobDone;
-      case "in_progress":
-        return isJobInProgress;
-      case "completed":
-        return isJobDone;
-      case "rejected":
-        return app.status === "REJECTED";
-      default:
-        return true;
+    const filtered = applications.filter((app: any) => {
+      const isAccepted = app.status === "ACCEPTED";
+      const jobStatus = app.job?.status;
+      const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
+      const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+
+      switch (filter) {
+        case "pending":
+          return app.status === "PENDING";
+        case "accepted":
+          return isAccepted && !isJobInProgress && !isJobDone;
+        case "in_progress":
+          return isJobInProgress;
+        case "completed":
+          return isJobDone;
+        case "rejected":
+          return app.status === "REJECTED";
+        default:
+          return true;
+      }
+    });
+
+    // Sort: incomplete/in-progress jobs first, done jobs last
+    return filtered.sort((a: any, b: any) => {
+      const aIsAccepted = a.status === "ACCEPTED";
+      const bIsAccepted = b.status === "ACCEPTED";
+      const aJobStatus = a.job?.status;
+      const bJobStatus = b.job?.status;
+      const aIsDone = aIsAccepted && (aJobStatus === "COMPLETED" || aJobStatus === "REVIEWED");
+      const bIsDone = bIsAccepted && (bJobStatus === "COMPLETED" || bJobStatus === "REVIEWED");
+
+      // Done jobs go to the end
+      if (aIsDone && !bIsDone) return 1;
+      if (!aIsDone && bIsDone) return -1;
+      return 0; // Preserve existing order for same-status items
+    });
+  }, [applications, filter]);
+
+  // Memoized counts calculation - computed once when applications change
+  const counts = useMemo(() => {
+    if (!applications) {
+      return { all: 0, pending: 0, accepted: 0, in_progress: 0, completed: 0, rejected: 0 };
     }
-  }) || [];
 
-  const counts = {
-    all: applications?.length || 0,
-    pending: applications?.filter((a: any) => a.status === "PENDING").length || 0,
-    accepted: applications?.filter((a: any) => {
-      const isAccepted = a.status === "ACCEPTED";
-      const jobStatus = a.job?.status;
-      return isAccepted && jobStatus !== "IN_PROGRESS" && jobStatus !== "COMPLETED" && jobStatus !== "REVIEWED";
-    }).length || 0,
-    in_progress: applications?.filter((a: any) => a.status === "ACCEPTED" && a.job?.status === "IN_PROGRESS").length || 0,
-    completed: applications?.filter((a: any) => a.status === "ACCEPTED" && (a.job?.status === "COMPLETED" || a.job?.status === "REVIEWED")).length || 0,
-    rejected: applications?.filter((a: any) => a.status === "REJECTED").length || 0,
-  };
+    // Single pass through applications to calculate all counts
+    return applications.reduce(
+      (acc: Record<string, number>, app: any) => {
+        acc.all++;
+        const isAccepted = app.status === "ACCEPTED";
+        const jobStatus = app.job?.status;
+        const isJobDone = isAccepted && (jobStatus === "COMPLETED" || jobStatus === "REVIEWED");
+        const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
+
+        if (app.status === "PENDING") acc.pending++;
+        else if (app.status === "REJECTED") acc.rejected++;
+        else if (isJobDone) acc.completed++;
+        else if (isJobInProgress) acc.in_progress++;
+        else if (isAccepted) acc.accepted++;
+
+        return acc;
+      },
+      { all: 0, pending: 0, accepted: 0, in_progress: 0, completed: 0, rejected: 0 }
+    );
+  }, [applications]);
 
   const filterButtons: { key: FilterType; label: string; color: string }[] = [
     { key: "all", label: "All", color: "bg-slate-500" },
@@ -405,7 +508,8 @@ export default function ApplicationsPage() {
                   key={app.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 * Math.min(index, 10) }}
+                  // Cap animation delay at 5 items to prevent performance issues with large lists
+                  transition={{ delay: index < 5 ? 0.03 * index : 0 }}
                 >
                   <ApplicationCard
                     app={app}

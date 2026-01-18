@@ -400,9 +400,15 @@ model MicroJob {
   // Optional community association (derived from location if not set)
   communityId  String?
 
+  // Standard job category and template (optional - for taxonomy filtering)
+  standardCategoryId String?
+  standardTemplateId String?
+
   postedById  String
   postedBy    User        @relation(fields: [postedById], references: [id])
   community   Community?  @relation(fields: [communityId], references: [id])
+  standardCategory StandardJobCategory? @relation(fields: [standardCategoryId], references: [id])
+  standardTemplate StandardJobTemplate? @relation(fields: [standardTemplateId], references: [id])
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -428,6 +434,8 @@ model MicroJob {
   @@index([updatedAt])
   @@index([status, category]) // Composite for filtered job listings
   @@index([status, createdAt]) // Composite for sorted job listings
+  @@index([standardCategoryId])
+  @@index([standardTemplateId])
 }
 
 model Application {
@@ -448,6 +456,9 @@ model Application {
   @@index([youthId])
   @@index([status])
   @@index([displayOrder])
+  // Compound indexes for optimized queries
+  @@index([youthId, displayOrder, createdAt]) // Main applications list query
+  @@index([youthId, status]) // Status filtering
 }
 
 model Review {
@@ -1560,4 +1571,59 @@ model NewsletterSubscription {
 
   @@index([userId])
   @@index([email])
+}
+
+// ============================================
+// JOB CATEGORIES & TEMPLATES TAXONOMY
+// Standardized job categories and templates for quick job posting
+// ============================================
+
+// StandardJobCategory - Taxonomy of job categories
+// Admin-seeded, used for filtering and organizing jobs
+model StandardJobCategory {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  icon        String?  // Icon key/name (e.g., "home", "baby", "dog")
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+
+  templates   StandardJobTemplate[]
+  jobs        MicroJob[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// StandardJobTemplate - Predefined job templates within categories
+// Provides quick-start templates for common job types
+model StandardJobTemplate {
+  id           String   @id @default(cuid())
+  categoryId   String
+  category     StandardJobCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  title        String
+  shortDesc    String
+  suggestedPay String?   // e.g., "150–300 NOK"
+  duration     String?   // e.g., "1–2 hours"
+  tags         String[]  // Postgres text array
+  ageGuidance  String?   // e.g., "16+ recommended"
+  safetyNotes  String?   // Safety considerations for this job type
+  isActive     Boolean   @default(true)
+  sortOrder    Int       @default(0)
+
+  jobs         MicroJob[]
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([categoryId, title]) // Prevent duplicate templates in same category
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([sortOrder])
 }

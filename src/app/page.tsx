@@ -674,6 +674,29 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-12 sm:py-16 md:py-20 border-b">
+        <div className="container px-4">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-8 sm:mb-10">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              <Card className="border">
+                <CardContent className="p-5 sm:p-6">
+                  <h3 className="font-semibold text-base sm:text-lg mb-2">
+                    How does Sprout help with career decisions?
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    When you&apos;re unsure what path to take, Sprout gives you practical information — what a role actually involves, what skills matter most, and what next steps make sense for your situation. No pressure, no hype — just honest guidance when you need it.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t bg-background py-8 sm:py-12">
         <div className="container px-4">

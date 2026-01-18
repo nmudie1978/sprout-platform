@@ -14,6 +14,14 @@ import { JobCategory, PayType } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { AgeVerificationModal } from "@/components/age-verification-modal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SafetyNoteBanner, DISALLOWED_JOB_TYPES_MESSAGE } from "@/components/safety-note-banner";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertCircle,
@@ -212,12 +220,36 @@ function OptionalLabel({ htmlFor, children, className }: { htmlFor?: string; chi
   );
 }
 
+// Types for standard categories and templates
+interface StandardTemplate {
+  id: string;
+  title: string;
+  shortDesc: string;
+  suggestedPay: string | null;
+  duration: string | null;
+  tags: string[];
+  ageGuidance: string | null;
+  safetyNotes: string | null;
+}
+
+interface StandardCategory {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  templates?: StandardTemplate[];
+}
+
 export default function PostJobPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const { toast } = useToast();
   const [showAgeVerification, setShowAgeVerification] = useState(false);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [selectedStandardCategoryId, setSelectedStandardCategoryId] = useState<string>("");
+  const [selectedStandardTemplateId, setSelectedStandardTemplateId] = useState<string>("");
+  const [selectedTemplateSafetyNotes, setSelectedTemplateSafetyNotes] = useState<string | null>(null);
 
   const { data: employerProfile } = useQuery({
     queryKey: ["employer-profile"],
@@ -228,6 +260,25 @@ export default function PostJobPage() {
     },
     enabled: !!session?.user?.id && session.user.role === "EMPLOYER",
   });
+
+  // Fetch standard job categories with templates
+  const { data: categoriesData } = useQuery({
+    queryKey: ["standard-job-categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/job-categories?includeTemplates=true");
+      if (!response.ok) throw new Error("Failed to fetch categories");
+      return response.json();
+    },
+  });
+
+  const standardCategories: StandardCategory[] = categoriesData?.categories || [];
+
+  // Get templates for the selected category
+  const selectedCategoryTemplates = useMemo(() => {
+    if (!selectedStandardCategoryId) return [];
+    const category = standardCategories.find((c) => c.id === selectedStandardCategoryId);
+    return category?.templates || [];
+  }, [selectedStandardCategoryId, standardCategories]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -242,7 +293,71 @@ export default function PostJobPage() {
     applicationDeadline: "",
     requiredTraits: [] as string[],
     images: [] as string[],
+    standardCategoryId: null as string | null,
+    standardTemplateId: null as string | null,
   });
+
+  // Handle template selection - auto-fill fields
+  const handleTemplateSelect = (templateId: string) => {
+    setSelectedStandardTemplateId(templateId);
+    if (!templateId) {
+      setSelectedTemplateSafetyNotes(null);
+      setFormData((prev) => ({
+        ...prev,
+        standardTemplateId: null,
+      }));
+      return;
+    }
+
+    const template = selectedCategoryTemplates.find((t) => t.id === templateId);
+    if (template) {
+      setSelectedTemplateSafetyNotes(template.safetyNotes);
+      setFormData((prev) => ({
+        ...prev,
+        title: template.title,
+        description: template.shortDesc,
+        standardTemplateId: template.id,
+      }));
+      toast({
+        title: "Template applied",
+        description: "You can customize the title and description as needed.",
+      });
+    }
+  };
+
+  // Handle category selection
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedStandardCategoryId(categoryId);
+    setSelectedStandardTemplateId("");
+    setSelectedTemplateSafetyNotes(null);
+
+    // Map standard category to legacy JobCategory enum for compatibility
+    const category = standardCategories.find((c) => c.id === categoryId);
+    if (category) {
+      // Map slug to closest legacy category
+      const slugToCategoryMap: Record<string, JobCategory> = {
+        "home-yard-help": "DIY_HELP",
+        "child-family-support": "BABYSITTING",
+        "pet-animal-care": "DOG_WALKING",
+        "cleaning-organizing": "CLEANING",
+        "tech-digital-help": "TECH_HELP",
+        "errands-local-tasks": "ERRANDS",
+        "events-community-help": "OTHER",
+        "creative-media-gigs": "OTHER",
+        "education-learning-support": "OTHER",
+        "retail-microbusiness-help": "OTHER",
+        "fitness-activity-help": "OTHER",
+        "online-ai-age-jobs": "TECH_HELP",
+      };
+
+      setFormData((prev) => ({
+        ...prev,
+        category: slugToCategoryMap[category.slug] || "OTHER",
+        standardCategoryId: category.id,
+        standardTemplateId: null,
+      }));
+    }
+  };
 
   // Validation errors
   const errors = {
@@ -300,6 +415,8 @@ export default function PostJobPage() {
           endDate: formData.endDate,
           applicationDeadline: formData.applicationDeadline,
           images: formData.images,
+          standardCategoryId: formData.standardCategoryId,
+          standardTemplateId: formData.standardTemplateId,
         }),
       });
 
@@ -508,6 +625,67 @@ export default function PostJobPage() {
                   />
 
                   <div className="space-y-4">
+                    {/* Standard Category Selection */}
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <RequiredLabel htmlFor="standardCategory">Job Category</RequiredLabel>
+                        <Select
+                          value={selectedStandardCategoryId}
+                          onValueChange={handleCategorySelect}
+                        >
+                          <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-purple-500/50">
+                            <SelectValue placeholder="Select a category..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {standardCategories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id}>
+                                {cat.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Template Selection - only show when category is selected */}
+                      {selectedStandardCategoryId && selectedCategoryTemplates.length > 0 && (
+                        <div>
+                          <OptionalLabel htmlFor="standardTemplate">
+                            Use a Template
+                          </OptionalLabel>
+                          <Select
+                            value={selectedStandardTemplateId}
+                            onValueChange={handleTemplateSelect}
+                          >
+                            <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-purple-500/50">
+                              <SelectValue placeholder="Quick-fill from template..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="">
+                                <span className="text-muted-foreground">No template (custom job)</span>
+                              </SelectItem>
+                              {selectedCategoryTemplates.map((template) => (
+                                <SelectItem key={template.id} value={template.id}>
+                                  <div className="flex flex-col">
+                                    <span>{template.title}</span>
+                                    {template.suggestedPay && (
+                                      <span className="text-xs text-muted-foreground">
+                                        {template.suggestedPay}
+                                      </span>
+                                    )}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Safety Note Banner */}
+                    {selectedTemplateSafetyNotes && (
+                      <SafetyNoteBanner safetyNotes={selectedTemplateSafetyNotes} />
+                    )}
+
                     <div>
                       <RequiredLabel htmlFor="title">Job Title</RequiredLabel>
                       <Input
@@ -803,20 +981,30 @@ export default function PostJobPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="text-sm text-muted-foreground bg-muted/50 rounded-xl p-4 border"
+            className="space-y-3"
           >
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-green-600 shrink-0" />
-              <span>
-                Please post only safe, appropriate tasks.{" "}
-                <a
-                  href="/legal/safety"
-                  target="_blank"
-                  className="text-primary hover:underline font-medium"
-                >
-                  Read our Safety Guidelines
-                </a>
-              </span>
+            <div className="text-sm text-muted-foreground bg-muted/50 rounded-xl p-4 border">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-green-600 shrink-0" />
+                <span>
+                  Please post only safe, appropriate tasks.{" "}
+                  <a
+                    href="/legal/safety"
+                    target="_blank"
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Read our Safety Guidelines
+                  </a>
+                </span>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground bg-orange-500/5 rounded-xl p-4 border border-orange-500/20">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+                <span className="text-orange-700 dark:text-orange-400">
+                  <strong>Not allowed:</strong> construction, heavy machinery, night work, medical care, financial handling, driving jobs, or unsupervised one-on-one adult home visits.
+                </span>
+              </div>
             </div>
           </motion.div>
 

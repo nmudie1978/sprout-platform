@@ -20,7 +20,6 @@ import {
   Badge as BadgeIcon,
   Building2,
   Shield,
-  HandHeart,
   Sprout,
   X,
   Settings,
@@ -30,6 +29,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
+import { PokesBell } from "@/components/pokes-bell";
 import { Avatar } from "@/components/avatar";
 
 interface NavigationProps {
@@ -38,6 +38,15 @@ interface NavigationProps {
   userEmail?: string;
   userAvatarId?: string | null;
   userProfilePic?: string | null;
+}
+
+interface NavLink {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isCore: boolean;
+  iconOnly?: boolean;
+  iconColor?: string;
 }
 
 export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
@@ -109,37 +118,35 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const currentRole = roleConfig[userRole];
 
-  const youthLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: false },
+  const youthLinks: NavLink[] = [
+    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-blue-500" },
     { href: "/jobs", label: "Find Jobs", icon: Briefcase, isCore: true },
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
-    { href: "/pokes", label: "Pokes", icon: HandHeart, isCore: false },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
     { href: "/career-advisor", label: "AI Advisor", icon: MessageSquare, isCore: true },
     { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
 
-  const employerLinks = [
-    { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: false },
+  const employerLinks: NavLink[] = [
+    { href: "/employer/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
     { href: "/employer/post-job", label: "Post Job", icon: Briefcase, isCore: false },
     { href: "/employer/talent", label: "Browse Talent", icon: User, isCore: false },
-    { href: "/pokes", label: "Pokes", icon: HandHeart, isCore: false },
     { href: "/employer/settings", label: "Settings", icon: Settings, isCore: false },
   ];
 
-  const adminLinks = [
+  const adminLinks: NavLink[] = [
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3, isCore: true },
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: false },
+    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-orange-500" },
     { href: "/admin/questions", label: "Moderate Q&A", icon: MessageSquare, isCore: false },
     { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: false },
   ];
 
   // Guardian link - shown only for users who are guardians
-  const guardianLink = { href: "/guardian", label: "Guardian", icon: Shield, isCore: false };
+  const guardianLink: NavLink = { href: "/guardian", label: "Guardian", icon: Shield, isCore: false };
 
   // Guardian-only links (when user's primary role is COMMUNITY_GUARDIAN)
-  const guardianOnlyLinks = [
+  const guardianOnlyLinks: NavLink[] = [
     { href: "/guardian", label: "Guardian Dashboard", icon: Shield, isCore: true },
     { href: "/jobs", label: "Browse Jobs", icon: Briefcase, isCore: false },
   ];
@@ -208,7 +215,8 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       <Icon className={cn(
                         "h-4 w-4",
                         isActive && "animate-pulse",
-                        link.isCore && !isActive && "text-primary"
+                        link.isCore && !isActive && "text-primary",
+                        !isActive && link.iconColor
                       )} />
                       {link.label && <span className="hidden lg:inline">{link.label}</span>}
                     </Link>
@@ -231,6 +239,9 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
           {/* User Menu */}
           <div className="hidden md:flex md:items-center md:space-x-3">
+            {/* Pokes Bell - for Youth and Employer */}
+            <PokesBell userRole={userRole} />
+
             {/* Notification Bell */}
             <NotificationBell />
 
@@ -375,9 +386,10 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       <Icon className={cn(
                         "h-5 w-5",
                         isActive && "animate-pulse",
-                        link.isCore && !isActive && "text-primary"
+                        link.isCore && !isActive && "text-primary",
+                        !isActive && link.iconColor
                       )} />
-                      {link.label && <span>{link.label}</span>}
+                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : "")}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}

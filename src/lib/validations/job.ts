@@ -15,6 +15,9 @@ export const jobSchema = z.object({
   requiredTraits: z.array(z.string()).default([]),
   images: z.array(z.string().url()).max(5, "Maximum 5 images allowed").default([]),
   applicationDeadline: z.string().min(1, "Application deadline is required"), // ISO date string for application deadline - REQUIRED
+  // Standard job category and template (taxonomy system)
+  standardCategoryId: z.string().optional().nullable(),
+  standardTemplateId: z.string().optional().nullable(),
 });
 
 export const applicationSchema = z.object({

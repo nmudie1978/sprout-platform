@@ -118,46 +118,101 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const applications = await prisma.application.findMany({
-      where: {
-        youthId: session.user.id,
-      },
-      include: {
-        job: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            payAmount: true,
-            payType: true,
-            location: true,
-            dateTime: true,
-            status: true,
-            statusReason: true,
-            category: true,
-            postedBy: {
-              select: {
-                employerProfile: {
-                  select: {
-                    companyName: true,
-                    companyLogo: true,
-                    verified: true,
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status"); // Optional status filter
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100); // Default 50, max 100
+    const cursor = searchParams.get("cursor"); // Cursor-based pagination
+
+    // Build where clause
+    const whereClause: any = {
+      youthId: session.user.id,
+    };
+
+    // Optional server-side status filtering
+    if (status && status !== "all") {
+      whereClause.status = status.toUpperCase();
+    }
+
+    // Run count and data queries in parallel for efficiency
+    const [applications, totalCount, statusCounts] = await Promise.all([
+      // Main data query - optimized field selection
+      prisma.application.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          status: true,
+          displayOrder: true,
+          createdAt: true,
+          // Only include needed job fields
+          job: {
+            select: {
+              id: true,
+              title: true,
+              payAmount: true,
+              payType: true,
+              location: true,
+              dateTime: true,
+              status: true,
+              category: true,
+              postedBy: {
+                select: {
+                  employerProfile: {
+                    select: {
+                      companyName: true,
+                      verified: true,
+                    },
                   },
                 },
               },
             },
           },
         },
+        orderBy: [
+          { displayOrder: { sort: "asc", nulls: "last" } },
+          { createdAt: "desc" },
+        ],
+        take: limit,
+        ...(cursor && {
+          skip: 1, // Skip the cursor
+          cursor: { id: cursor },
+        }),
+      }),
+      // Total count query
+      prisma.application.count({
+        where: { youthId: session.user.id },
+      }),
+      // Status counts in a single aggregated query
+      prisma.application.groupBy({
+        by: ["status"],
+        where: { youthId: session.user.id },
+        _count: { status: true },
+      }),
+    ]);
+
+    // Build status counts map
+    const counts = statusCounts.reduce(
+      (acc, { status, _count }) => {
+        acc[status.toLowerCase()] = _count.status;
+        return acc;
       },
-      orderBy: [
-        { displayOrder: { sort: "asc", nulls: "last" } },
-        { createdAt: "desc" },
-      ],
+      { pending: 0, accepted: 0, rejected: 0, withdrawn: 0 } as Record<string, number>
+    );
+
+    // Determine next cursor for pagination
+    const nextCursor = applications.length === limit ? applications[applications.length - 1]?.id : null;
+
+    const response = NextResponse.json({
+      applications,
+      pagination: {
+        total: totalCount,
+        nextCursor,
+        hasMore: nextCursor !== null,
+      },
+      counts,
     });
 
-    const response = NextResponse.json(applications);
-    // Add short cache for applications - user-specific, needs to stay fresh
-    response.headers.set('Cache-Control', 'private, max-age=15, stale-while-revalidate=30');
+    // Increased cache time with stale-while-revalidate for better performance
+    response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
     return response;
   } catch (error) {
     console.error("Failed to fetch applications:", error);
