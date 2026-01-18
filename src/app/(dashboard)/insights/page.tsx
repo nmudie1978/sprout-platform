@@ -30,7 +30,6 @@ import {
   Calendar,
   MapPin,
   CheckCircle2,
-  Target,
   MessageSquare,
   Building2,
 } from "lucide-react";
@@ -38,7 +37,6 @@ import { motion } from "framer-motion";
 
 // Import new insights components
 import {
-  CareerQuiz,
   InterviewPrepBank,
   CompanySpotlights,
   EventsCalendar,
@@ -103,7 +101,6 @@ export default function IndustryInsightsPage() {
 
   const sections = [
     { id: "industries", label: "Industries", icon: TrendingUp },
-    { id: "career-quiz", label: "Career Quiz", icon: Target },
     { id: "getting-started", label: "Get Started", icon: GraduationCap },
     { id: "progress-checklist", label: "Progress", icon: CheckCircle2 },
     { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
@@ -454,20 +451,6 @@ export default function IndustryInsightsPage() {
         </div>
       </motion.div>
 
-      {/* Career Quiz */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="mb-12"
-        id="career-quiz"
-      >
-        <CareerQuiz
-          careerGoals={userCareerGoals}
-          industryTypes={userIndustryTypes}
-        />
-      </motion.div>
-
       {/* How to Get Started - Filtered by user's career goals */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -589,7 +572,7 @@ export default function IndustryInsightsPage() {
         className="mb-12"
         id="companies"
       >
-        <CompanySpotlights />
+        <CompanySpotlights industryTypes={userIndustryTypes} />
       </motion.div>
 
       {/* Events Calendar */}
@@ -600,7 +583,7 @@ export default function IndustryInsightsPage() {
         className="mb-12"
         id="events"
       >
-        <EventsCalendar />
+        <EventsCalendar industryTypes={userIndustryTypes} />
       </motion.div>
 
       {/* AI Impact */}

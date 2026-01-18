@@ -1,9 +1,28 @@
 /**
  * AI Assistant Guardrails
  * Ensures the assistant stays within safe, helpful boundaries
+ *
+ * LANGUAGE POLICY: This app is English-only by design.
+ * All AI-generated content must be in English, regardless of user input language.
+ * See /docs/english-only.md for full policy documentation.
  */
 
 import { getCondensedNorwegianContext } from "./norwegian-context";
+
+/**
+ * English-only enforcement rule - MUST be included in all AI prompts
+ * This is a hard requirement, not a preference.
+ */
+export const ENGLISH_ONLY_RULE = `
+LANGUAGE REQUIREMENT (MANDATORY - NO EXCEPTIONS):
+- Output language: English (en) only.
+- Always respond in English, even if the user writes in another language.
+- Do NOT translate your response into other languages.
+- Do NOT switch languages mid-response.
+- If the user writes in Norwegian or another language, understand their intent but respond in English.
+- Use simple, clear English suitable for ages 15-20.
+- You may include Norwegian terminology for local concepts (e.g., "fagbrev", "NAV", "skattekort") but explain them in English.
+`.trim();
 
 // Intent types for logging
 export type IntentType =
@@ -146,6 +165,8 @@ export function getSystemPrompt(intent: IntentType, careerAspiration?: string | 
 - Application message drafting (professional but friendly tone)
 - Norwegian-specific guidance (labor law, age restrictions, seasonal jobs)
 
+${ENGLISH_ONLY_RULE}
+
 CRITICAL RULES:
 1. NEVER provide therapy, mental health counseling, or crisis support
 2. If someone mentions self-harm, suicide, or mental health crisis, respond: "I'm sorry you're going through this. Please reach out to a trusted adult, school counselor, or call 116 111 (Mental Helse helpline in Norway). I'm here for career questions when you're ready."
@@ -187,10 +208,9 @@ When users ask "How am I doing?" or about progress:
 NORWEGIAN EMPLOYMENT KNOWLEDGE:
 ${norwegianContext}
 
-LANGUAGE:
-- Respond in English (platform default)
+WRITING STYLE:
 - Use simple, clear language (avoid jargon)
-- Include Norwegian terms when helpful (e.g., "fagbrev", "lærling", "sommerjobb")
+- Include Norwegian terms when helpful (e.g., "fagbrev", "lærling", "sommerjobb") but always explain them in English
 - Be encouraging but realistic about job prospects`;
 
   // Add personalization if user has a career aspiration
@@ -288,6 +308,74 @@ export function isResponseSafe(response: string): {
   }
 
   return { safe: true };
+}
+
+/**
+ * Detect if AI response contains significant non-English content
+ * Returns true if the response appears to be in a language other than English
+ *
+ * This is a lightweight heuristic check - not meant to be perfect,
+ * but catches obvious cases of non-English output.
+ */
+export function detectNonEnglishResponse(response: string): {
+  isNonEnglish: boolean;
+  detectedPatterns?: string[];
+} {
+  // Common Norwegian/Scandinavian patterns that indicate non-English response
+  const norwegianPatterns = [
+    /\b(jeg|du|vi|de|han|hun|det|den)\b/gi, // Common pronouns
+    /\b(er|var|har|blir|kan|skal|vil|må)\b/gi, // Common verbs
+    /\b(og|eller|men|så|fordi|hvis|når|som)\b/gi, // Common conjunctions
+    /\b(ikke|bare|også|veldig|litt|mange|noen|alle)\b/gi, // Common adverbs
+    /\b(hei|takk|beklager|unnskyld|vennligst)\b/gi, // Common phrases
+    /\b(jobb|arbeid|karriere|utdanning|skole)\b/gi, // Work/career terms in Norwegian
+  ];
+
+  // Known Norwegian terms we allow (these are used in English context)
+  const allowedNorwegianTerms = [
+    "fagbrev", "lærling", "sommerjobb", "skattekort", "nav",
+    "videregående", "høgskole", "folkehøgskole", "tarifflønn",
+    "helgetillegg", "feriepenger", "arbeidsmiljøloven",
+    "studiespesialisering", "yrkesfag", "politiattest",
+  ];
+
+  const detectedPatterns: string[] = [];
+  let matchCount = 0;
+
+  // Check for Norwegian patterns, excluding allowed terms
+  for (const pattern of norwegianPatterns) {
+    const matches = response.match(pattern);
+    if (matches) {
+      // Filter out allowed terms
+      const filteredMatches = matches.filter(
+        (m) => !allowedNorwegianTerms.includes(m.toLowerCase())
+      );
+      if (filteredMatches.length > 0) {
+        matchCount += filteredMatches.length;
+        detectedPatterns.push(...filteredMatches.slice(0, 3)); // Keep first 3 for logging
+      }
+    }
+  }
+
+  // If more than 5 Norwegian words detected (excluding allowed terms), flag it
+  // This threshold allows for occasional Norwegian terms in context
+  const isNonEnglish = matchCount > 5;
+
+  return {
+    isNonEnglish,
+    detectedPatterns: isNonEnglish ? [...new Set(detectedPatterns)].slice(0, 5) : undefined,
+  };
+}
+
+/**
+ * Get a stronger English-only instruction for regeneration
+ * Used when initial response was detected as non-English
+ */
+export function getEnglishOnlyRegenerationPrompt(): string {
+  return `CRITICAL INSTRUCTION: Your previous response was not in English.
+Rewrite your response in English only. Do not include any translations.
+Output language: English (en). No exceptions.
+Respond in clear, simple English suitable for ages 15-20.`;
 }
 
 /**

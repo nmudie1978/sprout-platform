@@ -24,6 +24,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // Optimize package imports to reduce bundle size
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
   // Security headers
   async headers() {

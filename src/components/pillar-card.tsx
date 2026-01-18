@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
 import { LucideIcon, Wallet, Compass, BookOpen, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
@@ -73,19 +72,6 @@ export const PILLARS: Pillar[] = [
 ];
 
 
-// Simple icon wrapper with subtle hover effect
-function AnimatedIcon({ Icon, gradient }: { Icon: LucideIcon; gradient: string }) {
-  return (
-    <motion.div
-      className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-md`}
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-white relative z-10" />
-    </motion.div>
-  );
-}
-
 interface PillarCardProps {
   pillar: Pillar;
   index: number;
@@ -95,25 +81,10 @@ export function PillarCard({ pillar, index }: PillarCardProps) {
   const Icon = pillar.icon;
   const [isHovered, setIsHovered] = useState(false);
 
-  // Simple staggered entrance animation
-  const containerVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        delay: index * 0.1,
-      },
-    },
-  };
-
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
+    <div
+      className="animate-fade-in-up"
+      style={{ animationDelay: `${index * 100}ms` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -131,9 +102,13 @@ export function PillarCard({ pillar, index }: PillarCardProps) {
         />
 
         <CardContent className="p-4 sm:p-5 relative z-10">
-          {/* Icon with animations */}
+          {/* Icon */}
           <div className="mb-3">
-            <AnimatedIcon Icon={Icon} gradient={pillar.gradient} />
+            <div
+              className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${pillar.gradient} flex items-center justify-center shadow-md transition-transform duration-200 ${isHovered ? 'scale-105' : ''}`}
+            >
+              <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+            </div>
           </div>
 
           {/* Title with gradient */}
@@ -168,11 +143,11 @@ export function PillarCard({ pillar, index }: PillarCardProps) {
           />
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }
 
-// Section wrapper
+// Section wrapper - uses CSS animations instead of framer-motion
 export function PillarsSection() {
   return (
     <section id="pillars" className="py-12 sm:py-14 md:py-18 scroll-mt-20 relative">
@@ -183,13 +158,7 @@ export function PillarsSection() {
       </div>
 
       <div className="container px-4 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-8 sm:mb-10"
-        >
+        <div className="text-center mb-8 sm:mb-10 animate-fade-in-up">
           <div className="inline-flex items-center gap-2 rounded-full bg-green-500/10 backdrop-blur-sm border border-green-500/20 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 mb-4">
             <span>✨</span>
             How Sprout Helps You Grow
@@ -205,7 +174,7 @@ export function PillarsSection() {
           <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
             Everything you need to go from first job to first career — safely, practically, and at your own pace.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 max-w-6xl mx-auto">
           {PILLARS.map((pillar, index) => (
@@ -213,6 +182,25 @@ export function PillarsSection() {
           ))}
         </div>
       </div>
+
+      {/* CSS animations */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        :global(.animate-fade-in-up) {
+          animation: fadeInUp 0.4s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </section>
   );
 }

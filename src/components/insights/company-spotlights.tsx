@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Building2,
   MapPin,
-  ExternalLink,
-  Star,
   TrendingUp,
 } from "lucide-react";
 
@@ -23,6 +20,7 @@ interface Company {
 }
 
 const companies: Company[] = [
+  // Tech companies
   {
     id: "google",
     name: "Google",
@@ -44,34 +42,25 @@ const companies: Company[] = [
     roles: ["Software Engineer", "Cloud Architect", "PM"],
   },
   {
+    id: "amazon",
+    name: "Amazon",
+    industry: "tech",
+    logo: "📦",
+    location: "Global",
+    hiring: true,
+    website: "https://www.amazon.jobs",
+    roles: ["Developer", "Data Engineer", "Solutions Architect"],
+  },
+  // Green energy companies
+  {
     id: "siemens",
-    name: "Siemens",
+    name: "Siemens Energy",
     industry: "green",
     logo: "⚡",
     location: "Europe",
     hiring: true,
     website: "https://www.siemens.com/careers",
     roles: ["Engineer", "Technician", "Energy Specialist"],
-  },
-  {
-    id: "philips",
-    name: "Philips",
-    industry: "health",
-    logo: "💡",
-    location: "Europe",
-    hiring: true,
-    website: "https://www.careers.philips.com",
-    roles: ["Healthcare Tech", "Engineer", "Designer"],
-  },
-  {
-    id: "spotify",
-    name: "Spotify",
-    industry: "creative",
-    logo: "🎵",
-    location: "Stockholm",
-    hiring: true,
-    website: "https://www.lifeatspotify.com",
-    roles: ["Developer", "Designer", "Content"],
   },
   {
     id: "vestas",
@@ -83,22 +72,131 @@ const companies: Company[] = [
     website: "https://www.vestas.com/en/careers",
     roles: ["Wind Technician", "Engineer", "Analyst"],
   },
+  {
+    id: "orsted",
+    name: "Ørsted",
+    industry: "green",
+    logo: "🌊",
+    location: "Denmark",
+    hiring: true,
+    website: "https://orsted.com/en/careers",
+    roles: ["Offshore Technician", "Engineer", "Project Manager"],
+  },
+  // Healthcare companies & hospitals
+  {
+    id: "mayo-clinic",
+    name: "Mayo Clinic",
+    industry: "health",
+    logo: "🏥",
+    location: "USA",
+    hiring: true,
+    website: "https://jobs.mayoclinic.org",
+    roles: ["Nurse", "Medical Assistant", "Healthcare Admin"],
+  },
+  {
+    id: "cleveland-clinic",
+    name: "Cleveland Clinic",
+    industry: "health",
+    logo: "🏥",
+    location: "USA",
+    hiring: true,
+    website: "https://jobs.clevelandclinic.org",
+    roles: ["Registered Nurse", "Patient Care", "Technician"],
+  },
+  {
+    id: "kaiser",
+    name: "Kaiser Permanente",
+    industry: "health",
+    logo: "🏥",
+    location: "USA",
+    hiring: true,
+    website: "https://jobs.kaiserpermanente.org",
+    roles: ["Nurse", "Medical Assistant", "Pharmacy Tech"],
+  },
+  {
+    id: "nhs",
+    name: "NHS",
+    industry: "health",
+    logo: "🏥",
+    location: "UK",
+    hiring: true,
+    website: "https://www.jobs.nhs.uk",
+    roles: ["Nurse", "Healthcare Support", "Mental Health"],
+  },
+  {
+    id: "philips",
+    name: "Philips Healthcare",
+    industry: "health",
+    logo: "💡",
+    location: "Europe",
+    hiring: true,
+    website: "https://www.careers.philips.com",
+    roles: ["Healthcare Tech", "Clinical Specialist", "Engineer"],
+  },
+  {
+    id: "unitedhealth",
+    name: "UnitedHealth Group",
+    industry: "health",
+    logo: "🏥",
+    location: "USA",
+    hiring: true,
+    website: "https://careers.unitedhealthgroup.com",
+    roles: ["Care Coordinator", "Nurse", "Health Coach"],
+  },
+  // Creative companies
+  {
+    id: "spotify",
+    name: "Spotify",
+    industry: "creative",
+    logo: "🎵",
+    location: "Stockholm",
+    hiring: true,
+    website: "https://www.lifeatspotify.com",
+    roles: ["Developer", "Designer", "Content"],
+  },
+  {
+    id: "netflix",
+    name: "Netflix",
+    industry: "creative",
+    logo: "🎬",
+    location: "Global",
+    hiring: true,
+    website: "https://jobs.netflix.com",
+    roles: ["Content Creator", "Designer", "Producer"],
+  },
+  {
+    id: "adobe",
+    name: "Adobe",
+    industry: "creative",
+    logo: "🎨",
+    location: "Global",
+    hiring: true,
+    website: "https://www.adobe.com/careers.html",
+    roles: ["Designer", "Product Manager", "Marketing"],
+  },
 ];
 
-const industryFilters = [
-  { id: "all", label: "All", color: "from-primary to-purple-500" },
-  { id: "tech", label: "Tech", color: "from-blue-500 to-cyan-500" },
-  { id: "green", label: "Green Energy", color: "from-green-500 to-teal-500" },
-  { id: "health", label: "Healthcare", color: "from-red-500 to-pink-500" },
-  { id: "creative", label: "Creative", color: "from-purple-500 to-pink-500" },
-];
+interface CompanySpotlightsProps {
+  industryTypes?: string[];
+}
 
-export function CompanySpotlights() {
-  const [filter, setFilter] = useState<string>("all");
+export function CompanySpotlights({ industryTypes = [] }: CompanySpotlightsProps) {
+  // Filter companies based on user's career goal industry types
+  const filteredCompanies = industryTypes.length > 0
+    ? companies.filter((c) => industryTypes.includes(c.industry))
+    : companies;
 
-  const filteredCompanies = filter === "all"
-    ? companies
-    : companies.filter((c) => c.industry === filter);
+  // Get industry labels for display
+  const industryLabels: Record<string, string> = {
+    tech: "Tech & AI",
+    green: "Green Energy",
+    health: "Healthcare",
+    creative: "Creative",
+  };
+
+  const activeIndustries = industryTypes.length > 0
+    ? industryTypes.map(t => industryLabels[t] || t).join(", ")
+    : "all industries";
 
   return (
     <Card className="border-2 overflow-hidden">
@@ -108,26 +206,13 @@ export function CompanySpotlights() {
           <Building2 className="h-5 w-5 text-primary" />
           Company Spotlights
         </CardTitle>
-        <CardDescription>Top employers actively hiring young talent</CardDescription>
+        <CardDescription>
+          {industryTypes.length > 0
+            ? `Top employers hiring in ${activeIndustries} based on your career goals`
+            : "Top employers actively hiring young talent"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Filter */}
-        <div className="flex flex-wrap gap-2">
-          {industryFilters.map((ind) => (
-            <button
-              key={ind.id}
-              onClick={() => setFilter(ind.id)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                filter === ind.id
-                  ? `bg-gradient-to-r ${ind.color} text-white`
-                  : "bg-muted hover:bg-muted/80"
-              }`}
-            >
-              {ind.label}
-            </button>
-          ))}
-        </div>
-
         {/* Company Grid - Compact Cards */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCompanies.map((company) => (

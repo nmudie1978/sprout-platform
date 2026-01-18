@@ -16,6 +16,8 @@ import {
   isResponseSafe,
   getFallbackResponse,
   getSmartFallbackResponse,
+  detectNonEnglishResponse,
+  getEnglishOnlyRegenerationPrompt,
   type IntentType,
 } from "@/lib/ai-guardrails";
 import { checkRateLimit, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
@@ -337,6 +339,52 @@ export async function POST(req: NextRequest) {
         intent,
         sources: [],
       });
+    }
+
+    // Language check - ensure response is in English (silent regeneration if needed)
+    const languageCheck = detectNonEnglishResponse(assistantMessage);
+    if (languageCheck.isNonEnglish) {
+      console.warn("[Chat API] Non-English response detected, regenerating:", languageCheck.detectedPatterns);
+
+      // Attempt to regenerate with stronger English-only instruction
+      try {
+        const regenerationMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+          ...messages,
+          { role: "assistant", content: assistantMessage },
+          { role: "user", content: getEnglishOnlyRegenerationPrompt() },
+        ];
+
+        const regeneration = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: regenerationMessages,
+          temperature: 0.5, // Lower temperature for more consistent output
+          max_tokens: 600,
+        });
+
+        const regeneratedMessage = regeneration.choices[0]?.message?.content;
+        if (regeneratedMessage) {
+          // Check regenerated response is now in English
+          const recheck = detectNonEnglishResponse(regeneratedMessage);
+          if (!recheck.isNonEnglish) {
+            assistantMessage = regeneratedMessage;
+            console.log("[Chat API] Successfully regenerated response in English");
+          } else {
+            // Still not English - use smart fallback (don't expose to user)
+            console.warn("[Chat API] Regeneration still not in English, using fallback");
+            assistantMessage = getSmartFallbackResponse(message, intent);
+          }
+        }
+      } catch (regenError) {
+        console.error("[Chat API] Regeneration failed, using fallback:", regenError);
+        // Silently fall back to smart response - don't expose error to user
+        assistantMessage = getSmartFallbackResponse(message, intent);
+      }
+
+      // Log the language issue (non-blocking)
+      logIntent(session.user.id, intent, {
+        triggered: "non_english_response",
+        patterns: languageCheck.detectedPatterns,
+      }).catch(() => {});
     }
 
     // Log intent (anonymously) - don't await to avoid blocking the response

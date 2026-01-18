@@ -1,6 +1,6 @@
-"use client";
-
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import {
@@ -8,42 +8,130 @@ import {
   Building2,
   UserPlus,
   ArrowRight,
-  Search,
   CheckCircle,
   Star,
-  Trophy,
-  LayoutDashboard,
   Quote,
-  Zap,
   Shield,
   MapPin,
   GraduationCap,
   Award,
-  Users,
   Sparkles,
 } from "lucide-react";
-import { PillarsSection } from "@/components/pillar-card";
-import { HeroVideo } from "@/components/hero-video";
-import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
-import { Suspense } from "react";
 
-// Loading skeleton for session-dependent content
-function NavSkeleton() {
-  return (
-    <div className="flex items-center gap-2 sm:gap-4">
-      <div className="h-9 w-20 bg-muted/50 rounded animate-pulse hidden sm:block" />
-      <div className="h-10 w-24 bg-green-600/50 rounded animate-pulse" />
-    </div>
-  );
-}
+// Direct import for server component (no JS shipped)
+import { HeroSection } from "@/components/landing/hero-section";
+
+// Lazy load client components that aren't needed for initial render
+const AnimatedBackground = dynamic(
+  () => import("@/components/landing/animated-background").then((mod) => mod.AnimatedBackground),
+  { ssr: false }
+);
+
+const LandingNavAuth = dynamic(
+  () => import("@/components/landing/landing-nav").then((mod) => mod.LandingNavAuth),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center gap-2 sm:gap-4">
+        <div className="h-9 w-20 bg-muted/50 rounded animate-pulse hidden sm:block" />
+        <div className="h-10 w-24 bg-green-600/50 rounded animate-pulse" />
+      </div>
+    )
+  }
+);
+
+// Lazy load below-the-fold components
+const PillarsSection = dynamic(
+  () => import("@/components/pillar-card").then((mod) => mod.PillarsSection),
+  {
+    ssr: true,
+    loading: () => <div className="py-12 sm:py-14 md:py-18" />
+  }
+);
+
+const HeroVideo = dynamic(
+  () => import("@/components/hero-video").then((mod) => mod.HeroVideo),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full max-w-xs sm:max-w-sm mx-auto px-4">
+        <div className="w-full rounded-xl sm:rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse" style={{ aspectRatio: "16 / 9" }} />
+      </div>
+    )
+  }
+);
+
+// Static data - defined outside component to avoid recreation
+const YOUTH_BENEFITS = [
+  "Find local jobs and gigs in your area",
+  "Build a verified portfolio of work experience",
+  "AI-powered career guidance from your own dedicated advisor",
+  "Explore 100+ career paths matched to your goals",
+];
+
+const EMPLOYER_BENEFITS = [
+  "Post jobs and find eager local youth workers",
+  "Browse profiles with verified reviews and ratings",
+  "Labor law compliance handled automatically",
+  "Support young people in your community",
+];
+
+const YOUTH_STEPS = [
+  { step: 1, title: "Sign Up Free", desc: "Create your profile in minutes. Add your skills, interests, and availability.", color: "from-blue-500 to-cyan-500" },
+  { step: 2, title: "Browse Small Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", color: "from-purple-500 to-pink-500" },
+  { step: 3, title: "Get Hired", desc: "Apply with one click or get 'poked' by interested job posters. Start working fast.", color: "from-pink-500 to-rose-500" },
+  { step: 4, title: "Earn & Grow", desc: "Complete small jobs, collect reviews, and build your verified portfolio.", color: "from-green-500 to-emerald-500" },
+];
+
+const EMPLOYER_STEPS = [
+  { step: 1, title: "Post Your Job", desc: "Describe what you need done. Set your budget and requirements in minutes.", color: "from-purple-500 to-pink-500" },
+  { step: 2, title: "Find Talent", desc: "Browse youth profiles with verified reviews and ratings. Find the perfect match.", color: "from-blue-500 to-cyan-500" },
+  { step: 3, title: "Hire & Connect", desc: "Send 'pokes' to workers you like or review applications. Start chatting instantly.", color: "from-pink-500 to-rose-500" },
+  { step: 4, title: "Review & Repeat", desc: "Leave feedback after completion. Build relationships with reliable youth workers.", color: "from-green-500 to-emerald-500" },
+];
+
+const TESTIMONIALS = [
+  {
+    name: "Emma S.",
+    age: 18,
+    role: "Pet Sitter & Dog Walker",
+    quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
+    avatar: "🐕",
+    jobs: 24,
+    rating: 4.9,
+  },
+  {
+    name: "Marcus L.",
+    age: 17,
+    role: "Tech Helper & Tutor",
+    quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
+    avatar: "💻",
+    jobs: 31,
+    rating: 5.0,
+  },
+  {
+    name: "Sofia K.",
+    age: 19,
+    role: "Event Assistant",
+    quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning!",
+    avatar: "🎉",
+    jobs: 18,
+    rating: 4.8,
+  },
+];
+
+const TRUST_ITEMS = [
+  { icon: Shield, title: "Legal Compliance", desc: "Arbeidsmiljøloven rules enforced automatically—working hours, pay minimums, age restrictions" },
+  { icon: GraduationCap, title: "Guardian Consent", desc: "Parents approve before minors can work. Full visibility and peace of mind" },
+  { icon: Award, title: "Verified Posters", desc: "Age verification required. Optional BankID/Vipps for highest trust" },
+  { icon: MapPin, title: "Local Community", desc: "Neighbors helping neighbors. Build relationships that last beyond single jobs" },
+  { icon: Sparkles, title: "AI Career Advisor", desc: "Your dedicated AI agent provides personalised career guidance based on your goals and interests" },
+];
 
 export default function LandingPage() {
-  const { data: session, status } = useSession();
-
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Multi-layered gradient background - darker for visible grid */}
+      {/* Static gradient background - renders immediately */}
       <div className="fixed inset-0 -z-20">
         <div className="absolute inset-0 bg-gradient-to-br from-green-100/90 via-emerald-50/80 to-teal-100/90 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/40" />
         <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/50 via-transparent to-purple-50/40 dark:from-transparent dark:via-slate-800/30 dark:to-emerald-900/30" />
@@ -53,101 +141,9 @@ export default function LandingPage() {
         <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-emerald-100/80 via-green-50/50 to-transparent dark:from-slate-950/90 dark:via-slate-900/60 dark:to-transparent" />
       </div>
 
-      {/* Animated Background - Gradient Blobs (hidden on mobile for performance) */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
-        <motion.div
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-green-400/25 via-emerald-300/20 to-transparent blur-3xl"
-          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-teal-400/20 via-cyan-300/15 to-transparent blur-3xl"
-          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/3 w-[350px] h-[350px] rounded-full bg-gradient-to-tl from-emerald-400/20 via-green-300/15 to-transparent blur-3xl"
-          animate={{ x: [0, -25, 0], y: [0, -15, 0], scale: [1, 1.12, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-        {/* Additional accent blob */}
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-r from-green-200/10 via-emerald-100/15 to-teal-200/10 dark:from-green-800/10 dark:via-emerald-900/10 dark:to-teal-800/10 blur-3xl"
-          animate={{ scale: [1, 1.08, 1], rotate: [0, 5, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Animated grid - higher opacity for visibility */}
-        <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.15)_1px,transparent_1px)] bg-[size:40px_40px]"
-          animate={{ opacity: [0.6, 0.9, 0.6] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Secondary offset grid for depth */}
-        <motion.div
-          className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"
-          style={{ transform: "translate(20px, 20px)" }}
-          animate={{ opacity: [0.5, 0.7, 0.5] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-      </div>
+      {/* Animated background - lazy loaded, non-blocking */}
+      <AnimatedBackground />
 
-      {/* Floating Bubbles - Subtle, on sides only, behind content (hidden on mobile for performance) */}
-      <div className="fixed inset-0 z-[1] overflow-hidden pointer-events-none hidden sm:block">
-        {/* Left side bubbles */}
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={`left-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: `${6 + (i % 3) * 4}px`,
-              height: `${6 + (i % 3) * 4}px`,
-              left: `${3 + (i % 3) * 4}%`,
-              top: `${12 + i * 18}%`,
-              background: "radial-gradient(circle, rgba(34,197,94,0.5) 0%, rgba(34,197,94,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(34,197,94,0.25)",
-            }}
-            animate={{
-              y: [0, -25 - (i % 3) * 10, 0],
-              x: [0, 8 + (i % 2) * 4, 0],
-              opacity: [0.3, 0.5, 0.3],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 10 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.5,
-            }}
-          />
-        ))}
-        {/* Right side bubbles */}
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={`right-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: `${6 + (i % 3) * 4}px`,
-              height: `${6 + (i % 3) * 4}px`,
-              right: `${3 + (i % 3) * 4}%`,
-              top: `${18 + i * 16}%`,
-              background: "radial-gradient(circle, rgba(16,185,129,0.5) 0%, rgba(16,185,129,0.2) 50%, transparent 70%)",
-              boxShadow: "0 0 10px rgba(16,185,129,0.25)",
-            }}
-            animate={{
-              y: [0, -20 - (i % 3) * 8, 0],
-              x: [0, -8 - (i % 2) * 4, 0],
-              opacity: [0.3, 0.5, 0.3],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 11 + i * 1.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.3 + 0.5,
-            }}
-          />
-        ))}
-      </div>
       {/* Navigation */}
       <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 sm:h-16 items-center justify-between px-4">
@@ -162,147 +158,49 @@ export default function LandingPage() {
             <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
               About
             </Link>
-            {status === "loading" ? (
-              <NavSkeleton />
-            ) : session ? (
-              <>
-                <span className="text-sm text-muted-foreground hidden lg:inline">
-                  {session.user.email}
-                </span>
-                <Button asChild className="h-10 sm:h-9 px-3 sm:px-4">
-                  <Link href={session.user.role === "EMPLOYER" ? "/employer/dashboard" : "/dashboard"}>
-                    <LayoutDashboard className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Dashboard</span>
-                  </Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" asChild className="h-10 sm:h-9 px-3 sm:px-4 hidden sm:inline-flex">
-                  <Link href="/auth/signin">Sign In</Link>
-                </Button>
-                <Button asChild className="bg-green-600 hover:bg-green-700 h-10 sm:h-9 px-4">
-                  <Link href="/auth/signup">
-                    <span className="sm:hidden">Start</span>
-                    <span className="hidden sm:inline">Get Started</span>
-                  </Link>
-                </Button>
-              </>
-            )}
+            <Suspense fallback={
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="h-9 w-20 bg-muted/50 rounded animate-pulse hidden sm:block" />
+                <div className="h-10 w-24 bg-green-600/50 rounded animate-pulse" />
+              </div>
+            }>
+              <LandingNavAuth />
+            </Suspense>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden border-b">
-        <div className="container px-4 py-12 sm:py-20 md:py-32">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mx-auto max-w-4xl text-center"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 mb-4 sm:mb-6"
-            >
-              <Sprout className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              Growth from Small Beginnings
-            </motion.div>
+      <HeroSection />
 
-            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6">
-              Where Young Talent{" "}
-              <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                Takes Root
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
-              Sprout connects Norwegian neighborhoods with young talent. Find local micro-jobs,
-              build real skills, and discover your career path—all in a safe, legally compliant platform for ages 15–20.
-            </p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0"
-            >
-              <Button size="lg" asChild className="bg-green-600 hover:bg-green-700 text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
-                <Link href="/auth/signup">
-                  Start Growing
-                  <Sprout className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
-                <Link href="/auth/signup?role=employer">
-                  Hire Young Talent
-                </Link>
-              </Button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="mt-6"
-            >
-              <Link
-                href="/about"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
-              >
-                Learn more about Sprout
-                <ArrowRight className="h-3 w-3" />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Hero Video Section
-          - Lazy-loaded for performance (IntersectionObserver)
-          - Poster image prevents video download until interaction
-          - Play button overlay with tap-to-play for mobile
-          - Keyboard accessible (Space/Enter to play, M to mute)
-          - Respects prefers-reduced-motion
-          - Supports captions/subtitles via tracks prop
-      */}
+      {/* Hero Video Section */}
       <section className="py-8 sm:py-12 md:py-16 border-b bg-muted/20">
         <div className="container px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5 }}
-          >
-            <HeroVideo
-              src="VIDEO_URL_PLACEHOLDER"
-              poster="/video-poster.jpg"
-              ariaLabel="Sprout platform explainer video - See how young people find jobs and build skills"
-              caption="See how Sprout helps young people grow skills, earn trust, and take their first steps into work."
-              tracks={[
-                {
-                  src: "/captions-en.vtt",
-                  kind: "captions",
-                  srcLang: "en",
-                  label: "English",
-                },
-                {
-                  src: "/captions-no.vtt",
-                  kind: "captions",
-                  srcLang: "no",
-                  label: "Norsk",
-                  default: true,
-                },
-              ]}
-            />
-          </motion.div>
+          <HeroVideo
+            src="VIDEO_URL_PLACEHOLDER"
+            poster="/video-poster.jpg"
+            ariaLabel="Sprout platform explainer video - See how young people find jobs and build skills"
+            caption="See how Sprout helps young people grow skills, earn trust, and take their first steps into work."
+            tracks={[
+              {
+                src: "/captions-en.vtt",
+                kind: "captions",
+                srcLang: "en",
+                label: "English",
+              },
+              {
+                src: "/captions-no.vtt",
+                kind: "captions",
+                srcLang: "no",
+                label: "Norsk",
+                default: true,
+              },
+            ]}
+          />
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section - Static content, no client JS needed */}
       <section className="border-b py-8 sm:py-12 bg-muted/30">
         <div className="container px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
@@ -326,7 +224,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 4 Pillars Section - with enhanced animations */}
+      {/* 4 Pillars Section */}
       <PillarsSection />
 
       {/* Join Section - Role-Based Cards */}
@@ -356,12 +254,7 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <ul className="space-y-3">
-                  {[
-                    "Find local jobs and gigs in your area",
-                    "Build a verified portfolio of work experience",
-                    "AI-powered career guidance from your own dedicated advisor",
-                    "Explore 100+ career paths matched to your goals",
-                  ].map((item, i) => (
+                  {YOUTH_BENEFITS.map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
                       {item}
@@ -391,12 +284,7 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <ul className="space-y-3">
-                  {[
-                    "Post jobs and find eager local youth workers",
-                    "Browse profiles with verified reviews and ratings",
-                    "Labor law compliance handled automatically",
-                    "Support young people in your community",
-                  ].map((item, i) => (
+                  {EMPLOYER_BENEFITS.map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <CheckCircle className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
                       {item}
@@ -442,12 +330,7 @@ export default function LandingPage() {
                 For Youth Workers
               </div>
               <div className="space-y-6">
-                {[
-                  { step: 1, title: "Sign Up Free", desc: "Create your profile in minutes. Add your skills, interests, and availability.", icon: UserPlus, color: "from-blue-500 to-cyan-500" },
-                  { step: 2, title: "Browse Small Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", icon: Search, color: "from-purple-500 to-pink-500" },
-                  { step: 3, title: "Get Hired", desc: "Apply with one click or get 'poked' by interested job posters. Start working fast.", icon: CheckCircle, color: "from-pink-500 to-rose-500" },
-                  { step: 4, title: "Earn & Grow", desc: "Complete small jobs, collect reviews, and build your verified portfolio.", icon: Star, color: "from-green-500 to-emerald-500" },
-                ].map((item) => (
+                {YOUTH_STEPS.map((item) => (
                   <div key={item.step} className="flex gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
                       {item.step}
@@ -468,12 +351,7 @@ export default function LandingPage() {
                 For Job Posters
               </div>
               <div className="space-y-6">
-                {[
-                  { step: 1, title: "Post Your Job", desc: "Describe what you need done. Set your budget and requirements in minutes.", icon: Building2, color: "from-purple-500 to-pink-500" },
-                  { step: 2, title: "Find Talent", desc: "Browse youth profiles with verified reviews and ratings. Find the perfect match.", icon: Users, color: "from-blue-500 to-cyan-500" },
-                  { step: 3, title: "Hire & Connect", desc: "Send 'pokes' to workers you like or review applications. Start chatting instantly.", icon: Zap, color: "from-pink-500 to-rose-500" },
-                  { step: 4, title: "Review & Repeat", desc: "Leave feedback after completion. Build relationships with reliable youth workers.", icon: Trophy, color: "from-green-500 to-emerald-500" },
-                ].map((item) => (
+                {EMPLOYER_STEPS.map((item) => (
                   <div key={item.step} className="flex gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
                       {item.step}
@@ -507,35 +385,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                name: "Emma S.",
-                age: 18,
-                role: "Pet Sitter & Dog Walker",
-                quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
-                avatar: "🐕",
-                jobs: 24,
-                rating: 4.9,
-              },
-              {
-                name: "Marcus L.",
-                age: 17,
-                role: "Tech Helper & Tutor",
-                quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
-                avatar: "💻",
-                jobs: 31,
-                rating: 5.0,
-              },
-              {
-                name: "Sofia K.",
-                age: 19,
-                role: "Event Assistant",
-                quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning!",
-                avatar: "🎉",
-                jobs: 18,
-                rating: 4.8,
-              },
-            ].map((testimonial) => (
+            {TESTIMONIALS.map((testimonial) => (
               <Card key={testimonial.name} className="hover:shadow-lg transition-shadow">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-4">
@@ -590,13 +440,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
-            {[
-              { icon: Shield, title: "Legal Compliance", desc: "Arbeidsmiljøloven rules enforced automatically—working hours, pay minimums, age restrictions" },
-              { icon: GraduationCap, title: "Guardian Consent", desc: "Parents approve before minors can work. Full visibility and peace of mind" },
-              { icon: Award, title: "Verified Posters", desc: "Age verification required. Optional BankID/Vipps for highest trust" },
-              { icon: MapPin, title: "Local Community", desc: "Neighbors helping neighbors. Build relationships that last beyond single jobs" },
-              { icon: Sparkles, title: "AI Career Advisor", desc: "Your dedicated AI agent provides personalised career guidance based on your goals and interests" },
-            ].map((item) => (
+            {TRUST_ITEMS.map((item) => (
               <div key={item.title} className="text-center p-6 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
                   <item.icon className="h-6 w-6 text-green-600" />
@@ -676,7 +520,7 @@ export default function LandingPage() {
               <Link href="/legal/disclaimer" className="hover:text-primary transition-colors">Disclaimer</Link>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground text-center px-4">
-              &copy; {new Date().getFullYear()} Sprout. Connecting Norwegian neighborhoods with young talent.
+              © {new Date().getFullYear()} Sprout. Connecting Norwegian neighborhoods with young talent.
             </p>
           </div>
         </div>

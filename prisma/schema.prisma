@@ -1,4 +1,9 @@
 // This is your Prisma schema file
+//
+// LANGUAGE POLICY: This application is English-only by design.
+// - System-generated content (AI responses, notifications, etc.) must be in English.
+// - User-generated content (profiles, messages, reviews) can be in any language.
+// - See /docs/english-only.md for full policy documentation.
 
 generator client {
   provider = "prisma-client-js"
