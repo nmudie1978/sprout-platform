@@ -26,6 +26,8 @@ import {
   Rocket,
   Loader2,
   Check,
+  Handshake,
+  MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { searchCareers, type Career } from "@/lib/career-pathways";
@@ -171,7 +173,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
   });
 
   const handleNext = () => {
-    if (step < 3) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       submitMutation.mutate();
@@ -202,12 +204,12 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
             <DialogTitle className="text-xl">Welcome to Sprout</DialogTitle>
           </div>
           <DialogDescription>
-            Let&apos;s personalize your experience in {3 - step === 0 ? "one" : 3 - step + 1} quick step{3 - step !== 1 ? "s" : ""}
+            Let&apos;s personalize your experience in {4 - step === 0 ? "one" : 4 - step + 1} quick step{4 - step !== 1 ? "s" : ""}
           </DialogDescription>
 
           {/* Progress dots */}
           <div className="flex gap-2 mt-4">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div
                 key={s}
                 className={cn(
@@ -303,10 +305,50 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
               </motion.div>
             )}
 
-            {/* Step 2: Current Priorities */}
+            {/* Step 2: How Payments Work */}
             {step === 2 && (
               <motion.div
                 key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Handshake className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold">How payments work</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Sprout helps you find real jobs and connect with people in your local community.
+                  </p>
+
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex items-start gap-3">
+                      <MessageCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">
+                          Payment is agreed and handled directly between you and the employer.
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Sprout does not handle money or take fees.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground text-center pt-2">
+                    This keeps Sprout simple, safe, and focused on helping you find work.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 3: Current Priorities */}
+            {step === 3 && (
+              <motion.div
+                key="step3"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -353,10 +395,10 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
               </motion.div>
             )}
 
-            {/* Step 3: Availability */}
-            {step === 3 && (
+            {/* Step 4: Availability */}
+            {step === 4 && (
               <motion.div
-                key="step3"
+                key="step4"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -433,7 +475,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   Saving...
                 </>
-              ) : step === 3 ? (
+              ) : step === 4 ? (
                 <>
                   <Sparkles className="h-4 w-4 mr-2" />
                   Get Started

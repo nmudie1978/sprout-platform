@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CheckCircle2, Banknote, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
 interface ConfirmPaymentButtonProps {
@@ -60,8 +60,8 @@ export function ConfirmPaymentButton({
     },
     onSuccess: () => {
       toast({
-        title: "Payment Confirmed! ✅",
-        description: `You've confirmed payment of ${formatCurrency(amount)} for "${jobTitle}".`,
+        title: "Work Completed",
+        description: `You've confirmed work completed for "${jobTitle}". Remember to arrange payment directly with the worker.`,
       });
       queryClient.invalidateQueries({ queryKey: ["payment-status", jobId] });
       queryClient.invalidateQueries({ queryKey: ["employer-jobs"] });
@@ -81,7 +81,7 @@ export function ConfirmPaymentButton({
     return (
       <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
         <CheckCircle2 className="h-4 w-4" />
-        <span>Payment Confirmed</span>
+        <span>Work Completed</span>
       </div>
     );
   }
@@ -103,32 +103,33 @@ export function ConfirmPaymentButton({
           size="sm"
           className="border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-700"
         >
-          <Banknote className="mr-2 h-4 w-4" />
-          Confirm Payment
+          <CheckCircle2 className="mr-2 h-4 w-4" />
+          Mark Complete
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
-            <Banknote className="h-5 w-5 text-green-600" />
-            Confirm Payment
+            <CheckCircle2 className="h-5 w-5 text-green-600" />
+            Confirm Work Completed
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-3">
             <p>
-              Please confirm that you have paid{" "}
-              {youthName ? <strong>{youthName}</strong> : "the youth worker"} for
-              completing this job.
+              Please confirm that{" "}
+              {youthName ? <strong>{youthName}</strong> : "the youth worker"} has
+              completed this job.
             </p>
             <div className="p-4 rounded-lg bg-muted">
               <div className="text-sm text-muted-foreground">Job</div>
               <div className="font-medium">{jobTitle}</div>
-              <div className="mt-2 text-sm text-muted-foreground">Amount</div>
+              <div className="mt-2 text-sm text-muted-foreground">Agreed amount</div>
               <div className="text-2xl font-bold text-green-600">
                 {formatCurrency(amount)}
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              The youth worker will be notified that payment has been confirmed.
+              The worker will be notified that you&apos;ve confirmed the job is complete.
+              Remember to arrange payment directly with them.
             </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -147,7 +148,7 @@ export function ConfirmPaymentButton({
             ) : (
               <>
                 <CheckCircle2 className="mr-2 h-4 w-4" />
-                Confirm Payment
+                Confirm Complete
               </>
             )}
           </AlertDialogAction>

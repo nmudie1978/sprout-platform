@@ -123,6 +123,24 @@ export default function SafetyGuidelinesPage() {
           </section>
 
           <section className="mb-8">
+            <h2>How Does Payment Work?</h2>
+            <p>
+              Sprout does not process payments or hold money. Workers and employers agree
+              payment terms directly with each other.
+            </p>
+            <ul>
+              <li>Discuss and agree on payment before starting any work</li>
+              <li>Make sure you understand how and when you will be paid</li>
+              <li>Cash payment at the end of a job is common for small jobs</li>
+              <li>Keep records of completed work if requested</li>
+            </ul>
+            <p className="text-muted-foreground">
+              This approach allows Sprout to stay focused on safety, trust, and connecting
+              young people with local opportunities.
+            </p>
+          </section>
+
+          <section className="mb-8">
             <h2>Related Policies</h2>
             <p>
               Please also review our other policies:

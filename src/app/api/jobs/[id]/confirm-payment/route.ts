@@ -81,8 +81,8 @@ export async function POST(
       data: {
         userId: youthId,
         type: "SYSTEM",
-        title: "Payment Confirmed! 💰",
-        message: `Payment of ${job.payAmount} kr for "${job.title}" has been confirmed by the employer.`,
+        title: "Work Completed",
+        message: `Employer confirmed work completed for "${job.title}" (${job.payAmount} kr). Payment is arranged directly with the employer.`,
         link: `/dashboard`,
       },
     });

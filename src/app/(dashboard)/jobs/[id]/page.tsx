@@ -54,6 +54,7 @@ import {
   Compass,
   Info,
   Trophy,
+  Lightbulb,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -628,6 +629,9 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     <div className="text-xs text-muted-foreground">
                       {job.payType === "HOURLY" ? "per hour" : "fixed price"}
                     </div>
+                    <div className="text-[10px] text-muted-foreground/70 mt-1">
+                      Paid directly by employer
+                    </div>
                   </div>
 
                   {/* Date */}
@@ -889,7 +893,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                             <Link href={profileLink}>View Profile</Link>
                           </Button>
                         )}
-                        {/* Confirm Payment button */}
+                        {/* Mark Work Complete button */}
                         {isOwner && (job.status === "COMPLETED" || job.status === "REVIEWED") && (
                           <ConfirmPaymentButton
                             jobId={job.id}
@@ -1159,6 +1163,12 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         <Sparkles className="mr-2 h-5 w-5" />
                         Apply for This Job
                       </Button>
+
+                      {/* Payment note */}
+                      <div className="flex items-start gap-2 text-xs text-muted-foreground px-1">
+                        <Lightbulb className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                        <span>Payment is arranged directly with the employer after the job is completed.</span>
+                      </div>
 
                       {/* Recommend a Friend */}
                       {job.status === "POSTED" && !isDeadlinePassed && (

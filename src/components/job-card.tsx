@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { MapPin, Clock, Calendar, AlertCircle, CheckCircle2, ChevronRight } from "lucide-react";
+import { RoleThumbnailSquare } from "@/components/role-thumbnail";
 
 // Category configuration
 const categoryConfig: Record<string, { emoji: string; label: string }> = {
@@ -134,7 +135,7 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
           {/* Header: Title + Pay */}
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-lg shrink-0">{category.emoji}</span>
+              <RoleThumbnailSquare category={job.category} title={job.title} size="md" />
               <div className="min-w-0">
                 <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
                   {job.title}
@@ -147,9 +148,12 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
                 </p>
               </div>
             </div>
-            <span className="font-bold text-sm text-gray-600 dark:text-gray-400 shrink-0">
-              {formatCurrency(job.payAmount)}
-            </span>
+            <div className="text-right shrink-0">
+              <span className="font-bold text-sm text-gray-600 dark:text-gray-400">
+                {formatCurrency(job.payAmount)}
+              </span>
+              <p className="text-[9px] text-muted-foreground/70">Direct pay</p>
+            </div>
           </div>
 
           {/* Location */}
@@ -218,9 +222,7 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
         <div className="p-4 pb-3">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-start gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                <span className="text-xl">{category.emoji}</span>
-              </div>
+              <RoleThumbnailSquare category={job.category} title={job.title} size="lg" />
               <div className="min-w-0">
                 <h3 className="font-semibold text-base group-hover:text-primary transition-colors line-clamp-1">
                   {job.title}
@@ -242,6 +244,7 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
                   {job.payType === "HOURLY" ? "/hr" : "fixed"}
                 </p>
               )}
+              <p className="text-[10px] text-muted-foreground/70">Paid directly by employer</p>
             </div>
           </div>
 
@@ -330,11 +333,9 @@ export const JobCardSimple = memo(function JobCardSimple({ job }: { job: any }) 
   return (
     <Link href={`/jobs/${job.id}`} className="block group">
       <Card className="p-4 border hover:border-primary/30 hover:shadow-md transition-all h-full">
-        {/* Header: Emoji + Title + Pay */}
+        {/* Header: Thumbnail + Title + Pay */}
         <div className="flex items-start gap-3 mb-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center shrink-0">
-            <span className="text-lg">{category.emoji}</span>
-          </div>
+          <RoleThumbnailSquare category={job.category} title={job.title} size="md" className="w-9 h-9" />
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1 mb-0.5">
               {job.title}
@@ -346,9 +347,12 @@ export const JobCardSimple = memo(function JobCardSimple({ job }: { job: any }) 
               )}
             </p>
           </div>
-          <span className="font-bold text-gray-600 dark:text-gray-400 shrink-0">
-            {formatCurrency(job.payAmount)}
-          </span>
+          <div className="text-right shrink-0">
+            <span className="font-bold text-gray-600 dark:text-gray-400">
+              {formatCurrency(job.payAmount)}
+            </span>
+            <p className="text-[9px] text-muted-foreground/70">Direct pay</p>
+          </div>
         </div>
 
         {/* Info Grid */}
