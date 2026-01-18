@@ -149,6 +149,7 @@ export interface MultipleCareerJourneys {
   completedJobsCount: number;
   totalEarnings: number;
   userSkills: string[];
+  availabilityLevel: string | null;
 }
 
 // Get Multiple Career Journeys - for users with multiple career goals
@@ -165,6 +166,7 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
       select: {
         careerAspiration: true,
         desiredRoles: true,
+        availabilityLevel: true,
       },
     }),
     prisma.userSkillSignal.findMany({
@@ -192,6 +194,9 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
     (sum, job) => sum + (job.job.payAmount || 0),
     0
   );
+
+  // Get availability level for runway data
+  const availabilityLevel = youthProfile?.availabilityLevel || null;
 
   // Collect all career goals (from careerAspiration and desiredRoles)
   const careerGoals: string[] = [];
@@ -276,6 +281,99 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
     completedJobsCount: completedJobs.length,
     totalEarnings,
     userSkills,
+    availabilityLevel,
+  };
+}
+
+// Get Career Journey by specific goal - for goal-scoped sub-pages
+export async function getCareerJourneyForGoal(goal: string): Promise<CareerJourneyData | null> {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "YOUTH") return null;
+
+  const userId = session.user.id;
+
+  // Fetch user profile and skill data
+  const [skillSignals, completedJobs] = await Promise.all([
+    prisma.userSkillSignal.findMany({
+      where: { userId },
+      include: { skill: true },
+    }),
+    prisma.jobCompletion.findMany({
+      where: {
+        youthId: userId,
+        outcome: "COMPLETED",
+      },
+      include: {
+        job: {
+          select: { payAmount: true },
+        },
+      },
+    }),
+  ]);
+
+  // Extract user's skills
+  const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
+
+  // Find target career from the specific goal
+  let targetCareer: Career | null = null;
+  let category: CareerCategory | null = null;
+
+  const recommendations = getRecommendationsFromAspiration(goal);
+  if (recommendations.length > 0) {
+    targetCareer = recommendations[0].career;
+    category = getCategoryForCareer(targetCareer.id) || null;
+  }
+
+  if (!targetCareer) {
+    return null;
+  }
+
+  // Calculate skills analysis
+  const skillsNeeded = targetCareer.keySkills || [];
+  const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
+
+  const skillsYouHave = userSkills.filter((skill) =>
+    skillsNeededLower.some(
+      (needed) => needed.includes(skill) || skill.includes(needed)
+    )
+  );
+
+  const skillsToGain = skillsNeeded.filter(
+    (skill) =>
+      !userSkills.some(
+        (userSkill) =>
+          userSkill.includes(skill.toLowerCase()) ||
+          skill.toLowerCase().includes(userSkill)
+      )
+  );
+
+  const skillMatchPercent = calculateCareerMatch(userSkills, targetCareer);
+
+  // Get related careers in same category
+  const relatedCareers = category
+    ? getCareersForCategory(category)
+        .filter((c) => c.id !== targetCareer?.id)
+        .slice(0, 4)
+    : [];
+
+  // Calculate total earnings
+  const totalEarnings = completedJobs.reduce(
+    (sum, app) => sum + (app.job.payAmount || 0),
+    0
+  );
+
+  return {
+    targetCareer,
+    careerAspiration: goal,
+    educationPath: targetCareer.educationPath || null,
+    skillsNeeded,
+    skillsYouHave,
+    skillsToGain,
+    skillMatchPercent,
+    relatedCareers,
+    category,
+    completedJobsCount: completedJobs.length,
+    totalEarnings,
   };
 }
 

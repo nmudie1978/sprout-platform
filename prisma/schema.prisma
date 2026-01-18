@@ -325,8 +325,9 @@ model YouthProfile {
   address              String?          // Full address (optional, more specific)
 
   // My Path personalization fields
-  desiredRoles         String[]         // Top role interests (max 3)
+  desiredRoles         String[]         // Top role interests (max 3, career goals)
   desiredSectors       String[]         // Optional sector preferences
+  activeCareerGoal     String?          // Currently selected career tab in My Growth
   learningPreferences  String[]         // e.g., "video", "hands-on", "reading"
   availabilityTags     String[]         // e.g., "weekends", "after-school", "summer"
   locationBase         String?          // City/area for job matching (legacy, prefer city field)

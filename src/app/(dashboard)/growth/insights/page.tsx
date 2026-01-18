@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,12 +16,13 @@ import {
   Sparkles,
   Bot,
   ArrowRight,
+  ArrowLeft,
   Lock,
   CheckCircle2,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { getCareerJourney, type CareerJourneyData } from "@/lib/my-path/actions";
+import { getCareerJourneyForGoal, type CareerJourneyData } from "@/lib/my-path/actions";
 
 interface Insight {
   type: "strength" | "opportunity" | "gap" | "trend";
@@ -30,7 +32,7 @@ interface Insight {
   href?: string;
 }
 
-function generateInsights(journey: CareerJourneyData | null, growthData: any): Insight[] {
+function generateInsights(journey: CareerJourneyData | null, growthData: any, goalName: string): Insight[] {
   const insights: Insight[] = [];
 
   // Skill-based insights
@@ -38,7 +40,7 @@ function generateInsights(journey: CareerJourneyData | null, growthData: any): I
     insights.push({
       type: "strength",
       title: `Your strongest skill is "${journey.skillsYouHave[0]}"`,
-      description: "This skill has been demonstrated through your completed jobs and is valued by employers.",
+      description: `This skill has been demonstrated through your completed jobs and is valued for ${goalName}.`,
       actionable: "Keep building on this strength by taking on more challenging jobs that use it.",
     });
   }
@@ -59,7 +61,7 @@ function generateInsights(journey: CareerJourneyData | null, growthData: any): I
         title: `You're ${journey.skillMatchPercent}% of the way to ${journey.targetCareer.title}!`,
         description: "You're making great progress toward your career goal.",
         actionable: "Keep going! Your next steps are becoming clearer.",
-        href: "/growth/career-path",
+        href: `/growth/career-path?goal=${encodeURIComponent(goalName)}`,
       });
     }
   }
@@ -117,11 +119,13 @@ function generateInsights(journey: CareerJourneyData | null, growthData: any): I
 
 export default function InsightsPage() {
   const { data: session, status: sessionStatus } = useSession();
+  const searchParams = useSearchParams();
+  const goalParam = searchParams.get("goal");
 
   const { data: journey, isLoading: journeyLoading } = useQuery<CareerJourneyData | null>({
-    queryKey: ["career-journey"],
-    queryFn: () => getCareerJourney(),
-    enabled: session?.user?.role === "YOUTH",
+    queryKey: ["career-journey", goalParam],
+    queryFn: () => goalParam ? getCareerJourneyForGoal(goalParam) : Promise.resolve(null),
+    enabled: session?.user?.role === "YOUTH" && !!goalParam,
   });
 
   const { data: growthData, isLoading: growthLoading } = useQuery({
@@ -160,7 +164,30 @@ export default function InsightsPage() {
     );
   }
 
-  const insights = generateInsights(journey ?? null, growthData);
+  // No goal parameter provided - redirect back to growth page
+  if (!goalParam) {
+    return (
+      <Card className="border-2 border-dashed border-amber-300 dark:border-amber-700">
+        <CardContent className="py-12 text-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+            <Lightbulb className="h-8 w-8 text-amber-600" />
+          </div>
+          <h2 className="text-xl font-semibold mb-2">No career goal selected</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Please select a career goal from your My Growth page to view insights.
+          </p>
+          <Link href="/growth">
+            <Button size="lg">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to My Growth
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const insights = generateInsights(journey ?? null, growthData, goalParam);
 
   const getInsightConfig = (type: Insight["type"]) => {
     switch (type) {
@@ -197,6 +224,12 @@ export default function InsightsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Back link */}
+      <Link href="/growth" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        Back to My Growth
+      </Link>
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -204,10 +237,10 @@ export default function InsightsPage() {
       >
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="h-5 w-5 text-amber-600" />
-          <h2 className="text-lg font-semibold">Your Insights</h2>
+          <h2 className="text-lg font-semibold">Insights for {goalParam}</h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          Personalised analysis based on your progress, skills, and career goals.
+          Personalised analysis based on your progress toward becoming a {journey?.targetCareer?.title || goalParam}.
         </p>
       </motion.div>
 
@@ -218,12 +251,9 @@ export default function InsightsPage() {
             <Lightbulb className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
             <h3 className="font-semibold mb-2">No insights yet</h3>
             <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
-              Complete some jobs and set a career goal to receive personalised insights.
+              Complete some jobs to receive personalised insights for {goalParam}.
             </p>
             <div className="flex gap-2 justify-center">
-              <Button asChild variant="outline">
-                <Link href="/profile">Set career goal</Link>
-              </Button>
               <Button asChild>
                 <Link href="/jobs">Browse Small Jobs</Link>
               </Button>
@@ -291,11 +321,11 @@ export default function InsightsPage() {
                 <div>
                   <h4 className="font-semibold">Want deeper insights?</h4>
                   <p className="text-sm text-muted-foreground">
-                    Ask Sprout AI for personalised advice
+                    Ask Sprout AI for personalised advice about {goalParam}
                   </p>
                 </div>
               </div>
-              <Link href="/career-advisor">
+              <Link href={`/career-advisor?goal=${encodeURIComponent(goalParam)}`}>
                 <Button variant="outline" className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30">
                   <Bot className="h-4 w-4 mr-2" />
                   Chat

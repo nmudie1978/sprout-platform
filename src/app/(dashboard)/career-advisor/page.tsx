@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,8 @@ import {
   ChevronRight,
   AlertCircle,
   LogIn,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -38,7 +41,8 @@ interface Message {
   };
 }
 
-const suggestedPrompts = [
+// Default prompts when no goal is set
+const defaultPrompts = [
   {
     icon: Compass,
     label: "Explore careers",
@@ -65,7 +69,49 @@ const suggestedPrompts = [
   },
 ];
 
-const quickQuestions = [
+// Goal-specific prompt generators
+function getGoalSpecificPrompts(goal: string) {
+  return [
+    {
+      icon: Target,
+      label: "Career path",
+      prompt: `What's the typical path to becoming a ${goal}?`,
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      icon: GraduationCap,
+      label: "Education",
+      prompt: `What education or training do I need to become a ${goal}?`,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: TrendingUp,
+      label: "Job market",
+      prompt: `What's the job market like for ${goal}s in Norway?`,
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: Lightbulb,
+      label: "Build skills",
+      prompt: `What skills should I build now to prepare for becoming a ${goal}?`,
+      color: "from-orange-500 to-amber-500",
+    },
+  ];
+}
+
+// Goal-specific quick questions generator
+function getGoalSpecificQuestions(goal: string) {
+  return [
+    `What does a day in the life of a ${goal} look like?`,
+    `What salary can I expect as a ${goal} in Norway?`,
+    `What small jobs can help me build skills for becoming a ${goal}?`,
+    `What challenges do ${goal}s typically face?`,
+    `Are there apprenticeships available for ${goal}s?`,
+    `What companies hire ${goal}s in Norway?`,
+  ];
+}
+
+const defaultQuickQuestions = [
   "What does a day in the life of a developer look like?",
   "How much can I earn as a lærling (apprentice)?",
   "What are the fastest-growing industries in Norway?",
@@ -76,12 +122,25 @@ const quickQuestions = [
 
 export default function CareerAdvisorPage() {
   const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
+  const goalParam = searchParams.get("goal");
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Compute goal-specific content
+  const suggestedPrompts = useMemo(
+    () => (goalParam ? getGoalSpecificPrompts(goalParam) : defaultPrompts),
+    [goalParam]
+  );
+  const quickQuestions = useMemo(
+    () => (goalParam ? getGoalSpecificQuestions(goalParam) : defaultQuickQuestions),
+    [goalParam]
+  );
 
   const isAuthenticated = status === "authenticated";
   const isLoadingAuth = status === "loading";
@@ -110,15 +169,21 @@ export default function CareerAdvisorPage() {
     setError(null);
 
     try {
+      // Add goal context to the message if set
+      const messageWithContext = goalParam
+        ? `[Context: I'm interested in becoming a ${goalParam}] ${messageText.trim()}`
+        : messageText.trim();
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: messageText.trim(),
+          message: messageWithContext,
           conversationHistory: messages.slice(-4).map((m) => ({
             role: m.role,
             content: m.content,
           })),
+          careerGoal: goalParam || undefined,
         }),
       });
 
@@ -250,7 +315,9 @@ export default function CareerAdvisorPage() {
       <PageHeader
         title="AI Career"
         gradientText="Advisor"
-        description="Get personalised career guidance, explore opportunities, and plan your path forward"
+        description={goalParam
+          ? `Get personalised guidance for your path to becoming a ${goalParam}`
+          : "Get personalised career guidance, explore opportunities, and plan your path forward"}
         icon={Bot}
       />
 
@@ -286,10 +353,21 @@ export default function CareerAdvisorPage() {
               <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 mb-4">
                 <Sparkles className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Hei! I'm your Career Advisor</h3>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                I can help you explore careers, find jobs, build skills, and plan your path. Ask me anything about work and careers in Norway!
-              </p>
+              {goalParam ? (
+                <>
+                  <h3 className="text-xl font-bold mb-2">Let's talk about becoming a {goalParam}</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    I can help you understand the path to this career, the skills you'll need, and how to get started. Ask me anything!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl font-bold mb-2">Hei! I'm your Career Advisor</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    I can help you explore careers, find jobs, build skills, and plan your path. Ask me anything about work and careers in Norway!
+                  </p>
+                </>
+              )}
 
               {/* Suggested Prompts */}
               <div className="grid grid-cols-2 gap-3 w-full max-w-lg mb-6">

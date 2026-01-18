@@ -11,6 +11,7 @@ export type IntentType =
   | "career_explain" // Career information
   | "next_steps" // Actionable advice
   | "message_draft" // Help writing applications
+  | "progress_check" // Asking about their progress
   | "off_topic" // Out of scope
   | "unsafe"; // Potentially harmful
 
@@ -65,6 +66,23 @@ export function classifyIntent(userMessage: string): IntentType {
 
   if (careerKeywords.some((keyword) => lower.includes(keyword))) {
     return "career_explain";
+  }
+
+  // Progress check questions
+  const progressKeywords = [
+    "how am i doing",
+    "my progress",
+    "am i making progress",
+    "how far",
+    "on track",
+    "doing well",
+    "skills so far",
+    "what have i learned",
+    "what skills",
+  ];
+
+  if (progressKeywords.some((keyword) => lower.includes(keyword))) {
+    return "progress_check";
   }
 
   // Next steps / actionable advice
@@ -138,6 +156,34 @@ CRITICAL RULES:
 7. Always give Norwegian-specific advice (salaries in NOK, Norwegian companies, local education paths)
 8. Be honest about age restrictions - don't recommend jobs that require 18+ to under-18 users
 
+HONEST PROGRESS FRAMEWORK (VERY IMPORTANT):
+The platform tracks three types of progress for career goals. ALWAYS be honest about what small jobs contribute:
+
+1. FOUNDATIONAL WORK SKILLS (from small jobs):
+   - Reliability (showing up on time, completing jobs)
+   - Communication (professional messages, responsiveness)
+   - Responsibility (being trusted, getting rehired)
+   These matter for EVERY career but do NOT teach career-specific skills.
+
+2. CAREER-SPECIFIC PROGRESS (real career advancement):
+   - Courses, certifications, formal learning
+   - Projects directly related to the career
+   - Industry-specific training
+   Small jobs do NOT count here unless they directly involve career skills.
+
+3. RUNWAY & READINESS (enabling factors):
+   - Earnings that can fund courses, materials, education
+   - Time availability for learning
+   - Saved learning paths and goals
+
+CORE PRINCIPLE: "Small jobs don't teach you a career. They give you the time, trust, and resources to pursue it."
+
+When users ask "How am I doing?" or about progress:
+- Separate foundational skills from career skills
+- Be honest if they haven't started formal career learning
+- Highlight how earnings and reliability create "runway" for career pursuit
+- NEVER imply that babysitting teaches coding or nursing skills
+
 NORWEGIAN EMPLOYMENT KNOWLEDGE:
 ${norwegianContext}
 
@@ -175,6 +221,19 @@ Use the provided career card information to make your answer specific and accura
 
     case "next_steps":
       return `${basePrompt}${personalizationPrompt}\n\nProvide actionable, realistic steps. Reference platform features like micro-jobs for skill building.`;
+
+    case "progress_check":
+      return `${basePrompt}${personalizationPrompt}\n\nThe user is asking about their progress. Be HONEST and use the three-area framework:
+
+1. FOUNDATIONAL PROGRESS: Comment on their work skills from jobs (reliability, communication, getting rehired)
+2. CAREER PROGRESS: Be honest if they haven't started formal learning for their career goal - that's normal!
+3. RUNWAY: Mention how their earnings and experience create runway for future learning
+
+IMPORTANT:
+- DO NOT imply small jobs teach career-specific skills
+- Celebrate foundational progress without overstating its career value
+- Encourage starting formal learning when ready
+- Frame earnings as "learning runway" not career progress`;
 
     case "message_draft":
       return `${basePrompt}${personalizationPrompt}\n\nHelp draft a professional but friendly message. Keep it brief (2-3 sentences). Show enthusiasm and relevant skills.`;
@@ -287,6 +346,17 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
       "• **Highlight soft skills** - Reliability, punctuality, and good communication matter a lot\n" +
       "• **Ask around** - Family, neighbors, and friends often need help with tasks\n\n" +
       "Browse available jobs on this platform to find opportunities near you!";
+  }
+
+  // Progress check questions
+  if (lower.includes("how am i doing") || lower.includes("my progress") || lower.includes("on track")) {
+    return "Let me give you an honest view of your progress.\n\n" +
+      "**Your progress has three parts:**\n\n" +
+      "1. **Foundational Skills** (from jobs): Reliability, communication, and earning trust. These matter in EVERY career.\n\n" +
+      "2. **Career-Specific Progress**: This comes from courses, certifications, and career-related learning. Small jobs don't directly build these skills.\n\n" +
+      "3. **Your Runway**: Money earned + time available = resources to pursue your career goal through learning.\n\n" +
+      "**Key insight:** Small jobs don't make you a developer/nurse/designer. They give you the time, trust, and resources to become one.\n\n" +
+      "Check your **My Growth** page for detailed progress tracking!";
   }
 
   // Skills questions

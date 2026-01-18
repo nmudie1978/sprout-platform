@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
   CheckCircle2,
   Circle,
   ArrowRight,
+  ArrowLeft,
   Briefcase,
   TrendingUp,
   Sparkles,
@@ -23,16 +25,18 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
-import { getCareerJourney, type CareerJourneyData } from "@/lib/my-path/actions";
+import { getCareerJourneyForGoal, type CareerJourneyData } from "@/lib/my-path/actions";
 import { formatCurrency } from "@/lib/utils";
 
 export default function CareerPathPage() {
   const { data: session, status: sessionStatus } = useSession();
+  const searchParams = useSearchParams();
+  const goalParam = searchParams.get("goal");
 
   const { data: journey, isLoading } = useQuery<CareerJourneyData | null>({
-    queryKey: ["career-journey"],
-    queryFn: () => getCareerJourney(),
-    enabled: session?.user?.role === "YOUTH",
+    queryKey: ["career-journey", goalParam],
+    queryFn: () => goalParam ? getCareerJourneyForGoal(goalParam) : Promise.resolve(null),
+    enabled: session?.user?.role === "YOUTH" && !!goalParam,
   });
 
   if (sessionStatus === "loading" || isLoading) {
@@ -59,7 +63,30 @@ export default function CareerPathPage() {
     );
   }
 
-  // No target career set
+  // No goal parameter provided - redirect back to growth page
+  if (!goalParam) {
+    return (
+      <Card className="border-2 border-dashed border-amber-300 dark:border-amber-700">
+        <CardContent className="py-12 text-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+            <Target className="h-8 w-8 text-amber-600" />
+          </div>
+          <h2 className="text-xl font-semibold mb-2">No career goal selected</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Please select a career goal from your My Growth page to view your career path.
+          </p>
+          <Link href="/growth">
+            <Button size="lg">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to My Growth
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // No target career found for the goal
   if (!journey?.targetCareer) {
     return (
       <Card className="border-2 border-dashed border-purple-300 dark:border-purple-700">
@@ -67,15 +94,14 @@ export default function CareerPathPage() {
           <div className="mx-auto w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
             <Target className="h-8 w-8 text-purple-600" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">Set your career goal</h2>
+          <h2 className="text-xl font-semibold mb-2">Career path not found</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Tell us what career you're working towards. We'll show you the journey to get there,
-            including the education path, skills you need, and how your current jobs are building toward your goal.
+            We couldn't find a career path for "{goalParam}". Try selecting a different career goal.
           </p>
-          <Link href="/profile">
+          <Link href="/growth">
             <Button size="lg">
-              <Settings className="h-4 w-4 mr-2" />
-              Set career goal in profile
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to My Growth
             </Button>
           </Link>
         </CardContent>
@@ -87,6 +113,12 @@ export default function CareerPathPage() {
 
   return (
     <div className="space-y-6">
+      {/* Back link */}
+      <Link href="/growth" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        Back to My Growth
+      </Link>
+
       {/* Target Career Card */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -115,7 +147,7 @@ export default function CareerPathPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/profile">
+              <Link href="/growth">
                 <Button variant="ghost" size="sm">
                   <Settings className="h-4 w-4" />
                 </Button>
