@@ -327,6 +327,15 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
     return "You're welcome! Feel free to ask if you have more questions about careers, jobs, or the platform. Good luck!";
   }
 
+  // Check if this is a "day in the life" question - extract career name for generic handling
+  // This catches questions like "What does a day in the life of an accountant look like?"
+  const dayInLifePattern = /(?:day in the life|typical day|daily routine|workday|what do .* do all day).*?(?:of |as |for )?(?:a |an )?([a-zA-ZæøåÆØÅ\s]+?)(?:\?|$|look|like)/i;
+  const dayMatch = lower.match(dayInLifePattern);
+  if (dayMatch && (lower.includes("day") || lower.includes("typical") || lower.includes("look like") || lower.includes("routine"))) {
+    // Let career-specific handlers below take over if they match
+    // This is just for logging/tracking that it's a day-in-life question
+  }
+
   // Career exploration questions
   if (lower.includes("what career") || lower.includes("which career") || lower.includes("career for me") || lower.includes("right career")) {
     return "Great question! Finding the right career starts with understanding your interests and strengths.\n\n" +
@@ -405,18 +414,126 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
   }
 
   // Healthcare careers
-  if (lower.includes("health") || lower.includes("nurse") || lower.includes("doctor") || lower.includes("medical") || lower.includes("hospital")) {
+  if (lower.includes("health") || lower.includes("nurse") || lower.includes("doctor") || lower.includes("medical") || lower.includes("hospital") || lower.includes("sykepleier") || lower.includes("lege")) {
+    // Check if asking about "day in the life" or typical day
+    if (lower.includes("day") || lower.includes("typical") || lower.includes("look like") || lower.includes("daily") || lower.includes("routine") || lower.includes("workday")) {
+      // Nurse-specific day
+      if (lower.includes("nurse") || lower.includes("sykepleier")) {
+        return "**A typical day as a Nurse (Sykepleier) in Norway:**\n\n" +
+          "**Early shift example (07:00-15:00):**\n\n" +
+          "**07:00** - Arrive and get report from night shift about patients\n" +
+          "**07:30** - Morning rounds: check vitals, give medications, help with breakfast\n" +
+          "**09:00** - Patient care: wound dressing, assisting doctors, blood tests\n" +
+          "**11:00** - Documentation in patient records\n" +
+          "**12:00** - Lunch break (30 min)\n" +
+          "**12:30** - Afternoon medications, patient consultations, family meetings\n" +
+          "**14:30** - Handover preparation and documentation\n" +
+          "**15:00** - Report to evening shift and end of day\n\n" +
+          "**What nurses actually do:**\n" +
+          "• ~40% direct patient care (medications, treatments, comfort)\n" +
+          "• ~25% documentation and charting\n" +
+          "• ~20% coordination with doctors, families, other staff\n" +
+          "• ~15% patient education and emotional support\n\n" +
+          "**Reality check:** Nursing is physically demanding (lots of standing/walking) and emotionally challenging. But nurses say the reward of helping people through difficult times makes it worthwhile.";
+      }
+      // Doctor-specific day
+      if (lower.includes("doctor") || lower.includes("lege")) {
+        return "**A typical day as a Doctor (Lege) in Norway:**\n\n" +
+          "**Hospital doctor example (08:00-16:00):**\n\n" +
+          "**08:00** - Morning meeting: discuss overnight admissions, complex cases\n" +
+          "**08:30** - Ward rounds: visit patients, review test results, adjust treatments\n" +
+          "**10:30** - Outpatient clinic or procedures\n" +
+          "**12:00** - Lunch and brief documentation catch-up\n" +
+          "**12:30** - More patient consultations, referrals, discharge planning\n" +
+          "**14:00** - Teaching medical students or meetings with team\n" +
+          "**15:00** - Documentation, test result reviews, planning\n" +
+          "**16:00** - Handover to on-call doctor\n\n" +
+          "**What doctors actually do:**\n" +
+          "• ~40% patient consultations and examinations\n" +
+          "• ~25% documentation and administrative work\n" +
+          "• ~20% procedures and treatments\n" +
+          "• ~15% meetings, teaching, research\n\n" +
+          "**Reality check:** The path is long (6 years + specialization) and on-call shifts can be tough. But doctors have high job security and make a real difference in people's lives.";
+      }
+      // General healthcare day
+      return "**A typical day in healthcare depends on the role:**\n\n" +
+        "**Healthcare Worker (Helsefagarbeider):**\n" +
+        "• Help patients with daily activities (eating, dressing, mobility)\n" +
+        "• Take vital signs and report changes to nurses\n" +
+        "• Lots of direct patient contact and relationship building\n\n" +
+        "**Paramedic (Ambulansearbeider):**\n" +
+        "• 12-hour shifts, respond to emergency calls\n" +
+        "• Assess patients, provide first aid, transport to hospital\n" +
+        "• Adrenaline-filled moments mixed with quieter standby periods\n\n" +
+        "**Common across healthcare:**\n" +
+        "• Shift work (early, late, nights, weekends)\n" +
+        "• Physically active - lots of standing and walking\n" +
+        "• Emotionally rewarding but can be draining\n" +
+        "• Strong teamwork with colleagues\n\n" +
+        "Which healthcare career are you interested in? I can tell you more specifics!";
+    }
+    // Default to career path overview
     return "Healthcare is a meaningful and stable career path!\n\n" +
       "**Healthcare careers in Norway:**\n" +
       "• **Nurse (Sykepleier)** - 3-year bachelor's degree, great job security\n" +
       "• **Healthcare worker (Helsefagarbeider)** - 2-year vocational training (fagbrev)\n" +
       "• **Doctor (Lege)** - 6-year medical degree + specialization\n" +
       "• **Paramedic (Ambulansearbeider)** - Vocational training available\n\n" +
-      "**Get started:** Volunteer at local healthcare facilities or apply for summer jobs at nursing homes to see if it's right for you!";
+      "**Get started:** Volunteer at local healthcare facilities or apply for summer jobs at nursing homes to see if it's right for you!\n\n" +
+      "Would you like to know what a typical day looks like in any of these roles?";
   }
 
   // Creative careers
-  if (lower.includes("design") || lower.includes("creative") || lower.includes("art") || lower.includes("music") || lower.includes("film") || lower.includes("content")) {
+  if (lower.includes("design") || lower.includes("creative") || lower.includes("art") || lower.includes("music") || lower.includes("film") || lower.includes("content") || lower.includes("ux") || lower.includes("ui")) {
+    // Check if asking about "day in the life" or typical day
+    if (lower.includes("day") || lower.includes("typical") || lower.includes("look like") || lower.includes("daily") || lower.includes("routine") || lower.includes("workday")) {
+      // Designer-specific
+      if (lower.includes("design") || lower.includes("ux") || lower.includes("ui")) {
+        return "**A typical day as a Designer:**\n\n" +
+          "**Morning (09:00-12:00)**\n" +
+          "• Check emails, Slack, project updates\n" +
+          "• Morning standup or team sync (15 min)\n" +
+          "• Deep work: designing screens, creating mockups, iterating on feedback\n\n" +
+          "**Afternoon (12:00-17:00)**\n" +
+          "• Lunch (often with team or at desk)\n" +
+          "• User research meetings or design critiques\n" +
+          "• More design work: prototyping, refining details\n" +
+          "• Collaborate with developers on implementation\n" +
+          "• End of day: organize files, update project boards\n\n" +
+          "**What designers actually do:**\n" +
+          "• ~50% actual design work (in Figma, Sketch, Adobe)\n" +
+          "• ~25% meetings and collaboration\n" +
+          "• ~15% research and testing\n" +
+          "• ~10% documentation and handoffs\n\n" +
+          "**Reality check:** Design involves lots of iteration and feedback. You need thick skin for critiques, but seeing your work used by real people is incredibly satisfying!";
+      }
+      // Content creator
+      if (lower.includes("content") || lower.includes("creator") || lower.includes("influencer")) {
+        return "**A typical day as a Content Creator:**\n\n" +
+          "**Morning**\n" +
+          "• Check analytics from previous posts\n" +
+          "• Plan content: brainstorm ideas, script writing\n" +
+          "• Respond to comments and messages\n\n" +
+          "**Afternoon**\n" +
+          "• Film or create content (photos, videos, graphics)\n" +
+          "• Editing and post-production\n" +
+          "• Schedule posts, write captions\n\n" +
+          "**Evening/Flexible**\n" +
+          "• Engage with community\n" +
+          "• Brand collaboration calls\n" +
+          "• Stay updated on trends\n\n" +
+          "**Reality check:** It looks glamorous, but it's a lot of work. Success requires consistency, creativity, and patience. Most creators don't earn a full living until they have large followings. Consider it a side project first!";
+      }
+      // General creative
+      return "**A typical day in creative careers varies a lot!**\n\n" +
+        "**Common patterns:**\n" +
+        "• Flexible hours in many roles (especially freelance)\n" +
+        "• Mix of solo creative work and collaboration\n" +
+        "• Deadline-driven with busy periods\n" +
+        "• Continuous learning (new tools, trends)\n\n" +
+        "Which creative career interests you? I can give more specific details about a designer, content creator, artist, or other creative role!";
+    }
+    // Default creative overview
     return "Creative careers let you express yourself while earning a living!\n\n" +
       "**Popular creative paths:**\n" +
       "• **Graphic Design** - Logos, websites, marketing materials\n" +
@@ -427,7 +544,7 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
       "• Build a portfolio with personal projects\n" +
       "• Learn industry tools (Figma, Adobe Creative Suite)\n" +
       "• Share your work online to get noticed\n\n" +
-      "Check out our career cards for more creative roles!";
+      "Would you like to know what a typical day looks like in any of these roles?";
   }
 
   // Interview questions
@@ -508,9 +625,30 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
       "Use the menu or quick actions on your dashboard to navigate. What specific feature are you looking for?";
   }
 
+  // Check for generic "day in the life" questions that didn't match specific careers
+  if (lower.includes("day") && (lower.includes("life") || lower.includes("typical") || lower.includes("look like"))) {
+    return "I'd be happy to tell you about a day in the life of different careers!\n\n" +
+      "**Popular careers I can describe:**\n" +
+      "• **Developer/Programmer** - Code, meetings, problem-solving\n" +
+      "• **Nurse** - Patient care, teamwork, shift work\n" +
+      "• **Doctor** - Rounds, consultations, treatments\n" +
+      "• **Designer** - Creative work, collaboration, iteration\n" +
+      "• **Content Creator** - Filming, editing, community building\n\n" +
+      "Which career would you like to know more about? Just ask \"What does a typical day as a [career] look like?\"";
+  }
+
   // Default response based on intent
   switch (intent) {
     case "career_explain":
+      // Check if asking about a day or typical workday
+      if (lower.includes("day") || lower.includes("typical") || lower.includes("routine")) {
+        return "I can describe what a typical workday looks like for different careers!\n\n" +
+          "Just tell me which career you're curious about. For example:\n" +
+          "• \"What does a day in the life of a nurse look like?\"\n" +
+          "• \"What's a typical day for a developer?\"\n" +
+          "• \"What do designers do all day?\"\n\n" +
+          "I have detailed info on tech, healthcare, creative, and many other careers!";
+      }
       return "I'd love to tell you more about careers!\n\n" +
         "Check out our **Explore Careers** section to browse detailed career cards with info about different roles, " +
         "including what they involve, required skills, and typical salaries.\n\n" +

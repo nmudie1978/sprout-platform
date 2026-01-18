@@ -33,13 +33,29 @@ export default function CareerPathPage() {
   const searchParams = useSearchParams();
   const goalParam = searchParams.get("goal");
 
-  const { data: journey, isLoading } = useQuery<CareerJourneyData | null>({
-    queryKey: ["career-journey", goalParam],
-    queryFn: () => goalParam ? getCareerJourneyForGoal(goalParam) : Promise.resolve(null),
-    enabled: session?.user?.role === "YOUTH" && !!goalParam,
+  // Fetch user's career goals to use as fallback when no ?goal= param
+  const { data: careerGoalsData, isLoading: goalsLoading } = useQuery<{ goals: string[]; activeGoal: string | null }>({
+    queryKey: ["career-goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile/career-goals");
+      if (!response.ok) return { goals: [], activeGoal: null };
+      return response.json();
+    },
+    enabled: session?.user?.role === "YOUTH" && !goalParam,
   });
 
-  if (sessionStatus === "loading" || isLoading) {
+  // Use URL param if provided, otherwise use active goal or first goal
+  const effectiveGoal = goalParam || careerGoalsData?.activeGoal || careerGoalsData?.goals?.[0] || null;
+
+  const { data: journey, isLoading: journeyLoading } = useQuery<CareerJourneyData | null>({
+    queryKey: ["career-journey", effectiveGoal],
+    queryFn: () => effectiveGoal ? getCareerJourneyForGoal(effectiveGoal) : Promise.resolve(null),
+    enabled: session?.user?.role === "YOUTH" && !!effectiveGoal,
+  });
+
+  const isLoading = sessionStatus === "loading" || goalsLoading || journeyLoading;
+
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <Skeleton className="h-32 w-full" />
@@ -63,22 +79,22 @@ export default function CareerPathPage() {
     );
   }
 
-  // No goal parameter provided - redirect back to growth page
-  if (!goalParam) {
+  // No career goals set at all
+  if (!effectiveGoal) {
     return (
       <Card className="border-2 border-dashed border-amber-300 dark:border-amber-700">
         <CardContent className="py-12 text-center">
           <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
             <Target className="h-8 w-8 text-amber-600" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No career goal selected</h2>
+          <h2 className="text-xl font-semibold mb-2">No career goals set</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Please select a career goal from your My Growth page to view your career path.
+            Set your career goals first to see your personalised career path.
           </p>
           <Link href="/growth">
             <Button size="lg">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to My Growth
+              Set Career Goals
             </Button>
           </Link>
         </CardContent>
@@ -96,7 +112,7 @@ export default function CareerPathPage() {
           </div>
           <h2 className="text-xl font-semibold mb-2">Career path not found</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            We couldn't find a career path for "{goalParam}". Try selecting a different career goal.
+            We couldn't find a career path for "{effectiveGoal}". Try selecting a different career goal.
           </p>
           <Link href="/growth">
             <Button size="lg">

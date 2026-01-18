@@ -422,7 +422,7 @@ function CareerTabContent({
   );
 }
 
-// Career Tabs Component with horizontal scrolling
+// Career Tabs Component with clear separation
 function CareerTabs({
   journeys,
   activeTab,
@@ -435,51 +435,70 @@ function CareerTabs({
   onManageGoals: () => void;
 }) {
   return (
-    <div className="relative">
-      {/* Scrollable tabs container */}
-      <div className="overflow-x-auto scrollbar-hide -mx-1 px-1">
-        <div className="flex items-center gap-1.5 min-w-max pb-1">
-          {journeys.map((journey, index) => {
-            const isActive = activeTab === journey.targetCareer.id;
-            return (
-              <button
-                key={journey.targetCareer.id}
-                onClick={() => onTabChange(journey.targetCareer.id)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap",
-                  isActive
-                    ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-900 dark:text-emerald-100 font-medium"
-                    : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <span className="text-base">{journey.targetCareer.emoji}</span>
-                <span className="text-sm">{journey.targetCareer.title}</span>
-                <Badge
-                  variant={isActive ? "secondary" : "outline"}
+    <div className="space-y-3">
+      {/* Tab label */}
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+          Select a career goal
+        </p>
+        <button
+          onClick={onManageGoals}
+          className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
+          <Settings className="h-3 w-3" />
+          Manage Goals
+        </button>
+      </div>
+
+      {/* Tabs container with border */}
+      <div className="border-2 rounded-xl bg-muted/30 p-1.5">
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex items-stretch gap-2 min-w-max">
+            {journeys.map((journey, index) => {
+              const isActive = activeTab === journey.targetCareer.id;
+              return (
+                <button
+                  key={journey.targetCareer.id}
+                  onClick={() => onTabChange(journey.targetCareer.id)}
                   className={cn(
-                    "text-[10px] px-1.5 py-0",
-                    isActive && "bg-emerald-200 dark:bg-emerald-800"
+                    "relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all whitespace-nowrap min-w-[140px]",
+                    isActive
+                      ? "bg-white dark:bg-background shadow-md border-2 border-emerald-500"
+                      : "bg-transparent hover:bg-white/50 dark:hover:bg-background/50 border-2 border-transparent"
                   )}
                 >
-                  {journey.skillMatchPercent}%
-                </Badge>
-                {index === 0 && (
-                  <Badge variant="secondary" className="text-[10px] px-1 py-0 bg-primary/10 text-primary">
-                    Primary
-                  </Badge>
-                )}
-              </button>
-            );
-          })}
+                  {/* Emoji and content */}
+                  <span className="text-2xl">{journey.targetCareer.emoji}</span>
+                  <div className="flex flex-col items-start">
+                    <span className={cn(
+                      "text-sm font-medium",
+                      isActive ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
+                    )}>
+                      {journey.targetCareer.title}
+                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className={cn(
+                        "text-[10px]",
+                        isActive ? "text-emerald-600 dark:text-emerald-500" : "text-muted-foreground"
+                      )}>
+                        {journey.skillMatchPercent}% match
+                      </span>
+                      {index === 0 && (
+                        <Badge className="text-[9px] px-1 py-0 h-4 bg-primary/10 text-primary border-0">
+                          Primary
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
 
-          {/* Add/Manage button */}
-          <button
-            onClick={onManageGoals}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-muted/30 hover:bg-muted text-muted-foreground hover:text-foreground transition-all whitespace-nowrap border border-dashed"
-          >
-            <Settings className="h-3.5 w-3.5" />
-            <span className="text-xs">Manage</span>
-          </button>
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-8 h-1 bg-emerald-500 rounded-full" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -554,13 +573,19 @@ export default function GrowthPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <div className="grid gap-3">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
+      <div className="container mx-auto max-w-2xl px-4 py-6">
+        <div className="mb-6 text-center">
+          <Skeleton className="h-8 w-32 mx-auto mb-2" />
+          <Skeleton className="h-4 w-48 mx-auto" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <div className="grid gap-3">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
         </div>
       </div>
     );
@@ -568,15 +593,23 @@ export default function GrowthPage() {
 
   if (session?.user?.role !== "YOUTH") {
     return (
-      <Card className="border-2">
-        <CardContent className="py-12 text-center">
-          <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">This page is only available for youth workers.</p>
-          <Button className="mt-4" asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="container mx-auto max-w-2xl px-4 py-6">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold">My Growth</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Track your progress toward your career goals
+          </p>
+        </div>
+        <Card className="border-2">
+          <CardContent className="py-12 text-center">
+            <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">This page is only available for youth workers.</p>
+            <Button className="mt-4" asChild>
+              <Link href="/dashboard">Go to Dashboard</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -586,22 +619,32 @@ export default function GrowthPage() {
   // No career goals set - show empty/exploring state
   if (!hasCareerGoals) {
     return (
-      <div className="space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <EmptyStateBanner onAddGoal={() => setGoalManagerOpen(true)} />
-        </motion.div>
+      <div className="container mx-auto max-w-2xl px-4 py-6">
+        {/* Header */}
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold">My Growth</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Track your progress toward your career goals
+          </p>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.3 }}
-        >
-          <ExploringBanner onAddGoal={() => setGoalManagerOpen(true)} />
-        </motion.div>
+        <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <EmptyStateBanner onAddGoal={() => setGoalManagerOpen(true)} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
+            <ExploringBanner onAddGoal={() => setGoalManagerOpen(true)} />
+          </motion.div>
+        </div>
 
         <GoalManagerModal
           open={goalManagerOpen}
@@ -614,22 +657,31 @@ export default function GrowthPage() {
 
   // Has career goals - show tabbed view
   return (
-    <div className="space-y-4">
+    <div className="container mx-auto max-w-2xl px-4 py-6">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-emerald-600" />
-            <h1 className="font-bold text-lg">My Career Goals</h1>
-            <Badge variant="secondary" className="text-xs">
-              {journeys.length} goal{journeys.length > 1 ? "s" : ""}
-            </Badge>
+      <div className="mb-6 text-center">
+        <h1 className="text-2xl font-bold">My Growth</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Track your progress toward your career goals
+        </p>
+      </div>
+
+      <div className="space-y-4">
+        {/* Goals Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-emerald-600" />
+              <h2 className="font-bold text-lg">My Career Goals</h2>
+              <Badge variant="secondary" className="text-xs">
+                {journeys.length} goal{journeys.length > 1 ? "s" : ""}
+              </Badge>
+            </div>
           </div>
-        </div>
 
         {/* Progress Summary */}
         {growthData?.hasData && (
@@ -687,12 +739,13 @@ export default function GrowthPage() {
         )}
       </motion.div>
 
-      {/* Goal Manager Modal */}
-      <GoalManagerModal
-        open={goalManagerOpen}
-        onOpenChange={setGoalManagerOpen}
-        currentGoals={currentGoals}
-      />
+        {/* Goal Manager Modal */}
+        <GoalManagerModal
+          open={goalManagerOpen}
+          onOpenChange={setGoalManagerOpen}
+          currentGoals={currentGoals}
+        />
+      </div>
     </div>
   );
 }

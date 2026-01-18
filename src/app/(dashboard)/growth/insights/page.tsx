@@ -122,10 +122,24 @@ export default function InsightsPage() {
   const searchParams = useSearchParams();
   const goalParam = searchParams.get("goal");
 
+  // Fetch user's career goals to use as fallback when no ?goal= param
+  const { data: careerGoalsData, isLoading: goalsLoading } = useQuery<{ goals: string[]; activeGoal: string | null }>({
+    queryKey: ["career-goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile/career-goals");
+      if (!response.ok) return { goals: [], activeGoal: null };
+      return response.json();
+    },
+    enabled: session?.user?.role === "YOUTH" && !goalParam,
+  });
+
+  // Use URL param if provided, otherwise use active goal or first goal
+  const effectiveGoal = goalParam || careerGoalsData?.activeGoal || careerGoalsData?.goals?.[0] || null;
+
   const { data: journey, isLoading: journeyLoading } = useQuery<CareerJourneyData | null>({
-    queryKey: ["career-journey", goalParam],
-    queryFn: () => goalParam ? getCareerJourneyForGoal(goalParam) : Promise.resolve(null),
-    enabled: session?.user?.role === "YOUTH" && !!goalParam,
+    queryKey: ["career-journey", effectiveGoal],
+    queryFn: () => effectiveGoal ? getCareerJourneyForGoal(effectiveGoal) : Promise.resolve(null),
+    enabled: session?.user?.role === "YOUTH" && !!effectiveGoal,
   });
 
   const { data: growthData, isLoading: growthLoading } = useQuery({
@@ -138,7 +152,7 @@ export default function InsightsPage() {
     enabled: session?.user?.role === "YOUTH",
   });
 
-  const isLoading = sessionStatus === "loading" || journeyLoading || growthLoading;
+  const isLoading = sessionStatus === "loading" || goalsLoading || journeyLoading || growthLoading;
 
   if (isLoading) {
     return (
@@ -164,22 +178,22 @@ export default function InsightsPage() {
     );
   }
 
-  // No goal parameter provided - redirect back to growth page
-  if (!goalParam) {
+  // No career goals set at all
+  if (!effectiveGoal) {
     return (
       <Card className="border-2 border-dashed border-amber-300 dark:border-amber-700">
         <CardContent className="py-12 text-center">
           <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
             <Lightbulb className="h-8 w-8 text-amber-600" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">No career goal selected</h2>
+          <h2 className="text-xl font-semibold mb-2">No career goals set</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Please select a career goal from your My Growth page to view insights.
+            Set your career goals first to see personalised insights.
           </p>
           <Link href="/growth">
             <Button size="lg">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to My Growth
+              Set Career Goals
             </Button>
           </Link>
         </CardContent>
@@ -187,7 +201,7 @@ export default function InsightsPage() {
     );
   }
 
-  const insights = generateInsights(journey ?? null, growthData, goalParam);
+  const insights = generateInsights(journey ?? null, growthData, effectiveGoal);
 
   const getInsightConfig = (type: Insight["type"]) => {
     switch (type) {
@@ -237,10 +251,10 @@ export default function InsightsPage() {
       >
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="h-5 w-5 text-amber-600" />
-          <h2 className="text-lg font-semibold">Insights for {goalParam}</h2>
+          <h2 className="text-lg font-semibold">Insights for {effectiveGoal}</h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          Personalised analysis based on your progress toward becoming a {journey?.targetCareer?.title || goalParam}.
+          Personalised analysis based on your progress toward becoming a {journey?.targetCareer?.title || effectiveGoal}.
         </p>
       </motion.div>
 
@@ -251,7 +265,7 @@ export default function InsightsPage() {
             <Lightbulb className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
             <h3 className="font-semibold mb-2">No insights yet</h3>
             <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
-              Complete some jobs to receive personalised insights for {goalParam}.
+              Complete some jobs to receive personalised insights for {effectiveGoal}.
             </p>
             <div className="flex gap-2 justify-center">
               <Button asChild>
@@ -321,11 +335,11 @@ export default function InsightsPage() {
                 <div>
                   <h4 className="font-semibold">Want deeper insights?</h4>
                   <p className="text-sm text-muted-foreground">
-                    Ask Sprout AI for personalised advice about {goalParam}
+                    Ask Sprout AI for personalised advice about {effectiveGoal}
                   </p>
                 </div>
               </div>
-              <Link href={`/career-advisor?goal=${encodeURIComponent(goalParam)}`}>
+              <Link href={`/career-advisor?goal=${encodeURIComponent(effectiveGoal)}`}>
                 <Button variant="outline" className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30">
                   <Bot className="h-4 w-4 mr-2" />
                   Chat
