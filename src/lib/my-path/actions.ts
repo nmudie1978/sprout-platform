@@ -197,7 +197,16 @@ export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourney
   const careerGoals: string[] = [];
 
   if (youthProfile?.careerAspiration) {
-    careerGoals.push(youthProfile.careerAspiration);
+    // Split comma-separated career aspirations into individual goals
+    const aspirations = youthProfile.careerAspiration
+      .split(/[,;]/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    for (const aspiration of aspirations) {
+      if (!careerGoals.includes(aspiration)) {
+        careerGoals.push(aspiration);
+      }
+    }
   }
 
   if (youthProfile?.desiredRoles?.length) {
