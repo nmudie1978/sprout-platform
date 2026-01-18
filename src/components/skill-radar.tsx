@@ -30,7 +30,7 @@ export function SkillRadar({ userId }: SkillRadarProps) {
     return (
       <div className="rounded-lg bg-muted p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Complete jobs to start building your skill profile!
+          Complete small jobs to start building your skill profile!
         </p>
       </div>
     );
@@ -69,7 +69,7 @@ export function SkillRadar({ userId }: SkillRadarProps) {
 
       {sortedSkills.length === 0 && (
         <p className="text-center text-sm text-muted-foreground">
-          No skills tracked yet. Complete more jobs!
+          No skills tracked yet. Complete more small jobs!
         </p>
       )}
 

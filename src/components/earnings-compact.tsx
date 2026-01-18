@@ -80,7 +80,7 @@ export function EarningsCompact() {
         {totalEarned === 0 && (
           <div className="mt-3 pt-3 border-t">
             <p className="text-xs text-muted-foreground text-center">
-              Complete jobs to start earning
+              Complete small jobs to start earning
             </p>
           </div>
         )}

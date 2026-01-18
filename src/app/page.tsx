@@ -446,7 +446,7 @@ export default function LandingPage() {
                   { step: 1, title: "Sign Up Free", desc: "Create your profile in minutes. Add your skills, interests, and availability.", icon: UserPlus, color: "from-blue-500 to-cyan-500" },
                   { step: 2, title: "Browse Small Jobs", desc: "Find local gigs that match your schedule. Filter by category, pay, and location.", icon: Search, color: "from-purple-500 to-pink-500" },
                   { step: 3, title: "Get Hired", desc: "Apply with one click or get 'poked' by interested job posters. Start working fast.", icon: CheckCircle, color: "from-pink-500 to-rose-500" },
-                  { step: 4, title: "Earn & Grow", desc: "Complete jobs, collect reviews, and build your verified portfolio.", icon: Star, color: "from-green-500 to-emerald-500" },
+                  { step: 4, title: "Earn & Grow", desc: "Complete small jobs, collect reviews, and build your verified portfolio.", icon: Star, color: "from-green-500 to-emerald-500" },
                 ].map((item) => (
                   <div key={item.step} className="flex gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0`}>
@@ -617,7 +617,7 @@ export default function LandingPage() {
             Join Your Local Community
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-green-100 max-w-2xl mx-auto mb-6 sm:mb-8 px-2">
-            Neighbors across Norway are already connecting through Sprout—young people finding their first jobs,
+            Neighbors across Norway are already connecting through Sprout—young people finding their first small jobs,
             families finding reliable help. Be part of something that strengthens communities.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">

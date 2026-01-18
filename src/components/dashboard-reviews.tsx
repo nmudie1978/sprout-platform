@@ -59,7 +59,7 @@ const getTierConfig = (isJobPoster: boolean) => ({
     borderColor: "border-gray-300",
     textColor: "text-gray-600",
     bgColor: "bg-gradient-to-br from-gray-50 to-slate-50",
-    requirement: isJobPoster ? "Get more reviews to earn a tier" : "Complete more jobs to earn a tier",
+    requirement: isJobPoster ? "Get more reviews to earn a tier" : "Complete more small jobs to earn a tier",
   },
 });
 
@@ -176,8 +176,8 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
             <p className="text-muted-foreground mb-2">No reviews yet</p>
             <p className="text-sm text-muted-foreground">
               {isJobPoster
-                ? "Workers will leave reviews after completing jobs for you"
-                : "Complete jobs to start building your reputation"}
+                ? "Workers will leave reviews after completing small jobs for you"
+                : "Complete small jobs to start building your reputation"}
             </p>
           </div>
         </CardContent>
@@ -270,7 +270,7 @@ export function DashboardReviews({ className }: DashboardReviewsProps) {
               <p className="text-xs text-muted-foreground">
                 {stats.tier === "NONE" && (isJobPoster
                   ? "Get 2+ reviews with 3.5+ rating to earn Bronze tier"
-                  : "Complete 2+ jobs with 3.5+ rating to earn Bronze tier")}
+                  : "Complete 2+ small jobs with 3.5+ rating to earn Bronze tier")}
                 {stats.tier === "BRONZE" && "Get 5+ reviews with 4.0+ avg to reach Silver tier"}
                 {stats.tier === "SILVER" && "Get 10+ reviews with 4.5+ avg to reach Gold tier"}
               </p>

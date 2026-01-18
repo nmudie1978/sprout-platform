@@ -283,7 +283,7 @@ export function SpendingChart() {
                     <div className="text-center py-12 text-muted-foreground">
                       <BarChart3 className="h-12 w-12 mx-auto mb-3 opacity-50" />
                       <p>No spending data available</p>
-                      <p className="text-sm">Complete jobs to track your spending!</p>
+                      <p className="text-sm">Complete small jobs to track your spending!</p>
                     </div>
                   ) : (
                     <div className="relative">

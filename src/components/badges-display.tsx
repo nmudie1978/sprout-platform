@@ -18,32 +18,32 @@ import { BadgeType } from "@prisma/client";
 const BADGE_DEFINITIONS: Record<BadgeType, { emoji: string; label: string; description: string; color: string }> = {
   FIRST_JOB: {
     emoji: "🎉",
-    label: "First Job",
-    description: "Completed your first job",
+    label: "First Small Job",
+    description: "Completed your first small job",
     color: "from-purple-500 to-pink-500",
   },
   FIVE_JOBS: {
     emoji: "🌟",
     label: "Rising Star",
-    description: "Completed 5 jobs",
+    description: "Completed 5 small jobs",
     color: "from-blue-500 to-cyan-500",
   },
   TEN_JOBS: {
     emoji: "🔥",
     label: "On Fire",
-    description: "Completed 10 jobs",
+    description: "Completed 10 small jobs",
     color: "from-orange-500 to-red-500",
   },
   TWENTY_FIVE_JOBS: {
     emoji: "💎",
     label: "Diamond Worker",
-    description: "Completed 25 jobs",
+    description: "Completed 25 small jobs",
     color: "from-cyan-500 to-blue-500",
   },
   FIFTY_JOBS: {
     emoji: "👑",
     label: "Legend",
-    description: "Completed 50 jobs",
+    description: "Completed 50 small jobs",
     color: "from-amber-500 to-yellow-500",
   },
   FIVE_STAR_RATING: {
@@ -85,13 +85,13 @@ const BADGE_DEFINITIONS: Record<BadgeType, { emoji: string; label: string; descr
   CATEGORY_MASTER: {
     emoji: "🏆",
     label: "Category Master",
-    description: "Completed 5+ jobs in one category",
+    description: "Completed 5+ small jobs in one category",
     color: "from-emerald-500 to-green-500",
   },
   MULTI_TALENTED: {
     emoji: "🎨",
     label: "Multi-Talented",
-    description: "Completed jobs in 3+ categories",
+    description: "Completed small jobs in 3+ categories",
     color: "from-pink-500 to-rose-500",
   },
   FIRST_REVIEW: {

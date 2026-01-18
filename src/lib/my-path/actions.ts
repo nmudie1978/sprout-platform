@@ -130,7 +130,147 @@ export interface CareerJourneyData {
   totalEarnings: number;
 }
 
-// Get Career Journey - the user's long-term career path
+// Single career journey data for one goal
+export interface SingleCareerJourney {
+  targetCareer: Career;
+  careerAspiration: string;
+  educationPath: string | null;
+  skillsNeeded: string[];
+  skillsYouHave: string[];
+  skillsToGain: string[];
+  skillMatchPercent: number;
+  relatedCareers: Career[];
+  category: CareerCategory | null;
+}
+
+// Multiple career journeys response
+export interface MultipleCareerJourneys {
+  journeys: SingleCareerJourney[];
+  completedJobsCount: number;
+  totalEarnings: number;
+  userSkills: string[];
+}
+
+// Get Multiple Career Journeys - for users with multiple career goals
+export async function getMultipleCareerJourneys(): Promise<MultipleCareerJourneys | null> {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "YOUTH") return null;
+
+  const userId = session.user.id;
+
+  // Fetch user profile and skill data
+  const [youthProfile, skillSignals, completedJobs] = await Promise.all([
+    prisma.youthProfile.findUnique({
+      where: { userId },
+      select: {
+        careerAspiration: true,
+        desiredRoles: true,
+      },
+    }),
+    prisma.userSkillSignal.findMany({
+      where: { userId },
+      include: { skill: true },
+    }),
+    prisma.jobCompletion.findMany({
+      where: {
+        youthId: userId,
+        outcome: "COMPLETED",
+      },
+      include: {
+        job: {
+          select: { payAmount: true },
+        },
+      },
+    }),
+  ]);
+
+  // Extract user's skills
+  const userSkills = [...new Set(skillSignals.map((s) => s.skill.name.toLowerCase()))];
+
+  // Calculate total earnings
+  const totalEarnings = completedJobs.reduce(
+    (sum, job) => sum + (job.job.payAmount || 0),
+    0
+  );
+
+  // Collect all career goals (from careerAspiration and desiredRoles)
+  const careerGoals: string[] = [];
+
+  if (youthProfile?.careerAspiration) {
+    careerGoals.push(youthProfile.careerAspiration);
+  }
+
+  if (youthProfile?.desiredRoles?.length) {
+    for (const role of youthProfile.desiredRoles) {
+      if (!careerGoals.includes(role)) {
+        careerGoals.push(role);
+      }
+    }
+  }
+
+  // Build journey data for each career goal
+  const journeys: SingleCareerJourney[] = [];
+  const seenCareerIds = new Set<string>();
+
+  for (const goal of careerGoals) {
+    const recommendations = getRecommendationsFromAspiration(goal);
+    if (recommendations.length > 0) {
+      const targetCareer = recommendations[0].career;
+
+      // Skip if we already have this career
+      if (seenCareerIds.has(targetCareer.id)) continue;
+      seenCareerIds.add(targetCareer.id);
+
+      const category = getCategoryForCareer(targetCareer.id) || null;
+      const skillsNeeded = targetCareer.keySkills || [];
+      const skillsNeededLower = skillsNeeded.map((s) => s.toLowerCase());
+
+      const skillsYouHave = userSkills.filter((skill) =>
+        skillsNeededLower.some(
+          (needed) => needed.includes(skill) || skill.includes(needed)
+        )
+      );
+
+      const skillsToGain = skillsNeeded.filter(
+        (skill) =>
+          !userSkills.some(
+            (userSkill) =>
+              userSkill.includes(skill.toLowerCase()) ||
+              skill.toLowerCase().includes(userSkill)
+          )
+      );
+
+      const skillMatchPercent = calculateCareerMatch(userSkills, targetCareer);
+
+      const relatedCareers = category
+        ? getCareersForCategory(category)
+            .filter((c) => c.id !== targetCareer.id)
+            .slice(0, 4)
+        : [];
+
+      journeys.push({
+        targetCareer,
+        careerAspiration: goal,
+        educationPath: targetCareer.educationPath || null,
+        skillsNeeded,
+        skillsYouHave,
+        skillsToGain,
+        skillMatchPercent,
+        relatedCareers,
+        category,
+      });
+    }
+  }
+
+  return {
+    journeys,
+    completedJobsCount: completedJobs.length,
+    totalEarnings,
+    userSkills,
+  };
+}
+
+// Get Career Journey - the user's long-term career path (single career - legacy)
 export async function getCareerJourney(): Promise<CareerJourneyData | null> {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "YOUTH") return null;

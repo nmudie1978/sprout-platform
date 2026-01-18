@@ -271,7 +271,7 @@ export function EarningsChart() {
                     <div className="text-center py-12 text-muted-foreground">
                       <BarChart3 className="h-12 w-12 mx-auto mb-3 opacity-50" />
                       <p>No earnings data available</p>
-                      <p className="text-sm">Complete jobs to start tracking your earnings!</p>
+                      <p className="text-sm">Complete small jobs to start tracking your earnings!</p>
                     </div>
                   ) : (
                     <div className="relative">
