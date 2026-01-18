@@ -1,28 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import {
-  TrendingUp,
-  Zap,
-  BarChart3,
-  GraduationCap,
-  Archive,
-  Lightbulb,
-  Bot,
-  Users,
-} from "lucide-react";
-
-const tabs = [
-  { href: "/growth", label: "Next Steps", icon: Zap, exact: true },
-  { href: "/growth/short-term", label: "Short-term", icon: BarChart3 },
-  { href: "/growth/career-path", label: "Career Path", icon: GraduationCap },
-  { href: "/growth/pro-insights", label: "Pro Insights", icon: Users },
-  { href: "/growth/vault", label: "Vault", icon: Archive },
-  { href: "/growth/insights", label: "Insights", icon: Lightbulb },
-];
+import { TrendingUp } from "lucide-react";
+import { JourneyMap, JourneyMapCompact } from "@/components/growth/journey-map";
+import type { ReadinessCheck } from "@/lib/growth/stage-config";
 
 export default function GrowthLayout({
   children,
@@ -30,6 +14,37 @@ export default function GrowthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isYouth = session?.user?.role === "YOUTH";
+
+  // Fetch readiness data for JourneyMap
+  const { data: readiness } = useQuery<ReadinessCheck>({
+    queryKey: ["growth-readiness"],
+    queryFn: async () => {
+      const response = await fetch("/api/growth/readiness");
+      if (!response.ok) throw new Error("Failed to fetch readiness");
+      return response.json();
+    },
+    enabled: isYouth,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  // Default readiness if not loaded yet
+  const readinessData: ReadinessCheck = readiness || {
+    hasTargetCareer: false,
+    hasSkillTags: false,
+    hasLocationPreference: false,
+    hasCV: false,
+  };
+
+  // Check if we're on a stage page (not the dashboard)
+  const isOnStagePage =
+    pathname.startsWith("/growth/explore") ||
+    pathname.startsWith("/growth/build") ||
+    pathname.startsWith("/growth/apply");
+
+  // Dashboard only shows for /growth exact
+  const isDashboard = pathname === "/growth";
 
   return (
     <div className="min-h-full">
@@ -60,40 +75,36 @@ export default function GrowthLayout({
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl">
-            Your personal progression hub. Build skills through small jobs, track your journey to your dream career, and get personalised insights along the way.
+            Your career journey in three stages: Explore, Build, Apply
           </p>
         </motion.div>
 
-        {/* Tabs Navigation */}
-        <div className="border-b mb-6">
-          <nav className="flex overflow-x-auto no-scrollbar -mb-px">
-            {tabs.map((tab) => {
-              const isActive = tab.exact
-                ? pathname === tab.href
-                : pathname.startsWith(tab.href);
-              const Icon = tab.icon;
-
-              return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={cn(
-                    "flex items-center gap-1.5 px-3 sm:px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors",
-                    isActive
-                      ? "border-emerald-500 text-emerald-600 dark:text-emerald-400"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+        {/* Journey Map - Always Visible */}
+        {isYouth && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className="mb-6"
+          >
+            {/* Full JourneyMap on desktop, compact on mobile */}
+            <div className="hidden md:block">
+              <JourneyMap readiness={readinessData} />
+            </div>
+            <div className="md:hidden">
+              <JourneyMapCompact readiness={readinessData} />
+            </div>
+          </motion.div>
+        )}
 
         {/* Content */}
-        {children}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+        >
+          {children}
+        </motion.div>
       </div>
     </div>
   );

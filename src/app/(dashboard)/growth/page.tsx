@@ -1,609 +1,276 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import {
-  Target,
-  Briefcase,
-  BookOpen,
-  ArrowRight,
   Lock,
-  Settings,
-  Zap,
-  TrendingUp,
-  GraduationCap,
+  ArrowRight,
+  Compass,
+  Hammer,
+  Send,
   Sparkles,
   CheckCircle2,
-  ChevronRight,
-  ChevronLeft,
-  Bot,
-  Plus,
-  Compass,
+  Target,
+  MapPin,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
-import { getMultipleCareerJourneys, type MultipleCareerJourneys, type SingleCareerJourney } from "@/lib/my-path/actions";
-import { formatCurrency } from "@/lib/utils";
-import { GoalManagerModal } from "@/components/goal-manager-modal";
-import { cn } from "@/lib/utils";
-import { HonestProgressSection } from "@/components/growth/honest-progress-section";
 import {
-  computeFoundationalProgress,
-  computeCareerProgress,
-  computeRunwayData,
-} from "@/lib/growth/progress-helpers";
+  STAGES,
+  STAGE_ORDER,
+  getSuggestedStage,
+  checkStageReadiness,
+  getStageBanner,
+  type StageId,
+  type ReadinessCheck,
+} from "@/lib/growth/stage-config";
+import { cn } from "@/lib/utils";
 
-// Empty State Banner - when no career goals set
-function EmptyStateBanner({ onAddGoal }: { onAddGoal: () => void }) {
+// Next Stop Card - The primary action card
+function NextStopCard({
+  stageId,
+  readiness,
+}: {
+  stageId: StageId;
+  readiness: ReadinessCheck;
+}) {
+  const stage = STAGES[stageId];
+  const banner = getStageBanner(stageId);
+  const Icon = stage.icon;
+  const { canAdvance, blockers } = checkStageReadiness(stageId, readiness);
+
   return (
-    <Card className="border-2 border-dashed border-emerald-300 dark:border-emerald-700 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
-      <CardContent className="py-8 text-center">
-        <Target className="h-12 w-12 mx-auto text-emerald-600 mb-4" />
-        <h3 className="font-semibold text-lg mb-2">Set your career goals</h3>
-        <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-4">
-          Tell us your dream careers (up to 4) and we&apos;ll tailor everything to help you get there.
-        </p>
-        <Button onClick={onAddGoal} className="bg-emerald-600 hover:bg-emerald-700">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Career Goals
-        </Button>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.1, duration: 0.3 }}
+    >
+      <Card className="border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950/30 dark:via-green-950/20 dark:to-teal-950/30 dark:border-emerald-800/50">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
+              <Icon className="w-8 h-8 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-medium text-emerald-600 uppercase tracking-wide">
+                  Your Next Stop
+                </span>
+                <Sparkles className="w-3 h-3 text-emerald-500" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">{banner.title}</h2>
+              <p className="text-muted-foreground mb-4">{banner.description}</p>
+
+              <Link href={stage.route}>
+                <Button className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                  Go to {stage.label}
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+// Readiness Checklist
+function ReadinessChecklist({ readiness }: { readiness: ReadinessCheck }) {
+  const items = [
+    {
+      key: "hasTargetCareer",
+      label: "Career goal selected",
+      completed: readiness.hasTargetCareer,
+      icon: Target,
+      href: "/growth/explore",
+    },
+    {
+      key: "hasSkillTags",
+      label: "Skills added to profile",
+      completed: readiness.hasSkillTags,
+      icon: CheckCircle2,
+      href: "/profile",
+    },
+    {
+      key: "hasLocationPreference",
+      label: "Location set",
+      completed: readiness.hasLocationPreference,
+      icon: MapPin,
+      href: "/profile",
+    },
+    {
+      key: "hasCV",
+      label: "Proof in vault",
+      completed: readiness.hasCV,
+      icon: FileText,
+      href: "/growth/vault",
+    },
+  ];
+
+  const completedCount = items.filter((i) => i.completed).length;
+
+  return (
+    <Card className="border">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-sm">Journey Readiness</h3>
+          <span className="text-xs text-muted-foreground">
+            {completedCount}/{items.length} complete
+          </span>
+        </div>
+        <div className="space-y-2">
+          {items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 p-2 rounded-lg transition-colors",
+                  item.completed
+                    ? "bg-emerald-50 dark:bg-emerald-950/20"
+                    : "bg-gray-50 dark:bg-gray-900/20 hover:bg-gray-100 dark:hover:bg-gray-800/30"
+                )}
+              >
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center",
+                    item.completed
+                      ? "bg-emerald-500 text-white"
+                      : "bg-gray-200 dark:bg-gray-700"
+                  )}
+                >
+                  {item.completed ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    <Icon className="w-3 h-3 text-gray-500" />
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    "text-sm flex-1",
+                    item.completed
+                      ? "text-emerald-700 dark:text-emerald-400"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.label}
+                </span>
+                {!item.completed && (
+                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </CardContent>
     </Card>
   );
 }
 
-// Exploring State Banner - for users who haven't set goals yet
-function ExploringBanner({ onAddGoal }: { onAddGoal: () => void }) {
+// Stage Quick Links
+function StageQuickLinks({ currentStage }: { currentStage: StageId }) {
   return (
-    <div className="space-y-6">
-      <Card className="border-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
-        <CardContent className="py-6">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <Compass className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg">Exploring Mode</h3>
-              <p className="text-sm text-muted-foreground">
-                You&apos;re browsing without specific career goals. Add goals to get personalised guidance.
-              </p>
-            </div>
-            <Button onClick={onAddGoal} variant="outline">
-              <Plus className="h-4 w-4 mr-2" />
-              Set Goals
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid sm:grid-cols-3 gap-3">
+      {STAGE_ORDER.map((stageId) => {
+        const stage = STAGES[stageId];
+        const Icon = stage.icon;
+        const isCurrent = stageId === currentStage;
 
-      {/* General Growth Links */}
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Link href="/growth/short-term">
-          <Card className="border-2 hover:border-emerald-300 transition-colors cursor-pointer h-full">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Short-term Growth</p>
-                  <p className="text-xs text-muted-foreground">Track skills & reliability</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/careers">
-          <Card className="border-2 hover:border-purple-300 transition-colors cursor-pointer h-full">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <GraduationCap className="h-5 w-5 text-purple-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Explore Careers</p>
-                  <p className="text-xs text-muted-foreground">Discover what suits you</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/growth/vault">
-          <Card className="border-2 hover:border-blue-300 transition-colors cursor-pointer h-full">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Your Vault</p>
-                  <p className="text-xs text-muted-foreground">Saved items & achievements</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/career-advisor">
-          <Card className="border-2 hover:border-primary/50 transition-colors cursor-pointer h-full">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <Bot className="h-5 w-5 text-primary" />
-                <div className="flex-1">
-                  <p className="font-medium text-sm">Ask Sprout AI</p>
-                  <p className="text-xs text-muted-foreground">Get career advice</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-// Next Action Card Component
-function NextActionCard({
-  icon: Icon,
-  iconColor,
-  iconBg,
-  title,
-  description,
-  reason,
-  href,
-  actionLabel,
-}: {
-  icon: React.ElementType;
-  iconColor: string;
-  iconBg: string;
-  title: string;
-  description: string;
-  reason?: string;
-  href: string;
-  actionLabel: string;
-}) {
-  return (
-    <Link href={href}>
-      <Card className="border hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors group cursor-pointer">
-        <CardContent className="py-4">
-          <div className="flex items-start gap-3">
-            <div className={`p-2.5 rounded-xl ${iconBg}`}>
-              <Icon className={`h-4 w-4 ${iconColor}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-sm mb-0.5">{title}</h4>
-              <p className="text-xs text-muted-foreground line-clamp-2">{description}</p>
-              {reason && (
-                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1.5 flex items-center gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  {reason}
-                </p>
+        return (
+          <Link key={stageId} href={stage.route}>
+            <Card
+              className={cn(
+                "border-2 transition-colors cursor-pointer h-full",
+                isCurrent
+                  ? "border-emerald-300 bg-emerald-50/50 dark:bg-emerald-950/20"
+                  : "hover:border-gray-300"
               )}
-            </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-emerald-600 transition-colors">
-              <span className="hidden sm:inline">{actionLabel}</span>
-              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
-
-// Career Tab Content Component - goal-scoped view
-function CareerTabContent({
-  journey,
-  growthData,
-  multiJourneys,
-  availabilityLevel,
-}: {
-  journey: SingleCareerJourney;
-  growthData: any;
-  multiJourneys: MultipleCareerJourneys | null;
-  availabilityLevel: string | null;
-}) {
-  const skillsToGain = journey.skillsToGain || [];
-  const goalName = journey.targetCareer.title;
-
-  // Compute honest progress data
-  const foundationalProgress = computeFoundationalProgress(growthData);
-  const careerProgress = computeCareerProgress(goalName, multiJourneys?.userSkills || []);
-  const runwayData = computeRunwayData(multiJourneys, availabilityLevel);
-
-  // Generate personalised next steps based on career
-  const nextSteps = [];
-
-  // 1. Skill to build next
-  if (skillsToGain.length > 0) {
-    const nextSkill = skillsToGain[0];
-    nextSteps.push({
-      icon: Target,
-      iconColor: "text-purple-600",
-      iconBg: "bg-purple-100 dark:bg-purple-900/30",
-      title: `Build "${nextSkill}" skill`,
-      description: `Essential for becoming a ${goalName}. Look for small jobs that help you practice.`,
-      reason: `Required for ${goalName}`,
-      href: "/jobs",
-      actionLabel: "Find jobs",
-    });
-  }
-
-  // 2. Relevant job suggestion
-  nextSteps.push({
-    icon: Briefcase,
-    iconColor: "text-green-600",
-    iconBg: "bg-green-100 dark:bg-green-900/30",
-    title: "Complete a skill-building small job",
-    description: `Even small jobs help build skills for your ${goalName} goal. Every job is a step forward.`,
-    reason: "Builds toward your career goal",
-    href: "/jobs",
-    actionLabel: "Browse jobs",
-  });
-
-  // 3. Learning suggestion
-  nextSteps.push({
-    icon: BookOpen,
-    iconColor: "text-blue-600",
-    iconBg: "bg-blue-100 dark:bg-blue-900/30",
-    title: "Explore learning resources",
-    description: `Discover courses and certifications for ${goalName}.`,
-    reason: `Aligned to ${goalName} requirements`,
-    href: `/growth/career-path?goal=${encodeURIComponent(goalName)}`,
-    actionLabel: "View path",
-  });
-
-  // 4. Career exploration
-  nextSteps.push({
-    icon: GraduationCap,
-    iconColor: "text-amber-600",
-    iconBg: "bg-amber-100 dark:bg-amber-900/30",
-    title: "Review your career path",
-    description: `See what steps lie ahead on your journey to ${goalName}.`,
-    href: `/growth/career-path?goal=${encodeURIComponent(goalName)}`,
-    actionLabel: "View path",
-  });
-
-  return (
-    <div className="space-y-5">
-      {/* Career Header */}
-      <Card className="border-2 border-emerald-200 dark:border-emerald-800/50 bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950/30 dark:via-green-950/20 dark:to-teal-950/30">
-        <CardContent className="py-4">
-          <div className="flex items-center gap-4">
-            <div className="text-3xl">{journey.targetCareer.emoji}</div>
-            <div className="flex-1">
-              <h3 className="font-bold text-lg">{goalName}</h3>
-              <p className="text-sm text-muted-foreground">{journey.educationPath}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Honest Progress Framework */}
-      <HonestProgressSection
-        careerName={goalName}
-        careerEmoji={journey.targetCareer.emoji}
-        foundational={foundationalProgress}
-        careerProgress={careerProgress}
-        runway={runwayData}
-      />
-
-      {/* Skills Progress */}
-      <div className="grid sm:grid-cols-2 gap-3">
-        <Card className="border">
-          <CardContent className="py-3">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-              <h4 className="font-medium text-xs">Skills You Have</h4>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {journey.skillsYouHave.length > 0 ? (
-                journey.skillsYouHave.slice(0, 5).map((skill) => (
-                  <Badge key={skill} variant="secondary" className="text-[10px] bg-emerald-100 dark:bg-emerald-900/30">
-                    {skill}
-                  </Badge>
-                ))
-              ) : (
-                <p className="text-[10px] text-muted-foreground">Complete small jobs to build skills</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border">
-          <CardContent className="py-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Target className="h-4 w-4 text-amber-600" />
-              <h4 className="font-medium text-xs">Skills to Build</h4>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {journey.skillsToGain.slice(0, 4).map((skill) => (
-                <Badge key={skill} variant="outline" className="text-[10px]">
-                  {skill}
-                </Badge>
-              ))}
-              {journey.skillsToGain.length > 4 && (
-                <Badge variant="outline" className="text-[10px]">
-                  +{journey.skillsToGain.length - 4} more
-                </Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Personalised Next Steps */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className="h-4 w-4 text-emerald-600" />
-          <h2 className="font-semibold text-sm">Next steps for {goalName}</h2>
-        </div>
-        <div className="grid gap-2">
-          {nextSteps.slice(0, 3).map((step, i) => (
-            <NextActionCard key={i} {...step} />
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Links */}
-      <div className="grid grid-cols-2 gap-2">
-        <Link href={`/growth/short-term?goal=${encodeURIComponent(goalName)}`}>
-          <Card className="border hover:border-emerald-300 transition-colors cursor-pointer h-full">
-            <CardContent className="py-3">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-emerald-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-xs">Short-term Growth</p>
-                  <p className="text-[10px] text-muted-foreground">Skills & reliability</p>
-                </div>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/growth/vault">
-          <Card className="border hover:border-blue-300 transition-colors cursor-pointer h-full">
-            <CardContent className="py-3">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-xs">Your Vault</p>
-                  <p className="text-[10px] text-muted-foreground">Saved items</p>
-                </div>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
-
-      {/* AI Assistant Prompt - Goal Scoped */}
-      <Card className="border-2 border-purple-200 dark:border-purple-800/50 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
-        <CardContent className="py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <Bot className="h-4 w-4 text-purple-600" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">Ask Sprout AI about {goalName}</h4>
-                <p className="text-[10px] text-muted-foreground">Get personalised advice</p>
-              </div>
-            </div>
-            <Link href={`/career-advisor?goal=${encodeURIComponent(goalName)}&prompt=${encodeURIComponent(`Tell me about becoming a ${goalName}`)}`}>
-              <Button variant="outline" size="sm" className="h-7 text-xs border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30">
-                <Bot className="h-3 w-3 mr-1" />
-                Chat
-              </Button>
-            </Link>
-          </div>
-          {/* Quick AI prompts for this goal */}
-          <div className="flex flex-wrap gap-1.5 mt-2 pl-11">
-            <Link href={`/career-advisor?goal=${encodeURIComponent(goalName)}&prompt=${encodeURIComponent(`What should I do next to become a ${goalName}?`)}`}>
-              <Badge variant="secondary" className="text-[10px] cursor-pointer hover:bg-purple-100">
-                What should I do next?
-              </Badge>
-            </Link>
-            <Link href={`/career-advisor?goal=${encodeURIComponent(goalName)}&prompt=${encodeURIComponent(`What skills am I missing for ${goalName}?`)}`}>
-              <Badge variant="secondary" className="text-[10px] cursor-pointer hover:bg-purple-100">
-                Skills I need
-              </Badge>
-            </Link>
-            <Link href={`/career-advisor?goal=${encodeURIComponent(goalName)}&prompt=${encodeURIComponent(`What is being a ${goalName} really like?`)}`}>
-              <Badge variant="secondary" className="text-[10px] cursor-pointer hover:bg-purple-100">
-                Reality check
-              </Badge>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Career Tabs Component with clear separation
-function CareerTabs({
-  journeys,
-  activeTab,
-  onTabChange,
-  onManageGoals,
-}: {
-  journeys: SingleCareerJourney[];
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  onManageGoals: () => void;
-}) {
-  return (
-    <div className="space-y-3">
-      {/* Tab label */}
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-          Select a career goal
-        </p>
-        <button
-          onClick={onManageGoals}
-          className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        >
-          <Settings className="h-3 w-3" />
-          Manage Goals
-        </button>
-      </div>
-
-      {/* Tabs container with border */}
-      <div className="border-2 rounded-xl bg-muted/30 p-1.5">
-        <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex items-stretch gap-2 min-w-max">
-            {journeys.map((journey, index) => {
-              const isActive = activeTab === journey.targetCareer.id;
-              return (
-                <button
-                  key={journey.targetCareer.id}
-                  onClick={() => onTabChange(journey.targetCareer.id)}
-                  className={cn(
-                    "relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all whitespace-nowrap min-w-[140px]",
-                    isActive
-                      ? "bg-white dark:bg-background shadow-md border-2 border-emerald-500"
-                      : "bg-transparent hover:bg-white/50 dark:hover:bg-background/50 border-2 border-transparent"
-                  )}
-                >
-                  {/* Emoji and content */}
-                  <span className="text-2xl">{journey.targetCareer.emoji}</span>
-                  <div className="flex flex-col items-start">
-                    <span className={cn(
-                      "text-sm font-medium",
-                      isActive ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
-                    )}>
-                      {journey.targetCareer.title}
-                    </span>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className={cn(
-                        "text-[10px]",
-                        isActive ? "text-emerald-600 dark:text-emerald-500" : "text-muted-foreground"
-                      )}>
-                        {journey.skillMatchPercent}% match
-                      </span>
-                      {index === 0 && (
-                        <Badge className="text-[9px] px-1 py-0 h-4 bg-primary/10 text-primary border-0">
-                          Primary
-                        </Badge>
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={cn(
+                      "p-2 rounded-lg",
+                      stageId === "explore" && "bg-blue-100 dark:bg-blue-900/30",
+                      stageId === "build" && "bg-amber-100 dark:bg-amber-900/30",
+                      stageId === "apply" && "bg-emerald-100 dark:bg-emerald-900/30"
+                    )}
+                  >
+                    <Icon
+                      className={cn(
+                        "w-5 h-5",
+                        stageId === "explore" && "text-blue-600",
+                        stageId === "build" && "text-amber-600",
+                        stageId === "apply" && "text-emerald-600"
                       )}
-                    </div>
+                    />
                   </div>
-
-                  {/* Active indicator */}
-                  {isActive && (
-                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-8 h-1 bg-emerald-500 rounded-full" />
+                  <div className="flex-1">
+                    <p className="font-medium text-sm">{stage.label}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {stage.microcopy}
+                    </p>
+                  </div>
+                  {isCurrent && (
+                    <span className="text-xs font-medium text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 px-2 py-0.5 rounded-full">
+                      Next
+                    </span>
                   )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll indicators for mobile */}
-      {journeys.length > 2 && (
-        <>
-          <div className="absolute left-0 top-0 bottom-1 w-4 bg-gradient-to-r from-background to-transparent pointer-events-none sm:hidden" />
-          <div className="absolute right-0 top-0 bottom-1 w-4 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
-        </>
-      )}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        );
+      })}
     </div>
   );
 }
 
-export default function GrowthPage() {
+export default function GrowthDashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
-  const [activeTab, setActiveTab] = useState<string>("");
-  const [goalManagerOpen, setGoalManagerOpen] = useState(false);
-  const queryClient = useQueryClient();
 
-  const { data: multiJourneys, isLoading: journeyLoading } = useQuery<MultipleCareerJourneys | null>({
-    queryKey: ["multiple-career-journeys"],
-    queryFn: () => getMultipleCareerJourneys(),
-    enabled: session?.user?.role === "YOUTH",
-  });
-
-  const { data: growthData, isLoading: growthLoading } = useQuery({
-    queryKey: ["growth-data"],
+  // Fetch readiness data
+  const { data: readiness, isLoading: readinessLoading } = useQuery<ReadinessCheck>({
+    queryKey: ["growth-readiness"],
     queryFn: async () => {
-      const response = await fetch("/api/growth");
-      if (!response.ok) throw new Error("Failed to fetch growth data");
+      const response = await fetch("/api/growth/readiness");
+      if (!response.ok) throw new Error("Failed to fetch readiness");
       return response.json();
     },
     enabled: session?.user?.role === "YOUTH",
   });
 
-  // Mutation to save active tab
-  const saveActiveTab = useMutation({
-    mutationFn: async (goalId: string) => {
-      await fetch("/api/profile/career-goals", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activeGoal: goalId }),
-      });
-    },
-  });
-
-  const journeys = multiJourneys?.journeys || [];
-
-  // Set initial active tab
-  useEffect(() => {
-    if (journeys.length > 0 && !activeTab) {
-      // Try to restore from saved preference or use first
-      setActiveTab(journeys[0].targetCareer.id);
-    }
-  }, [journeys, activeTab]);
-
-  // Handle tab change
-  const handleTabChange = (tabId: string) => {
-    setActiveTab(tabId);
-    // Save preference (fire and forget)
-    const journey = journeys.find((j) => j.targetCareer.id === tabId);
-    if (journey) {
-      saveActiveTab.mutate(journey.targetCareer.title);
-    }
-  };
-
-  // Get current goals for the goal manager
-  const currentGoals = journeys.map((j) => j.targetCareer.title);
-
-  const isLoading = sessionStatus === "loading" || journeyLoading || growthLoading;
+  const isLoading = sessionStatus === "loading" || readinessLoading;
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-2xl px-4 py-6">
-        <div className="mb-6 text-center">
-          <Skeleton className="h-8 w-32 mx-auto mb-2" />
-          <Skeleton className="h-4 w-48 mx-auto" />
-        </div>
-        <div className="space-y-4">
-          <Skeleton className="h-12 w-full" />
+      <div className="max-w-2xl mx-auto space-y-4">
+        <Skeleton className="h-40 w-full" />
+        <div className="grid sm:grid-cols-3 gap-3">
           <Skeleton className="h-24 w-full" />
-          <div className="grid gap-3">
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-          </div>
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
         </div>
+        <Skeleton className="h-48 w-full" />
       </div>
     );
   }
 
   if (session?.user?.role !== "YOUTH") {
     return (
-      <div className="container mx-auto max-w-2xl px-4 py-6">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold">My Growth</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Track your progress toward your career goals
-          </p>
-        </div>
+      <div className="max-w-2xl mx-auto">
         <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">This page is only available for youth workers.</p>
+            <p className="text-muted-foreground">
+              This page is only available for youth workers.
+            </p>
             <Button className="mt-4" asChild>
               <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
@@ -613,139 +280,52 @@ export default function GrowthPage() {
     );
   }
 
-  const hasCareerGoals = journeys.length > 0;
-  const activeJourney = journeys.find((j) => j.targetCareer.id === activeTab);
+  // Default readiness if not loaded
+  const readinessData: ReadinessCheck = readiness || {
+    hasTargetCareer: false,
+    hasSkillTags: false,
+    hasLocationPreference: false,
+    hasCV: false,
+  };
 
-  // No career goals set - show empty/exploring state
-  if (!hasCareerGoals) {
-    return (
-      <div className="container mx-auto max-w-2xl px-4 py-6">
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold">My Growth</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Track your progress toward your career goals
-          </p>
-        </div>
+  // Determine suggested next stage
+  const suggestedStage = getSuggestedStage(readinessData);
 
-        <div className="space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <EmptyStateBanner onAddGoal={() => setGoalManagerOpen(true)} />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.3 }}
-          >
-            <ExploringBanner onAddGoal={() => setGoalManagerOpen(true)} />
-          </motion.div>
-        </div>
-
-        <GoalManagerModal
-          open={goalManagerOpen}
-          onOpenChange={setGoalManagerOpen}
-          currentGoals={currentGoals}
-        />
-      </div>
-    );
-  }
-
-  // Has career goals - show tabbed view
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-6">
-      {/* Header */}
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold">My Growth</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Track your progress toward your career goals
-        </p>
-      </div>
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Next Stop Card */}
+      <NextStopCard stageId={suggestedStage} readiness={readinessData} />
 
-      <div className="space-y-4">
-        {/* Goals Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-emerald-600" />
-              <h2 className="font-bold text-lg">My Career Goals</h2>
-              <Badge variant="secondary" className="text-xs">
-                {journeys.length} goal{journeys.length > 1 ? "s" : ""}
-              </Badge>
-            </div>
-          </div>
-
-        {/* Progress Summary */}
-        {growthData?.hasData && (
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <Card className="border">
-              <CardContent className="py-2.5 text-center">
-                <p className="text-lg font-bold text-emerald-600">{growthData.growth.totalJobsCompleted}</p>
-                <p className="text-[10px] text-muted-foreground">Small Jobs Done</p>
-              </CardContent>
-            </Card>
-            <Card className="border">
-              <CardContent className="py-2.5 text-center">
-                <p className="text-lg font-bold text-purple-600">{growthData.growth.skillsDemonstrated?.length || 0}</p>
-                <p className="text-[10px] text-muted-foreground">Skills Built</p>
-              </CardContent>
-            </Card>
-            <Card className="border">
-              <CardContent className="py-2.5 text-center">
-                <p className="text-lg font-bold text-amber-600">{formatCurrency(multiJourneys?.totalEarnings || 0)}</p>
-                <p className="text-[10px] text-muted-foreground">Earned</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </motion.div>
-
-      {/* Career Goal Tabs */}
+      {/* Stage Quick Links */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.3 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
       >
-        <CareerTabs
-          journeys={journeys}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          onManageGoals={() => setGoalManagerOpen(true)}
-        />
+        <h3 className="font-semibold text-sm mb-3 text-muted-foreground">
+          All Stages
+        </h3>
+        <StageQuickLinks currentStage={suggestedStage} />
       </motion.div>
 
-      {/* Active Tab Content */}
+      {/* Readiness Checklist */}
       <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, x: 10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.2 }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.3 }}
       >
-        {activeJourney && (
-          <CareerTabContent
-            journey={activeJourney}
-            growthData={growthData}
-            multiJourneys={multiJourneys ?? null}
-            availabilityLevel={multiJourneys?.availabilityLevel ?? null}
-          />
-        )}
+        <ReadinessChecklist readiness={readinessData} />
       </motion.div>
 
-        {/* Goal Manager Modal */}
-        <GoalManagerModal
-          open={goalManagerOpen}
-          onOpenChange={setGoalManagerOpen}
-          currentGoals={currentGoals}
-        />
-      </div>
+      {/* Help Text */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.3 }}
+        className="text-center text-sm text-muted-foreground"
+      >
+        Complete each stage to unlock the next. Your progress is saved automatically.
+      </motion.p>
     </div>
   );
 }
