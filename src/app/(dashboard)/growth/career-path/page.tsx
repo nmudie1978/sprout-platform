@@ -23,10 +23,44 @@ import {
   Settings,
   Lock,
   ExternalLink,
+  Clock,
+  Globe,
+  MapPin,
+  AlertCircle,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { getCareerJourneyForGoal, type CareerJourneyData } from "@/lib/my-path/actions";
 import { formatCurrency } from "@/lib/utils";
+
+// Type for verified learning API response
+interface VerifiedLearningResource {
+  id: string;
+  title: string;
+  provider: string;
+  providerType: string;
+  deliveryMode: string;
+  regionScope: string;
+  duration: string;
+  cost: string;
+  certificationType: string;
+  ageSuitability: string;
+  officialUrl: string;
+  description: string | null;
+  highlights: string[];
+}
+
+interface LearningRecommendationsResponse {
+  success: boolean;
+  message: string;
+  localRegional: VerifiedLearningResource[];
+  international: VerifiedLearningResource[];
+  totalCount: number;
+  nextSteps?: string[];
+  meta?: {
+    verificationNote: string;
+  };
+}
 
 export default function CareerPathPage() {
   const { data: session, status: sessionStatus } = useSession();
@@ -51,6 +85,19 @@ export default function CareerPathPage() {
     queryKey: ["career-journey", effectiveGoal],
     queryFn: () => effectiveGoal ? getCareerJourneyForGoal(effectiveGoal) : Promise.resolve(null),
     enabled: session?.user?.role === "YOUTH" && !!effectiveGoal,
+  });
+
+  // Fetch verified learning recommendations
+  const { data: learningData, isLoading: learningLoading } = useQuery<LearningRecommendationsResponse>({
+    queryKey: ["verified-learning", effectiveGoal],
+    queryFn: async () => {
+      const params = effectiveGoal ? `?careers=${encodeURIComponent(effectiveGoal)}` : "";
+      const response = await fetch(`/api/learning/recommendations${params}`);
+      if (!response.ok) throw new Error("Failed to fetch learning recommendations");
+      return response.json();
+    },
+    enabled: session?.user?.role === "YOUTH" && !!effectiveGoal,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const isLoading = sessionStatus === "loading" || goalsLoading || journeyLoading;
@@ -328,7 +375,7 @@ export default function CareerPathPage() {
         </Card>
       </motion.div>
 
-      {/* Learning Resources (Placeholder for now) */}
+      {/* Verified Learning Recommendations */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -336,36 +383,116 @@ export default function CareerPathPage() {
       >
         <Card className="border-2">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-blue-600" />
-              Recommended Learning
-            </CardTitle>
-            <CardDescription>
-              Courses and certifications to help you on your journey
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-blue-600" />
+                  Recommended Learning
+                </CardTitle>
+                <CardDescription>
+                  Verified courses and certifications for your career journey
+                </CardDescription>
+              </div>
+              <Badge variant="outline" className="text-xs flex items-center gap-1">
+                <ShieldCheck className="h-3 w-3" />
+                Verified
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3">
-              {/* These would be dynamically generated based on career */}
-              <Link href="https://www.nav.no/utdanning" target="_blank" rel="noopener noreferrer">
-                <div className="p-4 rounded-lg border hover:border-blue-300 transition-colors flex items-center justify-between group">
+            {learningLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            ) : learningData && learningData.totalCount > 0 ? (
+              <div className="space-y-6">
+                {/* Verification note */}
+                <p className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
+                  {learningData.message}
+                </p>
+
+                {/* Local/Regional Resources */}
+                {learningData.localRegional.length > 0 && (
                   <div>
-                    <h4 className="font-medium text-sm">NAV Education Resources</h4>
-                    <p className="text-xs text-muted-foreground">Official Norwegian education pathways</p>
+                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-green-600" />
+                      Local &amp; Regional
+                    </h4>
+                    <div className="grid gap-3">
+                      {learningData.localRegional.map((resource) => (
+                        <VerifiedCourseCard key={resource.id} resource={resource} />
+                      ))}
+                    </div>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600" />
-                </div>
-              </Link>
-              <Link href="https://utdanning.no" target="_blank" rel="noopener noreferrer">
-                <div className="p-4 rounded-lg border hover:border-blue-300 transition-colors flex items-center justify-between group">
+                )}
+
+                {/* International Resources */}
+                {learningData.international.length > 0 && (
                   <div>
-                    <h4 className="font-medium text-sm">Utdanning.no</h4>
-                    <p className="text-xs text-muted-foreground">Explore education options in Norway</p>
+                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-blue-600" />
+                      International (Online)
+                    </h4>
+                    <div className="grid gap-3">
+                      {learningData.international.map((resource) => (
+                        <VerifiedCourseCard key={resource.id} resource={resource} />
+                      ))}
+                    </div>
                   </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600" />
+                )}
+              </div>
+            ) : (
+              /* No verified courses found - show clear message */
+              <div className="text-center py-6">
+                <div className="mx-auto w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
+                  <AlertCircle className="h-6 w-6 text-amber-600" />
                 </div>
-              </Link>
-            </div>
+                <p className="text-sm font-medium mb-2">
+                  {learningData?.message || "No verified courses found"}
+                </p>
+                <p className="text-xs text-muted-foreground mb-4 max-w-sm mx-auto">
+                  We only show courses that have been independently verified as real and currently available.
+                </p>
+                {learningData?.nextSteps && learningData.nextSteps.length > 0 && (
+                  <div className="text-left bg-muted/50 rounded-lg p-4 max-w-sm mx-auto">
+                    <p className="text-xs font-medium mb-2">Next steps:</p>
+                    <ul className="text-xs text-muted-foreground space-y-1">
+                      {learningData.nextSteps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-muted-foreground">•</span>
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {/* Always show fallback resources */}
+                <div className="mt-4 pt-4 border-t">
+                  <p className="text-xs text-muted-foreground mb-3">Explore these trusted resources:</p>
+                  <div className="grid gap-2">
+                    <Link href="https://utdanning.no" target="_blank" rel="noopener noreferrer">
+                      <div className="p-3 rounded-lg border hover:border-blue-300 transition-colors flex items-center justify-between group text-left">
+                        <div>
+                          <h4 className="font-medium text-sm">Utdanning.no</h4>
+                          <p className="text-xs text-muted-foreground">Norwegian education portal</p>
+                        </div>
+                        <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600" />
+                      </div>
+                    </Link>
+                    <Link href="https://www.nav.no/utdanning" target="_blank" rel="noopener noreferrer">
+                      <div className="p-3 rounded-lg border hover:border-blue-300 transition-colors flex items-center justify-between group text-left">
+                        <div>
+                          <h4 className="font-medium text-sm">NAV Education</h4>
+                          <p className="text-xs text-muted-foreground">Official career guidance</p>
+                        </div>
+                        <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600" />
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -411,5 +538,89 @@ export default function CareerPathPage() {
         </motion.div>
       )}
     </div>
+  );
+}
+
+/**
+ * VerifiedCourseCard - Displays a verified learning resource with full metadata
+ * Only shows courses that have been verified as real and current
+ */
+function VerifiedCourseCard({ resource }: { resource: VerifiedLearningResource }) {
+  const getCostBadgeVariant = (cost: string) => {
+    if (cost.toLowerCase() === "free") return "secondary";
+    return "outline";
+  };
+
+  const getDeliveryIcon = (mode: string) => {
+    switch (mode) {
+      case "ONLINE":
+        return <Globe className="h-3 w-3" />;
+      case "IN_PERSON":
+        return <MapPin className="h-3 w-3" />;
+      default:
+        return <Globe className="h-3 w-3" />;
+    }
+  };
+
+  return (
+    <a
+      href={resource.officialUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block"
+    >
+      <div className="p-4 rounded-lg border hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors group">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-sm group-hover:text-blue-600 transition-colors">
+              {resource.title}
+            </h4>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {resource.provider}
+            </p>
+            {resource.description && (
+              <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                {resource.description}
+              </p>
+            )}
+          </div>
+          <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-blue-600 shrink-0" />
+        </div>
+
+        {/* Metadata badges */}
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          <Badge variant={getCostBadgeVariant(resource.cost)} className="text-[10px] px-1.5 py-0">
+            {resource.cost}
+          </Badge>
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex items-center gap-1">
+            <Clock className="h-2.5 w-2.5" />
+            {resource.duration}
+          </Badge>
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0 flex items-center gap-1">
+            {getDeliveryIcon(resource.deliveryMode)}
+            {resource.deliveryMode === "ONLINE" ? "Online" : resource.deliveryMode === "IN_PERSON" ? "In-person" : "Hybrid"}
+          </Badge>
+          {resource.certificationType !== "NONE" && (
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+              {resource.certificationType === "PROFESSIONAL_CERT" ? "Certificate" :
+               resource.certificationType === "DIGITAL_BADGE" ? "Badge" :
+               resource.certificationType === "ACADEMIC_CREDIT" ? "Credit" : "Completion"}
+            </Badge>
+          )}
+        </div>
+
+        {/* Highlights */}
+        {resource.highlights.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {resource.highlights.slice(0, 2).map((highlight, i) => (
+              <span key={i} className="text-[10px] text-muted-foreground">
+                {i > 0 && "• "}
+                {highlight}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </a>
   );
 }

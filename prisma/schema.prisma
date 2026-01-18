@@ -263,6 +263,9 @@ model User {
   alertEvents             OpportunityAlertEvent[]
   pathSnapshots           PathSnapshot[]
 
+  // Verified Learning
+  learningProgress        UserLearningProgress[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -1921,4 +1924,144 @@ model IndustryInsightsModule {
   @@index([status])
   @@index([lastVerifiedAt])
   @@index([key])
+}
+
+// ============================================
+// VERIFIED LEARNING RESOURCES
+// ============================================
+// Accuracy-first learning recommendations system.
+// Only includes courses/certifications that have been verified as real and current.
+// See /docs/verified-learning.md for full documentation.
+
+enum LearningProviderType {
+  UNIVERSITY           // Universities and colleges
+  PUBLIC_BODY          // Government / public education bodies
+  INDUSTRY_CERT        // Industry certification bodies (CompTIA, AWS, etc.)
+  ONLINE_PLATFORM      // Major online learning platforms (Coursera, etc.)
+}
+
+enum LearningDeliveryMode {
+  ONLINE               // Fully online / remote
+  IN_PERSON            // Requires physical attendance
+  HYBRID               // Mix of online and in-person
+}
+
+enum LearningRegionScope {
+  LOCAL                // Country-specific (e.g., Norway only)
+  REGIONAL             // Regional (e.g., Nordics, EU)
+  INTERNATIONAL        // Globally accessible
+}
+
+enum LearningCertificationType {
+  PROFESSIONAL_CERT    // Industry-recognized certification
+  COURSE_COMPLETION    // Certificate of completion
+  DIGITAL_BADGE        // Micro-credential / badge
+  ACADEMIC_CREDIT      // University credit / qualification
+  NONE                 // No certificate offered
+}
+
+enum LearningPrerequisiteLevel {
+  NONE                 // No prerequisites
+  BASIC                // Basic computer/reading skills
+  INTERMEDIATE         // Some prior knowledge required
+  ADVANCED             // Significant prior experience needed
+}
+
+enum LearningResourceStatus {
+  VERIFIED             // Actively verified as available
+  PENDING_VERIFICATION // Awaiting verification
+  VERIFICATION_FAILED  // Could not verify - do not display
+  ARCHIVED             // Previously valid, now discontinued
+}
+
+// Verified Learning Resource - ACCURACY FIRST
+// Only courses that have been verified as real and currently available
+model VerifiedLearningResource {
+  id                    String                    @id @default(uuid())
+
+  // Core identification
+  title                 String                    // Official course/certification name
+  provider              String                    // e.g., "Coursera", "Google", "NAV"
+  providerType          LearningProviderType
+
+  // Delivery & accessibility
+  deliveryMode          LearningDeliveryMode
+  regionScope           LearningRegionScope
+  regionDetails         String?                   // e.g., "Norway", "EU/EEA", "Global"
+  language              String                    @default("en") // Primary language
+
+  // Duration & commitment
+  duration              String                    // e.g., "6 weeks", "3 months", "Self-paced"
+  timeCommitmentHours   Int?                      // Hours per week if known
+
+  // Cost
+  cost                  String                    // "Free", "Paid", or specific amount
+  costAmount            Decimal?                  @db.Decimal(10, 2) // Numeric cost if known
+  costCurrency          String?                   // e.g., "NOK", "USD", "EUR"
+  financialAidAvailable Boolean                   @default(false)
+
+  // Certification & recognition
+  certificationType     LearningCertificationType
+  recognisedBy          String[]                  // Who recognizes this cert
+  industryValue         String?                   // Brief note on industry recognition
+
+  // Age & prerequisites
+  minimumAge            Int?                      // Minimum age if specified
+  ageSuitability        String                    // e.g., "16+", "18+", "All ages"
+  prerequisiteLevel     LearningPrerequisiteLevel
+  prerequisiteDetails   String?                   // Specific prereqs if any
+
+  // Career relevance
+  relevantCareers       String[]                  // Career paths this supports
+  relevantSkills        String[]                  // Skills taught/developed
+
+  // Official URL - MUST be real and verified
+  officialUrl           String                    // Direct link to course page
+
+  // Verification tracking (critical for accuracy)
+  status                LearningResourceStatus    @default(PENDING_VERIFICATION)
+  lastVerifiedAt        DateTime?                 // When we last confirmed it exists
+  verificationNotes     String?                   // Notes from verification
+  verificationSource    String?                   // How we verified (manual, API, etc.)
+
+  // Metadata
+  description           String?                   @db.Text // Brief description
+  highlights            String[]                  // Key selling points
+
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+
+  // Relations
+  userProgress          UserLearningProgress[]
+
+  @@index([status])
+  @@index([provider])
+  @@index([relevantCareers])
+  @@index([regionScope])
+  @@index([lastVerifiedAt])
+}
+
+// User's saved/tracked learning resources
+model UserLearningProgress {
+  id                    String                    @id @default(uuid())
+  userId                String
+  resourceId            String
+
+  // Progress tracking
+  status                String                    @default("saved") // saved, in_progress, completed
+  startedAt             DateTime?
+  completedAt           DateTime?
+
+  // User notes
+  notes                 String?                   @db.Text
+
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+
+  user                  User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource              VerifiedLearningResource  @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, resourceId])
+  @@index([userId])
+  @@index([resourceId])
 }
