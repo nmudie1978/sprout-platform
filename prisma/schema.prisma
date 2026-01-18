@@ -1829,3 +1829,96 @@ model AiChatMessage {
 
   @@index([userId, createdAt])
 }
+
+// ============================================
+// INDUSTRY INSIGHT VIDEOS (Content Freshness System)
+// ============================================
+
+enum IndustryInsightVideoStatus {
+  ACTIVE          // Currently displayed to users
+  REFRESH_DUE     // Content is stale, needs regeneration
+  REGENERATING    // Being regenerated with new content
+  ARCHIVED        // Previous version, kept for history
+}
+
+model IndustryInsightVideo {
+  id            String                     @id @default(uuid())
+  industry      String                     // e.g., "tech", "health", "green", "creative"
+  role          String?                    // Optional specialization (e.g., "Developer", "Nurse")
+  title         String                     // Video title
+  description   String?                    @db.Text // Video description
+  videoUrl      String                     // YouTube URL or video ID
+  thumbnailUrl  String?                    // Custom thumbnail (optional)
+  duration      String?                    // e.g., "12:34"
+  channel       String?                    // Source channel name
+  topic         String?                    // Topic tag (e.g., "AI Impact", "Skills")
+
+  // Content generation tracking
+  generatedBy   String                     @default("manual") // "AI" or "manual"
+  generatedAt   DateTime                   @default(now())
+  refreshDueAt  DateTime                   // generatedAt + 90 days
+  lastCheckedAt DateTime?                  // When freshness was last verified
+
+  // Status and versioning
+  status        IndustryInsightVideoStatus @default(ACTIVE)
+  version       Int                        @default(1)
+  previousVersionId String?                // Reference to archived version
+
+  // AI regeneration metadata
+  aiPrompt      String?                    @db.Text // Prompt used for AI generation
+  aiModel       String?                    // Model used (e.g., "gpt-4")
+
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+
+  @@unique([industry, role, status], name: "unique_active_video")
+  @@index([industry])
+  @@index([status])
+  @@index([refreshDueAt])
+  @@index([generatedAt])
+}
+
+// ============================================
+// INDUSTRY INSIGHTS MODULES (90-Day Verify & Refresh System)
+// ============================================
+// Modular content system for Industry Insights page.
+// Each module is independently verified and refreshed based on cadence.
+// System-generated content must be in English only.
+
+enum InsightsModuleStatus {
+  ACTIVE          // Currently displayed, within verification window
+  VERIFY_DUE      // Verification window exceeded, needs checking
+  REGENERATING    // Currently being refreshed with new data
+}
+
+model IndustryInsightsModule {
+  id                  String               @id @default(uuid())
+  key                 String               @unique // e.g., "top_industries", "skills_trends"
+  title               String               // Display title
+  description         String?              // Optional description
+
+  // Content storage (English-only for renderedSummary)
+  contentJson         Json                 // Structured data (arrays, objects)
+  renderedSummary     String?              @db.Text // English-only summary text for UI
+  sourceMeta          Json?                // Provider info: {provider, fetchedAt, urls}
+
+  // Verification tracking
+  lastGeneratedAt     DateTime             @default(now())
+  lastVerifiedAt      DateTime             @default(now())
+  refreshCadenceDays  Int                  @default(90) // Default 90 days
+  status              InsightsModuleStatus @default(ACTIVE)
+
+  // Change detection thresholds (per-module)
+  // e.g., {"salaryPct": 10, "rankShift": 2, "listDiffPct": 20}
+  changeThreshold     Json                 @default("{}")
+
+  // Versioning
+  version             Int                  @default(1)
+
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([status])
+  @@index([lastVerifiedAt])
+  @@index([key])
+}

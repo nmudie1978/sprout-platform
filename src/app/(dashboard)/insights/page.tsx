@@ -276,16 +276,39 @@ export default function IndustryInsightsPage() {
     topEmployers: "Small & medium businesses employ 60% of young workers",
   };
 
-  const featuredVideos = [
-    { title: "How AI Will Change The Job Market", channel: "CNBC", videoId: "gWmRkYsLzB4", duration: "12:34", topic: "AI Impact" },
-    { title: "Why You Will Fail to Have a Great Career", channel: "TEDx Talks", videoId: "iKHTawgyKWQ", duration: "15:00", topic: "Careers" },
-    { title: "The First 20 Hours: How to Learn Anything", channel: "TEDx Talks", videoId: "5MgBikgcWnY", duration: "19:27", topic: "Skills" },
-    { title: "Day in the Life: Software Developer", channel: "Tech Career Insider", videoId: "qMkRHW9zE1c", duration: "11:18", topic: "Tech" },
-    { title: "How to Get Into the Trades Without Experience", channel: "Mike Rowe", videoId: "IRVdiHu1VCc", duration: "9:42", topic: "Trades" },
-    { title: "Steve Jobs' Stanford Commencement Address", channel: "Stanford", videoId: "UF8uR6Z6KLc", duration: "15:05", topic: "Inspiration" },
-    { title: "Grit: The Power of Passion and Perseverance", channel: "TED", videoId: "H14bBuluwB8", duration: "6:12", topic: "Success" },
-    { title: "Your Body Language May Shape Who You Are", channel: "TED", videoId: "Ks-_Mh1QhMc", duration: "21:02", topic: "Interview Tips" },
+  // Fetch videos from database with freshness system
+  const { data: videosData, isLoading: isLoadingVideos } = useQuery({
+    queryKey: ["industry-insight-videos", industryFilter],
+    queryFn: async () => {
+      const params = industryFilter !== "all" ? `?industry=${industryFilter}` : "";
+      const response = await fetch(`/api/insights/videos${params}`);
+      if (!response.ok) throw new Error("Failed to fetch videos");
+      return response.json();
+    },
+  });
+
+  // Fetch insights modules verification status
+  const { data: modulesData } = useQuery({
+    queryKey: ["insights-modules-meta"],
+    queryFn: async () => {
+      const response = await fetch("/api/insights/modules");
+      if (!response.ok) throw new Error("Failed to fetch modules");
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  const featuredVideos = videosData?.videos || [];
+
+  // Fallback videos if database is empty (for initial load before seeding)
+  const fallbackVideos = [
+    { id: "1", title: "How AI Will Change The Job Market", channel: "CNBC", videoUrl: "gWmRkYsLzB4", duration: "12:34", topic: "AI Impact", thumbnail: "https://img.youtube.com/vi/gWmRkYsLzB4/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "2", title: "Why You Will Fail to Have a Great Career", channel: "TEDx Talks", videoUrl: "iKHTawgyKWQ", duration: "15:00", topic: "Careers", thumbnail: "https://img.youtube.com/vi/iKHTawgyKWQ/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "3", title: "The First 20 Hours: How to Learn Anything", channel: "TEDx Talks", videoUrl: "5MgBikgcWnY", duration: "19:27", topic: "Skills", thumbnail: "https://img.youtube.com/vi/5MgBikgcWnY/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "4", title: "Day in the Life: Software Developer", channel: "Tech Career Insider", videoUrl: "qMkRHW9zE1c", duration: "11:18", topic: "Tech", thumbnail: "https://img.youtube.com/vi/qMkRHW9zE1c/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
   ];
+
+  const displayVideos = featuredVideos.length > 0 ? featuredVideos : fallbackVideos;
 
   const filteredIndustries = industryFilter === "all"
     ? growingIndustries
@@ -784,65 +807,95 @@ export default function IndustryInsightsPage() {
         className="mb-12"
         id="videos"
       >
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Youtube className="h-6 w-6 text-red-600" />
-            Watch & Learn
-          </h2>
-          <p className="text-muted-foreground">Expert insights and career advice from top creators</p>
+        <div className="mb-6 flex items-end justify-between">
+          <div>
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              <Youtube className="h-6 w-6 text-red-600" />
+              Watch & Learn
+            </h2>
+            <p className="text-muted-foreground">Expert insights and career advice from top creators</p>
+          </div>
+          <Badge variant="outline" className="text-xs">
+            <Clock className="h-3 w-3 mr-1" />
+            Auto-refreshed quarterly
+          </Badge>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {featuredVideos.map((video, index) => (
-            <motion.a
-              key={video.videoId}
-              href={`https://www.youtube.com/watch?v=${video.videoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 1.3 + index * 0.05 }}
-            >
-              <Card className="overflow-hidden border hover:border-red-500 transition-all duration-300 hover:shadow-lg h-full">
-                <div className="relative aspect-video overflow-hidden bg-black">
-                  <Image
-                    src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`}
-                    alt={video.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-red-600 group-hover:bg-red-700 group-hover:scale-110 transition-all flex items-center justify-center shadow-xl">
-                      <Play className="h-6 w-6 text-white ml-0.5" fill="white" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/90 rounded text-white text-[10px] font-semibold">
-                    {video.duration}
-                  </div>
-                </div>
+        {isLoadingVideos ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Card key={i} className="overflow-hidden border animate-pulse">
+                <div className="aspect-video bg-muted" />
                 <CardContent className="p-3">
-                  <div className="flex items-start gap-2 mb-2">
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400">
-                      {video.topic}
-                    </Badge>
-                  </div>
-                  <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-red-600 transition-colors mb-1">
-                    {video.title}
-                  </h3>
-                  <p className="text-[11px] text-muted-foreground">
-                    {video.channel}
-                  </p>
+                  <div className="h-4 bg-muted rounded w-16 mb-2" />
+                  <div className="h-4 bg-muted rounded w-full mb-1" />
+                  <div className="h-3 bg-muted rounded w-24" />
                 </CardContent>
               </Card>
-            </motion.a>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {displayVideos.map((video: any, index: number) => (
+              <motion.a
+                key={video.id}
+                href={`https://www.youtube.com/watch?v=${video.videoUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: 1.3 + index * 0.05 }}
+              >
+                <Card className="overflow-hidden border hover:border-red-500 transition-all duration-300 hover:shadow-lg h-full">
+                  <div className="relative aspect-video overflow-hidden bg-black">
+                    <Image
+                      src={video.thumbnail}
+                      alt={video.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-red-600 group-hover:bg-red-700 group-hover:scale-110 transition-all flex items-center justify-center shadow-xl">
+                        <Play className="h-6 w-6 text-white ml-0.5" fill="white" />
+                      </div>
+                    </div>
+                    {video.duration && (
+                      <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/90 rounded text-white text-[10px] font-semibold">
+                        {video.duration}
+                      </div>
+                    )}
+                    {/* Freshness badge */}
+                    {video.freshness?.label === "Recently updated" && (
+                      <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-green-600 rounded text-white text-[10px] font-semibold flex items-center gap-1">
+                        <Sparkles className="h-3 w-3" />
+                        New
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-3">
+                    <div className="flex items-start gap-2 mb-2">
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400">
+                        {video.topic}
+                      </Badge>
+                    </div>
+                    <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-red-600 transition-colors mb-1">
+                      {video.title}
+                    </h3>
+                    <p className="text-[11px] text-muted-foreground">
+                      {video.channel}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.a>
+            ))}
+          </div>
+        )}
 
         <div className="mt-6 p-4 rounded-xl bg-muted/50 border text-center">
           <p className="text-sm text-muted-foreground">
-            These videos open in YouTube. We've curated content from trusted sources to help you stay informed.
+            These videos open in YouTube. Content is automatically refreshed every 3 months to ensure freshness.
           </p>
         </div>
       </motion.div>
@@ -880,11 +933,22 @@ export default function IndustryInsightsPage() {
                 LinkedIn Economic Graph
               </a>
             </div>
-            <p className="text-xs text-muted-foreground mt-3">
-              Last updated: January 2025
-            </p>
           </div>
         </div>
+      </div>
+
+      {/* Verification Status Footer */}
+      <div className="mt-6 flex items-center justify-center gap-3 text-sm text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-green-500" />
+          <span>Updated regularly</span>
+        </div>
+        {modulesData?.meta?.allVerifiedThisQuarter && (
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <span>Verified this quarter</span>
+          </div>
+        )}
       </div>
     </div>
   );
