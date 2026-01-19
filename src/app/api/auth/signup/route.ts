@@ -3,13 +3,17 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AccountStatus, AuditAction } from "@prisma/client";
 import {
-  calculateAge,
   logAuditAction,
-  MIN_YOUTH_AGE,
-  MAX_YOUTH_AGE,
   MIN_EMPLOYER_AGE,
   validateAgeBracket,
 } from "@/lib/safety";
+import {
+  getAge,
+  getAgeBand,
+  validateSignupAge,
+  PLATFORM_MIN_AGE,
+  PLATFORM_MAX_AGE,
+} from "@/lib/safety/age";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,6 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate date of birth for youth users
+    // SAFETY INVARIANT: Platform minimum age is 16 (hard block under-16)
     let birthDate: Date | null = null;
     let age: number | null = null;
     let initialAccountStatus: AccountStatus = AccountStatus.ONBOARDING;
@@ -53,19 +58,28 @@ export async function POST(req: NextRequest) {
       }
 
       birthDate = new Date(dateOfBirth);
-      age = calculateAge(birthDate);
+      age = getAge(birthDate);
 
-      // Validate age is within acceptable range (15-20)
-      if (age < MIN_YOUTH_AGE) {
+      // CORE SAFETY CHECK: Validate age using canonical function
+      const ageValidation = validateSignupAge(dateOfBirth);
+      if (!ageValidation.valid) {
         return NextResponse.json(
-          { error: `You must be at least ${MIN_YOUTH_AGE} years old to register` },
+          { error: ageValidation.error },
           { status: 400 }
         );
       }
 
-      if (age > MAX_YOUTH_AGE) {
+      // Double-check age constraints server-side (defense in depth)
+      if (age === null || age < PLATFORM_MIN_AGE) {
         return NextResponse.json(
-          { error: `Youth workers must be ${MAX_YOUTH_AGE} or younger. Consider registering as an employer.` },
+          { error: `Sprout is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}. You must be at least ${PLATFORM_MIN_AGE} to create an account.` },
+          { status: 400 }
+        );
+      }
+
+      if (age > PLATFORM_MAX_AGE) {
+        return NextResponse.json(
+          { error: `Youth workers must be ${PLATFORM_MAX_AGE} or younger. Consider registering as an employer.` },
           { status: 400 }
         );
       }
@@ -80,6 +94,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Youth under 18 need guardian consent before becoming ACTIVE
+      // Youth 18-20 can be ACTIVE immediately
       if (age < 18) {
         initialAccountStatus = AccountStatus.PENDING_VERIFICATION;
       } else {
@@ -89,7 +104,14 @@ export async function POST(req: NextRequest) {
       // Employers must be at least 18 years old
       if (dateOfBirth) {
         birthDate = new Date(dateOfBirth);
-        age = calculateAge(birthDate);
+        age = getAge(birthDate);
+
+        if (age === null) {
+          return NextResponse.json(
+            { error: "Invalid date of birth" },
+            { status: 400 }
+          );
+        }
 
         if (age < MIN_EMPLOYER_AGE) {
           return NextResponse.json(

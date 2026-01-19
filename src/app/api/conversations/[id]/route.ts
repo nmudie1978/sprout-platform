@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { MessageIntent } from "@prisma/client";
 import {
   canSendMessage,
-  canUseTemplate,
-  validatePayload,
-  renderMessageText,
   logSafetyAction,
-  TemplateAllowedFields,
 } from "@/lib/safety-messaging";
+import {
+  validateIntentVariables,
+  checkHardBlocks,
+  getIntentTemplate,
+} from "@/lib/message-intents";
 import { recordLifeSkillEvent } from "@/lib/life-skills";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 
@@ -78,8 +80,12 @@ export async function GET(
           orderBy: { createdAt: "asc" },
           select: {
             id: true,
-            renderedText: true,
+            intent: true,
+            renderedMessage: true,
+            isLegacy: true,
+            // Legacy fields for backward compatibility
             templateId: true,
+            content: true,
             senderId: true,
             read: true,
             createdAt: true,
@@ -147,17 +153,27 @@ export async function GET(
       frozenReason: conversation.frozenReason,
       otherParty,
       job: conversation.job,
-      messages: conversation.messages.map((msg) => ({
-        id: msg.id,
-        content: msg.renderedText,
-        templateKey: msg.template?.key,
-        templateLabel: msg.template?.label,
-        templateCategory: msg.template?.category,
-        senderId: msg.senderId,
-        read: msg.read,
-        createdAt: msg.createdAt,
-        isFromMe: msg.senderId === userId,
-      })),
+      messages: conversation.messages.map((msg) => {
+        // Get the template info for intent-based messages
+        const intentTemplate = msg.intent ? getIntentTemplate(msg.intent) : null;
+
+        return {
+          id: msg.id,
+          // Prefer new intent-based content, fall back to legacy fields
+          content: msg.renderedMessage || msg.content || "",
+          intent: msg.intent,
+          intentLabel: intentTemplate?.label,
+          isLegacy: msg.isLegacy,
+          // Legacy template fields for backward compatibility
+          templateKey: msg.template?.key,
+          templateLabel: msg.template?.label,
+          templateCategory: msg.template?.category,
+          senderId: msg.senderId,
+          read: msg.read,
+          createdAt: msg.createdAt,
+          isFromMe: msg.senderId === userId,
+        };
+      }),
     });
   } catch (error) {
     console.error("Failed to fetch conversation:", error);
@@ -168,8 +184,8 @@ export async function GET(
   }
 }
 
-// POST /api/conversations/[id] - Send a structured message
-// Phase 1 Safety: NO free-text messaging - must use templates
+// POST /api/conversations/[id] - Send an intent-based message
+// CORE SAFETY FEATURE: NO free-text messaging - must use intents
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -201,17 +217,29 @@ export async function POST(
     }
 
     const body = await req.json();
-    const { templateKey, payload } = body;
+    const { intent, variables } = body as {
+      intent: MessageIntent | undefined;
+      variables: Record<string, string> | undefined;
+    };
 
-    // Phase 1 Safety: Template is REQUIRED - no free-text
-    if (!templateKey) {
+    // HARD BLOCK: Check basic requirements
+    const hardBlock = checkHardBlocks(intent, variables || {}, id);
+    if (hardBlock.blocked) {
       return NextResponse.json(
-        { error: "Template key is required. Free-text messaging is not allowed.", code: "TEMPLATE_REQUIRED" },
+        { error: hardBlock.reason, code: "HARD_BLOCK" },
         { status: 400 }
       );
     }
 
-    // Phase 1 Safety: Check if user can send messages in this conversation
+    // CORE SAFETY: Intent is REQUIRED - no free-text
+    if (!intent || !Object.values(MessageIntent).includes(intent)) {
+      return NextResponse.json(
+        { error: "Please select a message type. Free-text messaging is not allowed.", code: "INTENT_REQUIRED" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user can send messages in this conversation
     const sendCheck = await canSendMessage(userId, id);
     if (!sendCheck.allowed) {
       return NextResponse.json(
@@ -241,67 +269,49 @@ export async function POST(
       );
     }
 
+    // Get user's age bracket for safety checks
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { ageBracket: true },
+    });
+
     // Determine recipient
     const recipientId =
       conversation.participant1Id === userId
         ? conversation.participant2Id
         : conversation.participant1Id;
 
-    // Phase 1 Safety: Check if user can use this template (direction restrictions)
-    const templateCheck = await canUseTemplate(userId, recipientId, templateKey);
-    if (!templateCheck.allowed) {
-      return NextResponse.json(
-        {
-          error: templateCheck.reason || "Cannot use this message type",
-          code: templateCheck.code,
-        },
-        { status: 403 }
-      );
-    }
-
-    // Get the template for validation and rendering
-    const template = await prisma.messageTemplate.findUnique({
-      where: { key: templateKey },
-    });
-
-    if (!template || !template.isActive) {
-      return NextResponse.json(
-        { error: "Invalid or inactive template", code: "INVALID_TEMPLATE" },
-        { status: 400 }
-      );
-    }
-
-    // Phase 1 Safety: Validate payload against template allowed fields
-    const allowedFields = template.allowedFields as unknown as TemplateAllowedFields;
-    const messagePayload = payload || {};
-    const validation = validatePayload(messagePayload, allowedFields);
+    // CORE SAFETY: Validate variables against intent template
+    // This includes age-based safety checks for contact info detection
+    const validation = validateIntentVariables(
+      intent,
+      variables || {},
+      user?.ageBracket
+    );
 
     if (!validation.valid) {
       return NextResponse.json(
         {
-          error: "Invalid message payload",
-          code: "INVALID_PAYLOAD",
+          error: validation.errors[0] || "Invalid message",
+          code: "INVALID_MESSAGE",
           details: validation.errors,
         },
         { status: 400 }
       );
     }
 
-    // Phase 1 Safety: Server-side rendering of safe message text
-    const renderedText = renderMessageText(
-      template.label,
-      allowedFields.renderTemplate,
-      messagePayload
-    );
+    // Get the intent template for response
+    const intentTemplate = getIntentTemplate(intent);
 
-    // Create the message with template and validated payload
+    // Create the message with intent and validated variables
     const message = await prisma.message.create({
       data: {
         conversationId: id,
         senderId: userId,
-        templateId: template.id,
-        payload: messagePayload,
-        renderedText,
+        intent: intent,
+        variables: variables || {},
+        renderedMessage: validation.renderedMessage!,
+        isLegacy: false,
       },
     });
 
@@ -312,7 +322,9 @@ export async function POST(
     });
 
     // Create notification for the recipient (with safe rendered text)
-    const notificationPreview = renderedText.slice(0, 60) + (renderedText.length > 60 ? "..." : "");
+    const notificationPreview =
+      validation.renderedMessage!.slice(0, 60) +
+      (validation.renderedMessage!.length > 60 ? "..." : "");
     await prisma.notification.create({
       data: {
         userId: recipientId,
@@ -332,12 +344,12 @@ export async function POST(
       message.id,
       {
         conversationId: id,
-        templateKey,
+        intent,
         recipientId,
       }
     );
 
-    // Life Skills: Record events based on message context
+    // Life Skills: Record events based on message intent
     if (session.user.role === "YOUTH") {
       // Check if this is the user's first message ever (to any conversation)
       const messageCount = await prisma.message.count({
@@ -345,27 +357,25 @@ export async function POST(
       });
       if (messageCount === 1) {
         // This was their first message
-        await recordLifeSkillEvent(userId, "MESSAGE_SENT_FIRST", id, { templateKey });
+        await recordLifeSkillEvent(userId, "MESSAGE_SENT_FIRST", id, { intent });
       }
 
-      // Record events based on specific template usage
-      if (templateKey === "RUNNING_LATE") {
-        await recordLifeSkillEvent(userId, "RUNNING_LATE_TEMPLATE_USED", message.id, { conversationId: id });
-      } else if (templateKey === "CONFIRM_PAYMENT" || templateKey === "ASK_PAYMENT") {
-        await recordLifeSkillEvent(userId, "PAYMENT_DISCUSSED", message.id, { conversationId: id });
-      } else if (templateKey === "CONFIRM_LOCATION" || templateKey === "ASK_LOCATION") {
-        await recordLifeSkillEvent(userId, "LOCATION_SHARED", message.id, { conversationId: id });
-      } else if (templateKey === "DECLINE_POLITELY") {
+      // Record events based on specific intent usage
+      if (intent === MessageIntent.CONFIRM_COMPLETION) {
+        await recordLifeSkillEvent(userId, "JOB_COMPLETED", message.id, { conversationId: id });
+      } else if (intent === MessageIntent.UNABLE_TO_PROCEED) {
         await recordLifeSkillEvent(userId, "JOB_DECLINED", id, { conversationId: id });
+      } else if (intent === MessageIntent.CONFIRM_AVAILABILITY) {
+        await recordLifeSkillEvent(userId, "JOB_ACCEPTED", message.id, { conversationId: id });
       }
     }
 
     return NextResponse.json(
       {
         id: message.id,
-        content: renderedText,
-        templateKey: template.key,
-        templateLabel: template.label,
+        content: validation.renderedMessage,
+        intent: intent,
+        intentLabel: intentTemplate?.label,
         senderId: message.senderId,
         createdAt: message.createdAt,
         isFromMe: true,

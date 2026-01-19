@@ -79,7 +79,8 @@ export async function GET(req: NextRequest) {
           orderBy: { createdAt: "desc" },
           take: 1,
           select: {
-            renderedText: true,
+            renderedMessage: true,
+            content: true,
             createdAt: true,
             senderId: true,
           },
@@ -139,7 +140,7 @@ export async function GET(req: NextRequest) {
           status: conv.status,
           lastMessage: lastMessage
             ? {
-                content: lastMessage.renderedText,
+                content: lastMessage.renderedMessage || lastMessage.content || "",
                 createdAt: lastMessage.createdAt,
                 isFromMe: lastMessage.senderId === userId,
               }

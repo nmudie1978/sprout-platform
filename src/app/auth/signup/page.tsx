@@ -28,8 +28,9 @@ function SignUpForm() {
   const [loading, setLoading] = useState(false);
 
   // Calculate age and bracket from date of birth
+  // SAFETY INVARIANT: Platform is for ages 16-20. Under-16 is HARD BLOCKED.
   const calculateAgeInfo = (dob: string) => {
-    if (!dob) return { age: null, bracket: null };
+    if (!dob) return { age: null, bracket: null, ageBand: null };
     const today = new Date();
     const birthDate = new Date(dob);
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -37,8 +38,21 @@ function SignUpForm() {
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    const bracket = age >= 15 && age <= 17 ? "SIXTEEN_SEVENTEEN" : age >= 18 && age <= 20 ? "EIGHTEEN_TWENTY" : null;
-    return { age, bracket };
+    // Age bands: UNDER_SIXTEEN (blocked), SIXTEEN_SEVENTEEN (minor), EIGHTEEN_TWENTY (adult)
+    let bracket = null;
+    let ageBand = null;
+    if (age >= 16 && age <= 17) {
+      bracket = "SIXTEEN_SEVENTEEN";
+      ageBand = "AGE_16_17";
+    } else if (age >= 18 && age <= 20) {
+      bracket = "EIGHTEEN_TWENTY";
+      ageBand = "AGE_18_20";
+    } else if (age < 16) {
+      ageBand = "UNDER_16";
+    } else if (age > 20) {
+      ageBand = "OVER_20";
+    }
+    return { age, bracket, ageBand };
   };
 
   const ageInfo = calculateAgeInfo(dateOfBirth);
@@ -64,12 +78,19 @@ function SignUpForm() {
       }
 
       // Validate date of birth for youth
+      // SAFETY INVARIANT: Hard-block under-16
       if (role === "YOUTH") {
         if (!dateOfBirth) {
           throw new Error("Date of birth is required");
         }
-        if (ageInfo.age === null || ageInfo.age < 15 || ageInfo.age > 20) {
-          throw new Error("Youth workers must be between 15 and 20 years old");
+        if (ageInfo.age === null) {
+          throw new Error("Invalid date of birth");
+        }
+        if (ageInfo.age < 16) {
+          throw new Error("Sprout is for users aged 16-20. You must be at least 16 to create an account.");
+        }
+        if (ageInfo.age > 20) {
+          throw new Error("Youth workers must be 20 or younger. Consider registering as a job poster.");
         }
       }
 
@@ -232,11 +253,11 @@ function SignUpForm() {
                   className="h-11 sm:h-10"
                 />
                 {dateOfBirth && ageInfo.age !== null && (
-                  <p className={`text-xs ${ageInfo.age >= 15 && ageInfo.age <= 20 ? "text-green-600" : "text-red-500"}`}>
-                    {ageInfo.age >= 15 && ageInfo.age <= 20
+                  <p className={`text-xs ${ageInfo.age >= 16 && ageInfo.age <= 20 ? "text-green-600" : "text-red-500"}`}>
+                    {ageInfo.age >= 16 && ageInfo.age <= 20
                       ? `You are ${ageInfo.age} years old - eligible to join!`
-                      : ageInfo.age < 15
-                        ? "You must be at least 15 years old to register"
+                      : ageInfo.age < 16
+                        ? "Sprout is for ages 16-20. You must be at least 16 to register."
                         : "Youth workers must be 20 or younger. Consider registering as a job poster."}
                   </p>
                 )}

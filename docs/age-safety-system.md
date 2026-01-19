@@ -19,11 +19,18 @@ The age safety system ensures that:
 
 ## Data Model
 
+### Platform Minimum Age
+
+**SAFETY INVARIANT**: The platform minimum age is **16 years old**.
+Users under 16 cannot create accounts (hard-blocked at signup).
+
+See `/docs/SAFETY_INVARIANTS.md` for the full policy.
+
 ### Risk Categories and Minimum Ages
 
 | Risk Category | Minimum Age | Example Jobs |
 |---------------|-------------|--------------|
-| LOW_RISK | 15 | Tech help, errands, light pet care |
+| LOW_RISK | 16 | Tech help, errands, light pet care |
 | MEDIUM_RISK | 16 | Dog walking, cleaning, snow clearing |
 | HIGH_RISK | 18 | Power tools, chemicals, night work |
 
