@@ -388,13 +388,20 @@ model YouthProfile {
   address String? // Full address (optional, more specific)
 
   // My Path personalization fields
-  desiredRoles        String[] // Top role interests (max 3, career goals)
+  desiredRoles        String[] // Top role interests (max 3, career goals) - LEGACY
   desiredSectors      String[] // Optional sector preferences
-  activeCareerGoal    String? // Currently selected career tab in My Growth
+  activeCareerGoal    String? // Currently selected career tab in My Growth - LEGACY
   learningPreferences String[] // e.g., "video", "hands-on", "reading"
   availabilityTags    String[] // e.g., "weekends", "after-school", "summer"
   locationBase        String? // City/area for job matching (legacy, prefer city field)
   pathUpdatedAt       DateTime? // Last time path preferences were updated
+
+  // Structured Career Goals (Primary + Secondary)
+  primaryGoal   Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
+  secondaryGoal Json? // Same structure, optional
+
+  // Private notes
+  notes UserNote[]
 
   // Onboarding fields
   onboardingCompletedAt DateTime? // When onboarding was completed
@@ -424,6 +431,19 @@ model YouthProfile {
   @@index([averageRating])
   @@index([completedJobsCount])
   @@index([city])
+}
+
+// Private user notes for goal tracking
+model UserNote {
+  id        String   @id @default(cuid())
+  profileId String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([createdAt])
 }
 
 // Career Interests Snapshot - Optional, privacy-controlled career interests

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense, useCallback } from "react";
+import { useState, useMemo, useEffect, Suspense, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { CareerFilterBar } from "@/components/careers/career-filter-bar";
 import { CareerAdvancedFilters } from "@/components/careers/career-advanced-filters";
 import { CareerActiveChips } from "@/components/careers/career-active-chips";
 import { MobileFilterDrawer } from "@/components/careers/mobile-filter-drawer";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 import { motion } from "framer-motion";
 import { Compass, Search, Sparkles, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -27,12 +28,27 @@ import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
 
+// Pagination constants
+const PAGE_SIZE = 12;
+
 function CareersPageContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const isMobile = useIsMobile();
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Get current page from URL (default to 1)
+  const currentPage = useMemo(() => {
+    const pageParam = searchParams.get("page");
+    const page = pageParam ? parseInt(pageParam, 10) : 1;
+    return isNaN(page) || page < 1 ? 1 : page;
+  }, [searchParams]);
+
+  // Track previous filter state to detect changes
+  const prevFiltersRef = useRef<string>("");
 
   // Load view preference from localStorage
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
@@ -85,6 +101,59 @@ function CareersPageContent() {
     hasActiveFilters,
     advancedFilterCount,
   } = useCareerFilters(recommendationMap);
+
+  // Pagination calculations
+  const totalItems = filteredCareers.length;
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+  const validCurrentPage = Math.min(currentPage, Math.max(1, totalPages));
+
+  // Get paginated slice of careers
+  const paginatedCareers = useMemo(() => {
+    const startIndex = (validCurrentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+    return filteredCareers.slice(startIndex, endIndex);
+  }, [filteredCareers, validCurrentPage]);
+
+  // Handle page change - update URL
+  const handlePageChange = useCallback((newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (newPage === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", newPage.toString());
+    }
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+    // Scroll to top of results
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [searchParams, router, pathname]);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    const filterString = JSON.stringify({
+      category: filters.category,
+      searchQuery: filters.searchQuery,
+      growthFilter: filters.growthFilter,
+      salaryRange: filters.salaryRange,
+      educationLevels: filters.educationLevels,
+      skills: filters.skills,
+      careerNatures: filters.careerNatures,
+      entryLevelOnly: filters.entryLevelOnly,
+    });
+
+    // Only reset if filters actually changed (not on initial mount)
+    if (prevFiltersRef.current && prevFiltersRef.current !== filterString) {
+      // Filters changed - reset to page 1
+      if (currentPage !== 1) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("page");
+        const queryString = params.toString();
+        router.replace(queryString ? `${pathname}?${queryString}` : pathname, { scroll: false });
+      }
+    }
+
+    prevFiltersRef.current = filterString;
+  }, [filters, currentPage, searchParams, router, pathname]);
 
   // Read category from URL params on mount
   useEffect(() => {
@@ -242,8 +311,15 @@ function CareersPageContent() {
       {/* Results Header */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs text-muted-foreground">
-          {filteredCareers.length} career
-          {filteredCareers.length !== 1 ? "s" : ""}
+          {totalItems > PAGE_SIZE ? (
+            <>
+              Showing {((validCurrentPage - 1) * PAGE_SIZE) + 1}–{Math.min(validCurrentPage * PAGE_SIZE, totalItems)} of {totalItems} career{totalItems !== 1 ? "s" : ""}
+            </>
+          ) : (
+            <>
+              {totalItems} career{totalItems !== 1 ? "s" : ""}
+            </>
+          )}
           {filters.searchQuery && ` for "${filters.searchQuery}"`}
         </p>
         <div className="flex items-center gap-2">
@@ -260,32 +336,48 @@ function CareersPageContent() {
       </div>
 
       {/* Results */}
-      {filteredCareers.length > 0 ? (
-        <div
-          className={
-            viewMode === "list"
-              ? "border rounded-md overflow-hidden bg-background"
-              : viewMode === "small"
-              ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-              : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          }
-        >
-          {filteredCareers.map((career, index) => (
-            <motion.div
-              key={career.id}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(index * 0.02, 0.3) }}
-            >
-              <CareerCardV2
-                career={career}
-                viewMode={viewMode}
-                matchScore={recommendationMap.get(career.id)}
-                onLearnMore={() => setSelectedCareer(career)}
+      {totalItems > 0 ? (
+        <>
+          <div
+            className={
+              viewMode === "list"
+                ? "border rounded-md overflow-hidden bg-background"
+                : viewMode === "small"
+                ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            }
+          >
+            {paginatedCareers.map((career, index) => (
+              <motion.div
+                key={career.id}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(index * 0.02, 0.3) }}
+              >
+                <CareerCardV2
+                  career={career}
+                  viewMode={viewMode}
+                  matchScore={recommendationMap.get(career.id)}
+                  onLearnMore={() => setSelectedCareer(career)}
+                />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-6">
+              <PaginationControls
+                currentPage={validCurrentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={PAGE_SIZE}
+                onPageChange={handlePageChange}
+                showItemCount={false}
               />
-            </motion.div>
-          ))}
-        </div>
+            </div>
+          )}
+        </>
       ) : (
         <Card className="border-2">
           <CardContent className="py-12 text-center">

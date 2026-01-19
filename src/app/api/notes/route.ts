@@ -1,54 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
-// GET /api/notes - Get notes for a specific worker or all notes
-export async function GET(req: NextRequest) {
+const createNoteSchema = z.object({
+  content: z.string().min(1).max(2000),
+});
+
+// GET - Fetch user's notes
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== "EMPLOYER") {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const youthId = searchParams.get("youthId");
-
-    const notes = await prisma.workerNote.findMany({
-      where: {
-        employerId: session.user.id,
-        ...(youthId ? { youthId } : {}),
+    // First get or create the profile
+    const profile = await prisma.youthProfile.upsert({
+      where: { userId: session.user.id },
+      create: {
+        userId: session.user.id,
+        displayName: session.user.name || "User",
       },
-      include: {
-        youth: {
-          select: {
-            id: true,
-            youthProfile: {
-              select: {
-                displayName: true,
-                avatarId: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: { updatedAt: "desc" },
+      update: {},
+      select: { id: true },
     });
 
-    const formattedNotes = notes.map((note) => ({
-      id: note.id,
-      youthId: note.youthId,
-      displayName: note.youth.youthProfile?.displayName || "Unknown",
-      avatarId: note.youth.youthProfile?.avatarId,
-      content: note.content,
-      createdAt: note.createdAt,
-      updatedAt: note.updatedAt,
-    }));
+    const notes = await prisma.userNote.findMany({
+      where: { profileId: profile.id },
+      orderBy: { createdAt: "desc" },
+      take: 50, // Limit to 50 most recent
+    });
 
-    return NextResponse.json(formattedNotes);
+    return NextResponse.json({ notes });
   } catch (error) {
-    console.error("Failed to fetch notes:", error);
+    console.error("Error fetching notes:", error);
     return NextResponse.json(
       { error: "Failed to fetch notes" },
       { status: 500 }
@@ -56,94 +43,90 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/notes - Create or update a note for a worker
-export async function POST(req: NextRequest) {
+// POST - Create a new note
+export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== "EMPLOYER") {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { youthId, content } = body;
+    const body = await request.json();
+    const { content } = createNoteSchema.parse(body);
 
-    if (!youthId || !content) {
-      return NextResponse.json(
-        { error: "Youth ID and content are required" },
-        { status: 400 }
-      );
-    }
+    // Get or create the profile
+    const profile = await prisma.youthProfile.upsert({
+      where: { userId: session.user.id },
+      create: {
+        userId: session.user.id,
+        displayName: session.user.name || "User",
+      },
+      update: {},
+      select: { id: true },
+    });
 
-    // Check if note already exists
-    const existingNote = await prisma.workerNote.findUnique({
-      where: {
-        employerId_youthId: {
-          employerId: session.user.id,
-          youthId,
-        },
+    const note = await prisma.userNote.create({
+      data: {
+        profileId: profile.id,
+        content,
       },
     });
 
-    let note;
-    if (existingNote) {
-      // Update existing note
-      note = await prisma.workerNote.update({
-        where: { id: existingNote.id },
-        data: { content },
-      });
-    } else {
-      // Create new note
-      note = await prisma.workerNote.create({
-        data: {
-          employerId: session.user.id,
-          youthId,
-          content,
-        },
-      });
-    }
-
-    return NextResponse.json(note, { status: existingNote ? 200 : 201 });
+    return NextResponse.json({ success: true, note });
   } catch (error) {
-    console.error("Failed to save note:", error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid request", details: error.errors },
+        { status: 400 }
+      );
+    }
+    console.error("Error creating note:", error);
     return NextResponse.json(
-      { error: "Failed to save note" },
+      { error: "Failed to create note" },
       { status: 500 }
     );
   }
 }
 
-// DELETE /api/notes - Delete a note
-export async function DELETE(req: NextRequest) {
+// DELETE - Delete a note
+export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session || session.user.role !== "EMPLOYER") {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(req.url);
-    const youthId = searchParams.get("youthId");
+    const { searchParams } = new URL(request.url);
+    const noteId = searchParams.get("id");
 
-    if (!youthId) {
+    if (!noteId) {
       return NextResponse.json(
-        { error: "Youth ID is required" },
+        { error: "Note ID required" },
         { status: 400 }
       );
     }
 
-    await prisma.workerNote.delete({
+    // Get the profile
+    const profile = await prisma.youthProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+
+    if (!profile) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    // Delete the note (only if it belongs to this user)
+    await prisma.userNote.deleteMany({
       where: {
-        employerId_youthId: {
-          employerId: session.user.id,
-          youthId,
-        },
+        id: noteId,
+        profileId: profile.id,
       },
     });
 
-    return NextResponse.json({ message: "Note deleted" });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Failed to delete note:", error);
+    console.error("Error deleting note:", error);
     return NextResponse.json(
       { error: "Failed to delete note" },
       { status: 500 }

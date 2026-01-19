@@ -1,179 +1,861 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   Target,
   Plus,
-  CheckCircle2,
-  Circle,
+  Edit2,
   Trash2,
-  Sparkles,
-  Calendar,
-  TrendingUp,
   Star,
-  Rocket,
-  Trophy,
-  Briefcase,
+  Clock,
   ChevronRight,
+  CheckCircle2,
+  X,
+  Compass,
+  BookOpen,
+  Briefcase,
+  Lightbulb,
+  ArrowRight,
+  StickyNote,
 } from "lucide-react";
+import type {
+  CareerGoal,
+  GoalSlot,
+  GoalStatus,
+  GoalConfidence,
+  GoalTimeframe,
+  NextStep,
+} from "@/lib/goals/types";
+import {
+  STATUS_CONFIG,
+  CONFIDENCE_CONFIG,
+  TIMEFRAME_CONFIG,
+  SUGGESTED_ACTIONS_BY_CAREER,
+  ONBOARDING_SUGGESTIONS,
+  createEmptyGoal,
+} from "@/lib/goals/types";
 
-// Goal type
-interface Goal {
+// Note type for the Notes/Journal feature
+interface UserNote {
   id: string;
-  title: string;
-  completed: boolean;
-  category: "career" | "skills" | "jobs" | "learning";
+  content: string;
   createdAt: string;
 }
 
-// Category configuration
-const categoryConfig = {
-  career: { label: "Career", color: "bg-purple-500", icon: Rocket },
-  skills: { label: "Skills", color: "bg-blue-500", icon: TrendingUp },
-  jobs: { label: "Jobs", color: "bg-emerald-500", icon: Target },
-  learning: { label: "Learning", color: "bg-amber-500", icon: Star },
-};
+// Goal Card Component
+function GoalCard({
+  goal,
+  slot,
+  isEditing,
+  onEdit,
+  onSave,
+  onCancel,
+  onClear,
+  editForm,
+  setEditForm,
+}: {
+  goal: CareerGoal | null;
+  slot: GoalSlot;
+  isEditing: boolean;
+  onEdit: () => void;
+  onSave: () => void;
+  onCancel: () => void;
+  onClear: () => void;
+  editForm: CareerGoal | null;
+  setEditForm: (form: CareerGoal | null) => void;
+}) {
+  const isPrimary = slot === "primary";
 
-// Suggested goals based on youth platform context
-const suggestedGoals = [
-  { title: "Complete my profile", category: "career" as const },
-  { title: "Apply to my first job", category: "jobs" as const },
-  { title: "Explore 5 different careers", category: "career" as const },
-  { title: "Complete a job successfully", category: "jobs" as const },
-  { title: "Get my first positive review", category: "jobs" as const },
-  { title: "Learn a new skill this month", category: "skills" as const },
-  { title: "Save my first earnings", category: "jobs" as const },
-  { title: "Connect with a mentor", category: "learning" as const },
-];
+  const addNextStep = () => {
+    if (!editForm || editForm.nextSteps.length >= 5) return;
+    setEditForm({
+      ...editForm,
+      nextSteps: [
+        ...editForm.nextSteps,
+        { id: crypto.randomUUID(), text: "", completed: false },
+      ],
+    });
+  };
 
+  const updateNextStep = (id: string, text: string) => {
+    if (!editForm) return;
+    setEditForm({
+      ...editForm,
+      nextSteps: editForm.nextSteps.map((s) =>
+        s.id === id ? { ...s, text } : s
+      ),
+    });
+  };
+
+  const removeNextStep = (id: string) => {
+    if (!editForm) return;
+    setEditForm({
+      ...editForm,
+      nextSteps: editForm.nextSteps.filter((s) => s.id !== id),
+    });
+  };
+
+  const addSkill = (skill: string) => {
+    if (!editForm || !skill.trim() || editForm.skills.length >= 8) return;
+    if (editForm.skills.includes(skill.trim())) return;
+    setEditForm({
+      ...editForm,
+      skills: [...editForm.skills, skill.trim()],
+    });
+  };
+
+  const removeSkill = (skill: string) => {
+    if (!editForm) return;
+    setEditForm({
+      ...editForm,
+      skills: editForm.skills.filter((s) => s !== skill),
+    });
+  };
+
+  // Empty state - show placeholder
+  if (!goal && !isEditing) {
+    return (
+      <Card
+        className={`border-2 border-dashed ${
+          isPrimary
+            ? "border-purple-300 dark:border-purple-700"
+            : "border-slate-300 dark:border-slate-700"
+        }`}
+      >
+        <CardContent className="py-8 text-center">
+          <div
+            className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center ${
+              isPrimary
+                ? "bg-purple-100 dark:bg-purple-900/50"
+                : "bg-slate-100 dark:bg-slate-800"
+            }`}
+          >
+            <Target
+              className={`h-6 w-6 ${
+                isPrimary
+                  ? "text-purple-500"
+                  : "text-slate-500"
+              }`}
+            />
+          </div>
+          <h3 className="font-semibold mb-1">
+            {isPrimary ? "No Primary Goal Set" : "No Secondary Goal"}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            {isPrimary
+              ? "Set a primary career goal to get personalized suggestions"
+              : "Add a backup goal you're exploring"}
+          </p>
+          <Link href="/careers">
+            <Button
+              variant={isPrimary ? "default" : "outline"}
+              className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+            >
+              <Compass className="h-4 w-4 mr-2" />
+              Explore Careers
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Editing state
+  if (isEditing && editForm) {
+    return (
+      <Card
+        className={`border-2 ${
+          isPrimary
+            ? "border-purple-500 dark:border-purple-600"
+            : "border-slate-400 dark:border-slate-600"
+        }`}
+      >
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {isPrimary && <Star className="h-5 w-5 text-purple-500" />}
+              <span className="text-sm font-medium text-muted-foreground">
+                {isPrimary ? "Primary Goal" : "Secondary Goal"}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="sm" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={onSave}
+                className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Title */}
+          <div>
+            <label className="text-sm font-medium mb-1 block">Career Goal</label>
+            <Input
+              value={editForm.title}
+              onChange={(e) =>
+                setEditForm({ ...editForm, title: e.target.value })
+              }
+              placeholder="e.g., Software Developer"
+              className="text-lg font-semibold"
+            />
+          </div>
+
+          {/* Status & Confidence & Timeframe Row */}
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Status</label>
+              <Select
+                value={editForm.status}
+                onValueChange={(v) =>
+                  setEditForm({ ...editForm, status: v as GoalStatus })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="exploring">Exploring</SelectItem>
+                  <SelectItem value="committed">Committed</SelectItem>
+                  <SelectItem value="paused">Paused</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Confidence</label>
+              <Select
+                value={editForm.confidence}
+                onValueChange={(v) =>
+                  setEditForm({ ...editForm, confidence: v as GoalConfidence })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Timeframe</label>
+              <Select
+                value={editForm.timeframe}
+                onValueChange={(v) =>
+                  setEditForm({ ...editForm, timeframe: v as GoalTimeframe })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="this-year">This year</SelectItem>
+                  <SelectItem value="1-2-years">1-2 years</SelectItem>
+                  <SelectItem value="3-plus-years">3+ years</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Why */}
+          <div>
+            <label className="text-sm font-medium mb-1 block">
+              Why this goal?
+            </label>
+            <Textarea
+              value={editForm.why}
+              onChange={(e) =>
+                setEditForm({ ...editForm, why: e.target.value })
+              }
+              placeholder="What draws you to this career?"
+              className="resize-none"
+              rows={2}
+              maxLength={500}
+            />
+          </div>
+
+          {/* Next Steps */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Next Steps</label>
+              <span className="text-xs text-muted-foreground">
+                {editForm.nextSteps.length}/5
+              </span>
+            </div>
+            <div className="space-y-2">
+              {editForm.nextSteps.map((step) => (
+                <div key={step.id} className="flex items-center gap-2">
+                  <Input
+                    value={step.text}
+                    onChange={(e) => updateNextStep(step.id, e.target.value)}
+                    placeholder="e.g., Research required qualifications"
+                    className="flex-1"
+                    maxLength={200}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeNextStep(step.id)}
+                    className="h-8 w-8 text-muted-foreground hover:text-red-500"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              {editForm.nextSteps.length < 5 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={addNextStep}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-1" /> Add Step
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Skills */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Skills to Build</label>
+              <span className="text-xs text-muted-foreground">
+                {editForm.skills.length}/8
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {editForm.skills.map((skill) => (
+                <Badge
+                  key={skill}
+                  variant="secondary"
+                  className="cursor-pointer hover:bg-red-100 dark:hover:bg-red-900"
+                  onClick={() => removeSkill(skill)}
+                >
+                  {skill}
+                  <X className="h-3 w-3 ml-1" />
+                </Badge>
+              ))}
+            </div>
+            {editForm.skills.length < 8 && (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add a skill..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addSkill((e.target as HTMLInputElement).value);
+                      (e.target as HTMLInputElement).value = "";
+                    }
+                  }}
+                  maxLength={50}
+                />
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Display state
+  const statusConfig = STATUS_CONFIG[goal!.status];
+  const confidenceConfig = CONFIDENCE_CONFIG[goal!.confidence];
+  const timeframeConfig = TIMEFRAME_CONFIG[goal!.timeframe];
+
+  return (
+    <Card
+      className={`${
+        isPrimary
+          ? "border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50/50 to-white dark:from-purple-950/30 dark:to-background"
+          : "border border-slate-200 dark:border-slate-800"
+      }`}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            {isPrimary && <Star className="h-5 w-5 text-purple-500 fill-purple-500" />}
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {isPrimary ? "Primary Goal" : "Secondary Goal"}
+            </span>
+          </div>
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onEdit}
+              className="h-8 w-8"
+            >
+              <Edit2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClear}
+              className="h-8 w-8 text-muted-foreground hover:text-red-500"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        <CardTitle
+          className={`text-xl ${isPrimary ? "text-purple-900 dark:text-purple-100" : ""}`}
+        >
+          {goal!.title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Status badges */}
+        <div className="flex flex-wrap gap-2">
+          <Badge className={statusConfig.color}>{statusConfig.label}</Badge>
+          <Badge variant="outline" className={confidenceConfig.color}>
+            {confidenceConfig.label} confidence
+          </Badge>
+          <Badge variant="outline" className="text-muted-foreground">
+            <Clock className="h-3 w-3 mr-1" />
+            {timeframeConfig.label}
+          </Badge>
+        </div>
+
+        {/* Why */}
+        {goal!.why && (
+          <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
+            <span className="font-medium">Why: </span>
+            {goal!.why}
+          </div>
+        )}
+
+        {/* Next Steps */}
+        {goal!.nextSteps.length > 0 && (
+          <div>
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-green-500" />
+              Next Steps
+            </h4>
+            <div className="space-y-1">
+              {goal!.nextSteps.map((step) => (
+                <div
+                  key={step.id}
+                  className="flex items-center gap-2 text-sm"
+                >
+                  <Checkbox
+                    checked={step.completed}
+                    disabled
+                    className="h-4 w-4"
+                  />
+                  <span
+                    className={step.completed ? "line-through text-muted-foreground" : ""}
+                  >
+                    {step.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Skills */}
+        {goal!.skills.length > 0 && (
+          <div>
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Lightbulb className="h-4 w-4 text-amber-500" />
+              Skills to Build
+            </h4>
+            <div className="flex flex-wrap gap-1.5">
+              {goal!.skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="text-xs">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Last updated */}
+        {goal!.updatedAt && (
+          <p className="text-xs text-muted-foreground">
+            Last updated: {new Date(goal!.updatedAt).toLocaleDateString()}
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// Notes Section Component
+function NotesSection({
+  notes,
+  isLoading,
+  onAdd,
+  onDelete,
+}: {
+  notes: UserNote[];
+  isLoading: boolean;
+  onAdd: (content: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const [newNote, setNewNote] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNote.trim()) return;
+    onAdd(newNote.trim());
+    setNewNote("");
+    setIsAdding(false);
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <StickyNote className="h-5 w-5 text-amber-500" />
+            Notes & Journal
+          </CardTitle>
+          {!isAdding && (
+            <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
+              <Plus className="h-4 w-4 mr-1" /> Add Note
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {isAdding && (
+          <form onSubmit={handleSubmit} className="mb-4">
+            <Textarea
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              placeholder="Write your thoughts, reflections, or anything you want to remember..."
+              className="mb-2 resize-none"
+              rows={3}
+              maxLength={2000}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => {
+                  setIsAdding(false);
+                  setNewNote("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button size="sm" type="submit" disabled={!newNote.trim()}>
+                Save Note
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-4 bg-muted rounded w-24 mb-2" />
+                <div className="h-16 bg-muted rounded" />
+              </div>
+            ))}
+          </div>
+        ) : notes.length === 0 ? (
+          <div className="text-center py-6 text-muted-foreground">
+            <StickyNote className="h-8 w-8 mx-auto mb-2 opacity-30" />
+            <p className="text-sm">No notes yet. Start journaling your career thoughts!</p>
+          </div>
+        ) : (
+          <div className="space-y-3 max-h-[400px] overflow-y-auto">
+            <AnimatePresence>
+              {notes.map((note) => (
+                <motion.div
+                  key={note.id}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="group relative p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      {new Date(note.createdAt).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(note.id)}
+                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// Suggested Actions Component
+function SuggestedActions({ primaryGoal }: { primaryGoal: CareerGoal | null }) {
+  const actions = primaryGoal
+    ? SUGGESTED_ACTIONS_BY_CAREER[primaryGoal.title.toLowerCase().replace(/\s+/g, "-")] ||
+      SUGGESTED_ACTIONS_BY_CAREER.default
+    : ONBOARDING_SUGGESTIONS;
+
+  const iconMap: Record<string, React.ElementType> = {
+    search: Compass,
+    users: Target,
+    "graduation-cap": BookOpen,
+    briefcase: Briefcase,
+    star: Star,
+    banknote: Target,
+    code: Target,
+    globe: Compass,
+    play: Target,
+    refresh: Target,
+    building: Briefcase,
+    heart: Star,
+    "hand-heart": Star,
+    award: Star,
+    folder: Briefcase,
+    pencil: Edit2,
+    trophy: Star,
+    tool: Target,
+    network: Target,
+    user: Target,
+    compass: Compass,
+    clipboard: BookOpen,
+    target: Target,
+  };
+
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex items-center gap-2">
+          <Lightbulb className="h-5 w-5 text-amber-500" />
+          {primaryGoal ? "Suggested Next Actions" : "Get Started"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {actions.slice(0, 5).map((action) => {
+            const Icon = iconMap[action.icon || "target"] || Target;
+            return (
+              <Link
+                key={action.id}
+                href={action.href || "/careers"}
+                className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors group"
+              >
+                <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50">
+                  <Icon className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <span className="flex-1 text-sm font-medium">{action.text}</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+              </Link>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Main Goals Page
 export default function GoalsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const [newGoal, setNewGoal] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<Goal["category"]>("career");
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  // Editing states
+  const [editingSlot, setEditingSlot] = useState<GoalSlot | null>(null);
+  const [primaryEditForm, setPrimaryEditForm] = useState<CareerGoal | null>(null);
+  const [secondaryEditForm, setSecondaryEditForm] = useState<CareerGoal | null>(null);
 
-  // Fetch career goals from database
-  const { data: careerGoalsData, isLoading: isLoadingCareerGoals } = useQuery({
-    queryKey: ["career-goals"],
+  // Fetch goals
+  const { data: goalsData, isLoading: isLoadingGoals } = useQuery({
+    queryKey: ["goals"],
     queryFn: async () => {
-      const response = await fetch("/api/profile/career-goals");
-      if (!response.ok) return { goals: [], activeGoal: null };
+      const response = await fetch("/api/goals");
+      if (!response.ok) throw new Error("Failed to fetch goals");
       return response.json();
     },
     enabled: !!session?.user?.id,
   });
 
-  const careerGoals: string[] = Array.isArray(careerGoalsData?.goals) ? careerGoalsData.goals : [];
-
-  // For MVP, store personal goals in localStorage (could be moved to DB later)
-  const { data: goals = [], isLoading } = useQuery({
-    queryKey: ["my-goals", session?.user?.id],
-    queryFn: () => {
-      if (typeof window === "undefined") return [];
-      const stored = localStorage.getItem(`sprout-goals-${session?.user?.id}`);
-      return stored ? JSON.parse(stored) : [];
+  // Fetch notes
+  const { data: notesData, isLoading: isLoadingNotes } = useQuery({
+    queryKey: ["notes"],
+    queryFn: async () => {
+      const response = await fetch("/api/notes");
+      if (!response.ok) throw new Error("Failed to fetch notes");
+      return response.json();
     },
     enabled: !!session?.user?.id,
   });
 
-  const saveGoals = (newGoals: Goal[]) => {
-    if (typeof window !== "undefined" && session?.user?.id) {
-      localStorage.setItem(`sprout-goals-${session.user.id}`, JSON.stringify(newGoals));
-    }
-  };
-
-  const addGoalMutation = useMutation({
-    mutationFn: async (goal: Omit<Goal, "id" | "createdAt">) => {
-      const newGoalItem: Goal = {
-        ...goal,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-      };
-      const updatedGoals = [...goals, newGoalItem];
-      saveGoals(updatedGoals);
-      return updatedGoals;
+  // Update goal mutation
+  const updateGoalMutation = useMutation({
+    mutationFn: async ({
+      slot,
+      goal,
+    }: {
+      slot: GoalSlot;
+      goal: CareerGoal | null;
+    }) => {
+      const response = await fetch("/api/goals", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slot, goal }),
+      });
+      if (!response.ok) throw new Error("Failed to update goal");
+      return response.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["my-goals", session?.user?.id], data);
-      setNewGoal("");
-      toast({ title: "Goal added!", description: "Keep working towards your dreams." });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+      setEditingSlot(null);
+      setPrimaryEditForm(null);
+      setSecondaryEditForm(null);
+      toast({ title: "Goal updated!" });
     },
-  });
-
-  const toggleGoalMutation = useMutation({
-    mutationFn: async (goalId: string) => {
-      const updatedGoals = goals.map((g: Goal) =>
-        g.id === goalId ? { ...g, completed: !g.completed } : g
-      );
-      saveGoals(updatedGoals);
-      return updatedGoals;
-    },
-    onSuccess: (data, goalId) => {
-      queryClient.setQueryData(["my-goals", session?.user?.id], data);
-      const goal = data.find((g: Goal) => g.id === goalId);
-      if (goal?.completed) {
-        toast({ title: "Goal completed!", description: "Great job! Keep it up." });
-      }
+    onError: () => {
+      toast({ title: "Failed to update goal", variant: "destructive" });
     },
   });
 
+  // Delete goal mutation
   const deleteGoalMutation = useMutation({
-    mutationFn: async (goalId: string) => {
-      const updatedGoals = goals.filter((g: Goal) => g.id !== goalId);
-      saveGoals(updatedGoals);
-      return updatedGoals;
+    mutationFn: async (slot: GoalSlot) => {
+      const response = await fetch(`/api/goals?slot=${slot}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete goal");
+      return response.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["my-goals", session?.user?.id], data);
-      toast({ title: "Goal removed" });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+      toast({ title: "Goal cleared" });
+    },
+    onError: () => {
+      toast({ title: "Failed to clear goal", variant: "destructive" });
     },
   });
 
-  const handleAddGoal = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newGoal.trim()) return;
-    addGoalMutation.mutate({ title: newGoal.trim(), completed: false, category: selectedCategory });
-  };
+  // Add note mutation
+  const addNoteMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const response = await fetch("/api/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      if (!response.ok) throw new Error("Failed to add note");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      toast({ title: "Note added!" });
+    },
+    onError: () => {
+      toast({ title: "Failed to add note", variant: "destructive" });
+    },
+  });
 
-  const handleAddSuggestedGoal = (suggestion: typeof suggestedGoals[0]) => {
-    // Check if already exists
-    if (goals.some((g: Goal) => g.title.toLowerCase() === suggestion.title.toLowerCase())) {
-      toast({ title: "Goal already exists", variant: "destructive" });
+  // Delete note mutation
+  const deleteNoteMutation = useMutation({
+    mutationFn: async (noteId: string) => {
+      const response = await fetch(`/api/notes?id=${noteId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete note");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
+      toast({ title: "Note deleted" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete note", variant: "destructive" });
+    },
+  });
+
+  const primaryGoal: CareerGoal | null = goalsData?.primaryGoal || null;
+  const secondaryGoal: CareerGoal | null = goalsData?.secondaryGoal || null;
+  const notes: UserNote[] = notesData?.notes || [];
+
+  // Handlers
+  const handleEditPrimary = useCallback(() => {
+    setPrimaryEditForm(primaryGoal || createEmptyGoal(""));
+    setEditingSlot("primary");
+  }, [primaryGoal]);
+
+  const handleEditSecondary = useCallback(() => {
+    setSecondaryEditForm(secondaryGoal || createEmptyGoal(""));
+    setEditingSlot("secondary");
+  }, [secondaryGoal]);
+
+  const handleSavePrimary = useCallback(() => {
+    if (!primaryEditForm || !primaryEditForm.title.trim()) {
+      toast({ title: "Please enter a goal title", variant: "destructive" });
       return;
     }
-    addGoalMutation.mutate({ title: suggestion.title, completed: false, category: suggestion.category });
-  };
+    updateGoalMutation.mutate({ slot: "primary", goal: primaryEditForm });
+  }, [primaryEditForm, updateGoalMutation, toast]);
 
-  // Calculate progress
-  const completedCount = goals.filter((g: Goal) => g.completed).length;
-  const totalCount = goals.length;
-  const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const handleSaveSecondary = useCallback(() => {
+    if (!secondaryEditForm || !secondaryEditForm.title.trim()) {
+      toast({ title: "Please enter a goal title", variant: "destructive" });
+      return;
+    }
+    updateGoalMutation.mutate({ slot: "secondary", goal: secondaryEditForm });
+  }, [secondaryEditForm, updateGoalMutation, toast]);
 
-  // Filter goals
-  const activeGoals = goals.filter((g: Goal) => !g.completed);
-  const completedGoals = goals.filter((g: Goal) => g.completed);
+  const handleCancel = useCallback(() => {
+    setEditingSlot(null);
+    setPrimaryEditForm(null);
+    setSecondaryEditForm(null);
+  }, []);
 
-  if (isLoading || isLoadingCareerGoals) {
+  if (isLoadingGoals) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-muted rounded w-48" />
-          <div className="h-32 bg-muted rounded" />
-          <div className="h-64 bg-muted rounded" />
+          <div className="h-48 bg-muted rounded" />
+          <div className="h-48 bg-muted rounded" />
         </div>
       </div>
     );
@@ -188,328 +870,78 @@ export default function GoalsPage() {
         className="mb-8"
       >
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500">
             <Target className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-3xl font-bold">My Goals</h1>
         </div>
         <p className="text-muted-foreground">
-          Set personal goals and track your progress on your career journey.
+          Focus on what matters. Set one primary and one secondary career goal.
         </p>
       </motion.div>
 
-      {/* Career Goals - Compact Display */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-      >
-        <Card className="mb-6 border border-purple-200 dark:border-purple-800">
-          <CardContent className="py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Briefcase className="h-4 w-4 text-purple-500" />
-                <span className="font-medium text-sm">Career Goals</span>
-                {careerGoals.length > 0 && (
-                  <Badge variant="secondary" className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-                    {careerGoals.length}/4
-                  </Badge>
-                )}
-              </div>
-              <Link href="/careers">
-                <Button variant="ghost" size="sm" className="h-7 text-xs text-purple-600 hover:text-purple-700">
-                  {careerGoals.length > 0 ? "Edit" : "Add"}
-                  <ChevronRight className="h-3 w-3 ml-1" />
-                </Button>
-              </Link>
-            </div>
-            {careerGoals.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {careerGoals.map((career, index) => (
-                  <Badge
-                    key={career}
-                    variant={index === 0 ? "default" : "secondary"}
-                    className={index === 0 ? "bg-purple-500 hover:bg-purple-600" : ""}
-                  >
-                    {index === 0 && <Star className="h-3 w-3 mr-1" />}
-                    {career}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No career goals yet.{" "}
-                <Link href="/careers" className="text-purple-600 hover:underline">
-                  Explore careers
-                </Link>{" "}
-                to add some.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Progress Card */}
-      {totalCount > 0 && (
+      <div className="space-y-6">
+        {/* Primary Goal Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.15 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
         >
-          <Card className="mb-6 border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-amber-500" />
-                  <span className="font-semibold">Personal Goals Progress</span>
-                </div>
-                <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
-                  {completedCount} / {totalCount} completed
-                </Badge>
-              </div>
-              <Progress value={progressPercent} className="h-3" />
-              <p className="text-sm text-muted-foreground mt-2">
-                {progressPercent === 100
-                  ? "Amazing! You've completed all your goals!"
-                  : progressPercent >= 50
-                    ? "Great progress! Keep going!"
-                    : "You're on your way. Every step counts!"}
-              </p>
-            </CardContent>
-          </Card>
+          <GoalCard
+            goal={primaryGoal}
+            slot="primary"
+            isEditing={editingSlot === "primary"}
+            onEdit={handleEditPrimary}
+            onSave={handleSavePrimary}
+            onCancel={handleCancel}
+            onClear={() => deleteGoalMutation.mutate("primary")}
+            editForm={primaryEditForm}
+            setEditForm={setPrimaryEditForm}
+          />
         </motion.div>
-      )}
 
-      {/* Add Goal Form */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Plus className="h-5 w-5" />
-              Add a New Goal
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddGoal} className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="What do you want to achieve?"
-                  value={newGoal}
-                  onChange={(e) => setNewGoal(e.target.value)}
-                  className="flex-1"
-                />
-                <Button type="submit" disabled={!newGoal.trim()}>
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {(Object.keys(categoryConfig) as Goal["category"][]).map((cat) => {
-                  const config = categoryConfig[cat];
-                  return (
-                    <Button
-                      key={cat}
-                      type="button"
-                      variant={selectedCategory === cat ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedCategory(cat)}
-                      className={selectedCategory === cat ? config.color : ""}
-                    >
-                      <config.icon className="h-3 w-3 mr-1" />
-                      {config.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </motion.div>
+        {/* Secondary Goal Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <GoalCard
+            goal={secondaryGoal}
+            slot="secondary"
+            isEditing={editingSlot === "secondary"}
+            onEdit={handleEditSecondary}
+            onSave={handleSaveSecondary}
+            onCancel={handleCancel}
+            onClear={() => deleteGoalMutation.mutate("secondary")}
+            editForm={secondaryEditForm}
+            setEditForm={setSecondaryEditForm}
+          />
+        </motion.div>
 
-      {/* Suggested Goals */}
-      {showSuggestions && goals.length < 3 && (
+        {/* Suggested Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="mb-6 border-dashed">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-purple-500" />
-                  Suggested Goals
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSuggestions(false)}
-                  className="text-muted-foreground"
-                >
-                  Hide
-                </Button>
-              </div>
-              <CardDescription>
-                Not sure where to start? Try one of these:
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {suggestedGoals.map((suggestion, i) => {
-                  const config = categoryConfig[suggestion.category];
-                  const alreadyAdded = goals.some(
-                    (g: Goal) => g.title.toLowerCase() === suggestion.title.toLowerCase()
-                  );
-                  return (
-                    <Button
-                      key={i}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleAddSuggestedGoal(suggestion)}
-                      disabled={alreadyAdded}
-                      className={alreadyAdded ? "opacity-50" : "hover:border-primary"}
-                    >
-                      <config.icon className={`h-3 w-3 mr-1 ${alreadyAdded ? "" : "text-" + suggestion.category}`} />
-                      {suggestion.title}
-                      {alreadyAdded && <CheckCircle2 className="h-3 w-3 ml-1 text-green-500" />}
-                    </Button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+          <SuggestedActions primaryGoal={primaryGoal} />
         </motion.div>
-      )}
 
-      {/* Active Goals */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Circle className="h-5 w-5" />
-              Active Goals
-              {activeGoals.length > 0 && (
-                <Badge variant="secondary">{activeGoals.length}</Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {activeGoals.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Target className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                <p>No active goals yet. Add one above to get started!</p>
-              </div>
-            ) : (
-              <AnimatePresence>
-                <div className="space-y-2">
-                  {activeGoals.map((goal: Goal) => {
-                    const config = categoryConfig[goal.category];
-                    return (
-                      <motion.div
-                        key={goal.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        className="flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors group"
-                      >
-                        <Checkbox
-                          checked={goal.completed}
-                          onCheckedChange={() => toggleGoalMutation.mutate(goal.id)}
-                          className="h-5 w-5"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{goal.title}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="secondary" className={`text-xs ${config.color} text-white`}>
-                              {config.label}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {new Date(goal.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => deleteGoalMutation.mutate(goal.id)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </AnimatePresence>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Completed Goals */}
-      {completedGoals.length > 0 && (
+        {/* Notes Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.4 }}
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-                Completed Goals
-                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                  {completedGoals.length}
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {completedGoals.map((goal: Goal) => {
-                  const config = categoryConfig[goal.category];
-                  return (
-                    <motion.div
-                      key={goal.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border bg-green-50/50 dark:bg-green-950/20 group"
-                    >
-                      <Checkbox
-                        checked={goal.completed}
-                        onCheckedChange={() => toggleGoalMutation.mutate(goal.id)}
-                        className="h-5 w-5"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium line-through text-muted-foreground truncate">
-                          {goal.title}
-                        </p>
-                        <Badge variant="secondary" className={`text-xs mt-1 ${config.color} text-white`}>
-                          {config.label}
-                        </Badge>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteGoalMutation.mutate(goal.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-500"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+          <NotesSection
+            notes={notes}
+            isLoading={isLoadingNotes}
+            onAdd={(content) => addNoteMutation.mutate(content)}
+            onDelete={(id) => deleteNoteMutation.mutate(id)}
+          />
         </motion.div>
-      )}
+      </div>
     </div>
   );
 }
