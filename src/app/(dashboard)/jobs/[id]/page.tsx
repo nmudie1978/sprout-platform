@@ -74,6 +74,7 @@ import { ReportModal } from "@/components/report-modal";
 import { CommunityGuardedBadge, PausedBadge } from "@/components/guardian-badge";
 import { UserBadgesDisplay } from "@/components/user-badges-display";
 import { StickyActionBar, StickyActionBarSpacer } from "@/components/sticky-action-bar";
+import { PaymentDisclosure } from "@/components/payment-disclosure";
 
 const categoryLabels: Record<string, string> = {
   BABYSITTING: "Babysitting",
@@ -968,6 +969,9 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                           <span className="text-muted-foreground">{applicationMessage.length}/500</span>
                         </div>
                       </div>
+                      {/* Payment disclosure */}
+                      <PaymentDisclosure variant="compact" />
+
                       <div className="flex gap-3">
                         <Button
                           onClick={() => applyMutation.mutate()}
@@ -1000,11 +1004,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         Apply for This Job
                       </Button>
 
-                      {/* Payment note */}
-                      <div className="flex items-start gap-2 text-xs text-muted-foreground px-1">
-                        <Lightbulb className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                        <span>Payment is arranged directly with the employer after the job is completed.</span>
-                      </div>
+                      {/* Payment disclosure */}
+                      <PaymentDisclosure variant="compact" />
 
                       {/* Recommend a Friend */}
                       {job.status === "POSTED" && !isDeadlinePassed && (

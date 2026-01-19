@@ -56,6 +56,7 @@ import { toast } from "sonner";
 import { getAvatarById } from "@/lib/avatars";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { MessageIntentSheet } from "@/components/messages/MessageIntentSheet";
+import { PaymentDisclosure } from "@/components/payment-disclosure";
 
 // ============================================
 // TYPES
@@ -476,6 +477,11 @@ export function ChatView({ conversationId }: { conversationId: string }) {
           </div>
         ) : (
           <>
+            {/* Payment disclosure - shown once at top of conversation */}
+            {conversation.job && (
+              <PaymentDisclosure variant="messaging" className="mb-3" />
+            )}
+
             {conversation.messages.map((msg, index) => (
               <motion.div
                 key={msg.id}

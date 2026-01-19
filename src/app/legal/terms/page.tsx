@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, AlertTriangle } from "lucide-react";
+import { PAYMENT_COPY } from "@/lib/copy/payments";
 
 export const metadata = {
   title: "Terms of Service | Sprout",
@@ -87,13 +88,10 @@ export default function TermsOfServicePage() {
           </section>
 
           <section className="mb-8">
-            <h2>6. Payments and Fees</h2>
-            <p>
-              [PLACEHOLDER: Explain how payments work between employers and youth workers. Clarify:
-              - Platform fees (if any)
-              - Payment processing
-              - Disputes and refunds
-              - Tax responsibilities]
+            <h2>6. {PAYMENT_COPY.terms.title}</h2>
+            <p>{PAYMENT_COPY.terms.body}</p>
+            <p className="text-sm text-muted-foreground mt-4">
+              {PAYMENT_COPY.terms.clarification}
             </p>
           </section>
 
