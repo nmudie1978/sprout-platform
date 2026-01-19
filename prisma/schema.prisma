@@ -977,6 +977,22 @@ enum MessageTemplateDirection {
   YOUTH_TO_ADULT // Only youth can send to adults/employers
 }
 
+// ============================================
+// MESSAGE INTENT - CORE SAFETY FEATURE
+// ============================================
+// LOCKED: Users do NOT send arbitrary free-text messages.
+// Messages are intent-based with fixed templates.
+// DO NOT add new intents without safety review.
+enum MessageIntent {
+  ASK_ABOUT_JOB // "Hi, I'm interested in this job. Could you share a bit more detail about what's needed?"
+  CONFIRM_AVAILABILITY // "I'm available on [day(s)] at [time]. Does that work for you?"
+  CONFIRM_TIME_DATE // "Just to confirm, the job is scheduled for [date] at [time]."
+  CONFIRM_LOCATION // "Could you confirm the location for this job?"
+  ASK_CLARIFICATION // "I have a quick question about the job: [your question]."
+  CONFIRM_COMPLETION // "I've completed the job as agreed. Please let me know if anything else is needed."
+  UNABLE_TO_PROCEED // "I'm no longer able to take this job. Thank you for understanding."
+}
+
 // Message templates for structured messaging (Phase 1 Safety)
 // No free-text allowed - messages must use approved templates
 model MessageTemplate {
@@ -1000,22 +1016,28 @@ model MessageTemplate {
   @@index([category])
 }
 
-// Messages - Phase 1 Safety: Only structured messages via templates
-// IMPORTANT: Free-text messaging is DISABLED for safety.
-// All new messages MUST use templates (enforced at API level).
+// Messages - CORE SAFETY FEATURE
+// ============================================
+// IMPORTANT: Messages are INTENT-BASED with fixed templates.
+// Free-text messaging is NOT allowed (except in placeholder fields).
+// This is a safety requirement, not a preference.
 model Message {
   id             String @id @default(cuid())
   conversationId String
   senderId       String
 
-  // Structured messaging (REQUIRED for all new messages)
-  templateId   String? // Template used (nullable for legacy messages only)
-  payload      Json? // Validated fields from template
-  renderedText String? @db.Text // Server-generated safe text
+  // INTENT-BASED MESSAGING (REQUIRED for all new messages)
+  // Intent determines the exact template text
+  intent          MessageIntent? // The message intent (required for new messages)
+  variables       Json? // Variables for placeholders (e.g., {days: "Monday", time: "3pm"})
+  renderedMessage String?        @db.Text // Server-generated final message text
 
-  // Legacy field - DO NOT USE for new messages
-  // Kept for backward compatibility with existing data
-  content String? @db.Text // @deprecated - use templateId + payload instead
+  // Legacy fields - DO NOT USE for new messages
+  // Kept for backward compatibility with existing messages
+  templateId String? // @deprecated - use intent instead
+  payload    Json? // @deprecated - use variables instead
+  content    String? @db.Text // @deprecated - use renderedMessage instead
+  isLegacy   Boolean @default(false) // Mark legacy messages that don't conform to intent system
 
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -1027,8 +1049,10 @@ model Message {
   @@index([conversationId])
   @@index([senderId])
   @@index([templateId])
+  @@index([intent])
   @@index([createdAt])
   @@index([read])
+  @@index([isLegacy])
   @@index([conversationId, senderId, read]) // Composite for unread count queries
 }
 

@@ -40,6 +40,7 @@ import type { Career } from "@/lib/career-pathways";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { CareerProgressionFlow } from "@/components/careers/CareerProgressionFlow";
+import { RealWorldExamplesLinks } from "@/components/careers/RealWorldExamplesLinks";
 
 interface CareerDetailSheetProps {
   career: Career | null;
@@ -537,6 +538,9 @@ export function CareerDetailSheet({
                         ))}
                       </ul>
                     </div>
+
+                    {/* Real-World Examples - Live Job Search Links */}
+                    <RealWorldExamplesLinks careerTitle={career.title} />
 
                     {/* Education Path from Career */}
                     <div>

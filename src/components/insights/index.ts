@@ -12,3 +12,4 @@ export { ProgressChecklist } from "./progress-checklist";
 export { HowToStart } from "./how-to-start";
 export { SaveIndustryButton } from "./save-industry-button";
 export { NewsletterSignup } from "./newsletter-signup";
+export { IndustrySnapshot } from "./industry-snapshot";

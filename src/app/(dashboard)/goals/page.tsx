@@ -52,6 +52,8 @@ import {
   ONBOARDING_SUGGESTIONS,
   createEmptyGoal,
 } from "@/lib/goals/types";
+import { GoalPodcasts } from "@/components/goal-podcasts";
+import { WorkplaceInsightPlaceholder } from "@/components/goals/WorkplaceInsightPlaceholder";
 
 // Note type for the Notes/Journal feature
 interface UserNote {
@@ -500,6 +502,17 @@ function GoalCard({
           <p className="text-xs text-muted-foreground">
             Last updated: {new Date(goal!.updatedAt).toLocaleDateString()}
           </p>
+        )}
+
+        {/* Podcast Recommendations - Optional listening from professionals */}
+        <GoalPodcasts
+          goalTitle={goal!.title}
+          isPrimary={isPrimary}
+        />
+
+        {/* Workplace Insight Placeholder - Primary Goal only */}
+        {isPrimary && (
+          <WorkplaceInsightPlaceholder goalTitle={goal!.title} />
         )}
       </CardContent>
     </Card>

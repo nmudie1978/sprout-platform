@@ -7,13 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import {
   ArrowLeft,
   Send,
@@ -24,14 +18,12 @@ import {
   Shield,
   AlertTriangle,
   Lock,
-  Calendar,
-  Clock,
-  MessageSquare,
-  CreditCard,
   CheckCircle2,
   MoreVertical,
   Flag,
   Ban,
+  MessageCircle,
+  HelpCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -48,6 +40,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { format, isToday, isYesterday } from "date-fns";
@@ -56,9 +55,17 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { getAvatarById } from "@/lib/avatars";
 
+// ============================================
+// TYPES
+// ============================================
+
 interface Message {
   id: string;
   content: string;
+  intent?: string;
+  intentLabel?: string;
+  isLegacy?: boolean;
+  // Legacy fields for backward compatibility
   templateKey?: string;
   templateLabel?: string;
   templateCategory?: string;
@@ -88,23 +95,27 @@ interface ConversationDetail {
   messages: Message[];
 }
 
-interface MessageTemplate {
-  id: string;
-  key: string;
+interface IntentVariable {
+  name: string;
   label: string;
-  category: string;
-  allowedFields: {
-    fields: Array<{
-      name: string;
-      type: string;
-      label: string;
-      required?: boolean;
-      options?: string[];
-      min?: number;
-      max?: number;
-    }>;
-  };
+  type: string;
+  required: boolean;
+  maxLength?: number;
+  placeholder?: string;
 }
+
+interface MessageIntentData {
+  intent: string;
+  label: string;
+  description: string;
+  template: string;
+  hasVariables: boolean;
+  variables: IntentVariable[];
+}
+
+// ============================================
+// HELPERS
+// ============================================
 
 function formatMessageDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -117,14 +128,6 @@ function formatMessageDate(dateStr: string): string {
   }
 }
 
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  scheduling: <Calendar className="h-4 w-4" />,
-  job: <Briefcase className="h-4 w-4" />,
-  payment: <CreditCard className="h-4 w-4" />,
-  safety: <Clock className="h-4 w-4" />,
-  feedback: <MessageSquare className="h-4 w-4" />,
-};
-
 const REPORT_CATEGORIES = [
   { value: "INAPPROPRIATE_CONTENT", label: "Inappropriate content" },
   { value: "HARASSMENT", label: "Harassment or bullying" },
@@ -134,10 +137,14 @@ const REPORT_CATEGORIES = [
   { value: "OTHER", label: "Other" },
 ];
 
+// ============================================
+// MAIN COMPONENT
+// ============================================
+
 export function ChatView({ conversationId }: { conversationId: string }) {
   const { data: session } = useSession();
-  const [selectedTemplate, setSelectedTemplate] = useState<MessageTemplate | null>(null);
-  const [payload, setPayload] = useState<Record<string, any>>({});
+  const [selectedIntent, setSelectedIntent] = useState<MessageIntentData | null>(null);
+  const [variables, setVariables] = useState<Record<string, string>>({});
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [reportCategory, setReportCategory] = useState("");
@@ -159,21 +166,23 @@ export function ChatView({ conversationId }: { conversationId: string }) {
     refetchIntervalInBackground: false,
   });
 
-  // Fetch available templates
-  const { data: templates } = useQuery<MessageTemplate[]>({
-    queryKey: ["messageTemplates", conversation?.otherParty?.role],
+  // Fetch available message intents
+  const { data: intentsData } = useQuery<{ intents: MessageIntentData[] }>({
+    queryKey: ["messageIntents"],
     queryFn: async () => {
-      const response = await fetch("/api/messages/templates");
-      if (!response.ok) return [];
-      const data = await response.json();
-      return data.templates || [];
+      const response = await fetch("/api/message-intents");
+      if (!response.ok) return { intents: [] };
+      return response.json();
     },
     enabled: !!conversation,
+    staleTime: 3600000, // 1 hour - intents are static
   });
+
+  const intents = intentsData?.intents || [];
 
   // Send message mutation
   const sendMutation = useMutation({
-    mutationFn: async (data: { templateKey: string; payload: Record<string, any> }) => {
+    mutationFn: async (data: { intent: string; variables: Record<string, string> }) => {
       const response = await fetch(`/api/conversations/${conversationId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -196,8 +205,8 @@ export function ChatView({ conversationId }: { conversationId: string }) {
           };
         }
       );
-      setSelectedTemplate(null);
-      setPayload({});
+      setSelectedIntent(null);
+      setVariables({});
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
       toast.success("Message sent");
     },
@@ -260,24 +269,43 @@ export function ChatView({ conversationId }: { conversationId: string }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversation?.messages]);
 
+  // Handle intent selection
+  const handleIntentSelect = (intentKey: string) => {
+    const intent = intents.find((i) => i.intent === intentKey);
+    setSelectedIntent(intent || null);
+    setVariables({});
+  };
+
+  // Handle send
   const handleSend = () => {
-    if (selectedTemplate && !sendMutation.isPending) {
+    if (selectedIntent && !sendMutation.isPending) {
       sendMutation.mutate({
-        templateKey: selectedTemplate.key,
-        payload,
+        intent: selectedIntent.intent,
+        variables,
       });
     }
   };
 
-  // Check if payload is valid
-  const isPayloadValid = () => {
-    if (!selectedTemplate) return false;
-    for (const field of selectedTemplate.allowedFields.fields) {
-      if (field.required && !payload[field.name]) {
+  // Check if all required variables are filled
+  const isReadyToSend = () => {
+    if (!selectedIntent) return false;
+    for (const variable of selectedIntent.variables) {
+      if (variable.required && (!variables[variable.name] || variables[variable.name].trim() === "")) {
         return false;
       }
     }
     return true;
+  };
+
+  // Preview the message
+  const getMessagePreview = () => {
+    if (!selectedIntent) return "";
+    let preview = selectedIntent.template;
+    for (const variable of selectedIntent.variables) {
+      const value = variables[variable.name] || `[${variable.name}]`;
+      preview = preview.replace(`[${variable.name}]`, value);
+    }
+    return preview;
   };
 
   if (isLoading) {
@@ -331,14 +359,6 @@ export function ChatView({ conversationId }: { conversationId: string }) {
       );
     }
   };
-
-  // Group templates by category
-  const templatesByCategory = templates?.reduce((acc, template) => {
-    const category = template.category || "other";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(template);
-    return acc;
-  }, {} as Record<string, MessageTemplate[]>) || {};
 
   return (
     <Card className="h-[calc(100dvh-4rem-env(safe-area-inset-bottom,0px))] sm:h-[600px] flex flex-col sm:rounded-lg rounded-none border-x-0 sm:border-x">
@@ -432,13 +452,12 @@ export function ChatView({ conversationId }: { conversationId: string }) {
       <CardContent className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 touch-scroll">
         {conversation.messages.length === 0 ? (
           <div className="h-full flex items-center justify-center">
-            <div className="text-center text-muted-foreground">
-              <Shield className="h-8 w-8 mx-auto mb-2 text-primary/60" />
-              <p className="font-medium">Safe Messaging</p>
+            <div className="text-center text-muted-foreground max-w-xs">
+              <Shield className="h-10 w-10 mx-auto mb-3 text-primary/60" />
+              <p className="font-medium mb-1">Structured Messaging</p>
               <p className="text-sm">
-                For safety, all messages use pre-approved templates.
-                <br />
-                Select a message type below to get started.
+                For safety, messages use predefined templates.
+                Select a message type below to start.
               </p>
             </div>
           </div>
@@ -449,7 +468,7 @@ export function ChatView({ conversationId }: { conversationId: string }) {
                 key={msg.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.02 }}
+                transition={{ delay: Math.min(index * 0.02, 0.3) }}
                 className={cn(
                   "flex",
                   msg.isFromMe ? "justify-end" : "justify-start"
@@ -457,24 +476,41 @@ export function ChatView({ conversationId }: { conversationId: string }) {
               >
                 <div
                   className={cn(
-                    "max-w-[75%] rounded-2xl px-4 py-2",
+                    "max-w-[80%] rounded-2xl px-4 py-2.5",
                     msg.isFromMe
                       ? "bg-primary text-primary-foreground rounded-br-md"
-                      : "bg-muted rounded-bl-md"
+                      : "bg-muted rounded-bl-md",
+                    msg.isLegacy && "opacity-70 border-2 border-dashed"
                   )}
                 >
-                  {msg.templateCategory && (
+                  {/* Legacy message indicator */}
+                  {msg.isLegacy && (
+                    <div className={cn(
+                      "flex items-center gap-1 text-[10px] mb-1",
+                      msg.isFromMe ? "text-primary-foreground/60" : "text-muted-foreground"
+                    )}>
+                      <HelpCircle className="h-3 w-3" />
+                      <span>Legacy message</span>
+                    </div>
+                  )}
+
+                  {/* Intent label for new messages */}
+                  {msg.intentLabel && !msg.isLegacy && (
                     <div className={cn(
                       "flex items-center gap-1 text-xs mb-1",
                       msg.isFromMe ? "text-primary-foreground/70" : "text-muted-foreground"
                     )}>
-                      {CATEGORY_ICONS[msg.templateCategory]}
-                      <span>{msg.templateLabel}</span>
+                      <MessageCircle className="h-3 w-3" />
+                      <span>{msg.intentLabel}</span>
                     </div>
                   )}
+
+                  {/* Message content */}
                   <p className="text-sm whitespace-pre-wrap break-words">
                     {msg.content}
                   </p>
+
+                  {/* Timestamp */}
                   <p
                     className={cn(
                       "text-xs mt-1",
@@ -493,128 +529,74 @@ export function ChatView({ conversationId }: { conversationId: string }) {
         )}
       </CardContent>
 
-      {/* Template Selector and Input */}
+      {/* Intent Selector and Input */}
       {canSendMessages ? (
-        <div className="border-t p-3 sm:p-4 flex-shrink-0 space-y-3 pb-safe">
-          {/* Template selector */}
-          <div className="flex gap-2">
-            <Select
-              value={selectedTemplate?.key || ""}
-              onValueChange={(key) => {
-                const template = templates?.find((t) => t.key === key);
-                setSelectedTemplate(template || null);
-                setPayload({});
-              }}
-            >
-              <SelectTrigger className="flex-1 h-11 sm:h-10 text-sm">
-                <SelectValue placeholder="Choose a message type..." />
-              </SelectTrigger>
-              <SelectContent className="max-h-[50vh]">
-                {Object.entries(templatesByCategory).map(([category, categoryTemplates]) => (
-                  <div key={category}>
-                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                      {CATEGORY_ICONS[category]}
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </div>
-                    {categoryTemplates.map((template) => (
-                      <SelectItem key={template.key} value={template.key}>
-                        {template.label}
-                      </SelectItem>
-                    ))}
+        <div className="border-t p-3 sm:p-4 flex-shrink-0 space-y-3 pb-safe bg-background">
+          {/* Intent selector */}
+          <Select
+            value={selectedIntent?.intent || ""}
+            onValueChange={handleIntentSelect}
+          >
+            <SelectTrigger className="h-11 sm:h-10 text-sm">
+              <SelectValue placeholder="Select a message type..." />
+            </SelectTrigger>
+            <SelectContent className="max-h-[50vh]">
+              {intents.map((intent) => (
+                <SelectItem key={intent.intent} value={intent.intent}>
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">{intent.label}</span>
+                    <span className="text-xs text-muted-foreground truncate max-w-[250px]">
+                      {intent.description}
+                    </span>
                   </div>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          {/* Template fields */}
-          {selectedTemplate && (
+          {/* Variables input */}
+          {selectedIntent && (
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
-              {selectedTemplate.allowedFields.fields.map((field) => (
-                <div key={field.name} className="space-y-1">
-                  <label className="text-sm font-medium">
-                    {field.label}
-                    {field.required && <span className="text-red-500 ml-1">*</span>}
+              {/* Show template preview */}
+              <div className="text-sm text-muted-foreground bg-background/50 p-2 rounded border">
+                <span className="text-xs font-medium block mb-1">Preview:</span>
+                {getMessagePreview()}
+              </div>
+
+              {/* Variable inputs */}
+              {selectedIntent.variables.map((variable) => (
+                <div key={variable.name} className="space-y-1">
+                  <label className="text-sm font-medium flex items-center gap-1">
+                    {variable.label}
+                    {variable.required && <span className="text-red-500">*</span>}
                   </label>
-
-                  {field.type === "select" && field.options && (
-                    <Select
-                      value={payload[field.name] || ""}
-                      onValueChange={(value) =>
-                        setPayload({ ...payload, [field.name]: value })
+                  <Input
+                    value={variables[variable.name] || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Enforce max length
+                      if (variable.maxLength && value.length > variable.maxLength) {
+                        return;
                       }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={`Select ${field.label.toLowerCase()}...`} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {field.options.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-
-                  {field.type === "boolean" && (
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={!!payload[field.name]}
-                        onChange={(e) =>
-                          setPayload({ ...payload, [field.name]: e.target.checked })
-                        }
-                        className="h-4 w-4 rounded border-gray-300"
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        Yes, I confirm
-                      </span>
-                    </div>
-                  )}
-
-                  {field.type === "date" && (
-                    <input
-                      type="date"
-                      value={payload[field.name] || ""}
-                      onChange={(e) =>
-                        setPayload({ ...payload, [field.name]: e.target.value })
-                      }
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    />
-                  )}
-
-                  {field.type === "time" && (
-                    <input
-                      type="time"
-                      value={payload[field.name] || ""}
-                      onChange={(e) =>
-                        setPayload({ ...payload, [field.name]: e.target.value })
-                      }
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    />
-                  )}
-
-                  {field.type === "number" && (
-                    <input
-                      type="number"
-                      value={payload[field.name] || ""}
-                      min={field.min}
-                      max={field.max}
-                      onChange={(e) =>
-                        setPayload({ ...payload, [field.name]: Number(e.target.value) })
-                      }
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      placeholder={`Enter ${field.label.toLowerCase()}`}
-                    />
+                      setVariables({ ...variables, [variable.name]: value });
+                    }}
+                    placeholder={variable.placeholder || `Enter ${variable.label.toLowerCase()}`}
+                    maxLength={variable.maxLength}
+                    className="h-10"
+                  />
+                  {variable.maxLength && (
+                    <p className="text-xs text-muted-foreground">
+                      {(variables[variable.name] || "").length}/{variable.maxLength}
+                    </p>
                   )}
                 </div>
               ))}
 
+              {/* Send button */}
               <Button
-                className="w-full h-11 sm:h-10 touch-target"
+                className="w-full h-11 sm:h-10"
                 onClick={handleSend}
-                disabled={!isPayloadValid() || sendMutation.isPending}
+                disabled={!isReadyToSend() || sendMutation.isPending}
               >
                 {sendMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -624,6 +606,22 @@ export function ChatView({ conversationId }: { conversationId: string }) {
                 Send Message
               </Button>
             </div>
+          )}
+
+          {/* Quick send for intents without variables */}
+          {selectedIntent && !selectedIntent.hasVariables && (
+            <Button
+              className="w-full h-11 sm:h-10"
+              onClick={handleSend}
+              disabled={sendMutation.isPending}
+            >
+              {sendMutation.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              Send Message
+            </Button>
           )}
 
           {/* Safety notice */}

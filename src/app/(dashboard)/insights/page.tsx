@@ -45,6 +45,7 @@ import {
   HowToStart,
   SaveIndustryButton,
   NewsletterSignup,
+  IndustrySnapshot,
 } from "@/components/insights";
 
 type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
@@ -373,6 +374,16 @@ export default function IndustryInsightsPage() {
           })}
         </div>
       </div>
+
+      {/* Industry Snapshot - Featured Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mb-6"
+      >
+        <IndustrySnapshot />
+      </motion.div>
 
       {/* Industry Filter */}
       <motion.div {...fadeInUp} className="mb-6">

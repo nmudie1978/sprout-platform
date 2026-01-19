@@ -263,6 +263,55 @@ interface CareerGoal {
 - `/api/profile/career-goals` - Legacy 4-goal array system
 - `/components/goal-manager-modal.tsx` - Legacy multi-goal selector
 
+### 💬 CORE SAFETY FEATURE: Structured Messaging
+
+**CRITICAL: Messaging is intent-based for user safety.**
+
+Users do NOT send arbitrary free-text messages. Each message consists of:
+- **intent** - One of 7 predefined message types
+- **variables** - Values for placeholder fields only
+- **renderedMessage** - Server-generated final text
+
+#### Allowed Message Intents
+
+| Intent | Template |
+|--------|----------|
+| `ASK_ABOUT_JOB` | "Hi, I'm interested in this job. Could you share a bit more detail about what's needed?" |
+| `CONFIRM_AVAILABILITY` | "I'm available on [days] at [time]. Does that work for you?" |
+| `CONFIRM_TIME_DATE` | "Just to confirm, the job is scheduled for [date] at [time]." |
+| `CONFIRM_LOCATION` | "Could you confirm the location for this job?" |
+| `ASK_CLARIFICATION` | "I have a quick question about the job: [question]." |
+| `CONFIRM_COMPLETION` | "I've completed the job as agreed. Please let me know if anything else is needed." |
+| `UNABLE_TO_PROCEED` | "I'm no longer able to take this job. Thank you for understanding." |
+
+#### Free Text Rule
+- Free text input is ONLY allowed inside `[placeholder]` fields
+- Entirely free-form messages are NOT allowed
+- Placeholders are validated for dangerous content (URLs, phone numbers, emails, social handles)
+
+#### Age Safety Integration
+- **16-17 year olds**: BLOCKED if contact info detected in placeholders
+- **18-20 year olds**: WARNED if contact info detected (still blocked)
+
+#### Hard Blocks
+- Empty messages
+- Emoji-only messages
+- Multiple intents in one message
+- Messages without conversation context
+
+#### Files
+- **Schema**: `MessageIntent` enum in `prisma/schema.prisma`
+- **Templates**: `/lib/message-intents.ts` - Intent definitions and validation
+- **API**: `/api/conversations/[id]/route.ts` - Send intent-based messages
+- **API**: `/api/message-intents/route.ts` - Get available intents
+- **UI**: `/components/chat-view.tsx` - Intent selector UI
+- **Migration**: `/scripts/migrate-messages-to-legacy.ts` - Mark old messages as legacy
+
+#### Reporting
+- "Report Conversation" action visible in messaging UI
+- Reports freeze the conversation immediately
+- Reports flagged for admin review
+
 ### 🚀 Performance Optimizations
 
 #### Bundle Optimization
