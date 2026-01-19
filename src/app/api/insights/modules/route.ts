@@ -5,6 +5,11 @@ import {
   getActiveInsightsModules,
   initializeInsightsModules,
 } from "@/lib/insights-refresh";
+import {
+  TIER1_SOURCE_METADATA,
+  type Tier1SourceId,
+  isTier1Source,
+} from "@/lib/industry-insights/tier1-sources";
 
 /**
  * GET /api/insights/modules
@@ -26,6 +31,19 @@ export async function GET() {
       );
       const isVerifiedThisQuarter = daysSinceVerified < 90;
 
+      // Extract Tier-1 source attribution
+      const sourceMeta = m.sourceMeta as { sourceId?: string; sourceName?: string; attribution?: string } | null;
+      const sourceId = sourceMeta?.sourceId;
+      const sourceInfo = sourceId && isTier1Source(sourceId)
+        ? {
+            id: sourceId,
+            name: TIER1_SOURCE_METADATA[sourceId].name,
+            shortName: TIER1_SOURCE_METADATA[sourceId].shortName,
+            url: TIER1_SOURCE_METADATA[sourceId].url,
+            attribution: sourceMeta?.attribution || `Based on research from ${TIER1_SOURCE_METADATA[sourceId].name}`,
+          }
+        : null;
+
       return {
         key: m.key,
         title: m.title,
@@ -35,6 +53,7 @@ export async function GET() {
         version: m.version,
         lastUpdated: m.lastGeneratedAt.toISOString(),
         verifiedThisQuarter: isVerifiedThisQuarter,
+        source: sourceInfo,
       };
     });
 
@@ -50,6 +69,13 @@ export async function GET() {
         allVerifiedThisQuarter: allVerified,
         lastVerification: lastVerification?.toISOString(),
         totalModules: modules.length,
+        tier1Sources: Object.values(TIER1_SOURCE_METADATA).map((s) => ({
+          id: s.id,
+          name: s.name,
+          shortName: s.shortName,
+          url: s.url,
+        })),
+        sourcePolicy: "All insights are derived from Tier-1 sources only: Visual Capitalist, World Economic Forum, and McKinsey & Company.",
       },
     });
   } catch (error) {

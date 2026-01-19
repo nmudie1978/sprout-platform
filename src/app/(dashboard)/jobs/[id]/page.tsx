@@ -349,11 +349,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="h-8 w-8 border-3 border-primary border-t-transparent rounded-full"
-        />
+        <div className="h-8 w-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -422,133 +418,17 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         />
       </div>
 
-      {/* Animated Morphing Shapes Layer */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        {/* Large morphing blob - top right */}
-        <motion.div
-          className="absolute -top-20 -right-20 w-[600px] h-[600px]"
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-        >
-          <motion.div
-            className="w-full h-full bg-gradient-to-br from-amber-300/20 via-orange-200/15 to-rose-200/10 dark:from-amber-700/10 dark:via-orange-800/8 dark:to-rose-900/5"
-            style={{ borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" }}
-            animate={{
-              borderRadius: [
-                "60% 40% 30% 70% / 60% 30% 70% 40%",
-                "30% 60% 70% 40% / 50% 60% 30% 60%",
-                "60% 40% 30% 70% / 60% 30% 70% 40%",
-              ],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </motion.div>
+      {/* Lightweight CSS-only background shapes (hidden on mobile for performance) */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none hidden sm:block">
+        {/* Large blob - top right - CSS animation */}
+        <div className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-amber-300/15 via-orange-200/10 to-rose-200/5 dark:from-amber-700/8 dark:via-orange-800/5 dark:to-rose-900/3 blur-3xl animate-blob-slow" />
 
-        {/* Medium morphing blob - bottom left */}
-        <motion.div
-          className="absolute -bottom-32 -left-32 w-[500px] h-[500px]"
-          animate={{ rotate: [360, 0] }}
-          transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
-        >
-          <motion.div
-            className="w-full h-full bg-gradient-to-tr from-emerald-300/15 via-teal-200/12 to-cyan-200/8 dark:from-emerald-800/10 dark:via-teal-900/8 dark:to-cyan-950/5"
-            style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}
-            animate={{
-              borderRadius: [
-                "40% 60% 70% 30% / 40% 50% 60% 50%",
-                "70% 30% 50% 50% / 30% 30% 70% 70%",
-                "40% 60% 70% 30% / 40% 50% 60% 50%",
-              ],
-              scale: [1, 1.15, 1],
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          />
-        </motion.div>
+        {/* Medium blob - bottom left - CSS animation */}
+        <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-emerald-300/12 via-teal-200/8 to-cyan-200/5 dark:from-emerald-800/8 dark:via-teal-900/5 dark:to-cyan-950/3 blur-3xl animate-blob-slow animation-delay-2000" />
 
-        {/* Flowing wave lines */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.06] dark:opacity-[0.03]" preserveAspectRatio="none">
-          <motion.path
-            d="M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200"
-            fill="none"
-            stroke="url(#wave-gradient)"
-            strokeWidth="2"
-            animate={{
-              d: [
-                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
-                "M0,200 Q200,300 400,200 T800,200 T1200,200 T1600,200",
-                "M0,200 Q200,100 400,200 T800,200 T1200,200 T1600,200",
-              ],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400"
-            fill="none"
-            stroke="url(#wave-gradient)"
-            strokeWidth="1.5"
-            animate={{
-              d: [
-                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
-                "M0,400 Q200,500 400,400 T800,400 T1200,400 T1600,400",
-                "M0,400 Q200,300 400,400 T800,400 T1200,400 T1600,400",
-              ],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
-          <defs>
-            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#d97706" />
-              <stop offset="50%" stopColor="#059669" />
-              <stop offset="100%" stopColor="#0891b2" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Geometric floating shapes */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute"
-            style={{
-              left: `${10 + (i * 15)}%`,
-              top: `${20 + ((i * 20) % 50)}%`,
-            }}
-            animate={{
-              y: [0, -25, 0],
-              x: [0, i % 2 === 0 ? 12 : -12, 0],
-              rotate: [0, i % 2 === 0 ? 180 : -180, 0],
-              opacity: [0.12, 0.25, 0.12],
-            }}
-            transition={{
-              duration: 10 + i * 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.8,
-            }}
-          >
-            {i % 3 === 0 ? (
-              <div
-                className="w-6 h-6 bg-gradient-to-br from-amber-400/20 to-orange-300/10 dark:from-amber-600/15 dark:to-orange-700/8"
-                style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
-              />
-            ) : i % 3 === 1 ? (
-              <div
-                className="w-5 h-5 bg-gradient-to-br from-emerald-400/20 to-teal-300/10 dark:from-emerald-600/15 dark:to-teal-700/8"
-                style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
-              />
-            ) : (
-              <div
-                className="w-4 h-4 bg-gradient-to-br from-rose-400/20 to-pink-300/10 dark:from-rose-600/15 dark:to-pink-700/8"
-                style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}
-              />
-            )}
-          </motion.div>
-        ))}
-
-        {/* Subtle dot grid */}
+        {/* Subtle dot grid - static for performance */}
         <div
-          className="absolute inset-0 opacity-[0.025] dark:opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.02] dark:opacity-[0.01]"
           style={{
             backgroundImage: `radial-gradient(circle, #78716c 1px, transparent 1px)`,
             backgroundSize: "32px 32px",
@@ -556,39 +436,21 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         />
       </div>
 
-      {/* Accent glow spots */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-amber-400/8 dark:bg-amber-600/5 blur-3xl"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-1/3 left-1/4 w-48 h-48 rounded-full bg-emerald-400/8 dark:bg-emerald-600/5 blur-3xl"
-          animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-      </div>
-
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 max-w-4xl relative z-10">
         {/* Back button */}
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+        <div className="animate-fade-in">
           <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2 hover:bg-muted/50">
             <Link href={isOwner ? "/employer/dashboard" : "/jobs"}>
               <ArrowLeft className="mr-1 h-4 w-4" />
               {isOwner ? "Back to Dashboard" : "Back to Jobs"}
             </Link>
           </Button>
-        </motion.div>
+        </div>
 
         <div className="space-y-6">
           {/* Hero Card - Job Title & Key Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
+          <div className="animate-fade-in">
             <Card className="border-2 shadow-xl overflow-hidden relative">
               {/* Category color bar */}
               <div className={`h-1.5 bg-gradient-to-r ${colors.from} ${colors.to}`} />
@@ -694,14 +556,10 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Description & Photos Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-          >
+          <div className="animate-fade-in">
             <Card className="border-2 shadow-lg">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-3 text-lg">
@@ -753,14 +611,10 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Employer Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
+          <div className="animate-fade-in">
             <Card className="border-2 shadow-lg">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-3 text-lg">
@@ -829,7 +683,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                 })()}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Assigned Youth Worker (when job is in progress) */}
           {(() => {
@@ -841,11 +695,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             const profileLink = youthProfile?.publicProfileSlug ? `/p/${youthProfile.publicProfileSlug}` : null;
 
             return (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-              >
+              <div className="animate-fade-in">
                 <Card className="border-2 border-emerald-500/30 shadow-lg bg-emerald-500/5">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-3 text-lg text-emerald-700 dark:text-emerald-400">
@@ -924,7 +774,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             );
           })()}
 
@@ -934,11 +784,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             if (pendingApplications.length === 0) return null;
 
             return (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-              >
+              <div className="animate-fade-in">
                 <Card className="border-2 shadow-lg">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
@@ -1030,17 +876,13 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             );
           })()}
 
           {/* Career Connections (for youth) */}
           {isYouth && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-            >
+            <div className="animate-fade-in">
               <Card className="border-2 shadow-lg overflow-hidden">
                 <CardHeader className="pb-4 bg-gradient-to-r from-orange-500/5 to-amber-500/5">
                   <CardTitle className="flex items-center gap-3 text-lg">
@@ -1069,17 +911,12 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Application Section (for youth) */}
           {isYouth && (
-            <motion.div
-              id="application-section"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
+            <div id="application-section" className="animate-fade-in">
               <Card className="border-2 shadow-lg">
                 <CardContent className="p-6">
                   {isDeadlinePassed ? (
@@ -1108,11 +945,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                       </Button>
                     </div>
                   ) : showApplicationForm ? (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="space-y-4"
-                    >
+                    <div className="space-y-4 animate-fade-in">
                       <div>
                         <Label htmlFor="message" className="text-base font-semibold">
                           Your Application Message
@@ -1156,7 +989,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                           Cancel
                         </Button>
                       </div>
-                    </motion.div>
+                    </div>
                   ) : (
                     <div className="space-y-4">
                       <Button
@@ -1188,7 +1021,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   )}
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Recommendations Section for Employers */}
@@ -1208,11 +1041,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
 
           {/* Owner Actions */}
           {isOwner && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-            >
+            <div className="animate-fade-in">
               <Card className="border-2 shadow-lg">
                 <CardContent className="p-6">
                   <div className="flex gap-3">
@@ -1237,16 +1066,11 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   )}
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
 
           {/* Safety Note */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="p-4 rounded-2xl bg-muted/50 border flex items-start justify-between gap-3"
-          >
+          <div className="p-4 rounded-2xl bg-muted/50 border flex items-start justify-between gap-3 animate-fade-in">
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
               <div className="text-sm text-muted-foreground">
@@ -1260,7 +1084,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                 targetName={job.title}
               />
             )}
-          </motion.div>
+          </div>
 
           {/* Mobile spacer for sticky action bar */}
           {isYouth && !hasApplied && !isDeadlinePassed && (

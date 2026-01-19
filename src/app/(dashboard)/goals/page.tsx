@@ -55,6 +55,9 @@ import {
 import { GoalPodcasts } from "@/components/goal-podcasts";
 import { WorkplaceInsightPlaceholder } from "@/components/goals/WorkplaceInsightPlaceholder";
 import { JourneyReportModal } from "@/components/goals/JourneyReportModal";
+import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
+import { AddNoteSheet } from "@/components/goals/QuickAddSheet";
+import { useIsMobile } from "@/hooks/use-media-query";
 import { FileText } from "lucide-react";
 
 // Note type for the Notes/Journal feature
@@ -75,6 +78,8 @@ function GoalCard({
   onClear,
   editForm,
   setEditForm,
+  onOpenGoalSheet,
+  isMobile,
 }: {
   goal: CareerGoal | null;
   slot: GoalSlot;
@@ -85,6 +90,8 @@ function GoalCard({
   onClear: () => void;
   editForm: CareerGoal | null;
   setEditForm: (form: CareerGoal | null) => void;
+  onOpenGoalSheet?: () => void;
+  isMobile?: boolean;
 }) {
   const isPrimary = slot === "primary";
 
@@ -168,15 +175,29 @@ function GoalCard({
               ? "Set a primary career goal to get personalized suggestions"
               : "Add a backup goal you're exploring"}
           </p>
-          <Link href="/careers">
-            <Button
-              variant={isPrimary ? "default" : "outline"}
-              className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
-            >
-              <Compass className="h-4 w-4 mr-2" />
-              Explore Careers
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            {/* Mobile: Quick Set button */}
+            {isMobile && onOpenGoalSheet && (
+              <Button
+                variant={isPrimary ? "default" : "outline"}
+                className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+                onClick={onOpenGoalSheet}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Set Goal
+              </Button>
+            )}
+            {/* Explore Careers link */}
+            <Link href="/careers">
+              <Button
+                variant={isMobile && onOpenGoalSheet ? "outline" : (isPrimary ? "default" : "outline")}
+                className={!isMobile && isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+              >
+                <Compass className="h-4 w-4 mr-2" />
+                Explore Careers
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
     );
@@ -527,11 +548,15 @@ function NotesSection({
   isLoading,
   onAdd,
   onDelete,
+  onOpenMobileSheet,
+  isMobile,
 }: {
   notes: UserNote[];
   isLoading: boolean;
   onAdd: (content: string) => void;
   onDelete: (id: string) => void;
+  onOpenMobileSheet?: () => void;
+  isMobile?: boolean;
 }) {
   const [newNote, setNewNote] = useState("");
   const [isAdding, setIsAdding] = useState(false);
@@ -544,6 +569,14 @@ function NotesSection({
     setIsAdding(false);
   };
 
+  const handleAddClick = () => {
+    if (isMobile && onOpenMobileSheet) {
+      onOpenMobileSheet();
+    } else {
+      setIsAdding(true);
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -553,14 +586,14 @@ function NotesSection({
             Notes & Journal
           </CardTitle>
           {!isAdding && (
-            <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
+            <Button variant="outline" size="sm" onClick={handleAddClick}>
               <Plus className="h-4 w-4 mr-1" /> Add Note
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent>
-        {isAdding && (
+        {isAdding && !isMobile && (
           <form onSubmit={handleSubmit} className="mb-4">
             <Textarea
               value={newNote}
@@ -714,6 +747,7 @@ export default function GoalsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   // Editing states
   const [editingSlot, setEditingSlot] = useState<GoalSlot | null>(null);
@@ -722,6 +756,13 @@ export default function GoalsPage() {
 
   // Report modal state
   const [showReportModal, setShowReportModal] = useState(false);
+
+  // Goal selection sheet state (mobile)
+  const [showGoalSheet, setShowGoalSheet] = useState(false);
+  const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
+
+  // Add note sheet state (mobile)
+  const [showNoteSheet, setShowNoteSheet] = useState(false);
 
   // Fetch goals
   const { data: goalsData, isLoading: isLoadingGoals } = useQuery({
@@ -867,6 +908,21 @@ export default function GoalsPage() {
     setSecondaryEditForm(null);
   }, []);
 
+  // Open goal selection sheet (mobile)
+  const handleOpenGoalSheet = useCallback((slot?: GoalSlot) => {
+    setGoalSheetTargetSlot(slot || null);
+    setShowGoalSheet(true);
+  }, []);
+
+  // Handle note add from mobile sheet
+  const handleAddNoteFromSheet = useCallback((content: string) => {
+    addNoteMutation.mutate(content, {
+      onSuccess: () => {
+        setShowNoteSheet(false);
+      },
+    });
+  }, [addNoteMutation]);
+
   if (isLoadingGoals) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -882,11 +938,7 @@ export default function GoalsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <div className="mb-8 animate-fade-in">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500">
@@ -909,15 +961,11 @@ export default function GoalsPage() {
         <p className="text-muted-foreground">
           Focus on what matters. Set one primary and one secondary career goal.
         </p>
-      </motion.div>
+      </div>
 
       <div className="space-y-6">
         {/* Primary Goal Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <div className="animate-fade-in">
           <GoalCard
             goal={primaryGoal}
             slot="primary"
@@ -928,15 +976,13 @@ export default function GoalsPage() {
             onClear={() => deleteGoalMutation.mutate("primary")}
             editForm={primaryEditForm}
             setEditForm={setPrimaryEditForm}
+            onOpenGoalSheet={() => handleOpenGoalSheet("primary")}
+            isMobile={isMobile}
           />
-        </motion.div>
+        </div>
 
         {/* Secondary Goal Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div className="animate-fade-in">
           <GoalCard
             goal={secondaryGoal}
             slot="secondary"
@@ -947,31 +993,27 @@ export default function GoalsPage() {
             onClear={() => deleteGoalMutation.mutate("secondary")}
             editForm={secondaryEditForm}
             setEditForm={setSecondaryEditForm}
+            onOpenGoalSheet={() => handleOpenGoalSheet("secondary")}
+            isMobile={isMobile}
           />
-        </motion.div>
+        </div>
 
         {/* Suggested Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <div className="animate-fade-in">
           <SuggestedActions primaryGoal={primaryGoal} />
-        </motion.div>
+        </div>
 
         {/* Notes Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
+        <div className="animate-fade-in">
           <NotesSection
             notes={notes}
             isLoading={isLoadingNotes}
             onAdd={(content) => addNoteMutation.mutate(content)}
             onDelete={(id) => deleteNoteMutation.mutate(id)}
+            onOpenMobileSheet={() => setShowNoteSheet(true)}
+            isMobile={isMobile}
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Journey Report Modal */}
@@ -982,6 +1024,27 @@ export default function GoalsPage() {
         secondaryGoal={secondaryGoal}
         hasNotes={notes.length > 0}
         hasJobs={false}
+      />
+
+      {/* Goal Selection Sheet (Mobile) */}
+      <GoalSelectionSheet
+        open={showGoalSheet}
+        onClose={() => setShowGoalSheet(false)}
+        targetSlot={goalSheetTargetSlot}
+        primaryGoal={primaryGoal}
+        secondaryGoal={secondaryGoal}
+        onSuccess={() => {
+          // Refetch goals after setting
+          queryClient.invalidateQueries({ queryKey: ["goals"] });
+        }}
+      />
+
+      {/* Add Note Sheet (Mobile) */}
+      <AddNoteSheet
+        open={showNoteSheet}
+        onClose={() => setShowNoteSheet(false)}
+        onAdd={handleAddNoteFromSheet}
+        isPending={addNoteMutation.isPending}
       />
     </div>
   );

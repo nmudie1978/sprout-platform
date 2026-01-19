@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,6 +36,15 @@ export function JourneyReportModal({
   const [includeSmallJobs, setIncludeSmallJobs] = useState(hasJobs);
   const [includeInsightsPodcasts, setIncludeInsightsPodcasts] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Reset defaults when modal opens
+  useEffect(() => {
+    if (open) {
+      setIncludeNotes(false);
+      setIncludeSmallJobs(hasJobs);
+      setIncludeInsightsPodcasts(true);
+    }
+  }, [open, hasJobs]);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
@@ -78,7 +87,7 @@ export function JourneyReportModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-w-[calc(100vw-2rem)] mx-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-emerald-500" />
@@ -95,32 +104,32 @@ export function JourneyReportModal({
             Preview Summary
           </p>
           <div className="space-y-1">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Primary Goal</span>
-              <span className="font-medium">
+            <div className="flex justify-between text-sm gap-2">
+              <span className="text-muted-foreground flex-shrink-0">Primary Goal</span>
+              <span className="font-medium truncate">
                 {primaryGoal?.title || "Not set"}
               </span>
             </div>
             {secondaryGoal && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Secondary Goal</span>
-                <span className="font-medium">{secondaryGoal.title}</span>
+              <div className="flex justify-between text-sm gap-2">
+                <span className="text-muted-foreground flex-shrink-0">Secondary Goal</span>
+                <span className="font-medium truncate">{secondaryGoal.title}</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* Options */}
-        <div className="space-y-4">
+        {/* Options - mobile-friendly with larger touch targets */}
+        <div className="space-y-3">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Include in Report
           </p>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="include-notes" className="text-sm cursor-pointer">
+          <div className="flex items-center justify-between min-h-[44px] py-2">
+            <Label htmlFor="include-notes" className="text-sm cursor-pointer flex-1">
               Notes & Reflections
               {!hasNotes && (
-                <span className="text-xs text-muted-foreground ml-1">(none saved)</span>
+                <span className="text-xs text-muted-foreground ml-1 block sm:inline">(none saved)</span>
               )}
             </Label>
             <Switch
@@ -128,14 +137,15 @@ export function JourneyReportModal({
               checked={includeNotes}
               onCheckedChange={setIncludeNotes}
               disabled={!hasNotes}
+              className="ml-3"
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="include-jobs" className="text-sm cursor-pointer">
+          <div className="flex items-center justify-between min-h-[44px] py-2">
+            <Label htmlFor="include-jobs" className="text-sm cursor-pointer flex-1">
               Work Experience
               {!hasJobs && (
-                <span className="text-xs text-muted-foreground ml-1">(none yet)</span>
+                <span className="text-xs text-muted-foreground ml-1 block sm:inline">(none yet)</span>
               )}
             </Label>
             <Switch
@@ -143,17 +153,19 @@ export function JourneyReportModal({
               checked={includeSmallJobs}
               onCheckedChange={setIncludeSmallJobs}
               disabled={!hasJobs}
+              className="ml-3"
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <Label htmlFor="include-insights" className="text-sm cursor-pointer">
+          <div className="flex items-center justify-between min-h-[44px] py-2">
+            <Label htmlFor="include-insights" className="text-sm cursor-pointer flex-1">
               Insights & Podcasts
             </Label>
             <Switch
               id="include-insights"
               checked={includeInsightsPodcasts}
               onCheckedChange={setIncludeInsightsPodcasts}
+              className="ml-3"
             />
           </div>
         </div>
@@ -163,14 +175,19 @@ export function JourneyReportModal({
           Your report will include your initials and age band, but not your date of birth or any financial information.
         </p>
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose} disabled={isGenerating}>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            disabled={isGenerating}
+            className="h-11 sm:h-10 w-full sm:w-auto"
+          >
             Cancel
           </Button>
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || !primaryGoal}
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-emerald-600 hover:bg-emerald-700 h-11 sm:h-10 w-full sm:w-auto"
           >
             {isGenerating ? (
               <>

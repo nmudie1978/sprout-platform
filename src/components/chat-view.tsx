@@ -54,6 +54,8 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { getAvatarById } from "@/lib/avatars";
+import { useIsMobile } from "@/hooks/use-media-query";
+import { MessageIntentSheet } from "@/components/messages/MessageIntentSheet";
 
 // ============================================
 // TYPES
@@ -143,10 +145,12 @@ const REPORT_CATEGORIES = [
 
 export function ChatView({ conversationId }: { conversationId: string }) {
   const { data: session } = useSession();
+  const isMobile = useIsMobile();
   const [selectedIntent, setSelectedIntent] = useState<MessageIntentData | null>(null);
   const [variables, setVariables] = useState<Record<string, string>>({});
   const [showBlockDialog, setShowBlockDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showIntentSheet, setShowIntentSheet] = useState(false);
   const [reportCategory, setReportCategory] = useState("");
   const [reportDetails, setReportDetails] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -284,6 +288,15 @@ export function ChatView({ conversationId }: { conversationId: string }) {
         variables,
       });
     }
+  };
+
+  // Handle send from mobile sheet
+  const handleMobileSheetSend = (data: { intent: string; variables: Record<string, string> }) => {
+    sendMutation.mutate(data, {
+      onSuccess: () => {
+        setShowIntentSheet(false);
+      },
+    });
   };
 
   // Check if all required variables are filled
@@ -532,27 +545,39 @@ export function ChatView({ conversationId }: { conversationId: string }) {
       {/* Intent Selector and Input */}
       {canSendMessages ? (
         <div className="border-t p-3 sm:p-4 flex-shrink-0 space-y-3 pb-safe bg-background">
-          {/* Intent selector */}
-          <Select
-            value={selectedIntent?.intent || ""}
-            onValueChange={handleIntentSelect}
-          >
-            <SelectTrigger className="h-11 sm:h-10 text-sm">
-              <SelectValue placeholder="Select a message type..." />
-            </SelectTrigger>
-            <SelectContent className="max-h-[50vh]">
-              {intents.map((intent) => (
-                <SelectItem key={intent.intent} value={intent.intent}>
-                  <div className="flex flex-col items-start">
-                    <span className="font-medium">{intent.label}</span>
-                    <span className="text-xs text-muted-foreground truncate max-w-[250px]">
-                      {intent.description}
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Mobile: Button to open intent sheet */}
+          {isMobile ? (
+            <Button
+              onClick={() => setShowIntentSheet(true)}
+              variant="outline"
+              className="w-full h-11 justify-start text-muted-foreground"
+            >
+              <MessageCircle className="h-4 w-4 mr-2" />
+              {selectedIntent ? selectedIntent.label : "Tap to select message type..."}
+            </Button>
+          ) : (
+            /* Desktop: Dropdown selector */
+            <Select
+              value={selectedIntent?.intent || ""}
+              onValueChange={handleIntentSelect}
+            >
+              <SelectTrigger className="h-11 sm:h-10 text-sm">
+                <SelectValue placeholder="Select a message type..." />
+              </SelectTrigger>
+              <SelectContent className="max-h-[50vh]">
+                {intents.map((intent) => (
+                  <SelectItem key={intent.intent} value={intent.intent}>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">{intent.label}</span>
+                      <span className="text-xs text-muted-foreground truncate max-w-[250px]">
+                        {intent.description}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           {/* Variables input */}
           {selectedIntent && (
@@ -740,6 +765,15 @@ export function ChatView({ conversationId }: { conversationId: string }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Mobile Intent Sheet */}
+      <MessageIntentSheet
+        open={showIntentSheet}
+        onClose={() => setShowIntentSheet(false)}
+        intents={intents}
+        onSend={handleMobileSheetSend}
+        isPending={sendMutation.isPending}
+      />
     </Card>
   );
 }

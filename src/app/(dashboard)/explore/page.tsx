@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { CareerSwipeCard } from "@/components/career-swipe-card";
 import { CareerDetailModal } from "@/components/career-detail-modal";
 import { useToast } from "@/hooks/use-toast";
-import { calculateSkillLevels, hasRelevantSkills } from "@/lib/skills-mapping";
+import { hasRelevantSkills } from "@/lib/skills-mapping";
 import {
   ChevronLeft,
   ChevronRight,
@@ -39,31 +39,16 @@ export default function ExplorePage() {
     },
   });
 
-  // Fetch user's completed jobs to calculate skills
+  // Fetch user's skill levels from optimized endpoint
   const { data: userSkills } = useQuery({
     queryKey: ["user-skills"],
     queryFn: async () => {
-      const response = await fetch("/api/profile");
+      const response = await fetch("/api/profile/skills");
       if (!response.ok) return {};
-
-      const profile = await response.json();
-      if (!profile) return {};
-
-      // Get completed jobs
-      const jobsResponse = await fetch("/api/jobs");
-      const allJobs = await jobsResponse.json();
-      const completedJobs = allJobs.filter(
-        (job: any) =>
-          job.status === "COMPLETED" &&
-          job.applications?.some(
-            (app: any) =>
-              app.youthId === session?.user.id && app.status === "ACCEPTED"
-          )
-      );
-
-      return calculateSkillLevels(completedJobs);
+      return response.json();
     },
     enabled: !!session?.user.id,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   const swipeMutation = useMutation({

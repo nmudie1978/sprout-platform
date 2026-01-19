@@ -14,30 +14,32 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const unseen = searchParams.get("unseen") === "true";
 
-    // Get all active career cards
-    let careerCards = await prisma.careerCard.findMany({
-      where: {
-        active: true,
-      },
+    // Build where clause - optimized single query
+    const whereClause: any = {
+      active: true,
+    };
+
+    // If requesting unseen cards, exclude already-swiped cards in single query
+    if (unseen) {
+      // Get swiped card IDs in a single query using subquery pattern
+      const swipedCardIds = await prisma.swipe.findMany({
+        where: { youthId: session.user.id },
+        select: { careerCardId: true },
+      });
+
+      if (swipedCardIds.length > 0) {
+        whereClause.id = {
+          notIn: swipedCardIds.map(s => s.careerCardId),
+        };
+      }
+    }
+
+    const careerCards = await prisma.careerCard.findMany({
+      where: whereClause,
       orderBy: {
         order: "asc",
       },
     });
-
-    // If requesting unseen cards only
-    if (unseen) {
-      const swipes = await prisma.swipe.findMany({
-        where: {
-          youthId: session.user.id,
-        },
-        select: {
-          careerCardId: true,
-        },
-      });
-
-      const seenCardIds = swipes.map((s) => s.careerCardId);
-      careerCards = careerCards.filter((card) => !seenCardIds.includes(card.id));
-    }
 
     const response = NextResponse.json(careerCards);
     // Add cache headers - careers data doesn't change often

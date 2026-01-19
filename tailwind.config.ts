@@ -107,11 +107,34 @@ const config: Config = {
             opacity: "1",
           },
         },
+        float: {
+          "0%, 100%": {
+            transform: "translateY(0) scale(1)",
+            opacity: "0.3",
+          },
+          "50%": {
+            transform: "translateY(-20px) scale(1.1)",
+            opacity: "0.5",
+          },
+        },
+        "blob-slow": {
+          "0%, 100%": {
+            transform: "translate(0, 0) scale(1)",
+          },
+          "33%": {
+            transform: "translate(20px, -20px) scale(1.05)",
+          },
+          "66%": {
+            transform: "translate(-10px, 10px) scale(0.95)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         blob: "blob 7s infinite",
+        "blob-slow": "blob-slow 12s ease-in-out infinite",
+        float: "float 8s ease-in-out infinite",
         shimmer: "shimmer 2s linear infinite",
         "fade-in": "fade-in 0.5s ease-out",
         "slide-up": "slide-up 0.5s ease-out",
@@ -122,8 +145,14 @@ const config: Config = {
     require("tailwindcss-animate"),
     function ({ addUtilities }: any) {
       const newUtilities = {
+        ".animation-delay-1000": {
+          "animation-delay": "1s",
+        },
         ".animation-delay-2000": {
           "animation-delay": "2s",
+        },
+        ".animation-delay-3000": {
+          "animation-delay": "3s",
         },
         ".animation-delay-4000": {
           "animation-delay": "4s",
