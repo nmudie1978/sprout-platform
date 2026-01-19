@@ -54,6 +54,8 @@ import {
 } from "@/lib/goals/types";
 import { GoalPodcasts } from "@/components/goal-podcasts";
 import { WorkplaceInsightPlaceholder } from "@/components/goals/WorkplaceInsightPlaceholder";
+import { JourneyReportModal } from "@/components/goals/JourneyReportModal";
+import { FileText } from "lucide-react";
 
 // Note type for the Notes/Journal feature
 interface UserNote {
@@ -718,6 +720,9 @@ export default function GoalsPage() {
   const [primaryEditForm, setPrimaryEditForm] = useState<CareerGoal | null>(null);
   const [secondaryEditForm, setSecondaryEditForm] = useState<CareerGoal | null>(null);
 
+  // Report modal state
+  const [showReportModal, setShowReportModal] = useState(false);
+
   // Fetch goals
   const { data: goalsData, isLoading: isLoadingGoals } = useQuery({
     queryKey: ["goals"],
@@ -882,11 +887,24 @@ export default function GoalsPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500">
-            <Target className="h-6 w-6 text-white" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500">
+              <Target className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold">My Goals</h1>
           </div>
-          <h1 className="text-3xl font-bold">My Goals</h1>
+          {primaryGoal && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowReportModal(true)}
+              className="text-emerald-600 border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-950"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Generate Report
+            </Button>
+          )}
         </div>
         <p className="text-muted-foreground">
           Focus on what matters. Set one primary and one secondary career goal.
@@ -955,6 +973,16 @@ export default function GoalsPage() {
           />
         </motion.div>
       </div>
+
+      {/* Journey Report Modal */}
+      <JourneyReportModal
+        open={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        primaryGoal={primaryGoal}
+        secondaryGoal={secondaryGoal}
+        hasNotes={notes.length > 0}
+        hasJobs={false}
+      />
     </div>
   );
 }
