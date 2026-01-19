@@ -5,13 +5,14 @@
  * Designed for the horizontal carousel.
  *
  * Features:
- * - 16:9 visual header (gradient fallback)
+ * - 16:9 visual header (image or gradient fallback)
  * - Headline (max 2 lines)
  * - One-line summary
  * - Source + date (muted)
  * - Single CTA: "Read article →"
  */
 
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { type CuratedArticle } from "@/lib/industry-insights/world-lens-data";
@@ -84,14 +85,38 @@ export function ArticleInsightCard({
     >
       <Card className="overflow-hidden border hover:shadow-md transition-shadow duration-200 h-full w-[320px] sm:w-[340px] flex-shrink-0">
         {/* 16:9 Visual Header */}
-        <div
-          className={`aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center`}
-        >
-          <div className="text-center p-4">
-            <span className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wide">
-              {article.sourceName}
-            </span>
-          </div>
+        <div className="aspect-video relative overflow-hidden">
+          {article.imageUrl ? (
+            <>
+              <Image
+                src={article.imageUrl}
+                alt={article.title}
+                fill
+                sizes="340px"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  // Hide broken image and show fallback
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+              {/* Subtle overlay for better text contrast if needed */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              {/* Source badge on image */}
+              <div className="absolute bottom-2 left-2 px-2 py-1 bg-white/90 dark:bg-black/70 rounded text-[10px] font-medium text-muted-foreground">
+                {article.sourceName}
+              </div>
+            </>
+          ) : (
+            <div
+              className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}
+            >
+              <div className="text-center p-4">
+                <span className="text-xs font-medium text-muted-foreground/80 uppercase tracking-wide">
+                  {article.sourceName}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <CardContent className="p-4 space-y-3">

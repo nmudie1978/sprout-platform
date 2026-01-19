@@ -26,6 +26,7 @@ import {
   BarChart3,
   Bot,
   Target,
+  HelpCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -134,6 +135,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
     { href: "/goals", label: "", icon: Target, isCore: false, iconOnly: true, iconColor: "text-amber-500" },
     { href: "/career-advisor", label: "", icon: Bot, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
+    { href: "/legal/safety", label: "", icon: HelpCircle, isCore: false, iconOnly: true, iconColor: "text-green-500" },
     { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
 
@@ -142,6 +144,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/employer/post-job", label: "Post Job", icon: Briefcase, isCore: false },
     { href: "/employer/talent", label: "Browse Talent", icon: User, isCore: false },
     { href: "/employer/settings", label: "Settings", icon: Settings, isCore: false },
+    { href: "/legal/safety", label: "", icon: HelpCircle, isCore: false, iconOnly: true, iconColor: "text-green-500" },
   ];
 
   const adminLinks: NavLink[] = [
@@ -216,6 +219,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                   if (isAiAdvisor) return "AI Career Advisor";
                   if (isGoals) return "My Goals";
                   if (isDashboard) return "Dashboard";
+                  if (link.href === "/legal/safety") return "Help & Safety";
                   return link.label;
                 };
 
@@ -299,13 +303,22 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
             <div className="h-8 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
 
-            {/* User avatar (for youth) or name (for others) */}
+            {/* User avatar and name */}
             {userRole === "YOUTH" && userAvatarId ? (
-              <Link href="/profile" className="hover:opacity-80 transition-opacity">
+              <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <Avatar avatarId={userAvatarId} size="sm" />
+                <span className="text-sm font-medium hidden lg:block max-w-[100px] truncate">
+                  {userName && userName.length > 12
+                    ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                    : userName}
+                </span>
               </Link>
             ) : (
-              <span className="text-sm font-medium">{userName}</span>
+              <span className="text-sm font-medium max-w-[120px] truncate">
+                {userName && userName.length > 15
+                  ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                  : userName}
+              </span>
             )}
 
             {/* Sign out button */}
@@ -426,7 +439,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         link.isCore && !isActive && "text-primary",
                         !isActive && link.iconColor
                       )} />
-                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : link.href === "/goals" ? "My Goals" : "")}</span>
+                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : link.href === "/goals" ? "My Goals" : link.href === "/legal/safety" ? "Help & Safety" : "")}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}

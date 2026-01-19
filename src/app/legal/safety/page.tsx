@@ -19,7 +19,7 @@ export default function SafetyGuidelinesPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Safety & Community Guidelines</h1>
-            <p className="text-muted-foreground">Last updated: [DATE]</p>
+            <p className="text-muted-foreground">Last updated: January 2025</p>
           </div>
         </div>
         <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-500/10">
@@ -158,8 +158,8 @@ export default function SafetyGuidelinesPage() {
           <div className="bg-muted/50 p-4 rounded-lg text-sm">
             <p className="font-medium mb-2">Contact Us</p>
             <p className="text-muted-foreground">
-              For safety concerns or questions about these guidelines, contact us at:
-              [safety@sprout.no]
+              For safety concerns or questions about these guidelines, contact us at:{" "}
+              <a href="mailto:safety@sprout.no" className="text-primary hover:underline">safety@sprout.no</a>
             </p>
           </div>
         </CardContent>

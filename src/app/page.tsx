@@ -249,7 +249,7 @@ export default function LandingPage() {
                 </div>
                 <CardTitle className="text-2xl">I&apos;m a Youth Worker</CardTitle>
                 <CardDescription className="text-base">
-                  Ages 15–20 looking to earn, help neighbors, and build real-world experience
+                  Ages 16–20 looking to earn, help neighbors, and build real-world experience
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">

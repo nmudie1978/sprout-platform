@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +31,13 @@ const categoryEmojis: Record<string, string> = {
   OTHER: "✨",
 };
 
+// Ticker interval in milliseconds (10 seconds)
+const TICKER_INTERVAL = 10000;
+
 export function NextStepPanel() {
+  const [currentJobIndex, setCurrentJobIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
   const { data, isLoading } = useQuery({
     queryKey: ["next-step-suggestion"],
     queryFn: () => getNextStepSuggestion(),
@@ -38,11 +45,30 @@ export function NextStepPanel() {
     refetchOnWindowFocus: false,
   });
 
+  const topJobs = data?.topJobs || [];
+
+  // Auto-advance ticker
+  useEffect(() => {
+    if (topJobs.length <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentJobIndex((prev) => (prev + 1) % topJobs.length);
+    }, TICKER_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [topJobs.length, isPaused]);
+
+  // Reset index when jobs change
+  useEffect(() => {
+    setCurrentJobIndex(0);
+  }, [topJobs.length]);
+
   if (isLoading || !data) {
     return null;
   }
 
-  const { suggestion, topJob, careerAspiration } = data;
+  const { suggestion, topJob, primaryGoalTitle } = data;
+  const currentJob = topJobs[currentJobIndex] || topJob;
 
   return (
     <motion.div
@@ -61,9 +87,9 @@ export function NextStepPanel() {
             </div>
             <span className="font-semibold text-sm">Your Next Step</span>
           </div>
-          {careerAspiration && (
+          {primaryGoalTitle && (
             <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
-              Career goal: {careerAspiration}
+              Primary career goal: {primaryGoalTitle}
             </Badge>
           )}
         </div>
@@ -85,21 +111,64 @@ export function NextStepPanel() {
             </Button>
           </div>
 
-          {/* 2. Top Job */}
-          <Link href={topJob ? `/jobs/${topJob.id}` : "/jobs"} className="block group">
-            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-blue-300 transition-colors">
+          {/* 2. Top Job - Ticker */}
+          <Link
+            href={currentJob ? `/jobs/${currentJob.id}` : "/jobs"}
+            className="block group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-blue-300 transition-colors overflow-hidden relative">
               <div className="flex items-center gap-1.5 text-blue-500 mb-1.5">
                 <Briefcase className="h-3.5 w-3.5" />
                 <span className="text-[10px] font-medium uppercase tracking-wide">Top Small Job</span>
-                <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                {topJobs.length > 1 && (
+                  <span className="text-[9px] text-muted-foreground ml-auto tabular-nums">
+                    {currentJobIndex + 1}/{topJobs.length}
+                  </span>
+                )}
+                <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              {topJob ? (
-                <>
-                  <p className="text-xs font-medium truncate">{topJob.title}</p>
-                  <p className="text-[10px] text-muted-foreground">{topJob.location?.split(",")[0]} · {formatCurrency(topJob.payAmount)}</p>
-                </>
-              ) : (
-                <p className="text-xs text-muted-foreground">Find small jobs near you</p>
+              <div className="relative h-[32px] overflow-hidden">
+                <AnimatePresence mode="wait">
+                  {currentJob ? (
+                    <motion.div
+                      key={currentJob.id}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{
+                        duration: 0.4,
+                        ease: "easeInOut"
+                      }}
+                      className="absolute inset-x-0"
+                    >
+                      <p className="text-xs font-medium truncate">{currentJob.title}</p>
+                      <p className="text-[10px] text-muted-foreground">{currentJob.location?.split(",")[0]} · {formatCurrency(currentJob.payAmount)}</p>
+                    </motion.div>
+                  ) : (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-xs text-muted-foreground"
+                    >
+                      Find small jobs near you
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
+              {/* Progress bar indicator */}
+              {topJobs.length > 1 && !isPaused && (
+                <motion.div
+                  key={currentJobIndex}
+                  className="absolute bottom-0 left-0 h-0.5 bg-blue-400/50"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{
+                    duration: TICKER_INTERVAL / 1000,
+                    ease: "linear"
+                  }}
+                />
               )}
             </div>
           </Link>

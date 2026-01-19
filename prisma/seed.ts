@@ -2960,16 +2960,22 @@ This platform helps you earn money through micro-jobs while discovering potentia
   }
 
   // Create demo youth worker with reviews
+  // Guardian consent pre-granted for test data (allows job applications)
   const ryanYouth = await prisma.user.upsert({
     where: { email: 'ryanmudie1982@gmail.com' },
-    update: { role: 'YOUTH' },
+    update: {
+      role: 'YOUTH',
+      accountStatus: 'ACTIVE', // Pre-approved for testing
+    },
     create: {
       email: 'ryanmudie1982@gmail.com',
       role: 'YOUTH',
+      accountStatus: 'ACTIVE', // Pre-approved for testing
     },
   });
 
   // Upsert Ryan's youth profile with all required fields
+  // Guardian consent pre-granted for test data
   await prisma.youthProfile.upsert({
     where: { userId: ryanYouth.id },
     update: {
@@ -2983,6 +2989,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       availabilityStatus: 'AVAILABLE',
       city: 'Fjellhamar',
       address: 'Fjellhamar, Norway',
+      // Guardian consent pre-granted for testing
+      guardianConsent: true,
+      guardianConsentAt: new Date(),
     },
     create: {
       userId: ryanYouth.id,
@@ -2999,6 +3008,9 @@ This platform helps you earn money through micro-jobs while discovering potentia
       availabilityStatus: 'AVAILABLE',
       city: 'Fjellhamar',
       address: 'Fjellhamar, Norway',
+      // Guardian consent pre-granted for testing
+      guardianConsent: true,
+      guardianConsentAt: new Date(),
     },
   });
 

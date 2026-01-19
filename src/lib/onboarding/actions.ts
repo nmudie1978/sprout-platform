@@ -30,7 +30,8 @@ export interface NextStepSuggestion {
 export interface NextStepData {
   suggestion: NextStepSuggestion;
   topJob: SmartJobPick | null;
-  careerAspiration: string | null;
+  topJobs: SmartJobPick[]; // Multiple jobs for ticker display
+  primaryGoalTitle: string | null; // From structured goals system
 }
 
 // Priority mappings for suggestions
@@ -189,16 +190,21 @@ export async function getNextStepSuggestion(): Promise<NextStepData | null> {
     where: { userId: session.user.id },
     select: {
       currentPriorities: true,
-      careerAspiration: true,
+      primaryGoal: true,
       completedJobsCount: true,
     },
   });
 
   if (!youthProfile) return null;
 
-  // Get smart job picks (top 1)
-  const jobPicks = await getSmartJobPicks(1);
+  // Extract primary goal title from structured goal
+  const primaryGoal = youthProfile.primaryGoal as { title?: string } | null;
+  const primaryGoalTitle = primaryGoal?.title || null;
+
+  // Get smart job picks (top 5 for ticker display)
+  const jobPicks = await getSmartJobPicks(5);
   const topJob = jobPicks.length > 0 ? jobPicks[0] : null;
+  const topJobs = jobPicks;
 
   // Determine primary priority
   const priorities = youthProfile.currentPriorities;
@@ -221,7 +227,8 @@ export async function getNextStepSuggestion(): Promise<NextStepData | null> {
   return {
     suggestion,
     topJob,
-    careerAspiration: youthProfile.careerAspiration,
+    topJobs,
+    primaryGoalTitle,
   };
 }
 

@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { SkillRadar } from "@/components/skill-radar";
 import { Switch } from "@/components/ui/switch";
 import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin, Calendar, Cake, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
@@ -89,7 +88,6 @@ export default function ProfilePage() {
     city: "",
     interests: [] as string[],
     guardianEmail: "",
-    careerAspiration: "",
   });
   const formInitializedRef = useRef(false);
   const lastUserIdRef = useRef<string | null>(null);
@@ -122,6 +120,18 @@ export default function ProfilePage() {
     }
   }, [session?.user?.id]);
 
+  // Fetch primary goal from goals API
+  const { data: goalsData } = useQuery({
+    queryKey: ["goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/goals");
+      if (!response.ok) return null;
+      return response.json();
+    },
+    enabled: !!session?.user?.id && session?.user?.role === "YOUTH",
+    staleTime: 30 * 1000,
+  });
+
   // Only initialize form data once when profile first loads
   useEffect(() => {
     if (profile && !formInitializedRef.current) {
@@ -134,7 +144,6 @@ export default function ProfilePage() {
         city: profile.city || "",
         interests: profile.interests || [],
         guardianEmail: profile.guardianEmail || "",
-        careerAspiration: profile.careerAspiration || "",
       });
       // Initialize DOB dropdowns from existing date
       if (profile.user?.dateOfBirth) {
@@ -172,7 +181,6 @@ export default function ProfilePage() {
         city: data.city || "",
         interests: data.interests || [],
         guardianEmail: data.guardianEmail || "",
-        careerAspiration: data.careerAspiration || "",
       });
       toast({
         title: "Profile saved!",
@@ -281,36 +289,6 @@ export default function ProfilePage() {
       toast({
         title: "Error",
         description: "Failed to update avatar",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateCareerAspirationMutation = useMutation({
-    mutationFn: async (careerAspiration: string) => {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ careerAspiration }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update career aspiration");
-      }
-
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Career goal saved!",
-        description: "Your career aspiration has been updated.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update career aspiration",
         variant: "destructive",
       });
     },
@@ -739,9 +717,120 @@ export default function ProfilePage() {
       <div className="grid gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
         <div className="lg:col-span-2 space-y-6 relative z-10">
+          {/* Basic Information - Read-only summary */}
+          {profile && (
+            <Card className="border bg-card/50 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-medium text-foreground/90">Basic Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Identity Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Display Name</span>
+                    <span className="text-sm font-medium">{profile.displayName || "Not set"}</span>
+                  </div>
+                  <div className="h-px bg-border/50" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Account Type</span>
+                    <Badge variant="secondary" className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 font-normal">
+                      {session.user.role === "YOUTH" ? "Youth" : session.user.role === "EMPLOYER" ? "Job Poster" : session.user.role}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Age & Eligibility - Youth Only */}
+                {session.user.role === "YOUTH" && (
+                  <>
+                    <div className="h-px bg-border/30" />
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground/80">Age & Eligibility</h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Age Band</span>
+                        <Badge variant="outline" className="font-normal border-stone-300 dark:border-stone-600">
+                          {session.user.ageBracket === "SIXTEEN_SEVENTEEN" ? "16–17" :
+                           session.user.ageBracket === "EIGHTEEN_TWENTY" ? "18–20" : "Not verified"}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {session.user.ageBracket === "EIGHTEEN_TWENTY"
+                          ? "You are eligible to use all youth features."
+                          : session.user.ageBracket === "SIXTEEN_SEVENTEEN" && profile.guardianConsent
+                          ? "You are eligible to use all youth features."
+                          : "Some features may be restricted until verification is complete."}
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {/* Verification Status - Youth Only */}
+                {session.user.role === "YOUTH" && session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
+                  <>
+                    <div className="h-px bg-border/30" />
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground/80">Verification Status</h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Guardian Verification</span>
+                        {profile.guardianConsent ? (
+                          <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 font-normal">
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Verified
+                          </Badge>
+                        ) : profile.guardianEmail ? (
+                          <Badge className="bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400 border-amber-200 dark:border-amber-800 font-normal">
+                            <Clock className="h-3 w-3 mr-1" />
+                            Pending
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-stone-500 dark:text-stone-400 font-normal">
+                            Required
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Guardian verification is required for users aged 16–17. This helps keep Sprout safe for young users.
+                      </p>
+                      {!profile.guardianConsent && (
+                        <Link
+                          href="/guardian-consent"
+                          className="inline-flex items-center text-xs text-primary hover:underline"
+                        >
+                          Complete guardian verification
+                          <ExternalLink className="h-3 w-3 ml-1" />
+                        </Link>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {/* 18-20 age band - no guardian needed */}
+                {session.user.role === "YOUTH" && session.user.ageBracket === "EIGHTEEN_TWENTY" && (
+                  <>
+                    <div className="h-px bg-border/30" />
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium text-foreground/80">Verification Status</h4>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Account Status</span>
+                        <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 font-normal">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Verified
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        As an adult user (18+), you have full access to all features without guardian verification.
+                      </p>
+                    </div>
+                  </>
+                )}
+
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Edit Profile Form */}
           <Card className="border-2 shadow-lg hover-lift relative z-10">
             <CardHeader>
-              <CardTitle className="text-xl">Basic Information</CardTitle>
+              <CardTitle className="text-xl">Edit Your Profile</CardTitle>
               <CardDescription>
                 This information will be shown to employers when you share your profile
               </CardDescription>
@@ -1081,49 +1170,28 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Skills & Stats */}
+          {/* Job Stats */}
           {profile && (
-            <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-50 pointer-events-none" />
-              <CardHeader className="relative">
-                <CardTitle className="text-xl">Your Skills</CardTitle>
-                <CardDescription>
-                  Built from your completed jobs
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative">
-                <SkillRadar userId={session.user.id} />
-
-                <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20">
-                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
-                      {profile.completedJobsCount || 0}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                      Jobs Done
-                    </div>
-                  </div>
-                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20">
-                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
-                      {profile.averageRating
-                        ? profile.averageRating.toFixed(1)
-                        : "N/A"}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                      Rating
-                    </div>
-                  </div>
-                  <div className="text-center p-2 sm:p-3 rounded-lg bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20">
-                    <div className="text-2xl sm:text-3xl font-bold gradient-text">
-                      {profile.reliabilityScore || 0}%
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-muted-foreground mt-1">
-                      Reliable
-                    </div>
-                  </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
+                <div className="text-xl font-bold text-purple-600 dark:text-purple-400">
+                  {profile.completedJobsCount || 0}
                 </div>
-              </CardContent>
-            </Card>
+                <div className="text-[10px] text-muted-foreground">Jobs</div>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
+                <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                  {profile.averageRating ? profile.averageRating.toFixed(1) : "—"}
+                </div>
+                <div className="text-[10px] text-muted-foreground">Rating</div>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
+                <div className="text-xl font-bold text-green-600 dark:text-green-400">
+                  {profile.reliabilityScore || 0}%
+                </div>
+                <div className="text-[10px] text-muted-foreground">Reliable</div>
+              </div>
+            </div>
           )}
         </div>
 
@@ -1240,7 +1308,7 @@ export default function ProfilePage() {
           {/* Saved Life Skills */}
           {profile && <SavedLifeSkills />}
 
-          {/* Career Goal */}
+          {/* Career Goal - Read Only (managed in My Goals) */}
           {profile && (
             <Card className="border-2 shadow-lg hover-lift overflow-hidden relative z-10">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-50 pointer-events-none" />
@@ -1250,41 +1318,77 @@ export default function ProfilePage() {
                   Career Goal
                 </CardTitle>
                 <CardDescription>
-                  What do you want to be?
+                  Your primary career goal
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10 space-y-4">
-                <div>
-                  <Input
-                    placeholder="e.g., Software Developer, Chef, Entrepreneur"
-                    value={formData.careerAspiration}
-                    onChange={(e) =>
-                      setFormData({ ...formData, careerAspiration: e.target.value })
-                    }
-                    maxLength={200}
-                    className="h-11 sm:h-10"
-                  />
-                  <p className="mt-1 text-xs text-muted-foreground text-right">
-                    {formData.careerAspiration.length}/200 characters
-                  </p>
-                </div>
-                <Button
-                  onClick={() => updateCareerAspirationMutation.mutate(formData.careerAspiration)}
-                  disabled={updateCareerAspirationMutation.isPending || formData.careerAspiration === (profile.careerAspiration || "")}
-                  className="w-full"
-                  size="sm"
-                >
-                  {updateCareerAspirationMutation.isPending ? "Saving..." : "Save Goal"}
-                </Button>
-                <div className="rounded-lg bg-muted p-3">
-                  <Link
-                    href="/career-explore"
-                    className="flex items-center gap-2 text-sm text-primary hover:underline"
-                  >
-                    <Compass className="h-4 w-4" />
-                    Need inspiration? Explore careers
+                {goalsData?.primaryGoal ? (
+                  <>
+                    <div className="rounded-lg bg-gradient-to-br from-purple-500/10 to-orange-500/5 border border-purple-500/20 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-lg truncate">
+                            {goalsData.primaryGoal.title}
+                          </p>
+                          {goalsData.primaryGoal.status && (
+                            <Badge
+                              variant="secondary"
+                              className={`mt-1 text-xs ${
+                                goalsData.primaryGoal.status === "committed"
+                                  ? "bg-green-500/10 text-green-700 dark:text-green-400"
+                                  : goalsData.primaryGoal.status === "exploring"
+                                  ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
+                                  : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                              }`}
+                            >
+                              {goalsData.primaryGoal.status === "committed"
+                                ? "Committed"
+                                : goalsData.primaryGoal.status === "exploring"
+                                ? "Exploring"
+                                : "Paused"}
+                            </Badge>
+                          )}
+                        </div>
+                        <Badge variant="outline" className="text-xs shrink-0">
+                          Primary
+                        </Badge>
+                      </div>
+                      {goalsData.primaryGoal.why && (
+                        <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
+                          {goalsData.primaryGoal.why}
+                        </p>
+                      )}
+                    </div>
+                    {goalsData.secondaryGoal && (
+                      <div className="rounded-lg bg-muted/50 border p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium truncate">
+                            {goalsData.secondaryGoal.title}
+                          </p>
+                          <Badge variant="outline" className="text-xs shrink-0">
+                            Secondary
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center">
+                    <Target className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                    <p className="text-sm text-muted-foreground">
+                      No career goal set yet
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Define your goals in My Goals
+                    </p>
+                  </div>
+                )}
+                <Button asChild variant="outline" className="w-full" size="sm">
+                  <Link href="/goals" className="flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    {goalsData?.primaryGoal ? "Edit in My Goals" : "Set Goals"}
                   </Link>
-                </div>
+                </Button>
               </CardContent>
             </Card>
           )}

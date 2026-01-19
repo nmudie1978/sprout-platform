@@ -184,6 +184,25 @@ export default function EmployerSettingsPage() {
       </div>
 
       <div className="space-y-6">
+        {/* Basic Information - Read-only summary */}
+        <Card className="border bg-card/50 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-medium text-foreground/90">Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Account Type</span>
+              <span className="text-sm px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300">
+                Job Poster
+              </span>
+            </div>
+            <div className="h-px bg-border/30" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Age and guardian verification does not apply to job posters. You are required to verify you are 18+ before posting jobs.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Age Verification Status */}
         {!profile?.ageVerified && (
           <Card className="border-2 border-yellow-500/50 shadow-lg">

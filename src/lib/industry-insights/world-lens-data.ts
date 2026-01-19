@@ -206,6 +206,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
     tier: "tier1",
     publishedAt: "2025-01-10",
+    imageUrl: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=680&h=382&fit=crop",
     topics: ["future of work", "skills", "employment"],
   },
   {
@@ -217,6 +218,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.oecd.org/employment/skills-and-work/",
     tier: "tier1",
     publishedAt: "2025-01-08",
+    imageUrl: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=680&h=382&fit=crop",
     topics: ["skills", "education", "youth employment"],
   },
   {
@@ -228,6 +230,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.ilo.org/global/topics/youth-employment/",
     tier: "tier1",
     publishedAt: "2025-01-05",
+    imageUrl: "https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?w=680&h=382&fit=crop",
     topics: ["youth employment", "labour market"],
   },
   {
@@ -239,6 +242,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.mckinsey.com/featured-insights/future-of-work/",
     tier: "tier1",
     publishedAt: "2025-01-03",
+    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=680&h=382&fit=crop",
     topics: ["AI", "automation", "future of work"],
   },
   {
@@ -250,6 +254,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.weforum.org/agenda/green-jobs/",
     tier: "tier1",
     publishedAt: "2024-12-28",
+    imageUrl: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=680&h=382&fit=crop",
     topics: ["green jobs", "sustainability", "energy transition"],
   },
   {
@@ -261,6 +266,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.economist.com/",
     tier: "tier2",
     publishedAt: "2024-12-20",
+    imageUrl: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=680&h=382&fit=crop",
     topics: ["skills gap", "education", "employment"],
   },
   {
@@ -272,6 +278,7 @@ export const CURATED_ARTICLES: CuratedArticle[] = [
     sourceUrl: "https://www.ft.com/",
     tier: "tier2",
     publishedAt: "2024-12-15",
+    imageUrl: "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=680&h=382&fit=crop",
     topics: ["remote work", "hybrid work", "careers"],
   },
 ];
