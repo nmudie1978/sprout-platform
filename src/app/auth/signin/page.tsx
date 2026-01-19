@@ -199,6 +199,10 @@ export default function SignInPage() {
               Sign up
             </Link>
           </div>
+
+          <p className="mt-6 text-center text-[11px] text-muted-foreground/70">
+            Vipps and BankID login coming in production
+          </p>
         </CardContent>
       </Card>
     </div>

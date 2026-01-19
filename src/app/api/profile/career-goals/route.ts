@@ -23,10 +23,18 @@ export async function PUT(request: Request) {
     // Remove duplicates while preserving order
     const uniqueGoals = [...new Set(goals)];
 
-    // Update the profile
-    const updatedProfile = await prisma.youthProfile.update({
+    // Use upsert to create profile if it doesn't exist
+    const updatedProfile = await prisma.youthProfile.upsert({
       where: { userId: session.user.id },
-      data: {
+      create: {
+        userId: session.user.id,
+        displayName: session.user.name || "User",
+        careerAspiration: uniqueGoals.join(", "),
+        desiredRoles: uniqueGoals,
+        activeCareerGoal: uniqueGoals.length > 0 ? uniqueGoals[0] : null,
+        pathUpdatedAt: new Date(),
+      },
+      update: {
         // Store as comma-separated in careerAspiration for backwards compatibility
         careerAspiration: uniqueGoals.join(", "),
         // Also store in desiredRoles array

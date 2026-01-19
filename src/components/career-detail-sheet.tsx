@@ -161,11 +161,13 @@ export function CareerDetailSheet({
     onSuccess: () => {
       setIsAdded(true);
       toast.success("Career added to your goals!", {
-        description: "View and manage your goals in your profile.",
+        description: "View your goals on the Goals page.",
       });
-      // Invalidate related queries
+      // Invalidate all related queries
       queryClient.invalidateQueries({ queryKey: ["career-goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["multiple-career-journeys"] });
     },
     onError: (error: Error) => {
       if (error.message === "ALREADY_EXISTS") {

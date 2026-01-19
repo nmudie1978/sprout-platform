@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Target,
   Plus,
@@ -23,6 +24,8 @@ import {
   Star,
   Rocket,
   Trophy,
+  Briefcase,
+  ChevronRight,
 } from "lucide-react";
 
 // Goal type
@@ -63,7 +66,20 @@ export default function GoalsPage() {
   const [selectedCategory, setSelectedCategory] = useState<Goal["category"]>("career");
   const [showSuggestions, setShowSuggestions] = useState(true);
 
-  // For MVP, store goals in localStorage (could be moved to DB later)
+  // Fetch career goals from database
+  const { data: careerGoalsData, isLoading: isLoadingCareerGoals } = useQuery({
+    queryKey: ["career-goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile/career-goals");
+      if (!response.ok) return { goals: [], activeGoal: null };
+      return response.json();
+    },
+    enabled: !!session?.user?.id,
+  });
+
+  const careerGoals: string[] = careerGoalsData?.goals || [];
+
+  // For MVP, store personal goals in localStorage (could be moved to DB later)
   const { data: goals = [], isLoading } = useQuery({
     queryKey: ["my-goals", session?.user?.id],
     queryFn: () => {
@@ -182,19 +198,70 @@ export default function GoalsPage() {
         </p>
       </motion.div>
 
+      {/* Career Goals - Compact Display */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+      >
+        <Card className="mb-6 border border-purple-200 dark:border-purple-800">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-purple-500" />
+                <span className="font-medium text-sm">Career Goals</span>
+                {careerGoals.length > 0 && (
+                  <Badge variant="secondary" className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                    {careerGoals.length}/4
+                  </Badge>
+                )}
+              </div>
+              <Link href="/careers">
+                <Button variant="ghost" size="sm" className="h-7 text-xs text-purple-600 hover:text-purple-700">
+                  {careerGoals.length > 0 ? "Edit" : "Add"}
+                  <ChevronRight className="h-3 w-3 ml-1" />
+                </Button>
+              </Link>
+            </div>
+            {careerGoals.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {careerGoals.map((career, index) => (
+                  <Badge
+                    key={career}
+                    variant={index === 0 ? "default" : "secondary"}
+                    className={index === 0 ? "bg-purple-500 hover:bg-purple-600" : ""}
+                  >
+                    {index === 0 && <Star className="h-3 w-3 mr-1" />}
+                    {career}
+                  </Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No career goals yet.{" "}
+                <Link href="/careers" className="text-purple-600 hover:underline">
+                  Explore careers
+                </Link>{" "}
+                to add some.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Progress Card */}
       {totalCount > 0 && (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.15 }}
         >
           <Card className="mb-6 border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-amber-500" />
-                  <span className="font-semibold">Your Progress</span>
+                  <span className="font-semibold">Personal Goals Progress</span>
                 </div>
                 <Badge variant="secondary" className="bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
                   {completedCount} / {totalCount} completed
