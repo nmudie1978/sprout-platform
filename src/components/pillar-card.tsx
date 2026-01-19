@@ -23,9 +23,9 @@ export const PILLARS: Pillar[] = [
   {
     key: "earn",
     title: "EARN",
-    tagline: "Real pay. Real safety. Real experience.",
+    tagline: "Trust and responsibility, not hustle.",
     description:
-      "Find safe, local micro-jobs designed for teens 16-20. Every adult is verified, every interaction is structured, and you get paid for real work that builds your future.",
+      "Take on real responsibilities with real pay, in a safe and structured way. Every employer is verified, every interaction has clear boundaries. Show up, do something meaningful, and be trusted.",
     icon: Wallet,
     gradient: "from-emerald-500 to-green-600",
     iconBg: "bg-emerald-500/10 dark:bg-emerald-500/20",
@@ -35,9 +35,9 @@ export const PILLARS: Pillar[] = [
   {
     key: "explore",
     title: "EXPLORE",
-    tagline: "Careers without the hype.",
+    tagline: "Clarity before commitment.",
     description:
-      "Discover what jobs actually look like day-to-day. Browse real career paths, understand required skills, and get honest 'reality checks' - not glossy brochures.",
+      "See what work is actually like before you commit to anything. Honest, day-to-day realities — not polished versions. No pressure to pick a direction or make decisions early.",
     icon: Compass,
     gradient: "from-blue-500 to-cyan-600",
     iconBg: "bg-blue-500/10 dark:bg-blue-500/20",
@@ -47,9 +47,9 @@ export const PILLARS: Pillar[] = [
   {
     key: "learn",
     title: "LEARN",
-    tagline: "Life skills, right when you need them.",
+    tagline: "Guidance when it matters.",
     description:
-      "Get micro-guidance at the moments that matter - before your first job, when handling conflict, or managing your first paycheck. No boring courses, just timely tips.",
+      "Get practical support for real moments — preparing for your first work experience, handling a difficult situation, or understanding what just happened. Short, optional, and nothing like school.",
     icon: BookOpen,
     gradient: "from-purple-500 to-pink-600",
     iconBg: "bg-purple-500/10 dark:bg-purple-500/20",
@@ -59,10 +59,9 @@ export const PILLARS: Pillar[] = [
   {
     key: "grow",
     title: "GROW",
-    tagline: "Build proof of who you're becoming.",
+    tagline: "Proof through actions, not claims.",
     description:
-      "Every job completed adds to your private skill graph. Build trust signals that compound over time and unlock better opportunities.",
-    subtext: "Ask questions about roles, skills, or courses — and get clear, practical answers.",
+      "Build a quiet record of who you're becoming. Reliability, skills, responsibilities — tracked privately, without leaderboards or follower counts. Your actions speak for themselves over time.",
     icon: TrendingUp,
     gradient: "from-orange-500 to-red-600",
     iconBg: "bg-orange-500/10 dark:bg-orange-500/20",

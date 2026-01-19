@@ -4,57 +4,37 @@ import { useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { getMultipleCareerJourneys, type MultipleCareerJourneys } from "@/lib/my-path/actions";
 import {
   TrendingUp,
   Sparkles,
-  Briefcase,
-  Users,
-  Zap,
-  ArrowUpRight,
-  Brain,
-  Wrench,
-  Heart,
-  Code,
-  ChevronRight,
-  Filter,
   Youtube,
   Play,
-  ExternalLink,
-  GraduationCap,
-  Clock,
-  BookOpen,
   Calendar,
-  MapPin,
   CheckCircle2,
-  MessageSquare,
-  Building2,
-  RefreshCw,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Import new insights components
+// Import insights components
 import {
-  InterviewPrepBank,
-  CompanySpotlights,
   EventsCalendar,
-  ProgressChecklist,
-  HowToStart,
-  SaveIndustryButton,
   NewsletterSignup,
-  IndustrySnapshot,
+  BigPictureChart,
+  GrowingIndustriesChart,
+  ReshapingJobsCard,
+  WorldLensArticles,
 } from "@/components/insights";
 
 type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
 
 export default function IndustryInsightsPage() {
   const { data: session } = useSession();
-  const [activeSection, setActiveSection] = useState("industries");
-  const [industryFilter, setIndustryFilter] = useState<IndustryFilter>("all");
-  const [showAlternateVideos, setShowAlternateVideos] = useState(false);
+  const [showVideos, setShowVideos] = useState(false);
 
   // Fetch user's career goals
   const { data: careerData } = useQuery<MultipleCareerJourneys | null>({
@@ -97,203 +77,15 @@ export default function IndustryInsightsPage() {
   // Get user's industry types from their career goals
   const userIndustryTypes = [...new Set(userCareerGoals.map(getIndustryFromCareer))];
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 },
-  };
-
-  const sections = [
-    { id: "industries", label: "Industries", icon: TrendingUp },
-    { id: "getting-started", label: "Prepare", icon: GraduationCap },
-    { id: "interview-prep", label: "Interview", icon: MessageSquare },
-    { id: "companies", label: "Companies", icon: Building2 },
-    { id: "events", label: "Events", icon: Calendar },
-    { id: "skills", label: "Market", icon: Zap },
-    { id: "videos", label: "Videos", icon: Youtube },
-  ];
-
-  const industryFilters = [
-    { id: "all" as IndustryFilter, label: "All", icon: null },
-    { id: "tech" as IndustryFilter, label: "Tech & AI", icon: Code },
-    { id: "green" as IndustryFilter, label: "Green Energy", icon: Wrench },
-    { id: "health" as IndustryFilter, label: "Healthcare", icon: Heart },
-    { id: "creative" as IndustryFilter, label: "Creative", icon: Sparkles },
-  ];
-
-  // Industry data derived from Tier-1 sources only:
-  // - World Economic Forum (Future of Jobs Report)
-  // - McKinsey & Company (workforce research)
-  // - Visual Capitalist (macro trends)
-  const growingIndustries = [
-    {
-      id: "tech",
-      name: "Technology & AI",
-      growth: "Growing steadily",
-      icon: Code,
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30",
-      jobs: ["Developer", "Data Analyst", "AI Specialist", "IT Support"],
-      articleLink: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-      articleLabel: "Read WEF Future of Jobs Report",
-      lastUpdated: "Q1 2025",
-      source: "World Economic Forum",
-      sourceLink: "https://www.weforum.org",
-      remoteScore: 95,
-      entryDifficulty: "Medium",
-      avgSalary: "Competitive",
-      howToStart: {
-        requirements: ["Basic programming", "English", "Problem solving"],
-        timeline: "6-12 months self-study or bootcamp",
-        freeResources: [
-          { name: "freeCodeCamp", url: "https://www.freecodecamp.org" },
-          { name: "Codecademy", url: "https://www.codecademy.com" },
-          { name: "CS50 (Harvard)", url: "https://cs50.harvard.edu" },
-        ],
-        certifications: ["Google IT Support", "AWS Cloud Practitioner", "Meta Frontend Developer"],
-      },
-    },
-    {
-      id: "green",
-      name: "Green Energy & Maritime",
-      growth: "Growing steadily",
-      icon: Wrench,
-      color: "from-green-500 to-teal-500",
-      bgColor: "from-green-50 to-teal-50 dark:from-green-950/30 dark:to-teal-950/30",
-      jobs: ["Wind Turbine Technician", "Electrician", "Marine Mechanic", "Energy Advisor"],
-      articleLink: "https://www.mckinsey.com/featured-insights/future-of-work",
-      articleLabel: "Read McKinsey workforce research",
-      lastUpdated: "Q1 2025",
-      source: "McKinsey & Company",
-      sourceLink: "https://www.mckinsey.com",
-      remoteScore: 20,
-      entryDifficulty: "Medium-High",
-      avgSalary: "Competitive",
-      howToStart: {
-        requirements: ["Trade certification", "Safety training", "Physical fitness"],
-        timeline: "2-4 year apprenticeship",
-        freeResources: [
-          { name: "Khan Academy", url: "https://www.khanacademy.org" },
-          { name: "Coursera", url: "https://www.coursera.org" },
-          { name: "edX", url: "https://www.edx.org" },
-        ],
-        certifications: ["Journeyman Electrician", "Wind Turbine Certification", "GWO Basic Safety"],
-      },
-    },
-    {
-      id: "health",
-      name: "Healthcare",
-      growth: "Stable demand",
-      icon: Heart,
-      color: "from-red-500 to-pink-500",
-      bgColor: "from-red-50 to-pink-50 dark:from-red-950/30 dark:to-pink-950/30",
-      jobs: ["Healthcare Worker", "Nurse", "Pharmacy Assistant", "Mental Health"],
-      articleLink: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-      articleLabel: "Read WEF Future of Jobs Report",
-      lastUpdated: "Q1 2025",
-      source: "World Economic Forum",
-      sourceLink: "https://www.weforum.org",
-      remoteScore: 15,
-      entryDifficulty: "Medium",
-      avgSalary: "Varies by role",
-      howToStart: {
-        requirements: ["Healthcare education", "Empathy and communication", "Language skills"],
-        timeline: "2-4 years education + practice",
-        freeResources: [
-          { name: "Khan Academy Health", url: "https://www.khanacademy.org/science/health-and-medicine" },
-          { name: "Coursera Healthcare", url: "https://www.coursera.org/browse/health" },
-          { name: "edX Health", url: "https://www.edx.org/learn/health" },
-        ],
-        certifications: ["CNA Certification", "Healthcare License"],
-      },
-    },
-    {
-      id: "creative",
-      name: "Creative Services",
-      growth: "Growing",
-      icon: Sparkles,
-      color: "from-purple-500 to-pink-500",
-      bgColor: "from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30",
-      jobs: ["Content Creator", "Graphic Designer", "Video Editor", "Social Media"],
-      articleLink: "https://www.mckinsey.com/featured-insights/future-of-work",
-      articleLabel: "Read McKinsey workforce research",
-      lastUpdated: "Q1 2025",
-      source: "McKinsey & Company",
-      sourceLink: "https://www.mckinsey.com",
-      remoteScore: 85,
-      entryDifficulty: "Low-Medium",
-      avgSalary: "Varies widely",
-      howToStart: {
-        requirements: ["Portfolio of work", "Creative tools (Adobe, Figma)", "Self-promotion"],
-        timeline: "3-6 months to build portfolio",
-        freeResources: [
-          { name: "Canva Design School", url: "https://www.canva.com/designschool" },
-          { name: "Coursera", url: "https://www.coursera.org" },
-          { name: "Khan Academy", url: "https://www.khanacademy.org" },
-        ],
-        certifications: ["Google Digital Marketing", "Meta Social Media Marketing"],
-      },
-    },
-  ];
-
-  // Skills data derived from WEF Future of Jobs Report and McKinsey research
-  const inDemandSkills = [
-    { skill: "Analytical Thinking", demand: 95, category: "Cognitive", source: "World Economic Forum" },
-    { skill: "Creative Thinking", demand: 92, category: "Cognitive", source: "World Economic Forum" },
-    { skill: "AI and Big Data", demand: 88, category: "Technical", source: "World Economic Forum" },
-    { skill: "Leadership", demand: 85, category: "Social", source: "McKinsey & Company" },
-    { skill: "Resilience and Flexibility", demand: 82, category: "Self-management", source: "World Economic Forum" },
-    { skill: "Technology Literacy", demand: 80, category: "Technical", source: "World Economic Forum" },
-    { skill: "Curiosity and Lifelong Learning", demand: 78, category: "Self-management", source: "World Economic Forum" },
-    { skill: "Systems Thinking", demand: 75, category: "Cognitive", source: "McKinsey & Company" },
-  ];
-
-  // AI Impact data derived from WEF Future of Jobs Report and McKinsey research
-  const aiImpact = [
-    {
-      title: "AI Creates New Jobs",
-      description: "According to global workforce research, AI adoption is generating demand for new roles that combine technical skills with domain expertise.",
-      stat: "Significant",
-      statLabel: "growth in AI-related positions",
-      icon: Brain,
-      source: "World Economic Forum",
-      sourceLink: "https://www.weforum.org",
-    },
-    {
-      title: "Human Skills Remain in Demand",
-      description: "Research indicates that as automation increases, roles requiring creativity, empathy, and complex problem-solving are growing.",
-      stat: "Increasing",
-      statLabel: "demand for human-centric roles",
-      icon: Users,
-      source: "McKinsey & Company",
-      sourceLink: "https://www.mckinsey.com",
-    },
-    {
-      title: "Skills-Based Hiring Growing",
-      description: "Analysis shows employers are increasingly prioritizing demonstrated skills over traditional credentials for many technical roles.",
-      stat: "Growing",
-      statLabel: "trend towards skills-first hiring",
-      icon: Zap,
-      source: "World Economic Forum",
-      sourceLink: "https://www.weforum.org",
-    },
-  ];
-
-  const regionalInsights = {
-    hotSectors: ["Tech Hubs", "Renewable Energy", "Healthcare", "Tourism & Hospitality"],
-    avgYouthPay: "$15-25/hour",
-    topEmployers: "Small & medium businesses employ 60% of young workers",
-  };
-
   // Fetch videos from database with freshness system
   const { data: videosData, isLoading: isLoadingVideos } = useQuery({
-    queryKey: ["industry-insight-videos", industryFilter],
+    queryKey: ["industry-insight-videos"],
     queryFn: async () => {
-      const params = industryFilter !== "all" ? `?industry=${industryFilter}` : "";
-      const response = await fetch(`/api/insights/videos${params}`);
+      const response = await fetch("/api/insights/videos");
       if (!response.ok) throw new Error("Failed to fetch videos");
       return response.json();
     },
+    enabled: showVideos, // Only fetch when videos section is expanded
   });
 
   // Fetch insights modules verification status
@@ -309,42 +101,13 @@ export default function IndustryInsightsPage() {
 
   const featuredVideos = videosData?.videos || [];
 
-  // Fallback videos if database is empty (for initial load before seeding)
+  // Fallback videos if database is empty
   const fallbackVideos = [
-    { id: "1", title: "How AI Will Change The Job Market", channel: "CNBC", videoUrl: "gWmRkYsLzB4", duration: "12:34", topic: "AI Impact", thumbnail: "https://img.youtube.com/vi/gWmRkYsLzB4/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "2", title: "Why You Will Fail to Have a Great Career", channel: "TEDx Talks", videoUrl: "iKHTawgyKWQ", duration: "15:00", topic: "Careers", thumbnail: "https://img.youtube.com/vi/iKHTawgyKWQ/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "3", title: "The First 20 Hours: How to Learn Anything", channel: "TEDx Talks", videoUrl: "5MgBikgcWnY", duration: "19:27", topic: "Skills", thumbnail: "https://img.youtube.com/vi/5MgBikgcWnY/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "4", title: "Day in the Life: Software Developer", channel: "Tech Career Insider", videoUrl: "qMkRHW9zE1c", duration: "11:18", topic: "Tech", thumbnail: "https://img.youtube.com/vi/qMkRHW9zE1c/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "1", title: "How AI Will Change The Job Market", channel: "CNBC", videoUrl: "gWmRkYsLzB4", duration: "12:34", topic: "AI Impact", thumbnail: "https://img.youtube.com/vi/gWmRkYsLzB4/mqdefault.jpg" },
+    { id: "2", title: "Why You Will Fail to Have a Great Career", channel: "TEDx Talks", videoUrl: "iKHTawgyKWQ", duration: "15:00", topic: "Careers", thumbnail: "https://img.youtube.com/vi/iKHTawgyKWQ/mqdefault.jpg" },
   ];
 
-  // Alternate videos for "refresh" feature
-  const alternateVideos = [
-    { id: "a1", title: "How to Get a Job With No Experience", channel: "Ali Abdaal", videoUrl: "3mxZHDdUbCQ", duration: "14:22", topic: "Careers", thumbnail: "https://img.youtube.com/vi/3mxZHDdUbCQ/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "a2", title: "The Future of Work: AI and Jobs", channel: "Bloomberg", videoUrl: "z2_TpP2v86A", duration: "10:45", topic: "AI Impact", thumbnail: "https://img.youtube.com/vi/z2_TpP2v86A/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "a3", title: "5 Skills That Will Get You Hired", channel: "Indeed", videoUrl: "Uo3cL4nrGOk", duration: "8:30", topic: "Skills", thumbnail: "https://img.youtube.com/vi/Uo3cL4nrGOk/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-    { id: "a4", title: "How to Build Your Personal Brand", channel: "Gary Vee", videoUrl: "JQzQVGEBpg0", duration: "12:15", topic: "Branding", thumbnail: "https://img.youtube.com/vi/JQzQVGEBpg0/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
-  ];
-
-  const primaryVideos = featuredVideos.length > 0 ? featuredVideos : fallbackVideos;
-  const displayVideos = showAlternateVideos ? alternateVideos : primaryVideos;
-
-  const filteredIndustries = industryFilter === "all"
-    ? growingIndustries.slice(0, 2) // Show only top 2 for compact display
-    : growingIndustries.filter(i => i.id === industryFilter);
-
-  // Industries filtered by user's career goals for the "How to Get Started" section
-  const careerGoalIndustries = userIndustryTypes.length > 0
-    ? growingIndustries.filter(i => userIndustryTypes.includes(i.id as IndustryFilter)).slice(0, 2)
-    : growingIndustries.slice(0, 2); // Show only top 2 for compact display
-
-  const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
+  const displayVideos = featuredVideos.length > 0 ? featuredVideos.slice(0, 2) : fallbackVideos;
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
@@ -354,361 +117,198 @@ export default function IndustryInsightsPage() {
       <PageHeader
         title="Industry"
         gradientText="Insights"
-        description="Job market trends, preparation resources, and career opportunities"
+        description="Understanding what's shaping careers globally"
         icon={TrendingUp}
       />
 
-      {/* Sticky Section Navigation */}
-      <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background/95 backdrop-blur-sm border-b mb-6">
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-          {sections.map((section) => {
-            const Icon = section.icon;
-            return (
-              <button
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                  activeSection === section.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
-              >
-                <Icon className="h-3 w-3" />
-                {section.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Industry Snapshot - Featured Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      {/* World Lens intro text */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="mb-6"
+        className="text-sm text-muted-foreground mb-8 max-w-2xl"
       >
-        <IndustrySnapshot />
-      </motion.div>
+        Industry Insights is your world lens — helping you understand the world beyond job listings.
+      </motion.p>
 
-      {/* Industry Filter */}
-      <motion.div {...fadeInUp} className="mb-6">
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Filter className="h-3.5 w-3.5" />
-            <span>Filter:</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {industryFilters.map((filter) => (
-              <button
-                key={filter.id}
-                onClick={() => setIndustryFilter(filter.id)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
-                  industryFilter === filter.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
-              >
-                {filter.icon && <filter.icon className="h-3 w-3" />}
-                {filter.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Growing Industries - Compact */}
-      <motion.div {...fadeInUp} className="mb-6" id="industries">
-        <Card className="border-2 overflow-hidden">
-          <div className="h-1 bg-gradient-to-r from-blue-500 via-green-500 to-purple-500" />
-          <CardHeader className="pb-2 pt-4">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                Fastest Growing Industries
-              </CardTitle>
-              <Badge variant="outline" className="text-[10px]">2025</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2">
-              {filteredIndustries.map((industry) => {
-                const Icon = industry.icon;
-                return (
-                  <div key={industry.name} className="flex items-center gap-3 p-2 rounded-lg border hover:bg-muted/30 transition-colors">
-                    <div className={`p-1.5 rounded-md bg-gradient-to-br ${industry.color}`}>
-                      <Icon className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">{industry.name}</span>
-                        <span className="text-xs font-bold text-green-600">{industry.growth}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {industry.jobs.slice(0, 3).map((job) => (
-                          <Badge key={job} variant="secondary" className="text-[9px] px-1.5 py-0">{job}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <SaveIndustryButton industryId={industry.id} industryName={industry.name} />
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Preparation Zone: How to Start + Progress Checklist - Side by Side */}
-      <motion.div
+      {/* ============================================ */}
+      {/* SECTION 1: WORLD AT A GLANCE (3 Insight Cards) */}
+      {/* ============================================ */}
+      <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="mb-6"
-        id="getting-started"
+        transition={{ duration: 0.5, delay: 0.15 }}
+        className="mb-10"
       >
-        <div className="grid gap-4 md:grid-cols-2">
-          <HowToStart industryTypes={userIndustryTypes} />
-          <div id="progress-checklist">
-            <ProgressChecklist />
-          </div>
-        </div>
-      </motion.div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Insight 1: Where most people work */}
+          <BigPictureChart />
 
-      {/* Interview Prep Bank - Compact standalone */}
-      <motion.div
+          {/* Insight 2: Which industries are growing */}
+          <GrowingIndustriesChart />
+
+          {/* Insight 3: What's reshaping jobs */}
+          <ReshapingJobsCard />
+        </div>
+      </motion.section>
+
+      {/* ============================================ */}
+      {/* SECTION 2: WORLD LENS ARTICLES */}
+      {/* ============================================ */}
+      <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.25 }}
-        className="mb-6"
-        id="interview-prep"
+        className="mb-10"
       >
-        <InterviewPrepBank />
-      </motion.div>
+        <WorldLensArticles />
+      </motion.section>
 
-      {/* Company Spotlights */}
-      <motion.div
+      {/* ============================================ */}
+      {/* SECTION 3: EVENTS CALENDAR */}
+      {/* ============================================ */}
+      <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.42 }}
-        className="mb-6"
-        id="companies"
-      >
-        <CompanySpotlights industryTypes={userIndustryTypes} />
-      </motion.div>
-
-      {/* Events Calendar */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.43 }}
-        className="mb-6"
+        transition={{ duration: 0.5, delay: 0.35 }}
+        className="mb-10"
         id="events"
       >
         <EventsCalendar industryTypes={userIndustryTypes} />
-      </motion.div>
+      </motion.section>
 
-      {/* Market Data - Combined AI/Skills/Regional in 3 columns */}
-      <motion.div
+      {/* ============================================ */}
+      {/* SECTION 4: VIDEOS (De-emphasized, collapsible) */}
+      {/* ============================================ */}
+      <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-6"
-        id="skills"
+        transition={{ duration: 0.5, delay: 0.45 }}
+        className="mb-10"
       >
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* AI Impact */}
-          <Card className="border-2 overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <Brain className="h-3.5 w-3.5 text-purple-600" />
-                AI Impact
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 space-y-1.5">
-              {aiImpact.slice(0, 2).map((item) => (
-                <div key={item.title} className="flex items-center gap-2">
-                  <span className="text-base font-bold text-purple-600">{item.stat}</span>
-                  <span className="text-[9px] text-muted-foreground truncate">{item.statLabel}</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+        <button
+          onClick={() => setShowVideos(!showVideos)}
+          className="w-full flex items-center justify-between p-4 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <Youtube className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Watch short explainers</span>
+            <span className="text-xs text-muted-foreground">(optional)</span>
+          </div>
+          {showVideos ? (
+            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          )}
+        </button>
 
-          {/* Top Skills */}
-          <Card className="border-2 overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-primary to-blue-500" />
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <Zap className="h-3.5 w-3.5 text-primary" />
-                Top Skills
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 space-y-1">
-              {inDemandSkills.slice(0, 3).map((item, index) => (
-                <div key={item.skill} className="flex items-center gap-2 text-xs">
-                  <span className="font-bold text-primary w-4">{index + 1}</span>
-                  <span className="flex-1 truncate">{item.skill}</span>
-                  <span className="font-medium text-primary">{item.demand}%</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Regional */}
-          <Card className="border-2 overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-green-500 to-teal-500" />
-            <CardHeader className="pb-2 pt-3">
-              <CardTitle className="flex items-center gap-1.5 text-sm">
-                <MapPin className="h-3.5 w-3.5 text-green-600" />
-                Regional
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-muted-foreground">Youth Wages</span>
-                <span className="text-sm font-bold text-green-600">{regionalInsights.avgYouthPay}</span>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {regionalInsights.hotSectors.slice(0, 2).map((sector) => (
-                  <Badge key={sector} variant="secondary" className="text-[8px] px-1 py-0">{sector}</Badge>
+        {showVideos && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.3 }}
+            className="mt-4"
+          >
+            {isLoadingVideos ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[1, 2].map((i) => (
+                  <Card key={i} className="overflow-hidden border animate-pulse">
+                    <div className="aspect-video bg-muted" />
+                    <CardContent className="p-3">
+                      <div className="h-4 bg-muted rounded w-full mb-1" />
+                      <div className="h-3 bg-muted rounded w-24" />
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </motion.div>
-
-      {/* Featured Videos */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1.2 }}
-        className="mb-6"
-        id="videos"
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Youtube className="h-5 w-5 text-red-600" />
-            <h2 className="text-base font-bold">Watch & Learn</h2>
-          </div>
-          <button
-            onClick={() => setShowAlternateVideos(!showAlternateVideos)}
-            className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-full border hover:bg-muted transition-colors"
-          >
-            <RefreshCw className={`h-3 w-3 ${showAlternateVideos ? "text-primary" : ""}`} />
-            {showAlternateVideos ? "Default" : "Refresh"}
-          </button>
-        </div>
-
-        {isLoadingVideos ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <Card key={i} className="overflow-hidden border animate-pulse">
-                <div className="aspect-video bg-muted" />
-                <CardContent className="p-3">
-                  <div className="h-4 bg-muted rounded w-16 mb-2" />
-                  <div className="h-4 bg-muted rounded w-full mb-1" />
-                  <div className="h-3 bg-muted rounded w-24" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {displayVideos.map((video: any, index: number) => (
-              <motion.a
-                key={video.id}
-                href={`https://www.youtube.com/watch?v=${video.videoUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 1.3 + index * 0.05 }}
-              >
-                <Card className="overflow-hidden border hover:border-red-500 transition-all duration-300 hover:shadow-lg h-full">
-                  <div className="relative aspect-video overflow-hidden bg-black">
-                    <Image
-                      src={video.thumbnail}
-                      alt={video.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-red-600 group-hover:bg-red-700 group-hover:scale-110 transition-all flex items-center justify-center shadow-xl">
-                        <Play className="h-6 w-6 text-white ml-0.5" fill="white" />
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {displayVideos.map((video: any) => (
+                  <a
+                    key={video.id}
+                    href={`https://www.youtube.com/watch?v=${video.videoUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group"
+                  >
+                    <Card className="overflow-hidden border hover:border-muted-foreground/50 transition-all duration-200 hover:shadow-sm">
+                      <div className="relative aspect-video overflow-hidden bg-muted">
+                        <Image
+                          src={video.thumbnail}
+                          alt={video.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 50vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
+                            <Play className="h-4 w-4 text-slate-800 ml-0.5" fill="currentColor" />
+                          </div>
+                        </div>
+                        {video.duration && (
+                          <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/80 rounded text-white text-[10px]">
+                            {video.duration}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    {video.duration && (
-                      <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/90 rounded text-white text-[10px] font-semibold">
-                        {video.duration}
-                      </div>
-                    )}
-                    {/* Freshness badge */}
-                    {video.freshness?.label === "Recently updated" && (
-                      <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-green-600 rounded text-white text-[10px] font-semibold flex items-center gap-1">
-                        <Sparkles className="h-3 w-3" />
-                        New
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-3">
-                    <div className="flex items-start gap-2 mb-2">
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400">
-                        {video.topic}
-                      </Badge>
-                    </div>
-                    <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-red-600 transition-colors mb-1">
-                      {video.title}
-                    </h3>
-                    <p className="text-[11px] text-muted-foreground">
-                      {video.channel}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.a>
-            ))}
-          </div>
+                      <CardContent className="p-3">
+                        <h3 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                          {video.title}
+                        </h3>
+                        <p className="text-[11px] text-muted-foreground mt-1">
+                          {video.channel}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </a>
+                ))}
+              </div>
+            )}
+            <p className="text-[10px] text-muted-foreground text-center mt-3">
+              Videos open in YouTube
+            </p>
+          </motion.div>
         )}
+      </motion.section>
 
-        <div className="mt-4 p-3 rounded-lg bg-muted/50 border text-center">
-          <p className="text-xs text-muted-foreground">
-            Click "Refresh Content" for more videos. All videos open in YouTube.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Newsletter Signup */}
-      <motion.div
+      {/* ============================================ */}
+      {/* NEWSLETTER SIGNUP */}
+      {/* ============================================ */}
+      <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1.3 }}
-        className="mb-6"
+        transition={{ duration: 0.5, delay: 0.55 }}
+        className="mb-10"
       >
         <NewsletterSignup />
-      </motion.div>
+      </motion.section>
 
-      {/* Data Source Note - Tier-1 Sources Only */}
-      <div className="mt-12 p-6 rounded-xl bg-muted/30 border">
+      {/* ============================================ */}
+      {/* DATA SOURCE NOTE */}
+      {/* ============================================ */}
+      <div className="mt-8 p-5 rounded-lg bg-muted/20 border">
         <div className="flex items-start gap-3">
-          <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
+          <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <div>
-            <p className="font-medium mb-2">About the Data</p>
-            <p className="text-sm text-muted-foreground mb-3">
-              All insights are derived from authoritative Tier-1 sources and updated regularly. Content is summarised for clarity and relevance to young workers.
+            <p className="font-medium text-sm mb-1">About the Data</p>
+            <p className="text-xs text-muted-foreground mb-2">
+              All insights are derived from Tier-1 sources and reviewed quarterly. Content is summarised for clarity.
             </p>
-            <div className="flex flex-wrap gap-3 text-xs">
-              <a href="https://www.weforum.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            <div className="flex flex-wrap gap-2 text-[10px]">
+              <a href="https://www.weforum.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 World Economic Forum
               </a>
-              <a href="https://www.mckinsey.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                McKinsey & Company
+              <span className="text-muted-foreground/50">•</span>
+              <a href="https://www.ilo.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                ILO
               </a>
-              <a href="https://www.visualcapitalist.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                Visual Capitalist
+              <span className="text-muted-foreground/50">•</span>
+              <a href="https://www.oecd.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                OECD
+              </a>
+              <span className="text-muted-foreground/50">•</span>
+              <a href="https://www.mckinsey.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                McKinsey
               </a>
             </div>
           </div>
@@ -716,15 +316,15 @@ export default function IndustryInsightsPage() {
       </div>
 
       {/* Verification Status Footer */}
-      <div className="mt-6 flex items-center justify-center gap-3 text-sm text-muted-foreground">
+      <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-green-500" />
-          <span>Updated regularly</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+          <span>Refreshed Q1 2025</span>
         </div>
         {modulesData?.meta?.allVerifiedThisQuarter && (
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <span>Verified this quarter</span>
+            <CheckCircle2 className="h-3 w-3 text-green-600" />
+            <span>Verified</span>
           </div>
         )}
       </div>

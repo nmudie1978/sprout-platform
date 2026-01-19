@@ -13,3 +13,8 @@ export { HowToStart } from "./how-to-start";
 export { SaveIndustryButton } from "./save-industry-button";
 export { NewsletterSignup } from "./newsletter-signup";
 export { IndustrySnapshot } from "./industry-snapshot";
+export { BigPictureChart } from "./big-picture-chart";
+export { GrowingIndustriesChart } from "./growing-industries-chart";
+export { ReshapingJobsCard } from "./reshaping-jobs-card";
+export { ArticleInsightCard } from "./article-insight-card";
+export { WorldLensArticles } from "./world-lens-articles";
