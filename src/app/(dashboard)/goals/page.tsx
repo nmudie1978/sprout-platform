@@ -77,7 +77,7 @@ export default function GoalsPage() {
     enabled: !!session?.user?.id,
   });
 
-  const careerGoals: string[] = careerGoalsData?.goals || [];
+  const careerGoals: string[] = Array.isArray(careerGoalsData?.goals) ? careerGoalsData.goals : [];
 
   // For MVP, store personal goals in localStorage (could be moved to DB later)
   const { data: goals = [], isLoading } = useQuery({
@@ -167,7 +167,7 @@ export default function GoalsPage() {
   const activeGoals = goals.filter((g: Goal) => !g.completed);
   const completedGoals = goals.filter((g: Goal) => g.completed);
 
-  if (isLoading) {
+  if (isLoading || isLoadingCareerGoals) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-4">
