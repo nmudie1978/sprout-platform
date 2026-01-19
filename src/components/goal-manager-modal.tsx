@@ -1,3 +1,19 @@
+/**
+ * @deprecated This modal is deprecated.
+ *
+ * CORE PRODUCT INVARIANT - Career Goals:
+ * - EXACTLY ONE Primary Career Goal (the anchor, default lens for all personalisation)
+ * - AT MOST ONE Secondary Career Goal (backup/alternative, always lower priority)
+ * - NO concept of third, fourth, or unlimited goals
+ *
+ * Use the goal setting flow in CareerDetailSheet instead (via Explore Careers page).
+ * Users set goals by clicking "Set as Primary Goal" or "Set as Secondary Goal" on a career.
+ * When both slots are full, the SwapGoalModal handles replacement flow.
+ *
+ * See: /api/goals for the correct API
+ * See: /app/(dashboard)/goals/page.tsx for the My Goals page
+ * See: /components/career-detail-sheet.tsx for the correct goal setting UI
+ */
 "use client";
 
 import { useState, useEffect } from "react";

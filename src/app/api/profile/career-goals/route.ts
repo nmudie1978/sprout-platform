@@ -1,9 +1,21 @@
+/**
+ * @deprecated This API is deprecated. Use /api/goals instead.
+ *
+ * CORE PRODUCT INVARIANT - Career Goals:
+ * - EXACTLY ONE Primary Career Goal (the anchor, default lens for all personalisation)
+ * - AT MOST ONE Secondary Career Goal (backup/alternative, always lower priority)
+ * - NO concept of third, fourth, or unlimited goals
+ *
+ * The new /api/goals endpoint enforces this invariant with primaryGoal/secondaryGoal JSON fields.
+ * This legacy endpoint is kept temporarily for backward compatibility but should not be used for new features.
+ */
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
+/** @deprecated Use /api/goals - Primary/Secondary model only */
 const MAX_GOALS = 4;
 
 const updateGoalsSchema = z.object({

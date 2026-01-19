@@ -146,7 +146,7 @@ describe('Safety Module', () => {
 
   describe('Age Constants', () => {
     it('should have correct minimum youth age', () => {
-      expect(MIN_YOUTH_AGE).toBe(15)
+      expect(MIN_YOUTH_AGE).toBe(16) // Platform minimum is 16
     })
 
     it('should have correct maximum youth age', () => {
@@ -165,8 +165,8 @@ describe('Safety Module', () => {
 
 describe('Safety Rules - Business Logic', () => {
   describe('Youth Registration Rules', () => {
-    it('should allow registration for ages 15-20', () => {
-      const validAges = [15, 16, 17, 18, 19, 20]
+    it('should allow registration for ages 16-20', () => {
+      const validAges = [16, 17, 18, 19, 20] // Platform minimum is 16
       validAges.forEach(age => {
         const today = new Date()
         const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate())
@@ -176,9 +176,9 @@ describe('Safety Rules - Business Logic', () => {
       })
     })
 
-    it('should require guardian consent for ages 15-17', () => {
+    it('should require guardian consent for ages 16-17', () => {
       const today = new Date()
-      for (let age = 15; age <= 17; age++) {
+      for (let age = 16; age <= 17; age++) { // Platform minimum is 16
         const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate())
         expect(isMinor(birthDate)).toBe(true)
       }

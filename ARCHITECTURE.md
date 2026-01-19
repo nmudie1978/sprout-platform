@@ -203,6 +203,66 @@ All shadcn/ui components built on Radix UI:
 - ARIA attributes
 - Screen reader support
 
+### 🎯 CORE PRODUCT INVARIANT: Career Goals
+
+**CRITICAL: Sprout is fundamentally driven by CAREER GOALS.**
+
+Every user can have:
+- **EXACTLY ONE Primary Career Goal** - The anchor, default lens for all personalisation
+- **AT MOST ONE Secondary Career Goal** - Backup/alternative, always lower priority
+
+**This is NOT flexible:**
+- NO third, fourth, or unlimited goals
+- NO "goal lists" or "career tracking arrays"
+- NO ambiguous language ("your goals" plural without context)
+
+#### Primary-First Behaviour
+- Primary goal is the default lens for recommendations
+- Primary goal appears first in all displays
+- Primary goal is the "current focus" for insights
+- If only one goal exists, it is ALWAYS the Primary
+
+#### Visual Hierarchy
+- Primary: Dominant, larger, more prominent
+- Secondary: Lighter, smaller, clearly subordinate
+
+#### API Contract
+```typescript
+// /api/goals - Single source of truth
+interface GoalsResponse {
+  primaryGoal: CareerGoal | null;  // The anchor goal
+  secondaryGoal: CareerGoal | null; // Backup/alternative
+}
+
+interface CareerGoal {
+  title: string;
+  status: "exploring" | "committed" | "paused";
+  confidence: "low" | "medium" | "high";
+  timeframe: "this-year" | "1-2-years" | "3-plus-years";
+  why: string;
+  nextSteps: NextStep[];
+  skills: string[];
+  updatedAt: string;
+}
+```
+
+#### Goal Setting Flow
+1. User browses careers on `/careers`
+2. User clicks "Learn More" on a career to open CareerDetailSheet
+3. User clicks "Set as Primary Goal" or "Set as Secondary Goal"
+4. If both slots full, SwapGoalModal prompts user to choose which to replace
+5. Goal appears on `/goals` page (My Goals)
+
+#### Files
+- **API**: `/api/goals/route.ts` - GET/PUT/DELETE for goals
+- **Types**: `/lib/goals/types.ts` - Goal type definitions
+- **UI**: `/components/career-detail-sheet.tsx` - Goal setting with swap modal
+- **Page**: `/app/(dashboard)/goals/page.tsx` - My Goals page
+
+#### Deprecated (DO NOT USE)
+- `/api/profile/career-goals` - Legacy 4-goal array system
+- `/components/goal-manager-modal.tsx` - Legacy multi-goal selector
+
 ### 🚀 Performance Optimizations
 
 #### Bundle Optimization

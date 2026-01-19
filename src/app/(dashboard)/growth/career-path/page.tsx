@@ -32,6 +32,7 @@ import {
 import Link from "next/link";
 import { getCareerJourneyForGoal, type CareerJourneyData } from "@/lib/my-path/actions";
 import { formatCurrency } from "@/lib/utils";
+import type { CareerGoal } from "@/lib/goals/types";
 
 // Type for verified learning API response
 interface VerifiedLearningResource {
@@ -67,19 +68,19 @@ export default function CareerPathPage() {
   const searchParams = useSearchParams();
   const goalParam = searchParams.get("goal");
 
-  // Fetch user's career goals to use as fallback when no ?goal= param
-  const { data: careerGoalsData, isLoading: goalsLoading } = useQuery<{ goals: string[]; activeGoal: string | null }>({
-    queryKey: ["career-goals"],
+  // Fetch user's career goals (Primary/Secondary only - core product invariant)
+  const { data: goalsData, isLoading: goalsLoading } = useQuery<{ primaryGoal: CareerGoal | null; secondaryGoal: CareerGoal | null }>({
+    queryKey: ["goals"],
     queryFn: async () => {
-      const response = await fetch("/api/profile/career-goals");
-      if (!response.ok) return { goals: [], activeGoal: null };
+      const response = await fetch("/api/goals");
+      if (!response.ok) return { primaryGoal: null, secondaryGoal: null };
       return response.json();
     },
     enabled: session?.user?.role === "YOUTH" && !goalParam,
   });
 
-  // Use URL param if provided, otherwise use active goal or first goal
-  const effectiveGoal = goalParam || careerGoalsData?.activeGoal || careerGoalsData?.goals?.[0] || null;
+  // Use URL param if provided, otherwise use primary goal (default lens)
+  const effectiveGoal = goalParam || goalsData?.primaryGoal?.title || goalsData?.secondaryGoal?.title || null;
 
   const { data: journey, isLoading: journeyLoading } = useQuery<CareerJourneyData | null>({
     queryKey: ["career-journey", effectiveGoal],
