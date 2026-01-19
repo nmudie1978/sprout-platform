@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CareerCard } from "@/components/career-card";
-import type { Career } from "@/lib/career-pathways";
+import { getAllCareers, type Career } from "@/lib/career-pathways";
 
 interface CareerInsight {
   career: Career;
@@ -71,8 +71,8 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="border-2 overflow-hidden h-full">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <Card className="border-2 overflow-hidden h-full relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
           <CardHeader className="relative pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -164,8 +164,8 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
       className="space-y-6"
     >
       {/* Header Card */}
-      <Card className="border-2 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+      <Card className="border-2 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
         <CardHeader className="relative">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20">
@@ -183,10 +183,10 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
             <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Briefcase className="h-4 w-4" />
-                Jobs Completed
+                Careers Available
               </div>
               <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">
-                {totalCompletedJobs}
+                {getAllCareers().length}
               </div>
             </div>
             <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20">
@@ -201,10 +201,10 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
             <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Sparkles className="h-4 w-4" />
-                Career Matches
+                Top Matches
               </div>
               <div className="text-2xl font-bold text-amber-700 dark:text-amber-400">
-                {recommendations.length}
+                {Math.min(recommendations.length, 4)}
               </div>
             </div>
             <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 border border-emerald-500/20">
@@ -252,6 +252,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                     career={rec.career}
                     matchScore={Math.min(Math.round(rec.matchScore), 100)}
                     showExpandButton
+                    compact
                   />
                 </motion.div>
               ))}

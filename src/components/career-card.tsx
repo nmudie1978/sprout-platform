@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import { CareerRealityCheck } from "./career-reality-check";
+import { CareerProgression, CareerProgressionCompact } from "./career-progression";
 
 interface CareerCardProps {
   career: Career;
@@ -151,6 +152,9 @@ export const CareerCard = memo(function CareerCard({
                           ))}
                         </div>
                       </div>
+
+                      {/* Career Progression */}
+                      <CareerProgressionCompact careerId={career.id} />
 
                       {/* Education Path */}
                       <div>
@@ -300,6 +304,9 @@ export const CareerCard = memo(function CareerCard({
                   className="overflow-hidden"
                 >
                   <div className="px-4 py-3 border-t space-y-4">
+                    {/* Career Progression */}
+                    <CareerProgression careerId={career.id} />
+
                     {/* Education Path */}
                     <div>
                       <div className="flex items-center gap-2 mb-2">

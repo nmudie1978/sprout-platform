@@ -5,18 +5,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { X, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CareerSalarySlider } from "./career-salary-slider";
-import { CareerSkillAutocomplete } from "./career-skill-autocomplete";
 import type {
   CareerFilterState,
-  EducationLevel,
-  CareerNature,
   SalaryRange,
-} from "@/lib/career-filters/types";
-import {
-  EDUCATION_LEVEL_LABELS,
-  CAREER_NATURE_LABELS,
-  CAREER_NATURE_EMOJIS,
 } from "@/lib/career-filters/types";
 
 interface MobileFilterDrawerProps {
@@ -24,43 +15,16 @@ interface MobileFilterDrawerProps {
   onClose: () => void;
   filters: CareerFilterState;
   salaryBounds: SalaryRange;
-  allSkills: string[];
   resultCount: number;
-  onSalaryChange: (range: SalaryRange | null) => void;
-  onEducationToggle: (level: EducationLevel) => void;
-  onSkillsChange: (skills: string[]) => void;
-  onNatureToggle: (nature: CareerNature) => void;
   onEntryLevelChange: (enabled: boolean) => void;
   onReset: () => void;
 }
-
-const educationLevels: EducationLevel[] = [
-  "no-formal",
-  "vocational",
-  "bachelor",
-  "master",
-  "doctorate",
-];
-
-const careerNatures: CareerNature[] = [
-  "hands-on",
-  "analytical",
-  "people-focused",
-  "creative",
-  "technical",
-];
 
 export function MobileFilterDrawer({
   isOpen,
   onClose,
   filters,
-  salaryBounds,
-  allSkills,
   resultCount,
-  onSalaryChange,
-  onEducationToggle,
-  onSkillsChange,
-  onNatureToggle,
   onEntryLevelChange,
   onReset,
 }: MobileFilterDrawerProps) {
@@ -113,67 +77,6 @@ export function MobileFilterDrawer({
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-            {/* Salary Range */}
-            <CareerSalarySlider
-              bounds={salaryBounds}
-              value={filters.salaryRange}
-              onChange={onSalaryChange}
-            />
-
-            {/* Education Level */}
-            <div className="space-y-2">
-              <span className="text-xs font-medium">Education Level</span>
-              <div className="flex flex-wrap gap-1.5">
-                {educationLevels.map((level) => {
-                  const isSelected = filters.educationLevels.includes(level);
-                  return (
-                    <button
-                      key={level}
-                      onClick={() => onEducationToggle(level)}
-                      className={`px-2.5 py-1.5 rounded-full text-[11px] font-medium transition-all ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted hover:bg-muted/80"
-                      }`}
-                    >
-                      {EDUCATION_LEVEL_LABELS[level]}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Skills Autocomplete */}
-            <CareerSkillAutocomplete
-              allSkills={allSkills}
-              selectedSkills={filters.skills}
-              onSkillsChange={onSkillsChange}
-            />
-
-            {/* Career Type/Nature */}
-            <div className="space-y-2">
-              <span className="text-xs font-medium">Career Type</span>
-              <div className="flex flex-wrap gap-1.5">
-                {careerNatures.map((nature) => {
-                  const isSelected = filters.careerNatures.includes(nature);
-                  return (
-                    <button
-                      key={nature}
-                      onClick={() => onNatureToggle(nature)}
-                      className={`px-2.5 py-1.5 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted hover:bg-muted/80"
-                      }`}
-                    >
-                      <span>{CAREER_NATURE_EMOJIS[nature]}</span>
-                      {CAREER_NATURE_LABELS[nature]}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Entry Level Only */}
             <div className="flex items-center gap-3">
               <button

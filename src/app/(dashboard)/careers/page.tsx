@@ -195,9 +195,11 @@ function CareersPageContent() {
         advancedFilterCount={advancedFilterCount}
         showAdvancedFilters={showAdvancedFilters}
         viewMode={viewMode}
+        salaryBounds={salaryBounds}
         onCategoryChange={handleCategoryChange}
         onSearchChange={handleSearchChange}
         onGrowthChange={handleGrowthChange}
+        onSalaryChange={handleSalaryChange}
         onToggleAdvanced={handleToggleAdvanced}
         onClearAll={clearAllFilters}
         onViewModeChange={setViewMode}
@@ -208,11 +210,6 @@ function CareersPageContent() {
         <CareerAdvancedFilters
           filters={filters}
           salaryBounds={salaryBounds}
-          allSkills={allSkills}
-          onSalaryChange={handleSalaryChange}
-          onEducationToggle={handleEducationToggle}
-          onSkillsChange={handleSkillsChange}
-          onNatureToggle={handleNatureToggle}
           onEntryLevelChange={handleEntryLevelChange}
           isOpen={showAdvancedFilters}
         />
@@ -225,12 +222,7 @@ function CareersPageContent() {
           onClose={() => setShowAdvancedFilters(false)}
           filters={filters}
           salaryBounds={salaryBounds}
-          allSkills={allSkills}
           resultCount={filteredCareers.length}
-          onSalaryChange={handleSalaryChange}
-          onEducationToggle={handleEducationToggle}
-          onSkillsChange={handleSkillsChange}
-          onNatureToggle={handleNatureToggle}
           onEntryLevelChange={handleEntryLevelChange}
           onReset={handleResetAdvanced}
         />
