@@ -2932,13 +2932,32 @@ This platform helps you earn money through micro-jobs while discovering potentia
     },
   ];
 
-  for (const job of demoJobs) {
-    await prisma.microJob.create({
-      data: job,
-    });
-  }
+  // Check if jobs already exist to prevent duplicates
+  const existingJobCount = await prisma.microJob.count();
+  const MAX_JOBS_BEFORE_SKIP = 100;
 
-  console.log('✅ Created 20 demo jobs distributed across 12 categories');
+  if (existingJobCount >= MAX_JOBS_BEFORE_SKIP) {
+    console.log(`⏭️  Skipping job seeding: ${existingJobCount} jobs already exist (max: ${MAX_JOBS_BEFORE_SKIP})`);
+  } else {
+    let createdCount = 0;
+    for (const job of demoJobs) {
+      // Check if job with same title already exists for this employer
+      const existingJob = await prisma.microJob.findFirst({
+        where: {
+          title: job.title,
+          postedById: job.postedById,
+        },
+      });
+
+      if (!existingJob) {
+        await prisma.microJob.create({
+          data: job,
+        });
+        createdCount++;
+      }
+    }
+    console.log(`✅ Created ${createdCount} demo jobs (${demoJobs.length - createdCount} already existed)`);
+  }
 
   // Create demo youth worker with reviews
   const ryanYouth = await prisma.user.upsert({
@@ -3081,30 +3100,54 @@ This platform helps you earn money through micro-jobs while discovering potentia
 
   const completedJobs = [];
   for (let i = 0; i < completedJobsData.length; i++) {
-    const job = await prisma.microJob.create({
-      data: {
-        ...completedJobsData[i],
-        postedById: employers[i].id,
+    const jobData = completedJobsData[i];
+    const employerId = employers[i].id;
+
+    // Check if job already exists
+    const existingJob = await prisma.microJob.findFirst({
+      where: {
+        title: jobData.title,
+        postedById: employerId,
       },
     });
-    completedJobs.push(job);
+
+    if (existingJob) {
+      completedJobs.push(existingJob);
+    } else {
+      const job = await prisma.microJob.create({
+        data: {
+          ...jobData,
+          postedById: employerId,
+        },
+      });
+      completedJobs.push(job);
+    }
   }
 
-  console.log('✅ Created completed jobs for reviews');
+  console.log('✅ Created/found completed jobs for reviews');
 
-  // Create accepted applications linking Ryan to jobs
+  // Create accepted applications linking Ryan to jobs (if not already existing)
   for (const job of completedJobs) {
-    await prisma.application.create({
-      data: {
+    const existingApp = await prisma.application.findFirst({
+      where: {
         jobId: job.id,
         youthId: ryanYouth.id,
-        message: 'I would love to help with this job!',
-        status: 'ACCEPTED',
       },
     });
+
+    if (!existingApp) {
+      await prisma.application.create({
+        data: {
+          jobId: job.id,
+          youthId: ryanYouth.id,
+          message: 'I would love to help with this job!',
+          status: 'ACCEPTED',
+        },
+      });
+    }
   }
 
-  console.log('✅ Created accepted applications');
+  console.log('✅ Created/found accepted applications');
 
   // Create reviews for Ryan
   const reviewsData = [
@@ -3151,8 +3194,16 @@ This platform helps you earn money through micro-jobs while discovering potentia
   ];
 
   for (let i = 0; i < reviewsData.length; i++) {
-    await prisma.review.create({
-      data: {
+    await prisma.review.upsert({
+      where: {
+        jobId_reviewerId_reviewedId: {
+          jobId: completedJobs[i].id,
+          reviewerId: employers[i].id,
+          reviewedId: ryanYouth.id,
+        },
+      },
+      update: reviewsData[i],
+      create: {
         jobId: completedJobs[i].id,
         reviewerId: employers[i].id,
         reviewedId: ryanYouth.id,
@@ -3288,13 +3339,25 @@ This platform helps you earn money through micro-jobs while discovering potentia
     },
   ];
 
+  let nickyJobsCreated = 0;
   for (const job of nickyJobsData) {
-    await prisma.microJob.create({
-      data: job,
+    // Check if job already exists
+    const existingJob = await prisma.microJob.findFirst({
+      where: {
+        title: job.title,
+        postedById: job.postedById,
+      },
     });
+
+    if (!existingJob) {
+      await prisma.microJob.create({
+        data: job,
+      });
+      nickyJobsCreated++;
+    }
   }
 
-  console.log('✅ Created jobs for nickymudie@hotmail.com');
+  console.log(`✅ Created ${nickyJobsCreated} jobs for nickymudie@hotmail.com (${nickyJobsData.length - nickyJobsCreated} already existed)`);
 
   // Create completed jobs that Nicky posted and Ryan completed (for reviews)
   const nickyCompletedJobsData = [
@@ -3328,6 +3391,19 @@ This platform helps you earn money through micro-jobs while discovering potentia
 
   const nickyCompletedJobs = [];
   for (const jobData of nickyCompletedJobsData) {
+    // Check if job already exists
+    const existingJob = await prisma.microJob.findFirst({
+      where: {
+        title: jobData.title,
+        postedById: jobData.postedById,
+      },
+    });
+
+    if (existingJob) {
+      nickyCompletedJobs.push(existingJob);
+      continue;
+    }
+
     const job = await prisma.microJob.create({
       data: jobData,
     });
@@ -3365,8 +3441,16 @@ This platform helps you earn money through micro-jobs while discovering potentia
   ];
 
   for (let i = 0; i < nickyReviewsData.length; i++) {
-    await prisma.review.create({
-      data: {
+    await prisma.review.upsert({
+      where: {
+        jobId_reviewerId_reviewedId: {
+          jobId: nickyCompletedJobs[i].id,
+          reviewerId: nickyEmployer.id,
+          reviewedId: ryanYouth.id,
+        },
+      },
+      update: nickyReviewsData[i],
+      create: {
         jobId: nickyCompletedJobs[i].id,
         reviewerId: nickyEmployer.id,
         reviewedId: ryanYouth.id,
@@ -3399,6 +3483,108 @@ This platform helps you earn money through micro-jobs while discovering potentia
   });
 
   console.log('✅ Updated Ryan profile with new stats');
+
+  // ============================================
+  // CONVERSATION & MESSAGES between Nicky and Ryan
+  // 20+ realistic messages about job coordination
+  // ============================================
+  console.log('💬 Seeding conversation between Nicky and Ryan...');
+
+  // Normalize participant order (smaller ID first for consistency)
+  const [convParticipant1Id, convParticipant2Id] = [nickyEmployer.id, ryanYouth.id].sort();
+
+  // Check for existing conversation or create new one
+  let nickyRyanConversation = await prisma.conversation.findFirst({
+    where: {
+      participant1Id: convParticipant1Id,
+      participant2Id: convParticipant2Id,
+    },
+  });
+
+  if (!nickyRyanConversation) {
+    // Use the first completed job as context
+    nickyRyanConversation = await prisma.conversation.create({
+      data: {
+        participant1Id: convParticipant1Id,
+        participant2Id: convParticipant2Id,
+        jobId: nickyCompletedJobs[0]?.id,
+        status: 'ACTIVE',
+        lastMessageAt: new Date(),
+      },
+    });
+  }
+
+  // 20 messages alternating between Nicky (employer) and Ryan (youth)
+  const conversationMessages = [
+    { sender: 'nicky', content: 'Hi Ryan! I saw your profile and you look perfect for my dog sitting job. Are you available this Saturday evening?', hoursAgo: 72 },
+    { sender: 'ryan', content: 'Hi! Yes, I love dogs! What time would you need me and what kind of dogs do you have?', hoursAgo: 71 },
+    { sender: 'nicky', content: 'Great! We have two golden retrievers - Max and Bella. They are very friendly. Would 6pm to 10pm work?', hoursAgo: 70 },
+    { sender: 'ryan', content: 'That works perfectly for me. Should I come to your place or do you want to drop them off somewhere?', hoursAgo: 69 },
+    { sender: 'nicky', content: 'Please come to our house. I will send you the address. They are used to being at home and have their toys and beds here.', hoursAgo: 68 },
+    { sender: 'ryan', content: 'Sounds good! Do they need to be walked or just kept company?', hoursAgo: 67 },
+    { sender: 'nicky', content: 'A short walk around 7pm would be great - just 15-20 minutes around the block. They know the route! Food and treats are in the kitchen.', hoursAgo: 66 },
+    { sender: 'ryan', content: 'Perfect, I can definitely do that. Is there anything special I should know about them?', hoursAgo: 65 },
+    { sender: 'nicky', content: 'Bella sometimes gets nervous during thunderstorms but the forecast looks clear. Max loves belly rubs! They are both very gentle.', hoursAgo: 64 },
+    { sender: 'ryan', content: 'That is so helpful to know. I will make sure they feel comfortable and safe. Looking forward to meeting them!', hoursAgo: 63 },
+    { sender: 'nicky', content: 'Wonderful! Here is the address: Parkveien 15, Oslo. The code to the building is 1234. See you Saturday at 6!', hoursAgo: 48 },
+    { sender: 'ryan', content: 'Got it! I will be there 5 minutes early. Have a great evening out!', hoursAgo: 47 },
+    { sender: 'ryan', content: 'Hi! Just arrived and the dogs are so sweet. We are playing in the living room now.', hoursAgo: 24 },
+    { sender: 'nicky', content: 'Thank you for the update! So glad they like you. Feel free to give them treats - they are in the blue jar.', hoursAgo: 23 },
+    { sender: 'ryan', content: 'Just got back from the walk! They were so well behaved. Max found a stick he really liked 😄', hoursAgo: 22 },
+    { sender: 'nicky', content: 'Ha! That sounds like Max. He collects sticks. Thanks for the photos you sent - so cute!', hoursAgo: 21 },
+    { sender: 'ryan', content: 'They are both sleeping now after all the playing. Everything is going great!', hoursAgo: 20 },
+    { sender: 'nicky', content: 'Perfect! We are heading home now, should be there in about 30 minutes.', hoursAgo: 19 },
+    { sender: 'ryan', content: 'Sounds good! I will make sure everything is tidied up. The dogs had their water refreshed too.', hoursAgo: 18 },
+    { sender: 'nicky', content: 'Ryan, you were amazing! The dogs clearly loved you. I have sent the payment via Vipps. Would you be available for our birthday party next week too?', hoursAgo: 17 },
+    { sender: 'ryan', content: 'Thank you so much! I had a great time with Max and Bella. Yes, I would love to help with the birthday party! What date and time?', hoursAgo: 16 },
+    { sender: 'nicky', content: 'It is next Saturday from 2pm to 6pm. We are having about 10 kids aged 6-8. Would need help with games and serving food.', hoursAgo: 15 },
+    { sender: 'ryan', content: 'That sounds fun! I am good with kids and have helped at birthday parties before. Count me in!', hoursAgo: 14 },
+    { sender: 'nicky', content: 'Fantastic! I will create the job listing so you can formally accept. Looking forward to working with you again!', hoursAgo: 13 },
+  ];
+
+  // Check existing message count to avoid duplicates
+  const existingMessageCount = await prisma.message.count({
+    where: { conversationId: nickyRyanConversation.id },
+  });
+
+  if (existingMessageCount < 20) {
+    // Clear existing messages if partial, then seed fresh
+    if (existingMessageCount > 0) {
+      await prisma.message.deleteMany({
+        where: { conversationId: nickyRyanConversation.id },
+      });
+    }
+
+    for (const msg of conversationMessages) {
+      const senderId = msg.sender === 'nicky' ? nickyEmployer.id : ryanYouth.id;
+      const messageDate = new Date();
+      messageDate.setHours(messageDate.getHours() - msg.hoursAgo);
+
+      await prisma.message.create({
+        data: {
+          conversationId: nickyRyanConversation.id,
+          senderId,
+          content: msg.content,
+          read: true,
+          createdAt: messageDate,
+        },
+      });
+    }
+
+    // Update conversation's last message time
+    const lastMsg = conversationMessages[conversationMessages.length - 1];
+    const lastMessageDate = new Date();
+    lastMessageDate.setHours(lastMessageDate.getHours() - lastMsg.hoursAgo);
+
+    await prisma.conversation.update({
+      where: { id: nickyRyanConversation.id },
+      data: { lastMessageAt: lastMessageDate },
+    });
+
+    console.log(`✅ Created ${conversationMessages.length} messages between Nicky and Ryan`);
+  } else {
+    console.log('⏭️  Skipping message seeding: conversation already has messages');
+  }
 
   // ============================================
   // GROWTH DATA - JobCompletions, StructuredFeedback, TrustSignals, UserSkillSignals

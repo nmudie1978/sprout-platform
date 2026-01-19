@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
             ageBracket: true,
             location: true,
             doNotDisturb: true,
+            dateOfBirth: true,
           },
         },
       },
@@ -119,6 +120,62 @@ export async function PATCH(req: NextRequest) {
         where: { id: session.user.id },
         data: { doNotDisturb: Boolean(body.doNotDisturb) },
         select: { doNotDisturb: true },
+      });
+
+      return NextResponse.json(user);
+    }
+
+    // Handle dateOfBirth update (on User model, not YouthProfile)
+    if ("dateOfBirth" in body && Object.keys(body).length === 1) {
+      // Validate dateOfBirth
+      const dob = body.dateOfBirth ? new Date(body.dateOfBirth) : null;
+
+      if (dob) {
+        // Validate it's a valid date
+        if (isNaN(dob.getTime())) {
+          return NextResponse.json(
+            { error: "Invalid date format" },
+            { status: 400 }
+          );
+        }
+
+        // Calculate age
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+          age--;
+        }
+
+        // Validate minimum age (13 years for youth platform)
+        if (age < 13) {
+          return NextResponse.json(
+            { error: "You must be at least 13 years old to use this platform" },
+            { status: 400 }
+          );
+        }
+
+        // Validate maximum age (25 years for youth platform)
+        if (age > 25) {
+          return NextResponse.json(
+            { error: "This platform is for users aged 13-25" },
+            { status: 400 }
+          );
+        }
+
+        // Validate date is not in the future
+        if (dob > today) {
+          return NextResponse.json(
+            { error: "Date of birth cannot be in the future" },
+            { status: 400 }
+          );
+        }
+      }
+
+      const user = await prisma.user.update({
+        where: { id: session.user.id },
+        data: { dateOfBirth: dob },
+        select: { dateOfBirth: true },
       });
 
       return NextResponse.json(user);

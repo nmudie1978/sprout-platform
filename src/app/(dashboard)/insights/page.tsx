@@ -32,6 +32,7 @@ import {
   CheckCircle2,
   MessageSquare,
   Building2,
+  RefreshCw,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -41,6 +42,7 @@ import {
   CompanySpotlights,
   EventsCalendar,
   ProgressChecklist,
+  HowToStart,
   SaveIndustryButton,
   NewsletterSignup,
 } from "@/components/insights";
@@ -51,6 +53,7 @@ export default function IndustryInsightsPage() {
   const { data: session } = useSession();
   const [activeSection, setActiveSection] = useState("industries");
   const [industryFilter, setIndustryFilter] = useState<IndustryFilter>("all");
+  const [showAlternateVideos, setShowAlternateVideos] = useState(false);
 
   // Fetch user's career goals
   const { data: careerData } = useQuery<MultipleCareerJourneys | null>({
@@ -101,12 +104,11 @@ export default function IndustryInsightsPage() {
 
   const sections = [
     { id: "industries", label: "Industries", icon: TrendingUp },
-    { id: "getting-started", label: "Get Started", icon: GraduationCap },
-    { id: "progress-checklist", label: "Progress", icon: CheckCircle2 },
-    { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
+    { id: "getting-started", label: "Prepare", icon: GraduationCap },
+    { id: "interview-prep", label: "Interview", icon: MessageSquare },
     { id: "companies", label: "Companies", icon: Building2 },
     { id: "events", label: "Events", icon: Calendar },
-    { id: "skills", label: "Top Skills", icon: Zap },
+    { id: "skills", label: "Market", icon: Zap },
     { id: "videos", label: "Videos", icon: Youtube },
   ];
 
@@ -308,16 +310,25 @@ export default function IndustryInsightsPage() {
     { id: "4", title: "Day in the Life: Software Developer", channel: "Tech Career Insider", videoUrl: "qMkRHW9zE1c", duration: "11:18", topic: "Tech", thumbnail: "https://img.youtube.com/vi/qMkRHW9zE1c/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
   ];
 
-  const displayVideos = featuredVideos.length > 0 ? featuredVideos : fallbackVideos;
+  // Alternate videos for "refresh" feature
+  const alternateVideos = [
+    { id: "a1", title: "How to Get a Job With No Experience", channel: "Ali Abdaal", videoUrl: "3mxZHDdUbCQ", duration: "14:22", topic: "Careers", thumbnail: "https://img.youtube.com/vi/3mxZHDdUbCQ/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "a2", title: "The Future of Work: AI and Jobs", channel: "Bloomberg", videoUrl: "z2_TpP2v86A", duration: "10:45", topic: "AI Impact", thumbnail: "https://img.youtube.com/vi/z2_TpP2v86A/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "a3", title: "5 Skills That Will Get You Hired", channel: "Indeed", videoUrl: "Uo3cL4nrGOk", duration: "8:30", topic: "Skills", thumbnail: "https://img.youtube.com/vi/Uo3cL4nrGOk/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+    { id: "a4", title: "How to Build Your Personal Brand", channel: "Gary Vee", videoUrl: "JQzQVGEBpg0", duration: "12:15", topic: "Branding", thumbnail: "https://img.youtube.com/vi/JQzQVGEBpg0/mqdefault.jpg", freshness: { label: "Current", variant: "default" as const } },
+  ];
+
+  const primaryVideos = featuredVideos.length > 0 ? featuredVideos : fallbackVideos;
+  const displayVideos = showAlternateVideos ? alternateVideos : primaryVideos;
 
   const filteredIndustries = industryFilter === "all"
-    ? growingIndustries
+    ? growingIndustries.slice(0, 2) // Show only top 2 for compact display
     : growingIndustries.filter(i => i.id === industryFilter);
 
   // Industries filtered by user's career goals for the "How to Get Started" section
   const careerGoalIndustries = userIndustryTypes.length > 0
-    ? growingIndustries.filter(i => userIndustryTypes.includes(i.id as IndustryFilter))
-    : growingIndustries;
+    ? growingIndustries.filter(i => userIndustryTypes.includes(i.id as IndustryFilter)).slice(0, 2)
+    : growingIndustries.slice(0, 2); // Show only top 2 for compact display
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -336,26 +347,26 @@ export default function IndustryInsightsPage() {
       <PageHeader
         title="Industry"
         gradientText="Insights"
-        description="Stay ahead with the latest trends, opportunities, and insights shaping the future of work"
+        description="Job market trends, preparation resources, and career opportunities"
         icon={TrendingUp}
       />
 
       {/* Sticky Section Navigation */}
-      <div className="sticky top-0 z-40 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b mb-8">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background/95 backdrop-blur-sm border-b mb-6">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
           {sections.map((section) => {
             const Icon = section.icon;
             return (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                   activeSection === section.id
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted hover:bg-muted/80"
                 }`}
               >
-                <Icon className="h-3.5 w-3.5" />
+                <Icon className="h-3 w-3" />
                 {section.label}
               </button>
             );
@@ -363,228 +374,99 @@ export default function IndustryInsightsPage() {
         </div>
       </div>
 
-      {/* Personalization Filter */}
-      <motion.div {...fadeInUp} className="mb-8">
-        <Card className="border bg-muted/30">
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5 text-primary" />
-                <span className="font-medium text-gray-700 dark:text-gray-300">What interests you?</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {industryFilters.map((filter) => (
-                  <button
-                    key={filter.id}
-                    onClick={() => setIndustryFilter(filter.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                      industryFilter === filter.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-background border hover:border-primary"
-                    }`}
-                  >
-                    {filter.icon && <filter.icon className="h-3.5 w-3.5" />}
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
+      {/* Industry Filter */}
+      <motion.div {...fadeInUp} className="mb-6">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Filter className="h-3.5 w-3.5" />
+            <span>Filter:</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {industryFilters.map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => setIndustryFilter(filter.id)}
+                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium transition-all ${
+                  industryFilter === filter.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted hover:bg-muted/80"
+                }`}
+              >
+                {filter.icon && <filter.icon className="h-3 w-3" />}
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Growing Industries - Compact */}
+      <motion.div {...fadeInUp} className="mb-6" id="industries">
+        <Card className="border-2 overflow-hidden">
+          <div className="h-1 bg-gradient-to-r from-blue-500 via-green-500 to-purple-500" />
+          <CardHeader className="pb-2 pt-4">
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                Fastest Growing Industries
+              </CardTitle>
+              <Badge variant="outline" className="text-[10px]">2025</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-2">
+              {filteredIndustries.map((industry) => {
+                const Icon = industry.icon;
+                return (
+                  <div key={industry.name} className="flex items-center gap-3 p-2 rounded-lg border hover:bg-muted/30 transition-colors">
+                    <div className={`p-1.5 rounded-md bg-gradient-to-br ${industry.color}`}>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">{industry.name}</span>
+                        <span className="text-xs font-bold text-green-600">{industry.growth}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {industry.jobs.slice(0, 3).map((job) => (
+                          <Badge key={job} variant="secondary" className="text-[9px] px-1.5 py-0">{job}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <SaveIndustryButton industryId={industry.id} industryName={industry.name} />
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Growing Industries */}
-      <motion.div {...fadeInUp} className="mb-12" id="industries">
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Fastest Growing Industries</h2>
-            <p className="text-muted-foreground">Where the opportunities are heading in 2025</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            Updated: January 2025
-          </Badge>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {filteredIndustries.map((industry, index) => {
-            const Icon = industry.icon;
-            return (
-              <motion.div
-                key={industry.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className={`overflow-hidden border-2 hover:shadow-xl transition-all duration-300 bg-gradient-to-br ${industry.bgColor}`}>
-                  <div className={`h-1.5 bg-gradient-to-r ${industry.color}`} />
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${industry.color} shadow-lg`}>
-                          <Icon className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-xl">{industry.name}</CardTitle>
-                          <CardDescription className="flex items-center gap-1 mt-1">
-                            <ArrowUpRight className="h-4 w-4 text-green-600" />
-                            <span className="font-bold text-green-600">{industry.growth}</span>
-                            <span>growth this year</span>
-                          </CardDescription>
-                        </div>
-                      </div>
-                      <SaveIndustryButton industryId={industry.id} industryName={industry.name} />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div>
-                      <p className="text-sm font-semibold text-muted-foreground mb-2">Top Opportunities:</p>
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {industry.jobs.map((job) => (
-                          <Badge key={job} variant="secondary" className="bg-background/80">
-                            {job}
-                          </Badge>
-                        ))}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <a
-                          href={industry.articleLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline transition-all"
-                        >
-                          {industry.articleLabel}
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                        <a
-                          href={industry.sourceLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-muted-foreground hover:underline"
-                        >
-                          Source: {industry.source}
-                        </a>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      {/* How to Get Started - Filtered by user's career goals */}
+      {/* Preparation Zone: How to Start + Progress Checklist - Side by Side */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mb-12"
+        className="mb-6"
         id="getting-started"
       >
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold mb-2">How to Get Started</h2>
-          <p className="text-muted-foreground">
-            {userCareerGoals.length > 0
-              ? `Your roadmap based on your career goals: ${userCareerGoals.join(", ")}`
-              : "Your roadmap into each industry"}
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {careerGoalIndustries.map((industry) => {
-            const Icon = industry.icon;
-            return (
-              <Card key={industry.id} className="border-2">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${industry.color}`}>
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-                    <CardTitle className="text-lg">{industry.name}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
-                      Requirements to start:
-                    </p>
-                    <ul className="text-sm text-muted-foreground space-y-1 ml-6">
-                      {industry.howToStart.requirements.map((req) => (
-                        <li key={req}>• {req}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-blue-600" />
-                      Timeline:
-                    </p>
-                    <p className="text-sm text-muted-foreground ml-6">{industry.howToStart.timeline}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                      <BookOpen className="h-4 w-4 text-purple-600" />
-                      Free resources:
-                    </p>
-                    <div className="flex flex-wrap gap-2 ml-6">
-                      {industry.howToStart.freeResources.map((resource) => (
-                        <a
-                          key={resource.name}
-                          href={resource.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                        >
-                          {resource.name}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                      <GraduationCap className="h-4 w-4 text-orange-600" />
-                      Recommended certifications:
-                    </p>
-                    <div className="flex flex-wrap gap-1 ml-6">
-                      {industry.howToStart.certifications.map((cert) => (
-                        <Badge key={cert} variant="outline" className="text-xs">
-                          {cert}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+        <div className="grid gap-4 md:grid-cols-2">
+          <HowToStart industryTypes={userIndustryTypes} />
+          <div id="progress-checklist">
+            <ProgressChecklist />
+          </div>
         </div>
       </motion.div>
 
-      {/* Progress Checklist */}
+      {/* Interview Prep Bank - Compact standalone */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.22 }}
-        className="mb-12"
-        id="progress-checklist"
-      >
-        <ProgressChecklist />
-      </motion.div>
-
-      {/* Interview Prep Bank - Filtered by user's career goals */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.41 }}
-        className="mb-12"
+        transition={{ duration: 0.5, delay: 0.25 }}
+        className="mb-6"
         id="interview-prep"
       >
-        <InterviewPrepBank
-          careerGoals={userCareerGoals}
-          industryTypes={userIndustryTypes}
-        />
+        <InterviewPrepBank />
       </motion.div>
 
       {/* Company Spotlights */}
@@ -592,7 +474,7 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.42 }}
-        className="mb-12"
+        className="mb-6"
         id="companies"
       >
         <CompanySpotlights industryTypes={userIndustryTypes} />
@@ -603,200 +485,82 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.43 }}
-        className="mb-12"
+        className="mb-6"
         id="events"
       >
         <EventsCalendar industryTypes={userIndustryTypes} />
       </motion.div>
 
-      {/* AI Impact */}
+      {/* Market Data - Combined AI/Skills/Regional in 3 columns */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-12"
-      >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">AI's Impact on Jobs</h2>
-            <p className="text-muted-foreground">How artificial intelligence is reshaping the job market</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            January 2025
-          </Badge>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {aiImpact.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Card key={item.title} className="border-2 hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{item.title}</CardTitle>
-                      <CardDescription className="mt-2 text-sm leading-relaxed">
-                        {item.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border">
-                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      {item.stat}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">{item.statLabel}</p>
-                  </div>
-                  <a
-                    href={item.sourceLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-muted-foreground hover:underline mt-3 block"
-                  >
-                    Source: {item.source}
-                  </a>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </motion.div>
-
-      {/* In-Demand Skills */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="mb-12"
+        className="mb-6"
         id="skills"
       >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Most In-Demand Skills</h2>
-            <p className="text-muted-foreground">What employers are looking for in 2025</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            January 2025
-          </Badge>
-        </div>
-
-        <Card className="border-2">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              {inDemandSkills.map((item, index) => (
-                <div key={item.skill} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl font-bold text-muted-foreground/30">
-                        {(index + 1).toString().padStart(2, '0')}
-                      </span>
-                      <div>
-                        <p className="font-semibold">{item.skill}</p>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-xs">
-                            {item.category}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">({item.source})</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-primary">{item.demand}%</p>
-                      <p className="text-xs text-muted-foreground">demand</p>
-                    </div>
-                  </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-primary to-blue-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${item.demand}%` }}
-                      transition={{ duration: 1, delay: 0.8 + index * 0.1 }}
-                    />
-                  </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* AI Impact */}
+          <Card className="border-2 overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="flex items-center gap-1.5 text-sm">
+                <Brain className="h-3.5 w-3.5 text-purple-600" />
+                AI Impact
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-1.5">
+              {aiImpact.slice(0, 2).map((item) => (
+                <div key={item.title} className="flex items-center gap-2">
+                  <span className="text-base font-bold text-purple-600">{item.stat}</span>
+                  <span className="text-[9px] text-muted-foreground truncate">{item.statLabel}</span>
                 </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+            </CardContent>
+          </Card>
 
-      {/* Regional Insights */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1 }}
-        className="mb-12"
-      >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <MapPin className="h-6 w-6" />
-              Regional Market Insights
-            </h2>
-            <p className="text-muted-foreground">What's happening in the local job market</p>
-          </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            January 2025
-          </Badge>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
-            <CardHeader>
-              <CardTitle className="text-lg">Popular Sectors</CardTitle>
+          {/* Top Skills */}
+          <Card className="border-2 overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-primary to-blue-500" />
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="flex items-center gap-1.5 text-sm">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+                Top Skills
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {regionalInsights.hotSectors.map((sector) => (
-                  <div key={sector} className="flex items-center gap-2">
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium">{sector}</span>
-                  </div>
+            <CardContent className="pt-0 space-y-1">
+              {inDemandSkills.slice(0, 3).map((item, index) => (
+                <div key={item.skill} className="flex items-center gap-2 text-xs">
+                  <span className="font-bold text-primary w-4">{index + 1}</span>
+                  <span className="flex-1 truncate">{item.skill}</span>
+                  <span className="font-medium text-primary">{item.demand}%</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Regional */}
+          <Card className="border-2 overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-green-500 to-teal-500" />
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="flex items-center gap-1.5 text-sm">
+                <MapPin className="h-3.5 w-3.5 text-green-600" />
+                Regional
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-muted-foreground">Youth Wages</span>
+                <span className="text-sm font-bold text-green-600">{regionalInsights.avgYouthPay}</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {regionalInsights.hotSectors.slice(0, 2).map((sector) => (
+                  <Badge key={sector} variant="secondary" className="text-[8px] px-1 py-0">{sector}</Badge>
                 ))}
               </div>
             </CardContent>
           </Card>
-
-          <Card className="border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30">
-            <CardHeader>
-              <CardTitle className="text-lg">Youth Wages</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-green-600 dark:text-green-400">
-                  {regionalInsights.avgYouthPay}
-                </div>
-                <p className="text-sm text-muted-foreground mt-2">Average hourly wage for young workers</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
-            <CardHeader>
-              <CardTitle className="text-lg">Employers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <p className="text-sm leading-relaxed">{regionalInsights.topEmployers}</p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
-        <p className="text-xs text-muted-foreground mt-4 text-right">
-          Sources:{" "}
-          <a href="https://www.nav.no" target="_blank" rel="noopener noreferrer" className="hover:underline">NAV</a>,{" "}
-          <a href="https://www.ssb.no" target="_blank" rel="noopener noreferrer" className="hover:underline">SSB</a>
-        </p>
       </motion.div>
 
       {/* Featured Videos */}
@@ -804,21 +568,21 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 1.2 }}
-        className="mb-12"
+        className="mb-6"
         id="videos"
       >
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <Youtube className="h-6 w-6 text-red-600" />
-              Watch & Learn
-            </h2>
-            <p className="text-muted-foreground">Expert insights and career advice from top creators</p>
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Youtube className="h-5 w-5 text-red-600" />
+            <h2 className="text-base font-bold">Watch & Learn</h2>
           </div>
-          <Badge variant="outline" className="text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            Auto-refreshed quarterly
-          </Badge>
+          <button
+            onClick={() => setShowAlternateVideos(!showAlternateVideos)}
+            className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium rounded-full border hover:bg-muted transition-colors"
+          >
+            <RefreshCw className={`h-3 w-3 ${showAlternateVideos ? "text-primary" : ""}`} />
+            {showAlternateVideos ? "Default" : "Refresh"}
+          </button>
         </div>
 
         {isLoadingVideos ? (
@@ -893,9 +657,9 @@ export default function IndustryInsightsPage() {
           </div>
         )}
 
-        <div className="mt-6 p-4 rounded-xl bg-muted/50 border text-center">
-          <p className="text-sm text-muted-foreground">
-            These videos open in YouTube. Content is automatically refreshed every 3 months to ensure freshness.
+        <div className="mt-4 p-3 rounded-lg bg-muted/50 border text-center">
+          <p className="text-xs text-muted-foreground">
+            Click "Refresh Content" for more videos. All videos open in YouTube.
           </p>
         </div>
       </motion.div>
@@ -905,7 +669,7 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 1.3 }}
-        className="mb-12"
+        className="mb-6"
       >
         <NewsletterSignup />
       </motion.div>

@@ -25,7 +25,20 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
     // Optimize package imports to reduce bundle size
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      'date-fns',
+      'recharts',
+      '@radix-ui/react-icons',
+      'lodash',
+    ],
+  },
+  // Reduce bundle size by moving large data to server-only
+  modularizeImports: {
+    'date-fns': {
+      transform: 'date-fns/{{member}}',
+    },
   },
   // Security headers
   async headers() {

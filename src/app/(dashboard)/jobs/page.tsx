@@ -31,7 +31,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
-import { JobCard as JobCardComponent } from "@/components/job-card";
+import { JobCardV2 } from "@/components/job-card-v2";
+import { ViewModeToggle } from "@/components/view/ViewModeToggle";
+import { useViewMode } from "@/hooks/useViewMode";
 
 const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ALL: { label: "All Small Jobs", emoji: "🌟" },
@@ -44,8 +46,6 @@ const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ERRANDS: { label: "Errands", emoji: "🏃" },
   OTHER: { label: "Other", emoji: "✨" },
 };
-
-type ViewMode = "grid" | "list";
 
 // Icon mapping for standard categories
 const categoryIconMap: Record<string, string> = {
@@ -78,7 +78,7 @@ export default function JobsPage() {
   const [standardCategoryFilter, setStandardCategoryFilter] = useState<string>(""); // New taxonomy
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [startDateFilter, setStartDateFilter] = useState<string>("");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const { viewMode, setViewMode } = useViewMode({ storageKey: "jobViewMode", defaultMode: "grid" });
   const [showFilters, setShowFilters] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -308,29 +308,19 @@ export default function JobsPage() {
               )}
             </Button>
 
-            <div className="flex items-center border rounded-xl p-1 bg-muted/30">
-              <Button
-                variant={viewMode === "grid" ? "secondary" : "ghost"}
-                size="icon"
-                className="h-9 w-9 rounded-lg"
-                onClick={() => setViewMode("grid")}
-              >
-                <LayoutGrid className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "secondary" : "ghost"}
-                size="icon"
-                className="h-9 w-9 rounded-lg"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-1">
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                showCompact={true}
+              />
               <Link href="/jobs/map">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 rounded-lg"
+                  className="h-8 w-8 rounded-lg border bg-muted/30"
                   title="Map View"
+                  aria-label="Map View"
                 >
                   <MapIcon className="h-4 w-4" />
                 </Button>
@@ -474,11 +464,25 @@ export default function JobsPage() {
               className={
                 viewMode === "grid"
                   ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-                  : "space-y-3"
+                  : viewMode === "list"
+                    ? "border rounded-lg overflow-hidden bg-background"
+                    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
               }
             >
               {filteredJobs.map((job: any, index: number) => (
-                <JobCard key={job.id} job={job} index={index} viewMode={viewMode} userCity={userCity} />
+                <motion.div
+                  key={job.id}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(index, 8) * 0.02 }}
+                  className={viewMode === "grid" ? "h-full" : ""}
+                >
+                  <JobCardV2
+                    job={job}
+                    viewMode={viewMode}
+                    userCity={userCity}
+                  />
+                </motion.div>
               ))}
             </motion.div>
 
@@ -585,23 +589,5 @@ export default function JobsPage() {
           </motion.div>
         )}
     </div>
-  );
-}
-
-// Job Card wrapper for animation and view mode
-function JobCard({ job, index, viewMode, userCity }: { job: any; index: number; viewMode: ViewMode; userCity?: string | null }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 5 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: Math.min(index, 8) * 0.02 }}
-      className="h-full"
-    >
-      <JobCardComponent
-        job={job}
-        variant={viewMode === "list" ? "compact" : "default"}
-        userCity={userCity}
-      />
-    </motion.div>
   );
 }

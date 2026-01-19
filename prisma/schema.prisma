@@ -315,6 +315,10 @@ model User {
   guardianProfile GuardianProfile? // If this user is a guardian
   guardianLinks   WorkerGuardianLink[] @relation("WorkerGuardianLinks") // Youth's linked guardians
 
+  // Interview Prep
+  generatedQuestionSets GeneratedQuestionSet[]
+  questionStates        UserQuestionState[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -2253,4 +2257,85 @@ model AgeEligibilityAuditLog {
   @@index([policyVersion])
   @@index([createdAt])
   @@index([workerId, jobId]) // For checking if a specific apply was logged
+}
+
+
+// ============================================
+// INTERVIEW PREP SYSTEM
+// ============================================
+
+// Interview questions - can be seeded or generated
+model InterviewQuestion {
+  id           String   @id @default(cuid())
+  category     String   // General, Tech, Healthcare, Green, Creative
+  difficulty   String   // Easy, Medium, Hard
+  questionText String   @db.Text
+  tip          String?  @db.Text
+  answerHint   String?  @db.Text
+  tags         String[] // For search/filtering
+  isGenerated  Boolean  @default(false) // AI-generated vs seeded
+  createdAt    DateTime @default(now())
+
+  userStates         UserQuestionState[]
+  generatedSetItems  GeneratedSetQuestion[]
+
+  @@index([category])
+  @@index([difficulty])
+  @@index([isGenerated])
+}
+
+// Generated question sets - tracks sets created by users
+model GeneratedQuestionSet {
+  id            String   @id @default(cuid())
+  userId        String
+  roleTarget    String?  // e.g., "Software Engineer"
+  category      String   // Category filter used
+  difficultyMix Json     // { easy: 2, medium: 3, hard: 1 }
+  focusAreas    String[] // Optional focus areas
+  generatorType String   @default("MOCK") // MOCK or AI
+  createdAt     DateTime @default(now())
+
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions GeneratedSetQuestion[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Junction table for generated sets and questions
+model GeneratedSetQuestion {
+  id         String @id @default(cuid())
+  setId      String
+  questionId String
+  sortOrder  Int    @default(0)
+
+  set      GeneratedQuestionSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  question InterviewQuestion    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([setId, questionId])
+  @@index([setId])
+  @@index([questionId])
+}
+
+// User state for each question - saved, practiced, notes
+model UserQuestionState {
+  id              String    @id @default(cuid())
+  userId          String
+  questionId      String
+  saved           Boolean   @default(false)
+  practicedCount  Int       @default(0)
+  lastPracticedAt DateTime?
+  confidence      Int?      // 1-5 rating
+  notes           String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId])
+  @@index([questionId])
+  @@index([saved])
+  @@index([lastPracticedAt])
 }

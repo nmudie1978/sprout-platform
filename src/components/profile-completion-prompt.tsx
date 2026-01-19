@@ -95,8 +95,8 @@ export function ProfileCompletionPrompt() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <Card className="border-2 border-primary/30 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
+      <Card className="border-2 border-primary/30 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 pointer-events-none" />
         <CardHeader className="relative pb-2">
           <div className="flex items-center justify-between">
             <div>

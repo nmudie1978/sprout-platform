@@ -238,8 +238,8 @@ export function UserBadgesDisplay({
       animate={{ opacity: 1, y: 0 }}
       className={className}
     >
-      <Card className="border-2 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5" />
+      <Card className="border-2 overflow-hidden relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 pointer-events-none" />
         <CardHeader className="relative pb-3">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20">

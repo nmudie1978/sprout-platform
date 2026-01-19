@@ -322,113 +322,91 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
     .filter((e) => isUpcoming(e.date))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  // Show only first 6 events for compact view
+  const displayEvents = sortedEvents.slice(0, 6);
+
   return (
     <Card className="border-2 overflow-hidden">
       <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Calendar className="h-5 w-5 text-primary" />
           Events & Job Fairs
         </CardTitle>
         <CardDescription>
           {industryTypes.length > 0
-            ? `Upcoming events in ${activeIndustries} based on your career goals`
-            : "Upcoming career events, webinars, and networking opportunities"}
+            ? `Upcoming events in ${activeIndustries}`
+            : "Upcoming career events and networking opportunities"}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Events List */}
-        <div className="space-y-4">
-          {sortedEvents.length > 0 ? (
-            sortedEvents.map((event) => {
-              const TypeIcon = typeConfig[event.type].icon;
-              return (
-                <div
-                  key={event.id}
-                  className="p-4 rounded-xl border-2 hover:border-primary/50 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    {/* Date Box */}
-                    <div className="flex-shrink-0 w-16 text-center p-2 rounded-lg bg-primary/10">
-                      <div className="text-xs text-muted-foreground uppercase">
-                        {new Date(event.date).toLocaleDateString("en-US", { month: "short" })}
-                      </div>
-                      <div className="text-2xl font-bold text-primary">
-                        {new Date(event.date).getDate()}
-                      </div>
-                    </div>
-
-                    {/* Event Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <Badge className={typeConfig[event.type].color}>
-                          <TypeIcon className="h-3 w-3 mr-1" />
+      <CardContent>
+        {/* Compact Table View */}
+        {displayEvents.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-xs text-muted-foreground">
+                  <th className="text-left py-2 font-medium">Date</th>
+                  <th className="text-left py-2 font-medium">Event</th>
+                  <th className="text-left py-2 font-medium hidden sm:table-cell">Type</th>
+                  <th className="text-left py-2 font-medium hidden md:table-cell">Location</th>
+                  <th className="text-right py-2 font-medium"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayEvents.map((event) => {
+                  const TypeIcon = typeConfig[event.type].icon;
+                  return (
+                    <tr key={event.id} className="border-b last:border-0 hover:bg-muted/30">
+                      <td className="py-2 pr-3 whitespace-nowrap">
+                        <div className="text-xs font-medium">
+                          {new Date(event.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                        </div>
+                      </td>
+                      <td className="py-2 pr-3">
+                        <div className="font-medium text-xs truncate max-w-[180px]" title={event.title}>
+                          {event.title}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground sm:hidden">
+                          {event.isOnline ? "Online" : event.location.split(",")[0]}
+                        </div>
+                      </td>
+                      <td className="py-2 pr-3 hidden sm:table-cell">
+                        <Badge className={`${typeConfig[event.type].color} text-[10px] px-1.5 py-0`}>
+                          <TypeIcon className="h-2.5 w-2.5 mr-0.5" />
                           {typeConfig[event.type].label}
                         </Badge>
-                        {event.isOnline && (
-                          <Badge variant="outline" className="text-[10px]">
-                            <Video className="h-3 w-3 mr-1" />
-                            Online
-                          </Badge>
-                        )}
-                      </div>
-
-                      <h3 className="font-semibold text-sm mb-1">{event.title}</h3>
-
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground mb-2">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {event.time}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {event.location}
-                        </span>
-                        {event.spots && (
-                          <span className="flex items-center gap-1">
-                            <Users className="h-3 w-3" />
-                            {event.spots.toLocaleString()} spots
+                      </td>
+                      <td className="py-2 pr-3 hidden md:table-cell">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          {event.isOnline ? <Video className="h-3 w-3" /> : <MapPin className="h-3 w-3" />}
+                          <span className="truncate max-w-[120px]">
+                            {event.isOnline ? "Online" : event.location.split(",")[0]}
                           </span>
-                        )}
-                      </div>
-
-                      <p className="text-xs text-muted-foreground mb-3">
-                        {event.description}
-                      </p>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          Organizer: {event.organizer}
-                        </span>
-                        <Button size="sm" variant="outline" asChild>
-                          <a
-                            href={event.registrationUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Register
-                            <ExternalLink className="ml-1 h-3 w-3" />
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
-              <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No upcoming events in this category</p>
-            </div>
-          )}
-        </div>
-
-        {/* Tip */}
-        <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-          <span className="font-semibold">Tip:</span> Job fairs are a great way to meet
-          employers face to face. Bring your CV and be prepared to introduce yourself!
-        </div>
+                        </div>
+                      </td>
+                      <td className="py-2 text-right">
+                        <a
+                          href={event.registrationUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-xs text-primary hover:underline"
+                        >
+                          Register
+                          <ExternalLink className="ml-1 h-3 w-3" />
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-4 text-muted-foreground text-sm">
+            No upcoming events in this category
+          </div>
+        )}
       </CardContent>
     </Card>
   );

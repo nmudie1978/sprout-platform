@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -14,19 +13,68 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Shield, AlertCircle } from "lucide-react";
+import { Shield, AlertCircle, Calendar } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AgeVerificationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+// Generate arrays for date dropdowns
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 100 }, (_, i) => currentYear - i - 18).filter(y => y >= 1920);
+const months = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+function getDaysInMonth(month: string, year: string): number {
+  if (!month || !year) return 31;
+  return new Date(parseInt(year), parseInt(month), 0).getDate();
+}
+
 export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [day, setDay] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
   const [error, setError] = useState("");
+
+  // Computed date of birth string
+  const dateOfBirth = day && month && year ? `${year}-${month}-${day.padStart(2, '0')}` : "";
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (open) {
+      setDay("");
+      setMonth("");
+      setYear("");
+      setError("");
+    }
+  }, [open]);
+
+  // Get available days based on selected month/year
+  const daysInMonth = getDaysInMonth(month, year);
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   const verifyAgeMutation = useMutation({
     mutationFn: async (dob: string) => {
@@ -60,8 +108,15 @@ export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModa
     e.preventDefault();
     setError("");
 
-    if (!dateOfBirth) {
-      setError("Please enter your date of birth");
+    if (!day || !month || !year) {
+      setError("Please select your complete date of birth");
+      return;
+    }
+
+    // Validate the date is real (e.g., not Feb 30)
+    const selectedDay = parseInt(day);
+    if (selectedDay > daysInMonth) {
+      setError("Please select a valid day for the selected month");
       return;
     }
 
@@ -101,20 +156,54 @@ export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModa
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-            <Input
-              id="dateOfBirth"
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => {
-                setDateOfBirth(e.target.value);
-                setError("");
-              }}
-              max={new Date().toISOString().split('T')[0]}
-              required
-              className="mt-1"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
+            <Label className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Date of Birth *
+            </Label>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              {/* Day */}
+              <Select value={day} onValueChange={(value) => { setDay(value); setError(""); }}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Day" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {days.map((d) => (
+                    <SelectItem key={d} value={d.toString()}>
+                      {d}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Month */}
+              <Select value={month} onValueChange={(value) => { setMonth(value); setError(""); }}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {months.map((m) => (
+                    <SelectItem key={m.value} value={m.value}>
+                      {m.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Year */}
+              <Select value={year} onValueChange={(value) => { setYear(value); setError(""); }}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {years.map((y) => (
+                    <SelectItem key={y} value={y.toString()}>
+                      {y}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
               Your date of birth is kept private and used only for age verification.
             </p>
           </div>
@@ -129,8 +218,8 @@ export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModa
           <DialogFooter>
             <Button
               type="submit"
-              disabled={verifyAgeMutation.isPending || !dateOfBirth}
-              className="w-full"
+              disabled={verifyAgeMutation.isPending || !day || !month || !year}
+              className="w-full h-11"
             >
               {verifyAgeMutation.isPending ? "Verifying..." : "Verify Age"}
             </Button>

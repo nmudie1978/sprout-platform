@@ -11,9 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { SkillRadar } from "@/components/skill-radar";
-import { ReviewsDisplay } from "@/components/reviews-display";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin, Calendar, Cake } from "lucide-react";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
@@ -27,6 +26,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AvatarSelectorInline } from "@/components/avatar-selector-inline";
 import { BadgesDisplay } from "@/components/badges-display";
 import { LifeSkillsSettings } from "@/components/life-skills-settings";
@@ -46,6 +52,30 @@ const INTEREST_OPTIONS = [
   "Learning",
 ];
 
+// Date of birth dropdown helpers
+const currentYear = new Date().getFullYear();
+// Youth platform: allow ages 13-24
+const DOB_YEARS = Array.from({ length: 12 }, (_, i) => currentYear - 13 - i);
+const DOB_MONTHS = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+function getDaysInMonth(month: string, year: string): number {
+  if (!month || !year) return 31;
+  return new Date(parseInt(year), parseInt(month), 0).getDate();
+}
+
 export default function ProfilePage() {
   const { data: session } = useSession();
   const { toast } = useToast();
@@ -63,6 +93,11 @@ export default function ProfilePage() {
   });
   const formInitializedRef = useRef(false);
   const lastUserIdRef = useRef<string | null>(null);
+
+  // DOB dropdown state
+  const [dobDay, setDobDay] = useState("");
+  const [dobMonth, setDobMonth] = useState("");
+  const [dobYear, setDobYear] = useState("");
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", session?.user?.id],
@@ -101,6 +136,13 @@ export default function ProfilePage() {
         guardianEmail: profile.guardianEmail || "",
         careerAspiration: profile.careerAspiration || "",
       });
+      // Initialize DOB dropdowns from existing date
+      if (profile.user?.dateOfBirth) {
+        const dob = new Date(profile.user.dateOfBirth);
+        setDobYear(dob.getFullYear().toString());
+        setDobMonth((dob.getMonth() + 1).toString().padStart(2, "0"));
+        setDobDay(dob.getDate().toString());
+      }
     }
   }, [profile]);
 
@@ -301,6 +343,37 @@ export default function ProfilePage() {
       toast({
         title: "Error",
         description: "Failed to update Do Not Disturb setting",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateDateOfBirthMutation = useMutation({
+    mutationFn: async (dateOfBirth: string | null) => {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dateOfBirth }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update date of birth");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Date of birth saved!",
+        description: "Your date of birth has been updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -595,6 +668,7 @@ export default function ProfilePage() {
         // Required fields
         if (!profile.avatarId) missingRequired.push("Avatar");
         if (!profile.displayName) missingRequired.push("Display Name");
+        if (!profile.user?.dateOfBirth) missingRequired.push("Date of Birth");
         if (!profile.phoneNumber) missingRequired.push("Phone Number");
         if (!profile.city) missingRequired.push("City");
 
@@ -794,6 +868,122 @@ export default function ProfilePage() {
                 ) : (
                   <p className="mt-1 text-xs text-muted-foreground">
                     Only shown to employers when you're assigned to their job
+                  </p>
+                )}
+              </div>
+
+              {/* Date of Birth - Critical for age verification */}
+              <div className="p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
+                <Label className="flex items-center gap-2 mb-3">
+                  <Cake className="h-4 w-4 text-blue-500" />
+                  Date of Birth
+                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                  <Badge className="text-[10px] px-1.5 py-0 h-4 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                    Age Verification
+                  </Badge>
+                </Label>
+                <div className="flex flex-col gap-3">
+                  {/* Day / Month / Year dropdowns */}
+                  <div className="grid grid-cols-3 gap-2">
+                    {/* Day */}
+                    <Select
+                      value={dobDay}
+                      onValueChange={setDobDay}
+                      disabled={updateDateOfBirthMutation.isPending}
+                    >
+                      <SelectTrigger className={`h-11 ${!dobDay && profile ? "border-red-300" : ""}`}>
+                        <SelectValue placeholder="Day" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[200px]">
+                        {Array.from({ length: getDaysInMonth(dobMonth, dobYear) }, (_, i) => i + 1).map((d) => (
+                          <SelectItem key={d} value={d.toString()}>
+                            {d}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Month */}
+                    <Select
+                      value={dobMonth}
+                      onValueChange={setDobMonth}
+                      disabled={updateDateOfBirthMutation.isPending}
+                    >
+                      <SelectTrigger className={`h-11 ${!dobMonth && profile ? "border-red-300" : ""}`}>
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[200px]">
+                        {DOB_MONTHS.map((m) => (
+                          <SelectItem key={m.value} value={m.value}>
+                            {m.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Year */}
+                    <Select
+                      value={dobYear}
+                      onValueChange={setDobYear}
+                      disabled={updateDateOfBirthMutation.isPending}
+                    >
+                      <SelectTrigger className={`h-11 ${!dobYear && profile ? "border-red-300" : ""}`}>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[200px]">
+                        {DOB_YEARS.map((y) => (
+                          <SelectItem key={y} value={y.toString()}>
+                            {y}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Save button and age display */}
+                  <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                    {dobDay && dobMonth && dobYear && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          const dateString = `${dobYear}-${dobMonth}-${dobDay.padStart(2, "0")}`;
+                          updateDateOfBirthMutation.mutate(dateString);
+                        }}
+                        disabled={updateDateOfBirthMutation.isPending}
+                        className="h-10"
+                      >
+                        {updateDateOfBirthMutation.isPending ? "Saving..." : "Save Date of Birth"}
+                      </Button>
+                    )}
+                    {profile?.user?.dateOfBirth && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200 dark:border-blue-800">
+                        <Calendar className="h-4 w-4 text-blue-500" />
+                        <span className="font-semibold text-blue-700 dark:text-blue-300">
+                          {(() => {
+                            const dob = new Date(profile.user.dateOfBirth);
+                            const today = new Date();
+                            let age = today.getFullYear() - dob.getFullYear();
+                            const monthDiff = today.getMonth() - dob.getMonth();
+                            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                              age--;
+                            }
+                            return `${age} years old`;
+                          })()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {!profile?.user?.dateOfBirth && profile ? (
+                  <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" />
+                    Required: Your date of birth is needed for age verification and safety
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
+                    <Shield className="h-3 w-3" />
+                    Used for age verification to ensure appropriate job matching and safety features
                   </p>
                 )}
               </div>
@@ -1202,14 +1392,6 @@ export default function ProfilePage() {
           {/* Badges Section */}
           {profile && (
             <BadgesDisplay showLocked />
-          )}
-
-          {/* Reviews Section */}
-          {profile && session?.user?.id && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">My Reviews</h2>
-              <ReviewsDisplay userId={session.user.id} userRole="YOUTH" />
-            </div>
           )}
 
           {/* Profile Tips */}

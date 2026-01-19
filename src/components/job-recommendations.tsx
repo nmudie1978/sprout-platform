@@ -124,7 +124,7 @@ export function JobRecommendations({ jobId, isEmployer }: JobRecommendationsProp
   }
 
   return (
-    <Card className="border-2 overflow-hidden">
+    <Card className="border-2 overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 pointer-events-none" />
       <CardHeader className="relative pb-3">
         <div className="flex items-center justify-between">

@@ -125,7 +125,7 @@ export function getPolicyRules(policy: AgePolicy | null): AgePolicyRules {
   if (!policy) return DEFAULT_POLICY_RULES
 
   try {
-    const parsed = policy.policyJson as AgePolicyRules
+    const parsed = policy.policyJson as unknown as AgePolicyRules
     // Validate structure
     if (
       typeof parsed.LOW_RISK?.minAge === 'number' &&
@@ -289,7 +289,7 @@ export async function logAgeEligibilityDecision(params: {
       userAge: params.userAge,
       userAgeBracket: params.userAgeBracket,
       policyVersion: params.policyVersion,
-      metadata: params.metadata,
+      metadata: params.metadata ? JSON.parse(JSON.stringify(params.metadata)) : undefined,
       ipAddress: params.ipAddress,
     },
   })

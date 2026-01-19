@@ -25,6 +25,7 @@ import {
   Settings,
   BarChart3,
   Bot,
+  Target,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -131,6 +132,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
+    { href: "/goals", label: "", icon: Target, isCore: false, iconOnly: true, iconColor: "text-amber-500" },
     { href: "/career-advisor", label: "", icon: Bot, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
     { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
@@ -205,12 +207,14 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 const isActive = pathname === link.href;
                 const isProfile = link.href === "/profile";
                 const isAiAdvisor = link.href === "/career-advisor";
+                const isGoals = link.href === "/goals";
                 const isDashboard = link.href === "/dashboard" || link.href === "/employer/dashboard";
 
                 // Get tooltip text for icon-only items
                 const getTooltipText = () => {
                   if (isProfile) return "My Profile";
                   if (isAiAdvisor) return "AI Career Advisor";
+                  if (isGoals) return "My Goals";
                   if (isDashboard) return "Dashboard";
                   return link.label;
                 };
@@ -422,7 +426,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         link.isCore && !isActive && "text-primary",
                         !isActive && link.iconColor
                       )} />
-                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : "")}</span>
+                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : link.href === "/goals" ? "My Goals" : "")}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
