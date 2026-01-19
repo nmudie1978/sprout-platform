@@ -35,11 +35,11 @@ export const youthCareerCards = [
   },
   {
     roleName: 'Retail Sales Associate',
-    summary: 'Help customers find products, organize displays, and process sales. Great for building confidence and communication skills.',
+    summary: 'Help customers find products, organise displays, and process sales. Great for building confidence and communication skills.',
     traits: ['Helpful', 'Organized', 'Patient', 'Good communicator'],
     dayInLife: [
       'Greet and assist customers',
-      'Stock shelves and organize merchandise',
+      'Stock shelves and organise merchandise',
       'Process purchases at the register',
       'Answer questions about products',
       'Keep the store tidy and presentable',
@@ -156,7 +156,7 @@ export const youthCareerCards = [
       'Check expiration dates',
       'Help customers find items',
       'Work the checkout register',
-      'Keep the store clean and organized',
+      'Keep the store clean and organised',
     ],
     realityCheck: 'Physical work with lifting boxes. Early morning or evening shifts common. Repetitive tasks. Good employee discounts and stable hours.',
     salaryBand: '150-180 NOK/hour (tariff rates apply)',
@@ -261,12 +261,12 @@ export const youthCareerCards = [
   },
   {
     roleName: 'Warehouse Worker',
-    summary: 'Pick, pack, and organize products in warehouses. Good physical work with regular hours.',
+    summary: 'Pick, pack, and organise products in warehouses. Good physical work with regular hours.',
     traits: ['Organized', 'Physically fit', 'Detail-oriented', 'Dependable'],
     dayInLife: [
       'Pick products for customer orders',
       'Pack items carefully for shipping',
-      'Organize inventory on shelves',
+      'Organise inventory on shelves',
       'Use handheld scanners',
       'Load and unload deliveries',
     ],
@@ -284,7 +284,7 @@ export const youthCareerCards = [
       'Be ready for early morning shifts',
       'Highlight your reliability and physical fitness',
     ],
-    tags: ['physical', 'logistics', 'organized', 'entry-level', 'full-time-possible', '18+'],
+    tags: ['physical', 'logistics', 'organised', 'entry-level', 'full-time-possible', '18+'],
     order: 39,
   },
   {
@@ -350,7 +350,7 @@ export const youthCareerCards = [
     dayInLife: [
       'Wash dishes and kitchen equipment',
       'Prep simple ingredients',
-      'Keep the kitchen clean and organized',
+      'Keep the kitchen clean and organised',
       'Take out trash and recycling',
       'Assist cooks when needed',
     ],
@@ -378,7 +378,7 @@ export const youthCareerCards = [
     dayInLife: [
       'Vacuum and mop floors',
       'Clean bathrooms and kitchens',
-      'Dust and organize spaces',
+      'Dust and organise spaces',
       'Change linens in hotels',
       'Report maintenance issues',
     ],

@@ -558,7 +558,7 @@ export default function GuardianDashboard() {
 
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span>
-                            {job.postedBy?.employerProfile?.companyName || "Unknown employer"}
+                            {job.postedBy?.employerProfile?.companyName || "Unknown job poster"}
                           </span>
                           <span>{job.location}</span>
                           <span>

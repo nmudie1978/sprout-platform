@@ -19,7 +19,7 @@ export function LifeSkillsSettings() {
             Work tips
           </Label>
           <p className="text-xs text-muted-foreground">
-            Helpful guidance when you accept jobs or chat with employers
+            Helpful guidance when you accept jobs or chat with job posters
           </p>
         </div>
       </div>

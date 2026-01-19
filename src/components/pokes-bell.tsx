@@ -71,7 +71,7 @@ export function PokesBell({ userRole }: PokesBellProps) {
           </Link>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{userRole === "YOUTH" ? "Employer Pokes" : "Poke Responses"}</p>
+          <p>{userRole === "YOUTH" ? "Job Poster Interest" : "Poke Responses"}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

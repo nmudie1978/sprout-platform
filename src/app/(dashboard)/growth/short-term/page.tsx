@@ -73,21 +73,21 @@ function analyzeGrowthStats(growth: any): FeedbackItem[] {
     if (rehireRate >= 80) {
       feedback.push({
         type: "success",
-        title: "Employers love working with you",
-        message: `${Math.round(rehireRate)}% of employers said they'd hire you again. That's excellent!`,
+        title: "Job posters love working with you",
+        message: `${Math.round(rehireRate)}% of job posters said they'd hire you again. That's excellent!`,
       });
     } else if (rehireRate >= 60) {
       feedback.push({
         type: "tip",
         title: "Good rehire rate, room to grow",
         message: `${Math.round(rehireRate)}% would rehire you. A few small improvements could push this higher.`,
-        actionTip: "Try asking employers for specific feedback after each job to understand what went well.",
+        actionTip: "Try asking job posters for specific feedback after each job to understand what went well.",
       });
     } else if (rehireRate >= 40) {
       feedback.push({
         type: "warning",
         title: "Your rehire rate needs attention",
-        message: `Only ${Math.round(rehireRate)}% of employers said they'd hire you again. This is below average.`,
+        message: `Only ${Math.round(rehireRate)}% of job posters said they'd hire you again. This is below average.`,
         actionTip: "Before each job, clarify expectations. After, ask: 'What could I have done better?' Small changes add up.",
       });
     } else {
@@ -105,8 +105,8 @@ function analyzeGrowthStats(growth: any): FeedbackItem[] {
     feedback.push({
       type: "tip",
       title: "No verified skills yet",
-      message: "Employers haven't tagged specific skills from your work yet.",
-      actionTip: "When completing jobs, try to go above and beyond in one specific area. This makes it easier for employers to recognise your strengths.",
+      message: "Job posters haven't tagged specific skills from your work yet.",
+      actionTip: "When completing jobs, try to go above and beyond in one specific area. This makes it easier for job posters to recognise your strengths.",
     });
   } else if (skillsDemonstrated && skillsDemonstrated.length >= 5) {
     feedback.push({
@@ -406,7 +406,7 @@ export default function ShortTermGrowthPage() {
                 Skills You've Demonstrated
               </CardTitle>
               <CardDescription>
-                Skills verified through completed jobs and employer feedback
+                Skills verified through completed jobs and job poster feedback
               </CardDescription>
             </CardHeader>
             <CardContent>

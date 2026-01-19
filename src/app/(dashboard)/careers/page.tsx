@@ -241,7 +241,7 @@ function CareersPageContent() {
       <PageHeader
         title="Explore"
         gradientText="Careers"
-        description="Discover career paths that match your skills and interests"
+        description="Learn what different jobs are really like before deciding anything"
         icon={Compass}
       />
 

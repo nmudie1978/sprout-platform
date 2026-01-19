@@ -163,7 +163,7 @@ export default async function PublicProfilePage({
             {profile.topTags && profile.topTags.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle>What Employers Say</CardTitle>
+                  <CardTitle>What Job Posters Say</CardTitle>
                   <CardDescription>
                     Based on {profile.reviews} reviews
                   </CardDescription>

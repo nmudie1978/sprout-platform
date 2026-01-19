@@ -132,7 +132,7 @@ function FoundationalProgress({
       label: "Trust",
       value: data.rehireRate,
       icon: Users,
-      description: "Would-rehire rate from employers",
+      description: "Would-rehire rate from job posters",
       color: "text-emerald-600",
       bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
     },

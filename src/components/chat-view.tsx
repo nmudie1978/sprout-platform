@@ -394,7 +394,7 @@ export function ChatView({ conversationId }: { conversationId: string }) {
               </CardTitle>
               {conversation.otherParty.role === "EMPLOYER" && (
                 <Badge variant="secondary" className="text-[10px] sm:text-xs px-1.5 py-0">
-                  Employer
+                  Job Poster
                 </Badge>
               )}
               {isFrozen && (

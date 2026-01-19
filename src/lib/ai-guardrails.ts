@@ -587,7 +587,7 @@ export function getSmartFallbackResponse(message: string, intent: IntentType): s
           "• User research meetings or design critiques\n" +
           "• More design work: prototyping, refining details\n" +
           "• Collaborate with developers on implementation\n" +
-          "• End of day: organize files, update project boards\n\n" +
+          "• End of day: organise files, update project boards\n\n" +
           "**What designers actually do:**\n" +
           "• ~50% actual design work (in Figma, Sketch, Adobe)\n" +
           "• ~25% meetings and collaboration\n" +

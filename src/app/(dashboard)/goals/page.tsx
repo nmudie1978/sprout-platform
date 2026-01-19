@@ -172,7 +172,7 @@ function GoalCard({
           </h3>
           <p className="text-sm text-muted-foreground mb-4">
             {isPrimary
-              ? "Set a primary career goal to get personalized suggestions"
+              ? "Set a primary career goal to get personalised suggestions"
               : "Add a backup goal you're exploring"}
           </p>
           <div className="flex flex-col sm:flex-row gap-2 justify-center">

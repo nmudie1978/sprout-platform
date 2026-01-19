@@ -135,11 +135,11 @@ const demoTeens: DemoTeen[] = [
     email: `mia.olsen${DEMO_EMAIL_DOMAIN}`,
     displayName: 'Mia O.',
     avatarId: 'kawaii-flower',
-    bio: 'Creative and organized. Love design and visual arts.',
+    bio: 'Creative and organised. Love design and visual arts.',
     city: 'Oslo',
     careerAspiration: 'UX Designer',
     interests: ['art', 'design', 'photography'],
-    skillTags: ['creative', 'organized', 'eye for detail'],
+    skillTags: ['creative', 'organised', 'eye for detail'],
     ageBracket: AgeBracket.EIGHTEEN_TWENTY,
   },
   {
@@ -292,7 +292,7 @@ const demoJobs: DemoJob[] = [
     location: 'Lørenskog',
     duration: 90,
     status: JobStatus.POSTED,
-    requiredTraits: ['reliable', 'organized'],
+    requiredTraits: ['reliable', 'organised'],
   },
   {
     title: 'Moving boxes to storage',

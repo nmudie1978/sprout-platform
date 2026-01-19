@@ -98,7 +98,7 @@ export function GoalSelectionSheet({
     onSuccess: ({ slot }) => {
       toast.success(
         slot === "primary" ? "Primary Goal Set!" : "Secondary Goal Set!",
-        { description: "View and customize your goals on the Goals page." }
+        { description: "View and customise your goals on the Goals page." }
       );
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });

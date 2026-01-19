@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
         {
           error: "Date of birth not set",
           code: "DOB_REQUIRED",
-          message: "Please complete your profile with your date of birth to see personalized job recommendations.",
+          message: "Please complete your profile with your date of birth to see personalised job recommendations.",
         },
         { status: 400 }
       );

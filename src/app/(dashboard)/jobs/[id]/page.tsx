@@ -52,7 +52,6 @@ import {
   Target,
   Building2,
   UserPlus,
-  Compass,
   Info,
   Trophy,
   Lightbulb,
@@ -65,8 +64,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
-import { CareerCard } from "@/components/career-card";
-import { getCareersForJobCategory, getPrimaryCareerCategory } from "@/lib/career-pathways";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";
@@ -332,7 +329,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       playSound("apply");
       toast({
         title: "Application submitted!",
-        description: "The employer will review your application.",
+        description: "The job poster will review your application.",
       });
       setShowApplicationForm(false);
       setApplicationMessage("");
@@ -496,7 +493,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                       {job.payType === "HOURLY" ? "per hour" : "fixed price"}
                     </div>
                     <div className="text-[10px] text-muted-foreground/70 mt-1">
-                      Paid directly by employer
+                      Paid directly by job poster
                     </div>
                   </div>
 
@@ -643,7 +640,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-semibold text-lg">
-                              {employer?.companyName || "Individual Employer"}
+                              {employer?.companyName || "Individual Job Poster"}
                             </span>
                             {employer?.verified && (
                               <CheckCircle className="h-4 w-4 text-blue-500" />
@@ -881,40 +878,6 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             );
           })()}
 
-          {/* Career Connections (for youth) */}
-          {isYouth && (
-            <div className="animate-fade-in">
-              <Card className="border-2 shadow-lg overflow-hidden">
-                <CardHeader className="pb-4 bg-gradient-to-r from-orange-500/5 to-amber-500/5">
-                  <CardTitle className="flex items-center gap-3 text-lg">
-                    <div className="p-2 rounded-xl bg-orange-500/10">
-                      <Compass className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    Career Connections
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    This job builds skills for careers like:
-                  </p>
-                </CardHeader>
-                <CardContent className="pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {getCareersForJobCategory(job.category).slice(0, 4).map((career) => (
-                      <CareerCard key={career.id} career={career} compact />
-                    ))}
-                  </div>
-                  <div className="mt-4">
-                    <Button variant="link" className="p-0 h-auto text-orange-600" asChild>
-                      <Link href={`/careers?category=${getPrimaryCareerCategory(job.category) || "ALL"}`}>
-                        Explore all related careers
-                        <ChevronRightIcon className="ml-1 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
           {/* Application Section (for youth) */}
           {isYouth && (
             <div id="application-section" className="animate-fade-in">
@@ -938,7 +901,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                         </div>
                         <div>
                           <div className="font-semibold">Application Submitted</div>
-                          <div className="text-sm opacity-80">The employer will review your application</div>
+                          <div className="text-sm opacity-80">The job poster will review your application</div>
                         </div>
                       </div>
                       <Button variant="outline" size="sm" asChild>
@@ -952,7 +915,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                           Your Application Message
                         </Label>
                         <p className="text-sm text-muted-foreground mb-2">
-                          Tell the employer why you're the perfect fit for this job
+                          Tell the job poster why you're the perfect fit for this job
                         </p>
                         <Textarea
                           id="message"

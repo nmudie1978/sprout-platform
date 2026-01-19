@@ -144,7 +144,7 @@ export function EarningsDisplay() {
                         <div className="font-medium text-sm">{earning.job.title}</div>
                         <div className="text-xs text-muted-foreground flex items-center gap-1">
                           <Building2 className="h-3 w-3" />
-                          {earning.job.postedBy?.employerProfile?.companyName || "Employer"}
+                          {earning.job.postedBy?.employerProfile?.companyName || "Job Poster"}
                         </div>
                       </div>
                     </div>

@@ -255,7 +255,7 @@ export function CareerDetailSheet({
       setShowSwapModal(false);
       toast.success(
         slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
-        { description: "View and customize your goals on the Goals page." }
+        { description: "View and customise your goals on the Goals page." }
       );
       // Invalidate goals query
       queryClient.invalidateQueries({ queryKey: ["goals"] });

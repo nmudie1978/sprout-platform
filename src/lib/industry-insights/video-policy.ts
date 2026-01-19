@@ -444,7 +444,7 @@ export function validateVideo(video: {
     );
     if (!matchedSource && !video.sourceId) {
       warnings.push(
-        `Channel "${video.channel}" is not a recognized Tier-1 source. Please verify.`
+        `Channel "${video.channel}" is not a recognised Tier-1 source. Please verify.`
       );
     }
   }

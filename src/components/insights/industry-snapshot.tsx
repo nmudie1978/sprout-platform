@@ -455,7 +455,7 @@ export function IndustrySnapshot() {
               <Target className="h-5 w-5 text-purple-500" />
               <div className="flex-1">
                 <p className="text-sm font-medium">Set a career goal</p>
-                <p className="text-xs text-muted-foreground">Get personalized industry insights</p>
+                <p className="text-xs text-muted-foreground">Get personalised industry insights</p>
               </div>
               <Link href="/goals">
                 <Button size="sm" variant="outline" className="border-purple-300 dark:border-purple-700">

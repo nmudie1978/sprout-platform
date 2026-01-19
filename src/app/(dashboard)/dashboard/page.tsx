@@ -137,7 +137,7 @@ function ApplicationCard({ app }: { app: any }) {
                 {app.job.title}
               </h4>
               <p className="text-xs text-muted-foreground truncate">
-                {app.job.postedBy?.employerProfile?.companyName || "Employer"}
+                {app.job.postedBy?.employerProfile?.companyName || "Job Poster"}
               </p>
             </div>
           </div>
@@ -190,7 +190,7 @@ function ApplicationListItem({ app }: { app: any }) {
         <div className="flex-1 min-w-0">
           <p className="font-medium text-sm truncate">{app.job.title}</p>
           <p className="text-xs text-muted-foreground truncate">
-            {app.job.postedBy?.employerProfile?.companyName || "Employer"} • {app.job.location?.split(",")[0] || "TBC"}
+            {app.job.postedBy?.employerProfile?.companyName || "Job Poster"} • {app.job.location?.split(",")[0] || "TBC"}
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -243,7 +243,7 @@ function ApplicationTimelineItem({ app, isLast }: { app: any; isLast: boolean })
                 <p className="font-medium text-sm truncate">{app.job.title}</p>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {app.job.postedBy?.employerProfile?.companyName || "Employer"}
+                {app.job.postedBy?.employerProfile?.companyName || "Job Poster"}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1 flex-shrink-0">

@@ -276,7 +276,7 @@ export function NewConversationModal({ open, onOpenChange }: NewConversationModa
                           <span className="font-medium truncate">{user.name}</span>
                           {user.role === "EMPLOYER" && (
                             <Badge variant="secondary" className="text-xs">
-                              Employer
+                              Job Poster
                             </Badge>
                           )}
                           {user.verified && (
@@ -307,7 +307,7 @@ export function NewConversationModal({ open, onOpenChange }: NewConversationModa
                     <span className="font-medium truncate">{selectedUser.name}</span>
                     {selectedUser.role === "EMPLOYER" && (
                       <Badge variant="secondary" className="text-xs">
-                        Employer
+                        Job Poster
                       </Badge>
                     )}
                   </div>

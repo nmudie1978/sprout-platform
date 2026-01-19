@@ -204,7 +204,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
             <DialogTitle className="text-xl">Welcome to Sprout</DialogTitle>
           </div>
           <DialogDescription>
-            Let&apos;s personalize your experience in {4 - step === 0 ? "one" : 4 - step + 1} quick step{4 - step !== 1 ? "s" : ""}
+            Let&apos;s personalise your experience in {4 - step === 0 ? "one" : 4 - step + 1} quick step{4 - step !== 1 ? "s" : ""}
           </DialogDescription>
 
           {/* Progress dots */}
@@ -329,7 +329,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
                       <MessageCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <div>
                         <p className="font-medium text-sm">
-                          Payment is agreed and handled directly between you and the employer.
+                          Payment is agreed and handled directly between you and the job poster.
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Sprout does not handle money or take fees.

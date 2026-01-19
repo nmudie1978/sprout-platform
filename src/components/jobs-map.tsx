@@ -204,7 +204,7 @@ export function JobsMap({
                     <span className="font-semibold text-sm">{job.title}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mb-2">
-                    {job.postedBy?.employerProfile?.companyName || "Employer"}
+                    {job.postedBy?.employerProfile?.companyName || "Job Poster"}
                   </p>
                   <div className="flex items-center gap-2 text-xs mb-2">
                     <Badge variant="secondary" className="text-xs">
@@ -277,7 +277,7 @@ export function JobsMap({
                     <h3 className="font-semibold text-sm">{selectedJob.title}</h3>
                     <p className="text-xs text-muted-foreground">
                       {selectedJob.postedBy?.employerProfile?.companyName ||
-                        "Employer"}
+                        "Job Poster"}
                     </p>
                   </div>
                 </div>

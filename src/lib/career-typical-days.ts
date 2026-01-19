@@ -184,7 +184,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Review day's patient schedule",
         "Morning patient consultations",
         "Perform examinations and cleanings",
-        "Take and analyze X-rays",
+        "Take and analyse X-rays",
       ],
       midday: [
         "Restorative procedures (fillings, crowns)",
@@ -313,7 +313,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Assess physical function and movement",
-      "Develop personalized treatment plans",
+      "Develop personalised treatment plans",
       "Provide hands-on therapy techniques",
       "Teach exercises for rehabilitation",
       "Track and document patient progress",
@@ -404,7 +404,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Check ongoing experiments",
         "Team meeting or journal club",
         "Lab work: prepare samples and run tests",
-        "Analyze yesterday's data",
+        "Analyse yesterday's data",
       ],
       midday: [
         "Continue experiments",
@@ -423,7 +423,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Design and conduct experiments",
-      "Analyze biological and medical data",
+      "Analyse biological and medical data",
       "Write research papers and reports",
       "Present findings at conferences",
       "Apply for research funding",
@@ -560,7 +560,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     entryPaths: [
       "Grunnskolelærerutdanning (4-5 years)",
       "Teaching practice during studies",
-      "Can specialize in 1-7 or 5-10 grade levels",
+      "Can specialise in 1-7 or 5-10 grade levels",
       "Continuous professional development",
     ],
     realityCheck: "Rewarding but demanding. Large classes, behavioral challenges, and lots of admin. But watching children grow and learn is incredibly fulfilling.",
@@ -570,7 +570,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     typicalDay: {
       morning: [
         "Prepare for day's lessons",
-        "Teach specialized subject classes",
+        "Teach specialised subject classes",
         "Manage different class groups",
         "Individual student support",
       ],
@@ -590,7 +590,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       environment: "Secondary school (school hours plus significant preparation and grading)",
     },
     whatYouActuallyDo: [
-      "Teach specialized subjects at advanced level",
+      "Teach specialised subjects at advanced level",
       "Prepare students for exams and further education",
       "Develop curriculum and materials",
       "Guide students on career and education choices",
@@ -715,7 +715,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "People who celebrate small victories",
     ],
     topSkills: [
-      "Specialized teaching methods",
+      "Specialised teaching methods",
       "Patience and empathy",
       "Assessment skills",
       "Collaboration",
@@ -725,7 +725,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     entryPaths: [
       "Master's in Special Education",
       "Often builds on teaching degree",
-      "Specialized courses available",
+      "Specialised courses available",
       "Experience with diverse learners valued",
     ],
     realityCheck: "Progress can be slow and not always visible. Emotionally demanding. But making a difference for students who struggle is profoundly meaningful.",
@@ -850,7 +850,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Assist with breakfast or snacks",
       ],
       midday: [
-        "Support organized activities",
+        "Support organised activities",
         "Help with meals and cleanup",
         "Outdoor play supervision",
         "Change diapers/assist with hygiene",
@@ -859,7 +859,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Rest time supervision",
         "Arts and crafts activities",
         "Parent pick-up communication",
-        "Clean and organize spaces",
+        "Clean and organise spaces",
       ],
       tools: ["Art supplies", "Educational toys", "Safety equipment", "Communication apps for parents"],
       environment: "Kindergartens, after-school programs (shift work, active environment)",
@@ -1025,7 +1025,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Build predictive models using machine learning",
-      "Analyze complex datasets for patterns",
+      "Analyse complex datasets for patterns",
       "Design experiments and A/B tests",
       "Present insights to business stakeholders",
       "Deploy models to production",
@@ -1060,7 +1060,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       morning: [
         "Review overnight security alerts",
         "Check threat intelligence feeds",
-        "Analyze suspicious activity logs",
+        "Analyse suspicious activity logs",
         "Team briefing on current threats",
       ],
       midday: [
@@ -1175,7 +1175,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       ],
       midday: [
         "Deploy and configure cloud resources",
-        "Optimize costs and performance",
+        "Optimise costs and performance",
         "Security reviews and compliance checks",
         "Documentation updates",
       ],
@@ -1191,7 +1191,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     whatYouActuallyDo: [
       "Design and build cloud infrastructure",
       "Automate deployments and operations",
-      "Optimize cloud costs and performance",
+      "Optimise cloud costs and performance",
       "Ensure security and compliance",
       "Support development teams",
       "Troubleshoot complex issues",
@@ -1346,7 +1346,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       ],
       afternoon: [
         "Deploy models to production",
-        "Optimize model performance",
+        "Optimise model performance",
         "Document systems and processes",
         "Experiment with new techniques",
       ],
@@ -1356,7 +1356,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     whatYouActuallyDo: [
       "Build and deploy AI/ML systems at scale",
       "Create data pipelines for training models",
-      "Optimize model performance and efficiency",
+      "Optimise model performance and efficiency",
       "Collaborate with data scientists on production",
       "Monitor and maintain deployed models",
       "Stay current with AI advancements",
@@ -1417,7 +1417,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Remove blockers for the team",
     ],
     whoThisIsGoodFor: [
-      "Organized, detail-oriented people",
+      "Organised, detail-oriented people",
       "Strong communicators",
       "Those who enjoy coordinating teams",
       "Problem-solvers who handle pressure well",
@@ -1665,7 +1665,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       morning: [
         "Check database performance dashboards",
         "Review backup job results",
-        "Analyze slow query logs",
+        "Analyse slow query logs",
         "Team standup meeting",
       ],
       midday: [
@@ -1680,12 +1680,12 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Disaster recovery testing",
         "On-call handover preparation",
       ],
-      tools: ["SQL Server/Oracle/PostgreSQL", "Monitoring tools", "Backup solutions", "Performance analyzers"],
+      tools: ["SQL Server/Oracle/PostgreSQL", "Monitoring tools", "Backup solutions", "Performance analysers"],
       environment: "Office or remote, on-call for critical database issues",
     },
     whatYouActuallyDo: [
       "Maintain database performance and availability",
-      "Optimize queries and database design",
+      "Optimise queries and database design",
       "Manage backups and disaster recovery",
       "Ensure database security",
       "Plan capacity and scaling",
@@ -1884,7 +1884,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     typicalDay: {
       morning: [
         "Review user feedback and analytics",
-        "Prioritize feature backlog",
+        "Prioritise feature backlog",
         "Standup with development team",
         "Stakeholder alignment meetings",
       ],
@@ -1905,9 +1905,9 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Define product vision and strategy",
-      "Prioritize features based on value",
+      "Prioritise features based on value",
       "Work with engineering on delivery",
-      "Gather and analyze user feedback",
+      "Gather and analyse user feedback",
       "Make data-driven decisions",
       "Communicate roadmap to stakeholders",
     ],
@@ -2023,7 +2023,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Make sure everyone knows what to do",
     ],
     whoThisIsGoodFor: [
-      "Organized, detail-oriented people",
+      "Organised, detail-oriented people",
       "Strong communicators",
       "Those who like helping teams succeed",
       "People comfortable with uncertainty",
@@ -2192,7 +2192,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "People-oriented individuals",
       "Good listeners and communicators",
       "Those who handle sensitive situations well",
-      "Organized, detail-oriented people",
+      "Organised, detail-oriented people",
       "Fair-minded problem-solvers",
     ],
     topSkills: [
@@ -2236,7 +2236,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       environment: "Client sites, offices, significant travel (can be intense hours)",
     },
     whatYouActuallyDo: [
-      "Analyze complex business problems",
+      "Analyse complex business problems",
       "Gather and synthesize data",
       "Develop strategic recommendations",
       "Present findings to executives",
@@ -2299,7 +2299,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Maintain office systems",
     ],
     whoThisIsGoodFor: [
-      "Highly organized individuals",
+      "Highly organised individuals",
       "People who enjoy helping others",
       "Good multitaskers",
       "Those who like routine with variety",
@@ -2331,7 +2331,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Team standup meeting",
       ],
       midday: [
-        "Analyze data and processes",
+        "Analyse data and processes",
         "Create process maps and diagrams",
         "Workshops with business users",
         "Working lunch",
@@ -2347,7 +2347,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Gather and document requirements",
-      "Analyze business processes",
+      "Analyse business processes",
       "Translate business needs to technical specs",
       "Create process maps and models",
       "Facilitate stakeholder workshops",
@@ -2381,7 +2381,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     typicalDay: {
       morning: [
         "Brief executive on day's schedule",
-        "Manage inbox and prioritize emails",
+        "Manage inbox and prioritise emails",
         "Coordinate meetings and calls",
         "Handle urgent requests",
       ],
@@ -2409,7 +2409,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Anticipate needs and solve problems",
     ],
     whoThisIsGoodFor: [
-      "Highly organized, proactive people",
+      "Highly organised, proactive people",
       "Discrete and trustworthy individuals",
       "Those who anticipate needs",
       "Flexible and adaptable personalities",
@@ -2517,13 +2517,13 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Record and classify financial transactions",
       "Prepare financial statements",
       "File tax returns and ensure compliance",
-      "Analyze financial data",
+      "Analyse financial data",
       "Advise clients on financial matters",
       "Support audits and reviews",
     ],
     whoThisIsGoodFor: [
       "Detail-oriented number lovers",
-      "Organized, methodical people",
+      "Organised, methodical people",
       "Those who value accuracy",
       "People who enjoy structured work",
       "Ethical, trustworthy individuals",
@@ -2570,7 +2570,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Assess clients' financial situations",
-      "Develop personalized financial plans",
+      "Develop personalised financial plans",
       "Recommend investments and insurance",
       "Monitor and adjust portfolios",
       "Educate clients on financial concepts",
@@ -2721,7 +2721,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       midday: [
         "Substantive testing of accounts",
         "Interview client personnel",
-        "Analyze financial data",
+        "Analyse financial data",
         "Working lunch",
       ],
       afternoon: [
@@ -2850,7 +2850,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Develop marketing strategies",
       "Plan and execute campaigns",
       "Manage marketing budgets",
-      "Analyze performance metrics",
+      "Analyse performance metrics",
       "Lead marketing team",
       "Coordinate with agencies and vendors",
     ],
@@ -2904,16 +2904,16 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     whatYouActuallyDo: [
       "Run paid advertising campaigns",
       "Manage social media presence",
-      "Optimize for search engines",
+      "Optimise for search engines",
       "Create digital content",
-      "Analyze and report on metrics",
-      "Test and optimize continuously",
+      "Analyse and report on metrics",
+      "Test and optimise continuously",
     ],
     whoThisIsGoodFor: [
       "Data-driven creatives",
       "People who love social media",
       "Quick learners (platforms change)",
-      "Analytical optimizers",
+      "Analytical optimisers",
       "Content creators",
     ],
     topSkills: [
@@ -3071,7 +3071,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Build and engage audience",
       "Manage social media presence",
       "Collaborate with brands",
-      "Analyze performance",
+      "Analyse performance",
       "Stay current with trends",
     ],
     whoThisIsGoodFor: [
@@ -3125,7 +3125,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Develop brand strategy and positioning",
       "Manage brand identity and guidelines",
       "Oversee marketing campaigns",
-      "Analyze brand performance",
+      "Analyse brand performance",
       "Coordinate with agencies",
       "Protect and grow brand equity",
     ],
@@ -3217,7 +3217,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Review project requirements",
         "CAD modeling work",
         "Team coordination meetings",
-        "Analyze test data",
+        "Analyse test data",
       ],
       midday: [
         "Design reviews",
@@ -3381,7 +3381,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       morning: [
         "Review production data",
         "Team meetings on well performance",
-        "Analyze reservoir simulations",
+        "Analyse reservoir simulations",
         "Plan drilling operations",
       ],
       midday: [
@@ -3400,9 +3400,9 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       environment: "Office and offshore platforms (rotational schedules offshore)",
     },
     whatYouActuallyDo: [
-      "Optimize oil and gas extraction",
+      "Optimise oil and gas extraction",
       "Design drilling and production programs",
-      "Analyze reservoir performance",
+      "Analyse reservoir performance",
       "Ensure safe operations",
       "Manage projects and budgets",
       "Work with multidisciplinary teams",
@@ -3479,7 +3479,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     ],
     entryPaths: [
       "Electrical or technical vocational training",
-      "Specialized renewable energy courses",
+      "Specialised renewable energy courses",
       "Certifications for specific technologies",
       "Apprenticeship or entry-level role",
     ],
@@ -3631,7 +3631,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Monitor delivery performance",
     ],
     whoThisIsGoodFor: [
-      "Organized multitaskers",
+      "Organised multitaskers",
       "Problem-solvers",
       "Good communicators",
       "Detail-oriented individuals",
@@ -3678,7 +3678,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       environment: "Office with travel to suppliers and facilities",
     },
     whatYouActuallyDo: [
-      "Optimize end-to-end supply chain",
+      "Optimise end-to-end supply chain",
       "Manage supplier relationships",
       "Reduce costs and improve efficiency",
       "Lead supply chain team",
@@ -3790,14 +3790,14 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     whatYouActuallyDo: [
       "Lead warehouse operations",
       "Manage warehouse staff",
-      "Optimize storage and flow",
+      "Optimise storage and flow",
       "Ensure accurate inventory",
       "Maintain safety standards",
       "Meet performance targets",
     ],
     whoThisIsGoodFor: [
       "Natural leaders",
-      "Organized operational thinkers",
+      "Organised operational thinkers",
       "Problem-solvers",
       "People who enjoy physical environments",
       "Results-driven individuals",
@@ -3851,7 +3851,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Solve cross-border issues",
     ],
     whoThisIsGoodFor: [
-      "Detail-oriented organizers",
+      "Detail-oriented organisers",
       "People who enjoy international work",
       "Good communicators",
       "Problem-solvers",
@@ -3902,7 +3902,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Navigate efficiently",
       "Handle customer interactions",
       "Track deliveries electronically",
-      "Load and organize packages",
+      "Load and organise packages",
       "Maintain vehicle",
     ],
     whoThisIsGoodFor: [
@@ -4404,7 +4404,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Ensure successful execution",
     ],
     whoThisIsGoodFor: [
-      "Highly organized individuals",
+      "Highly organised individuals",
       "Creative problem-solvers",
       "Those who thrive under pressure",
       "Detail-oriented planners",
@@ -4462,7 +4462,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Friendly, welcoming people",
       "Good multitaskers",
       "Problem-solvers",
-      "Organized individuals",
+      "Organised individuals",
       "Those with language skills",
     ],
     topSkills: [
@@ -4544,7 +4544,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     typicalDay: {
       morning: [
         "Review overnight feedback and metrics",
-        "Prioritize backlog items",
+        "Prioritise backlog items",
         "Prepare for backlog refinement",
         "Sync with stakeholders",
       ],
@@ -4558,13 +4558,13 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Stakeholder meetings",
         "Research user needs",
         "Plan upcoming sprints",
-        "Analyze product metrics",
+        "Analyse product metrics",
       ],
       tools: ["Jira/Azure DevOps", "Analytics platforms", "Prototyping tools", "User research tools"],
       environment: "Office or remote, constant collaboration with team and stakeholders",
     },
     whatYouActuallyDo: [
-      "Own and prioritize the product backlog",
+      "Own and prioritise the product backlog",
       "Write clear user stories with acceptance criteria",
       "Make trade-off decisions",
       "Accept or reject completed work",
@@ -4666,7 +4666,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       ],
       afternoon: [
         "Code review sessions",
-        "Optimize performance",
+        "Optimise performance",
         "Update documentation",
         "Deploy and test changes",
       ],
@@ -4677,7 +4677,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Build responsive user interfaces",
       "Implement designs pixel-perfectly",
       "Ensure accessibility compliance",
-      "Optimize frontend performance",
+      "Optimise frontend performance",
       "Write maintainable component code",
       "Collaborate with backend developers",
     ],
@@ -4734,7 +4734,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Implement business logic",
       "Ensure security best practices",
       "Handle system integrations",
-      "Optimize performance and reliability",
+      "Optimise performance and reliability",
     ],
     whoThisIsGoodFor: [
       "Logical, systematic thinkers",
@@ -4777,7 +4777,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       afternoon: [
         "Code review",
         "Prepare app store submissions",
-        "Optimize battery/performance",
+        "Optimise battery/performance",
         "Update dependencies",
       ],
       tools: ["Xcode/Android Studio", "Swift/Kotlin", "React Native/Flutter", "Firebase", "Git"],
@@ -4787,7 +4787,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Build native or cross-platform apps",
       "Implement smooth UI/animations",
       "Handle device-specific quirks",
-      "Optimize for battery and performance",
+      "Optimise for battery and performance",
       "Navigate app store guidelines",
       "Integrate with backend APIs",
     ],
@@ -4827,7 +4827,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Implement game features",
         "Work with artists on integration",
         "Debug gameplay issues",
-        "Optimize performance",
+        "Optimise performance",
       ],
       afternoon: [
         "Playtest sessions",
@@ -4841,7 +4841,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     whatYouActuallyDo: [
       "Program gameplay mechanics",
       "Implement game AI",
-      "Optimize for frame rate",
+      "Optimise for frame rate",
       "Integrate art and audio",
       "Fix bugs across platforms",
       "Collaborate with designers and artists",
@@ -4876,7 +4876,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Review overnight alerts and incidents",
         "Check system dashboards",
         "Standup with engineering team",
-        "Prioritize reliability work",
+        "Prioritise reliability work",
       ],
       midday: [
         "Automate operational tasks",
@@ -4934,7 +4934,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Plan development work",
       ],
       midday: [
-        "Build and optimize pipelines",
+        "Build and optimise pipelines",
         "Model data for analytics",
         "Support data scientists",
         "Document data sources",
@@ -4952,7 +4952,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Build reliable data pipelines",
       "Design data models and warehouses",
       "Ensure data quality and governance",
-      "Optimize query performance",
+      "Optimise query performance",
       "Support analytics and ML teams",
       "Manage data infrastructure",
     ],
@@ -5047,20 +5047,20 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Write firmware code",
         "Test on hardware",
         "Work with hardware engineers",
-        "Optimize for constraints",
+        "Optimise for constraints",
       ],
       afternoon: [
-        "Debug with oscilloscopes/analyzers",
+        "Debug with oscilloscopes/analysers",
         "Document interfaces",
         "Code review",
         "Update test procedures",
       ],
-      tools: ["IDEs (Keil, IAR)", "Oscilloscopes", "Logic analyzers", "JTAG debuggers", "Git"],
+      tools: ["IDEs (Keil, IAR)", "Oscilloscopes", "Logic analysers", "JTAG debuggers", "Git"],
       environment: "Lab environment with hardware, some office work",
     },
     whatYouActuallyDo: [
       "Write low-level firmware",
-      "Optimize for memory and power",
+      "Optimise for memory and power",
       "Debug hardware-software issues",
       "Work with microcontrollers",
       "Implement communication protocols",
@@ -5223,7 +5223,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Administrative tasks",
         "Update medical records",
       ],
-      tools: ["Medical equipment", "X-ray/ultrasound", "Lab analyzers", "Practice management software"],
+      tools: ["Medical equipment", "X-ray/ultrasound", "Lab analysers", "Practice management software"],
       environment: "Veterinary clinic or hospital, some house calls",
     },
     whatYouActuallyDo: [
@@ -5253,7 +5253,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Veterinary degree (5.5-6 years)",
       "Specialization available",
       "Often work experience before studies",
-      "Can specialize in specific animals",
+      "Can specialise in specific animals",
     ],
     realityCheck: "Emotionally challenging (euthanasia). Long hours. Student debt. But deeply fulfilling helping animals.",
   },
@@ -5264,7 +5264,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Prepare exam rooms",
         "Check on hospitalized animals",
         "Assist with appointments",
-        "Clean and organize",
+        "Clean and organise",
       ],
       midday: [
         "Restrain animals for exams",
@@ -5338,7 +5338,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     },
     whatYouActuallyDo: [
       "Clean teeth professionally",
-      "Take and analyze X-rays",
+      "Take and analyse X-rays",
       "Apply fluoride treatments",
       "Educate patients on oral health",
       "Screen for oral diseases",
@@ -5443,11 +5443,11 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Prepare for next day",
         "Update documentation",
       ],
-      tools: ["Analyzers", "Microscopes", "Centrifuges", "Lab information systems", "Safety equipment"],
+      tools: ["Analysers", "Microscopes", "Centrifuges", "Lab information systems", "Safety equipment"],
       environment: "Hospital or private laboratory, shift work possible",
     },
     whatYouActuallyDo: [
-      "Analyze blood and tissue samples",
+      "Analyse blood and tissue samples",
       "Operate laboratory equipment",
       "Ensure quality control",
       "Report results accurately",
@@ -5473,7 +5473,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Bachelor's in Biomedical Lab Science",
       "State authorization required",
       "Hospital training programs",
-      "Can specialize in areas",
+      "Can specialise in areas",
     ],
     realityCheck: "Repetitive work. Shift schedules. Handling bodily fluids. But critical role in healthcare.",
   },
@@ -5641,7 +5641,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Vocational welding training",
       "Welding certifications",
       "Apprenticeship programs",
-      "Specialized certifications available",
+      "Specialised certifications available",
     ],
     realityCheck: "Hot, dirty work. Safety hazards if careless. Physically demanding. But skilled trade with good opportunities.",
   },
@@ -5721,7 +5721,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       afternoon: [
         "Afternoon appointments",
         "Client follow-ups",
-        "Clean and organize",
+        "Clean and organise",
         "Plan next day's schedule",
       ],
       tools: ["Massage table", "Oils and lotions", "Hot stones", "Towels and linens", "Booking software"],
@@ -5753,7 +5753,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     entryPaths: [
       "Massage therapy certification",
       "1-2 year programs",
-      "Can specialize (sports, medical)",
+      "Can specialise (sports, medical)",
       "Continuing education for techniques",
     ],
     realityCheck: "Physically demanding on hands/body. Building clientele takes time. But flexible, rewarding wellness work.",
@@ -5831,7 +5831,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       afternoon: [
         "Afternoon appointments",
         "Complex nail art",
-        "Clean and organize",
+        "Clean and organise",
         "Update booking system",
       ],
       tools: ["Nail files and buffers", "UV lamps", "Gel/acrylic supplies", "Sterilization equipment", "Nail art tools"],
@@ -5932,7 +5932,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       morning: [
         "Review footage",
         "Plan edit structure",
-        "Import and organize media",
+        "Import and organise media",
         "Begin rough cuts",
       ],
       midday: [
@@ -6309,7 +6309,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     entryPaths: [
       "Bachelor's in Social Work (3 years)",
       "Supervised practice period",
-      "Can specialize in areas",
+      "Can specialise in areas",
       "Continuing education",
     ],
     realityCheck: "Emotionally draining. High caseloads. System frustrations. But deeply meaningful helping work.",
@@ -6335,12 +6335,12 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Regulatory consultation",
         "Project planning",
       ],
-      tools: ["Sampling equipment", "Lab analyzers", "GIS software", "Data analysis tools", "Field gear"],
+      tools: ["Sampling equipment", "Lab analysers", "GIS software", "Data analysis tools", "Field gear"],
       environment: "Office, laboratory, and field work, varied conditions",
     },
     whatYouActuallyDo: [
       "Collect environmental samples",
-      "Analyze data and trends",
+      "Analyse data and trends",
       "Write impact assessments",
       "Advise on regulations",
       "Develop sustainability plans",

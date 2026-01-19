@@ -172,7 +172,7 @@ export default function GuardianConsentPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-center">
             <p className="text-sm text-muted-foreground">
-              {consentInfo?.displayName} can now apply to jobs and message employers on Sprout.
+              {consentInfo?.displayName} can now apply to jobs and message job posters on Sprout.
               We'll ensure their safety through our moderation systems.
             </p>
             <div className="pt-4">
@@ -248,8 +248,8 @@ export default function GuardianConsentPage() {
               <h3 className="font-semibold">What is Sprout?</h3>
               <p className="text-sm text-muted-foreground">
                 Sprout is a platform that connects young people (ages 15-20) with local micro-jobs
-                like babysitting, dog walking, lawn care, and more. We prioritize safety with
-                verified employers, messaging moderation, and age-appropriate job listings.
+                like babysitting, dog walking, lawn care, and more. We prioritise safety with
+                verified job posters, messaging moderation, and age-appropriate job listings.
               </p>
             </div>
 
@@ -257,7 +257,7 @@ export default function GuardianConsentPage() {
             <div className="space-y-2">
               <h3 className="font-semibold">Our Safety Measures</h3>
               <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                <li>All employers must verify their identity (18+ only)</li>
+                <li>All job posters must verify their identity (18+ only)</li>
                 <li>Messages are monitored for inappropriate content</li>
                 <li>Youth can report any concerns directly to our team</li>
                 <li>No personal address or detailed location sharing</li>
@@ -322,7 +322,7 @@ export default function GuardianConsentPage() {
                   />
                   <Label htmlFor="agreeMonitoring" className="text-sm leading-tight cursor-pointer">
                     I understand that {consentInfo?.displayName} will be able to apply for jobs,
-                    communicate with employers, and share their availability on Sprout
+                    communicate with job posters, and share their availability on Sprout
                   </Label>
                 </div>
               </div>

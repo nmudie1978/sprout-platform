@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getRecommendationsFromAspiration, getCareersForCategory, getCategoryForCareer, type CareerCategory } from "@/lib/career-pathways";
 
-// GET /api/career-insights - Get personalised career recommendations for youth based on their career aspiration
+// GET /api/career-insights - Get personalised career recommendations for youth based on their primary goal
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -13,19 +13,21 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get the user's profile with career aspiration
+    // Get the user's profile with primary goal from structured goals system
     const youthProfile = await prisma.youthProfile.findUnique({
       where: { userId: session.user.id },
       select: {
-        careerAspiration: true,
+        primaryGoal: true,
         completedJobsCount: true,
       },
     });
 
-    const careerAspiration = youthProfile?.careerAspiration || "";
+    // Extract title from primary goal JSON (structured goals system)
+    const primaryGoal = youthProfile?.primaryGoal as { title?: string } | null;
+    const careerAspiration = primaryGoal?.title || "";
     const totalCompletedJobs = youthProfile?.completedJobsCount || 0;
 
-    // Get recommended careers based on career aspiration from profile
+    // Get recommended careers based on primary goal title
     const recommendations = getRecommendationsFromAspiration(careerAspiration);
 
     // Get top categories from recommendations
@@ -49,11 +51,11 @@ export async function GET() {
     // Build insights message
     let insightsMessage = "";
     if (!careerAspiration) {
-      insightsMessage = "Set your career aspiration in your profile to get personalised recommendations!";
+      insightsMessage = "Set your career goal in My Goals to get personalised recommendations!";
     } else if (recommendations.length === 0) {
-      insightsMessage = "Try updating your career aspiration for better matches.";
+      insightsMessage = "Try updating your career goal for better matches.";
     } else {
-      insightsMessage = `Based on your goal: "${careerAspiration}"`;
+      insightsMessage = `Based on your primary goal: "${careerAspiration}"`;
     }
 
     return NextResponse.json({

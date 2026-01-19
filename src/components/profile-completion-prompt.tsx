@@ -81,7 +81,7 @@ export function ProfileCompletionPrompt() {
               </div>
               <div>
                 <p className="font-semibold text-green-700 dark:text-green-400">Profile Complete!</p>
-                <p className="text-sm text-muted-foreground">You're all set to impress employers</p>
+                <p className="text-sm text-muted-foreground">You're all set to impress job posters</p>
               </div>
             </div>
           </CardContent>
@@ -102,7 +102,7 @@ export function ProfileCompletionPrompt() {
             <div>
               <CardTitle className="text-base">Profile Strength</CardTitle>
               <CardDescription>
-                Stand out to employers!
+                Stand out to job posters!
               </CardDescription>
             </div>
             <div className="relative h-16 w-16">

@@ -1,6 +1,6 @@
 import type { InterviewQuestion, GenerateOptions, Category, Difficulty } from "./types";
 
-// Comprehensive question bank organized by category
+// Comprehensive question bank organised by category
 const questionBank: Record<Category, InterviewQuestion[]> = {
   General: [
     { id: "g1", category: "General", difficulty: "Easy", questionText: "Tell me about yourself", tip: "Keep it brief (2 min). Focus on relevant experience and why you want this role.", tags: ["intro", "personal"], answerHint: "Use: Present → Past → Future structure", isGenerated: false },
@@ -30,12 +30,12 @@ const questionBank: Record<Category, InterviewQuestion[]> = {
   ],
   Healthcare: [
     { id: "h1", category: "Healthcare", difficulty: "Easy", questionText: "Why do you want to work in healthcare?", tip: "Be genuine about your motivation to help others.", tags: ["motivation", "personal"], isGenerated: false },
-    { id: "h2", category: "Healthcare", difficulty: "Medium", questionText: "How do you handle stressful situations?", tip: "Give examples. Show you can stay calm and prioritize care.", tags: ["stress", "pressure"], answerHint: "Example + How you stayed calm + Outcome", isGenerated: false },
+    { id: "h2", category: "Healthcare", difficulty: "Medium", questionText: "How do you handle stressful situations?", tip: "Give examples. Show you can stay calm and prioritise care.", tags: ["stress", "pressure"], answerHint: "Example + How you stayed calm + Outcome", isGenerated: false },
     { id: "h3", category: "Healthcare", difficulty: "Medium", questionText: "Tell me about a time you showed empathy", tip: "Share a genuine story about understanding others.", tags: ["empathy", "soft-skills"], isGenerated: false },
     { id: "h4", category: "Healthcare", difficulty: "Hard", questionText: "How do you handle difficult patients?", tip: "Show patience and understanding that people are often scared.", tags: ["conflict", "patient-care"], isGenerated: false },
     { id: "h5", category: "Healthcare", difficulty: "Hard", questionText: "What would you do if you made a mistake?", tip: "Honesty is crucial. Report it, learn from it, prevent it.", tags: ["accountability", "ethics"], answerHint: "Acknowledge → Report → Learn → Prevent", isGenerated: false },
     { id: "h6", category: "Healthcare", difficulty: "Easy", questionText: "What healthcare experience do you have?", tip: "Include volunteer work, internships, and relevant courses.", tags: ["experience", "background"], isGenerated: false },
-    { id: "h7", category: "Healthcare", difficulty: "Medium", questionText: "How do you prioritize tasks in a busy environment?", tip: "Show triage thinking: urgent vs important.", tags: ["prioritization", "time-management"], isGenerated: false },
+    { id: "h7", category: "Healthcare", difficulty: "Medium", questionText: "How do you prioritise tasks in a busy environment?", tip: "Show triage thinking: urgent vs important.", tags: ["prioritization", "time-management"], isGenerated: false },
     { id: "h8", category: "Healthcare", difficulty: "Medium", questionText: "How do you communicate with patients' families?", tip: "Show empathy and clear communication skills.", tags: ["communication", "family-care"], isGenerated: false },
   ],
   Green: [

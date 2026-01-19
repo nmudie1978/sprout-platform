@@ -59,7 +59,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Garage or shed clean-outs',
-        shortDesc: 'Help organize and clean out storage spaces',
+        shortDesc: 'Help organise and clean out storage spaces',
         suggestedPay: '200–400 NOK',
         duration: '2–4 hours',
         tags: ['organizing', 'physical', 'cleaning'],
@@ -67,7 +67,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Trash & recycling setup',
-        shortDesc: 'Sort recyclables, organize bins, take out trash',
+        shortDesc: 'Sort recyclables, organise bins, take out trash',
         suggestedPay: '100–150 NOK',
         duration: '30 min–1 hour',
         tags: ['organizing', 'eco-friendly'],
@@ -120,7 +120,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Toy / room organization',
-        shortDesc: 'Help organize children\'s toys, books, and rooms',
+        shortDesc: 'Help organise children\'s toys, books, and rooms',
         suggestedPay: '150–250 NOK',
         duration: '1–3 hours',
         tags: ['organizing', 'childcare'],
@@ -203,7 +203,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Closet organization',
-        shortDesc: 'Sort, organize, and arrange closets and wardrobes',
+        shortDesc: 'Sort, organise, and arrange closets and wardrobes',
         suggestedPay: '150–300 NOK',
         duration: '1–3 hours',
         tags: ['organizing', 'detail-oriented'],
@@ -211,7 +211,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Car interior cleaning',
-        shortDesc: 'Vacuum, wipe, and organize car interiors',
+        shortDesc: 'Vacuum, wipe, and organise car interiors',
         suggestedPay: '150–250 NOK',
         duration: '1–2 hours',
         tags: ['cleaning', 'detail-oriented', 'outdoor'],
@@ -228,7 +228,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Laundry folding',
-        shortDesc: 'Fold and organize clean laundry',
+        shortDesc: 'Fold and organise clean laundry',
         suggestedPay: '100–150 NOK',
         duration: '30 min–1 hour',
         tags: ['organizing', 'indoor', 'household'],
@@ -524,7 +524,7 @@ export const jobCategories: JobCategoryData[] = [
     templates: [
       {
         title: 'Stock sorting',
-        shortDesc: 'Sort and organize inventory and stock',
+        shortDesc: 'Sort and organise inventory and stock',
         suggestedPay: '150–250 NOK',
         duration: '2–4 hours',
         tags: ['retail', 'organizing', 'physical'],
@@ -532,7 +532,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Shelf labeling',
-        shortDesc: 'Label shelves and organize product displays',
+        shortDesc: 'Label shelves and organise product displays',
         suggestedPay: '100–200 NOK',
         duration: '1–2 hours',
         tags: ['retail', 'detail-oriented'],
@@ -614,7 +614,7 @@ export const jobCategories: JobCategoryData[] = [
       },
       {
         title: 'Gym tidying help',
-        shortDesc: 'Help organize and clean gym equipment',
+        shortDesc: 'Help organise and clean gym equipment',
         suggestedPay: '100–200 NOK',
         duration: '1–2 hours',
         tags: ['fitness', 'cleaning', 'physical'],

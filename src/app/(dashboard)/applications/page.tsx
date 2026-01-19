@@ -127,7 +127,7 @@ const ApplicationCard = memo(function ApplicationCard({ app, onReorder, isFirst,
                   {app.job.title}
                 </h4>
                 <p className="text-sm text-muted-foreground truncate">
-                  {app.job.postedBy?.employerProfile?.companyName || "Employer"}
+                  {app.job.postedBy?.employerProfile?.companyName || "Job Poster"}
                 </p>
               </div>
             </div>

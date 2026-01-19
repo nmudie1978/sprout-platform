@@ -716,7 +716,7 @@ const careerRealityChecks = [
       '4-5 year apprenticeship with classroom training',
       'Journeyman electrician (certified)',
       'Master electrician (additional experience)',
-      'Own business or specialized contractor',
+      'Own business or specialised contractor',
     ],
     skillGaps: [
       'Math skills for calculations',
@@ -1007,7 +1007,7 @@ const careerRealityChecks = [
     misconceptions: [
       'Not just massage—based on medical science',
       'Requires ongoing patient motivation',
-      'Can specialize (sports, pediatrics, elderly)',
+      'Can specialise (sports, paediatrics, elderly)',
       'Private practice requires business skills',
     ],
     hardParts: [
@@ -1025,7 +1025,7 @@ const careerRealityChecks = [
     typicalPath: [
       'Physiotherapy degree (4-5 years)',
       'Junior physiotherapist (hospital or clinic)',
-      'Senior or specialized physiotherapist',
+      'Senior or specialised physiotherapist',
       'Private practice or department lead',
     ],
     skillGaps: [
@@ -1083,7 +1083,7 @@ const careerRealityChecks = [
   {
     roleSlug: 'maritime-technician',
     title: 'Maritime Technician',
-    overview: 'Maritime technicians maintain and repair ships and offshore equipment. The role combines mechanical, electrical, and specialized marine skills in a unique working environment.',
+    overview: 'Maritime technicians maintain and repair ships and offshore equipment. The role combines mechanical, electrical, and specialised marine skills in a unique working environment.',
     dayToDay: [
       'Maintaining ship engines and systems',
       'Troubleshooting mechanical and electrical issues',
@@ -1703,7 +1703,7 @@ async function main() {
         'Train machine learning models on large datasets',
         'Fine-tune AI systems for specific tasks',
         'Collaborate with data scientists and engineers',
-        'Debug and optimize model performance',
+        'Debug and optimise model performance',
       ],
       realityCheck: 'Requires strong math and programming skills. Can be frustrating when models do not work as expected. Not for those who prefer predictable, routine work.',
       salaryBand: '600k-1.2M NOK',
@@ -1784,7 +1784,7 @@ async function main() {
     },
     {
       roleName: 'Cloud Engineer',
-      summary: 'Manage and optimize cloud infrastructure. Help companies move to and operate on cloud platforms like AWS, Azure, or Google Cloud.',
+      summary: 'Manage and optimise cloud infrastructure. Help companies move to and operate on cloud platforms like AWS, Azure, or Google Cloud.',
       traits: ['Technical', 'Systematic', 'Problem solving', 'Security-minded'],
       dayInLife: [
         'Set up cloud infrastructure and services',
@@ -1961,7 +1961,7 @@ async function main() {
     },
     {
       roleName: 'Prompt Engineer',
-      summary: 'Craft and optimize prompts for large language models. Help businesses leverage AI effectively by designing prompt systems and workflows.',
+      summary: 'Craft and optimise prompts for large language models. Help businesses leverage AI effectively by designing prompt systems and workflows.',
       traits: ['Creative writing', 'Analytical', 'Detail-oriented', 'Curious'],
       dayInLife: [
         'Design and test prompts for various use cases',
@@ -1998,7 +1998,7 @@ async function main() {
         'Work with cameras and sensor data',
         'Debug visual recognition issues',
       ],
-      realityCheck: 'Highly specialized field requiring deep learning expertise. Can be frustrating when models misidentify objects. GPU costs can be high.',
+      realityCheck: 'Highly specialised field requiring deep learning expertise. Can be frustrating when models misidentify objects. GPU costs can be high.',
       salaryBand: '650k-1.3M NOK',
       companies: ['AutoStore', 'Cognite', 'Research institutions', 'Robotics companies'],
       certifications: [
@@ -2144,7 +2144,7 @@ async function main() {
         'Report and track bugs',
         'Collaborate with developers to improve quality',
       ],
-      realityCheck: 'Can feel repetitive testing the same features. Pressure to balance speed with thoroughness. Developers may not prioritize bug fixes.',
+      realityCheck: 'Can feel repetitive testing the same features. Pressure to balance speed with thoroughness. Developers may not prioritise bug fixes.',
       salaryBand: '500k-850k NOK',
       companies: ['Finn.no', 'DNB', 'Vipps', 'Software companies', 'Consulting firms'],
       certifications: [
@@ -2228,7 +2228,7 @@ async function main() {
       dayInLife: [
         'Examine teeth and gums for issues',
         'Perform cleanings, fillings, and extractions',
-        'Take and analyze X-rays',
+        'Take and analyse X-rays',
         'Educate patients on oral hygiene',
         'Manage clinic and staff (if private practice)',
       ],
@@ -2309,10 +2309,10 @@ async function main() {
     },
     {
       roleName: 'Product Owner',
-      summary: 'Own the product backlog and prioritize features for agile development teams. Bridge business needs with technical delivery to create valuable products.',
+      summary: 'Own the product backlog and prioritise features for agile development teams. Bridge business needs with technical delivery to create valuable products.',
       traits: ['Communication', 'Decision-making', 'Stakeholder management', 'Analytical'],
       dayInLife: [
-        'Prioritize and manage the product backlog',
+        'Prioritise and manage the product backlog',
         'Write user stories and acceptance criteria',
         'Participate in sprint planning and reviews',
         'Gather feedback from users and stakeholders',
@@ -2722,12 +2722,12 @@ This platform helps you earn money through micro-jobs while discovering potentia
       title: 'Room Tidying and Closet Organization',
       category: JobCategory.CLEANING,
       standardCategoryId: categoryMap.get('cleaning-organizing'),
-      description: 'Help organize and tidy bedroom and closet. Sorting clothes, arranging shelves. About 2-3 hours.',
+      description: 'Help organise and tidy bedroom and closet. Sorting clothes, arranging shelves. About 2-3 hours.',
       payType: PayType.FIXED,
       payAmount: 300,
       location: 'Fjellhamar',
       status: 'POSTED' as const,
-      requiredTraits: ['organized', 'detail-oriented'],
+      requiredTraits: ['organised', 'detail-oriented'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(5, 3),
@@ -2766,7 +2766,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
       title: 'App Installation and Email Setup',
       category: JobCategory.TECH_HELP,
       standardCategoryId: categoryMap.get('tech-digital-help'),
-      description: 'Need help installing apps and setting up email on tablet. Also organize photos in cloud storage. 1-2 hours.',
+      description: 'Need help installing apps and setting up email on tablet. Also organise photos in cloud storage. 1-2 hours.',
       payType: PayType.HOURLY,
       payAmount: 180,
       location: 'Lørenskog, Sentrum',
@@ -2817,7 +2817,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
       payAmount: 350,
       location: 'Oslo, Vinderen',
       status: 'POSTED' as const,
-      requiredTraits: ['energetic', 'good with kids', 'organized'],
+      requiredTraits: ['energetic', 'good with kids', 'organised'],
       eligibleAgeGroups: eligibleForAll,
       postedById: demoEmployer.id,
       ...getJobDates(6, 4),
@@ -2826,7 +2826,7 @@ This platform helps you earn money through micro-jobs while discovering potentia
       title: 'Community Cleanup Event Assistant',
       category: JobCategory.OTHER,
       standardCategoryId: categoryMap.get('events-community-help'),
-      description: 'Help organize and participate in local park cleanup. Picking up litter, sorting recyclables. Equipment provided.',
+      description: 'Help organise and participate in local park cleanup. Picking up litter, sorting recyclables. Equipment provided.',
       payType: PayType.FIXED,
       payAmount: 200,
       location: 'Oslo, Grünerløkka',

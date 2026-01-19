@@ -102,7 +102,7 @@ const industryInfo = {
     name: "Technology & AI",
     icon: Code,
     color: "from-blue-500 to-cyan-500",
-    description: "Build apps, analyze data, and shape the digital future.",
+    description: "Build apps, analyse data, and shape the digital future.",
   },
   green: {
     name: "Green Energy",
@@ -269,7 +269,7 @@ export function CareerQuiz({ careerGoals = [], industryTypes = [] }: CareerQuizP
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
-              Get personalized industry recommendations
+              Get personalised industry recommendations
             </div>
           </div>
           <Button

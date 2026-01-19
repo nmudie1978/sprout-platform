@@ -68,7 +68,7 @@ export default function PokesPage() {
       queryClient.invalidateQueries({ queryKey: ["pokes"] });
       const statusMessages = {
         READ: "Marked as read",
-        ACCEPTED: "Accepted! The employer will be notified.",
+        ACCEPTED: "Accepted! The job poster will be notified.",
         DECLINED: "Declined politely",
       };
       toast({
@@ -108,7 +108,7 @@ export default function PokesPage() {
         </h1>
         <p className="text-lg text-muted-foreground">
           {isYouth
-            ? "Employers who are interested in working with you"
+            ? "Job posters who are interested in working with you"
             : "Youth workers you've shown interest in"}
         </p>
       </div>
@@ -291,7 +291,7 @@ export default function PokesPage() {
             <h3 className="text-xl font-bold mb-2">No pokes yet</h3>
             <p className="text-muted-foreground">
               {isYouth
-                ? "When employers are interested in you, they'll appear here"
+                ? "When job posters are interested in you, they'll appear here"
                 : "Start poking youth workers you're interested in!"}
             </p>
           </CardContent>

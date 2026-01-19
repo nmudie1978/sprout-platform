@@ -244,7 +244,7 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
                   {job.payType === "HOURLY" ? "/hr" : "fixed"}
                 </p>
               )}
-              <p className="text-[10px] text-muted-foreground/70">Paid directly by employer</p>
+              <p className="text-[10px] text-muted-foreground/70">Paid directly by job poster</p>
             </div>
           </div>
 

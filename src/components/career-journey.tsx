@@ -94,12 +94,12 @@ const shortTermBenefits = [
   { icon: Coins, label: "Pocket Money", description: "Earn while you learn" },
   { icon: Brain, label: "New Skills", description: "Real-world experience" },
   { icon: Heart, label: "Confidence", description: "Grow self-esteem" },
-  { icon: Users, label: "Network", description: "Meet employers" },
+  { icon: Users, label: "Network", description: "Meet job posters" },
 ];
 
 const longTermBenefits = [
   { icon: GraduationCap, label: "Career Clarity", description: "Know what you want" },
-  { icon: Building2, label: "Job Ready", description: "Stand out to employers" },
+  { icon: Building2, label: "Job Ready", description: "Stand out to job posters" },
   { icon: Star, label: "References", description: "Proven track record" },
   { icon: TrendingUp, label: "Head Start", description: "Ahead of peers" },
 ];

@@ -320,7 +320,7 @@ export default function PostJobPage() {
       }));
       toast({
         title: "Template applied",
-        description: "You can customize the title and description as needed.",
+        description: "You can customise the title and description as needed.",
       });
     }
   };

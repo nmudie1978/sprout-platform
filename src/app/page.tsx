@@ -473,7 +473,7 @@ export default function LandingPage() {
             </Button>
             <Button size="lg" variant="outline" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11 border-white text-white hover:bg-white/10">
               <Link href="/auth/signup?role=employer">
-                Sign Up as Employer
+                Sign Up as Job Poster
               </Link>
             </Button>
           </div>

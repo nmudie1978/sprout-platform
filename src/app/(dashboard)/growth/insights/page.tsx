@@ -76,8 +76,8 @@ function generateInsights(journey: CareerJourneyData | null, growthData: any, go
       if (rehireRate >= 80) {
         insights.push({
           type: "strength",
-          title: "Employers trust you",
-          description: `${Math.round(rehireRate)}% of employers would hire you again. This is excellent!`,
+          title: "Job posters trust you",
+          description: `${Math.round(rehireRate)}% of job posters would hire you again. This is excellent!`,
           actionable: "Your reliability is a major asset. Consider taking on more responsible jobs.",
         });
       }
