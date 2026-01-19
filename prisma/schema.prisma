@@ -319,6 +319,9 @@ model User {
   generatedQuestionSets GeneratedQuestionSet[]
   questionStates        UserQuestionState[]
 
+  // Beta Feedback
+  feedbackSubmissions Feedback[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -2382,4 +2385,59 @@ model UserQuestionState {
   @@index([questionId])
   @@index([saved])
   @@index([lastPracticedAt])
+}
+
+// ============================================
+// IN-APP FEEDBACK (BETA)
+// ============================================
+
+// Role of feedback submitter
+enum FeedbackRole {
+  TEEN_16_20
+  PARENT_GUARDIAN
+  ADULT_OTHER
+}
+
+// Clarity topics that users can select
+// Stored as String[] in clarityTopics field
+// Valid values: PRIMARY_VS_SECONDARY_GOAL, REAL_LIFE_WORK, SMALL_JOBS, NEXT_STEPS, NONE
+
+// Feedback submission - usability signals from beta users
+// NO PII: no name, email, DOB, phone stored
+model Feedback {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Optional link to user (null if submitted anonymously)
+  createdByUserId String?
+  createdByUser   User?   @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  // Who is giving feedback
+  role FeedbackRole
+
+  // Likert scale questions (1-5)
+  // Q1: "I understood what this app is for."
+  q1 Int
+  // Q2: "I understood what I should do first."
+  q2 Int
+  // Q3: "The app felt calm and not overwhelming."
+  q3 Int
+  // Q4: "The focus on having a main goal made sense to me."
+  q4 Int
+  // Q5: "I would feel comfortable using this (or letting my child use this)."
+  q5 Int
+
+  // Optional free-text: "What, if anything, felt confusing or unclear?"
+  confusingText String? @db.VarChar(500)
+
+  // Optional multi-select clarity topics
+  clarityTopics String[]
+
+  // Optional metadata
+  source     String? @db.VarChar(50) // e.g., "profile", "invite"
+  userAgent  String? @db.VarChar(200) // Browser info (truncated)
+  appVersion String? @db.VarChar(20)
+
+  @@index([createdAt])
+  @@index([role])
 }

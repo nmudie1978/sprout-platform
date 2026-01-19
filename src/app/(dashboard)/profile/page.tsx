@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { SkillRadar } from "@/components/skill-radar";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin, Calendar, Cake } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin, Calendar, Cake, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
@@ -1496,6 +1496,34 @@ export default function ProfilePage() {
                   </Link>
                 </li>
               </ul>
+            </CardContent>
+          </Card>
+
+          {/* Give Feedback (Beta) */}
+          <Card className="border-2 border-blue-500/20 shadow-lg hover-lift overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 pointer-events-none" />
+            <CardHeader className="relative">
+              <CardTitle className="text-xl flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-blue-600" />
+                Help Us Improve
+                <Badge variant="secondary" className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
+                  Beta
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Share your thoughts on how Sprout works for you
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="relative">
+              <Link href="/feedback?source=profile">
+                <Button
+                  variant="outline"
+                  className="w-full h-11 sm:h-10 border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-950"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Give Feedback (Beta)
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
