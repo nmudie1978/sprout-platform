@@ -1,0 +1,86 @@
+/**
+ * Career Filter Types
+ * Type definitions for the career filtering system
+ */
+
+export type EducationLevel =
+  | "no-formal"
+  | "vocational"
+  | "bachelor"
+  | "master"
+  | "doctorate";
+
+export type CareerNature =
+  | "hands-on"
+  | "analytical"
+  | "people-focused"
+  | "creative"
+  | "technical";
+
+export interface SalaryRange {
+  min: number; // in thousands (kr)
+  max: number; // in thousands (kr)
+}
+
+export interface CareerFilterState {
+  // Primary filters
+  category: string;
+  searchQuery: string;
+  growthFilter: string;
+
+  // Advanced filters
+  salaryRange: SalaryRange | null;
+  educationLevels: EducationLevel[];
+  skills: string[];
+  careerNatures: CareerNature[];
+  entryLevelOnly: boolean;
+}
+
+export interface ActiveFilterChip {
+  type:
+    | "category"
+    | "search"
+    | "growth"
+    | "salary"
+    | "education"
+    | "skill"
+    | "nature"
+    | "entryLevel";
+  label: string;
+  value: string | EducationLevel | CareerNature | SalaryRange | boolean;
+}
+
+export const DEFAULT_FILTER_STATE: CareerFilterState = {
+  category: "ALL",
+  searchQuery: "",
+  growthFilter: "all",
+  salaryRange: null,
+  educationLevels: [],
+  skills: [],
+  careerNatures: [],
+  entryLevelOnly: false,
+};
+
+export const EDUCATION_LEVEL_LABELS: Record<EducationLevel, string> = {
+  "no-formal": "No Formal Education",
+  vocational: "Vocational Training",
+  bachelor: "Bachelor's Degree",
+  master: "Master's Degree",
+  doctorate: "Doctorate/PhD",
+};
+
+export const CAREER_NATURE_LABELS: Record<CareerNature, string> = {
+  "hands-on": "Hands-on",
+  analytical: "Analytical",
+  "people-focused": "People-focused",
+  creative: "Creative",
+  technical: "Technical",
+};
+
+export const CAREER_NATURE_EMOJIS: Record<CareerNature, string> = {
+  "hands-on": "🔧",
+  analytical: "📊",
+  "people-focused": "👥",
+  creative: "🎨",
+  technical: "💻",
+};
