@@ -95,7 +95,7 @@ const TESTIMONIALS = [
     name: "Emma S.",
     age: 18,
     role: "Pet Sitter & Dog Walker",
-    quote: "I started with one dog walking job and now I have regular clients every week. Sprout helped me build real experience that I can put on my CV!",
+    quote: "I started with one small job helping a neighbour, and now I've got regular clients who trust me. It's not just the money — I've learned how to show up, be reliable, and handle responsibility.",
     avatar: "🐕",
     jobs: 24,
     rating: 4.9,
@@ -103,19 +103,19 @@ const TESTIMONIALS = [
   {
     name: "Marcus L.",
     age: 17,
-    role: "Tech Helper & Tutor",
-    quote: "I help older people with their phones and computers. It's amazing getting paid to do something I'm good at, and the reviews help me stand out.",
-    avatar: "💻",
-    jobs: 31,
+    role: "Exploring Options",
+    quote: "I used to feel stressed about not knowing what I wanted to do. Sprout helped me see that it's okay to explore. The guidance made things feel less overwhelming, and now I have a clearer idea of what I'm actually interested in.",
+    avatar: "🧭",
+    jobs: 8,
     rating: 5.0,
   },
   {
     name: "Sofia K.",
     age: 19,
-    role: "Event Assistant",
-    quote: "Through Sprout I've worked at weddings, birthday parties, and corporate events. Each job taught me something new about event planning!",
-    avatar: "🎉",
-    jobs: 18,
+    role: "Learning About Industries",
+    quote: "I had no idea how many different paths existed in green energy until I read about it on Sprout. Now I understand what entry-level roles actually look like, and I feel more prepared to make real decisions.",
+    avatar: "📚",
+    jobs: 12,
     rating: 4.8,
   },
 ];
@@ -374,13 +374,13 @@ export default function LandingPage() {
           <div className="text-center mb-14">
             <div className="inline-flex items-center gap-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-4 py-2 text-sm font-medium text-yellow-700 dark:text-yellow-400 mb-4">
               <Star className="h-4 w-4" />
-              Real Stories, Real Impact
+              Different Paths, Real Progress
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Hear from <span className="text-green-600">Youth Workers</span>
+              Hear from <span className="text-green-600">Young People</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Young people just like you are building skills, earning money, and discovering their futures with Sprout.
+              Whether it's earning, exploring, or learning — Sprout meets you where you are.
             </p>
           </div>
 
