@@ -24,9 +24,17 @@ export async function GET(req: NextRequest) {
             location: true,
             doNotDisturb: true,
             dateOfBirth: true,
+            authProvider: true,
           },
         },
       },
+    });
+
+    // PROOF: Log avatar loaded from DB
+    console.log("AVATAR LOADED FROM DB:", {
+      userId: session.user.id,
+      avatarId: profile?.avatarId ?? 'NO_PROFILE',
+      profileExists: !!profile
     });
 
     const response = NextResponse.json(profile);
@@ -210,12 +218,28 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json(profile);
     }
 
-    // Handle avatar update separately
+    // Handle avatar update separately - use upsert to ensure persistence
     if ("avatarId" in body && Object.keys(body).length === 1) {
-      const profile = await prisma.youthProfile.update({
+      const avatarId = body.avatarId;
+
+      // PROOF: Log avatar save attempt
+      console.log("AVATAR SAVE ATTEMPT:", { userId: session.user.id, avatarId });
+
+      // Use upsert to handle case where profile doesn't exist yet
+      const profile = await prisma.youthProfile.upsert({
         where: { userId: session.user.id },
-        data: { avatarId: body.avatarId },
+        update: { avatarId },
+        create: {
+          userId: session.user.id,
+          displayName: session.user.email?.split('@')[0] || 'User',
+          avatarId,
+          publicProfileSlug: `user-${session.user.id.slice(0, 8)}`,
+          profileVisibility: false,
+        },
       });
+
+      // PROOF: Log avatar save success
+      console.log("AVATAR SAVED TO DB:", { avatarId: profile.avatarId, profileId: profile.id });
 
       return NextResponse.json(profile);
     }

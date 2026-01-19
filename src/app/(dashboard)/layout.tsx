@@ -48,6 +48,13 @@ export default async function DashboardLayout({
     });
     userAvatarId = youthProfile?.avatarId || null;
     displayName = youthProfile?.displayName || null;
+
+    // PROOF: Log avatar loaded from DB in layout (SSR)
+    console.log("AVATAR LOADED FROM DB (LAYOUT SSR):", {
+      userId: session.user.id,
+      avatarId: userAvatarId,
+      profileExists: !!youthProfile
+    });
   } else if (session.user.role === "EMPLOYER") {
     const employerProfile = await prisma.employerProfile.findUnique({
       where: { userId: session.user.id },

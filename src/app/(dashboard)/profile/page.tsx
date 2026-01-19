@@ -215,8 +215,8 @@ export default function ProfilePage() {
       toast({
         title: data.profileVisibility ? "Profile is now public" : "Profile is now private",
         description: data.profileVisibility
-          ? "Employers can view your profile link"
-          : "Your profile is hidden from employers",
+          ? "Job posters can view your profile link"
+          : "Your profile is hidden from job posters",
       });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
@@ -266,6 +266,9 @@ export default function ProfilePage() {
 
   const updateAvatarMutation = useMutation({
     mutationFn: async (avatarId: string) => {
+      // PROOF: Log avatar save attempt on client
+      console.log("AVATAR SAVE ATTEMPT (CLIENT):", avatarId);
+
       const response = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -273,22 +276,32 @@ export default function ProfilePage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update avatar");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("AVATAR SAVE FAILED:", response.status, errorData);
+        throw new Error(errorData.error || "Failed to update avatar");
       }
 
-      return response.json();
+      const result = await response.json();
+      // PROOF: Log avatar save success on client
+      console.log("AVATAR SAVED (CLIENT):", result.avatarId);
+      return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // PROOF: Log successful mutation
+      console.log("AVATAR MUTATION SUCCESS:", data.avatarId);
       toast({
         title: "Avatar updated!",
         description: "Your new avatar is now active.",
       });
+      // Force immediate cache invalidation
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.refetchQueries({ queryKey: ["my-profile"] });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      console.error("AVATAR MUTATION ERROR:", error.message);
       toast({
-        title: "Error",
-        description: "Failed to update avatar",
+        title: "Error saving avatar",
+        description: error.message || "Failed to update avatar. Please try again.",
         variant: "destructive",
       });
     },
@@ -704,7 +717,7 @@ export default function ProfilePage() {
 
                   {isComplete && (
                     <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
-                      Great job! Your profile has all the information employers need.
+                      Great job! Your profile has all the information job posters need.
                     </p>
                   )}
                 </div>
@@ -832,15 +845,15 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle className="text-xl">Edit Your Profile</CardTitle>
               <CardDescription>
-                This information will be shown to employers when you share your profile
+                This information will be shown to job posters when you share your profile
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 relative z-10">
+            <CardContent className="space-y-5 relative z-10">
               {/* Avatar Selector */}
-              <div className="pb-4 border-b">
-                <Label className="text-center block mb-3 flex items-center justify-center gap-2">
+              <div className="pb-5 border-b">
+                <Label className="text-sm font-medium mb-3 flex items-center gap-2">
                   Your Avatar
-                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                  <span className="text-[10px] text-red-600 font-normal">*</span>
                 </Label>
                 <AvatarSelectorInline
                   currentAvatarId={profile?.avatarId}
@@ -848,17 +861,16 @@ export default function ProfilePage() {
                   disabled={updateAvatarMutation.isPending}
                 />
                 {!profile?.avatarId && (
-                  <p className="mt-2 text-xs text-red-500 text-center flex items-center justify-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Required: Choose an avatar to represent you
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Choose an avatar to represent you
                   </p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="displayName" className="flex items-center gap-2">
+                <Label htmlFor="displayName" className="text-sm font-medium flex items-center gap-1">
                   Display Name
-                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                  <span className="text-[10px] text-red-600">*</span>
                 </Label>
                 <Input
                   id="displayName"
@@ -867,49 +879,35 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, displayName: e.target.value })
                   }
-                  className={`h-11 sm:h-10 ${!formData.displayName && profile ? "border-red-300 focus:border-red-500" : ""}`}
+                  className="h-10 mt-1.5"
                 />
-                {!formData.displayName && profile ? (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Required: Employers need to know what to call you
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    This is how employers will address you
-                  </p>
-                )}
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  This is how job posters will address you
+                </p>
               </div>
 
               <div>
-                <Label htmlFor="bio" className="flex items-center gap-2">
+                <Label htmlFor="bio" className="text-sm font-medium">
                   About Me
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
                 </Label>
                 <Textarea
                   id="bio"
-                  placeholder="Tell employers a bit about yourself..."
+                  placeholder="Tell job posters a bit about yourself..."
                   value={formData.bio}
                   onChange={(e) =>
                     setFormData({ ...formData, bio: e.target.value })
                   }
                   rows={4}
+                  className="mt-1.5"
                 />
-                {!formData.bio ? (
-                  <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-                    Add a short bio to help employers understand your personality and strengths
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {formData.bio.length}/500 characters
-                  </p>
-                )}
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {formData.bio.length}/500 characters
+                </p>
               </div>
 
               <div>
-                <Label htmlFor="availability" className="flex items-center gap-2">
+                <Label htmlFor="availability" className="text-sm font-medium">
                   Availability
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
                 </Label>
                 <Input
                   id="availability"
@@ -918,24 +916,17 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, availability: e.target.value })
                   }
-                  className="h-11 sm:h-10"
+                  className="h-10 mt-1.5"
                 />
-                {!formData.availability ? (
-                  <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-                    Let employers know when you're free to work
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Employers can see when you're available
-                  </p>
-                )}
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Job posters can see when you're available
+                </p>
               </div>
 
               <div>
-                <Label htmlFor="phoneNumber" className="flex items-center gap-2">
-                  <Phone className="h-4 w-4" />
+                <Label htmlFor="phoneNumber" className="text-sm font-medium flex items-center gap-1">
                   Phone Number
-                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                  <span className="text-[10px] text-red-600">*</span>
                 </Label>
                 <Input
                   id="phoneNumber"
@@ -947,29 +938,24 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, phoneNumber: e.target.value })
                   }
-                  className={`h-11 sm:h-10 ${!formData.phoneNumber && profile ? "border-red-300 focus:border-red-500" : ""}`}
+                  className="h-10 mt-1.5"
                 />
-                {!formData.phoneNumber && profile ? (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Required: Employers need a way to contact you about jobs
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Only shown to employers when you're assigned to their job
-                  </p>
-                )}
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Only shown to job posters when you're assigned to their job
+                </p>
               </div>
 
-              {/* Date of Birth - Critical for age verification */}
-              <div className="p-4 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/30">
-                <Label className="flex items-center gap-2 mb-3">
-                  <Cake className="h-4 w-4 text-blue-500" />
+              {/* Date of Birth */}
+              <div>
+                <Label className="text-sm font-medium flex items-center gap-1 mb-1.5">
                   Date of Birth
-                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
-                  <Badge className="text-[10px] px-1.5 py-0 h-4 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                    Age Verification
-                  </Badge>
+                  <span className="text-[10px] text-red-600">*</span>
+                  {profile?.user?.authProvider === "VIPPS" && (
+                    <Badge className="ml-2 bg-[#ff5b24]/10 text-[#ff5b24] border-[#ff5b24]/20 text-[10px] px-1.5 py-0">
+                      <CheckCircle2 className="h-2.5 w-2.5 mr-1" />
+                      Verified by Vipps
+                    </Badge>
+                  )}
                 </Label>
                 <div className="flex flex-col gap-3">
                   {/* Day / Month / Year dropdowns */}
@@ -978,9 +964,9 @@ export default function ProfilePage() {
                     <Select
                       value={dobDay}
                       onValueChange={setDobDay}
-                      disabled={updateDateOfBirthMutation.isPending}
+                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
                     >
-                      <SelectTrigger className={`h-11 ${!dobDay && profile ? "border-red-300" : ""}`}>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[200px]">
@@ -996,9 +982,9 @@ export default function ProfilePage() {
                     <Select
                       value={dobMonth}
                       onValueChange={setDobMonth}
-                      disabled={updateDateOfBirthMutation.isPending}
+                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
                     >
-                      <SelectTrigger className={`h-11 ${!dobMonth && profile ? "border-red-300" : ""}`}>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[200px]">
@@ -1014,9 +1000,9 @@ export default function ProfilePage() {
                     <Select
                       value={dobYear}
                       onValueChange={setDobYear}
-                      disabled={updateDateOfBirthMutation.isPending}
+                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
                     >
-                      <SelectTrigger className={`h-11 ${!dobYear && profile ? "border-red-300" : ""}`}>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
                       <SelectContent className="max-h-[200px]">
@@ -1030,58 +1016,50 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Save button and age display */}
-                  <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                    {dobDay && dobMonth && dobYear && (
+                  <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                    {/* Only show save button for non-Vipps users */}
+                    {dobDay && dobMonth && dobYear && profile?.user?.authProvider !== "VIPPS" && (
                       <Button
                         type="button"
                         size="sm"
+                        variant="outline"
                         onClick={() => {
                           const dateString = `${dobYear}-${dobMonth}-${dobDay.padStart(2, "0")}`;
                           updateDateOfBirthMutation.mutate(dateString);
                         }}
                         disabled={updateDateOfBirthMutation.isPending}
-                        className="h-10"
+                        className="h-9"
                       >
                         {updateDateOfBirthMutation.isPending ? "Saving..." : "Save Date of Birth"}
                       </Button>
                     )}
                     {profile?.user?.dateOfBirth && (
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200 dark:border-blue-800">
-                        <Calendar className="h-4 w-4 text-blue-500" />
-                        <span className="font-semibold text-blue-700 dark:text-blue-300">
-                          {(() => {
-                            const dob = new Date(profile.user.dateOfBirth);
-                            const today = new Date();
-                            let age = today.getFullYear() - dob.getFullYear();
-                            const monthDiff = today.getMonth() - dob.getMonth();
-                            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-                              age--;
-                            }
-                            return `${age} years old`;
-                          })()}
-                        </span>
-                      </div>
+                      <Badge variant="secondary" className="text-xs font-normal px-2.5 py-1">
+                        {(() => {
+                          const dob = new Date(profile.user.dateOfBirth);
+                          const today = new Date();
+                          let age = today.getFullYear() - dob.getFullYear();
+                          const monthDiff = today.getMonth() - dob.getMonth();
+                          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                            age--;
+                          }
+                          return `${age} years old`;
+                        })()}
+                      </Badge>
                     )}
                   </div>
                 </div>
-                {!profile?.user?.dateOfBirth && profile ? (
-                  <p className="mt-2 text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Required: Your date of birth is needed for age verification and safety
-                  </p>
-                ) : (
-                  <p className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
-                    <Shield className="h-3 w-3" />
-                    Used for age verification to ensure appropriate job matching and safety features
-                  </p>
-                )}
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {profile?.user?.authProvider === "VIPPS"
+                    ? "Your date of birth is verified through Vipps and cannot be changed"
+                    : "Used for age verification and job matching"}
+                </p>
               </div>
 
               <div>
-                <Label htmlFor="city" className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
+                <Label htmlFor="city" className="text-sm font-medium flex items-center gap-1">
                   City
-                  <Badge variant="destructive" className="text-[10px] px-1.5 py-0 h-4">Required</Badge>
+                  <span className="text-[10px] text-red-600">*</span>
                 </Label>
                 <Input
                   id="city"
@@ -1090,24 +1068,16 @@ export default function ProfilePage() {
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
                   }
-                  className={`h-11 sm:h-10 ${!formData.city && profile ? "border-red-300 focus:border-red-500" : ""}`}
+                  className="h-10 mt-1.5"
                 />
-                {!formData.city && profile ? (
-                  <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
-                    Required: We use your city to show you nearby jobs
-                  </p>
-                ) : (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Used to show you jobs in your area
-                  </p>
-                )}
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  Used to show you jobs in your area
+                </p>
               </div>
 
               <div>
-                <Label className="flex items-center gap-2">
+                <Label className="text-sm font-medium">
                   Interests
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">Recommended</Badge>
                 </Label>
                 <p className="mb-2 text-xs text-muted-foreground">
                   Select topics you're interested in
@@ -1128,17 +1098,12 @@ export default function ProfilePage() {
                     </Badge>
                   ))}
                 </div>
-                {formData.interests.length === 0 && (
-                  <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-                    Select at least one interest to help match you with relevant jobs
-                  </p>
-                )}
               </div>
 
               {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
                 <div>
-                  <Label htmlFor="guardianEmail">
-                    Guardian Email (Optional)
+                  <Label htmlFor="guardianEmail" className="text-sm font-medium">
+                    Guardian Email
                   </Label>
                   <Input
                     id="guardianEmail"
@@ -1150,9 +1115,9 @@ export default function ProfilePage() {
                     onChange={(e) =>
                       setFormData({ ...formData, guardianEmail: e.target.value })
                     }
-                    className="h-11 sm:h-10"
+                    className="h-10 mt-1.5"
                   />
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-1.5 text-xs text-muted-foreground">
                     We'll keep them informed about your activity
                   </p>
                 </div>
@@ -1163,7 +1128,7 @@ export default function ProfilePage() {
                 disabled={
                   !formData.displayName || !formData.city || saveProfileMutation.isPending
                 }
-                className="w-full h-11 sm:h-10 shadow-lg"
+                className="w-full h-10 mt-2"
               >
                 {saveProfileMutation.isPending ? "Saving..." : "Save Profile"}
               </Button>
@@ -1214,7 +1179,7 @@ export default function ProfilePage() {
                     </Label>
                     <p className="text-xs text-muted-foreground">
                       {profile.profileVisibility
-                        ? "Employers can view your profile"
+                        ? "Job posters can view your profile"
                         : "Your profile is private"}
                     </p>
                   </div>
@@ -1234,7 +1199,7 @@ export default function ProfilePage() {
                       Profile is Public
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Share this link with employers:
+                      Share this link with job posters:
                     </p>
                     <div className="mt-2 flex items-center gap-2">
                       <code className="flex-1 truncate rounded bg-background px-2 py-1 text-xs">
@@ -1256,7 +1221,7 @@ export default function ProfilePage() {
                       Profile is Private
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Turn on visibility to share your profile with employers
+                      Turn on visibility to share your profile with job posters
                     </p>
                   </div>
                 )}
@@ -1399,7 +1364,7 @@ export default function ProfilePage() {
               <CardHeader>
                 <CardTitle className="text-xl">Work Availability</CardTitle>
                 <CardDescription>
-                  Let employers know if you're available for new jobs
+                  Let job posters know if you're available for new jobs
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
