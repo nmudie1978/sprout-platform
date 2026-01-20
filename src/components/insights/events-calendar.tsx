@@ -16,7 +16,16 @@ import {
   Star,
   Loader2,
   Settings,
+  ChevronDown,
+  Filter,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LocationChangeModal } from "./location-change-modal";
 import { CareerEventType, LocationMode } from "@prisma/client";
 
@@ -42,6 +51,13 @@ interface CareerEvent {
   distanceKm?: number;
 }
 
+interface CityOption {
+  city: string;
+  country: string;
+  lat: number;
+  lng: number;
+}
+
 interface EventsResponse {
   localEvents: CareerEvent[];
   onlineEvents: CareerEvent[];
@@ -50,6 +66,12 @@ interface EventsResponse {
     city?: string | null;
     region?: string | null;
     country?: string | null;
+  };
+  availableCities: CityOption[];
+  appliedFilters: {
+    city: string | null;
+    country: string | null;
+    includeOnline: boolean;
   };
 }
 
@@ -93,11 +115,17 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [selectedCity, setSelectedCity] = useState<string>(""); // Empty = user's location or all
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (cityFilter?: string) => {
     try {
       setLoading(true);
-      const response = await fetch("/api/career-events");
+      const params = new URLSearchParams();
+      if (cityFilter) {
+        params.set("city", cityFilter);
+      }
+      const url = `/api/career-events${params.toString() ? `?${params}` : ""}`;
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch events");
       const result = await response.json();
       setData(result);
@@ -110,8 +138,19 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
   };
 
   useEffect(() => {
-    fetchEvents();
-  }, []);
+    fetchEvents(selectedCity || undefined);
+  }, [selectedCity]);
+
+  const handleCityChange = (value: string) => {
+    setSelectedCity(value === "my-location" ? "" : value);
+  };
+
+  // Group cities by country for the dropdown
+  const citiesByCountry = data?.availableCities?.reduce((acc, city) => {
+    if (!acc[city.country]) acc[city.country] = [];
+    acc[city.country].push(city);
+    return acc;
+  }, {} as Record<string, CityOption[]>) || {};
 
   const handleLocationSave = async (location: {
     city: string;
@@ -259,7 +298,7 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
         <CardContent className="py-12">
           <div className="text-center text-muted-foreground">
             <p>{error}</p>
-            <Button variant="outline" size="sm" className="mt-2" onClick={fetchEvents}>
+            <Button variant="outline" size="sm" className="mt-2" onClick={() => fetchEvents()}>
               Try Again
             </Button>
           </div>
@@ -270,6 +309,80 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
 
   return (
     <div className="space-y-4">
+      {/* City Filter */}
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500" />
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Filter className="h-5 w-5 text-primary" />
+              Filter by Location
+            </CardTitle>
+          </div>
+          <CardDescription>
+            Browse career events across Europe or filter by a specific city
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <Select value={selectedCity || "my-location"} onValueChange={handleCityChange}>
+            <SelectTrigger className="w-full sm:w-[280px]">
+              <SelectValue placeholder="Select a city..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="my-location">
+                <span className="flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {data?.userHasLocation ? "My Location" : "All Events"}
+                </span>
+              </SelectItem>
+              {/* Norway first */}
+              {citiesByCountry["Norway"] && (
+                <>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50">
+                    🇳🇴 Norway
+                  </div>
+                  {citiesByCountry["Norway"].map((city) => (
+                    <SelectItem key={city.city} value={city.city}>
+                      {city.city}
+                    </SelectItem>
+                  ))}
+                </>
+              )}
+              {/* Other Nordic countries */}
+              {["Sweden", "Denmark", "Finland", "Iceland"].map((country) =>
+                citiesByCountry[country] ? (
+                  <div key={country}>
+                    <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50">
+                      {country === "Sweden" && "🇸🇪"}
+                      {country === "Denmark" && "🇩🇰"}
+                      {country === "Finland" && "🇫🇮"}
+                      {country === "Iceland" && "🇮🇸"} {country}
+                    </div>
+                    {citiesByCountry[country].map((city) => (
+                      <SelectItem key={city.city} value={city.city}>
+                        {city.city}
+                      </SelectItem>
+                    ))}
+                  </div>
+                ) : null
+              )}
+              {/* Rest of Europe */}
+              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted/50">
+                🇪🇺 Europe
+              </div>
+              {Object.entries(citiesByCountry)
+                .filter(([country]) => !["Norway", "Sweden", "Denmark", "Finland", "Iceland"].includes(country))
+                .flatMap(([, cities]) => cities)
+                .map((city) => (
+                  <SelectItem key={city.city} value={city.city}>
+                    {city.city}, {city.country}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+
       {/* Section 1: Career Events Near You */}
       <Card className="border-2 overflow-hidden">
         <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
@@ -277,20 +390,24 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg">
               <MapPin className="h-5 w-5 text-primary" />
-              Career Events Near You
+              {selectedCity ? `Events in ${selectedCity}` : "Career Events Near You"}
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocationModalOpen(true)}
-              className="text-xs gap-1"
-            >
-              <Settings className="h-3 w-3" />
-              {data?.userHasLocation ? "Change Location" : "Set Location"}
-            </Button>
+            {!selectedCity && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocationModalOpen(true)}
+                className="text-xs gap-1"
+              >
+                <Settings className="h-3 w-3" />
+                {data?.userHasLocation ? "Change Location" : "Set Location"}
+              </Button>
+            )}
           </div>
           <CardDescription>
-            {data?.locationInfo?.city
+            {selectedCity
+              ? `Showing events in ${selectedCity} and surrounding area`
+              : data?.locationInfo?.city
               ? `Events within 50km of ${data.locationInfo.city}${
                   data.locationInfo.region ? `, ${data.locationInfo.region}` : ""
                 }`
