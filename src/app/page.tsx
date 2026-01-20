@@ -154,7 +154,7 @@ export default function LandingPage() {
             </span>
           </Link>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 mr-2 sm:mr-4 lg:mr-8">
             <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:inline">
               About
             </Link>
