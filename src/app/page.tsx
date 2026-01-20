@@ -224,7 +224,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 4 Pillars Section */}
+      {/* Three Lenses Section */}
       <PillarsSection />
 
       {/* Join Section - Role-Based Cards */}
