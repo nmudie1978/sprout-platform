@@ -152,9 +152,6 @@ export function useCareerFilters(
           careerNatures: prev.careerNatures.filter((n) => n !== chip.value),
         }));
         break;
-      case "entryLevel":
-        setFilters((prev) => ({ ...prev, entryLevelOnly: false }));
-        break;
     }
   }, []);
 
@@ -214,14 +211,6 @@ export function useCareerFilters(
         type: "nature",
         label: CAREER_NATURE_LABELS[nature],
         value: nature,
-      });
-    }
-
-    if (filters.entryLevelOnly) {
-      chips.push({
-        type: "entryLevel",
-        label: "Entry-level",
-        value: true,
       });
     }
 
@@ -286,11 +275,6 @@ export function useCareerFilters(
       );
     }
 
-    // Apply entry-level filter
-    if (filters.entryLevelOnly) {
-      careers = careers.filter((career) => career.entryLevel === true);
-    }
-
     // Sort: by match score (if available), then by title
     return careers.sort((a, b) => {
       if (recommendationMap) {
@@ -310,8 +294,7 @@ export function useCareerFilters(
       filters.salaryRange !== null ||
       filters.educationLevels.length > 0 ||
       filters.skills.length > 0 ||
-      filters.careerNatures.length > 0 ||
-      filters.entryLevelOnly
+      filters.careerNatures.length > 0
     );
   }, [filters]);
 
@@ -321,7 +304,6 @@ export function useCareerFilters(
     count += filters.educationLevels.length;
     count += filters.skills.length;
     count += filters.careerNatures.length;
-    if (filters.entryLevelOnly) count++;
     return count;
   }, [filters]);
 

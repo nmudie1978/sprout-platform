@@ -33,7 +33,6 @@ export interface CareerFilterState {
   educationLevels: EducationLevel[];
   skills: string[];
   careerNatures: CareerNature[];
-  entryLevelOnly: boolean;
 }
 
 export interface ActiveFilterChip {
@@ -44,10 +43,9 @@ export interface ActiveFilterChip {
     | "salary"
     | "education"
     | "skill"
-    | "nature"
-    | "entryLevel";
+    | "nature";
   label: string;
-  value: string | EducationLevel | CareerNature | SalaryRange | boolean;
+  value: string | EducationLevel | CareerNature | SalaryRange;
 }
 
 export const DEFAULT_FILTER_STATE: CareerFilterState = {
@@ -58,7 +56,6 @@ export const DEFAULT_FILTER_STATE: CareerFilterState = {
   educationLevels: [],
   skills: [],
   careerNatures: [],
-  entryLevelOnly: false,
 };
 
 export const EDUCATION_LEVEL_LABELS: Record<EducationLevel, string> = {

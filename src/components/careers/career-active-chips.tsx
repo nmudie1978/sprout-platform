@@ -19,7 +19,6 @@ const chipTypeColors: Record<ActiveFilterChip["type"], string> = {
   education: "bg-indigo-500/10 text-indigo-600 border-indigo-200",
   skill: "bg-pink-500/10 text-pink-600 border-pink-200",
   nature: "bg-teal-500/10 text-teal-600 border-teal-200",
-  entryLevel: "bg-orange-500/10 text-orange-600 border-orange-200",
 };
 
 const chipTypeLabels: Record<ActiveFilterChip["type"], string> = {
@@ -30,7 +29,6 @@ const chipTypeLabels: Record<ActiveFilterChip["type"], string> = {
   education: "Education",
   skill: "Skill",
   nature: "Type",
-  entryLevel: "Level",
 };
 
 export function CareerActiveChips({

@@ -16,16 +16,13 @@ interface MobileFilterDrawerProps {
   filters: CareerFilterState;
   salaryBounds: SalaryRange;
   resultCount: number;
-  onEntryLevelChange: (enabled: boolean) => void;
   onReset: () => void;
 }
 
 export function MobileFilterDrawer({
   isOpen,
   onClose,
-  filters,
   resultCount,
-  onEntryLevelChange,
   onReset,
 }: MobileFilterDrawerProps) {
   return (
@@ -77,24 +74,9 @@ export function MobileFilterDrawer({
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-            {/* Entry Level Only */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => onEntryLevelChange(!filters.entryLevelOnly)}
-                className={`flex-1 p-3 rounded-lg border text-left transition-all ${
-                  filters.entryLevelOnly
-                    ? "border-primary bg-primary/5"
-                    : "hover:bg-muted/50"
-                }`}
-              >
-                <span className="text-xs font-medium block">
-                  Entry-level only
-                </span>
-                <span className="text-[10px] text-muted-foreground">
-                  No higher education required
-                </span>
-              </button>
-            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              No additional filters available
+            </p>
           </div>
 
           {/* Footer with results count */}

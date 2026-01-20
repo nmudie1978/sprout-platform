@@ -12,7 +12,6 @@ import { CareerCardV2, type ViewMode } from "@/components/career-card-v2";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { CareerInsights } from "@/components/career-insights";
 import { CareerFilterBar } from "@/components/careers/career-filter-bar";
-import { CareerAdvancedFilters } from "@/components/careers/career-advanced-filters";
 import { CareerActiveChips } from "@/components/careers/career-active-chips";
 import { MobileFilterDrawer } from "@/components/careers/mobile-filter-drawer";
 import { PaginationControls } from "@/components/ui/pagination-controls";
@@ -138,7 +137,6 @@ function CareersPageContent() {
       educationLevels: filters.educationLevels,
       skills: filters.skills,
       careerNatures: filters.careerNatures,
-      entryLevelOnly: filters.entryLevelOnly,
     });
 
     // Only reset if filters actually changed (not on initial mount)
@@ -215,11 +213,6 @@ function CareersPageContent() {
     [toggleArrayFilter]
   );
 
-  const handleEntryLevelChange = useCallback(
-    (enabled: boolean) => updateFilter("entryLevelOnly", enabled),
-    [updateFilter]
-  );
-
   const handleToggleAdvanced = useCallback(() => {
     setShowAdvancedFilters((prev) => !prev);
   }, []);
@@ -230,7 +223,6 @@ function CareersPageContent() {
     updateFilter("educationLevels", []);
     updateFilter("skills", []);
     updateFilter("careerNatures", []);
-    updateFilter("entryLevelOnly", false);
   }, [updateFilter]);
 
   return (
@@ -274,16 +266,6 @@ function CareersPageContent() {
         onViewModeChange={setViewMode}
       />
 
-      {/* Advanced Filters Panel (Desktop) */}
-      {!isMobile && (
-        <CareerAdvancedFilters
-          filters={filters}
-          salaryBounds={salaryBounds}
-          onEntryLevelChange={handleEntryLevelChange}
-          isOpen={showAdvancedFilters}
-        />
-      )}
-
       {/* Mobile Filter Drawer */}
       {isMobile && (
         <MobileFilterDrawer
@@ -292,7 +274,6 @@ function CareersPageContent() {
           filters={filters}
           salaryBounds={salaryBounds}
           resultCount={filteredCareers.length}
-          onEntryLevelChange={handleEntryLevelChange}
           onReset={handleResetAdvanced}
         />
       )}
