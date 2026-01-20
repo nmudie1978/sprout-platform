@@ -41,6 +41,7 @@ import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { CareerProgressionFlow } from "@/components/careers/CareerProgressionFlow";
 import { RealWorldExamplesLinks } from "@/components/careers/RealWorldExamplesLinks";
+import { MicroGuideCard, getGuideForCareer } from "@/components/careers/MicroGuideCard";
 
 interface CareerDetailSheetProps {
   career: Career | null;
@@ -563,6 +564,11 @@ export function CareerDetailSheet({
                         </p>
                       </div>
                     )}
+
+                    {/* Quick Guide - AI Micro-Guide Placeholder */}
+                    {/* TODO: Replace static content with AI-generated guidance */}
+                    {/* TODO: Add personalisation based on user experience level */}
+                    <MicroGuideCard content={getGuideForCareer(career.title)} />
 
                     {/* Content note */}
                     {!hasSpecificContent && (
