@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,283 +12,76 @@ import {
   ExternalLink,
   Video,
   Building2,
+  Globe,
+  Star,
+  Loader2,
+  Settings,
 } from "lucide-react";
+import { LocationChangeModal } from "./location-change-modal";
+import { CareerEventType, LocationMode } from "@prisma/client";
 
-interface Event {
+interface CareerEvent {
   id: string;
   title: string;
-  type: "jobfair" | "webinar" | "meetup" | "workshop";
-  industry: string[];
-  date: string;
-  time: string;
-  location: string;
-  isOnline: boolean;
-  organizer: string;
+  type: CareerEventType;
   description: string;
+  organizer: string;
+  startDate: string;
+  endDate?: string | null;
+  time: string;
+  locationMode: LocationMode;
+  city?: string | null;
+  region?: string | null;
+  country?: string | null;
+  venue?: string | null;
+  onlineUrl?: string | null;
   registrationUrl: string;
-  spots?: number;
+  spots?: number | null;
+  isYouthFocused: boolean;
+  industryTypes: string[];
+  distanceKm?: number;
 }
 
-const events: Event[] = [
-  // Tech events
-  {
-    id: "1",
-    title: "Web Summit 2026",
-    type: "jobfair",
-    industry: ["tech"],
-    date: "2026-11-10",
-    time: "09:00 - 18:00",
-    location: "Lisbon, Portugal",
-    isOnline: false,
-    organizer: "Web Summit",
-    description: "Europe's largest tech conference with career opportunities and networking with top companies.",
-    registrationUrl: "https://websummit.com",
-    spots: 70000,
-  },
-  {
-    id: "2",
-    title: "Tech Career Webinar: Getting Started in Coding",
-    type: "webinar",
-    industry: ["tech"],
-    date: "2026-02-20",
-    time: "18:00 - 19:30",
-    location: "Online (Zoom)",
-    isOnline: true,
-    organizer: "FreeCodeCamp",
-    description: "Learn how to start a career in tech without formal education. Tips for self-learning and bootcamps.",
-    registrationUrl: "https://www.freecodecamp.org",
-  },
-  {
-    id: "3",
-    title: "Berlin Tech Meetup",
-    type: "meetup",
-    industry: ["tech"],
-    date: "2026-03-15",
-    time: "18:00 - 21:00",
-    location: "Berlin, Germany",
-    isOnline: false,
-    organizer: "Berlin Tech Community",
-    description: "Networking evening for tech enthusiasts in Berlin. Presentations and mingling.",
-    registrationUrl: "https://www.meetup.com",
-    spots: 150,
-  },
-  {
-    id: "4",
-    title: "AWS Summit London",
-    type: "jobfair",
-    industry: ["tech"],
-    date: "2026-04-23",
-    time: "09:00 - 17:00",
-    location: "London, UK",
-    isOnline: false,
-    organizer: "Amazon Web Services",
-    description: "Cloud computing conference with hands-on labs, certifications, and career opportunities.",
-    registrationUrl: "https://aws.amazon.com/events/summits",
-    spots: 10000,
-  },
-  {
-    id: "5",
-    title: "React Europe Conference",
-    type: "meetup",
-    industry: ["tech"],
-    date: "2026-05-14",
-    time: "09:00 - 18:00",
-    location: "Paris, France",
-    isOnline: false,
-    organizer: "React Europe",
-    description: "The premier React.js conference in Europe. Learn from industry experts and network with developers.",
-    registrationUrl: "https://www.react-europe.org",
-    spots: 1500,
-  },
-  // Green energy events
-  {
-    id: "6",
-    title: "European Green Energy Summit",
-    type: "jobfair",
-    industry: ["green"],
-    date: "2026-04-12",
-    time: "09:00 - 17:00",
-    location: "Amsterdam, Netherlands",
-    isOnline: false,
-    organizer: "EU Energy Council",
-    description: "Connect with leading renewable energy companies. Learn about career paths in the green sector.",
-    registrationUrl: "https://www.euenergycouncil.com",
-    spots: 2000,
-  },
-  {
-    id: "7",
-    title: "Wind Energy Career Day",
-    type: "jobfair",
-    industry: ["green"],
-    date: "2026-03-08",
-    time: "10:00 - 16:00",
-    location: "Copenhagen, Denmark",
-    isOnline: false,
-    organizer: "WindEurope",
-    description: "Meet employers like Vestas and Ørsted. Learn about wind turbine technician careers.",
-    registrationUrl: "https://windeurope.org",
-    spots: 500,
-  },
-  {
-    id: "8",
-    title: "Solar Power International Europe",
-    type: "workshop",
-    industry: ["green"],
-    date: "2026-06-20",
-    time: "09:00 - 17:00",
-    location: "Munich, Germany",
-    isOnline: false,
-    organizer: "Solar Energy Industries Association",
-    description: "Hands-on workshops on solar installation and maintenance. Career pathways in solar energy.",
-    registrationUrl: "https://www.solarpowerinternational.com",
-    spots: 3000,
-  },
-  {
-    id: "9",
-    title: "Green Jobs Webinar Series",
-    type: "webinar",
-    industry: ["green"],
-    date: "2026-02-25",
-    time: "17:00 - 18:30",
-    location: "Online (Teams)",
-    isOnline: true,
-    organizer: "European Climate Foundation",
-    description: "Monthly webinar on careers in sustainability, renewable energy, and environmental services.",
-    registrationUrl: "https://europeanclimate.org",
-  },
-  // Healthcare events
-  {
-    id: "10",
-    title: "NHS Careers Fair",
-    type: "jobfair",
-    industry: ["health"],
-    date: "2026-03-22",
-    time: "10:00 - 16:00",
-    location: "London, UK",
-    isOnline: false,
-    organizer: "NHS England",
-    description: "Meet NHS recruiters and learn about nursing, allied health, and support roles across the UK.",
-    registrationUrl: "https://www.healthcareers.nhs.uk",
-    spots: 5000,
-  },
-  {
-    id: "11",
-    title: "European Nursing Conference",
-    type: "workshop",
-    industry: ["health"],
-    date: "2026-05-10",
-    time: "09:00 - 17:00",
-    location: "Barcelona, Spain",
-    isOnline: false,
-    organizer: "European Federation of Nurses",
-    description: "Professional development, networking, and job opportunities for nurses across Europe.",
-    registrationUrl: "https://www.efn.eu",
-    spots: 2000,
-  },
-  {
-    id: "12",
-    title: "Healthcare Career Webinar: Paths into Nursing",
-    type: "webinar",
-    industry: ["health"],
-    date: "2026-02-08",
-    time: "18:00 - 19:30",
-    location: "Online (Zoom)",
-    isOnline: true,
-    organizer: "Royal College of Nursing",
-    description: "Learn about different routes into nursing, from apprenticeships to university degrees.",
-    registrationUrl: "https://www.rcn.org.uk",
-  },
-  {
-    id: "13",
-    title: "Hospital Job Fair - Mayo Clinic",
-    type: "jobfair",
-    industry: ["health"],
-    date: "2026-04-05",
-    time: "09:00 - 15:00",
-    location: "Rochester, MN, USA",
-    isOnline: false,
-    organizer: "Mayo Clinic",
-    description: "On-site interviews for nursing, patient care, and allied health positions at Mayo Clinic.",
-    registrationUrl: "https://jobs.mayoclinic.org",
-    spots: 1000,
-  },
-  {
-    id: "14",
-    title: "Mental Health Careers Workshop",
-    type: "workshop",
-    industry: ["health"],
-    date: "2026-03-15",
-    time: "14:00 - 17:00",
-    location: "Online (Teams)",
-    isOnline: true,
-    organizer: "Mind UK",
-    description: "Explore careers in mental health support, counseling, and psychiatric nursing.",
-    registrationUrl: "https://www.mind.org.uk",
-    spots: 200,
-  },
-  // Creative events
-  {
-    id: "15",
-    title: "Creative Portfolio Workshop",
-    type: "workshop",
-    industry: ["creative"],
-    date: "2026-02-28",
-    time: "17:00 - 20:00",
-    location: "Online (Zoom)",
-    isOnline: true,
-    organizer: "Behance",
-    description: "Practical workshop on how to build a portfolio that stands out to employers.",
-    registrationUrl: "https://www.behance.net",
-    spots: 100,
-  },
-  {
-    id: "16",
-    title: "Adobe MAX Europe",
-    type: "jobfair",
-    industry: ["creative"],
-    date: "2026-10-15",
-    time: "09:00 - 18:00",
-    location: "London, UK",
-    isOnline: false,
-    organizer: "Adobe",
-    description: "The creativity conference. Workshops, networking, and career opportunities in design and media.",
-    registrationUrl: "https://max.adobe.com",
-    spots: 5000,
-  },
-  {
-    id: "17",
-    title: "Social Media Marketing Bootcamp",
-    type: "webinar",
-    industry: ["creative"],
-    date: "2026-03-10",
-    time: "10:00 - 16:00",
-    location: "Online (Zoom)",
-    isOnline: true,
-    organizer: "HubSpot Academy",
-    description: "Free intensive course on social media marketing, content creation, and brand building.",
-    registrationUrl: "https://academy.hubspot.com",
-  },
-  {
-    id: "18",
-    title: "UX Design Career Day",
-    type: "meetup",
-    industry: ["creative", "tech"],
-    date: "2026-04-18",
-    time: "14:00 - 19:00",
-    location: "Stockholm, Sweden",
-    isOnline: false,
-    organizer: "Interaction Design Foundation",
-    description: "Meet UX teams from Spotify, Klarna, and more. Portfolio reviews and networking.",
-    registrationUrl: "https://www.interaction-design.org",
-    spots: 300,
-  },
-];
+interface EventsResponse {
+  localEvents: CareerEvent[];
+  onlineEvents: CareerEvent[];
+  userHasLocation: boolean;
+  locationInfo: {
+    city?: string | null;
+    region?: string | null;
+    country?: string | null;
+  };
+}
 
-const typeConfig = {
-  jobfair: { label: "Job Fair", color: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400", icon: Building2 },
-  webinar: { label: "Webinar", color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400", icon: Video },
-  meetup: { label: "Meetup", color: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400", icon: Users },
-  workshop: { label: "Workshop", color: "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400", icon: Clock },
+const typeConfig: Record<
+  CareerEventType,
+  { label: string; color: string; icon: typeof Building2 }
+> = {
+  JOBFAIR: {
+    label: "Job Fair",
+    color: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
+    icon: Building2,
+  },
+  WEBINAR: {
+    label: "Webinar",
+    color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400",
+    icon: Video,
+  },
+  MEETUP: {
+    label: "Meetup",
+    color: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400",
+    icon: Users,
+  },
+  WORKSHOP: {
+    label: "Workshop",
+    color: "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400",
+    icon: Clock,
+  },
+  CONFERENCE: {
+    label: "Conference",
+    color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400",
+    icon: Globe,
+  },
 };
 
 interface EventsCalendarProps {
@@ -295,119 +89,301 @@ interface EventsCalendarProps {
 }
 
 export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
-  // Filter events based on user's career goal industry types
-  const filteredEvents = industryTypes.length > 0
-    ? events.filter((e) => e.industry.some(ind => industryTypes.includes(ind)))
-    : events;
+  const [data, setData] = useState<EventsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
 
-  // Get industry labels for display
-  const industryLabels: Record<string, string> = {
-    tech: "Tech & AI",
-    green: "Green Energy",
-    health: "Healthcare",
-    creative: "Creative",
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/career-events");
+      if (!response.ok) throw new Error("Failed to fetch events");
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError("Unable to load events");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const activeIndustries = industryTypes.length > 0
-    ? industryTypes.map(t => industryLabels[t] || t).join(", ")
-    : "all industries";
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
-  const isUpcoming = (dateStr: string) => {
-    const eventDate = new Date(dateStr);
-    const today = new Date();
-    return eventDate >= today;
+  const handleLocationSave = async (location: {
+    city: string;
+    region: string;
+    country: string;
+  }) => {
+    const response = await fetch("/api/profile/location", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(location),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save location");
+    }
+
+    // Refresh events with new location
+    await fetchEvents();
   };
 
-  const sortedEvents = filteredEvents
-    .filter((e) => isUpcoming(e.date))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  // Filter events by industry if specified
+  const filterByIndustry = (events: CareerEvent[]) => {
+    if (industryTypes.length === 0) return events;
+    return events.filter((e) =>
+      e.industryTypes.some((ind) => industryTypes.includes(ind))
+    );
+  };
 
-  // Show only first 6 events for compact view
-  const displayEvents = sortedEvents.slice(0, 6);
+  // API returns max 10 events per section, already verified and sorted
+  const localEvents = data ? filterByIndustry(data.localEvents) : [];
+  const onlineEvents = data ? filterByIndustry(data.onlineEvents) : [];
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  };
+
+  const formatLocation = (event: CareerEvent) => {
+    if (event.locationMode === "ONLINE") return "Online";
+    if (event.venue) return event.venue;
+    const parts = [event.city, event.country].filter(Boolean);
+    return parts.join(", ") || "Location TBA";
+  };
+
+  const renderEventRow = (event: CareerEvent, showDistance = false) => {
+    const TypeIcon = typeConfig[event.type]?.icon || Building2;
+    const typeStyle = typeConfig[event.type] || typeConfig.JOBFAIR;
+
+    return (
+      <tr key={event.id} className="border-b last:border-0 hover:bg-muted/30">
+        <td className="py-2.5 pr-3 whitespace-nowrap">
+          <div className="text-xs font-medium">{formatDate(event.startDate)}</div>
+          {showDistance && event.distanceKm !== undefined && (
+            <div className="text-[10px] text-muted-foreground">
+              {Math.round(event.distanceKm)} km
+            </div>
+          )}
+        </td>
+        <td className="py-2.5 pr-3">
+          <div className="flex items-start gap-1.5">
+            {event.isYouthFocused && (
+              <Star className="h-3 w-3 text-yellow-500 flex-shrink-0 mt-0.5" />
+            )}
+            <div>
+              <div
+                className="font-medium text-xs truncate max-w-[180px]"
+                title={event.title}
+              >
+                {event.title}
+              </div>
+              <div className="text-[10px] text-muted-foreground sm:hidden">
+                {formatLocation(event)}
+              </div>
+            </div>
+          </div>
+        </td>
+        <td className="py-2.5 pr-3 hidden sm:table-cell">
+          <Badge className={`${typeStyle.color} text-[10px] px-1.5 py-0`}>
+            <TypeIcon className="h-2.5 w-2.5 mr-0.5" />
+            {typeStyle.label}
+          </Badge>
+        </td>
+        <td className="py-2.5 pr-3 hidden md:table-cell">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            {event.locationMode === "ONLINE" ? (
+              <Video className="h-3 w-3" />
+            ) : (
+              <MapPin className="h-3 w-3" />
+            )}
+            <span className="truncate max-w-[120px]">{formatLocation(event)}</span>
+          </div>
+        </td>
+        <td className="py-2.5 text-right">
+          <a
+            href={event.registrationUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-xs text-primary hover:underline"
+          >
+            Register
+            <ExternalLink className="ml-1 h-3 w-3" />
+          </a>
+        </td>
+      </tr>
+    );
+  };
+
+  const renderEmptyState = (isLocal: boolean) => (
+    <div className="text-center py-6 text-muted-foreground text-sm">
+      {isLocal ? (
+        <>
+          <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p>No upcoming events near your location</p>
+          <p className="text-xs mt-1">
+            Check online events below or update your location
+          </p>
+        </>
+      ) : (
+        <>
+          <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p>No upcoming online or Europe-wide events</p>
+        </>
+      )}
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
+        <CardContent className="py-12">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>Loading events...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
+        <CardContent className="py-12">
+          <div className="text-center text-muted-foreground">
+            <p>{error}</p>
+            <Button variant="outline" size="sm" className="mt-2" onClick={fetchEvents}>
+              Try Again
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <Card className="border-2 overflow-hidden">
-      <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Calendar className="h-5 w-5 text-primary" />
-          Events & Job Fairs
-        </CardTitle>
-        <CardDescription>
-          {industryTypes.length > 0
-            ? `Upcoming events in ${activeIndustries}`
-            : "Upcoming career events and networking opportunities"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Compact Table View */}
-        {displayEvents.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-xs text-muted-foreground">
-                  <th className="text-left py-2 font-medium">Date</th>
-                  <th className="text-left py-2 font-medium">Event</th>
-                  <th className="text-left py-2 font-medium hidden sm:table-cell">Type</th>
-                  <th className="text-left py-2 font-medium hidden md:table-cell">Location</th>
-                  <th className="text-right py-2 font-medium"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayEvents.map((event) => {
-                  const TypeIcon = typeConfig[event.type].icon;
-                  return (
-                    <tr key={event.id} className="border-b last:border-0 hover:bg-muted/30">
-                      <td className="py-2 pr-3 whitespace-nowrap">
-                        <div className="text-xs font-medium">
-                          {new Date(event.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                        </div>
-                      </td>
-                      <td className="py-2 pr-3">
-                        <div className="font-medium text-xs truncate max-w-[180px]" title={event.title}>
-                          {event.title}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground sm:hidden">
-                          {event.isOnline ? "Online" : event.location.split(",")[0]}
-                        </div>
-                      </td>
-                      <td className="py-2 pr-3 hidden sm:table-cell">
-                        <Badge className={`${typeConfig[event.type].color} text-[10px] px-1.5 py-0`}>
-                          <TypeIcon className="h-2.5 w-2.5 mr-0.5" />
-                          {typeConfig[event.type].label}
-                        </Badge>
-                      </td>
-                      <td className="py-2 pr-3 hidden md:table-cell">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          {event.isOnline ? <Video className="h-3 w-3" /> : <MapPin className="h-3 w-3" />}
-                          <span className="truncate max-w-[120px]">
-                            {event.isOnline ? "Online" : event.location.split(",")[0]}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-2 text-right">
-                        <a
-                          href={event.registrationUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-xs text-primary hover:underline"
-                        >
-                          Register
-                          <ExternalLink className="ml-1 h-3 w-3" />
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+    <div className="space-y-4">
+      {/* Section 1: Career Events Near You */}
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-orange-500 to-red-500" />
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <MapPin className="h-5 w-5 text-primary" />
+              Career Events Near You
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocationModalOpen(true)}
+              className="text-xs gap-1"
+            >
+              <Settings className="h-3 w-3" />
+              {data?.userHasLocation ? "Change Location" : "Set Location"}
+            </Button>
           </div>
-        ) : (
-          <div className="text-center py-4 text-muted-foreground text-sm">
-            No upcoming events in this category
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          <CardDescription>
+            {data?.locationInfo?.city
+              ? `Events within 50km of ${data.locationInfo.city}${
+                  data.locationInfo.region ? `, ${data.locationInfo.region}` : ""
+                }`
+              : "Set your location to see nearby events"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!data?.userHasLocation ? (
+            <div className="text-center py-6">
+              <MapPin className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-50" />
+              <p className="text-muted-foreground mb-3">
+                Set your location to see career events near you
+              </p>
+              <Button onClick={() => setLocationModalOpen(true)}>
+                Set My Location
+              </Button>
+            </div>
+          ) : localEvents.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-xs text-muted-foreground">
+                    <th className="text-left py-2 font-medium">Date</th>
+                    <th className="text-left py-2 font-medium">Event</th>
+                    <th className="text-left py-2 font-medium hidden sm:table-cell">
+                      Type
+                    </th>
+                    <th className="text-left py-2 font-medium hidden md:table-cell">
+                      Location
+                    </th>
+                    <th className="text-right py-2 font-medium"></th>
+                  </tr>
+                </thead>
+                <tbody>{localEvents.map((e) => renderEventRow(e, true))}</tbody>
+              </table>
+            </div>
+          ) : (
+            renderEmptyState(true)
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Section 2: Online & Europe-wide Events */}
+      <Card className="border-2 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-purple-500 to-blue-500" />
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Globe className="h-5 w-5 text-primary" />
+            Online & Europe-wide Events
+          </CardTitle>
+          <CardDescription>
+            Virtual events and major conferences you can attend from anywhere
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {onlineEvents.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-xs text-muted-foreground">
+                    <th className="text-left py-2 font-medium">Date</th>
+                    <th className="text-left py-2 font-medium">Event</th>
+                    <th className="text-left py-2 font-medium hidden sm:table-cell">
+                      Type
+                    </th>
+                    <th className="text-left py-2 font-medium hidden md:table-cell">
+                      Location
+                    </th>
+                    <th className="text-right py-2 font-medium"></th>
+                  </tr>
+                </thead>
+                <tbody>{onlineEvents.map((e) => renderEventRow(e, false))}</tbody>
+              </table>
+            </div>
+          ) : (
+            renderEmptyState(false)
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Youth-focused legend */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
+        <Star className="h-3 w-3 text-yellow-500" />
+        <span>Events marked with a star are specifically designed for ages 15-20</span>
+      </div>
+
+      {/* Location Change Modal */}
+      <LocationChangeModal
+        open={locationModalOpen}
+        onOpenChange={setLocationModalOpen}
+        currentLocation={data?.locationInfo || {}}
+        onSave={handleLocationSave}
+      />
+    </div>
   );
 }

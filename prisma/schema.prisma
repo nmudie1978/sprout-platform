@@ -388,6 +388,10 @@ model YouthProfile {
 
   // Location fields (explicit city for easier filtering)
   city    String? // City name for job matching (e.g., "Oslo", "Fjellhamar")
+  region  String? // Region/county (e.g., "Viken", "Oslo")
+  country String? @default("Norway") // Country (default Norway)
+  lat     Float?  // Latitude for distance calculations
+  lng     Float?  // Longitude for distance calculations
   address String? // Full address (optional, more specific)
 
   // My Path personalization fields
@@ -2385,6 +2389,74 @@ model UserQuestionState {
   @@index([questionId])
   @@index([saved])
   @@index([lastPracticedAt])
+}
+
+// ============================================
+// CAREER EVENTS CALENDAR
+// ============================================
+
+enum CareerEventType {
+  JOBFAIR
+  WEBINAR
+  MEETUP
+  WORKSHOP
+  CONFERENCE
+}
+
+enum LocationMode {
+  IN_PERSON
+  ONLINE
+  HYBRID
+}
+
+model CareerEvent {
+  id          String          @id @default(cuid())
+  title       String
+  type        CareerEventType
+  description String          @db.Text
+  organizer   String
+
+  // Date and time
+  startDate   DateTime
+  endDate     DateTime? // Optional for single-day events
+  time        String    // Display time range e.g., "09:00 - 17:00"
+
+  // Location
+  locationMode LocationMode
+  city         String?  // City for in-person events
+  region       String?  // Region/county
+  country      String?  // Country
+  venue        String?  // Specific venue name/address
+  lat          Float?   // Latitude for distance calculations
+  lng          Float?   // Longitude for distance calculations
+  onlineUrl    String?  // URL for online events
+
+  // Registration
+  registrationUrl String
+  spots           Int?   // Optional capacity limit
+
+  // Youth targeting
+  isYouthFocused Boolean  @default(false) // Explicitly targets 15-20 age group
+  industryTypes  String[] // e.g., ["tech", "green", "health", "creative"]
+
+  // Verification - events must be verified before display
+  // Admin/curator must confirm the event exists and URL is valid
+  isVerified        Boolean   @default(false) // Only verified events are shown
+  verifiedAt        DateTime? // When the event was last verified
+  verificationNotes String?   @db.Text // Notes from verification (e.g., "URL confirmed working")
+
+  // Status
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([startDate])
+  @@index([locationMode])
+  @@index([isYouthFocused])
+  @@index([isActive])
+  @@index([isVerified])
+  @@index([city])
+  @@index([country])
 }
 
 // ============================================

@@ -1,6 +1,7 @@
 import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory, TrustSignalType, TrustSignalSource, ResponsibilityLevel, SupervisionLevel, JobCompletionOutcome } from '@prisma/client';
 import { seedYouthCareers } from './seed-youth-careers';
 import { seedJobCategories } from './seed-job-categories';
+import { seedCareerEvents } from './seed-career-events';
 
 // Use direct connection for seeding (not pooled connection)
 process.env.DATABASE_URL = process.env.DIRECT_URL || process.env.DATABASE_URL;
@@ -2522,6 +2523,9 @@ async function main() {
   // Seed youth-specific entry-level career cards
   await seedYouthCareers(prisma);
   console.log('✅ Created youth career cards');
+
+  // Seed career events
+  await seedCareerEvents(prisma);
 
   // Seed Help Docs
   const helpDocs = [
