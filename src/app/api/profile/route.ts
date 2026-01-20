@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { youthProfileSchema, profileVisibilitySchema, careerAspirationSchema } from "@/lib/validations/profile";
 import { slugify } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
+import { validateSignupAge, PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
 
 export async function GET(req: NextRequest) {
   try {
@@ -147,34 +148,21 @@ export async function PATCH(req: NextRequest) {
           );
         }
 
-        // Calculate age
-        const today = new Date();
-        let age = today.getFullYear() - dob.getFullYear();
-        const monthDiff = today.getMonth() - dob.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-          age--;
-        }
-
-        // Validate minimum age (13 years for youth platform)
-        if (age < 13) {
-          return NextResponse.json(
-            { error: "You must be at least 13 years old to use this platform" },
-            { status: 400 }
-          );
-        }
-
-        // Validate maximum age (25 years for youth platform)
-        if (age > 25) {
-          return NextResponse.json(
-            { error: "This platform is for users aged 13-25" },
-            { status: 400 }
-          );
-        }
-
         // Validate date is not in the future
+        const today = new Date();
         if (dob > today) {
           return NextResponse.json(
             { error: "Date of birth cannot be in the future" },
+            { status: 400 }
+          );
+        }
+
+        // CRITICAL: Use canonical age validation from safety/age module
+        // Platform policy: ages 16-20 only (same as signup)
+        const ageValidation = validateSignupAge(dob);
+        if (!ageValidation.valid) {
+          return NextResponse.json(
+            { error: ageValidation.error },
             { status: 400 }
           );
         }

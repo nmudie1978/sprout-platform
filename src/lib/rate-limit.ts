@@ -1,8 +1,11 @@
 /**
  * Rate Limiting Utility
  *
- * Simple in-memory rate limiting for development.
- * For production, use Upstash Redis or similar.
+ * Production-ready rate limiting with Upstash Redis support.
+ * Falls back to in-memory for development or when Redis is not configured.
+ *
+ * CRITICAL: For multi-instance deployments, Redis MUST be configured.
+ * In-memory rate limiting does NOT work across multiple server instances.
  */
 
 interface RateLimitConfig {
@@ -15,26 +18,95 @@ interface RateLimitRecord {
   resetAt: number;
 }
 
-// In-memory store (use Redis in production)
-const rateLimitStore = new Map<string, RateLimitRecord>();
+interface RateLimitResult {
+  success: boolean;
+  limit: number;
+  remaining: number;
+  reset: number;
+}
 
-// Cleanup old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, record] of rateLimitStore.entries()) {
-    if (now > record.resetAt) {
-      rateLimitStore.delete(key);
-    }
-  }
-}, 5 * 60 * 1000);
+// ============================================
+// REDIS CLIENT (Upstash)
+// ============================================
+
+// Lazy-loaded Redis client
+let redisClient: {
+  incr: (key: string) => Promise<number>;
+  expire: (key: string, seconds: number) => Promise<number>;
+  ttl: (key: string) => Promise<number>;
+} | null = null;
+
+let redisConfigured: boolean | null = null;
 
 /**
- * Check if request should be rate limited
+ * Check if Redis is configured
  */
-export function checkRateLimit(
+function isRedisConfigured(): boolean {
+  if (redisConfigured !== null) return redisConfigured;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  redisConfigured = !!(url && token && url.length > 0 && token.length > 0);
+
+  if (!redisConfigured && process.env.NODE_ENV === "production") {
+    console.warn(
+      "[Rate Limit] WARNING: Redis not configured in production. " +
+      "Rate limiting will not work across multiple instances. " +
+      "Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN."
+    );
+  }
+
+  return redisConfigured;
+}
+
+/**
+ * Get or create Redis client
+ */
+async function getRedisClient() {
+  if (!isRedisConfigured()) return null;
+  if (redisClient) return redisClient;
+
+  try {
+    // Dynamic import to avoid issues when Redis is not configured
+    const { Redis } = await import("@upstash/redis");
+    redisClient = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
+    return redisClient;
+  } catch (error) {
+    console.error("[Rate Limit] Failed to initialize Redis client:", error);
+    redisConfigured = false;
+    return null;
+  }
+}
+
+// ============================================
+// IN-MEMORY FALLBACK
+// ============================================
+
+// In-memory store (fallback for development or when Redis is unavailable)
+const rateLimitStore = new Map<string, RateLimitRecord>();
+
+// Cleanup old entries every 5 minutes (only for in-memory)
+if (typeof setInterval !== "undefined") {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, record] of rateLimitStore.entries()) {
+      if (now > record.resetAt) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }, 5 * 60 * 1000);
+}
+
+/**
+ * In-memory rate limit check (fallback)
+ */
+function checkRateLimitInMemory(
   identifier: string,
-  config: RateLimitConfig = { interval: 60000, maxRequests: 60 } // 60 req/min default
-): { success: boolean; limit: number; remaining: number; reset: number } {
+  config: RateLimitConfig
+): RateLimitResult {
   const now = Date.now();
   const record = rateLimitStore.get(identifier);
 
@@ -71,8 +143,98 @@ export function checkRateLimit(
   };
 }
 
+// ============================================
+// REDIS RATE LIMIT
+// ============================================
+
 /**
- * Get rate limit headers
+ * Redis-based rate limit check
+ */
+async function checkRateLimitRedis(
+  redis: NonNullable<typeof redisClient>,
+  identifier: string,
+  config: RateLimitConfig
+): Promise<RateLimitResult> {
+  const key = `ratelimit:${identifier}`;
+  const intervalSeconds = Math.ceil(config.interval / 1000);
+
+  try {
+    // Increment counter
+    const count = await redis.incr(key);
+
+    // Set expiry on first request
+    if (count === 1) {
+      await redis.expire(key, intervalSeconds);
+    }
+
+    // Get TTL for reset time
+    const ttl = await redis.ttl(key);
+    const resetAt = Date.now() + (ttl > 0 ? ttl * 1000 : config.interval);
+
+    const success = count <= config.maxRequests;
+    const remaining = Math.max(0, config.maxRequests - count);
+
+    return {
+      success,
+      limit: config.maxRequests,
+      remaining,
+      reset: resetAt,
+    };
+  } catch (error) {
+    console.error("[Rate Limit] Redis error, falling back to in-memory:", error);
+    // Fall back to in-memory on Redis error
+    return checkRateLimitInMemory(identifier, config);
+  }
+}
+
+// ============================================
+// PUBLIC API
+// ============================================
+
+/**
+ * Check if request should be rate limited.
+ * Uses Redis when configured, falls back to in-memory.
+ *
+ * @param identifier - Unique identifier for the rate limit bucket (e.g., "chat:userId")
+ * @param config - Rate limit configuration
+ * @returns Rate limit result with success status and metadata
+ */
+export async function checkRateLimitAsync(
+  identifier: string,
+  config: RateLimitConfig = { interval: 60000, maxRequests: 60 }
+): Promise<RateLimitResult> {
+  const redis = await getRedisClient();
+
+  if (redis) {
+    return checkRateLimitRedis(redis, identifier, config);
+  }
+
+  return checkRateLimitInMemory(identifier, config);
+}
+
+/**
+ * Synchronous rate limit check (in-memory only).
+ * Use checkRateLimitAsync when possible for Redis support.
+ *
+ * @deprecated Use checkRateLimitAsync for production deployments
+ */
+export function checkRateLimit(
+  identifier: string,
+  config: RateLimitConfig = { interval: 60000, maxRequests: 60 }
+): RateLimitResult {
+  // Log warning in production if Redis isn't configured
+  if (process.env.NODE_ENV === "production" && !isRedisConfigured()) {
+    console.warn(
+      `[Rate Limit] Using in-memory rate limiting for "${identifier}". ` +
+      "This does not work across multiple instances."
+    );
+  }
+
+  return checkRateLimitInMemory(identifier, config);
+}
+
+/**
+ * Get rate limit headers for HTTP response
  */
 export function getRateLimitHeaders(
   limit: number,

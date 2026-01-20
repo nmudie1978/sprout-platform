@@ -97,6 +97,11 @@ export default function ProfilePage() {
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
 
+  // Two-step account deletion state
+  const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
@@ -1609,7 +1614,17 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">
-              <AlertDialog>
+              <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={(open) => {
+                  setDeleteDialogOpen(open);
+                  if (!open) {
+                    // Reset state when dialog closes
+                    setDeleteStep(1);
+                    setDeleteConfirmText("");
+                  }
+                }}
+              >
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="destructive"
@@ -1621,28 +1636,92 @@ export default function ProfilePage() {
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete your
-                      account and remove all your data from our servers, including:
-                      <ul className="mt-2 ml-4 list-disc text-sm space-y-1">
-                        <li>Your profile and personal information</li>
-                        <li>All job applications and history</li>
-                        <li>Reviews and ratings</li>
-                        <li>Saved careers and preferences</li>
-                      </ul>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
-                    <AlertDialogCancel className="h-11 sm:h-10 w-full sm:w-auto">Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => deleteAccountMutation.mutate()}
-                      className="bg-red-600 hover:bg-red-700 h-11 sm:h-10 w-full sm:w-auto"
-                    >
-                      Yes, delete my account
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
+                  {deleteStep === 1 ? (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5 text-red-600" />
+                          Are you sure you want to delete your account?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your
+                          account and remove all your data from our servers, including:
+                          <ul className="mt-2 ml-4 list-disc text-sm space-y-1">
+                            <li>Your profile and personal information</li>
+                            <li>All job applications and history</li>
+                            <li>Reviews and ratings</li>
+                            <li>Saved careers and preferences</li>
+                          </ul>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                        <AlertDialogCancel className="h-11 sm:h-10 w-full sm:w-auto">
+                          Cancel
+                        </AlertDialogCancel>
+                        <Button
+                          variant="destructive"
+                          onClick={() => setDeleteStep(2)}
+                          className="h-11 sm:h-10 w-full sm:w-auto"
+                        >
+                          Continue with deletion
+                        </Button>
+                      </AlertDialogFooter>
+                    </>
+                  ) : (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                          <AlertTriangle className="h-5 w-5" />
+                          Final Confirmation Required
+                        </AlertDialogTitle>
+                        <AlertDialogDescription asChild>
+                          <div>
+                            <p className="mb-4">
+                              This is your last chance to cancel. Once deleted, your account
+                              and all associated data will be permanently removed and cannot be recovered.
+                            </p>
+                            <div className="space-y-2">
+                              <Label htmlFor="delete-confirm" className="text-foreground font-medium">
+                                Type <span className="font-bold text-red-600">DELETE</span> to confirm:
+                              </Label>
+                              <Input
+                                id="delete-confirm"
+                                type="text"
+                                placeholder="Type DELETE here"
+                                value={deleteConfirmText}
+                                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                className="border-red-200 focus:border-red-500"
+                                autoComplete="off"
+                              />
+                            </div>
+                          </div>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setDeleteStep(1);
+                            setDeleteConfirmText("");
+                          }}
+                          className="h-11 sm:h-10 w-full sm:w-auto"
+                        >
+                          Go Back
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            deleteAccountMutation.mutate();
+                            setDeleteDialogOpen(false);
+                          }}
+                          disabled={deleteConfirmText !== "DELETE" || deleteAccountMutation.isPending}
+                          className="h-11 sm:h-10 w-full sm:w-auto"
+                        >
+                          {deleteAccountMutation.isPending ? "Deleting..." : "Permanently Delete Account"}
+                        </Button>
+                      </AlertDialogFooter>
+                    </>
+                  )}
                 </AlertDialogContent>
               </AlertDialog>
             </CardContent>

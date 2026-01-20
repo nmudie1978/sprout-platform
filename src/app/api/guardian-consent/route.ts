@@ -57,15 +57,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // TODO: In production, send actual email to guardian with consent link
-    // For MVP, we'll just return the token so it can be used directly
-    const consentLink = `/guardian-consent/${guardianToken}`;
+    // TODO: Send actual email to guardian with consent link
+    // The consent link is: /guardian-consent/${guardianToken}
+    // This should be sent via email, NEVER returned to the client
 
     return NextResponse.json({
       success: true,
-      message: "Guardian consent request sent",
-      // Include link for testing (remove in production)
-      _testConsentLink: consentLink,
+      message: "Guardian consent request sent. Please ask your guardian to check their email.",
+      // Note: Consent link is sent via email only - never exposed in API response
     });
   } catch (error) {
     console.error("Failed to request guardian consent:", error);
