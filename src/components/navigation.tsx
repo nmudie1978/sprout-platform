@@ -31,6 +31,12 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
 import { Avatar } from "@/components/avatar";
@@ -184,6 +190,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   // Primary navigation only - secondary items moved to avatar menu
   const youthLinks: NavLink[] = [
+    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true },
     { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
@@ -252,13 +259,13 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
           </Link>
 
           {/* Desktop Navigation - Clean primary nav only */}
-          <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
-            {links.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
+          <TooltipProvider delayDuration={200}>
+            <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
+              {links.map((link) => {
+                const Icon = link.icon;
+                const isActive = pathname === link.href;
 
-              return (
-                <div key={link.href} className="relative group">
+                const linkContent = (
                   <motion.div
                     whileHover={{ scale: 1.03, y: -1 }}
                     whileTap={{ scale: 0.97 }}
@@ -266,7 +273,8 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center space-x-1.5 rounded-lg px-3 py-2 text-sm transition-all duration-200",
+                        "flex items-center rounded-lg transition-all duration-200",
+                        link.iconOnly ? "p-2" : "space-x-1.5 px-3 py-2 text-sm",
                         isActive
                           ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-medium`
                           : "text-foreground/80 font-medium hover:bg-muted hover:text-foreground"
@@ -276,24 +284,41 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         "h-4 w-4",
                         isActive && "animate-pulse"
                       )} />
-                      <span>{link.label}</span>
+                      {link.label && <span>{link.label}</span>}
                     </Link>
                   </motion.div>
+                );
 
-                  {/* Active indicator dot */}
-                  {isActive && (
-                    <motion.div
-                      className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
-                      layoutId="activeIndicator"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                return (
+                  <div key={link.href} className="relative group">
+                    {link.iconOnly ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          {linkContent}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Dashboard</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      linkContent
+                    )}
+
+                    {/* Active indicator dot */}
+                    {isActive && (
+                      <motion.div
+                        className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
+                        layoutId="activeIndicator"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </TooltipProvider>
 
           {/* Right side - Notifications + Avatar Menu only */}
           <div className="hidden md:flex md:items-center md:space-x-2">
@@ -385,6 +410,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
               {links.map((link, index) => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href;
+                const displayLabel = link.label || (link.iconOnly ? "Dashboard" : "");
                 return (
                   <motion.div
                     key={link.href}
@@ -403,7 +429,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Icon className={cn("h-5 w-5", isActive && "animate-pulse")} />
-                      <span>{link.label}</span>
+                      <span>{displayLabel}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
