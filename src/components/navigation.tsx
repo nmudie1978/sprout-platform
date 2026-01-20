@@ -4,41 +4,37 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
   Compass,
   LayoutDashboard,
   MessageSquare,
-  User,
-  LogOut,
-  Menu,
   TrendingUp,
   Badge as BadgeIcon,
   Building2,
   Shield,
   Sprout,
+  Menu,
   X,
   Settings,
   BarChart3,
-  Bot,
+  User,
   Target,
   HelpCircle,
+  Flag,
+  LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { motion, AnimatePresence } from "framer-motion";
 import { NotificationBell } from "@/components/notification-bell";
 import { Avatar } from "@/components/avatar";
+import { UserAvatarMenu } from "@/components/user-avatar-menu";
 
 interface NavigationProps {
   userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
@@ -57,10 +53,69 @@ interface NavLink {
   iconColor?: string;
 }
 
+// Icon mapping for mobile menu sections
+const mobileIcons = {
+  user: User,
+  settings: Settings,
+  target: Target,
+  help: HelpCircle,
+  flag: Flag,
+};
+
+// Helper component for mobile menu sections
+function MobileMenuSection({
+  title,
+  items,
+  pathname,
+  currentRole,
+  onClose,
+  delay,
+}: {
+  title: string;
+  items: Array<{ href: string; label: string; icon: keyof typeof mobileIcons }>;
+  pathname: string;
+  currentRole: { accentColor: string };
+  onClose: () => void;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ delay }}
+    >
+      <span className="text-xs text-muted-foreground uppercase tracking-wider px-4 py-2 block">
+        {title}
+      </span>
+      {items.map((item) => {
+        const Icon = mobileIcons[item.icon];
+        const isActive = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              "flex items-center space-x-3 rounded-xl px-4 py-2.5 text-sm transition-all block",
+              isActive
+                ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-medium`
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+            onClick={onClose}
+          >
+            <Icon className={cn("h-4 w-4", isActive && "animate-pulse")} />
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
+    </motion.div>
+  );
+}
+
 export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const { theme, setTheme } = useTheme();
 
   // Fetch avatar dynamically for youth users so it updates when changed
   const { data: profile } = useQuery({
@@ -127,31 +182,25 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const currentRole = roleConfig[userRole];
 
+  // Primary navigation only - secondary items moved to avatar menu
   const youthLinks: NavLink[] = [
-    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-blue-500" },
     { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
     { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
-    { href: "/goals", label: "", icon: Target, isCore: false, iconOnly: true, iconColor: "text-amber-500" },
-    { href: "/career-advisor", label: "", icon: Bot, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
-    { href: "/legal/safety", label: "", icon: HelpCircle, isCore: false, iconOnly: true, iconColor: "text-green-500" },
-    { href: "/profile", label: "", icon: User, isCore: false, iconOnly: true },
   ];
 
   const employerLinks: NavLink[] = [
-    { href: "/employer/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-purple-500" },
-    { href: "/employer/post-job", label: "Post Job", icon: Briefcase, isCore: false },
-    { href: "/employer/talent", label: "Browse Talent", icon: User, isCore: false },
-    { href: "/employer/settings", label: "Settings", icon: Settings, isCore: false },
-    { href: "/legal/safety", label: "", icon: HelpCircle, isCore: false, iconOnly: true, iconColor: "text-green-500" },
+    { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: true },
+    { href: "/employer/post-job", label: "Post Job", icon: Briefcase, isCore: true },
+    { href: "/employer/talent", label: "Browse Talent", icon: Compass, isCore: true },
   ];
 
   const adminLinks: NavLink[] = [
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3, isCore: true },
-    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true, iconColor: "text-orange-500" },
-    { href: "/admin/questions", label: "Moderate Q&A", icon: MessageSquare, isCore: false },
-    { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: false },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, isCore: true },
+    { href: "/admin/questions", label: "Moderate Q&A", icon: MessageSquare, isCore: true },
+    { href: "/insights", label: "Industry Insights", icon: TrendingUp, isCore: true },
   ];
 
   // Guardian link - shown only for users who are guardians
@@ -202,28 +251,14 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <TooltipProvider delayDuration={200}>
-            <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
-              {links.map((link) => {
-                const Icon = link.icon;
-                const isActive = pathname === link.href;
-                const isProfile = link.href === "/profile";
-                const isAiAdvisor = link.href === "/career-advisor";
-                const isGoals = link.href === "/goals";
-                const isDashboard = link.href === "/dashboard" || link.href === "/employer/dashboard";
+          {/* Desktop Navigation - Clean primary nav only */}
+          <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
+            {links.map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname === link.href;
 
-                // Get tooltip text for icon-only items
-                const getTooltipText = () => {
-                  if (isProfile) return "My Profile";
-                  if (isAiAdvisor) return "AI Career Advisor";
-                  if (isGoals) return "My Goals";
-                  if (isDashboard) return "Dashboard";
-                  if (link.href === "/legal/safety") return "Help & Safety";
-                  return link.label;
-                };
-
-                const linkContent = (
+              return (
+                <div key={link.href} className="relative group">
                   <motion.div
                     whileHover={{ scale: 1.03, y: -1 }}
                     whileTap={{ scale: 0.97 }}
@@ -231,108 +266,44 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center space-x-1 rounded-lg px-2 py-1.5 text-xs transition-all duration-200",
+                        "flex items-center space-x-1.5 rounded-lg px-3 py-2 text-sm transition-all duration-200",
                         isActive
-                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
-                          : link.isCore
-                            ? "text-foreground font-medium hover:bg-primary/10 border border-primary/20"
-                            : "text-muted-foreground font-medium hover:text-foreground hover:bg-muted/50"
+                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-medium`
+                          : "text-foreground/80 font-medium hover:bg-muted hover:text-foreground"
                       )}
                     >
                       <Icon className={cn(
-                        isProfile ? "h-5 w-5" : "h-4 w-4",
-                        isActive && "animate-pulse",
-                        link.isCore && !isActive && "text-primary",
-                        !isActive && link.iconColor
+                        "h-4 w-4",
+                        isActive && "animate-pulse"
                       )} />
-                      {link.label && <span className="hidden lg:inline">{link.label}</span>}
+                      <span>{link.label}</span>
                     </Link>
                   </motion.div>
-                );
 
-                return (
-                  <div key={link.href} className="relative group">
-                    {link.iconOnly ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          {linkContent}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{getTooltipText()}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      linkContent
-                    )}
+                  {/* Active indicator dot */}
+                  {isActive && (
+                    <motion.div
+                      className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
+                      layoutId="activeIndicator"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-                    {/* Active indicator dot */}
-                    {isActive && (
-                      <motion.div
-                        className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
-                        layoutId="activeIndicator"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </TooltipProvider>
-
-          {/* User Menu */}
-          <div className="hidden md:flex md:items-center md:space-x-3">
-            {/* Notification Bell */}
+          {/* Right side - Notifications + Avatar Menu only */}
+          <div className="hidden md:flex md:items-center md:space-x-2">
             <NotificationBell />
-
-            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-              <ThemeToggle />
-            </motion.div>
-
-            {/* Animated Role Badge */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              <Badge className={cn("shadow-lg hover:shadow-xl transition-shadow", currentRole.className)}>
-                <currentRole.icon className="mr-1.5 h-3.5 w-3.5" />
-                {currentRole.label}
-              </Badge>
-            </motion.div>
-
-            <div className="h-8 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
-
-            {/* User avatar and name */}
-            {userRole === "YOUTH" && userAvatarId ? (
-              <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <Avatar avatarId={userAvatarId} size="sm" />
-                <span className="text-sm font-medium hidden lg:block max-w-[100px] truncate">
-                  {userName && userName.length > 12
-                    ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-                    : userName}
-                </span>
-              </Link>
-            ) : (
-              <span className="text-sm font-medium max-w-[120px] truncate">
-                {userName && userName.length > 15
-                  ? userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-                  : userName}
-              </span>
-            )}
-
-            {/* Sign out button */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span className="hidden lg:inline">Sign Out</span>
-              </Button>
-            </motion.div>
+            <UserAvatarMenu
+              userRole={userRole}
+              userName={userName}
+              userAvatarId={userAvatarId}
+              userProfilePic={userProfilePic}
+            />
           </div>
 
           {/* Mobile menu button */}
@@ -379,7 +350,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
             transition={{ duration: 0.3 }}
           >
             <div className="space-y-1 px-4 pb-4 pt-2">
-              {/* Role Badge & User - Mobile */}
+              {/* User Header - Mobile */}
               <motion.div
                 className={`flex items-center justify-between p-4 rounded-xl mb-3 bg-gradient-to-r ${currentRole.accentColor}`}
                 initial={{ x: -20, opacity: 0 }}
@@ -410,7 +381,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 </Badge>
               </motion.div>
 
-              {/* Mobile Links */}
+              {/* Primary Navigation Links - Mobile */}
               {links.map((link, index) => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href;
@@ -426,20 +397,13 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       className={cn(
                         "flex items-center space-x-3 rounded-xl px-4 py-3 text-sm transition-all block",
                         isActive
-                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-bold`
-                          : link.isCore
-                            ? "font-bold text-foreground bg-primary/5 border-2 border-primary/30 hover:bg-primary/10"
-                            : "font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-medium`
+                          : "font-medium text-foreground hover:bg-muted"
                       )}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <Icon className={cn(
-                        "h-5 w-5",
-                        isActive && "animate-pulse",
-                        link.isCore && !isActive && "text-primary",
-                        !isActive && link.iconColor
-                      )} />
-                      <span>{link.label || (link.href.includes("dashboard") ? "Dashboard" : link.href === "/profile" ? "My Profile" : link.href === "/career-advisor" ? "AI Career Advisor" : link.href === "/goals" ? "My Goals" : link.href === "/legal/safety" ? "Help & Safety" : "")}</span>
+                      <Icon className={cn("h-5 w-5", isActive && "animate-pulse")} />
+                      <span>{link.label}</span>
                       {isActive && (
                         <span className="ml-auto h-2 w-2 rounded-full bg-white inline-block" />
                       )}
@@ -448,14 +412,71 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 );
               })}
 
-              {/* Sign Out - Mobile */}
+              {/* Divider */}
+              <div className="my-3 border-t border-border/50" />
+
+              {/* Secondary Links - Mobile (Account & Safety) */}
+              <MobileMenuSection
+                title="Account"
+                items={[
+                  { href: "/profile", label: "Profile", icon: "user" },
+                  { href: userRole === "EMPLOYER" ? "/employer/settings" : "/settings", label: "Settings", icon: "settings" },
+                ]}
+                pathname={pathname}
+                currentRole={currentRole}
+                onClose={() => setMobileMenuOpen(false)}
+                delay={0.15 + links.length * 0.05}
+              />
+
+              {userRole === "YOUTH" && (
+                <MobileMenuSection
+                  title="Growth"
+                  items={[
+                    { href: "/goals", label: "My Goals", icon: "target" },
+                  ]}
+                  pathname={pathname}
+                  currentRole={currentRole}
+                  onClose={() => setMobileMenuOpen(false)}
+                  delay={0.2 + links.length * 0.05}
+                />
+              )}
+
+              <MobileMenuSection
+                title="Safety"
+                items={[
+                  { href: "/legal/safety", label: "Health & Safety", icon: "help" },
+                  { href: "/report", label: "Report a concern", icon: "flag" },
+                ]}
+                pathname={pathname}
+                currentRole={currentRole}
+                onClose={() => setMobileMenuOpen(false)}
+                delay={0.25 + links.length * 0.05}
+              />
+
+              {/* Divider */}
+              <div className="my-3 border-t border-border/50" />
+
+              {/* Theme & Sign Out - Mobile */}
               <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.15 + links.length * 0.05 }}
+                transition={{ delay: 0.3 + links.length * 0.05 }}
+                className="space-y-1"
               >
                 <button
-                  className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-all mt-2"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="flex w-full items-center space-x-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="h-4 w-4" />
+                  ) : (
+                    <Moon className="h-4 w-4" />
+                  )}
+                  <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+                </button>
+
+                <button
+                  className="flex w-full items-center space-x-3 rounded-xl px-4 py-3 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-all"
                   onClick={() => signOut({ callbackUrl: "/" })}
                 >
                   <LogOut className="h-5 w-5" />
