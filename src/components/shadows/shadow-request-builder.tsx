@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +22,11 @@ import {
   Check,
   AlertCircle,
   Loader2,
+  Building2,
+  Search,
+  Star,
+  Globe,
+  Users,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -49,14 +56,28 @@ const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "S
 
 // Step configuration
 const STEPS = [
-  { id: 1, title: "Learning Goal", icon: Target, description: "What do you want to understand?" },
-  { id: 2, title: "Role Focus", icon: Briefcase, description: "Which role are you curious about?" },
-  { id: 3, title: "Observation Scope", icon: Eye, description: "This is observation only" },
-  { id: 4, title: "Format Preference", icon: Clock, description: "How long would you like to shadow?" },
-  { id: 5, title: "Availability", icon: CalendarDays, description: "When are you available?" },
-  { id: 6, title: "What You Bring", icon: Heart, description: "Your commitments" },
-  { id: 7, title: "Request Message", icon: MessageSquare, description: "Write your message" },
+  { id: 1, title: "Choose Host", icon: Building2, description: "Who do you want to shadow?" },
+  { id: 2, title: "Learning Goal", icon: Target, description: "What do you want to understand?" },
+  { id: 3, title: "Role Focus", icon: Briefcase, description: "Which role are you curious about?" },
+  { id: 4, title: "Observation Scope", icon: Eye, description: "This is observation only" },
+  { id: 5, title: "Format Preference", icon: Clock, description: "How long would you like to shadow?" },
+  { id: 6, title: "Availability", icon: CalendarDays, description: "When are you available?" },
+  { id: 7, title: "What You Bring", icon: Heart, description: "Your commitments" },
+  { id: 8, title: "Request Message", icon: MessageSquare, description: "Write your message" },
 ];
+
+const TOTAL_STEPS = 8;
+
+// Host type for selection
+interface ShadowHost {
+  id: string;
+  name: string;
+  logo?: string | null;
+  bio?: string | null;
+  website?: string | null;
+  rating?: number | null;
+  reviewCount: number;
+}
 
 interface ShadowRequestBuilderProps {
   onSubmit: (data: ShadowRequestData) => Promise<void>;
@@ -67,6 +88,8 @@ interface ShadowRequestBuilderProps {
 }
 
 export interface ShadowRequestData {
+  hostId?: string;
+  hostName?: string;
   learningGoals: string[];
   roleTitle: string;
   roleCategory?: string;
@@ -97,8 +120,15 @@ export function ShadowRequestBuilder({
   const [currentStep, setCurrentStep] = useState(1);
   const [isRewriting, setIsRewriting] = useState(false);
 
+  // Host selection state
+  const [hosts, setHosts] = useState<ShadowHost[]>([]);
+  const [hostsLoading, setHostsLoading] = useState(true);
+  const [hostSearch, setHostSearch] = useState("");
+
   // Form state
   const [formData, setFormData] = useState<ShadowRequestData>({
+    hostId: initialData?.hostId,
+    hostName: initialData?.hostName,
     learningGoals: initialData?.learningGoals || [],
     roleTitle: initialData?.roleTitle || "",
     roleCategory: initialData?.roleCategory || "",
@@ -118,6 +148,31 @@ export function ShadowRequestBuilder({
     emergencyContact: initialData?.emergencyContact || "",
     emergencyContactPhone: initialData?.emergencyContactPhone || "",
   });
+
+  // Fetch available hosts
+  useEffect(() => {
+    const fetchHosts = async () => {
+      setHostsLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (hostSearch) params.set("search", hostSearch);
+
+        const response = await fetch(`/api/shadows/hosts?${params}`);
+        if (response.ok) {
+          const data = await response.json();
+          setHosts(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hosts:", error);
+      } finally {
+        setHostsLoading(false);
+      }
+    };
+
+    // Debounce the search
+    const timeoutId = setTimeout(fetchHosts, 300);
+    return () => clearTimeout(timeoutId);
+  }, [hostSearch]);
 
   const updateFormData = useCallback((updates: Partial<ShadowRequestData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
@@ -171,21 +226,27 @@ export function ShadowRequestBuilder({
     }
   };
 
+  const selectHost = (host: ShadowHost) => {
+    updateFormData({ hostId: host.id, hostName: host.name });
+  };
+
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return formData.learningGoals.length > 0 && formData.learningGoals.length <= 2;
+        return !!formData.hostId; // Must select a host
       case 2:
-        return formData.roleTitle.trim().length >= 2;
+        return formData.learningGoals.length > 0 && formData.learningGoals.length <= 2;
       case 3:
-        return true; // Observation scope is informational
+        return formData.roleTitle.trim().length >= 2;
       case 4:
-        return !!formData.format;
+        return true; // Observation scope is informational
       case 5:
-        return true; // Availability is optional
+        return !!formData.format;
       case 6:
-        return formData.acceptsSafeguarding;
+        return true; // Availability is optional
       case 7:
+        return formData.acceptsSafeguarding;
+      case 8:
         return formData.message.trim().length >= 20;
       default:
         return false;
@@ -193,7 +254,7 @@ export function ShadowRequestBuilder({
   };
 
   const handleNext = () => {
-    if (currentStep < 7 && canProceed()) {
+    if (currentStep < TOTAL_STEPS && canProceed()) {
       setCurrentStep(prev => prev + 1);
     }
   };
@@ -217,6 +278,125 @@ export function ShadowRequestBuilder({
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
+        return (
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Select a verified employer you'd like to shadow. They'll receive your request directly.
+            </p>
+
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by company name..."
+                value={hostSearch}
+                onChange={(e) => setHostSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Host list */}
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {hostsLoading ? (
+                <>
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                </>
+              ) : hosts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">
+                    {hostSearch
+                      ? "No hosts found matching your search"
+                      : "No verified hosts available yet"}
+                  </p>
+                  <p className="text-xs mt-1">
+                    Try a different search or check back later
+                  </p>
+                </div>
+              ) : (
+                hosts.map((host) => {
+                  const isSelected = formData.hostId === host.id;
+                  return (
+                    <button
+                      key={host.id}
+                      onClick={() => selectHost(host)}
+                      className={cn(
+                        "w-full flex items-start gap-4 p-4 rounded-xl border text-left transition-all",
+                        isSelected
+                          ? "border-primary bg-primary/5 ring-2 ring-primary/20"
+                          : "hover:border-muted-foreground/50 hover:bg-muted/30"
+                      )}
+                    >
+                      {/* Logo/Avatar */}
+                      <div className="shrink-0">
+                        {host.logo ? (
+                          <img
+                            src={host.logo}
+                            alt={host.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
+                            <Building2 className="h-6 w-6 text-purple-600" />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-medium truncate">{host.name}</h3>
+                          {isSelected && (
+                            <div className="p-0.5 rounded-full bg-primary text-white shrink-0">
+                              <Check className="h-3 w-3" />
+                            </div>
+                          )}
+                        </div>
+
+                        {host.bio && (
+                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                            {host.bio}
+                          </p>
+                        )}
+
+                        <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                          {host.rating && (
+                            <span className="flex items-center gap-1">
+                              <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                              {host.rating.toFixed(1)}
+                              {host.reviewCount > 0 && (
+                                <span>({host.reviewCount})</span>
+                              )}
+                            </span>
+                          )}
+                          {host.website && (
+                            <span className="flex items-center gap-1">
+                              <Globe className="h-3 w-3" />
+                              Website
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+
+            {formData.hostId && formData.hostName && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                <Check className="h-4 w-4 shrink-0" />
+                <span className="text-sm">
+                  Selected: <strong>{formData.hostName}</strong>
+                </span>
+              </div>
+            )}
+          </div>
+        );
+
+      case 2:
         return (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -255,7 +435,7 @@ export function ShadowRequestBuilder({
           </div>
         );
 
-      case 2:
+      case 3:
         return (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -289,7 +469,7 @@ export function ShadowRequestBuilder({
           </div>
         );
 
-      case 3:
+      case 4:
         return (
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
@@ -321,7 +501,7 @@ export function ShadowRequestBuilder({
           </div>
         );
 
-      case 4:
+      case 5:
         return (
           <ShadowTemplates
             selectedFormat={formData.format}
@@ -329,7 +509,7 @@ export function ShadowRequestBuilder({
           />
         );
 
-      case 5:
+      case 6:
         return (
           <div className="space-y-6">
             <p className="text-sm text-muted-foreground">
@@ -405,7 +585,7 @@ export function ShadowRequestBuilder({
           </div>
         );
 
-      case 6:
+      case 7:
         return (
           <div className="space-y-6">
             <div>
@@ -476,7 +656,7 @@ export function ShadowRequestBuilder({
           </div>
         );
 
-      case 7:
+      case 8:
         return (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
@@ -551,7 +731,7 @@ export function ShadowRequestBuilder({
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-muted-foreground">
-            Step {currentStep} of 7
+            Step {currentStep} of {TOTAL_STEPS}
           </span>
           <Button variant="ghost" size="sm" onClick={handleSaveDraft} disabled={isSubmitting}>
             Save Draft
@@ -561,7 +741,7 @@ export function ShadowRequestBuilder({
           <motion.div
             className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
             initial={{ width: 0 }}
-            animate={{ width: `${(currentStep / 7) * 100}%` }}
+            animate={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
@@ -610,7 +790,7 @@ export function ShadowRequestBuilder({
           Back
         </Button>
 
-        {currentStep < 7 ? (
+        {currentStep < TOTAL_STEPS ? (
           <Button
             onClick={handleNext}
             disabled={!canProceed() || isSubmitting}
