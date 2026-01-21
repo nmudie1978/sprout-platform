@@ -173,12 +173,12 @@ export function NextStepPanel() {
             </div>
           </Link>
 
-          {/* 3. My Growth */}
-          <Link href="/growth" className="block group">
+          {/* 3. My Journey */}
+          <Link href="/my-journey" className="block group">
             <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-purple-300 transition-colors">
               <div className="flex items-center gap-1.5 text-purple-500 mb-1.5">
                 <TrendingUp className="h-3.5 w-3.5" />
-                <span className="text-[10px] font-medium uppercase tracking-wide">Growth</span>
+                <span className="text-[10px] font-medium uppercase tracking-wide">My Journey</span>
                 <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <p className="text-xs font-medium">Track progress</p>

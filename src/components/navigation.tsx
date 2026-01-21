@@ -199,8 +199,9 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
     "/insights": "See what's shaping careers globally — trends, forces, and opportunities.",
   };
 
-  // Primary navigation - 3 pillars only
+  // Primary navigation - 3 pillars + dashboard icon
   const youthLinks: NavLink[] = [
+    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true },
     { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
@@ -273,7 +274,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
               {links.map((link) => {
                 const Icon = link.icon;
                 const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
-                const tooltipText = pillarTooltips[link.href];
+                const tooltipText = link.iconOnly ? "Dashboard" : pillarTooltips[link.href];
 
                 const linkContent = (
                   <motion.div
@@ -284,8 +285,9 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                     <Link
                       href={link.href}
                       className={cn(
-                        "relative flex items-center space-x-2 px-4 py-2.5 text-sm rounded-xl transition-all duration-200 ease-out",
+                        "relative flex items-center rounded-xl transition-all duration-200 ease-out",
                         "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/50",
+                        link.iconOnly ? "p-2.5" : "space-x-2 px-4 py-2.5 text-sm",
                         isActive
                           ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg shadow-primary/25 font-semibold`
                           : "text-foreground/70 font-medium hover:text-foreground hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:shadow-md hover:shadow-primary/10"
@@ -295,7 +297,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                         "h-4 w-4 transition-transform duration-200",
                         isActive ? "scale-110" : "group-hover:scale-105"
                       )} />
-                      <span>{link.label}</span>
+                      {!link.iconOnly && <span>{link.label}</span>}
                       {/* Subtle glow effect on hover */}
                       {!isActive && (
                         <span className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
