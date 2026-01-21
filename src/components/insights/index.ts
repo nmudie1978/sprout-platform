@@ -19,3 +19,4 @@ export { ReshapingJobsCard } from "./reshaping-jobs-card";
 export { ArticleInsightCard } from "./article-insight-card";
 export { WorldLensArticles } from "./world-lens-articles";
 export { InsightVideos } from "./insight-videos";
+export { GlobalInnovationIndex } from "./global-innovation-index";

@@ -21,6 +21,7 @@ import {
   ReshapingJobsCard,
   WorldLensArticles,
   InsightVideos,
+  GlobalInnovationIndex,
 } from "@/components/insights";
 
 type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
@@ -158,12 +159,30 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 3: EVENTS CALENDAR */}
+      {/* SECTION 3: GLOBAL INNOVATION INDEX */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="mb-10"
+      >
+        <h2 className="text-sm font-medium mb-3 flex items-center gap-2">
+          <span>Global Innovation Index</span>
+          <span className="text-xs text-muted-foreground font-normal">(WIPO annual report)</span>
+        </h2>
+        <div className="max-w-xl">
+          <GlobalInnovationIndex />
+        </div>
+      </motion.section>
+
+      {/* ============================================ */}
+      {/* SECTION 4: EVENTS CALENDAR */}
+      {/* ============================================ */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
         className="mb-10"
         id="events"
       >
@@ -171,12 +190,12 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 4: INSIGHT VIDEOS */}
+      {/* SECTION 5: INSIGHT VIDEOS */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-10"
       >
         <h2 className="text-sm font-medium mb-3 flex items-center gap-2">
@@ -208,6 +227,10 @@ export default function IndustryInsightsPage() {
               <span className="text-muted-foreground/50">•</span>
               <a href="https://www.oecd.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 OECD
+              </a>
+              <span className="text-muted-foreground/50">•</span>
+              <a href="https://www.wipo.int" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                WIPO
               </a>
               <span className="text-muted-foreground/50">•</span>
               <a href="https://www.mckinsey.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
