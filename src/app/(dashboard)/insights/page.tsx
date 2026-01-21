@@ -8,6 +8,8 @@ import {
   TrendingUp,
   Calendar,
   CheckCircle2,
+  FileText,
+  Download,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -118,6 +120,28 @@ export default function IndustryInsightsPage() {
 
           {/* Insight 3: What's reshaping jobs */}
           <ReshapingJobsCard />
+        </div>
+
+        {/* PDF Download CTAs */}
+        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+          <a
+            href="/api/reports/fast-facts"
+            download="sprout-fast-facts-innovation.pdf"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-sm text-primary"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Fast Facts (2-page overview)</span>
+            <Download className="h-3.5 w-3.5 opacity-60" />
+          </a>
+          <a
+            href="/api/reports/career-snapshot"
+            download="world-of-work-career-industry-snapshot.pdf"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border bg-background hover:bg-muted/50 transition-colors text-sm text-muted-foreground hover:text-foreground"
+          >
+            <FileText className="h-4 w-4" />
+            <span>Full career & industry report</span>
+            <Download className="h-3.5 w-3.5 opacity-60" />
+          </a>
         </div>
       </motion.section>
 
