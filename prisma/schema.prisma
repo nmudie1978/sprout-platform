@@ -322,6 +322,11 @@ model User {
   // Beta Feedback
   feedbackSubmissions Feedback[]
 
+  // Career Shadowing
+  shadowRequestsAsYouth ShadowRequest[]    @relation("YouthShadowRequests")
+  shadowRequestsAsHost  ShadowRequest[]    @relation("HostShadowRequests")
+  shadowReflections     ShadowReflection[] @relation("YouthShadowReflections")
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -800,6 +805,13 @@ enum NotificationType {
   GUARDIAN_LINK_ACCEPTED // Link request accepted
   GUARDIAN_LINK_REJECTED // Link request rejected
   GUARDIAN_LINK_REVOKED // Link was revoked
+  // Career Shadowing
+  NEW_SHADOW_REQUEST // Host receives new shadow request
+  SHADOW_APPROVED // Youth's shadow request approved
+  SHADOW_DECLINED // Youth's shadow request declined
+  SHADOW_COMPLETED // Shadow experience completed
+  SHADOW_CANCELLED // Shadow request cancelled
+  SHADOW_REPORT // Admin notified of shadow issue report
 }
 
 enum RecommendationStatus {
@@ -2512,4 +2524,167 @@ model Feedback {
 
   @@index([createdAt])
   @@index([role])
+}
+
+// ============================================
+// CAREER SHADOW REQUESTS
+// Observation-only workplace experiences
+// ============================================
+
+enum ShadowRequestStatus {
+  DRAFT // Youth is building the request
+  PENDING // Submitted, awaiting host response
+  APPROVED // Host approved, preparing for shadow
+  DECLINED // Host declined
+  COMPLETED // Shadow completed
+  CANCELLED // Cancelled by either party
+  NO_SHOW // Youth did not attend
+}
+
+enum ShadowFormat {
+  WALKTHROUGH // 2-hour workplace walkthrough
+  HALF_DAY // Half-day observation (3-4 hours)
+  FULL_DAY // Full day "day in the life" (6-8 hours)
+}
+
+enum ShadowLearningGoal {
+  DAILY_WORK // What does a typical day look like?
+  SKILLS_USED // What skills are needed?
+  WORK_ENVIRONMENT // What's the workplace culture like?
+  CAREER_PATH // How do people get into this role?
+  EDUCATION_REQUIRED // What education or training is needed?
+  CHALLENGES // What are the hard parts of the job?
+}
+
+// Career Shadow Request
+model ShadowRequest {
+  id        String              @id @default(cuid())
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  status    ShadowRequestStatus @default(DRAFT)
+
+  // Youth making the request
+  youthId String
+  youth   User   @relation("YouthShadowRequests", fields: [youthId], references: [id], onDelete: Cascade)
+
+  // Host (employer/professional) receiving the request
+  hostId String?
+  host   User?   @relation("HostShadowRequests", fields: [hostId], references: [id], onDelete: SetNull)
+
+  // STEP 1: Learning Goals (max 2)
+  learningGoals ShadowLearningGoal[]
+
+  // STEP 2: Role Focus (single role)
+  roleTitle    String  @db.VarChar(100) // e.g., "Software Developer", "Veterinarian"
+  roleCategory String? @db.VarChar(50) // Optional category grouping
+
+  // STEP 3: Observation Scope (always observation-only, stored for clarity)
+  isObservationOnly Boolean @default(true) // Always true, non-editable
+
+  // STEP 4: Format Preference
+  format ShadowFormat @default(WALKTHROUGH)
+
+  // STEP 5: Availability (date windows, not exact dates)
+  availabilityStart DateTime? // Earliest available date
+  availabilityEnd   DateTime? // Latest available date
+  preferredDays     String[] // e.g., ["Monday", "Tuesday", "Friday"]
+  flexibleSchedule  Boolean   @default(true) // Youth is flexible on timing
+
+  // STEP 6: What Youth Brings (commitments)
+  commitsPunctuality   Boolean @default(true)
+  commitsCuriosity     Boolean @default(true)
+  commitsRespect       Boolean @default(true)
+  commitsFollowRules   Boolean @default(true)
+  acceptsNda           Boolean @default(false) // Optional NDA acceptance
+  acceptsSafeguarding  Boolean @default(false) // Accepted safeguarding rules
+
+  // STEP 7: Request Message
+  message         String  @db.Text // Youth's message to host
+  aiAssistedDraft Boolean @default(false) // Was AI used to help draft?
+
+  // Scheduled details (set after approval)
+  scheduledDate      DateTime? // Confirmed shadow date
+  scheduledStartTime String?   // e.g., "09:00"
+  scheduledEndTime   String?   // e.g., "12:00"
+  locationName       String?   // Workplace name
+  locationAddress    String?   // Workplace address
+
+  // Host response
+  hostResponseAt   DateTime?
+  hostMessage      String?   @db.Text // Optional message from host
+  declineReason    String?   @db.VarChar(200) // If declined
+
+  // Guardian consent (required for under 16)
+  requiresGuardianConsent Boolean   @default(false)
+  guardianNotified        Boolean   @default(false)
+  guardianConsentAt       DateTime?
+
+  // Safety & Trust
+  hostVerified         Boolean @default(false) // Host has verification badge
+  publicWorkplace      Boolean @default(true) // Workplace is public/registered
+  noPrivateTransport   Boolean @default(true) // No private transport offered
+  noIsolatedScenarios  Boolean @default(true) // Avoids 1:1 isolated scenarios
+  emergencyContact     String? @db.VarChar(100) // Youth's emergency contact
+  emergencyContactPhone String? @db.VarChar(20)
+
+  // Completion tracking
+  completedAt    DateTime?
+  youthAttended  Boolean?
+  durationMinutes Int? // Actual duration
+
+  // Reports
+  reportedIssue    Boolean   @default(false)
+  reportedAt       DateTime?
+  reportDetails    String?   @db.Text
+  reportResolvedAt DateTime?
+
+  // Relation to reflection
+  reflection ShadowReflection?
+
+  @@index([youthId])
+  @@index([hostId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([scheduledDate])
+  @@index([roleTitle])
+}
+
+// Post-Shadow Reflection
+model ShadowReflection {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Link to shadow request
+  shadowRequestId String        @unique
+  shadowRequest   ShadowRequest @relation(fields: [shadowRequestId], references: [id], onDelete: Cascade)
+
+  // Youth who completed the reflection
+  youthId String
+  youth   User   @relation("YouthShadowReflections", fields: [youthId], references: [id], onDelete: Cascade)
+
+  // Reflection questions
+  whatSurprised       String? @db.Text // What surprised you?
+  whatLiked           String? @db.Text // What did you like?
+  whatDisliked        String? @db.Text // What didn't you like?
+  skillsNoticed       String[] // Skills you noticed being used
+  wouldExplore        Boolean? // Would you want to explore this further?
+  wouldExploreReason  String?  @db.Text // Why or why not?
+
+  // Additional insights
+  keyTakeaways    String[] // Up to 3 key takeaways
+  questionsAsked  String[] // Questions youth asked during shadow
+  followUpActions String[] // What they want to do next
+
+  // Ratings (optional, simple scale)
+  overallExperience Int? // 1-5 scale
+  hostHelpfulness   Int? // 1-5 scale
+
+  // Journey integration flags
+  addedToTimeline    Boolean @default(false)
+  strengthsUpdated   Boolean @default(false)
+  goalStackUpdated   Boolean @default(false)
+
+  @@index([youthId])
+  @@index([createdAt])
 }

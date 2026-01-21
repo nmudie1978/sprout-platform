@@ -12,6 +12,7 @@ import {
   Lightbulb,
   Calendar,
   Sparkles,
+  Eye,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -25,7 +26,8 @@ type TimelineEntryType =
   | "volunteer_experience"
   | "certificate_earned"
   | "goal_set"
-  | "milestone";
+  | "milestone"
+  | "shadow_completed";
 
 interface TimelineEntry {
   id: string;
@@ -104,6 +106,12 @@ const ENTRY_CONFIG: Record<
     color: "text-orange-600",
     bgColor: "bg-orange-500/10",
     label: "Milestone",
+  },
+  shadow_completed: {
+    icon: Eye,
+    color: "text-purple-600",
+    bgColor: "bg-purple-500/10",
+    label: "Shadow",
   },
 };
 

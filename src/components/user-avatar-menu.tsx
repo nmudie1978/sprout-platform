@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Bot,
   Route,
+  Eye,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -143,6 +144,10 @@ export function UserAvatarMenu({
               <DropdownMenuItem onClick={() => navigateTo("/my-journey")} className="cursor-pointer">
                 <Route className="mr-2 h-4 w-4" />
                 My Journey
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigateTo("/shadows")} className="cursor-pointer">
+                <Eye className="mr-2 h-4 w-4" />
+                Career Shadows
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigateTo("/career-advisor")} className="cursor-pointer">
                 <Bot className="mr-2 h-4 w-4" />

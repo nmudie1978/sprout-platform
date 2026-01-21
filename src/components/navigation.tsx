@@ -29,6 +29,7 @@ import {
   Sun,
   Moon,
   Route,
+  Eye,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -68,6 +69,7 @@ const mobileIcons = {
   help: HelpCircle,
   flag: Flag,
   route: Route,
+  eye: Eye,
 };
 
 // Helper component for mobile menu sections
@@ -471,6 +473,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                   title="My Space"
                   items={[
                     { href: "/my-journey", label: "My Journey", icon: "route" },
+                    { href: "/shadows", label: "Career Shadows", icon: "eye" },
                   ]}
                   pathname={pathname}
                   currentRole={currentRole}

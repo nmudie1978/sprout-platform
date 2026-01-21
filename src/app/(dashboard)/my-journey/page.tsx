@@ -16,6 +16,11 @@ import { ProgressTimeline, type TimelineEntry } from "./progress-timeline";
 import { GoalStack, type Goal } from "./goal-stack";
 import { StrengthSnapshot, type StrengthData } from "./strength-snapshot";
 import MoneySmartsContent from "./money-smarts-content";
+import {
+  JourneyVisualAnchor,
+  type JourneyMarker,
+  type JourneyVisualVariation,
+} from "./journey-visual-anchor";
 
 // Section Wrapper Component
 function Section({
@@ -82,19 +87,42 @@ function CollapsibleSection({
 export default function MyJourneyPage() {
   const { data: session, status: sessionStatus } = useSession();
 
-  // Fetch user's journey data
+  // Fetch user's journey data including shadows
   const { data: journeyData, isLoading: journeyLoading } = useQuery({
     queryKey: ["my-journey-data"],
     queryFn: async () => {
-      // In production, this would fetch real data
-      // For now, return sample structure
+      // Fetch completed shadows for timeline
+      let shadowEntries: TimelineEntry[] = [];
+      try {
+        const shadowsResponse = await fetch("/api/shadows?status=COMPLETED");
+        if (shadowsResponse.ok) {
+          const shadows = await shadowsResponse.json();
+          shadowEntries = shadows.map((shadow: any) => ({
+            id: `shadow-${shadow.id}`,
+            type: "shadow_completed" as const,
+            title: `Shadowed: ${shadow.roleTitle}`,
+            description: shadow.reflection
+              ? "Reflection completed"
+              : "Experience completed",
+            date: new Date(shadow.completedAt || shadow.createdAt),
+            metadata: {
+              jobTitle: shadow.roleTitle,
+            },
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch shadows:", error);
+      }
+
+      // Return combined journey data
       return {
         hasGoals: false,
         hasCompletedJobs: false,
         completedJobsCount: 0,
         goalsCount: 0,
+        completedShadowsCount: shadowEntries.length,
         goals: [] as Goal[],
-        timelineEntries: [] as TimelineEntry[],
+        timelineEntries: shadowEntries as TimelineEntry[],
         strengths: {
           reliability: 20,
           communication: 15,
@@ -102,6 +130,10 @@ export default function MyJourneyPage() {
           teamwork: 15,
           initiative: 10,
         } as StrengthData,
+        // Journey visual anchor data
+        journeyMarkers: [] as JourneyMarker[],
+        visualVariation: "optimistic" as JourneyVisualVariation,
+        weeklyFocusTheme: "Reliability",
       };
     },
     enabled: session?.user?.role === "YOUTH",
@@ -115,6 +147,8 @@ export default function MyJourneyPage() {
         <div className="space-y-6">
           <Skeleton className="h-16 w-64" />
           <Skeleton className="h-8 w-96" />
+          {/* Visual anchor skeleton */}
+          <Skeleton className="h-48 w-full rounded-2xl" />
           <div className="grid gap-4 md:grid-cols-2">
             <Skeleton className="h-48" />
             <Skeleton className="h-48" />
@@ -178,6 +212,32 @@ export default function MyJourneyPage() {
             Where you are, what you're building toward, and what to do next.
           </p>
         </motion.div>
+
+        {/* Visual Anchor - Emotional entry point */}
+        <Section id="visual-anchor" delay={0.05}>
+          <JourneyVisualAnchor
+            variation={journeyData?.visualVariation}
+            markers={journeyData?.journeyMarkers}
+            weeklyFocusLabel={
+              journeyData?.weeklyFocusTheme
+                ? `This Week: ${journeyData.weeklyFocusTheme}`
+                : undefined
+            }
+            onMarkerClick={(marker) => {
+              // Navigate to related Proof & Progress entry
+              if (marker.href) {
+                window.location.href = marker.href;
+              }
+            }}
+            onCurrentPointClick={() => {
+              // Scroll to the weekly focus section in dashboard
+              document
+                .getElementById("dashboard")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="mb-2"
+          />
+        </Section>
 
         {/* Main Content - Four Layers */}
         <div className="space-y-8">

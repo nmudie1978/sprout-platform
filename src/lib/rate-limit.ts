@@ -60,22 +60,41 @@ function isRedisConfigured(): boolean {
 }
 
 /**
- * Get or create Redis client
+ * Get or create Redis client.
+ *
+ * NOTE: @upstash/redis must be installed for Redis support.
+ * Run: npm install @upstash/redis
+ *
+ * When Redis is not installed, falls back to in-memory rate limiting.
  */
 async function getRedisClient() {
   if (!isRedisConfigured()) return null;
   if (redisClient) return redisClient;
 
   try {
-    // Dynamic import to avoid issues when Redis is not configured
-    const { Redis } = await import("@upstash/redis");
+    // Use require() wrapped in a function to bypass Next.js/webpack static analysis
+    // This allows the build to succeed without @upstash/redis installed
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const dynamicRequire = new Function("moduleName", "return require(moduleName)");
+    const upstashModule = dynamicRequire("@upstash/redis");
+    const Redis = upstashModule.Redis;
+
     redisClient = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
       token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     });
     return redisClient;
-  } catch (error) {
-    console.error("[Rate Limit] Failed to initialize Redis client:", error);
+  } catch (error: unknown) {
+    // Handle case where @upstash/redis is not installed
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    if (errorMessage.includes("Cannot find module") || errorMessage.includes("MODULE_NOT_FOUND")) {
+      console.warn(
+        "[Rate Limit] @upstash/redis not installed. Using in-memory rate limiting. " +
+        "Run 'npm install @upstash/redis' for Redis support."
+      );
+    } else {
+      console.error("[Rate Limit] Failed to initialize Redis client:", error);
+    }
     redisConfigured = false;
     return null;
   }
