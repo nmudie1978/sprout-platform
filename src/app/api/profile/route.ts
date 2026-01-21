@@ -90,6 +90,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId: session.user.id,
         displayName: validatedData.displayName,
+        avatarId: validatedData.avatarId || null,
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,
@@ -256,12 +257,12 @@ export async function PATCH(req: NextRequest) {
     // Profile is complete if required fields are filled
     const hasRequiredFields = validatedData.displayName && validatedData.city;
 
-    // Update profile (note: avatarId is handled separately via dedicated endpoint)
+    // Update profile including avatarId
     const profile = await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
         displayName: validatedData.displayName,
-        // avatarId is intentionally excluded - use dedicated PATCH with { avatarId } to update
+        avatarId: validatedData.avatarId || undefined, // Include avatar if provided
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,

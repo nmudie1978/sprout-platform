@@ -263,15 +263,18 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
       {isLocal ? (
         <>
           <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p>No upcoming events near your location</p>
+          <p>No verified events available for this location</p>
           <p className="text-xs mt-1">
-            Check online events below or update your location
+            Check online events below or try a different city
           </p>
         </>
       ) : (
         <>
           <Calendar className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p>No upcoming online or Europe-wide events</p>
+          <p>No verified events available at the moment</p>
+          <p className="text-xs mt-1">
+            We only show events with confirmed registration links
+          </p>
         </>
       )}
     </div>

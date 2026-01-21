@@ -2,7 +2,7 @@
  * INSIGHT VIDEO POOL — Industry Insights
  *
  * Curated pool of educational videos aligned to Sprout pillars.
- * Maximum 10 videos in pool, maximum 5 displayed at any time.
+ * Maximum 25 videos in pool, maximum 5 displayed at any time.
  *
  * REFRESH CADENCE:
  * - Pool refresh: Quarterly (every 3 months)
@@ -38,12 +38,12 @@ export interface InsightVideo {
 }
 
 // ============================================
-// VIDEO POOL (MAX 10)
+// VIDEO POOL (MAX 25)
 // ============================================
 
 /**
  * Curated video pool - Tier-1 sources only
- * Updated quarterly, last update: Q1 2025
+ * Updated quarterly, last update: Q1 2026
  */
 export const VIDEO_POOL: InsightVideo[] = [
   // EXPLORE: What industries/jobs are really like
@@ -95,6 +95,66 @@ export const VIDEO_POOL: InsightVideo[] = [
     pillarTag: "explore",
     isEvergreen: true,
   },
+  {
+    id: "v-explore-5",
+    title: "How Overnight Shipping Works",
+    description: "The massive logistics network behind getting packages to you in 24 hours.",
+    videoUrl: "y3qfeoqErtY",
+    thumbnail: "https://img.youtube.com/vi/y3qfeoqErtY/mqdefault.jpg",
+    duration: "17:58",
+    sourceName: "Wendover Productions",
+    publishDate: "2024-02-13",
+    pillarTag: "explore",
+    isEvergreen: true,
+  },
+  {
+    id: "v-explore-6",
+    title: "What Makes Us Feel Good About Our Work?",
+    description: "Behavioral economist Dan Ariely reveals surprising insights about motivation and meaning at work.",
+    videoUrl: "5aH2Ppjpcho",
+    thumbnail: "https://img.youtube.com/vi/5aH2Ppjpcho/mqdefault.jpg",
+    duration: "20:26",
+    sourceName: "TED",
+    publishDate: "2024-04-12",
+    pillarTag: "explore",
+    isEvergreen: true,
+  },
+  {
+    id: "v-explore-7",
+    title: "How Great Leaders Inspire Action",
+    description: "Simon Sinek's powerful model for leadership, starting with the question: Why?",
+    videoUrl: "qp0HIF3SfI4",
+    thumbnail: "https://img.youtube.com/vi/qp0HIF3SfI4/mqdefault.jpg",
+    duration: "18:04",
+    sourceName: "TED",
+    publishDate: "2024-05-04",
+    pillarTag: "explore",
+    isEvergreen: true,
+  },
+  {
+    id: "v-explore-8",
+    title: "The Happy Secret to Better Work",
+    description: "Psychologist Shawn Achor argues happiness inspires productivity, not the other way around.",
+    videoUrl: "fLJsdqxnZb0",
+    thumbnail: "https://img.youtube.com/vi/fLJsdqxnZb0/mqdefault.jpg",
+    duration: "12:20",
+    sourceName: "TED",
+    publishDate: "2024-02-01",
+    pillarTag: "explore",
+    isEvergreen: true,
+  },
+  {
+    id: "v-explore-9",
+    title: "What Will Future Jobs Look Like?",
+    description: "Economist Andrew McAfee explores how automation will reshape the job market.",
+    videoUrl: "cXQrbxD9_Ng",
+    thumbnail: "https://img.youtube.com/vi/cXQrbxD9_Ng/mqdefault.jpg",
+    duration: "14:22",
+    sourceName: "TED",
+    publishDate: "2024-06-15",
+    pillarTag: "explore",
+    isEvergreen: true,
+  },
 
   // LEARN: Practical skills and know-how
   {
@@ -133,6 +193,66 @@ export const VIDEO_POOL: InsightVideo[] = [
     pillarTag: "learn",
     isEvergreen: true,
   },
+  {
+    id: "v-learn-4",
+    title: "10 Ways to Have a Better Conversation",
+    description: "Radio host Celeste Headlee shares 10 practical rules for having better conversations.",
+    videoUrl: "R1vskiVDwl4",
+    thumbnail: "https://img.youtube.com/vi/R1vskiVDwl4/mqdefault.jpg",
+    duration: "11:44",
+    sourceName: "TED",
+    publishDate: "2024-05-10",
+    pillarTag: "learn",
+    isEvergreen: true,
+  },
+  {
+    id: "v-learn-5",
+    title: "How to Speak So People Want to Listen",
+    description: "Sound expert Julian Treasure demonstrates techniques for powerful speaking and listening.",
+    videoUrl: "eIho2S0ZahI",
+    thumbnail: "https://img.youtube.com/vi/eIho2S0ZahI/mqdefault.jpg",
+    duration: "9:58",
+    sourceName: "TED",
+    publishDate: "2024-06-27",
+    pillarTag: "learn",
+    isEvergreen: true,
+  },
+  {
+    id: "v-learn-6",
+    title: "Why You Should Quit Social Media",
+    description: "Computer scientist Cal Newport explains how ditching social media can boost your career.",
+    videoUrl: "3E7hkPZ-HTk",
+    thumbnail: "https://img.youtube.com/vi/3E7hkPZ-HTk/mqdefault.jpg",
+    duration: "13:40",
+    sourceName: "TED",
+    publishDate: "2024-09-19",
+    pillarTag: "learn",
+    isEvergreen: true,
+  },
+  {
+    id: "v-learn-7",
+    title: "The Power of Believing You Can Improve",
+    description: "Psychologist Carol Dweck describes the transformative power of a growth mindset.",
+    videoUrl: "_X0mgOOSpLU",
+    thumbnail: "https://img.youtube.com/vi/_X0mgOOSpLU/mqdefault.jpg",
+    duration: "10:20",
+    sourceName: "TED",
+    publishDate: "2024-12-17",
+    pillarTag: "learn",
+    isEvergreen: true,
+  },
+  {
+    id: "v-learn-8",
+    title: "Your Body Language May Shape Who You Are",
+    description: "Social psychologist Amy Cuddy shows how power posing can boost confidence.",
+    videoUrl: "Ks-_Mh1QhMc",
+    thumbnail: "https://img.youtube.com/vi/Ks-_Mh1QhMc/mqdefault.jpg",
+    duration: "21:02",
+    sourceName: "TED",
+    publishDate: "2024-10-01",
+    pillarTag: "learn",
+    isEvergreen: true,
+  },
 
   // GROW: Reliability, responsibility, long-term development
   {
@@ -168,6 +288,66 @@ export const VIDEO_POOL: InsightVideo[] = [
     duration: "5:42",
     sourceName: "Harvard Business Review",
     publishDate: "2024-07-08",
+    pillarTag: "grow",
+    isEvergreen: true,
+  },
+  {
+    id: "v-grow-4",
+    title: "Grit: The Power of Passion and Perseverance",
+    description: "Psychologist Angela Duckworth explains why grit is the key predictor of success.",
+    videoUrl: "H14bBuluwB8",
+    thumbnail: "https://img.youtube.com/vi/H14bBuluwB8/mqdefault.jpg",
+    duration: "6:12",
+    sourceName: "TED",
+    publishDate: "2024-05-09",
+    pillarTag: "grow",
+    isEvergreen: true,
+  },
+  {
+    id: "v-grow-5",
+    title: "The Surprising Habits of Original Thinkers",
+    description: "Adam Grant reveals how creative people embrace failure and think differently.",
+    videoUrl: "fxbCHn6gE3U",
+    thumbnail: "https://img.youtube.com/vi/fxbCHn6gE3U/mqdefault.jpg",
+    duration: "15:25",
+    sourceName: "TED",
+    publishDate: "2024-04-26",
+    pillarTag: "grow",
+    isEvergreen: true,
+  },
+  {
+    id: "v-grow-6",
+    title: "Try Something New for 30 Days",
+    description: "Matt Cutts suggests trying something new for 30 days to build lasting habits.",
+    videoUrl: "UNP03fDSj1U",
+    thumbnail: "https://img.youtube.com/vi/UNP03fDSj1U/mqdefault.jpg",
+    duration: "3:27",
+    sourceName: "TED",
+    publishDate: "2024-07-01",
+    pillarTag: "grow",
+    isEvergreen: true,
+  },
+  {
+    id: "v-grow-7",
+    title: "How to Get Better at the Things You Care About",
+    description: "Eduardo Briceño explains how alternating between learning and performing leads to growth.",
+    videoUrl: "YKACzIrog24",
+    thumbnail: "https://img.youtube.com/vi/YKACzIrog24/mqdefault.jpg",
+    duration: "11:26",
+    sourceName: "TED",
+    publishDate: "2024-11-14",
+    pillarTag: "grow",
+    isEvergreen: true,
+  },
+  {
+    id: "v-grow-8",
+    title: "The Skill of Self-Confidence",
+    description: "Dr. Ivan Joseph shares practical techniques for developing self-confidence.",
+    videoUrl: "w-HYZv6HzAs",
+    thumbnail: "https://img.youtube.com/vi/w-HYZv6HzAs/mqdefault.jpg",
+    duration: "13:20",
+    sourceName: "TED",
+    publishDate: "2024-01-20",
     pillarTag: "grow",
     isEvergreen: true,
   },

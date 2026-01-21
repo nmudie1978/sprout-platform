@@ -88,6 +88,7 @@ export default function ProfilePage() {
     city: "",
     interests: [] as string[],
     guardianEmail: "",
+    avatarId: "" as string,
   });
   const formInitializedRef = useRef(false);
   const lastUserIdRef = useRef<string | null>(null);
@@ -149,6 +150,7 @@ export default function ProfilePage() {
         city: profile.city || "",
         interests: profile.interests || [],
         guardianEmail: profile.guardianEmail || "",
+        avatarId: profile.avatarId || "",
       });
       // Initialize DOB dropdowns from existing date
       if (profile.user?.dateOfBirth) {
@@ -186,6 +188,7 @@ export default function ProfilePage() {
         city: data.city || "",
         interests: data.interests || [],
         guardianEmail: data.guardianEmail || "",
+        avatarId: data.avatarId || "",
       });
       toast({
         title: "Profile saved!",
@@ -264,49 +267,6 @@ export default function ProfilePage() {
       toast({
         title: "Error",
         description: "Failed to update availability status",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateAvatarMutation = useMutation({
-    mutationFn: async (avatarId: string) => {
-      // PROOF: Log avatar save attempt on client
-      console.log("AVATAR SAVE ATTEMPT (CLIENT):", avatarId);
-
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("AVATAR SAVE FAILED:", response.status, errorData);
-        throw new Error(errorData.error || "Failed to update avatar");
-      }
-
-      const result = await response.json();
-      // PROOF: Log avatar save success on client
-      console.log("AVATAR SAVED (CLIENT):", result.avatarId);
-      return result;
-    },
-    onSuccess: (data) => {
-      // PROOF: Log successful mutation
-      console.log("AVATAR MUTATION SUCCESS:", data.avatarId);
-      toast({
-        title: "Avatar updated!",
-        description: "Your new avatar is now active.",
-      });
-      // Force immediate cache invalidation
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
-      queryClient.refetchQueries({ queryKey: ["my-profile"] });
-    },
-    onError: (error: Error) => {
-      console.error("AVATAR MUTATION ERROR:", error.message);
-      toast({
-        title: "Error saving avatar",
-        description: error.message || "Failed to update avatar. Please try again.",
         variant: "destructive",
       });
     },
@@ -861,11 +821,11 @@ export default function ProfilePage() {
                   <span className="text-[10px] text-red-600 font-normal">*</span>
                 </Label>
                 <AvatarSelectorInline
-                  currentAvatarId={profile?.avatarId}
-                  onSelect={(avatarId) => updateAvatarMutation.mutate(avatarId)}
-                  disabled={updateAvatarMutation.isPending}
+                  currentAvatarId={formData.avatarId || profile?.avatarId}
+                  onSelect={(avatarId) => setFormData(prev => ({ ...prev, avatarId }))}
+                  disabled={saveProfileMutation.isPending}
                 />
-                {!profile?.avatarId && (
+                {!formData.avatarId && !profile?.avatarId && (
                   <p className="mt-2 text-xs text-muted-foreground">
                     Choose an avatar to represent you
                   </p>
