@@ -28,6 +28,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  Route,
 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +67,7 @@ const mobileIcons = {
   target: Target,
   help: HelpCircle,
   flag: Flag,
+  route: Route,
 };
 
 // Helper component for mobile menu sections
@@ -188,11 +190,16 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const currentRole = roleConfig[userRole];
 
-  // Primary navigation only - secondary items moved to avatar menu
+  // 3 Pillars - core navigation items with tooltips
+  const pillarTooltips: Record<string, string> = {
+    "/jobs": "Find small local jobs to earn, learn, and build confidence.",
+    "/careers": "Discover career paths, skills, and what it takes to get there.",
+    "/insights": "See what's shaping careers globally — trends, forces, and opportunities.",
+  };
+
+  // Primary navigation - 3 pillars only
   const youthLinks: NavLink[] = [
-    { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true },
     { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
-    { href: "/growth", label: "My Growth", icon: TrendingUp, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
   ];
@@ -258,61 +265,66 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
             </span>
           </Link>
 
-          {/* Desktop Navigation - Clean primary nav only */}
-          <TooltipProvider delayDuration={200}>
-            <div className="hidden md:flex md:items-center md:space-x-1 ml-6">
+          {/* Desktop Navigation - 3 Pillars with enhanced styling */}
+          <TooltipProvider delayDuration={300}>
+            <div className="hidden md:flex md:items-center md:space-x-2 ml-6">
               {links.map((link) => {
                 const Icon = link.icon;
-                const isActive = pathname === link.href;
+                const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+                const tooltipText = pillarTooltips[link.href];
 
                 const linkContent = (
                   <motion.div
-                    whileHover={{ scale: 1.03, y: -1 }}
-                    whileTap={{ scale: 0.97 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="relative"
                   >
                     <Link
                       href={link.href}
                       className={cn(
-                        "flex items-center rounded-lg transition-all duration-200",
-                        link.iconOnly ? "p-2" : "space-x-1.5 px-3 py-2 text-sm",
+                        "relative flex items-center space-x-2 px-4 py-2.5 text-sm rounded-xl transition-all duration-200 ease-out",
+                        "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/50",
                         isActive
-                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg font-medium`
-                          : "text-foreground/80 font-medium hover:bg-muted hover:text-foreground"
+                          ? `bg-gradient-to-r ${currentRole.accentColor} text-white shadow-lg shadow-primary/25 font-semibold`
+                          : "text-foreground/70 font-medium hover:text-foreground hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 hover:shadow-md hover:shadow-primary/10"
                       )}
                     >
                       <Icon className={cn(
-                        "h-4 w-4",
-                        isActive && "animate-pulse"
+                        "h-4 w-4 transition-transform duration-200",
+                        isActive ? "scale-110" : "group-hover:scale-105"
                       )} />
-                      {link.label && <span>{link.label}</span>}
+                      <span>{link.label}</span>
+                      {/* Subtle glow effect on hover */}
+                      {!isActive && (
+                        <span className="absolute inset-0 rounded-xl opacity-0 hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+                      )}
                     </Link>
+                    {/* Animated underline for active state */}
+                    {isActive && (
+                      <motion.div
+                        className={`absolute -bottom-1 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
+                        layoutId="navUnderline"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
                   </motion.div>
                 );
 
                 return (
                   <div key={link.href} className="relative group">
-                    {link.iconOnly ? (
+                    {tooltipText ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           {linkContent}
                         </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Dashboard</p>
+                        <TooltipContent side="bottom" className="max-w-[220px] text-center">
+                          <p className="text-xs">{tooltipText}</p>
                         </TooltipContent>
                       </Tooltip>
                     ) : (
                       linkContent
-                    )}
-
-                    {/* Active indicator dot */}
-                    {isActive && (
-                      <motion.div
-                        className={`absolute -bottom-1 left-1/2 h-1.5 w-1.5 rounded-full bg-gradient-to-r ${currentRole.accentColor}`}
-                        layoutId="activeIndicator"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
                     )}
                   </div>
                 );
@@ -456,9 +468,9 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
               {userRole === "YOUTH" && (
                 <MobileMenuSection
-                  title="Growth"
+                  title="My Space"
                   items={[
-                    { href: "/goals", label: "My Goals", icon: "target" },
+                    { href: "/my-journey", label: "My Journey", icon: "route" },
                   ]}
                   pathname={pathname}
                   currentRole={currentRole}

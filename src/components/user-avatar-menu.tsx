@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 import {
   User,
   Settings,
-  Target,
   HelpCircle,
   Flag,
   Sun,
@@ -14,6 +13,7 @@ import {
   LogOut,
   ChevronDown,
   Bot,
+  Route,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -133,16 +133,16 @@ export function UserAvatarMenu({
 
         <DropdownMenuSeparator />
 
-        {/* GROWTH Section - Only for Youth */}
+        {/* MY SPACE Section - Only for Youth */}
         {userRole === "YOUTH" && (
           <>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider">
-                Growth
+                My Space
               </DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigateTo("/goals")} className="cursor-pointer">
-                <Target className="mr-2 h-4 w-4" />
-                My Goals
+              <DropdownMenuItem onClick={() => navigateTo("/my-journey")} className="cursor-pointer">
+                <Route className="mr-2 h-4 w-4" />
+                My Journey
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigateTo("/career-advisor")} className="cursor-pointer">
                 <Bot className="mr-2 h-4 w-4" />
