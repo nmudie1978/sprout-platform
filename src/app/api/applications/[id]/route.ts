@@ -90,6 +90,42 @@ export async function PATCH(
         application.jobId,
         { jobTitle: application.job.title }
       );
+
+      // Auto-reject all other pending applications for this job
+      const otherPendingApplications = await prisma.application.findMany({
+        where: {
+          jobId: application.jobId,
+          id: { not: id }, // Exclude the accepted application
+          status: "PENDING",
+        },
+        select: {
+          id: true,
+          youthId: true,
+        },
+      });
+
+      if (otherPendingApplications.length > 0) {
+        // Update all other applications to REJECTED
+        await prisma.application.updateMany({
+          where: {
+            jobId: application.jobId,
+            id: { not: id },
+            status: "PENDING",
+          },
+          data: { status: "REJECTED" },
+        });
+
+        // Send notifications to all rejected applicants
+        await prisma.notification.createMany({
+          data: otherPendingApplications.map((app) => ({
+            userId: app.youthId,
+            type: "APPLICATION_REJECTED",
+            title: "Position Filled",
+            message: `The position "${application.job.title}" has been filled. Keep applying — new opportunities are posted regularly!`,
+            link: "/jobs",
+          })),
+        });
+      }
     }
 
     // If rejected, notify the youth
