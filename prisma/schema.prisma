@@ -327,6 +327,9 @@ model User {
   shadowRequestsAsHost  ShadowRequest[]    @relation("HostShadowRequests")
   shadowReflections     ShadowReflection[] @relation("YouthShadowReflections")
 
+  // Journey timeline
+  timelineEvents TimelineEvent[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -411,6 +414,21 @@ model YouthProfile {
   // Structured Career Goals (Primary + Secondary)
   primaryGoal   Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
   secondaryGoal Json? // Same structure, optional
+  generatedTimeline Json? // Cached AI-generated career timeline
+
+  // ============================================
+  // JOURNEY STATE MACHINE FIELDS
+  // ============================================
+  journeyState          String    @default("BASELINE_PROFILE") // Current journey state
+  journeyCompletedSteps String[]  @default([]) // Array of completed step IDs
+  journeySkippedSteps   Json?     // Map of skipped step IDs to skip reasons
+  journeyLastUpdated    DateTime? // Last journey state update
+  journeySummary        Json? // Aggregated journey summary object
+
+  // Relations for new journey features
+  savedItems   SavedItem[]
+  reflections  JourneyReflection[]
+  journeyNotes JourneyNote[]
 
   // Private notes
   notes UserNote[]
@@ -2687,4 +2705,185 @@ model ShadowReflection {
 
   @@index([youthId])
   @@index([createdAt])
+}
+
+// ============================================
+// CAREER CLIPS
+// Curated, verified video clips for career exploration
+// Non-addictive, small collection per career category
+// ============================================
+
+enum CareerClipPlatform {
+  TIKTOK
+  YOUTUBE_SHORTS
+}
+
+enum CareerClipVerifiedStatus {
+  PENDING // Not yet validated
+  VALID // URL verified and working
+  INVALID // URL broken or removed
+}
+
+model CareerClip {
+  id            String                   @id @default(cuid())
+  careerSlug    String                   @db.VarChar(100) // e.g., "doctor", "electrician"
+  categorySlug  String                   @db.VarChar(100) // e.g., "healthcare", "technology"
+  title         String                   @db.VarChar(200)
+  platform      CareerClipPlatform
+  url           String                   @db.VarChar(500)
+  thumbnailUrl  String?                  @db.VarChar(500)
+  durationSecs  Int? // Duration in seconds, if known
+
+  // Verification status - ONLY valid clips are displayed
+  verifiedStatus   CareerClipVerifiedStatus @default(PENDING)
+  lastCheckedAt    DateTime?
+  checkFailReason  String?                  @db.VarChar(500)
+
+  // Metadata
+  sourceLabel   String                   @default("") @db.VarChar(100) // e.g., "TikTok (verified link)"
+  displayOrder  Int                      @default(0) // For manual ordering within category
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([careerSlug])
+  @@index([categorySlug])
+  @@index([verifiedStatus])
+  @@index([displayOrder])
+}
+
+// ============================================
+// MY JOURNEY - SAVED ITEMS (My Library)
+// Users can save articles, videos, podcasts, shorts for later
+// ============================================
+
+enum SavedItemType {
+  ARTICLE
+  VIDEO
+  PODCAST
+  SHORT // TikTok, Reels, YouTube Shorts
+}
+
+model SavedItem {
+  id        String        @id @default(cuid())
+  profileId String
+  type      SavedItemType
+  title     String        @db.VarChar(300)
+  url       String        @db.VarChar(1000)
+  source    String?       @db.VarChar(100) // e.g., "YouTube", "Medium", "TikTok"
+  tags      String[]      @default([]) // Free-form tags
+
+  // Career/role context tagging
+  careerPathId String? // Links to SavedIndustry or career slug
+  roleId       String? // Links to a specific role deep dive
+
+  // Metadata
+  thumbnail   String?   @db.VarChar(500)
+  description String?   @db.Text
+  savedAt     DateTime  @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([type])
+  @@index([savedAt])
+  @@index([careerPathId])
+}
+
+// ============================================
+// MY JOURNEY - REFLECTIONS
+// Micro-reflections after major actions
+// ============================================
+
+enum ReflectionContextType {
+  ALIGNED_ACTION
+  ROLE_DEEP_DIVE
+  INDUSTRY_INSIGHTS
+  SHADOW_COMPLETED
+  CAREER_DISCOVERY
+  PLAN_BUILD
+  STRENGTHS_REFLECTION
+}
+
+model JourneyReflection {
+  id          String                @id @default(cuid())
+  profileId   String
+  contextType ReflectionContextType
+  contextId   String? // ID of the related item (job, shadow, etc.)
+
+  // The reflection itself
+  prompt   String  @db.VarChar(500) // The question asked
+  response String? @db.Text // User's response (optional - they can skip)
+  skipped  Boolean @default(false) // Did user skip this reflection?
+
+  createdAt DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([contextType])
+  @@index([createdAt])
+}
+
+// ============================================
+// MY JOURNEY - TIMELINE EVENTS
+// Unified timeline for significant journey moments
+// ============================================
+
+enum TimelineEventType {
+  PROFILE_CREATED
+  STRENGTHS_CONFIRMED
+  CAREER_EXPLORED
+  ROLE_DEEP_DIVE_COMPLETED
+  PRIMARY_GOAL_SET
+  INDUSTRY_OUTLOOK_REVIEWED
+  REQUIREMENTS_REVIEWED
+  PLAN_CREATED
+  PLAN_UPDATED
+  SHADOW_REQUESTED
+  SHADOW_APPROVED
+  SHADOW_DECLINED
+  SHADOW_COMPLETED
+  SHADOW_SKIPPED
+  ALIGNED_ACTION_COMPLETED
+  ACTION_REFLECTION_SUBMITTED
+  EXTERNAL_FEEDBACK_RECEIVED
+  ITEM_SAVED
+  REFLECTION_RECORDED
+}
+
+model TimelineEvent {
+  id        String            @id @default(cuid())
+  userId    String
+  type      TimelineEventType
+  metadata  Json? // Additional context (title, details, etc.)
+  createdAt DateTime          @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// ============================================
+// MY JOURNEY - PERSONAL NOTES
+// Free-form notes for users to capture thoughts
+// ============================================
+
+model JourneyNote {
+  id        String   @id @default(cuid())
+  profileId String
+  title     String?  @db.VarChar(200) // Optional title
+  content   String   @db.Text // The note content
+  color     String?  @db.VarChar(20) // Optional color tag (yellow, blue, green, etc.)
+  pinned    Boolean  @default(false) // Pin important notes to top
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([createdAt])
+  @@index([pinned])
 }

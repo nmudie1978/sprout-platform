@@ -285,4 +285,7 @@ export const RateLimits = {
 
   // Questions: 3 per day (already implemented in API)
   QUESTIONS: { interval: 86400000, maxRequests: 3 },
+
+  // Timeline generation: 5 per hour (AI-generated career timelines)
+  TIMELINE_GENERATION: { interval: 3600000, maxRequests: 5 },
 } as const;
