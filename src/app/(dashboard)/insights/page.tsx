@@ -1,75 +1,111 @@
+/**
+ * INDUSTRY INSIGHTS PAGE
+ *
+ * Two-section architecture:
+ * 1) Global Industry & Career Landscape - macro job market data (not youth-specific)
+ * 2) Youth Lens (15-21) - interpretation of global data for young people
+ *
+ * Features:
+ * - Clear section dividers
+ * - Progressive disclosure (accordions, "show more")
+ * - Verified events with URL validation
+ * - Add to My Journey CTAs
+ */
+
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/page-header";
-import { getMultipleCareerJourneys, type MultipleCareerJourneys } from "@/lib/my-path/actions";
 import {
   TrendingUp,
+  Globe2,
+  Sparkles,
   Calendar,
   CheckCircle2,
   FileText,
   Download,
+  Target,
+  Lightbulb,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 // Import insights components
 import {
-  EventsCalendar,
-  BigPictureChart,
-  GrowingIndustriesChart,
-  ReshapingJobsCard,
-  WorldLensArticles,
-  InsightVideos,
-  GlobalInnovationIndex,
+  JobMarketStatsCarousel,
+  DidYouKnowCard,
+  WeeklyFactNudge,
+  WhyThisMatters,
+  InsightSection,
+  SkillLongevityIndex,
+  YouthEventsTable,
 } from "@/components/insights";
 
-type IndustryFilter = "all" | "tech" | "green" | "health" | "creative";
+
+// ============================================
+// SECTION HEADER COMPONENT
+// ============================================
+
+interface SectionHeaderProps {
+  icon: React.ElementType;
+  title: string;
+  subtitle: string;
+  gradient: string;
+  iconBg: string;
+  iconColor: string;
+}
+
+function SectionHeader({
+  icon: Icon,
+  title,
+  subtitle,
+  gradient,
+  iconBg,
+  iconColor,
+}: SectionHeaderProps) {
+  return (
+    <div className="mb-6">
+      <div className={`h-1.5 rounded-full bg-gradient-to-r ${gradient} mb-4`} />
+      <div className="flex items-start gap-3">
+        <div className={`p-2.5 rounded-xl ${iconBg}`}>
+          <Icon className={`h-6 w-6 ${iconColor}`} />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-foreground">{title}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// SECTION DIVIDER
+// ============================================
+
+function SectionDivider() {
+  return (
+    <div className="relative py-8">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full border-t-2 border-dashed border-muted-foreground/20" />
+      </div>
+      <div className="relative flex justify-center">
+        <div className="bg-background px-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
+            <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
+            <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// MAIN PAGE COMPONENT
+// ============================================
 
 export default function IndustryInsightsPage() {
-  const { data: session } = useSession();
-
-  // Fetch user's career goals
-  const { data: careerData } = useQuery<MultipleCareerJourneys | null>({
-    queryKey: ["multiple-career-journeys"],
-    queryFn: () => getMultipleCareerJourneys(),
-    enabled: session?.user?.role === "YOUTH",
-  });
-
-  // Extract career goal titles for filtering
-  const userCareerGoals = careerData?.journeys?.map(j => j.targetCareer.title) || [];
-
-  // Map career goals to industry types based on career category
-  const getIndustryFromCareer = (careerTitle: string): IndustryFilter => {
-    const lowerTitle = careerTitle.toLowerCase();
-    if (lowerTitle.includes("developer") || lowerTitle.includes("software") ||
-        lowerTitle.includes("data") || lowerTitle.includes("tech") ||
-        lowerTitle.includes("engineer") || lowerTitle.includes("it ") ||
-        lowerTitle.includes("cyber") || lowerTitle.includes("ai")) {
-      return "tech";
-    }
-    if (lowerTitle.includes("energy") || lowerTitle.includes("wind") ||
-        lowerTitle.includes("solar") || lowerTitle.includes("electric") ||
-        lowerTitle.includes("green") || lowerTitle.includes("sustain")) {
-      return "green";
-    }
-    if (lowerTitle.includes("health") || lowerTitle.includes("nurse") ||
-        lowerTitle.includes("medical") || lowerTitle.includes("care") ||
-        lowerTitle.includes("doctor") || lowerTitle.includes("pharmacy")) {
-      return "health";
-    }
-    if (lowerTitle.includes("design") || lowerTitle.includes("creative") ||
-        lowerTitle.includes("content") || lowerTitle.includes("market") ||
-        lowerTitle.includes("media") || lowerTitle.includes("video") ||
-        lowerTitle.includes("art") || lowerTitle.includes("music")) {
-      return "creative";
-    }
-    return "tech"; // Default fallback
-  };
-
-  // Get user's industry types from their career goals
-  const userIndustryTypes = [...new Set(userCareerGoals.map(getIndustryFromCareer))];
-
   // Fetch insights modules verification status
   const { data: modulesData } = useQuery({
     queryKey: ["insights-modules-meta"],
@@ -101,114 +137,163 @@ export default function IndustryInsightsPage() {
         className="text-sm text-muted-foreground mb-8 max-w-2xl"
       >
         Industry Insights is your world lens — helping you understand the world beyond job listings.
+        Split into two parts: global career landscape data, and what it means for you (15-21).
       </motion.p>
 
+      {/* Weekly Mobile Nudge (shows once per week on mobile) */}
+      <WeeklyFactNudge />
+
       {/* ============================================ */}
-      {/* SECTION 1: WORLD AT A GLANCE (3 Insight Cards) */}
+      {/* SECTION 1: GLOBAL INDUSTRY & CAREER LANDSCAPE */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
-        className="mb-10"
+        className="mb-4"
       >
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* Insight 1: Where most people work */}
-          <BigPictureChart />
+        <div className="rounded-2xl border-2 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-6">
+          <SectionHeader
+            icon={Globe2}
+            title="Global Industry & Career Landscape"
+            subtitle="Macro trends shaping jobs worldwide — data-led, not youth-specific"
+            gradient="from-blue-500 via-cyan-500 to-blue-500"
+            iconBg="bg-blue-100 dark:bg-blue-900/30"
+            iconColor="text-blue-600 dark:text-blue-400"
+          />
 
-          {/* Insight 2: Which industries are growing */}
-          <GrowingIndustriesChart />
-
-          {/* Insight 3: What's reshaping jobs */}
-          <ReshapingJobsCard />
-        </div>
-
-        {/* PDF Download CTAs */}
-        <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-          <a
-            href="/api/reports/fast-facts"
-            download="sprout-fast-facts-innovation.pdf"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-sm text-primary"
+          {/* 1. Job Market Statistics */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="mb-8"
           >
-            <FileText className="h-4 w-4" />
-            <span>Fast Facts (2-page overview)</span>
-            <Download className="h-3.5 w-3.5 opacity-60" />
-          </a>
-          <a
-            href="/api/reports/career-snapshot"
-            download="world-of-work-career-industry-snapshot.pdf"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border bg-background hover:bg-muted/50 transition-colors text-sm text-muted-foreground hover:text-foreground"
+            <div className="mb-4">
+              <h3 className="text-base font-semibold mb-1 flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                Job Market Statistics
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Key data points from global employment research
+              </p>
+            </div>
+            <JobMarketStatsCarousel />
+
+            {/* PDF Download CTAs */}
+            <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
+              <a
+                href="/api/reports/fast-facts"
+                download="sprout-fast-facts-innovation.pdf"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-sm text-primary"
+              >
+                <FileText className="h-4 w-4" />
+                <span>Fast Facts (2-page overview)</span>
+                <Download className="h-3.5 w-3.5 opacity-60" />
+              </a>
+              <a
+                href="/api/reports/career-snapshot"
+                download="world-of-work-career-industry-snapshot.pdf"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border bg-background hover:bg-muted/50 transition-colors text-sm text-muted-foreground hover:text-foreground"
+              >
+                <FileText className="h-4 w-4" />
+                <span>Full career & industry report</span>
+                <Download className="h-3.5 w-3.5 opacity-60" />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* 2. Jobs & Roles on the Rise */}
+          <InsightSection sectionKey="jobs-on-the-rise" delay={0.25} />
+
+          {/* 3. Skills That Matter */}
+          <InsightSection sectionKey="skills-that-matter" delay={0.3} />
+
+          {/* Skill Longevity Index */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.35 }}
+            className="mb-8"
           >
-            <FileText className="h-4 w-4" />
-            <span>Full career & industry report</span>
-            <Download className="h-3.5 w-3.5 opacity-60" />
-          </a>
+            <SkillLongevityIndex />
+          </motion.div>
+
         </div>
       </motion.section>
 
-      {/* ============================================ */}
-      {/* SECTION 2: WORLD LENS ARTICLES */}
-      {/* ============================================ */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.25 }}
-        className="mb-10"
-      >
-        <WorldLensArticles />
-      </motion.section>
+      {/* Section Divider */}
+      <SectionDivider />
 
       {/* ============================================ */}
-      {/* SECTION 3: GLOBAL INNOVATION INDEX */}
+      {/* SECTION 2: YOUTH LENS (15-21) */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mb-10"
+        transition={{ duration: 0.5, delay: 0.45 }}
+        className="mb-4"
       >
-        <h2 className="text-sm font-medium mb-3 flex items-center gap-2">
-          <span>Global Innovation Index</span>
-          <span className="text-xs text-muted-foreground font-normal">(WIPO annual report)</span>
-        </h2>
-        <div className="max-w-xl">
-          <GlobalInnovationIndex />
+        <div className="rounded-2xl border-2 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-6">
+          <SectionHeader
+            icon={Sparkles}
+            title="Youth Lens (15-21)"
+            subtitle="What the global landscape means for you — warm, actionable, grounded"
+            gradient="from-amber-400 via-orange-400 to-amber-400"
+            iconBg="bg-amber-100 dark:bg-amber-900/30"
+            iconColor="text-amber-600 dark:text-amber-400"
+          />
+
+          {/* 1. Why This Matters (for you) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+            className="mb-8"
+          >
+            <WhyThisMatters />
+          </motion.div>
+
+          {/* 2. Did You Know? (rotating facts) */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.55 }}
+            className="mb-8"
+          >
+            <div className="mb-4">
+              <h3 className="text-base font-semibold mb-1 flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-amber-500" />
+                Did You Know?
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Research-backed facts that might surprise you
+              </p>
+            </div>
+            <DidYouKnowCard />
+          </motion.div>
+
+          {/* 3. Youth Career Events in Norway */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+            className="mb-4"
+          >
+            <YouthEventsTable />
+          </motion.div>
         </div>
-      </motion.section>
-
-      {/* ============================================ */}
-      {/* SECTION 4: EVENTS CALENDAR */}
-      {/* ============================================ */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="mb-10"
-        id="events"
-      >
-        <EventsCalendar industryTypes={userIndustryTypes} />
-      </motion.section>
-
-      {/* ============================================ */}
-      {/* SECTION 5: INSIGHT VIDEOS */}
-      {/* ============================================ */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-10"
-      >
-        <h2 className="text-sm font-medium mb-3 flex items-center gap-2">
-          <span>Watch & Learn</span>
-          <span className="text-xs text-muted-foreground font-normal">(short explainers)</span>
-        </h2>
-        <InsightVideos />
       </motion.section>
 
       {/* ============================================ */}
       {/* DATA SOURCE NOTE */}
       {/* ============================================ */}
-      <div className="mt-8 p-5 rounded-lg bg-muted/20 border">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+        className="mt-8 p-5 rounded-lg bg-muted/20 border"
+      >
         <div className="flex items-start gap-3">
           <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <div>
@@ -239,7 +324,7 @@ export default function IndustryInsightsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Verification Status Footer */}
       <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
