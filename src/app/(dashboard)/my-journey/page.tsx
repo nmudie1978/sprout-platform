@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Route,
   Lock,
-  Calendar,
   BookOpen,
   CheckCircle2,
   Circle,
@@ -17,25 +15,27 @@ import {
   ChevronRight,
   SkipForward,
   StickyNote,
-  LayoutGrid,
-  Map,
   Target,
   ArrowRight,
   Sparkles,
-  Clock,
+  Info,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 import {
   prefersReducedMotion,
-  PREMIUM_EASE,
-  DURATION,
 } from '@/lib/motion';
 import {
   BreathingPill,
@@ -43,21 +43,30 @@ import {
 import { AnimatedCard } from '@/components/ui/dynamic-border-animations-card';
 
 // Journey Components
-import { JourneySummaryPanel, PersonalCareerTimeline } from '@/components/journey';
+import { PersonalCareerTimeline } from '@/components/journey';
 import { StepContent } from '@/components/journey/step-content';
-import { TimelineTab, LibraryTab, NotesTab } from '@/components/journey/tabs';
+import { LibraryTab, NotesTab } from '@/components/journey/tabs';
 import { JourneyRoadmap } from '@/components/journey/journey-roadmap';
+
+// Goal Components
+import { CareerRoadmapSVG } from '@/components/goals/CareerRoadmapSVG';
+import { SecondaryGoalReminder } from '@/components/goals/SecondaryGoalReminder';
+import { GoalSelectionSheet } from '@/components/goals/GoalSelectionSheet';
+import { useGoals, useToggleMilestone, usePromoteGoal, useUpdateGoal } from '@/hooks/use-goals';
+import { getMilestonesForCareer } from '@/lib/goals/career-milestones';
 
 // Types
 import type {
   JourneyUIState,
   JourneyStateId,
   JourneyStepUI,
+  JourneyStepStatus,
   StepCompletionData,
   JourneyLens,
   JourneyPhase,
   LensProgress,
   JourneySummary,
+  StateConfig,
 } from '@/lib/journey/types';
 
 import {
@@ -122,51 +131,143 @@ const PHASE_TITLES: Record<JourneyPhase, string> = {
 };
 
 // ============================================
-// TAB CONFIGURATION WITH LENS TAGS
+// DEMO JOURNEY (Test data fallback)
 // ============================================
 
-type JourneyTab = 'overview' | 'timeline' | 'library' | 'notes';
+const DEMO_JOURNEY: JourneyUIState = {
+  currentLens: 'DISCOVER',
+  currentState: 'ROLE_DEEP_DIVE',
+  completedSteps: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'],
+  skippedSteps: {} as Record<JourneyStateId, never>,
+  canAdvanceToNextLens: false,
+  nextStepReason: 'Complete a deep dive into a role you\'re interested in.',
+  steps: (Object.values(JOURNEY_STATE_CONFIG) as StateConfig[])
+    .sort((a, b) => a.order - b.order)
+    .map((config) => {
+      const completed: JourneyStateId[] = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'];
+      const current: JourneyStateId = 'ROLE_DEEP_DIVE';
+      let status: JourneyStepStatus = 'locked';
+      if (completed.includes(config.id)) status = 'completed';
+      else if (config.id === current) status = 'next';
+
+      return {
+        id: config.id,
+        title: config.title,
+        description: config.description,
+        status,
+        order: config.order,
+        artifacts: [],
+        mandatory: config.mandatory,
+        optional: !config.mandatory,
+        stepNumber: config.stepNumber,
+      };
+    }),
+  summary: {
+    lenses: {
+      discover: {
+        progress: 50,
+        completedMandatory: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'],
+        completedOptional: [],
+        totalMandatory: 4,
+        totalOptional: 0,
+        isComplete: false,
+      },
+      understand: {
+        progress: 0,
+        completedMandatory: [],
+        completedOptional: [],
+        totalMandatory: 3,
+        totalOptional: 2,
+        isComplete: false,
+      },
+      act: {
+        progress: 0,
+        completedMandatory: [],
+        completedOptional: [],
+        totalMandatory: 2,
+        totalOptional: 3,
+        isComplete: false,
+      },
+    },
+    overallProgress: 17,
+    primaryGoal: { title: null, selectedAt: null },
+    strengths: ['Communication', 'Problem Solving', 'Teamwork'],
+    demonstratedSkills: [],
+    careerInterests: ['Software Development'],
+    exploredRoles: [{
+      title: 'Junior Software Developer',
+      exploredAt: new Date().toISOString(),
+      educationPaths: ['Computer Science degree', 'Coding bootcamp'],
+      certifications: [],
+      companies: [],
+      humanSkills: ['Communication', 'Collaboration'],
+      entryExpectations: 'Entry-level, some coding experience preferred.',
+    }],
+    rolePlans: [],
+    certificationsRequired: [],
+    companiesOfInterest: [],
+    futureOutlookNotes: [],
+    nextActions: [],
+    alignedActions: [],
+    alignedActionsCount: 0,
+    alignedActionReflections: [],
+    savedSummary: { total: 0, byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 } },
+    recentSavedItems: [],
+    timelineSummary: { totalEvents: 2, thisMonth: 1 },
+    lastTimelineEventAt: new Date().toISOString(),
+    shadowSummary: {
+      total: 0, accepted: 0, skipped: false, skipReason: null,
+      pending: 0, completed: 0, declined: 0, lastUpdatedAt: null,
+    },
+    reflectionSummary: { total: 0, thisMonth: 0, lastReflectionAt: null },
+    industryInsightsSummary: { trendsReviewed: 0, insightsSaved: 0, lastReviewedAt: null },
+    requirementsReviewed: false,
+    planCreated: false,
+    planUpdatedAt: null,
+  },
+};
+
+// ============================================
+// TAB CONFIGURATION
+// ============================================
+
+type JourneyTab = 'roadmap' | 'progress' | 'library' | 'notes';
 
 interface TabConfig {
   id: JourneyTab;
   label: string;
   icon: typeof Route;
-  lensTag: string | null;
-  lensColor: string;
+  tooltip: string;
   subtitle: string;
 }
 
 const TAB_CONFIG: TabConfig[] = [
   {
-    id: 'overview',
-    label: 'Overview',
+    id: 'roadmap',
+    label: 'Roadmap',
     icon: Route,
-    lensTag: null,
-    lensColor: '',
-    subtitle: 'A snapshot of where you are — and what comes next.',
+    tooltip: 'Your visual path through Discover, Understand, and Act. Click milestones to complete them.',
+    subtitle: 'Your visual path — click milestones to mark them complete.',
   },
   {
-    id: 'timeline',
-    label: 'Timeline',
-    icon: Calendar,
-    lensTag: 'Act',
-    lensColor: 'text-emerald-500/70',
-    subtitle: 'Your actions and milestones, captured over time.',
+    id: 'progress',
+    label: 'Progress',
+    icon: Sparkles,
+    tooltip: 'Track your completion across each lens. You control your pace.',
+    subtitle: 'See how far you\'ve come across each lens.',
   },
   {
     id: 'library',
     label: 'Library',
     icon: BookOpen,
-    lensTag: 'Understand',
-    lensColor: 'text-purple-500/70',
-    subtitle: "Insights and resources you've saved along the way.",
+    tooltip: 'Insights and resources you\'ve saved along the way.',
+    subtitle: 'Insights and resources you\'ve saved along the way.',
   },
   {
     id: 'notes',
     label: 'Notes',
     icon: StickyNote,
-    lensTag: 'All',
-    lensColor: 'text-muted-foreground/60',
+    tooltip: 'Your personal thoughts across the journey.',
     subtitle: 'Your personal thoughts across the journey.',
   },
 ];
@@ -354,7 +455,7 @@ function StepRow({
 }
 
 // ============================================
-// OVERVIEW CONTROL TOWER COMPONENTS
+// NEXT STEP CARD
 // ============================================
 
 function NextStepCard({
@@ -434,6 +535,10 @@ function NextStepCard({
   );
 }
 
+// ============================================
+// PROGRESS SNAPSHOT
+// ============================================
+
 function ProgressSnapshot({ summary }: { summary: JourneySummary }) {
   const lenses: Array<{ key: JourneyLens; progress: LensProgress; config: typeof LENS_CONFIG['DISCOVER'] }> = [
     { key: 'DISCOVER', progress: summary.lenses.discover, config: LENS_CONFIG.DISCOVER },
@@ -477,67 +582,73 @@ function ProgressSnapshot({ summary }: { summary: JourneySummary }) {
   );
 }
 
-function PrimaryGoalCard({ summary }: { summary: JourneySummary }) {
+// ============================================
+// PRIMARY GOAL HERO
+// ============================================
+
+function PrimaryGoalHero({
+  summary,
+  onSetGoal,
+  milestoneProgress,
+}: {
+  summary: JourneySummary;
+  onSetGoal: () => void;
+  milestoneProgress?: { completed: number; total: number } | null;
+}) {
   const hasGoal = !!summary.primaryGoal.title;
 
-  return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex items-center gap-1.5 mb-2">
-          <Target className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-muted-foreground">Primary Goal</span>
-        </div>
-        {hasGoal ? (
-          <div>
-            <p className="text-sm font-medium">{summary.primaryGoal.title}</p>
-            {summary.primaryGoal.selectedAt && (
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Set {new Date(summary.primaryGoal.selectedAt).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })}
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-muted-foreground italic">Not yet selected</p>
-            <Button variant="ghost" size="sm" className="h-6 text-xs text-primary">
-              Select Goal
-            </Button>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function RecentActivityMini({ events }: { events?: Array<{ id: string; title: string; createdAt: string }> }) {
-  const isEmpty = !events || events.length === 0;
+  if (!hasGoal) {
+    return (
+      <div className="mb-6">
+        <button
+          onClick={onSetGoal}
+          className="w-full rounded-xl border-2 border-dashed border-muted-foreground/25 p-6 text-center transition-colors hover:border-primary/40 hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+        >
+          <Target className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+          <p className="text-lg font-semibold text-muted-foreground">Where are you heading?</p>
+          <p className="text-sm text-muted-foreground/70 mt-1">Set your primary career goal to anchor your journey</p>
+          <span className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-primary">
+            Choose a goal <ArrowRight className="h-4 w-4" />
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <Card>
-      <CardContent className="p-4">
-        <div className="flex items-center gap-1.5 mb-2">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs font-medium text-muted-foreground">Recent Activity</span>
-        </div>
-        {isEmpty ? (
-          <p className="text-xs text-muted-foreground italic">No activity yet</p>
-        ) : (
-          <div className="space-y-2">
-            {events.slice(0, 3).map((event) => (
-              <div key={event.id} className="flex items-start gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary/50 mt-1.5 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs truncate">{event.title}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {new Date(event.createdAt).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })}
-                  </p>
+    <div className="mb-6">
+      <Card className="bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-emerald-500/5 border-purple-200/50 dark:border-purple-800/50">
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-start gap-3 min-w-0">
+              <div className="h-10 w-10 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
+                <Target className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-0.5">Primary Goal</p>
+                <p className="text-xl sm:text-2xl font-bold truncate">{summary.primaryGoal.title}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  {summary.primaryGoal.selectedAt && (
+                    <p className="text-xs text-muted-foreground">
+                      Set {new Date(summary.primaryGoal.selectedAt).toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  )}
+                  {milestoneProgress && milestoneProgress.total > 0 && (
+                    <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">
+                      {milestoneProgress.completed}/{milestoneProgress.total} milestones
+                    </span>
+                  )}
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="text-right flex-shrink-0">
+              <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{summary.overallProgress}%</p>
+              <p className="text-[10px] text-muted-foreground">overall</p>
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
@@ -557,33 +668,26 @@ function TabSubtitle({ subtitle }: { subtitle: string }) {
 // MAIN PAGE COMPONENT
 // ============================================
 
-type OverviewViewMode = 'cards' | 'roadmap';
-
-const OVERVIEW_VIEW_STORAGE_KEY = 'my-journey-overview-view';
-
 export default function MyJourneyPage() {
   const { data: session, status: sessionStatus } = useSession();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<JourneyTab>('overview');
+  const [activeTab, setActiveTab] = useState<JourneyTab>('roadmap');
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
-  const [overviewView, setOverviewView] = useState<OverviewViewMode>('cards');
+  const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
   const reducedMotion = typeof window !== 'undefined' && prefersReducedMotion();
   const shouldAnimate = !reducedMotion;
 
-  // Load view preference from localStorage
-  useEffect(() => {
-    const savedView = localStorage.getItem(OVERVIEW_VIEW_STORAGE_KEY);
-    if (savedView === 'cards' || savedView === 'roadmap') {
-      setOverviewView(savedView);
-    }
-  }, []);
+  // Fetch goals
+  const isYouth = session?.user?.role === 'YOUTH';
+  const { data: goalsData } = useGoals(isYouth);
+  const primaryGoal = goalsData?.primaryGoal ?? null;
+  const secondaryGoal = goalsData?.secondaryGoal ?? null;
 
-  // Save view preference to localStorage
-  const handleViewChange = useCallback((view: OverviewViewMode) => {
-    setOverviewView(view);
-    localStorage.setItem(OVERVIEW_VIEW_STORAGE_KEY, view);
-  }, []);
+  // Goal mutations
+  const toggleMilestone = useToggleMilestone();
+  const promoteGoal = usePromoteGoal();
+  const updateGoal = useUpdateGoal();
 
   // Fetch journey state from API
   const {
@@ -680,7 +784,7 @@ export default function MyJourneyPage() {
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground">
-              This page is only available for youth workers.
+              This page is only available for youth members.
             </p>
             <Button className="mt-4" asChild>
               <Link href="/dashboard">Go to Dashboard</Link>
@@ -691,7 +795,7 @@ export default function MyJourneyPage() {
     );
   }
 
-  const journey = journeyData?.journey;
+  const journey = journeyData?.journey ?? DEMO_JOURNEY;
 
   // Determine current lens for breathing pill indicator
   const currentLens = journey?.currentState
@@ -772,186 +876,213 @@ export default function MyJourneyPage() {
           </p>
         </AnimatedCard>
 
+        {/* Primary Goal Hero */}
+        {journey && (
+          <PrimaryGoalHero
+            summary={journey.summary}
+            onSetGoal={() => setGoalSheetOpen(true)}
+            milestoneProgress={
+              primaryGoal?.nextSteps?.length
+                ? {
+                    completed: primaryGoal.nextSteps.filter((s) => s.completed).length,
+                    total: primaryGoal.nextSteps.length,
+                  }
+                : null
+            }
+          />
+        )}
+
         {/* Tab Navigation */}
         <div className="mb-6">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as JourneyTab)}>
-            <TabsList className="grid w-full max-w-3xl grid-cols-4 h-auto relative">
-              {TAB_CONFIG.map((tab) => {
-                const TabIcon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <TabsTrigger
-                    key={tab.id}
-                    value={tab.id}
-                    className="relative flex flex-col items-center gap-0.5 py-2 text-xs sm:text-sm data-[state=active]:bg-background"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <TabIcon className="h-4 w-4" />
-                      <span className="hidden sm:inline">{tab.label}</span>
-                    </div>
-                    {tab.lensTag && (
-                      <span className={cn('text-[9px] hidden sm:inline', tab.lensColor)}>
-                        {tab.lensTag}
-                      </span>
-                    )}
-                    {isActive && (
-                      <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
-                    )}
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
+            <TooltipProvider>
+              <TabsList className="grid w-full max-w-3xl grid-cols-4 h-auto relative">
+                {TAB_CONFIG.map((tab) => {
+                  const TabIcon = tab.icon;
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <Tooltip key={tab.id}>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger
+                          value={tab.id}
+                          className="relative flex flex-col items-center gap-0.5 py-2 text-xs sm:text-sm data-[state=active]:bg-background"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <TabIcon className="h-4 w-4" />
+                            <span className="hidden sm:inline">{tab.label}</span>
+                          </div>
+                          {isActive && (
+                            <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />
+                          )}
+                        </TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs text-center">
+                        <p className="text-xs">{tab.tooltip}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </TabsList>
+            </TooltipProvider>
 
-            {/* Overview Tab - Control Tower Layout */}
-            <TabsContent value="overview" className="mt-6">
-              {/* Overview Subtitle */}
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'overview')?.subtitle || ''} />
+            {/* My Roadmap Tab */}
+            <TabsContent value="roadmap" className="mt-6">
+              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'roadmap')?.subtitle || ''} />
+
+              {journey && (
+                <>
+                  {/* Info message */}
+                  <div className="flex items-start gap-2 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-3 mb-4">
+                    <Info className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      Click any unlocked milestone to complete it. You control your own pace.
+                    </p>
+                  </div>
+
+                  {/* Next Step Card */}
+                  <div className="mb-4">
+                    <NextStepCard journey={journey} onStepClick={handleStepClick} />
+                  </div>
+
+                  {/* Career Roadmap (milestone-based) */}
+                  {primaryGoal && primaryGoal.nextSteps.length > 0 && (
+                    <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 mb-6">
+                      <CardContent className="pt-6 pb-4">
+                        <CareerRoadmapSVG
+                          goalTitle={primaryGoal.title}
+                          milestones={primaryGoal.nextSteps}
+                          onToggleMilestone={(stepId) =>
+                            toggleMilestone.toggle('primary', primaryGoal, stepId)
+                          }
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Backward compat: goal exists but no milestones */}
+                  {primaryGoal && primaryGoal.nextSteps.length === 0 && (
+                    <Card className="border-dashed border-2 border-purple-200 dark:border-purple-800 mb-6">
+                      <CardContent className="py-6 text-center">
+                        <Target className="h-6 w-6 mx-auto text-purple-400 mb-2" />
+                        <p className="text-sm font-medium mb-1">
+                          Populate milestones for &ldquo;{primaryGoal.title}&rdquo;
+                        </p>
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Get 5 career-specific milestones to track your progress.
+                        </p>
+                        <Button
+                          size="sm"
+                          className="bg-purple-600 hover:bg-purple-700"
+                          onClick={() => {
+                            const milestones = getMilestonesForCareer(primaryGoal.title);
+                            updateGoal.mutate({
+                              slot: 'primary',
+                              goal: {
+                                ...primaryGoal,
+                                nextSteps: milestones,
+                                updatedAt: new Date().toISOString(),
+                              },
+                            });
+                          }}
+                          disabled={updateGoal.isPending}
+                        >
+                          {updateGoal.isPending ? 'Populating...' : 'Add Milestones'}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Secondary Goal Reminder */}
+                  {secondaryGoal && (
+                    <div className="mb-6">
+                      <SecondaryGoalReminder
+                        secondaryGoal={secondaryGoal}
+                        onPromote={() =>
+                          promoteGoal.mutate({
+                            currentPrimary: primaryGoal,
+                            currentSecondary: secondaryGoal,
+                          })
+                        }
+                        isPromoting={promoteGoal.isPending}
+                      />
+                    </div>
+                  )}
+
+                  {/* D→U→A Journey Roadmap */}
+                  <div className="mb-6">
+                    <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+                      <Route className="h-4 w-4" />
+                      Your Guided Journey
+                    </h3>
+                    <Card className="border-2 border-muted">
+                      <CardContent className="pt-6 pb-4">
+                        <JourneyRoadmap
+                          steps={journey.steps}
+                          currentState={journey.currentState}
+                          onStepClick={handleStepClick}
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Personal Career Timeline */}
+                  <PersonalCareerTimeline primaryGoalTitle={journey?.summary?.primaryGoal?.title || null} />
+                </>
+              )}
+            </TabsContent>
+
+            {/* My Progress Tab */}
+            <TabsContent value="progress" className="mt-6">
+              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'progress')?.subtitle || ''} />
 
               {journey && (() => {
-                // Calculate milestone-based progress for all lenses
                 const progressDetails = calculateAllLensProgress(journey.summary);
 
                 return (
                   <>
-                    {/* Control Tower Grid - Next Step + Quick Stats */}
-                    <div className="grid gap-4 lg:grid-cols-3 mb-6">
-                      {/* Next Step - Spans 2 columns on desktop */}
-                      <div className="lg:col-span-2">
-                        <NextStepCard journey={journey} onStepClick={handleStepClick} />
-                      </div>
-
-                      {/* Primary Goal */}
-                      <div>
-                        <PrimaryGoalCard summary={journey.summary} />
-                      </div>
+                    {/* Info message */}
+                    <div className="flex items-start gap-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/20 p-3 mb-4">
+                      <Info className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
+                      <p className="text-xs text-purple-700 dark:text-purple-300">
+                        Progress is based on milestones you choose to complete. Optional milestones add depth but are not required for 100%.
+                      </p>
                     </div>
 
-                    {/* Second Row: Progress + Recent Activity */}
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
+                    {/* Progress Snapshot */}
+                    <div className="mb-6">
                       <ProgressSnapshot summary={journey.summary} />
-                      <RecentActivityMini />
-                      {/* Third slot - compact stats */}
-                      <Card className="hidden lg:block">
-                        <CardContent className="p-4">
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Actions</p>
-                              <p className="text-lg font-semibold">{journey.summary.alignedActionsCount}</p>
-                            </div>
-                            <div>
-                              <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Saved</p>
-                              <p className="text-lg font-semibold">{journey.summary.savedSummary.total}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
                     </div>
 
-                    {/* View Toggle for Detailed View */}
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <h3 className="text-sm font-medium text-muted-foreground">Detailed Progress</h3>
-                      <div className="inline-flex items-center rounded-lg border bg-muted p-0.5">
-                        <button
-                          onClick={() => handleViewChange('cards')}
-                          className={cn(
-                            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all',
-                            overviewView === 'cards'
-                              ? 'bg-background text-foreground shadow-sm'
-                              : 'text-muted-foreground hover:text-foreground'
-                          )}
-                        >
-                          <LayoutGrid className="h-4 w-4" />
-                          <span className="hidden sm:inline">Cards</span>
-                        </button>
-                        <button
-                          onClick={() => handleViewChange('roadmap')}
-                          className={cn(
-                            'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all',
-                            overviewView === 'roadmap'
-                              ? 'bg-background text-foreground shadow-sm'
-                              : 'text-muted-foreground hover:text-foreground'
-                          )}
-                        >
-                          <Map className="h-4 w-4" />
-                          <span className="hidden sm:inline">Roadmap</span>
-                        </button>
-                      </div>
+                    {/* Lens Panels */}
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <LensPanel
+                        lens="DISCOVER"
+                        steps={getStepsByLens('DISCOVER')}
+                        lensProgress={journey.summary.lenses.discover}
+                        progressDetails={progressDetails.DISCOVER}
+                        currentState={journey.currentState}
+                        onStepClick={handleStepClick}
+                      />
+                      <LensPanel
+                        lens="UNDERSTAND"
+                        steps={getStepsByLens('UNDERSTAND')}
+                        lensProgress={journey.summary.lenses.understand}
+                        progressDetails={progressDetails.UNDERSTAND}
+                        currentState={journey.currentState}
+                        onStepClick={handleStepClick}
+                      />
+                      <LensPanel
+                        lens="ACT"
+                        steps={getStepsByLens('ACT')}
+                        lensProgress={journey.summary.lenses.act}
+                        progressDetails={progressDetails.ACT}
+                        currentState={journey.currentState}
+                        onStepClick={handleStepClick}
+                      />
                     </div>
-
-                    {/* View Content with Motion Trial animations */}
-                    <AnimatePresence mode="wait">
-                      {overviewView === 'cards' ? (
-                        <motion.div
-                          key="cards"
-                          initial={shouldAnimate ? { opacity: 0, y: 10 } : false}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={shouldAnimate ? { opacity: 0, y: -10 } : undefined}
-                          transition={{
-                            duration: DURATION.standard,
-                            ease: PREMIUM_EASE as unknown as string,
-                          }}
-                        >
-                          {/* Lens Panels */}
-                          <div className="grid gap-4 md:grid-cols-3">
-                            <LensPanel
-                              lens="DISCOVER"
-                              steps={getStepsByLens('DISCOVER')}
-                              lensProgress={journey.summary.lenses.discover}
-                              progressDetails={progressDetails.DISCOVER}
-                              currentState={journey.currentState}
-                              onStepClick={handleStepClick}
-                            />
-                            <LensPanel
-                              lens="UNDERSTAND"
-                              steps={getStepsByLens('UNDERSTAND')}
-                              lensProgress={journey.summary.lenses.understand}
-                              progressDetails={progressDetails.UNDERSTAND}
-                              currentState={journey.currentState}
-                              onStepClick={handleStepClick}
-                            />
-                            <LensPanel
-                              lens="ACT"
-                              steps={getStepsByLens('ACT')}
-                              lensProgress={journey.summary.lenses.act}
-                              progressDetails={progressDetails.ACT}
-                              currentState={journey.currentState}
-                              onStepClick={handleStepClick}
-                            />
-                          </div>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="roadmap"
-                          initial={shouldAnimate ? { opacity: 0, y: 10 } : false}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={shouldAnimate ? { opacity: 0, y: -10 } : undefined}
-                          transition={{
-                            duration: DURATION.standard,
-                            ease: PREMIUM_EASE as unknown as string,
-                          }}
-                        >
-                          {/* Roadmap View */}
-                          <Card className="border-2 border-muted">
-                            <CardContent className="pt-6 pb-4">
-                              <JourneyRoadmap
-                                steps={journey.steps}
-                                currentState={journey.currentState}
-                                onStepClick={handleStepClick}
-                              />
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </>
                 );
               })()}
-            </TabsContent>
-
-            {/* Timeline Tab */}
-            <TabsContent value="timeline" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'timeline')?.subtitle || ''} />
-              <TimelineTab />
             </TabsContent>
 
             {/* Library Tab */}
@@ -967,9 +1098,6 @@ export default function MyJourneyPage() {
             </TabsContent>
           </Tabs>
         </div>
-
-        {/* Personal Career Timeline */}
-        <PersonalCareerTimeline primaryGoalTitle={journey?.summary?.primaryGoal?.title || null} />
 
         {/* Footer Note */}
         <div className="mt-12 text-center">
@@ -993,6 +1121,15 @@ export default function MyJourneyPage() {
           }}
         />
       )}
+
+      {/* Goal Selection Sheet */}
+      <GoalSelectionSheet
+        open={goalSheetOpen}
+        onClose={() => setGoalSheetOpen(false)}
+        primaryGoal={primaryGoal}
+        secondaryGoal={secondaryGoal}
+        onSuccess={() => setGoalSheetOpen(false)}
+      />
     </div>
   );
 }
