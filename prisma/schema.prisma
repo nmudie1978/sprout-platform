@@ -426,9 +426,10 @@ model YouthProfile {
   journeySummary        Json? // Aggregated journey summary object
 
   // Relations for new journey features
-  savedItems   SavedItem[]
-  reflections  JourneyReflection[]
-  journeyNotes JourneyNote[]
+  savedItems        SavedItem[]
+  reflections       JourneyReflection[]
+  journeyNotes      JourneyNote[]
+  traitObservations TraitObservation[]
 
   // Private notes
   notes UserNote[]
@@ -2878,12 +2879,31 @@ model JourneyNote {
   content   String   @db.Text // The note content
   color     String?  @db.VarChar(20) // Optional color tag (yellow, blue, green, etc.)
   pinned    Boolean  @default(false) // Pin important notes to top
+  groupName String?  @db.VarChar(100) // Optional named group
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
+  @@index([profileId, groupName])
   @@index([createdAt])
   @@index([pinned])
+}
+
+model TraitObservation {
+  id          String   @id @default(cuid())
+  profileId   String
+  traitId     String   @db.VarChar(50)
+  observation String   @db.VarChar(20) // "noticed" | "unsure" | "not_me"
+  contextType String?  @db.VarChar(50)
+  contextId   String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, traitId])
+  @@index([profileId])
+  @@index([traitId])
 }
