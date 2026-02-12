@@ -5,19 +5,35 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { STAGE_CONFIG, STAGE_ORDER, type JourneyItem } from '@/lib/journey/career-journey-types';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { ZigzagRenderer } from './renderers';
 import { TimelineDetailDialog } from './timeline';
+import { LayersControl } from './overlays/layers-control';
+import { NodeDetailPanel } from './overlays/node-detail-panel';
+import { useOverlayState } from '@/hooks/use-overlay-state';
 
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
 }
 
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
+
+  const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
+  const {
+    activeLayers,
+    nodeAnnotations,
+    toggleLayer,
+    updateNodeAnnotation,
+    getNodeData,
+    hasAnyActiveLayer,
+  } = useOverlayState(goalId);
 
   const {
     data,
@@ -122,8 +138,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
         )}
       </div>
 
-      {/* Stage legend */}
-      <div className="flex flex-wrap gap-3 mb-4">
+      {/* Stage legend + layers control */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         {STAGE_ORDER.map((stage) => {
           const config = STAGE_CONFIG[stage];
           return (
@@ -138,26 +154,49 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
             </div>
           );
         })}
+        <div className="ml-auto">
+          <LayersControl activeLayers={activeLayers} onToggle={toggleLayer} />
+        </div>
       </div>
 
       {/* Zigzag renderer */}
-      <Card>
-        <CardContent className="pt-6 pb-4 overflow-x-auto">
-          <ZigzagRenderer
-            journey={journey}
-            onItemClick={(item) => setSelectedItem(item)}
-          />
-        </CardContent>
-      </Card>
+      <div className="overflow-x-auto">
+        <ZigzagRenderer
+          journey={journey}
+          onItemClick={(item) => setSelectedItem(item)}
+          overlayData={nodeAnnotations}
+          activeLayers={activeLayers}
+        />
+      </div>
 
-      {/* Detail dialog */}
-      <TimelineDetailDialog
-        item={selectedItem}
-        open={!!selectedItem}
-        onOpenChange={(open) => {
-          if (!open) setSelectedItem(null);
-        }}
-      />
+      {/* Detail dialog — default when no layers active */}
+      {!hasAnyActiveLayer && (
+        <TimelineDetailDialog
+          item={selectedItem}
+          open={!!selectedItem}
+          onOpenChange={(open) => {
+            if (!open) setSelectedItem(null);
+          }}
+        />
+      )}
+
+      {/* Overlay detail panel — when any layer is active */}
+      {hasAnyActiveLayer && (
+        <NodeDetailPanel
+          item={selectedItem}
+          nodeData={selectedItem ? (getNodeData(selectedItem.id) ?? {}) : {}}
+          activeLayers={activeLayers}
+          onUpdate={(partial) => {
+            if (selectedItem) {
+              updateNodeAnnotation(selectedItem.id, partial);
+            }
+          }}
+          open={!!selectedItem}
+          onOpenChange={(open) => {
+            if (!open) setSelectedItem(null);
+          }}
+        />
+      )}
     </section>
   );
 }
