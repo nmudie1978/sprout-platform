@@ -35,7 +35,6 @@ import {
   InsightSection,
   YouthEventsTable,
   JobsEconomySpotlight,
-  VerifiedInsightsFeed,
 } from "@/components/insights";
 
 
@@ -185,20 +184,6 @@ export default function IndustryInsightsPage() {
             <JobsEconomySpotlight />
           </motion.div>
 
-        </div>
-      </motion.section>
-
-      {/* ============================================ */}
-      {/* EXPLORE MORE — Verified Content Pool */}
-      {/* ============================================ */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-        className="mb-4"
-      >
-        <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-6">
-          <VerifiedInsightsFeed />
         </div>
       </motion.section>
 

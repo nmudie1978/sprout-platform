@@ -9,18 +9,19 @@ import {
   Film,
   ExternalLink,
   Trash2,
-  Tag,
-  Filter,
   Search,
-  Plus,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 import type { SavedItemData, SavedItemType } from '@/lib/journey/types';
+import { useViewMode } from '@/hooks/useViewMode';
+import { ViewModeToggle } from '@/components/view/ViewModeToggle';
+import { CuriositySaves } from '@/components/my-journey/CuriositySaves';
+import { RecentlyDeleted } from '@/components/journey/recently-deleted';
 
 // Icon mapping for item types
 const typeIcons: Record<SavedItemType, React.ComponentType<{ className?: string }>> = {
@@ -45,10 +46,128 @@ const typeLabels: Record<SavedItemType, string> = {
   SHORT: 'Shorts',
 };
 
+// List view row sub-component
+function LibraryListRow({
+  item,
+  onDelete,
+  isDeleting,
+}: {
+  item: SavedItemData;
+  onDelete: () => void;
+  isDeleting: boolean;
+}) {
+  const Icon = typeIcons[item.type];
+  const colorClass = typeColors[item.type];
+
+  return (
+    <div className="p-3 hover:bg-muted/50 transition-colors flex items-center gap-3 group">
+      <div className={`p-1.5 rounded-md shrink-0 ${colorClass}`}>
+        <Icon className="h-3.5 w-3.5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm truncate">{item.title}</p>
+        {item.source && (
+          <p className="text-xs text-muted-foreground truncate">{item.source}</p>
+        )}
+      </div>
+      {item.description && (
+        <p className="hidden sm:block text-xs text-muted-foreground truncate max-w-[200px] lg:max-w-[300px]">
+          {item.description}
+        </p>
+      )}
+      {item.tags && item.tags.length > 0 && (
+        <div className="hidden md:flex items-center gap-1 shrink-0">
+          {item.tags.slice(0, 2).map((tag) => (
+            <Badge key={tag} variant="secondary" className="text-[10px]">
+              {tag}
+            </Badge>
+          ))}
+          {item.tags.length > 2 && (
+            <span className="text-[10px] text-muted-foreground">+{item.tags.length - 2}</span>
+          )}
+        </div>
+      )}
+      <div className="flex items-center gap-1 shrink-0">
+        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" asChild>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 w-7 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={onDelete}
+          disabled={isDeleting}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Compact view card sub-component
+function LibraryCompactCard({
+  item,
+  onDelete,
+  isDeleting,
+}: {
+  item: SavedItemData;
+  onDelete: () => void;
+  isDeleting: boolean;
+}) {
+  const Icon = typeIcons[item.type];
+  const colorClass = typeColors[item.type];
+
+  return (
+    <div className="rounded-lg border p-2.5 hover:shadow-sm transition-shadow group flex items-start gap-2.5">
+      <div className={`p-1.5 rounded-md shrink-0 ${colorClass}`}>
+        <Icon className="h-3 w-3" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm truncate">{item.title}</p>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          {item.source && (
+            <span className="text-[11px] text-muted-foreground truncate">{item.source}</span>
+          )}
+          {item.tags && item.tags.length > 0 && (
+            <>
+              {item.source && <span className="text-[11px] text-muted-foreground">·</span>}
+              {item.tags.slice(0, 2).map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-[10px] px-1 py-0">
+                  {tag}
+                </Badge>
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center gap-0.5 shrink-0">
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" asChild>
+          <a href={item.url} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={onDelete}
+          disabled={isDeleting}
+        >
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function LibraryTab() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<SavedItemType | 'all'>('all');
   const [search, setSearch] = useState('');
+  const { viewMode, setViewMode } = useViewMode({ storageKey: 'libraryViewMode', defaultMode: 'compact' });
 
   const { data, isLoading, error } = useQuery<{
     success: boolean;
@@ -112,6 +231,10 @@ export function LibraryTab() {
 
   return (
     <div className="space-y-6">
+      {/* Curiosity Saves */}
+      <CuriositySaves />
+      <hr className="border-muted" />
+
       {/* Header with Stats */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -125,6 +248,11 @@ export function LibraryTab() {
             </p>
           )}
         </div>
+        <ViewModeToggle
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          showCompact={true}
+        />
       </div>
 
       {/* Type Filter Badges */}
@@ -139,7 +267,8 @@ export function LibraryTab() {
           </Button>
           {(['ARTICLE', 'VIDEO', 'PODCAST', 'SHORT'] as SavedItemType[]).map((type) => {
             const Icon = typeIcons[type];
-            const count = counts[type.toLowerCase() as keyof typeof counts] as number;
+            const countKey = { ARTICLE: 'articles', VIDEO: 'videos', PODCAST: 'podcasts', SHORT: 'shorts' } as const;
+            const count = counts[countKey[type]] as number;
             if (count === 0) return null;
             return (
               <Button
@@ -168,7 +297,7 @@ export function LibraryTab() {
         />
       </div>
 
-      {/* Items Grid */}
+      {/* Items */}
       {items.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
@@ -179,6 +308,28 @@ export function LibraryTab() {
             </p>
           </CardContent>
         </Card>
+      ) : viewMode === 'list' ? (
+        <div className="border rounded-lg overflow-hidden divide-y">
+          {items.map((item) => (
+            <LibraryListRow
+              key={item.id}
+              item={item}
+              onDelete={() => deleteMutation.mutate(item.id)}
+              isDeleting={deleteMutation.isPending}
+            />
+          ))}
+        </div>
+      ) : viewMode === 'compact' ? (
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item) => (
+            <LibraryCompactCard
+              key={item.id}
+              item={item}
+              onDelete={() => deleteMutation.mutate(item.id)}
+              isDeleting={deleteMutation.isPending}
+            />
+          ))}
+        </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence>
@@ -265,6 +416,9 @@ export function LibraryTab() {
           </AnimatePresence>
         </div>
       )}
+
+      {/* Recently Deleted */}
+      <RecentlyDeleted type="savedItem" />
     </div>
   );
 }

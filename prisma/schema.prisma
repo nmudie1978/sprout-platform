@@ -429,7 +429,9 @@ model YouthProfile {
   savedItems        SavedItem[]
   reflections       JourneyReflection[]
   journeyNotes      JourneyNote[]
-  traitObservations TraitObservation[]
+  traitObservations   TraitObservation[]
+  journeySnapshots    JourneySnapshot[]
+  contentInteractions ContentInteraction[]
 
   // Private notes
   notes UserNote[]
@@ -1272,6 +1274,11 @@ enum AuditAction {
   REPORT_REVIEWED
   REPORT_RESOLVED
   REPORT_DISMISSED
+  // Journey data recovery
+  JOURNEY_ITEM_DELETED
+  JOURNEY_ITEM_RESTORED
+  JOURNEY_DATA_EXPORTED
+  JOURNEY_DATA_IMPORTED
 }
 
 model AuditLog {
@@ -2782,10 +2789,12 @@ model SavedItem {
   thumbnail   String?   @db.VarChar(500)
   description String?   @db.Text
   savedAt     DateTime  @default(now())
+  deletedAt   DateTime? // null = active, set = soft-deleted
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
+  @@index([profileId, deletedAt])
   @@index([type])
   @@index([savedAt])
   @@index([careerPathId])
@@ -2882,10 +2891,12 @@ model JourneyNote {
   groupName String?  @db.VarChar(100) // Optional named group
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime? // null = active, set = soft-deleted
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([profileId])
+  @@index([profileId, deletedAt])
   @@index([profileId, groupName])
   @@index([createdAt])
   @@index([pinned])
@@ -2900,10 +2911,44 @@ model TraitObservation {
   contextId   String?  @db.VarChar(100)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deletedAt   DateTime? // null = active, set = soft-deleted
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@unique([profileId, traitId])
   @@index([profileId])
+  @@index([profileId, deletedAt])
   @@index([traitId])
+}
+
+// ============================================
+// MY JOURNEY - SNAPSHOTS (Recovery)
+// Full journey backups for undo/import safety
+// ============================================
+
+model JourneySnapshot {
+  id        String   @id @default(cuid())
+  profileId String
+  trigger   String   @db.VarChar(50) // "manual" | "pre_import" | "pre_bulk_delete" | "pre_restore"
+  label     String?  @db.VarChar(200)
+  data      Json     // Full journey export envelope
+  createdAt DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([createdAt])
+}
+
+model ContentInteraction {
+  id              String   @id @default(cuid())
+  profileId       String
+  contentUrl      String   @db.VarChar(1000)
+  interactionType String   @db.VarChar(20) // "watched"
+  createdAt       DateTime @default(now())
+
+  profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, contentUrl, interactionType])
+  @@index([profileId])
 }

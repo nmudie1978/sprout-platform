@@ -33,7 +33,7 @@ export async function GET() {
     }
 
     const observations = await prisma.traitObservation.findMany({
-      where: { profileId: profile.id },
+      where: { profileId: profile.id, deletedAt: null },
       orderBy: { updatedAt: "desc" },
     });
 
@@ -148,17 +148,19 @@ export async function DELETE(request: NextRequest) {
       },
     });
 
-    if (!existing) {
+    if (!existing || existing.deletedAt !== null) {
       return NextResponse.json({ error: "Observation not found" }, { status: 404 });
     }
 
-    await prisma.traitObservation.delete({
+    // Soft delete (30-day recovery window)
+    await prisma.traitObservation.update({
       where: {
         profileId_traitId: {
           profileId: profile.id,
           traitId,
         },
       },
+      data: { deletedAt: new Date() },
     });
 
     return NextResponse.json({ deleted: true });
