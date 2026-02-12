@@ -1,40 +1,19 @@
 /**
- * JourneyTitle — personalised "cover page" heading for the Roadmap tab.
+ * JourneyTitle — personalised heading for the Roadmap tab.
  *
- * Composes: {FirstName}'s Career Roadmap — {goal suffix}
- * Always calm, optional, revisable. Never implies permanence.
+ * Simply: {FirstName}'s Career Roadmap
  */
 
 interface JourneyTitleProps {
   firstName: string;
-  primaryGoalLabel?: string;
-  primaryGoalStatus?: string;
 }
 
-export function JourneyTitle({
-  firstName,
-  primaryGoalLabel,
-  primaryGoalStatus,
-}: JourneyTitleProps) {
-  const base = `${firstName}\u2019s Career Roadmap`;
-
-  let suffix = '';
-  if (primaryGoalLabel) {
-    suffix =
-      primaryGoalStatus === 'exploring'
-        ? ` \u2014 Exploring ${primaryGoalLabel}`
-        : ` \u2014 ${primaryGoalLabel}`;
-  }
-
+export function JourneyTitle({ firstName }: JourneyTitleProps) {
   return (
     <div className="mb-6">
       <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-        {base}
-        {suffix}
+        {firstName}&rsquo;s Career Roadmap
       </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        This is your personal journey. You can change direction anytime.
-      </p>
     </div>
   );
 }

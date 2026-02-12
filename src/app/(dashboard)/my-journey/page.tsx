@@ -45,7 +45,6 @@ import type {
   JourneyStateId,
   JourneyStepStatus,
   StepCompletionData,
-  JourneyLens,
   StateConfig,
 } from '@/lib/journey/types';
 
