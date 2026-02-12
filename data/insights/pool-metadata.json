@@ -1,0 +1,154 @@
+{
+  "lastRefreshISO": "2026-02-12T19:44:36.918Z",
+  "totalItems": 41,
+  "totalVerified": 21,
+  "totalFailed": 20,
+  "totalPending": 0,
+  "duplicatesRejected": 0,
+  "byType": {
+    "article": 17,
+    "video": 11,
+    "stat_report": 13,
+    "pdf": 0
+  },
+  "byDomain": {
+    "weforum.org": 5,
+    "ilo.org": 1,
+    "oecd.org": 5,
+    "worldbank.org": 2,
+    "mckinsey.com": 4,
+    "deloitte.com": 1,
+    "wipo.int": 1,
+    "who.int": 1,
+    "visualcapitalist.com": 2,
+    "ourworldindata.org": 2,
+    "youtube.com": 11,
+    "bcg.com": 1,
+    "pwc.com": 1,
+    "ec.europa.eu": 1,
+    "unesco.org": 1,
+    "accenture.com": 1,
+    "unicef.org": 1
+  },
+  "verificationHealth": [
+    {
+      "domain": "weforum.org",
+      "checked": 5,
+      "passed": 0,
+      "failed": 5,
+      "lastCheckedAt": "2026-02-12T19:44:23.571Z"
+    },
+    {
+      "domain": "ilo.org",
+      "checked": 1,
+      "passed": 0,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:43:40.865Z"
+    },
+    {
+      "domain": "oecd.org",
+      "checked": 5,
+      "passed": 0,
+      "failed": 5,
+      "lastCheckedAt": "2026-02-12T19:44:14.637Z"
+    },
+    {
+      "domain": "worldbank.org",
+      "checked": 2,
+      "passed": 1,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:44:09.808Z"
+    },
+    {
+      "domain": "mckinsey.com",
+      "checked": 4,
+      "passed": 2,
+      "failed": 2,
+      "lastCheckedAt": "2026-02-12T19:44:28.254Z"
+    },
+    {
+      "domain": "deloitte.com",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:01.628Z"
+    },
+    {
+      "domain": "wipo.int",
+      "checked": 1,
+      "passed": 0,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:44:03.505Z"
+    },
+    {
+      "domain": "who.int",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:04.914Z"
+    },
+    {
+      "domain": "visualcapitalist.com",
+      "checked": 2,
+      "passed": 0,
+      "failed": 2,
+      "lastCheckedAt": "2026-02-12T19:44:27.190Z"
+    },
+    {
+      "domain": "ourworldindata.org",
+      "checked": 2,
+      "passed": 2,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:27.399Z"
+    },
+    {
+      "domain": "youtube.com",
+      "checked": 11,
+      "passed": 11,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:36.559Z"
+    },
+    {
+      "domain": "bcg.com",
+      "checked": 1,
+      "passed": 0,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:44:10.540Z"
+    },
+    {
+      "domain": "pwc.com",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:11.418Z"
+    },
+    {
+      "domain": "ec.europa.eu",
+      "checked": 1,
+      "passed": 0,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:44:12.304Z"
+    },
+    {
+      "domain": "unesco.org",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:13.961Z"
+    },
+    {
+      "domain": "accenture.com",
+      "checked": 1,
+      "passed": 1,
+      "failed": 0,
+      "lastCheckedAt": "2026-02-12T19:44:26.188Z"
+    },
+    {
+      "domain": "unicef.org",
+      "checked": 1,
+      "passed": 0,
+      "failed": 1,
+      "lastCheckedAt": "2026-02-12T19:44:26.850Z"
+    }
+  ]
+}

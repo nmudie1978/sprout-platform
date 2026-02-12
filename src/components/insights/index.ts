@@ -58,3 +58,7 @@ export { SpotlightCarousel } from "./spotlight-carousel";
 // CFYE Podcast Spotlight
 export { PodcastSpotlight } from "./podcast-spotlight";
 
+// Verified Insights Pool — Deep Content + Anti-Repeat Engine
+export { VerifiedBadge } from "./verified-badge";
+export { VerifiedInsightsFeed } from "./verified-insights-feed";
+
