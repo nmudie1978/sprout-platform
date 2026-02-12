@@ -42,6 +42,10 @@ import { ProgressSection } from '@/components/journey/progress';
 import { SecondaryGoalReminder } from '@/components/goals/SecondaryGoalReminder';
 import { GoalSelectionSheet } from '@/components/goals/GoalSelectionSheet';
 import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
+import { GrowthMirror } from '@/components/my-journey/GrowthMirror';
+import { SelfReflection } from '@/components/my-journey/SelfReflection';
+import { CalmAcknowledgement } from '@/components/journey/CalmAcknowledgement';
+import { useAcknowledgements } from '@/hooks/use-acknowledgements';
 
 // Types
 import type {
@@ -192,10 +196,10 @@ const TAB_CONFIG: TabConfig[] = [
   },
   {
     id: 'traits',
-    label: 'Traits',
+    label: 'Self-Reflection',
     icon: Fingerprint,
-    tooltip: 'Notice which ways of working feel like you.',
-    subtitle: 'Traits you\'re noticing about yourself.',
+    tooltip: 'A space for checking in with yourself — no right pace, nothing to achieve.',
+    subtitle: "This space is for checking in with yourself. There's no right pace and nothing you need to 'achieve' here.",
   },
 ];
 
@@ -274,6 +278,7 @@ export default function MyJourneyPage() {
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
+  const { currentMessage, maybeShowAcknowledgement } = useAcknowledgements();
   const reducedMotion = typeof window !== 'undefined' && prefersReducedMotion();
   const shouldAnimate = !reducedMotion;
 
@@ -478,6 +483,11 @@ export default function MyJourneyPage() {
           </div>
         )}
 
+        {/* Growth Mirror */}
+        <div className="mb-6">
+          <GrowthMirror />
+        </div>
+
         {/* Tab Navigation */}
         <div className="mb-6">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as JourneyTab)}>
@@ -538,10 +548,16 @@ export default function MyJourneyPage() {
               <NotesTab />
             </TabsContent>
 
-            {/* Traits Tab */}
+            {/* Self-Reflection Tab */}
             <TabsContent value="traits" className="mt-6">
               <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'traits')?.subtitle || ''} />
-              <TraitsTab />
+              <CalmAcknowledgement message={currentMessage} />
+              <SelfReflection onReflectionSaved={maybeShowAcknowledgement} />
+              <div className="my-8 border-t border-border" />
+              <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
+                Trait Observations
+              </h3>
+              <TraitsTab onObservationRecorded={maybeShowAcknowledgement} />
             </TabsContent>
           </Tabs>
         </div>

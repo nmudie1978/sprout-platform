@@ -14,6 +14,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useTraitObservations, useRecordObservation } from '@/hooks/use-traits';
+import { RecentlyDeleted } from '@/components/journey/recently-deleted';
 import {
   TRAIT_CATALOG,
   TRAIT_MAP,
@@ -361,7 +362,7 @@ function TraitDetailDrawer({
 // TRAITS TAB (EXPORTED)
 // ============================================
 
-export function TraitsTab() {
+export function TraitsTab({ onObservationRecorded }: { onObservationRecorded?: () => void } = {}) {
   const { data, isLoading } = useTraitObservations();
   const recordMutation = useRecordObservation();
   const [detailTrait, setDetailTrait] = useState<Trait | null>(null);
@@ -388,7 +389,10 @@ export function TraitsTab() {
   }, [data]);
 
   const handleSelect = (traitId: TraitId, value: ObservationValue) => {
-    recordMutation.mutate({ traitId, observation: value });
+    recordMutation.mutate(
+      { traitId, observation: value },
+      { onSuccess: () => onObservationRecorded?.() }
+    );
   };
 
   if (isLoading) {
@@ -424,6 +428,9 @@ export function TraitsTab() {
         onClose={() => setDetailTrait(null)}
         isPending={recordMutation.isPending}
       />
+
+      {/* Recently Deleted */}
+      <RecentlyDeleted type="traitObservation" />
     </div>
   );
 }

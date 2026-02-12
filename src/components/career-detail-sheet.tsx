@@ -34,6 +34,9 @@ import {
   Loader2,
   Star,
   ArrowLeftRight,
+  Video,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
@@ -41,7 +44,7 @@ import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { CareerProgressionFlow } from "@/components/careers/CareerProgressionFlow";
 import { RealWorldExamplesLinks } from "@/components/careers/RealWorldExamplesLinks";
-import { MicroGuideCard, getGuideForCareer } from "@/components/careers/MicroGuideCard";
+import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 
 interface CareerDetailSheetProps {
   career: Career | null;
@@ -180,6 +183,7 @@ export function CareerDetailSheet({
   const queryClient = useQueryClient();
   const [addedAs, setAddedAs] = useState<GoalSlot | null>(null);
   const [showSwapModal, setShowSwapModal] = useState(false);
+  const { saveCuriosity, removeCuriosity, isSaved: isCuriositySaved } = useCuriositySaves();
 
   const isYouth = session?.user?.role === "YOUTH";
 
@@ -323,6 +327,25 @@ export function CareerDetailSheet({
                       {career.description}
                     </p>
                   </div>
+                  <button
+                    onClick={() => {
+                      if (isCuriositySaved(career.id)) {
+                        removeCuriosity(career.id);
+                        toast("Removed from curiosities");
+                      } else {
+                        saveCuriosity(career.id, career.title, career.emoji);
+                        toast("Saved to curiosities", { description: "Find it in My Journey → Library" });
+                      }
+                    }}
+                    className="p-1.5 rounded-md hover:bg-muted transition-colors flex-shrink-0"
+                    title={isCuriositySaved(career.id) ? "Remove from curiosities" : "Save to curiosities"}
+                  >
+                    {isCuriositySaved(career.id) ? (
+                      <BookmarkCheck className="h-5 w-5 text-teal-500" />
+                    ) : (
+                      <Bookmark className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </button>
                 </div>
 
                 {/* Match Score */}
@@ -470,6 +493,20 @@ export function CareerDetailSheet({
                             )}
                           </div>
                         )}
+
+                        {/* Day in the Life Video Link */}
+                        <div className="pt-2 border-t border-blue-200/50 dark:border-blue-800/50">
+                          <a
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`"a day in the life" ${career.title}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                          >
+                            <Video className="h-3.5 w-3.5" />
+                            Watch: A Day in the Life
+                            <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
+                          </a>
+                        </div>
                       </div>
                     </div>
 
@@ -565,10 +602,6 @@ export function CareerDetailSheet({
                       </div>
                     )}
 
-                    {/* Quick Guide - AI Micro-Guide Placeholder */}
-                    {/* TODO: Replace static content with AI-generated guidance */}
-                    {/* TODO: Add personalisation based on user experience level */}
-                    <MicroGuideCard content={getGuideForCareer(career.title)} />
 
                     {/* Content note */}
                     {!hasSpecificContent && (
@@ -641,12 +674,12 @@ export function CareerDetailSheet({
                   )}
                   <Button variant="outline" className="w-full" size="sm" asChild>
                     <a
-                      href={`https://utdanning.no/search?q=${encodeURIComponent(career.title)}`}
+                      href={`https://vilbli.no/?Ession=SO&Sok=${encodeURIComponent(career.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                      Learn More on Utdanning.no
+                      Learn More on Vilbli.no
                     </a>
                   </Button>
                 </div>
