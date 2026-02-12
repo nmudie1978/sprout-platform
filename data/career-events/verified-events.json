@@ -1,0 +1,94 @@
+[
+  {
+    "id": "tautdanning:oslo-12-february-2026",
+    "provider": "tautdanning",
+    "providerEventId": "oslo-12-february-2026",
+    "title": "Oslo - tautdanning.no",
+    "description": "Student fair in Oslo — explore education and career options with universities and employers.",
+    "startDateISO": "2026-02-11",
+    "locationLabel": "Oslo, Norway",
+    "city": "Oslo",
+    "country": "Norway",
+    "format": "In-person",
+    "category": "Job Fair",
+    "audienceFit": "Students",
+    "registrationUrl": "https://www.tautdanning.no/studentfairs/oslo/",
+    "sourceUrl": "https://www.tautdanning.no/studentfairs/oslo/",
+    "organizerName": "Ta Utdanning",
+    "tags": [
+      "student-fair",
+      "youth-friendly"
+    ],
+    "verified": true,
+    "verifiedAtISO": "2026-01-22T22:25:27.336Z"
+  },
+  {
+    "id": "tautdanning:transport-services-19-december",
+    "provider": "tautdanning",
+    "providerEventId": "transport-services-19-december",
+    "title": "Transport Services Fair - tautdanning.no",
+    "description": "Student fair focusing on careers in the transport and logistics sector.",
+    "startDateISO": "2026-12-18",
+    "locationLabel": "Norway",
+    "country": "Norway",
+    "format": "In-person",
+    "category": "Job Fair",
+    "audienceFit": "Students",
+    "registrationUrl": "https://www.tautdanning.no/studentfairs/transport-services/",
+    "sourceUrl": "https://www.tautdanning.no/studentfairs/transport-services/",
+    "organizerName": "Ta Utdanning",
+    "tags": [
+      "student-fair",
+      "youth-friendly"
+    ],
+    "verified": true,
+    "verifiedAtISO": "2026-01-22T22:25:27.336Z"
+  },
+  {
+    "id": "eures:seize-the-summer-with-eures-2026",
+    "provider": "eures",
+    "providerEventId": "seize-the-summer-with-eures-2026",
+    "title": "Seize the Summer with EURES 2026",
+    "description": "Find summer jobs across Europe — ideal for students and young people seeking seasonal work experience.",
+    "startDateISO": "2026-03-25",
+    "locationLabel": "Online",
+    "country": "Europe",
+    "format": "Online",
+    "category": "Job Fair",
+    "audienceFit": "Students",
+    "registrationUrl": "https://europeanjobdays.eu/en/who-are-you",
+    "sourceUrl": "https://europeanjobdays.eu/en/seizethesummer2026",
+    "organizerName": "EURES - European Employment Services",
+    "tags": [
+      "european-job-days",
+      "youth-friendly",
+      "summer-jobs",
+      "seasonal"
+    ],
+    "verified": true,
+    "verifiedAtISO": "2026-01-22T22:25:27.336Z"
+  },
+  {
+    "id": "eures:find-your-seasonal-job-in-europe",
+    "provider": "eures",
+    "providerEventId": "find-your-seasonal-job-in-europe",
+    "title": "Find your seasonal job in Europe!",
+    "description": "Seasonal job fair connecting young jobseekers with European employers for summer and holiday work.",
+    "startDateISO": "2026-04-01",
+    "locationLabel": "Online",
+    "country": "Europe",
+    "format": "Online",
+    "category": "Job Fair",
+    "audienceFit": "Students",
+    "registrationUrl": "https://europeanjobdays.eu/en/who-are-you",
+    "sourceUrl": "https://europeanjobdays.eu/en/event/find-your-seasonal-job-europe-0",
+    "organizerName": "EURES - European Employment Services",
+    "tags": [
+      "european-job-days",
+      "youth-friendly",
+      "seasonal"
+    ],
+    "verified": true,
+    "verifiedAtISO": "2026-01-22T22:25:27.336Z"
+  }
+]

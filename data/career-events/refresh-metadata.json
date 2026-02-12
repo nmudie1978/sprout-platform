@@ -1,0 +1,79 @@
+{
+  "lastRefreshISO": "2026-02-11T00:00:00.000Z",
+  "totalFetched": 10,
+  "totalNormalized": 10,
+  "totalVerified": 9,
+  "totalFailed": 1,
+  "duplicatesRemoved": 0,
+  "youthRelevantKept": 4,
+  "removedPastEvents": 3,
+  "removedNonYouthEvents": 2,
+  "providerStats": [
+    {
+      "provider": "tautdanning",
+      "fetched": 5,
+      "normalized": 5,
+      "verified": 4,
+      "failed": 1,
+      "errors": []
+    },
+    {
+      "provider": "oslomet",
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "provider": "bi-karrieredagene",
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
+      "failed": 0,
+      "errors": []
+    },
+    {
+      "provider": "eures",
+      "fetched": 5,
+      "normalized": 5,
+      "verified": 5,
+      "failed": 0,
+      "errors": []
+    }
+  ],
+  "providerHealth": [
+    {
+      "provider": "tautdanning",
+      "status": "healthy",
+      "lastRun": "2026-01-22T22:24:57.317Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-01-22T22:25:08.997Z",
+      "eventsFound": 5
+    },
+    {
+      "provider": "oslomet",
+      "status": "degraded",
+      "lastRun": "2026-01-22T22:25:09.622Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-01-22T22:25:18.471Z",
+      "eventsFound": 0
+    },
+    {
+      "provider": "bi-karrieredagene",
+      "status": "degraded",
+      "lastRun": "2026-01-22T22:25:19.015Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-01-22T22:25:19.693Z",
+      "eventsFound": 0
+    },
+    {
+      "provider": "eures",
+      "status": "healthy",
+      "lastRun": "2026-01-22T22:25:20.263Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-01-22T22:25:26.563Z",
+      "eventsFound": 5
+    }
+  ]
+}

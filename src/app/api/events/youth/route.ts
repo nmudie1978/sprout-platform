@@ -30,8 +30,41 @@ import type {
   YouthEventsResponse,
   RefreshMetadata,
 } from "@/lib/events/types";
-import { PROVIDER_PRIORITY } from "@/lib/events/types";
+import { PROVIDER_PRIORITY, type AudienceFit } from "@/lib/events/types";
 import { isWithinDateRange } from "@/lib/events/date-range";
+
+// ============================================
+// YOUTH-RELEVANCE FILTER (ages 15-21)
+// ============================================
+
+/** Audience values that indicate youth relevance */
+const YOUTH_AUDIENCES: AudienceFit[] = ["16–21", "Students"];
+
+/** Keywords in title/description that indicate youth relevance */
+const YOUTH_KEYWORDS = [
+  "student", "youth", "young", "teen", "junior",
+  "apprentice", "intern", "trainee", "beginner",
+  "entry-level", "entry level", "first job", "career start",
+  "summer job", "seasonal", "graduate", "school",
+  "studenter", "ungdom", "lærling",
+];
+
+/**
+ * Determines if an event is relevant for the 15-21 age range.
+ * Applied as a persistent filter so only youth-relevant events
+ * are served regardless of the data source.
+ */
+function isYouthRelevantEvent(event: EventItem): boolean {
+  // Direct audience match
+  if (YOUTH_AUDIENCES.includes(event.audienceFit)) return true;
+
+  // Youth-friendly tag
+  if (event.tags?.includes("youth-friendly")) return true;
+
+  // Keyword match in title or description
+  const searchText = `${event.title} ${event.description ?? ""}`.toLowerCase();
+  return YOUTH_KEYWORDS.some((kw) => searchText.includes(kw));
+}
 
 // ============================================
 // DATA FILE PATHS
@@ -133,7 +166,10 @@ export async function GET(request: NextRequest) {
       events = events.filter((e) => e.verified);
     }
 
-    // Filter: date range
+    // Filter: youth-relevant only (ages 15-21)
+    events = events.filter(isYouthRelevantEvent);
+
+    // Filter: date range (today → today + N months)
     events = events.filter((e) => isWithinDateRange(e.startDateISO, months));
 
     // Filter: search query
@@ -181,10 +217,10 @@ export async function GET(request: NextRequest) {
     const startIndex = (page - 1) * pageSize;
     const paginatedEvents = events.slice(startIndex, startIndex + pageSize);
 
-    // Build filter options from all events (not just current page)
+    // Build filter options from all youth-relevant events (not just current page)
     const allEvents = await loadEvents();
     const filteredForOptions = allEvents.filter((e) =>
-      e.verified && isWithinDateRange(e.startDateISO, months)
+      e.verified && isYouthRelevantEvent(e) && isWithinDateRange(e.startDateISO, months)
     );
 
     const cities = [...new Set(filteredForOptions.map((e) => e.city).filter(Boolean))] as string[];

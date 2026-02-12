@@ -576,7 +576,7 @@ function Pagination({ page, pageSize, total, onPageChange }: PaginationProps) {
 
 export function YouthEventsTable({
   className,
-  defaultPageSize = 10,
+  defaultPageSize = 5,
 }: YouthEventsTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(defaultPageSize);
