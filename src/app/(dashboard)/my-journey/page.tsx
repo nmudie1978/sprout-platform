@@ -8,9 +8,9 @@ import {
   Lock,
   BookOpen,
   StickyNote,
-  Fingerprint,
   Target,
   ArrowRight,
+  Fingerprint,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,24 +25,16 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-import {
-  prefersReducedMotion,
-} from '@/lib/motion';
-import {
-  BreathingPill,
-} from '@/components/motion';
 
 // Journey Components
 import { PersonalCareerTimeline } from '@/components/journey';
 import { JourneyTitle } from '@/components/journey/journey-title';
 import { StepContent } from '@/components/journey/step-content';
-import { LibraryTab, NotesTab, TraitsTab } from '@/components/journey/tabs';
-import { ProgressSection } from '@/components/journey/progress';
+import { LibraryTab, NotesTab } from '@/components/journey/tabs';
 // Goal Components
 import { SecondaryGoalReminder } from '@/components/goals/SecondaryGoalReminder';
 import { GoalSelectionSheet } from '@/components/goals/GoalSelectionSheet';
 import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
-import { GrowthMirror } from '@/components/my-journey/GrowthMirror';
 import { SelfReflection } from '@/components/my-journey/SelfReflection';
 import { CalmAcknowledgement } from '@/components/journey/CalmAcknowledgement';
 import { useAcknowledgements } from '@/hooks/use-acknowledgements';
@@ -162,7 +154,7 @@ const DEMO_JOURNEY: JourneyUIState = {
 // TAB CONFIGURATION
 // ============================================
 
-type JourneyTab = 'timeline' | 'library' | 'notes' | 'traits';
+type JourneyTab = 'timeline' | 'library' | 'notes' | 'self-reflection';
 
 interface TabConfig {
   id: JourneyTab;
@@ -181,8 +173,15 @@ const TAB_CONFIG: TabConfig[] = [
     subtitle: 'Your personalised career timeline.',
   },
   {
+    id: 'self-reflection',
+    label: 'Self-Reflection',
+    icon: Fingerprint,
+    tooltip: 'A space for checking in with yourself — no right pace, nothing to achieve.',
+    subtitle: "This space is for checking in with yourself. There's no right pace and nothing you need to 'achieve' here.",
+  },
+  {
     id: 'library',
-    label: 'Library',
+    label: 'My Content',
     icon: BookOpen,
     tooltip: 'Insights and resources you\'ve saved along the way.',
     subtitle: 'Insights and resources you\'ve saved along the way.',
@@ -194,13 +193,6 @@ const TAB_CONFIG: TabConfig[] = [
     tooltip: 'Your personal thoughts across the journey.',
     subtitle: 'Your personal thoughts across the journey.',
   },
-  {
-    id: 'traits',
-    label: 'Self-Reflection',
-    icon: Fingerprint,
-    tooltip: 'A space for checking in with yourself — no right pace, nothing to achieve.',
-    subtitle: "This space is for checking in with yourself. There's no right pace and nothing you need to 'achieve' here.",
-  },
 ];
 
 // ============================================
@@ -209,13 +201,10 @@ const TAB_CONFIG: TabConfig[] = [
 
 function PrimaryGoalHero({
   goalTitle,
-  overallProgress,
   onSetGoal,
 }: {
   goalTitle: string | null;
-  overallProgress: number;
   onSetGoal: () => void;
-  updatedAt?: string | null;
 }) {
   if (!goalTitle) {
     return (
@@ -236,18 +225,13 @@ function PrimaryGoalHero({
   return (
     <Card className="border-purple-200 dark:border-purple-800/60 h-full">
       <CardContent className="p-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
-              <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Primary Goal</p>
-              <p className="text-sm font-bold truncate">{goalTitle}</p>
-            </div>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
+            <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
           </div>
-          <div className="text-right flex-shrink-0">
-            <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{overallProgress}%</p>
+          <div className="min-w-0">
+            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Primary Goal</p>
+            <p className="text-sm font-bold truncate">{goalTitle}</p>
           </div>
         </div>
       </CardContent>
@@ -279,8 +263,6 @@ export default function MyJourneyPage() {
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
   const { currentMessage, maybeShowAcknowledgement } = useAcknowledgements();
-  const reducedMotion = typeof window !== 'undefined' && prefersReducedMotion();
-  const shouldAnimate = !reducedMotion;
 
   // Fetch goals
   const isYouth = session?.user?.role === 'YOUTH';
@@ -390,83 +372,17 @@ export default function MyJourneyPage() {
 
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
 
-  // Determine current lens for breathing pill indicator
-  const currentLens = journey?.currentState
-    ? JOURNEY_STATE_CONFIG[journey.currentState]?.lens
-    : 'DISCOVER';
-
-  // Derive a stable goalId for the task store (use title slug or fallback)
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
-  const goalId = goalTitle
-    ? goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-    : undefined;
 
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-4 py-8 max-w-6xl relative">
-        {/* Header */}
-        <div className="mb-8 rounded-2xl border border-border bg-card p-6 md:p-8">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
-              <Route className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                My Journey
-              </h1>
-              {/* Stage pills — inline with title */}
-              <div className="flex items-center gap-1">
-                <BreathingPill
-                  active={currentLens === 'DISCOVER'}
-                  enabled={shouldAnimate}
-                  className={cn(
-                    'text-[11px] px-1.5 py-0.5',
-                    currentLens === 'DISCOVER'
-                      ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  Discover
-                </BreathingPill>
-                <span className="text-muted-foreground/50 text-[10px]">·</span>
-                <BreathingPill
-                  active={currentLens === 'UNDERSTAND'}
-                  enabled={shouldAnimate}
-                  className={cn(
-                    'text-[11px] px-1.5 py-0.5',
-                    currentLens === 'UNDERSTAND'
-                      ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  Understand
-                </BreathingPill>
-                <span className="text-muted-foreground/50 text-[10px]">·</span>
-                <BreathingPill
-                  active={currentLens === 'ACT'}
-                  enabled={shouldAnimate}
-                  className={cn(
-                    'text-[11px] px-1.5 py-0.5',
-                    currentLens === 'ACT'
-                      ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  Act
-                </BreathingPill>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Goal Cards — primary + secondary side by side */}
         {journey && (
           <div className={cn('mb-6 grid gap-3', secondaryGoal ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1')}>
             <PrimaryGoalHero
               goalTitle={goalTitle}
-              overallProgress={journey.summary?.overallProgress ?? 0}
               onSetGoal={() => setGoalSheetOpen(true)}
-              updatedAt={primaryGoal?.updatedAt ?? journey.summary?.primaryGoal?.selectedAt ?? null}
             />
             {secondaryGoal && (
               <SecondaryGoalReminder
@@ -482,11 +398,6 @@ export default function MyJourneyPage() {
             )}
           </div>
         )}
-
-        {/* Growth Mirror */}
-        <div className="mb-6">
-          <GrowthMirror />
-        </div>
 
         {/* Tab Navigation */}
         <div className="mb-6">
@@ -527,11 +438,8 @@ export default function MyJourneyPage() {
                 <>
                   <JourneyTitle
                     firstName={(session?.user?.youthProfile?.displayName ?? session?.user?.name ?? '').split(' ')[0] || 'You'}
-                    primaryGoalLabel={goalTitle ?? undefined}
-                    primaryGoalStatus={primaryGoal?.status}
                   />
                   <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-                  <ProgressSection goalId={goalId} />
                 </>
               )}
             </TabsContent>
@@ -549,15 +457,10 @@ export default function MyJourneyPage() {
             </TabsContent>
 
             {/* Self-Reflection Tab */}
-            <TabsContent value="traits" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'traits')?.subtitle || ''} />
+            <TabsContent value="self-reflection" className="mt-6">
+              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'self-reflection')?.subtitle || ''} />
               <CalmAcknowledgement message={currentMessage} />
               <SelfReflection onReflectionSaved={maybeShowAcknowledgement} />
-              <div className="my-8 border-t border-border" />
-              <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
-                Trait Observations
-              </h3>
-              <TraitsTab onObservationRecorded={maybeShowAcknowledgement} />
             </TabsContent>
           </Tabs>
         </div>

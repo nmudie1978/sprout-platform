@@ -1,18 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { STAGE_CONFIG, STAGE_ORDER, type JourneyItem } from '@/lib/journey/career-journey-types';
 import type { Journey } from '@/lib/journey/career-journey-types';
-import { ZigzagRenderer } from './renderers';
+import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
+import type { RendererProps } from './renderers';
 import { TimelineDetailDialog } from './timeline';
 import { LayersControl } from './overlays/layers-control';
 import { NodeDetailPanel } from './overlays/node-detail-panel';
 import { useOverlayState } from '@/hooks/use-overlay-state';
+import { useTimelineStyle, type TimelineStyle } from '@/hooks/use-timeline-style';
+import { TimelineStyleSelector } from './timeline-style-selector';
+import { getAllCareers, type Career } from '@/lib/career-pathways';
+import { CareerDetailSheet } from '@/components/career-detail-sheet';
+
+const RENDERERS: Record<TimelineStyle, React.ComponentType<RendererProps>> = {
+  zigzag: ZigzagRenderer,
+  rail: RailRenderer,
+  stepping: SteppingRenderer,
+};
 
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
@@ -24,6 +35,15 @@ function slugify(text: string): string {
 
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
+  const [showCareerDetail, setShowCareerDetail] = useState(false);
+  const { style, setStyle } = useTimelineStyle();
+
+  // Find matching Career object for the detail sheet
+  const matchedCareer = useMemo<Career | null>(() => {
+    if (!primaryGoalTitle) return null;
+    const titleLower = primaryGoalTitle.toLowerCase();
+    return getAllCareers().find((c) => c.title.toLowerCase() === titleLower) ?? null;
+  }, [primaryGoalTitle]);
 
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   const {
@@ -132,13 +152,22 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
           <h2 className="text-lg font-semibold">
             Your Path to {journey.career}
           </h2>
+          {matchedCareer && (
+            <button
+              onClick={() => setShowCareerDetail(true)}
+              className="p-1 rounded-md text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/50 transition-colors"
+              title="View career details"
+            >
+              <Info className="h-4 w-4" />
+            </button>
+          )}
         </div>
         {data?.cached && (
           <span className="text-[10px] text-muted-foreground/60">Cached</span>
         )}
       </div>
 
-      {/* Stage legend + layers control */}
+      {/* Stage legend + style selector + layers control */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         {STAGE_ORDER.map((stage) => {
           const config = STAGE_CONFIG[stage];
@@ -154,20 +183,24 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
             </div>
           );
         })}
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <TimelineStyleSelector value={style} onChange={setStyle} />
           <LayersControl activeLayers={activeLayers} onToggle={toggleLayer} />
         </div>
       </div>
 
-      {/* Zigzag renderer */}
-      <div className="overflow-x-auto">
-        <ZigzagRenderer
-          journey={journey}
-          onItemClick={(item) => setSelectedItem(item)}
-          overlayData={nodeAnnotations}
-          activeLayers={activeLayers}
-        />
-      </div>
+      {/* Timeline renderer */}
+      {(() => {
+        const Renderer = RENDERERS[style];
+        return (
+          <Renderer
+            journey={journey}
+            onItemClick={(item) => setSelectedItem(item)}
+            overlayData={nodeAnnotations}
+            activeLayers={activeLayers}
+          />
+        );
+      })()}
 
       {/* Detail dialog — default when no layers active */}
       {!hasAnyActiveLayer && (
@@ -195,6 +228,14 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
           onOpenChange={(open) => {
             if (!open) setSelectedItem(null);
           }}
+        />
+      )}
+
+      {/* Career detail sheet */}
+      {showCareerDetail && matchedCareer && (
+        <CareerDetailSheet
+          career={matchedCareer}
+          onClose={() => setShowCareerDetail(false)}
         />
       )}
     </section>
