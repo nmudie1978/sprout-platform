@@ -47,6 +47,7 @@ import type {
   StepCompletionData,
   StateConfig,
 } from '@/lib/journey/types';
+import type { CareerGoal } from '@/lib/goals/types';
 
 import {
   JOURNEY_STATE_CONFIG,
@@ -169,43 +170,47 @@ const TAB_CONFIG: TabConfig[] = [
     label: 'Roadmap',
     icon: Route,
     tooltip: 'Your AI-generated career timeline based on your primary goal.',
-    subtitle: 'Your personalised career timeline.',
+    subtitle: 'Possible paths and steps over time — not a fixed plan.',
   },
   {
     id: 'self-reflection',
     label: 'Self-Reflection',
     icon: Fingerprint,
     tooltip: 'A space for checking in with yourself — no right pace, nothing to achieve.',
-    subtitle: "This space is for checking in with yourself. There's no right pace and nothing you need to 'achieve' here.",
+    subtitle: 'A space for checking in with yourself — no right pace and nothing you need to achieve.',
   },
   {
     id: 'library',
     label: 'My Content',
     icon: BookOpen,
     tooltip: 'Insights and resources you\'ve saved along the way.',
-    subtitle: 'Insights and resources you\'ve saved along the way.',
+    subtitle: 'Things you\'ve saved or explored, kept here for whenever you want to revisit them.',
   },
   {
     id: 'notes',
     label: 'Notes',
     icon: StickyNote,
     tooltip: 'Your personal thoughts across the journey.',
-    subtitle: 'Your personal thoughts across the journey.',
+    subtitle: 'A free space for thoughts, ideas, or anything worth remembering.',
   },
 ];
 
 // ============================================
-// PRIMARY GOAL HERO
+// PRIMARY GOAL HERO — Identity-first header
 // ============================================
 
 function PrimaryGoalHero({
-  goalTitle,
+  goal,
+  fallbackTitle,
   onSetGoal,
 }: {
-  goalTitle: string | null;
+  goal: CareerGoal | null;
+  fallbackTitle?: string | null;
   onSetGoal: () => void;
 }) {
-  if (!goalTitle) {
+  const title = goal?.title ?? fallbackTitle;
+
+  if (!title) {
     return (
       <button
         onClick={onSetGoal}
@@ -221,20 +226,25 @@ function PrimaryGoalHero({
     );
   }
 
+  const skills = goal?.skills ?? [];
+  const meta = skills.length > 0
+    ? skills.slice(0, 4).join(' \u00B7 ')
+    : null;
+
   return (
-    <Card className="border-purple-200 dark:border-purple-800/60 h-full">
-      <CardContent className="p-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center flex-shrink-0">
-            <Target className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">Primary Goal</p>
-            <p className="text-sm font-bold truncate">{goalTitle}</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="space-y-1 min-w-0">
+      <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/40">
+        Career Path
+      </p>
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">
+        {title}
+      </h1>
+      {meta && (
+        <p className="text-sm text-muted-foreground/40 pt-0.5 truncate">
+          {meta}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -376,24 +386,30 @@ export default function MyJourneyPage() {
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-4 py-8 max-w-6xl relative">
-        {/* Goal Cards — primary + secondary side by side */}
+        {/* Career Path Header + Secondary Goal */}
         {journey && (
-          <div className={cn('mb-6 grid gap-3', secondaryGoal ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1')}>
+          <div className={cn(
+            'mb-8',
+            goalTitle && secondaryGoal && 'flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4',
+          )}>
             <PrimaryGoalHero
-              goalTitle={goalTitle}
+              goal={primaryGoal}
+              fallbackTitle={journey.summary?.primaryGoal?.title}
               onSetGoal={() => setGoalSheetOpen(true)}
             />
-            {secondaryGoal && (
-              <SecondaryGoalReminder
-                secondaryGoal={secondaryGoal}
-                onPromote={() =>
-                  promoteGoal.mutate({
-                    currentPrimary: primaryGoal,
-                    currentSecondary: secondaryGoal,
-                  })
-                }
-                isPromoting={promoteGoal.isPending}
-              />
+            {goalTitle && secondaryGoal && (
+              <div className="flex-shrink-0 sm:w-72">
+                <SecondaryGoalReminder
+                  secondaryGoal={secondaryGoal}
+                  onPromote={() =>
+                    promoteGoal.mutate({
+                      currentPrimary: primaryGoal,
+                      currentSecondary: secondaryGoal,
+                    })
+                  }
+                  isPromoting={promoteGoal.isPending}
+                />
+              </div>
             )}
           </div>
         )}
@@ -433,6 +449,7 @@ export default function MyJourneyPage() {
 
             {/* Timeline Tab */}
             <TabsContent value="timeline" className="mt-6">
+              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'timeline')?.subtitle || ''} />
               {journey && (
                 <>
                   <JourneyTitle

@@ -2,14 +2,13 @@
 
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Sparkles, ChevronDown, Trash2, Zap } from 'lucide-react';
+import { ChevronDown, Trash2, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   prefersReducedMotion,
-  fadeInUp,
   staggerContainerVariants,
   staggerItem,
   PREMIUM_EASE,
@@ -70,10 +69,12 @@ function ReflectionCard({
   const summary = getSummary(entry);
   const hasCapabilityContent = entry.capability.skills?.length || entry.capability.responsibility || entry.capability.growthNote;
   const hasDirectionContent = entry.direction.nextInterest || entry.direction.perspectiveShift;
+  const hasEnergyNotes = entry.energy.notes;
+  const hasNonDefaultEnergy = entry.energy.level !== 3;
 
   return (
     <Card
-      className="cursor-pointer transition-shadow hover:shadow-md"
+      className="cursor-pointer transition-all duration-300 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/10"
       onClick={() => setExpanded(!expanded)}
     >
       <CardContent className="p-4">
@@ -81,18 +82,18 @@ function ReflectionCard({
         <div className="flex items-start justify-between gap-3 mb-2">
           <p className="text-sm font-medium line-clamp-1 flex-1">{summary}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-xs text-muted-foreground">{formatDate(entry.createdAt)}</span>
+            <span className="text-xs text-muted-foreground/60">{formatDate(entry.createdAt)}</span>
             <ChevronDown
               className={cn(
-                'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                'h-4 w-4 text-muted-foreground/40 transition-transform duration-200',
                 expanded && 'rotate-180'
               )}
             />
           </div>
         </div>
 
-        {/* Energy bar */}
-        <EnergyBar level={entry.energy.level} />
+        {/* Energy bar — only show if user set a non-default level */}
+        {hasNonDefaultEnergy && <EnergyBar level={entry.energy.level} />}
 
         {/* Expanded content */}
         <AnimatePresence>
@@ -108,41 +109,51 @@ function ReflectionCard({
               className="overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="mt-4 space-y-4 border-t pt-4">
+              <div className="mt-4 space-y-4 border-t border-border/50 pt-4">
                 {/* Awareness */}
                 {(entry.awareness.tried || entry.awareness.learned || entry.awareness.surprised) && (
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
-                      Awareness
-                    </p>
-                    <div className="space-y-1.5 text-sm text-muted-foreground">
-                      {entry.awareness.tried && (
-                        <p><span className="font-medium text-foreground">Tried:</span> {entry.awareness.tried}</p>
-                      )}
-                      {entry.awareness.learned && (
-                        <p><span className="font-medium text-foreground">Learned:</span> {entry.awareness.learned}</p>
-                      )}
-                      {entry.awareness.surprised && (
-                        <p><span className="font-medium text-foreground">Surprised:</span> {entry.awareness.surprised}</p>
-                      )}
-                    </div>
+                  <div className="space-y-2.5">
+                    {entry.awareness.tried && (
+                      <div>
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-0.5">
+                          Tried
+                        </p>
+                        <p className="text-sm text-foreground/80">{entry.awareness.tried}</p>
+                      </div>
+                    )}
+                    {entry.awareness.learned && (
+                      <div>
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-0.5">
+                          Learned
+                        </p>
+                        <p className="text-sm text-foreground/80">{entry.awareness.learned}</p>
+                      </div>
+                    )}
+                    {entry.awareness.surprised && (
+                      <div>
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-0.5">
+                          Surprised by
+                        </p>
+                        <p className="text-sm text-foreground/80">{entry.awareness.surprised}</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Energy notes */}
-                {entry.energy.notes && (
+                {hasEnergyNotes && (
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-0.5">
                       Energy Notes
                     </p>
-                    <p className="text-sm text-muted-foreground">{entry.energy.notes}</p>
+                    <p className="text-sm text-foreground/80">{entry.energy.notes}</p>
                   </div>
                 )}
 
                 {/* Capability */}
                 {hasCapabilityContent && (
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-1.5">
                       Capability
                     </p>
                     {entry.capability.skills && entry.capability.skills.length > 0 && (
@@ -154,7 +165,7 @@ function ReflectionCard({
                         ))}
                       </div>
                     )}
-                    <div className="space-y-1.5 text-sm text-muted-foreground">
+                    <div className="space-y-1.5 text-sm text-foreground/80">
                       {entry.capability.responsibility && (
                         <p><span className="font-medium text-foreground">Responsibility:</span> {entry.capability.responsibility}</p>
                       )}
@@ -168,10 +179,10 @@ function ReflectionCard({
                 {/* Direction */}
                 {hasDirectionContent && (
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-1.5">
                       Direction
                     </p>
-                    <div className="space-y-1.5 text-sm text-muted-foreground">
+                    <div className="space-y-1.5 text-sm text-foreground/80">
                       {entry.direction.nextInterest && (
                         <p><span className="font-medium text-foreground">Next interest:</span> {entry.direction.nextInterest}</p>
                       )}
@@ -183,10 +194,10 @@ function ReflectionCard({
                 )}
 
                 {/* Delete */}
-                <div className="pt-2 border-t flex justify-end">
+                <div className="pt-2 border-t border-border/50 flex justify-end">
                   {confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">Remove this reflection?</span>
+                      <span className="text-xs text-muted-foreground/60">Remove this reflection?</span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -208,7 +219,7 @@ function ReflectionCard({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-xs text-muted-foreground hover:text-destructive"
+                      className="h-7 text-xs text-muted-foreground/50 hover:text-destructive"
                       onClick={() => setConfirmDelete(true)}
                     >
                       <Trash2 className="h-3.5 w-3.5 mr-1" />
@@ -240,48 +251,64 @@ export function SelfReflection({ onReflectionSaved }: { onReflectionSaved?: () =
 
   return (
     <div className="space-y-6">
-      {/* New Self-Reflection button */}
-      <div className="flex justify-center">
-        <Button
-          onClick={() => setDialogOpen(true)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Self-Reflection
-        </Button>
-      </div>
-
-      {/* Reflection list or empty state */}
       {reflections.length === 0 ? (
-        <div className="text-center py-12">
-          <Sparkles className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
-          <p className="text-sm font-medium text-muted-foreground">
-            Your first reflection is just a few thoughts away.
+        /* ──── Empty state — inviting, not instructional ──── */
+        <div className="text-center py-14">
+          <div className="h-12 w-12 mx-auto rounded-full bg-emerald-500/[0.07] dark:bg-emerald-400/[0.05] mb-5" />
+          <p className="text-sm font-medium text-foreground/70 mb-1">
+            Your first reflection is a few thoughts away.
           </p>
-          <p className="text-xs text-muted-foreground/60 mt-1">
-            Take a moment to think about something recent — no pressure.
+          <p className="text-xs text-muted-foreground/50 mb-6">
+            A few gentle prompts — skip any, write what feels right.
           </p>
+          <Button
+            onClick={() => setDialogOpen(true)}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-6"
+          >
+            Take a moment
+          </Button>
         </div>
       ) : (
-        <motion.div
-          variants={reduced ? undefined : staggerContainerVariants}
-          initial={reduced ? undefined : 'initial'}
-          animate={reduced ? undefined : 'animate'}
-          className="space-y-3 max-w-2xl mx-auto"
-        >
-          {reflections.map((entry) => (
-            <motion.div
-              key={entry.id}
-              variants={reduced ? undefined : staggerItem}
+        <>
+          {/* ──── Invitation for returning users ──── */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => setDialogOpen(true)}
+              className={cn(
+                'rounded-2xl border border-dashed border-muted-foreground/15 px-7 py-4',
+                'transition-all duration-300',
+                'hover:border-emerald-500/25 hover:bg-muted/20',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20',
+              )}
             >
-              <ReflectionCard
-                entry={entry}
-                onDelete={deleteReflection}
-                reduced={reduced}
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+              <p className="text-sm font-medium text-foreground/80">Take a moment</p>
+              <p className="text-xs text-muted-foreground/40 mt-0.5">
+                A few gentle prompts, nothing required.
+              </p>
+            </button>
+          </div>
+
+          {/* ──── Reflection history ──── */}
+          <motion.div
+            variants={reduced ? undefined : staggerContainerVariants}
+            initial={reduced ? undefined : 'initial'}
+            animate={reduced ? undefined : 'animate'}
+            className="space-y-3 max-w-2xl mx-auto"
+          >
+            {reflections.map((entry) => (
+              <motion.div
+                key={entry.id}
+                variants={reduced ? undefined : staggerItem}
+              >
+                <ReflectionCard
+                  entry={entry}
+                  onDelete={deleteReflection}
+                  reduced={reduced}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </>
       )}
 
       {/* Dialog */}
