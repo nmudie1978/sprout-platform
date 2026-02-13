@@ -15,7 +15,10 @@ export type CareerNature =
   | "analytical"
   | "people-focused"
   | "creative"
-  | "technical";
+  | "technical"
+  | "outdoors-active"
+  | "structured-organised"
+  | "leadership";
 
 export interface SalaryRange {
   min: number; // in thousands (kr)
@@ -72,6 +75,9 @@ export const CAREER_NATURE_LABELS: Record<CareerNature, string> = {
   "people-focused": "People-focused",
   creative: "Creative",
   technical: "Technical",
+  "outdoors-active": "Outdoors & Active",
+  "structured-organised": "Structured & Organised",
+  leadership: "Leadership",
 };
 
 export const CAREER_NATURE_EMOJIS: Record<CareerNature, string> = {
@@ -80,4 +86,7 @@ export const CAREER_NATURE_EMOJIS: Record<CareerNature, string> = {
   "people-focused": "👥",
   creative: "🎨",
   technical: "💻",
+  "outdoors-active": "🌿",
+  "structured-organised": "📋",
+  leadership: "🎯",
 };

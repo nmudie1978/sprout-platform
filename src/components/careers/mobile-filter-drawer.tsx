@@ -7,8 +7,10 @@ import { X, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   CareerFilterState,
+  CareerNature,
   SalaryRange,
 } from "@/lib/career-filters/types";
+import { WorkStylePills } from "@/components/careers/work-style-pills";
 
 interface MobileFilterDrawerProps {
   isOpen: boolean;
@@ -17,13 +19,16 @@ interface MobileFilterDrawerProps {
   salaryBounds: SalaryRange;
   resultCount: number;
   onReset: () => void;
+  onNatureToggle: (nature: CareerNature) => void;
 }
 
 export function MobileFilterDrawer({
   isOpen,
   onClose,
+  filters,
   resultCount,
   onReset,
+  onNatureToggle,
 }: MobileFilterDrawerProps) {
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -74,9 +79,16 @@ export function MobileFilterDrawer({
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
-            <p className="text-xs text-muted-foreground text-center">
-              No additional filters available
-            </p>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground mb-3">
+                What kind of work interests you?
+              </p>
+              <WorkStylePills
+                selected={filters.careerNatures}
+                onToggle={onNatureToggle}
+                wrap
+              />
+            </div>
           </div>
 
           {/* Footer with results count */}

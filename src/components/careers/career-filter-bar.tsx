@@ -14,9 +14,10 @@ import {
   Square,
 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { CareerFilterState, SalaryRange } from "@/lib/career-filters/types";
+import type { CareerFilterState, CareerNature, SalaryRange } from "@/lib/career-filters/types";
 import { formatSalary } from "@/lib/career-filters/utils";
 import type { ViewMode } from "@/components/career-card-v2";
+import { WorkStylePills } from "@/components/careers/work-style-pills";
 
 const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ALL: { label: "All", emoji: "🌟" },
@@ -53,6 +54,8 @@ interface CareerFilterBarProps {
   onToggleAdvanced: () => void;
   onClearAll: () => void;
   onViewModeChange: (mode: ViewMode) => void;
+  selectedNatures: CareerNature[];
+  onNatureToggle: (nature: CareerNature) => void;
 }
 
 export function CareerFilterBar({
@@ -70,6 +73,8 @@ export function CareerFilterBar({
   onToggleAdvanced,
   onClearAll,
   onViewModeChange,
+  selectedNatures,
+  onNatureToggle,
 }: CareerFilterBarProps) {
   const [localSearch, setLocalSearch] = useState(filters.searchQuery);
   const debouncedSearch = useDebounce(localSearch, 300);
@@ -252,6 +257,14 @@ export function CareerFilterBar({
               )}
             </span>
           </div>
+        </div>
+
+        {/* Work Style Preferences */}
+        <div className="mt-3 pt-3 border-t border-purple-500/10">
+          <p className="text-[10px] font-medium text-muted-foreground mb-2">
+            What kind of work interests you?
+          </p>
+          <WorkStylePills selected={selectedNatures} onToggle={onNatureToggle} />
         </div>
       </div>
     </div>

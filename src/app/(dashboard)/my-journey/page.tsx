@@ -23,6 +23,7 @@ import {
   TooltipProvider,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 
@@ -236,7 +237,7 @@ function PrimaryGoalHero({
       <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/40">
         Career Path
       </p>
-      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">
+      <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground/80 truncate">
         {title}
       </h1>
       {meta && (
@@ -429,12 +430,21 @@ export default function MyJourneyPage() {
                           value={tab.id}
                           className="relative flex flex-col items-center gap-0.5 py-2 text-xs sm:text-sm data-[state=active]:bg-background"
                         >
-                          <div className="flex items-center gap-1.5">
+                          <motion.div
+                            className="flex items-center gap-1.5"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.97 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                          >
                             <TabIcon className="h-4 w-4" />
                             <span className="hidden sm:inline">{tab.label}</span>
-                          </div>
+                          </motion.div>
                           {isActive && (
-                            <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-500 rounded-full" />
+                            <motion.div
+                              layoutId="journey-tab-indicator"
+                              className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-500 rounded-full"
+                              transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                            />
                           )}
                         </TabsTrigger>
                       </TooltipTrigger>

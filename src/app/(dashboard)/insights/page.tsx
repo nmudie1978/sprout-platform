@@ -35,7 +35,6 @@ import {
   WhyThisMatters,
   InsightSection,
   YouthEventsTable,
-  PodcastSpotlight,
   JobsEconomySpotlight,
 } from "@/components/insights";
 
@@ -275,16 +274,6 @@ export default function IndustryInsightsPage() {
             <div className="lg:col-span-5">
               <DidYouKnowCard />
             </div>
-          </motion.div>
-
-          {/* Podcast Spotlight: CFYE Youth Employment */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
-            className="mb-6"
-          >
-            <PodcastSpotlight />
           </motion.div>
 
           {/* 3. Youth Career Events in Norway */}

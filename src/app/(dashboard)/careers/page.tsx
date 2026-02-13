@@ -264,6 +264,8 @@ function CareersPageContent() {
         onToggleAdvanced={handleToggleAdvanced}
         onClearAll={clearAllFilters}
         onViewModeChange={setViewMode}
+        selectedNatures={filters.careerNatures}
+        onNatureToggle={handleNatureToggle}
       />
 
       {/* Mobile Filter Drawer */}
@@ -275,6 +277,7 @@ function CareersPageContent() {
           salaryBounds={salaryBounds}
           resultCount={filteredCareers.length}
           onReset={handleResetAdvanced}
+          onNatureToggle={handleNatureToggle}
         />
       )}
 
