@@ -119,35 +119,39 @@ function EventListItem({ event }: { event: EventItem }) {
       onClick={() => setExpanded(!expanded)}
     >
       {/* Collapsed row */}
-      <div className="flex items-center gap-3 py-2.5 px-3">
+      <div className="flex items-center gap-2 py-1.5 px-2.5">
         {/* Date chip */}
         <div
-          className={`flex flex-col items-center justify-center w-11 h-11 rounded-lg flex-shrink-0 ${
+          className={`flex flex-col items-center justify-center w-9 h-9 rounded-lg flex-shrink-0 ${
             isUrgent
               ? "bg-amber-100 dark:bg-amber-900/30"
               : "bg-muted/50"
           }`}
         >
-          <span className="text-sm font-semibold leading-none">
+          <span className="text-xs font-semibold leading-none">
             {formatDay(event.startDateISO)}
           </span>
-          <span className="text-[9px] text-muted-foreground leading-tight mt-0.5">
+          <span className="text-[8px] text-muted-foreground leading-tight mt-0.5">
             {formatMonth(event.startDateISO)}
           </span>
         </div>
 
-        {/* Title + location + category */}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">{event.title}</p>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        {/* Title + location */}
+        <div className="md:flex-[3] flex-1 min-w-0">
+          <p className="text-xs font-medium truncate">{event.title}</p>
+          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
             {event.format === "Online" ? (
-              <Video className="h-3 w-3 flex-shrink-0" />
+              <Video className="h-2.5 w-2.5 flex-shrink-0" />
             ) : (
-              <MapPin className="h-3 w-3 flex-shrink-0" />
+              <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
             )}
             <span className="truncate">{event.locationLabel}</span>
-            <span className="text-muted-foreground/50">·</span>
-            <span className="flex-shrink-0">{event.category}</span>
+            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden flex-shrink-0">{event.category}</span>
+            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden flex-shrink-0">{event.format}</span>
+            <span className="md:hidden text-muted-foreground/50">·</span>
+            <span className="md:hidden flex-shrink-0">{PROVIDER_DISPLAY_NAMES[event.provider]}</span>
             {isUrgent && (
               <span className="text-amber-600 dark:text-amber-400 font-medium ml-1">
                 {relative}
@@ -156,17 +160,40 @@ function EventListItem({ event }: { event: EventItem }) {
           </div>
         </div>
 
-        {/* Country indicator */}
-        <span className="text-sm flex-shrink-0" title={event.country}>
-          {isNorway ? "🇳🇴" : "🌐"}
+        {/* Category column */}
+        <span className="hidden md:flex md:flex-1 text-[11px] text-muted-foreground justify-center truncate">
+          {event.category}
         </span>
 
-        {/* Online badge */}
-        {event.format === "Online" && (
-          <Badge variant="outline" className="text-[9px] px-1.5 py-0 flex-shrink-0 hidden sm:flex">
-            Online
+        {/* Format column */}
+        <span className="hidden md:flex md:flex-1 text-[11px] justify-center">
+          {event.format === "Online" ? (
+            <Badge variant="outline" className="text-[9px] px-1.5 py-0">
+              Online
+            </Badge>
+          ) : event.format === "Hybrid" ? (
+            <Badge variant="outline" className="text-[9px] px-1.5 py-0">
+              Hybrid
+            </Badge>
+          ) : (
+            <span className="text-muted-foreground">In-person</span>
+          )}
+        </span>
+
+        {/* Source column */}
+        <span className="hidden md:flex md:flex-1 justify-center">
+          <Badge
+            variant="outline"
+            className={`text-[9px] px-1.5 py-0 ${PROVIDER_BADGE_STYLES[event.provider]}`}
+          >
+            {PROVIDER_DISPLAY_NAMES[event.provider]}
           </Badge>
-        )}
+        </span>
+
+        {/* Country indicator */}
+        <span className="text-xs flex-shrink-0" title={event.country}>
+          {isNorway ? "🇳🇴" : "🌐"}
+        </span>
 
         {/* Register button */}
         <a
@@ -176,16 +203,16 @@ function EventListItem({ event }: { event: EventItem }) {
           onClick={(e) => e.stopPropagation()}
           className="flex-shrink-0"
         >
-          <Button size="sm" variant="outline" className="text-xs h-7 px-2.5">
+          <Button size="sm" variant="outline" className="text-[11px] h-6 px-2">
             Register
-            <ExternalLink className="h-3 w-3 ml-1" />
+            <ExternalLink className="h-2.5 w-2.5 ml-1" />
           </Button>
         </a>
       </div>
 
       {/* Expanded details */}
       {expanded && (
-        <div className="px-3 pb-3 pt-0 ml-14 space-y-2">
+        <div className="px-2.5 pb-2.5 pt-0 ml-11 space-y-1.5">
           {event.description && (
             <p className="text-xs text-muted-foreground line-clamp-2">
               {event.description}
@@ -195,6 +222,9 @@ function EventListItem({ event }: { event: EventItem }) {
           <div className="flex flex-wrap gap-1.5">
             <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
               {event.category}
+            </Badge>
+            <Badge variant="outline" className="text-[9px] px-1.5 py-0">
+              {event.format}
             </Badge>
             <Badge
               variant="outline"
@@ -550,19 +580,19 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
     <Card className={`border-2 overflow-hidden ${className}`}>
       <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400" />
 
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-            <Calendar className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+      <CardHeader className="pb-1.5 pt-4 px-4">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <div className="p-1 rounded-lg bg-amber-100 dark:bg-amber-900/30">
+            <Calendar className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
           </div>
           Youth Career Events
         </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-[11px] text-muted-foreground mt-0.5">
           Verified events from Norwegian and European career sources. Tap an event for details.
         </p>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2 px-4 pb-4">
         <FilterBar
           filters={filters}
           onFiltersChange={handleFiltersChange}
@@ -578,6 +608,17 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
 
         {!isLoading && data && (
           <>
+            {/* Column headers (desktop only) */}
+            <div className="hidden md:flex items-center gap-2 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+              <div className="w-9 flex-shrink-0" />
+              <div className="flex-[3] min-w-0">Event</div>
+              <div className="flex-1 text-center">Category</div>
+              <div className="flex-1 text-center">Format</div>
+              <div className="flex-1 text-center">Source</div>
+              <div className="w-[18px] flex-shrink-0" />
+              <div className="w-[72px] flex-shrink-0" />
+            </div>
+
             <div className="rounded-lg border overflow-hidden">
               {data.items.map((event) => (
                 <EventListItem key={event.id} event={event} />
@@ -591,7 +632,7 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
         {/* Footer */}
         <p className="text-[10px] text-muted-foreground/60 text-center pt-2 flex items-center justify-center gap-1">
           <CheckCircle2 className="h-3 w-3 text-green-600 dark:text-green-400" />
-          Verified &amp; refreshed daily
+          Verified links &middot; refreshed daily
           {data?.lastRefreshISO && (
             <span className="ml-1">
               &middot; Updated {new Date(data.lastRefreshISO).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}

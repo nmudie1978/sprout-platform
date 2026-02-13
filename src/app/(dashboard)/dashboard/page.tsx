@@ -26,7 +26,6 @@ import {
   Compass,
   Search,
   ChevronRight,
-  HandHeart,
   LayoutDashboard,
   User,
   Bot,
@@ -38,7 +37,6 @@ import {
 import Link from "next/link";
 import { EarningsCompact } from "@/components/earnings-compact";
 import { ProfileStrengthCompact } from "@/components/profile-strength-compact";
-import { BadgesDisplay } from "@/components/badges-display";
 import { VerificationStatus } from "@/components/verification-status";
 import { JobCardSimple } from "@/components/job-card";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
@@ -425,11 +423,10 @@ export default function DashboardPage() {
       >
         <Card className="border bg-muted/30">
           <CardContent className="p-3">
-            <div className="grid grid-cols-4 gap-1">
+            <div className="grid grid-cols-3 gap-1">
               {[
                 { href: "/jobs", label: "Small Jobs", icon: Search, color: "text-blue-500" },
                 { href: "/messages", label: "Messages", icon: MessageCircle, color: "text-green-500" },
-                { href: "/pokes", label: "Pokes", icon: HandHeart, color: "text-pink-500" },
                 { href: "/careers", label: "Careers", icon: Compass, color: "text-purple-500" },
               ].map((action) => {
                 const IconComponent = action.icon;
@@ -658,15 +655,6 @@ export default function DashboardPage() {
               transition={{ delay: 0.2 }}
             >
               <EarningsCompact />
-            </motion.div>
-
-            {/* Badges */}
-            <motion.div
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.25 }}
-            >
-              <BadgesDisplay compact />
             </motion.div>
 
             {/* Career Insights Link */}

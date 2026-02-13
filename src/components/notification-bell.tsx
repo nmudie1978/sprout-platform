@@ -85,8 +85,6 @@ export function NotificationBell() {
         return "🏆";
       case "NEW_REVIEW":
         return "⭐";
-      case "NEW_POKE":
-        return "👋";
       case "NEW_RECOMMENDATION":
         return "🤝";
       case "NEW_MESSAGE":

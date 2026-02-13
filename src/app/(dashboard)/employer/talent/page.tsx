@@ -1,19 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar } from "@/components/avatar";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import {
   Star,
-  HandHeart,
   CheckCircle2,
   Circle,
   XCircle,
@@ -71,18 +67,12 @@ const commonInterests = [
 ];
 
 export default function TalentBrowsePage() {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
   // Filter states
   const [availabilityFilter, setAvailabilityFilter] = useState<string>("");
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [ageBracketFilter, setAgeBracketFilter] = useState<string>("");
   const [interestsFilter, setInterestsFilter] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(true);
-
-  // Poke dialog states
-  const [pokeMessage, setPokeMessage] = useState("");
 
   // Build query params
   const buildQueryParams = () => {
@@ -107,60 +97,6 @@ export default function TalentBrowsePage() {
 
   // Handle both old array format and new paginated format
   const talent = Array.isArray(talentData) ? talentData : (talentData?.talent || []);
-
-  // Fetch existing pokes to check who has already been poked
-  const { data: existingPokes } = useQuery({
-    queryKey: ["employer-pokes"],
-    queryFn: async () => {
-      const response = await fetch("/api/pokes");
-      if (!response.ok) throw new Error("Failed to fetch pokes");
-      return response.json();
-    },
-  });
-
-  // Get set of already poked youth IDs
-  const pokedYouthIds = new Set(
-    existingPokes?.map((poke: any) => poke.youthId) || []
-  );
-
-  const pokeMutation = useMutation({
-    mutationFn: async ({ youthId, message }: { youthId: string; message?: string }) => {
-      const response = await fetch("/api/pokes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ youthId, message }),
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to send poke");
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pokes"] });
-      queryClient.invalidateQueries({ queryKey: ["employer-pokes"] });
-      queryClient.invalidateQueries({ queryKey: ["talent"] });
-      setPokeMessage("");
-      toast({
-        title: "Poke sent!",
-        description: "The youth worker will be notified of your interest.",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handlePoke = (youthUserId: string) => {
-    pokeMutation.mutate({
-      youthId: youthUserId,
-      message: pokeMessage || undefined,
-    });
-  };
 
   const toggleInterest = (interest: string) => {
     setInterestsFilter((prev) =>
@@ -340,7 +276,6 @@ export default function TalentBrowsePage() {
             const availability = availabilityConfig[profile.availabilityStatus as keyof typeof availabilityConfig];
             const AvailIcon = availability.icon;
             const profileLink = profile.publicProfileSlug ? `/p/${profile.publicProfileSlug}` : null;
-            const hasBeenPoked = pokedYouthIds.has(profile.user.id);
 
             return (
               <motion.div
@@ -467,58 +402,6 @@ export default function TalentBrowsePage() {
                       </div>
                     )}
 
-                    {/* Poke Button */}
-                    {hasBeenPoked ? (
-                      <Badge variant="secondary" className="mt-2">
-                        <CheckCircle2 className="mr-1.5 h-3 w-3" />
-                        Already Poked
-                      </Badge>
-                    ) : (
-                      <Dialog onOpenChange={(open) => { if (!open) setPokeMessage(""); }}>
-                        <DialogTrigger asChild>
-                          <Button size="sm" className="mt-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-sm">
-                            <HandHeart className="mr-1.5 h-3.5 w-3.5" />
-                            Poke
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle className="flex items-center gap-3">
-                              <Avatar
-                                avatarId={profile.avatarId}
-                                fallbackInitial={profile.displayName?.[0] || "?"}
-                                size="md"
-                              />
-                              Send a Poke to {profile.displayName}
-                            </DialogTitle>
-                            <DialogDescription>
-                              Show your interest in working with this youth worker. You can include an optional message.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div>
-                              <label className="mb-2 block text-sm font-medium">
-                                Message (Optional)
-                              </label>
-                              <Textarea
-                                placeholder="E.g., 'Hi! I have a dog walking job that might be perfect for you...'"
-                                value={pokeMessage}
-                                onChange={(e) => setPokeMessage(e.target.value)}
-                                rows={4}
-                              />
-                            </div>
-                            <Button
-                              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                              onClick={() => handlePoke(profile.user.id)}
-                              disabled={pokeMutation.isPending}
-                            >
-                              <HandHeart className="mr-2 h-4 w-4" />
-                              {pokeMutation.isPending ? "Sending..." : "Send Poke"}
-                            </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    )}
                   </CardContent>
                 </Card>
               </motion.div>

@@ -13,6 +13,8 @@ export * from "./config";
 
 // Utilities
 export * from "./verify-url";
+export * from "./verify-content";
+export * from "./verify-headless";
 export * from "./dedupe-events";
 export * from "./date-range";
 export * from "./scrape-utils";

@@ -12,13 +12,13 @@
 
 ## 1.1 What is Sprout?
 
-Sprout is a purpose-built digital platform connecting young people aged 15–20 in Norway with local, legal micro-jobs. The platform facilitates safe, age-appropriate work opportunities such as dog walking, babysitting, snow clearing, and tech assistance, while providing integrated career guidance through an AI-powered assistant.
+Sprout is a purpose-built digital platform connecting young people aged 15–23 in Norway with local, legal micro-jobs. The platform facilitates safe, age-appropriate work opportunities such as dog walking, babysitting, snow clearing, and tech assistance, while providing integrated career guidance through an AI-powered assistant.
 
 ## 1.2 Who Sprout Serves
 
 ### Primary User Groups
 
-- **Youth Workers (Ages 15–20):** Young people seeking flexible, local work opportunities to gain experience, earn money, and explore career paths
+- **Youth Workers (Ages 15–23):** Young people seeking flexible, local work opportunities to gain experience, earn money, and explore career paths
 - **Job Posters (Adults 18+):** Local employers, families, and community members needing help with small tasks and micro-jobs
 
 ### Secondary Stakeholders
@@ -41,14 +41,14 @@ Sprout is a purpose-built digital platform connecting young people aged 15–20 
 
 # 2. Target Audience
 
-## 2.1 Teen Users (Ages 15–20)
+## 2.1 Teen Users (Ages 15–23)
 
 ### Demographics & Context
 
-- Norwegian residents aged 15–20
+- Norwegian residents aged 15–23
 - Two distinct age brackets with different legal permissions:
   - **Minors (15–17):** Subject to stricter labor regulations
-  - **Young Adults (18–20):** Standard youth employment rules
+  - **Young Adults (18–23):** Standard youth employment rules
 
 ### Goals & Motivations
 
@@ -173,7 +173,6 @@ Sprout is a purpose-built digital platform connecting young people aged 15–20 
 - Browse youth worker profiles
 - Search by skills and availability
 - View ratings and reviews
-- Send "pokes" to encourage applications
 
 ### Favorites & Notes
 - Star preferred workers for quick rehiring
@@ -213,7 +212,7 @@ Sprout is a purpose-built digital platform connecting young people aged 15–20 
 ### Notifications
 - Real-time notifications for key events
 - Application updates
-- New messages and pokes
+- New messages
 - Review notifications
 - System announcements
 
@@ -352,7 +351,7 @@ PROFILE UPDATES
 | Rest Between Shifts | Minimum 14 hours |
 | Consecutive Work Days | Maximum 5 days |
 
-### Young Adults (Ages 18–20)
+### Young Adults (Ages 18–23)
 
 | Restriction Area | Rule |
 |-----------------|------|
@@ -401,7 +400,7 @@ The following work categories are **prohibited** for minors:
 | Age Group | Minimum Hourly Rate |
 |-----------|-------------------|
 | Youth (15-17) | 130 NOK/hour |
-| Young Adults (18-20) | 175 NOK/hour |
+| Young Adults (18-23) | 175 NOK/hour |
 
 ### Payment Traceability
 
@@ -924,7 +923,7 @@ Sprout creates a **protected environment** where young people can earn money, bu
 | Stakeholder | Key Value |
 |-------------|-----------|
 | Youth (15-17) | Safe first jobs with parental oversight, legal compliance automatic |
-| Youth (18-20) | Flexible work, career exploration, reputation building |
+| Youth (18-23) | Flexible work, career exploration, reputation building |
 | Employers | Verified workers, easy job posting, compliance handled |
 | Parents | Visibility into child's work, consent controls |
 | Community | Youth employment support, local economic activity |

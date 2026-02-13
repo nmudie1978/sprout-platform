@@ -10,6 +10,7 @@
 import type { EventItem } from "./types";
 import { isPastEvent } from "./date-range";
 import { verifyUrl } from "./verify-url";
+import { verifyEventsContent } from "./verify-content";
 
 // ============================================
 // CONSTANTS
@@ -135,4 +136,44 @@ export function removeStaleEvents(
   }
 
   return { fresh, stale };
+}
+
+// ============================================
+// RE-CHECK EVENT CONTENT (Stage B)
+// ============================================
+
+/**
+ * Re-verify events using content-level verification.
+ * Splits events into "needs content recheck" (>24h since contentVerifiedAtISO)
+ * vs "still fresh", then runs content verification on stale events.
+ */
+export async function recheckEventContent(
+  events: EventItem[],
+  concurrency = 3,
+): Promise<{ valid: EventItem[]; failed: EventItem[] }> {
+  const now = Date.now();
+  const recheckThresholdMs = RECHECK_INTERVAL_HOURS * 60 * 60 * 1000;
+
+  const needsRecheck: EventItem[] = [];
+  const stillFresh: EventItem[] = [];
+
+  for (const event of events) {
+    const lastCheck = event.contentVerifiedAtISO ?? event.lastCheckedAtISO ?? event.verifiedAtISO;
+    if (!lastCheck || now - new Date(lastCheck).getTime() > recheckThresholdMs) {
+      needsRecheck.push(event);
+    } else {
+      stillFresh.push(event);
+    }
+  }
+
+  if (needsRecheck.length === 0) {
+    return { valid: stillFresh, failed: [] };
+  }
+
+  const { verified, failed } = await verifyEventsContent(needsRecheck, concurrency);
+
+  return {
+    valid: [...stillFresh, ...verified],
+    failed,
+  };
 }

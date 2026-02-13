@@ -68,8 +68,6 @@ export async function GET(req: NextRequest) {
           take: 100, // Limit to recent notifications
           orderBy: { createdAt: "desc" },
         },
-        sentPokes: true,
-        receivedPokes: true,
       },
     });
 
@@ -195,10 +193,6 @@ export async function GET(req: NextRequest) {
         lastMessageAt: c.lastMessageAt,
         isParticipant1: c.participant1Id === userId,
       })),
-      pokes: {
-        sent: user.sentPokes,
-        received: user.receivedPokes,
-      },
       notifications: user.notifications.map((n) => ({
         type: n.type,
         title: n.title,

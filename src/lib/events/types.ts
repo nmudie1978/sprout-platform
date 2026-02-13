@@ -30,8 +30,9 @@ export const PROVIDER_DISPLAY_NAMES: Record<EventProvider, string> = {
 // ============================================
 
 export type EventFormat = "Online" | "In-person" | "Hybrid";
+export type VerificationMethod = "content" | "headless" | "http-only";
 export type EventCategory = "Job Fair" | "Workshop" | "Webinar/Seminar" | "Meetup" | "Conference" | "Other";
-export type AudienceFit = "16–21" | "18+" | "Students" | "General" | "Unknown";
+export type AudienceFit = "15–23" | "18+" | "Students" | "General" | "Unknown";
 export type EventCountry = "Norway" | "Europe";
 
 export interface EventItem {
@@ -55,6 +56,9 @@ export interface EventItem {
   verifiedAtISO?: string;
   lastCheckedAtISO?: string;      // when the agent last re-verified this event's link
   tags?: string[];                // include "youth-friendly" when appropriate
+  verificationMethod?: VerificationMethod;  // how the event was verified
+  contentVerifiedAtISO?: string;            // when content markers were last checked
+  finalUrl?: string;                        // URL after redirect resolution
 }
 
 // ============================================
@@ -246,11 +250,11 @@ export function inferAudienceFit(text: string): AudienceFit {
   if (
     searchStr.includes("youth") ||
     searchStr.includes("16-21") ||
-    searchStr.includes("15-20") ||
+    searchStr.includes("15-23") ||
     searchStr.includes("teen") ||
     searchStr.includes("young people")
   ) {
-    return "16–21";
+    return "15–23";
   }
   if (searchStr.includes("18+") || searchStr.includes("adults only")) {
     return "18+";
@@ -268,7 +272,7 @@ export function inferAudienceFit(text: string): AudienceFit {
  * Check if event should be tagged as youth-friendly
  */
 export function isYouthFriendly(audienceFit: AudienceFit, text: string): boolean {
-  if (audienceFit === "16–21") return true;
+  if (audienceFit === "15–23") return true;
   if (audienceFit === "18+") return false;
 
   const searchStr = text.toLowerCase();

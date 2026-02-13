@@ -23,10 +23,11 @@ import { updateProviderHealth } from "@/lib/events/provider-health";
 import { isWithinDateRange } from "@/lib/events/date-range";
 import {
   removeExpiredEvents,
-  recheckEventLinks,
+  recheckEventContent,
   removeStaleEvents,
   STALE_THRESHOLD_HOURS,
 } from "@/lib/events/agent-utils";
+import { verifyEventsContent } from "@/lib/events/verify-content";
 import type {
   EventItem,
   RefreshMetadata,
@@ -199,15 +200,22 @@ export async function POST(request: NextRequest) {
       `[Events Agent] ${newDeduped.length} new unique events after date filter + dedupe`,
     );
 
-    // Step 5: Verify URLs on new events
-    const { verified: newVerified } = await verifyEvents(newDeduped, 5);
-    console.log(`[Events Agent] ${newVerified.length} new events verified`);
+    // Step 5a: HTTP verification on new events (fast — rejects dead URLs)
+    const { verified: httpVerified } = await verifyEvents(newDeduped, 5);
+    console.log(`[Events Agent] Step 5a: ${httpVerified.length}/${newDeduped.length} passed HTTP verification`);
 
-    // Step 6: Re-check links on surviving existing events
-    const { valid: recheckedValid, failed: recheckedFailed } =
-      await recheckEventLinks(nonExpired, 5);
+    // Step 5b: Content verification on HTTP-passed events (deep — rejects non-event pages)
+    const { verified: newVerified, stats: contentStats } =
+      await verifyEventsContent(httpVerified, 3);
     console.log(
-      `[Events Agent] Re-checked links: ${recheckedValid.length} valid, ${recheckedFailed.length} failed`,
+      `[Events Agent] Step 5b: ${newVerified.length}/${httpVerified.length} passed content verification (avg marker score: ${contentStats.avgMarkerScore.toFixed(1)})`,
+    );
+
+    // Step 6: Re-check content on surviving existing events
+    const { valid: recheckedValid, failed: recheckedFailed } =
+      await recheckEventContent(nonExpired, 3);
+    console.log(
+      `[Events Agent] Re-checked content: ${recheckedValid.length} valid, ${recheckedFailed.length} failed`,
     );
 
     // Step 7: Remove stale events (unverified for > STALE_THRESHOLD_HOURS)

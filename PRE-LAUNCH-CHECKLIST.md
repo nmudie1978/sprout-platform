@@ -25,7 +25,7 @@ Rate limiting currently falls back to in-memory storage, which does NOT work acr
 **Why this matters:** Without Redis, attackers can bypass rate limits by having their requests hit different server instances. This affects:
 - Admin login brute force protection
 - AI chat abuse prevention (expensive API calls)
-- Poke/notification spam protection
+- Notification spam protection
 
 **Files affected:** `src/lib/rate-limit.ts`
 

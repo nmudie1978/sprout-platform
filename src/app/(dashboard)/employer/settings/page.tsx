@@ -408,7 +408,7 @@ export default function EmployerSettingsPage() {
                           <li>Your company profile and information</li>
                           <li>All job postings and applications</li>
                           <li>Reviews and ratings</li>
-                          <li>Pokes and messages</li>
+                          <li>Messages</li>
                         </ul>
                       </AlertDialogDescription>
                     </AlertDialogHeader>

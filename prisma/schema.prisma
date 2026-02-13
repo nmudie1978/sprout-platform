@@ -175,13 +175,6 @@ enum AvailabilityStatus {
   NOT_LOOKING
 }
 
-enum PokeStatus {
-  PENDING
-  READ
-  ACCEPTED
-  DECLINED
-}
-
 // Account status for safety controls
 enum AccountStatus {
   ONBOARDING // Just signed up, needs to complete setup
@@ -247,8 +240,6 @@ model User {
   aiChatMessages             AiChatMessage[]
   accounts                   Account[]
   sessions                   Session[]
-  sentPokes                  Poke[]                @relation("EmployerPokes")
-  receivedPokes              Poke[]                @relation("YouthReceivedPokes")
   notifications              Notification[]
   earnings                   Earning[]
   badges                     Badge[]
@@ -581,7 +572,6 @@ model MicroJob {
 
   applications    Application[]
   reviews         Review[]
-  pokes           Poke[]
   earnings        Earning[]
   recommendations Recommendation[]
   conversations   Conversation[]
@@ -780,34 +770,12 @@ model HelpDoc {
   @@index([active])
 }
 
-model Poke {
-  id         String     @id @default(cuid())
-  employerId String
-  youthId    String
-  jobId      String? // Optional: if poke is for a specific job
-  message    String?    @db.Text
-  status     PokeStatus @default(PENDING)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-
-  employer User      @relation("EmployerPokes", fields: [employerId], references: [id], onDelete: Cascade)
-  youth    User      @relation("YouthReceivedPokes", fields: [youthId], references: [id], onDelete: Cascade)
-  job      MicroJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
-
-  @@unique([employerId, youthId, jobId])
-  @@index([employerId])
-  @@index([youthId])
-  @@index([status])
-  @@index([createdAt])
-}
-
 enum NotificationType {
   NEW_APPLICATION
   APPLICATION_ACCEPTED
   APPLICATION_REJECTED
   JOB_COMPLETED
   NEW_REVIEW
-  NEW_POKE
   NEW_RECOMMENDATION
   NEW_MESSAGE
   SYSTEM
@@ -2474,7 +2442,7 @@ model CareerEvent {
   spots           Int?   // Optional capacity limit
 
   // Youth targeting
-  isYouthFocused Boolean  @default(false) // Explicitly targets 15-20 age group
+  isYouthFocused Boolean  @default(false) // Explicitly targets 15-23 age group
   industryTypes  String[] // e.g., ["tech", "green", "health", "creative"]
 
   // Verification - events must be verified before display
