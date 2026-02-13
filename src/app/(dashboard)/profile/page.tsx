@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Phone, Target, Compass, Moon, MessageCircleOff, AlertCircle, User, Scale, FileText, ShieldCheck, Users, AlertOctagon, ExternalLink, MapPin, Calendar, Cake, MessageSquare } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
@@ -33,10 +33,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AvatarSelectorInline } from "@/components/avatar-selector-inline";
-import { BadgesDisplay } from "@/components/badges-display";
 import { LifeSkillsSettings } from "@/components/life-skills-settings";
 import { SavedLifeSkills } from "@/components/saved-life-skills";
+import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import Link from "next/link";
+import type { GoalSlot } from "@/lib/goals/types";
 
 const INTEREST_OPTIONS = [
   "Technology",
@@ -98,6 +99,10 @@ export default function ProfilePage() {
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
 
+  // Goal sheet state
+  const [showGoalSheet, setShowGoalSheet] = useState(false);
+  const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
+
   // Two-step account deletion state
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -106,7 +111,9 @@ export default function ProfilePage() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", session?.user?.id],
     queryFn: async () => {
-      const response = await fetch("/api/profile");
+      const response = await fetch("/api/profile", {
+        headers: { "Cache-Control": "no-cache" },
+      });
       if (!response.ok) {
         if (response.status === 404) return null;
         throw new Error("Failed to fetch profile");
@@ -114,8 +121,9 @@ export default function ProfilePage() {
       return response.json();
     },
     enabled: !!session?.user?.id && session?.user?.role === "YOUTH",
-    staleTime: 30 * 1000, // Cache for 30 seconds before refetching
+    staleTime: 0, // Always consider stale to ensure avatar updates are visible
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchOnMount: true, // Refetch when component mounts
   });
 
   // Reset form initialization when user changes (sign out/in)
@@ -162,13 +170,101 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
+  // DEDICATED AVATAR SAVE MUTATION
+  // This saves avatars IMMEDIATELY when selected, with guaranteed server persistence
+  const saveAvatarMutation = useMutation({
+    mutationFn: async (avatarId: string) => {
+      const response = await fetch("/api/profile/avatar", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save avatar");
+      }
+
+      // Verify the response contains the expected avatar
+      if (data.avatarId !== avatarId) {
+        throw new Error("Avatar save verification failed - please try again");
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      // Update local form state with the server-confirmed avatar
+      setFormData((prev) => ({ ...prev, avatarId: data.avatarId }));
+
+      toast({
+        title: "Avatar saved!",
+        description: "Your avatar has been updated and will persist across sessions.",
+      });
+
+      // CRITICAL: Directly update ALL cached profile queries with the new avatar
+      // This ensures Navigation and other components see the change immediately
+      queryClient.setQueriesData(
+        { queryKey: ["my-profile"] },
+        (oldData: Record<string, unknown> | undefined) => {
+          if (!oldData) return oldData;
+          return { ...oldData, avatarId: data.avatarId };
+        }
+      );
+
+      // Also force an immediate refetch of all active profile queries
+      queryClient.refetchQueries({
+        queryKey: ["my-profile"],
+        type: "active",
+      });
+    },
+    // onError receives the context with previousAvatarId from onMutate
+    onError: (error: Error, _avatarId: string, context: { previousAvatarId: string } | undefined) => {
+      // Rollback to previous avatar on failure
+      if (context?.previousAvatarId) {
+        setFormData((prev) => ({ ...prev, avatarId: context.previousAvatarId }));
+      }
+      toast({
+        title: "Failed to save avatar",
+        description: error.message,
+        variant: "destructive",
+      });
+      console.error("[Avatar Save Error]", error);
+    },
+  });
+
+  // Handler for immediate avatar save when user selects one
+  const handleAvatarSelect = (avatarId: string) => {
+    // Capture current avatar for rollback
+    const previousAvatarId = formData.avatarId || profile?.avatarId || "";
+    // Optimistically update the UI
+    setFormData((prev) => ({ ...prev, avatarId }));
+    // Persist to server, passing context for rollback
+    saveAvatarMutation.mutate(avatarId, {
+      onError: (error) => {
+        // Rollback to previous avatar
+        setFormData((prev) => ({ ...prev, avatarId: previousAvatarId }));
+        toast({
+          title: "Failed to save avatar",
+          description: error.message + ". Your previous avatar has been restored.",
+          variant: "destructive",
+        });
+        console.error("[Avatar Save Error]", error);
+      },
+    });
+  };
+
   const saveProfileMutation = useMutation({
     mutationFn: async () => {
       const method = profile ? "PATCH" : "POST";
+
+      // Exclude avatarId — avatar changes go exclusively through /api/profile/avatar
+      const { avatarId: _excludedAvatarId, ...profileDataWithoutAvatar } = formData;
+
       const response = await fetch("/api/profile", {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(profileDataWithoutAvatar),
       });
 
       if (!response.ok) {
@@ -179,8 +275,9 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: (data) => {
-      // Sync form data with saved values
-      setFormData({
+      // Sync form data with saved values, keeping current avatarId from form state
+      // (avatar is managed separately and not returned by the profile save)
+      setFormData((prev) => ({
         displayName: data.displayName || "",
         bio: data.bio || "",
         availability: data.availability || "",
@@ -188,8 +285,8 @@ export default function ProfilePage() {
         city: data.city || "",
         interests: data.interests || [],
         guardianEmail: data.guardianEmail || "",
-        avatarId: data.avatarId || "",
-      });
+        avatarId: prev.avatarId,
+      }));
       toast({
         title: "Profile saved!",
         description: "Your profile has been updated successfully.",
@@ -814,17 +911,27 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5 relative z-10">
-              {/* Avatar Selector */}
+              {/* Avatar Selector - Saves immediately on selection */}
               <div className="pb-5 border-b">
                 <Label className="text-sm font-medium mb-3 flex items-center gap-2">
                   Your Avatar
                   <span className="text-[10px] text-red-600 font-normal">*</span>
+                  {saveAvatarMutation.isPending && (
+                    <span className="text-[10px] text-blue-600 font-normal animate-pulse">
+                      Saving...
+                    </span>
+                  )}
                 </Label>
                 <AvatarSelectorInline
-                  currentAvatarId={formData.avatarId || profile?.avatarId}
-                  onSelect={(avatarId) => setFormData(prev => ({ ...prev, avatarId }))}
-                  disabled={saveProfileMutation.isPending}
+                  currentAvatarId={profile?.avatarId || formData.avatarId}
+                  onSelect={handleAvatarSelect}
+                  disabled={saveProfileMutation.isPending || saveAvatarMutation.isPending}
                 />
+                {saveAvatarMutation.isError && (
+                  <p className="mt-2 text-xs text-red-600">
+                    Failed to save avatar. Please try again.
+                  </p>
+                )}
                 {!formData.avatarId && !profile?.avatarId && (
                   <p className="mt-2 text-xs text-muted-foreground">
                     Choose an avatar to represent you
@@ -1266,16 +1373,12 @@ export default function ProfilePage() {
                               className={`mt-1 text-xs ${
                                 goalsData.primaryGoal.status === "committed"
                                   ? "bg-green-500/10 text-green-700 dark:text-green-400"
-                                  : goalsData.primaryGoal.status === "exploring"
-                                  ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
-                                  : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                                  : "bg-blue-500/10 text-blue-700 dark:text-blue-400"
                               }`}
                             >
                               {goalsData.primaryGoal.status === "committed"
                                 ? "Committed"
-                                : goalsData.primaryGoal.status === "exploring"
-                                ? "Exploring"
-                                : "Paused"}
+                                : "Exploring"}
                             </Badge>
                           )}
                         </div>
@@ -1313,15 +1416,33 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 )}
-                <Button asChild variant="outline" className="w-full" size="sm">
-                  <Link href="/goals" className="flex items-center gap-2">
-                    <Target className="h-4 w-4" />
-                    {goalsData?.primaryGoal ? "Edit in My Goals" : "Set Goals"}
-                  </Link>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                  onClick={() => {
+                    setGoalSheetTargetSlot("primary");
+                    setShowGoalSheet(true);
+                  }}
+                >
+                  <Target className="h-4 w-4 mr-2" />
+                  {goalsData?.primaryGoal ? "Edit my Goals" : "Set Goals"}
                 </Button>
               </CardContent>
             </Card>
           )}
+
+          {/* Goal Selection Sheet (overlay, stays on /profile) */}
+          <GoalSelectionSheet
+            open={showGoalSheet}
+            onClose={() => setShowGoalSheet(false)}
+            targetSlot={goalSheetTargetSlot}
+            primaryGoal={goalsData?.primaryGoal || null}
+            secondaryGoal={goalsData?.secondaryGoal || null}
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["goals"] });
+            }}
+          />
 
           {/* Availability Status */}
           {profile && (
@@ -1422,116 +1543,6 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
           )}
-
-          {/* Badges Section */}
-          {profile && (
-            <BadgesDisplay showLocked />
-          )}
-
-          {/* Profile Tips */}
-          <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50 pointer-events-none" />
-            <CardHeader className="relative">
-              <CardTitle className="text-xl">Profile Tips</CardTitle>
-            </CardHeader>
-            <CardContent className="relative">
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold mt-0.5">✓</span>
-                  <span className="text-muted-foreground">Use a friendly display name</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold mt-0.5">✓</span>
-                  <span className="text-muted-foreground">Highlight your strengths in bio</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold mt-0.5">✓</span>
-                  <span className="text-muted-foreground">Keep availability up to date</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold mt-0.5">✓</span>
-                  <span className="text-muted-foreground">Complete more jobs to build skills</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold mt-0.5">✓</span>
-                  <span className="text-muted-foreground">Ask for reviews after jobs</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Legal & Safety */}
-          <Card className="border-2 shadow-lg hover-lift overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 pointer-events-none" />
-            <CardHeader className="relative">
-              <CardTitle className="text-xl flex items-center gap-2">
-                <Scale className="h-5 w-5 text-blue-500" />
-                Legal & Safety
-              </CardTitle>
-              <CardDescription>
-                Our policies and guidelines
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="relative">
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link
-                    href="/legal/terms"
-                    target="_blank"
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
-                  >
-                    <FileText className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                    <span className="flex-1">Terms of Service</span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/legal/privacy"
-                    target="_blank"
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
-                  >
-                    <Shield className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                    <span className="flex-1">Privacy Policy</span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/legal/safety"
-                    target="_blank"
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
-                  >
-                    <ShieldCheck className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                    <span className="flex-1">Safety Guidelines</span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/legal/eligibility"
-                    target="_blank"
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
-                  >
-                    <Users className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                    <span className="flex-1">Age & Eligibility</span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/legal/disclaimer"
-                    target="_blank"
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors group"
-                  >
-                    <AlertOctagon className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
-                    <span className="flex-1">Disclaimer</span>
-                    <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
-                  </Link>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
 
           {/* Give Feedback (Beta) */}
           <Card className="border-2 border-blue-500/20 shadow-lg hover-lift overflow-hidden relative">

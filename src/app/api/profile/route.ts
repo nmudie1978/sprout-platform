@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
     });
 
     const response = NextResponse.json(profile);
-    // Add short cache for profile data - user-specific, private
-    response.headers.set('Cache-Control', 'private, max-age=30, stale-while-revalidate=60');
+    // No caching to ensure avatar changes are reflected immediately
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     return response;
   } catch (error) {
     console.error("Failed to fetch profile:", error);
@@ -159,7 +159,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         // CRITICAL: Use canonical age validation from safety/age module
-        // Platform policy: ages 16-20 only (same as signup)
+        // Platform policy: ages 15-23 only (same as signup)
         const ageValidation = validateSignupAge(dob);
         if (!ageValidation.valid) {
           return NextResponse.json(
@@ -230,7 +230,9 @@ export async function PATCH(req: NextRequest) {
       // PROOF: Log avatar save success
       console.log("AVATAR SAVED TO DB:", { avatarId: profile.avatarId, profileId: profile.id });
 
-      return NextResponse.json(profile);
+      const response = NextResponse.json(profile);
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return response;
     }
 
     // Handle career aspiration update separately
@@ -257,12 +259,13 @@ export async function PATCH(req: NextRequest) {
     // Profile is complete if required fields are filled
     const hasRequiredFields = validatedData.displayName && validatedData.city;
 
-    // Update profile including avatarId
+    // Update profile — avatarId is intentionally excluded here.
+    // Avatar changes go exclusively through /api/profile/avatar to prevent
+    // stale formData from overwriting a recently-saved avatar.
     const profile = await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
         displayName: validatedData.displayName,
-        avatarId: validatedData.avatarId || undefined, // Include avatar if provided
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,

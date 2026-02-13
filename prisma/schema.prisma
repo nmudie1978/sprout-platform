@@ -372,6 +372,7 @@ model YouthProfile {
   userId             String             @unique
   displayName        String
   avatarId           String?            @default("kawaii-star") // Fun avatar identifier
+  avatarUpdatedAt    DateTime? // When avatar was last changed
   phoneNumber        String? // Contact number for employers
   bio                String?            @db.Text
   availability       String?
