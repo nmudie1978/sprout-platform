@@ -3,7 +3,7 @@
  *
  * Two-section architecture:
  * 1) Global Industry & Career Landscape - macro job market data (not youth-specific)
- * 2) Youth Lens (15-23) - interpretation of global data for young people
+ * 2) Youth Lens (15-21) - interpretation of global data for young people
  *
  * Features:
  * - Clear section dividers
@@ -35,9 +35,9 @@ import {
   WhyThisMatters,
   InsightSection,
   YouthEventsTable,
+  PodcastSpotlight,
   JobsEconomySpotlight,
 } from "@/components/insights";
-import { CareerConfidenceChart } from "@/components/insights/career-confidence-chart";
 
 const CONTEXT_HINTS_KEY = "insights_contextHints";
 
@@ -144,7 +144,7 @@ export default function IndustryInsightsPage() {
         <div>
           <p className="text-sm text-muted-foreground max-w-2xl">
             Industry Insights is your world lens — helping you understand the world beyond job listings.
-            Split into two parts: global career landscape data, and what it means for you (15-23).
+            Split into two parts: global career landscape data, and what it means for you (15-21).
           </p>
           <p
             className="text-[10px] text-muted-foreground/40 mt-1.5 cursor-default"
@@ -242,7 +242,7 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 2: YOUTH LENS (15-23) */}
+      {/* SECTION 2: YOUTH LENS (15-21) */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -254,7 +254,7 @@ export default function IndustryInsightsPage() {
           <SectionHeader
             icon={Sparkles}
             label="Youth Lens"
-            title="What It Means for You (15–23)"
+            title="What It Means for You (15–21)"
             subtitle="How the global landscape connects to your choices — warm, actionable, grounded"
             gradient="from-amber-400 via-orange-400 to-amber-400"
             iconBg="bg-amber-100 dark:bg-amber-900/30"
@@ -277,14 +277,14 @@ export default function IndustryInsightsPage() {
             </div>
           </motion.div>
 
-          {/* Career Confidence by Age Group */}
+          {/* Podcast Spotlight: CFYE Youth Employment */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.6 }}
             className="mb-6"
           >
-            <CareerConfidenceChart />
+            <PodcastSpotlight />
           </motion.div>
 
           {/* 3. Youth Career Events in Norway */}
