@@ -4,24 +4,24 @@
 
 @layer base {
   :root {
-    --background: 240 10% 98%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --background: 39 32% 96%;
+    --foreground: 30 15% 8%;
+    --card: 39 25% 99%;
+    --card-foreground: 30 15% 8%;
+    --popover: 39 25% 99%;
+    --popover-foreground: 30 15% 8%;
     --primary: 262 80% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --secondary: 36 18% 93%;
+    --secondary-foreground: 30 10% 12%;
+    --muted: 36 18% 93%;
+    --muted-foreground: 30 8% 46%;
     --accent: 262 80% 95%;
     --accent-foreground: 262 80% 30%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 34 15% 88%;
+    --input: 34 15% 88%;
     --ring: 262 80% 58%;
     --radius: 0.75rem;
     --gradient-1: linear-gradient(135deg, hsl(262 80% 58%) 0%, hsl(280 80% 65%) 100%);
@@ -36,19 +36,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 222 20% 14%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 70% 45%;
+    --primary: 262 80% 65%;
     --primary-foreground: 0 0% 100%;
     --secondary: 222 15% 20%;
     --secondary-foreground: 0 0% 98%;
     --muted: 222 15% 18%;
     --muted-foreground: 220 10% 65%;
-    --accent: 222 15% 20%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 262 50% 25%;
+    --accent-foreground: 262 80% 90%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 222 15% 22%;
     --input: 222 15% 22%;
-    --ring: 142 70% 45%;
+    --ring: 262 80% 65%;
   }
 }
 
@@ -68,6 +68,20 @@
 }
 
 @layer components {
+  /* Japandi palette utilities for landing-v2 */
+  .bg-sage-muted {
+    background-color: rgb(156 175 136 / 0.15);
+  }
+  .bg-warm-cream {
+    background-color: rgb(196 167 125 / 0.15);
+  }
+  .bg-stone-warm {
+    background-color: rgb(168 162 158 / 0.15);
+  }
+  .text-sage-dark {
+    color: rgb(107 127 92);
+  }
+
   /* Glass-morphism card */
   .glass-card {
     @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl;
@@ -372,7 +386,7 @@
 
   /* Gradient mesh background */
   .bg-gradient-mesh {
-    background-color: hsl(240 10% 98%);
+    background-color: hsl(39 32% 96%);
     background-image:
       radial-gradient(at 40% 20%, hsl(262 80% 58% / 0.15) 0px, transparent 50%),
       radial-gradient(at 80% 0%, hsl(200 80% 55% / 0.12) 0px, transparent 50%),
@@ -472,4 +486,5 @@
     position: fixed;
     width: 100%;
   }
+
 }
