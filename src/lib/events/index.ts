@@ -17,6 +17,7 @@ export * from "./dedupe-events";
 export * from "./date-range";
 export * from "./scrape-utils";
 export * from "./provider-health";
+export * from "./agent-utils";
 
 // Providers
 export * from "./providers";

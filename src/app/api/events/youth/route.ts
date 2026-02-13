@@ -5,6 +5,7 @@
  *
  * Returns verified career events from Norwegian and European sources.
  * Supports filtering, pagination, and sorting.
+ * Includes freshness guard — returns empty state if data is stale (>48h).
  *
  * Query Parameters:
  * - months: Number of months to look ahead (6 or 12, default: 12)
@@ -32,6 +33,7 @@ import type {
 } from "@/lib/events/types";
 import { PROVIDER_PRIORITY, type AudienceFit } from "@/lib/events/types";
 import { isWithinDateRange } from "@/lib/events/date-range";
+import { STALE_THRESHOLD_HOURS } from "@/lib/events/agent-utils";
 
 // ============================================
 // YOUTH-RELEVANCE FILTER (ages 15-21)
@@ -49,12 +51,28 @@ const YOUTH_KEYWORDS = [
   "studenter", "ungdom", "lærling",
 ];
 
+/** Keywords that indicate an event is NOT relevant for youth (industry-specific) */
+const YOUTH_EXCLUDE_KEYWORDS = [
+  "transport services", "logistics fair", "oil and gas",
+  "petroleum", "shipping conference", "maritime industry",
+  "executive leadership", "senior management", "c-suite",
+  "40+", "experienced professionals only",
+  "bransjedagene", "fagmesse", "tungbil",
+];
+
 /**
  * Determines if an event is relevant for the 15-21 age range.
  * Applied as a persistent filter so only youth-relevant events
  * are served regardless of the data source.
+ *
+ * First checks exclusions (industry-specific events), then
+ * applies positive matching (audience, tags, keywords).
  */
 function isYouthRelevantEvent(event: EventItem): boolean {
+  // Check exclusions first — reject industry-specific events
+  const searchText = `${event.title} ${event.description ?? ""}`.toLowerCase();
+  if (YOUTH_EXCLUDE_KEYWORDS.some((kw) => searchText.includes(kw))) return false;
+
   // Direct audience match
   if (YOUTH_AUDIENCES.includes(event.audienceFit)) return true;
 
@@ -62,8 +80,26 @@ function isYouthRelevantEvent(event: EventItem): boolean {
   if (event.tags?.includes("youth-friendly")) return true;
 
   // Keyword match in title or description
-  const searchText = `${event.title} ${event.description ?? ""}`.toLowerCase();
   return YOUTH_KEYWORDS.some((kw) => searchText.includes(kw));
+}
+
+/**
+ * Clean scraped event titles by stripping provider domain suffixes.
+ * e.g. "Oslo - tautdanning.no" → "Oslo"
+ */
+function cleanEventTitle(event: EventItem): EventItem {
+  let title = event.title;
+  // Strip " - provider.domain" suffixes
+  title = title.replace(
+    /\s*[-–—]\s*(tautdanning\.no|oslomet\.no|karrieredagene\.no|europeanjobdays\.eu)$/i,
+    "",
+  );
+  // Strip bare domain at end
+  title = title.replace(
+    /\s+(tautdanning|oslomet|karrieredagene|eures)\.(no|eu)$/i,
+    "",
+  );
+  return { ...event, title: title.trim() };
 }
 
 // ============================================
@@ -119,6 +155,17 @@ function matchesSearch(event: EventItem, query: string): boolean {
   );
 }
 
+/**
+ * Check if refresh metadata indicates data is still fresh.
+ * Returns true if lastRefreshISO is within STALE_THRESHOLD_HOURS.
+ */
+function isDataFresh(metadata: RefreshMetadata | null): boolean {
+  if (!metadata?.lastRefreshISO) return false;
+  const refreshTime = new Date(metadata.lastRefreshISO).getTime();
+  const thresholdMs = STALE_THRESHOLD_HOURS * 60 * 60 * 1000;
+  return Date.now() - refreshTime < thresholdMs;
+}
+
 // ============================================
 // GET HANDLER
 // ============================================
@@ -139,9 +186,12 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "startDate";
     const includeUnverified = parseBoolean(searchParams.get("includeUnverified"), false);
 
+    // Load metadata and check freshness (soft signal only — never hide valid events)
+    const metadata = await loadMetadata();
+    const dataFresh = isDataFresh(metadata);
+
     // Load events from file
     let events = await loadEvents();
-    const metadata = await loadMetadata();
 
     // If no events, return helpful message
     if (events.length === 0) {
@@ -151,6 +201,7 @@ export async function GET(request: NextRequest) {
         page: 1,
         pageSize,
         lastRefreshISO: metadata?.lastRefreshISO || new Date().toISOString(),
+        dataFresh,
         filters: {
           cities: [],
           categories: ["Job Fair", "Workshop", "Webinar/Seminar", "Meetup", "Conference", "Other"] as EventCategory[],
@@ -197,7 +248,7 @@ export async function GET(request: NextRequest) {
       events = events.filter((e) => e.provider === providerParam);
     }
 
-    // Sort
+    // Sort — Norway-first by default, then by date within each group
     events = [...events].sort((a, b) => {
       switch (sort) {
         case "-startDate":
@@ -205,8 +256,14 @@ export async function GET(request: NextRequest) {
         case "title":
           return a.title.localeCompare(b.title);
         case "startDate":
-        default:
+        default: {
+          // Norway-first: Norway events before Europe
+          const countryOrder = (e: EventItem) => (e.country === "Norway" ? 0 : 1);
+          const countryDiff = countryOrder(a) - countryOrder(b);
+          if (countryDiff !== 0) return countryDiff;
+          // Within same country group, sort by soonest date
           return new Date(a.startDateISO).getTime() - new Date(b.startDateISO).getTime();
+        }
       }
     });
 
@@ -215,7 +272,9 @@ export async function GET(request: NextRequest) {
 
     // Paginate
     const startIndex = (page - 1) * pageSize;
-    const paginatedEvents = events.slice(startIndex, startIndex + pageSize);
+    const paginatedEvents = events
+      .slice(startIndex, startIndex + pageSize)
+      .map(cleanEventTitle);
 
     // Build filter options from all youth-relevant events (not just current page)
     const allEvents = await loadEvents();
@@ -233,6 +292,8 @@ export async function GET(request: NextRequest) {
       page,
       pageSize,
       lastRefreshISO: metadata?.lastRefreshISO || new Date().toISOString(),
+      dataFresh,
+      ...((!dataFresh && metadata?.lastRefreshISO) ? { staleSinceISO: metadata.lastRefreshISO } : {}),
       filters: {
         cities: cities.sort(),
         categories: ["Job Fair", "Workshop", "Webinar/Seminar", "Meetup", "Conference", "Other"] as EventCategory[],

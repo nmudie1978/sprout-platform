@@ -53,6 +53,7 @@ export interface EventItem {
   organizerName?: string;
   verified: boolean;
   verifiedAtISO?: string;
+  lastCheckedAtISO?: string;      // when the agent last re-verified this event's link
   tags?: string[];                // include "youth-friendly" when appropriate
 }
 
@@ -135,6 +136,8 @@ export interface YouthEventsResponse {
   page: number;
   pageSize: number;
   lastRefreshISO: string;
+  dataFresh: boolean;
+  staleSinceISO?: string;
   filters: {
     cities: string[];
     categories: EventCategory[];
@@ -156,6 +159,17 @@ export interface RefreshRunStats {
   errors: string[];
 }
 
+export interface AgentRunReport {
+  runAtISO: string;
+  durationMs: number;
+  eventsActive: number;
+  eventsRemoved: number;
+  eventsAdded: number;
+  linksRechecked: number;
+  linksFailed: number;
+  providerHealth: ProviderHealth[];
+}
+
 export interface RefreshMetadata {
   lastRefreshISO: string;
   totalFetched: number;
@@ -165,6 +179,7 @@ export interface RefreshMetadata {
   duplicatesRemoved: number;
   providerStats: RefreshRunStats[];
   providerHealth: ProviderHealth[];
+  lastAgentRunReport?: AgentRunReport;
 }
 
 // ============================================

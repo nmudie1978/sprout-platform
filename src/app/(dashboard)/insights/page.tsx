@@ -14,6 +14,7 @@
 
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -34,8 +35,11 @@ import {
   WhyThisMatters,
   InsightSection,
   YouthEventsTable,
+  PodcastSpotlight,
   JobsEconomySpotlight,
 } from "@/components/insights";
+
+const CONTEXT_HINTS_KEY = "insights_contextHints";
 
 
 // ============================================
@@ -87,6 +91,26 @@ function SectionHeader({
 // ============================================
 
 export default function IndustryInsightsPage() {
+  // Context hints toggle (OFF by default, persisted to localStorage)
+  const [showContextHints, setShowContextHints] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(CONTEXT_HINTS_KEY);
+      if (stored === "true") setShowContextHints(true);
+    } catch {
+      // localStorage unavailable
+    }
+  }, []);
+
+  const toggleContextHints = useCallback(() => {
+    setShowContextHints((prev) => {
+      const next = !prev;
+      try { localStorage.setItem(CONTEXT_HINTS_KEY, String(next)); } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
   // Fetch insights modules verification status
   const { data: modulesData } = useQuery({
     queryKey: ["insights-modules-meta"],
@@ -110,16 +134,46 @@ export default function IndustryInsightsPage() {
         icon={TrendingUp}
       />
 
-      {/* World Lens intro text */}
-      <motion.p
+      {/* Trust line + context hints toggle */}
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-sm text-muted-foreground mb-8 max-w-2xl"
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8"
       >
-        Industry Insights is your world lens — helping you understand the world beyond job listings.
-        Split into two parts: global career landscape data, and what it means for you (15-21).
-      </motion.p>
+        <div>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            Industry Insights is your world lens — helping you understand the world beyond job listings.
+            Split into two parts: global career landscape data, and what it means for you (15-21).
+          </p>
+          <p
+            className="text-[10px] text-muted-foreground/40 mt-1.5 cursor-default"
+            title="Sources include OECD, WEF, ILO, McKinsey, NAV, SSB, and universities. Broken or outdated links are automatically removed. Data is refreshed quarterly."
+          >
+            Verified sources · Refreshed regularly
+          </p>
+        </div>
+        <button
+          onClick={toggleContextHints}
+          className="flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors self-start sm:self-auto flex-shrink-0"
+          aria-pressed={showContextHints}
+        >
+          <span
+            className={`
+              relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-200
+              ${showContextHints ? "bg-primary/60" : "bg-muted-foreground/20"}
+            `}
+          >
+            <span
+              className={`
+                inline-block h-3 w-3 rounded-full bg-white shadow-sm transition-transform duration-200
+                ${showContextHints ? "translate-x-3.5" : "translate-x-0.5"}
+              `}
+            />
+          </span>
+          Show context hints
+        </button>
+      </motion.div>
 
       {/* Weekly Mobile Nudge (shows once per week on mobile) */}
       <WeeklyFactNudge />
@@ -161,7 +215,7 @@ export default function IndustryInsightsPage() {
                 Key data points from global employment research
               </p>
             </div>
-            <JobMarketStatsCarousel />
+            <JobMarketStatsCarousel showContextHints={showContextHints} />
           </motion.div>
 
           {/* 2. Jobs & Roles on the Rise + 3. Skills That Matter (side-by-side) */}
@@ -174,12 +228,12 @@ export default function IndustryInsightsPage() {
             </div>
           </div>
 
-          {/* Future of Jobs & Economies */}
+          {/* Future of Jobs & Economies (WEF Report + CFYE Podcast) */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.32 }}
-            className="mb-8"
+            transition={{ duration: 0.4, delay: 0.38 }}
+            className="mb-4"
           >
             <JobsEconomySpotlight />
           </motion.div>
@@ -223,11 +277,21 @@ export default function IndustryInsightsPage() {
             </div>
           </motion.div>
 
+          {/* Podcast Spotlight: CFYE Youth Employment */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+            className="mb-6"
+          >
+            <PodcastSpotlight />
+          </motion.div>
+
           {/* 3. Youth Career Events in Norway */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.65 }}
+            transition={{ duration: 0.4, delay: 0.7 }}
             className="mb-4"
           >
             <YouthEventsTable />
@@ -252,29 +316,27 @@ export default function IndustryInsightsPage() {
               All insights are derived from Tier-1 sources and reviewed quarterly. Content is summarised for clarity.
             </p>
             <div className="flex flex-wrap gap-2 text-[10px]">
-              <a href="https://www.weforum.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                World Economic Forum
-              </a>
-              <span className="text-muted-foreground/50">•</span>
-              <a href="https://www.ilo.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                ILO
-              </a>
-              <span className="text-muted-foreground/50">•</span>
-              <a href="https://www.oecd.org" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                OECD
-              </a>
-              <span className="text-muted-foreground/50">•</span>
-              <a href="https://www.wipo.int" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                WIPO
-              </a>
-              <span className="text-muted-foreground/50">•</span>
-              <a href="https://www.mckinsey.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                McKinsey
-              </a>
-              <span className="text-muted-foreground/50">&bull;</span>
-              <a href="https://fundforyouthemployment.nl" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                CFYE
-              </a>
+              {[
+                { name: "WEF", url: "https://www.weforum.org" },
+                { name: "ILO", url: "https://www.ilo.org" },
+                { name: "OECD", url: "https://www.oecd.org" },
+                { name: "McKinsey", url: "https://www.mckinsey.com" },
+                { name: "Deloitte", url: "https://www.deloitte.com" },
+                { name: "LinkedIn", url: "https://economicgraph.linkedin.com" },
+                { name: "Eurostat", url: "https://ec.europa.eu/eurostat" },
+                { name: "NAV/SSB", url: "https://www.ssb.no" },
+                { name: "NHO", url: "https://www.nho.no" },
+                { name: "Lightcast", url: "https://lightcast.io" },
+                { name: "ManpowerGroup", url: "https://go.manpowergroup.com" },
+                { name: "CFYE", url: "https://fundforyouthemployment.nl" },
+              ].map((source, idx, arr) => (
+                <span key={source.name} className="flex items-center gap-2">
+                  <a href={source.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                    {source.name}
+                  </a>
+                  {idx < arr.length - 1 && <span className="text-muted-foreground/50">·</span>}
+                </span>
+              ))}
             </div>
           </div>
         </div>
