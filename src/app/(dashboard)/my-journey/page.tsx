@@ -10,7 +10,9 @@ import {
   StickyNote,
   Target,
   ArrowRight,
+  ArrowLeftRight,
   Fingerprint,
+  Loader2,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,18 +29,46 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 
-// Journey Components
-import { PersonalCareerTimeline } from '@/components/journey';
+import dynamic from 'next/dynamic';
+
+// Journey Components - lightweight, loaded eagerly
 import { JourneyTitle } from '@/components/journey/journey-title';
-import { StepContent } from '@/components/journey/step-content';
-import { LibraryTab, NotesTab } from '@/components/journey/tabs';
-// Goal Components
-import { SecondaryGoalReminder } from '@/components/goals/SecondaryGoalReminder';
-import { GoalSelectionSheet } from '@/components/goals/GoalSelectionSheet';
 import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
-import { SelfReflection } from '@/components/my-journey/SelfReflection';
-import { CalmAcknowledgement } from '@/components/journey/CalmAcknowledgement';
 import { useAcknowledgements } from '@/hooks/use-acknowledgements';
+
+// Heavy components - loaded lazily to reduce initial bundle
+const PersonalCareerTimeline = dynamic(
+  () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const StepContent = dynamic(
+  () => import('@/components/journey/step-content').then((m) => m.StepContent),
+  { ssr: false }
+);
+const LibraryTab = dynamic(
+  () => import('@/components/journey/tabs').then((m) => m.LibraryTab),
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
+);
+const NotesTab = dynamic(
+  () => import('@/components/journey/tabs').then((m) => m.NotesTab),
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
+);
+const GoalSelectionSheet = dynamic(
+  () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
+  { ssr: false }
+);
+const ConfirmDialog = dynamic(
+  () => import('@/components/mobile/ConfirmDialog').then((m) => m.ConfirmDialog),
+  { ssr: false }
+);
+const SelfReflection = dynamic(
+  () => import('@/components/my-journey/SelfReflection').then((m) => m.SelfReflection),
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
+);
+const CalmAcknowledgement = dynamic(
+  () => import('@/components/journey/CalmAcknowledgement').then((m) => m.CalmAcknowledgement),
+  { ssr: false }
+);
 
 // Types
 import type {
@@ -271,6 +301,7 @@ export default function MyJourneyPage() {
   const [activeTab, setActiveTab] = useState<JourneyTab>('timeline');
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
+  const [showSwapConfirm, setShowSwapConfirm] = useState(false);
 
   const { currentMessage, maybeShowAcknowledgement } = useAcknowledgements();
 
@@ -387,33 +418,74 @@ export default function MyJourneyPage() {
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-4 py-8 max-w-6xl relative">
-        {/* Career Path Header + Secondary Goal */}
+        {/* Career Path Header */}
         {journey && (
-          <div className={cn(
-            'mb-8',
-            goalTitle && secondaryGoal && 'flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4',
-          )}>
-            <PrimaryGoalHero
-              goal={primaryGoal}
-              fallbackTitle={journey.summary?.primaryGoal?.title}
-              onSetGoal={() => setGoalSheetOpen(true)}
-            />
-            {goalTitle && secondaryGoal && (
-              <div className="flex-shrink-0 sm:w-72">
-                <SecondaryGoalReminder
-                  secondaryGoal={secondaryGoal}
-                  onPromote={() =>
-                    promoteGoal.mutate({
-                      currentPrimary: primaryGoal,
-                      currentSecondary: secondaryGoal,
-                    })
-                  }
-                  isPromoting={promoteGoal.isPending}
-                />
+          <div className="mb-8">
+            {goalTitle && secondaryGoal ? (
+              /* Two-pill swap layout */
+              <div className="flex items-center gap-2 sm:gap-3">
+                {/* Primary pill */}
+                <div className="flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 sm:px-4 sm:py-2 min-w-0">
+                  <Target className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[9px] font-medium uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 leading-none mb-0.5">Primary</p>
+                    <p className="text-sm font-semibold truncate">{goalTitle}</p>
+                  </div>
+                </div>
+
+                {/* Swap button */}
+                <button
+                  onClick={() => setShowSwapConfirm(true)}
+                  disabled={promoteGoal.isPending}
+                  className="flex-shrink-0 p-1.5 rounded-full hover:bg-muted/60 transition-colors disabled:opacity-50"
+                  title="Swap goals"
+                >
+                  {promoteGoal.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  ) : (
+                    <ArrowLeftRight className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </button>
+
+                {/* Secondary pill */}
+                <div className="flex items-center gap-2 rounded-full bg-purple-50 dark:bg-purple-900/20 px-3 py-1.5 sm:px-4 sm:py-2 min-w-0">
+                  <Target className="h-4 w-4 text-purple-400 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[9px] font-medium uppercase tracking-wider text-purple-500/70 dark:text-purple-400/70 leading-none mb-0.5">Secondary</p>
+                    <p className="text-sm font-semibold truncate">{secondaryGoal.title}</p>
+                  </div>
+                </div>
               </div>
+            ) : (
+              <PrimaryGoalHero
+                goal={primaryGoal}
+                fallbackTitle={journey.summary?.primaryGoal?.title}
+                onSetGoal={() => setGoalSheetOpen(true)}
+              />
             )}
           </div>
         )}
+
+        {/* Goal swap confirmation */}
+        <ConfirmDialog
+          open={showSwapConfirm}
+          onClose={() => setShowSwapConfirm(false)}
+          title="Swap Goals?"
+          description="Your current primary goal will become your secondary goal, and your secondary goal will become primary."
+          confirmText="Swap Goals"
+          cancelText="Cancel"
+          onConfirm={() => {
+            setShowSwapConfirm(false);
+            if (secondaryGoal) {
+              promoteGoal.mutate({
+                currentPrimary: primaryGoal,
+                currentSecondary: secondaryGoal,
+              });
+            }
+          }}
+          isPending={promoteGoal.isPending}
+          icon={<ArrowLeftRight className="h-5 w-5 text-purple-500" />}
+        />
 
         {/* Tab Navigation */}
         <div className="mb-6">

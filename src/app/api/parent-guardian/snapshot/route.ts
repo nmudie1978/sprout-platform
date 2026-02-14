@@ -133,153 +133,159 @@ export async function GET(req: NextRequest) {
           visibilityScope: scope,
         };
 
+        // Run all permitted queries for this worker in parallel
+        const parallelQueries: Promise<void>[] = [];
+
         // Profile basics (if permitted)
         if (scope.canSeeProfileBasics) {
-          // Calculate total earnings from completed jobs
-          const earnings = await prisma.earning.aggregate({
-            where: { youthId: workerId },
-            _sum: { amount: true },
-          });
-
-          snapshot.profileBasics = {
-            completedJobsCount: link.worker.youthProfile?.completedJobsCount || 0,
-            averageRating: link.worker.youthProfile?.averageRating || 0,
-            totalEarnings: earnings._sum?.amount || 0,
-          };
+          parallelQueries.push(
+            prisma.earning.aggregate({
+              where: { youthId: workerId },
+              _sum: { amount: true },
+            }).then((earnings) => {
+              snapshot.profileBasics = {
+                completedJobsCount: link.worker.youthProfile?.completedJobsCount || 0,
+                averageRating: link.worker.youthProfile?.averageRating || 0,
+                totalEarnings: earnings._sum?.amount || 0,
+              };
+            })
+          );
         }
 
         // Applications (if permitted)
         if (scope.canSeeApplications) {
-          const recentApplications = await prisma.application.findMany({
-            where: { youthId: workerId },
-            select: {
-              id: true,
-              status: true,
-              createdAt: true,
-              job: {
+          parallelQueries.push(
+            Promise.all([
+              prisma.application.findMany({
+                where: { youthId: workerId },
                 select: {
                   id: true,
-                  title: true,
-                  category: true,
-                  minimumAge: true,
-                  riskCategory: true,
-                  location: true,
-                  payAmount: true,
-                  payType: true,
-                  postedBy: {
+                  status: true,
+                  createdAt: true,
+                  job: {
                     select: {
-                      employerProfile: {
+                      id: true,
+                      title: true,
+                      category: true,
+                      minimumAge: true,
+                      riskCategory: true,
+                      location: true,
+                      payAmount: true,
+                      payType: true,
+                      postedBy: {
                         select: {
-                          companyName: true,
-                          verified: true,
+                          employerProfile: {
+                            select: {
+                              companyName: true,
+                              verified: true,
+                            },
+                          },
                         },
                       },
                     },
                   },
                 },
-              },
-            },
-            orderBy: { createdAt: "desc" },
-            take: 10,
-          });
-
-          const applicationCounts = await prisma.application.groupBy({
-            by: ["status"],
-            where: { youthId: workerId },
-            _count: { status: true },
-          });
-
-          snapshot.applications = {
-            recent: recentApplications.map((app) => ({
-              id: app.id,
-              status: app.status,
-              createdAt: app.createdAt,
-              job: {
-                id: app.job.id,
-                title: app.job.title,
-                category: app.job.category,
-                minimumAge: app.job.minimumAge,
-                riskCategory: app.job.riskCategory,
-                location: app.job.location,
-                payAmount: app.job.payAmount,
-                payType: app.job.payType,
-                employer: app.job.postedBy.employerProfile?.companyName || "Unknown",
-                employerVerified: app.job.postedBy.employerProfile?.verified || false,
-              },
-            })),
-            counts: applicationCounts.reduce(
-              (acc, { status, _count }) => {
-                acc[status.toLowerCase()] = _count.status;
-                return acc;
-              },
-              { pending: 0, accepted: 0, rejected: 0, withdrawn: 0 } as Record<string, number>
-            ),
-          };
+                orderBy: { createdAt: "desc" },
+                take: 10,
+              }),
+              prisma.application.groupBy({
+                by: ["status"],
+                where: { youthId: workerId },
+                _count: { status: true },
+              }),
+            ]).then(([recentApplications, applicationCounts]) => {
+              snapshot.applications = {
+                recent: recentApplications.map((app) => ({
+                  id: app.id,
+                  status: app.status,
+                  createdAt: app.createdAt,
+                  job: {
+                    id: app.job.id,
+                    title: app.job.title,
+                    category: app.job.category,
+                    minimumAge: app.job.minimumAge,
+                    riskCategory: app.job.riskCategory,
+                    location: app.job.location,
+                    payAmount: app.job.payAmount,
+                    payType: app.job.payType,
+                    employer: app.job.postedBy.employerProfile?.companyName || "Unknown",
+                    employerVerified: app.job.postedBy.employerProfile?.verified || false,
+                  },
+                })),
+                counts: applicationCounts.reduce(
+                  (acc, { status, _count }) => {
+                    acc[status.toLowerCase()] = _count.status;
+                    return acc;
+                  },
+                  { pending: 0, accepted: 0, rejected: 0, withdrawn: 0 } as Record<string, number>
+                ),
+              };
+            })
+          );
         }
 
         // Saved career cards (if permitted)
         if (scope.canSeeSavedJobs) {
-          const savedSwipes = await prisma.swipe.findMany({
-            where: {
-              youthId: workerId,
-              saved: true,
-            },
-            include: {
-              careerCard: {
-                select: {
-                  id: true,
-                  roleName: true,
+          parallelQueries.push(
+            Promise.all([
+              prisma.swipe.findMany({
+                where: { youthId: workerId, saved: true },
+                include: {
+                  careerCard: { select: { id: true, roleName: true } },
                 },
-              },
-            },
-            orderBy: { createdAt: "desc" },
-            take: 10,
-          });
-
-          snapshot.savedCareers = {
-            recent: savedSwipes.map((s) => ({
-              id: s.id,
-              savedAt: s.createdAt,
-              career: {
-                id: s.careerCard.id,
-                roleName: s.careerCard.roleName,
-              },
-            })),
-            totalCount: await prisma.swipe.count({
-              where: { youthId: workerId, saved: true },
-            }),
-          };
+                orderBy: { createdAt: "desc" },
+                take: 10,
+              }),
+              prisma.swipe.count({
+                where: { youthId: workerId, saved: true },
+              }),
+            ]).then(([savedSwipes, totalCount]) => {
+              snapshot.savedCareers = {
+                recent: savedSwipes.map((s) => ({
+                  id: s.id,
+                  savedAt: s.createdAt,
+                  career: {
+                    id: s.careerCard.id,
+                    roleName: s.careerCard.roleName,
+                  },
+                })),
+                totalCount,
+              };
+            })
+          );
         }
+
+        await Promise.all(parallelQueries);
 
         // Messages meta (if permitted) - just counts, not content
         if (scope.canSeeMessagesMeta) {
-          // Count messages where the worker is the sender
-          const sentCount = await prisma.message.count({
-            where: { senderId: workerId },
-          });
+          // Run all message counts in parallel instead of sequentially
+          const [sentCount, conversationCount, workerConversations] = await Promise.all([
+            prisma.message.count({
+              where: { senderId: workerId },
+            }),
+            prisma.conversation.count({
+              where: {
+                OR: [{ participant1Id: workerId }, { participant2Id: workerId }],
+              },
+            }),
+            prisma.conversation.findMany({
+              where: {
+                OR: [{ participant1Id: workerId }, { participant2Id: workerId }],
+              },
+              select: { id: true },
+            }),
+          ]);
 
-          // Count conversations the worker is involved in (as participant1 or participant2)
-          const conversationCount = await prisma.conversation.count({
-            where: {
-              OR: [{ participant1Id: workerId }, { participant2Id: workerId }],
-            },
-          });
-
-          // Count unread messages in conversations where worker is participant
-          const workerConversations = await prisma.conversation.findMany({
-            where: {
-              OR: [{ participant1Id: workerId }, { participant2Id: workerId }],
-            },
-            select: { id: true },
-          });
-
-          const unreadCount = await prisma.message.count({
-            where: {
-              conversationId: { in: workerConversations.map((c) => c.id) },
-              senderId: { not: workerId },
-              read: false,
-            },
-          });
+          const unreadCount = workerConversations.length > 0
+            ? await prisma.message.count({
+                where: {
+                  conversationId: { in: workerConversations.map((c) => c.id) },
+                  senderId: { not: workerId },
+                  read: false,
+                },
+              })
+            : 0;
 
           snapshot.messages = {
             sentCount,

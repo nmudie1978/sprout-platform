@@ -329,34 +329,37 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // Enrich top youth earners with profile info
-    const enrichedTopYouthEarners = await Promise.all(
-      topYouthEarners.map(async (earner) => {
-        const profile = await prisma.youthProfile.findUnique({
-          where: { userId: earner.youthId },
-          select: { displayName: true, averageRating: true },
-        });
-        return {
-          ...earner,
-          displayName: profile?.displayName || "Unknown",
-          averageRating: profile?.averageRating,
-        };
-      })
-    );
+    // Batch-fetch profiles instead of N+1 individual queries
+    const [youthProfiles, employerProfiles] = await Promise.all([
+      prisma.youthProfile.findMany({
+        where: { userId: { in: topYouthEarners.map((e) => e.youthId) } },
+        select: { userId: true, displayName: true, averageRating: true },
+      }),
+      prisma.employerProfile.findMany({
+        where: { userId: { in: topEmployerSpenders.map((s) => s.postedById) } },
+        select: { userId: true, companyName: true },
+      }),
+    ]);
 
-    // Enrich top employer spenders with profile info
-    const enrichedTopEmployerSpenders = await Promise.all(
-      topEmployerSpenders.map(async (spender) => {
-        const profile = await prisma.employerProfile.findUnique({
-          where: { userId: spender.postedById },
-          select: { companyName: true },
-        });
-        return {
-          ...spender,
-          companyName: profile?.companyName || "Individual",
-        };
-      })
-    );
+    const youthProfileMap = new Map(youthProfiles.map((p) => [p.userId, p]));
+    const employerProfileMap = new Map(employerProfiles.map((p) => [p.userId, p]));
+
+    const enrichedTopYouthEarners = topYouthEarners.map((earner) => {
+      const profile = youthProfileMap.get(earner.youthId);
+      return {
+        ...earner,
+        displayName: profile?.displayName || "Unknown",
+        averageRating: profile?.averageRating,
+      };
+    });
+
+    const enrichedTopEmployerSpenders = topEmployerSpenders.map((spender) => {
+      const profile = employerProfileMap.get(spender.postedById);
+      return {
+        ...spender,
+        companyName: profile?.companyName || "Individual",
+      };
+    });
 
     // Calculate completion rate
     const totalFinishedJobs = completedJobs + cancelledJobs;
@@ -364,7 +367,7 @@ export async function GET(req: NextRequest) {
       ? Math.round((completedJobs / totalFinishedJobs) * 100)
       : 0;
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       generatedAt: new Date().toISOString(),
 
       // Overview
@@ -472,6 +475,9 @@ export async function GET(req: NextRequest) {
         })),
       },
     });
+    // Admin analytics are expensive; cache for 5 min
+    response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=120');
+    return response;
   } catch (error) {
     console.error("Failed to fetch analytics:", error);
     return NextResponse.json(

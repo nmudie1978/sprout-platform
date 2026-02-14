@@ -15,6 +15,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/page-header";
 import {
@@ -27,16 +28,34 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Import insights components
-import {
-  JobMarketStatsCarousel,
-  DidYouKnowCard,
-  WeeklyFactNudge,
-  WhyThisMatters,
-  InsightSection,
-  YouthEventsTable,
-  JobsEconomySpotlight,
-} from "@/components/insights";
+// Lightweight components loaded eagerly
+import { WeeklyFactNudge } from "@/components/insights/weekly-fact-nudge";
+
+// Heavy components loaded lazily - these are below the fold or data-dependent
+const JobMarketStatsCarousel = dynamic(
+  () => import("@/components/insights/job-market-stats-carousel").then((m) => m.JobMarketStatsCarousel),
+  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const InsightSection = dynamic(
+  () => import("@/components/insights/insight-section").then((m) => m.InsightSection),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const YouthEventsTable = dynamic(
+  () => import("@/components/insights/youth-events-table").then((m) => m.YouthEventsTable),
+  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const JobsEconomySpotlight = dynamic(
+  () => import("@/components/insights/jobs-economy-spotlight").then((m) => m.JobsEconomySpotlight),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const WhyThisMatters = dynamic(
+  () => import("@/components/insights/why-this-matters").then((m) => m.WhyThisMatters),
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const DidYouKnowCard = dynamic(
+  () => import("@/components/insights/did-you-know-card").then((m) => m.DidYouKnowCard),
+  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-xl bg-muted/50" /> }
+);
 
 const CONTEXT_HINTS_KEY = "insights_contextHints";
 

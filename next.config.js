@@ -22,13 +22,20 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'i.ytimg.com',
       },
-      // Article images (Unsplash)
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
     ],
+    // Serve modern formats and limit generated sizes
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
+  // Enable gzip/brotli compression
+  compress: true,
+  // Reduce unused polyfills
+  reactStrictMode: true,
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
@@ -41,7 +48,11 @@ const nextConfig = {
       'recharts',
       '@radix-ui/react-icons',
       'lodash',
+      '@tanstack/react-query',
+      'sonner',
     ],
+    // Optimize CSS loading
+    optimizeCss: false, // requires critters, leave off unless installed
   },
   // Reduce bundle size by moving large data to server-only
   modularizeImports: {
@@ -49,7 +60,7 @@ const nextConfig = {
       transform: 'date-fns/{{member}}',
     },
   },
-  // Security headers
+  // Security + performance headers
   async headers() {
     return [
       {
@@ -85,7 +96,38 @@ const nextConfig = {
           },
         ],
       },
+      // Cache static assets aggressively
+      {
+        source: '/images/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/videos/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
+  },
+  // Exclude heavy server-only packages from client bundles
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
   },
 };
 

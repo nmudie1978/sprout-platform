@@ -7,6 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import Link from "next/link";
 
+// Dynamic rendering needed for auth, but allow short revalidation
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -18,15 +22,6 @@ export default async function DashboardLayout({
     redirect("/auth/signin");
   }
 
-  // Check if user has accepted legal terms
-  const legalAcceptance = await prisma.legalAcceptance.findUnique({
-    where: { userId: session.user.id },
-  });
-
-  if (!legalAcceptance) {
-    redirect("/legal/accept");
-  }
-
   // Get current pathname to avoid redirect loops
   const headersList = headers();
   const pathname = headersList.get("x-pathname") || "";
@@ -36,32 +31,39 @@ export default async function DashboardLayout({
     redirect("/employer/dashboard");
   }
 
-  // Fetch profile data based on role
+  // Run legal check and profile fetch in parallel instead of sequentially
+  const [legalAcceptance, profileData] = await Promise.all([
+    prisma.legalAcceptance.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    }),
+    session.user.role === "YOUTH"
+      ? prisma.youthProfile.findUnique({
+          where: { userId: session.user.id },
+          select: { avatarId: true, displayName: true },
+        })
+      : session.user.role === "EMPLOYER"
+        ? prisma.employerProfile.findUnique({
+            where: { userId: session.user.id },
+            select: { companyName: true, companyLogo: true },
+          })
+        : Promise.resolve(null),
+  ]);
+
+  if (!legalAcceptance) {
+    redirect("/legal/accept");
+  }
+
   let userAvatarId: string | null = null;
   let displayName: string | null = null;
   let userProfilePic: string | null = null;
 
-  if (session.user.role === "YOUTH") {
-    const youthProfile = await prisma.youthProfile.findUnique({
-      where: { userId: session.user.id },
-      select: { avatarId: true, displayName: true },
-    });
-    userAvatarId = youthProfile?.avatarId || null;
-    displayName = youthProfile?.displayName || null;
-
-    // PROOF: Log avatar loaded from DB in layout (SSR)
-    console.log("AVATAR LOADED FROM DB (LAYOUT SSR):", {
-      userId: session.user.id,
-      avatarId: userAvatarId,
-      profileExists: !!youthProfile
-    });
-  } else if (session.user.role === "EMPLOYER") {
-    const employerProfile = await prisma.employerProfile.findUnique({
-      where: { userId: session.user.id },
-      select: { companyName: true, companyLogo: true },
-    });
-    displayName = employerProfile?.companyName || null;
-    userProfilePic = employerProfile?.companyLogo || null;
+  if (session.user.role === "YOUTH" && profileData && "avatarId" in profileData) {
+    userAvatarId = profileData.avatarId || null;
+    displayName = profileData.displayName || null;
+  } else if (session.user.role === "EMPLOYER" && profileData && "companyName" in profileData) {
+    displayName = profileData.companyName || null;
+    userProfilePic = profileData.companyLogo || null;
   }
 
   return (

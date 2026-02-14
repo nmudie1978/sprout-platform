@@ -14,8 +14,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000,
+            staleTime: 60 * 1000, // 1 min before refetch
+            gcTime: 5 * 60 * 1000, // Keep unused data in cache for 5 min
             refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            retry: 1, // Reduce retries from default 3 to 1
+          },
+          mutations: {
+            retry: 0, // Don't retry mutations
           },
         },
       })
@@ -28,7 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      <SessionProvider>
+      <SessionProvider refetchOnWindowFocus={false} refetchInterval={0}>
         <QueryClientProvider client={queryClient}>
           <LifeSkillsProvider>
             {children}

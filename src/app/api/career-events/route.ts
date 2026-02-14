@@ -198,7 +198,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Return events with available cities for filtering
-    return NextResponse.json({
+    const response = NextResponse.json({
       localEvents: finalLocalEvents.slice(0, MAX_EVENTS_PER_SECTION),
       onlineEvents: finalOnlineEvents.slice(0, MAX_EVENTS_PER_SECTION),
       userHasLocation: !!(userLocation.lat || userLocation.city),
@@ -215,6 +215,9 @@ export async function GET(req: NextRequest) {
         includeOnline,
       },
     });
+    // Events change infrequently, cache for 10 min
+    response.headers.set('Cache-Control', 'public, max-age=600, stale-while-revalidate=300');
+    return response;
   } catch (error) {
     console.error("[Career Events API] Error fetching events:", error);
     return NextResponse.json(

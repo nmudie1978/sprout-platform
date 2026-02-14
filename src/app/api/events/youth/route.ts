@@ -217,7 +217,10 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    return NextResponse.json(response);
+    const jsonResponse = NextResponse.json(response);
+    // Events data changes infrequently, cache for 15 min
+    jsonResponse.headers.set('Cache-Control', 'public, max-age=900, stale-while-revalidate=300');
+    return jsonResponse;
   } catch (error) {
     console.error("Failed to fetch youth events:", error);
     return NextResponse.json(

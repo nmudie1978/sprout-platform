@@ -22,13 +22,14 @@ export async function GET() {
       },
     });
 
-    // Extract title from primary goal JSON (structured goals system)
-    const primaryGoal = youthProfile?.primaryGoal as { title?: string } | null;
+    // Extract title and skills from primary goal JSON (structured goals system)
+    const primaryGoal = youthProfile?.primaryGoal as { title?: string; skills?: string[] } | null;
     const careerAspiration = primaryGoal?.title || "";
+    const goalSkills = primaryGoal?.skills || [];
     const totalCompletedJobs = youthProfile?.completedJobsCount || 0;
 
-    // Get recommended careers based on primary goal title
-    const recommendations = getRecommendationsFromAspiration(careerAspiration);
+    // Get recommended careers based on primary goal title and skills
+    const recommendations = getRecommendationsFromAspiration(careerAspiration, goalSkills);
 
     // Get top categories from recommendations
     const categoryCount: Record<CareerCategory, number> = {} as Record<CareerCategory, number>;
@@ -58,13 +59,16 @@ export async function GET() {
       insightsMessage = `Based on your primary goal: "${careerAspiration}"`;
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       totalCompletedJobs,
       careerAspiration,
       topCategories,
       recommendations: recommendations.slice(0, 6),
       insightsMessage,
     });
+    // User-specific data, cache for 5 min
+    response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=600');
+    return response;
   } catch (error) {
     console.error("Failed to get career insights:", error);
     return NextResponse.json(

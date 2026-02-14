@@ -100,143 +100,142 @@ export async function GET(request: NextRequest) {
       _count: { id: true },
     });
 
-    // Jobs per day time series
+    // Run all time-series and remaining queries in parallel
+    const [
+      jobsPerDayRaw,
+      topCategories,
+      topLocationsRaw,
+      totalApplications,
+      newApplications,
+      applicationsByStatus,
+      applicationsPerDayRaw,
+      totalMessages,
+      newMessages,
+      messagesPerDayRaw,
+      activeMessageSenders,
+      activeApplicants,
+    ] = await Promise.all([
+      // Jobs per day - single query with DATE_TRUNC instead of N sequential queries
+      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
+        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
+        FROM "MicroJob"
+        WHERE "createdAt" >= ${startDate}
+        GROUP BY DATE_TRUNC('day', "createdAt")
+        ORDER BY day ASC
+      `,
+
+      // Top 5 categories
+      prisma.microJob.groupBy({
+        by: ["category"],
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
+        take: 5,
+      }),
+
+      // Top 5 locations - use groupBy instead of fetching all records
+      prisma.microJob.groupBy({
+        by: ["location"],
+        where: { location: { not: "" } },
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
+        take: 20, // fetch extra to handle city extraction deduplication
+      }),
+
+      // Total applications
+      prisma.application.count(),
+
+      // Applications in date range
+      prisma.application.count({
+        where: { createdAt: { gte: startDate } },
+      }),
+
+      // Applications by status
+      prisma.application.groupBy({
+        by: ["status"],
+        _count: { id: true },
+      }),
+
+      // Applications per day - single query
+      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
+        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
+        FROM "Application"
+        WHERE "createdAt" >= ${startDate}
+        GROUP BY DATE_TRUNC('day', "createdAt")
+        ORDER BY day ASC
+      `,
+
+      // Total messages
+      prisma.message.count(),
+
+      // Messages in date range
+      prisma.message.count({
+        where: { createdAt: { gte: startDate } },
+      }),
+
+      // Messages per day - single query
+      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
+        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
+        FROM "Message"
+        WHERE "createdAt" >= ${startDate}
+        GROUP BY DATE_TRUNC('day', "createdAt")
+        ORDER BY day ASC
+      `,
+
+      // Active message senders
+      prisma.message.findMany({
+        where: { createdAt: { gte: startDate } },
+        select: { senderId: true },
+        distinct: ["senderId"],
+      }),
+
+      // Active applicants
+      prisma.application.findMany({
+        where: { createdAt: { gte: startDate } },
+        select: { youthId: true },
+        distinct: ["youthId"],
+      }),
+    ]);
+
+    // Build day-indexed maps from raw query results for O(1) lookup
+    const buildDayMap = (rows: Array<{ day: Date; count: bigint }>) => {
+      const map = new Map<string, number>();
+      for (const row of rows) {
+        map.set(formatDate(new Date(row.day)), Number(row.count));
+      }
+      return map;
+    };
+
+    const jobsDayMap = buildDayMap(jobsPerDayRaw);
+    const appsDayMap = buildDayMap(applicationsPerDayRaw);
+    const msgsDayMap = buildDayMap(messagesPerDayRaw);
+
+    // Fill in all days (including zeros) for the time series
     const jobsPerDay: { date: string; count: number }[] = [];
+    const applicationsPerDay: { date: string; count: number }[] = [];
+    const messagesPerDay: { date: string; count: number }[] = [];
+
     for (let i = validDays - 1; i >= 0; i--) {
-      const dayStart = getDaysAgo(i);
-      const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-
-      const count = await prisma.microJob.count({
-        where: {
-          createdAt: {
-            gte: dayStart,
-            lt: dayEnd,
-          },
-        },
-      });
-
-      jobsPerDay.push({
-        date: formatDate(dayStart),
-        count,
-      });
+      const d = formatDate(getDaysAgo(i));
+      jobsPerDay.push({ date: d, count: jobsDayMap.get(d) || 0 });
+      applicationsPerDay.push({ date: d, count: appsDayMap.get(d) || 0 });
+      messagesPerDay.push({ date: d, count: msgsDayMap.get(d) || 0 });
     }
 
-    // Top 5 categories
-    const topCategories = await prisma.microJob.groupBy({
-      by: ["category"],
-      _count: { id: true },
-      orderBy: { _count: { id: "desc" } },
-      take: 5,
-    });
-
-    // Top 5 locations (extract city from location string)
-    const allLocations = await prisma.microJob.findMany({
-      select: { location: true },
-    });
-
+    // Extract city from location and aggregate
     const locationCounts: Record<string, number> = {};
-    allLocations.forEach((job) => {
-      if (job.location) {
-        // Extract city (first part before comma or full string)
-        const city = job.location.split(",")[0].trim();
+    topLocationsRaw.forEach((row) => {
+      if (row.location) {
+        const city = (row.location as string).split(",")[0].trim();
+        const count = typeof row._count === 'number' ? row._count : (row._count as { id: number }).id;
         if (city) {
-          locationCounts[city] = (locationCounts[city] || 0) + 1;
+          locationCounts[city] = (locationCounts[city] || 0) + count;
         }
       }
     });
-
     const topLocations = Object.entries(locationCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([location, count]) => ({ location, count }));
-
-    // ============================================
-    // APPLICATION METRICS (AGGREGATED ONLY)
-    // ============================================
-
-    // Total applications
-    const totalApplications = await prisma.application.count();
-
-    // Applications in date range
-    const newApplications = await prisma.application.count({
-      where: { createdAt: { gte: startDate } },
-    });
-
-    // Applications by status
-    const applicationsByStatus = await prisma.application.groupBy({
-      by: ["status"],
-      _count: { id: true },
-    });
-
-    // Applications per day time series
-    const applicationsPerDay: { date: string; count: number }[] = [];
-    for (let i = validDays - 1; i >= 0; i--) {
-      const dayStart = getDaysAgo(i);
-      const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-
-      const count = await prisma.application.count({
-        where: {
-          createdAt: {
-            gte: dayStart,
-            lt: dayEnd,
-          },
-        },
-      });
-
-      applicationsPerDay.push({
-        date: formatDate(dayStart),
-        count,
-      });
-    }
-
-    // ============================================
-    // MESSAGE/ENGAGEMENT METRICS (COUNTS ONLY)
-    // ============================================
-
-    // Total messages (count only, no content)
-    const totalMessages = await prisma.message.count();
-
-    // Messages in date range
-    const newMessages = await prisma.message.count({
-      where: { createdAt: { gte: startDate } },
-    });
-
-    // Messages per day
-    const messagesPerDay: { date: string; count: number }[] = [];
-    for (let i = validDays - 1; i >= 0; i--) {
-      const dayStart = getDaysAgo(i);
-      const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-
-      const count = await prisma.message.count({
-        where: {
-          createdAt: {
-            gte: dayStart,
-            lt: dayEnd,
-          },
-        },
-      });
-
-      messagesPerDay.push({
-        date: formatDate(dayStart),
-        count,
-      });
-    }
-
-    // Active users (distinct users who sent a message or applied in date range)
-    const activeMessageSenders = await prisma.message.findMany({
-      where: { createdAt: { gte: startDate } },
-      select: { senderId: true },
-      distinct: ["senderId"],
-    });
-
-    const activeApplicants = await prisma.application.findMany({
-      where: { createdAt: { gte: startDate } },
-      select: { youthId: true },
-      distinct: ["youthId"],
-    });
 
     const uniqueActiveUsers = new Set([
       ...activeMessageSenders.map((m) => m.senderId),
@@ -249,7 +248,7 @@ export async function GET(request: NextRequest) {
     // RESPONSE
     // ============================================
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       dateRange: {
         days: validDays,
         startDate: formatDate(startDate),
@@ -296,6 +295,9 @@ export async function GET(request: NextRequest) {
         activeUsers,
       },
     });
+    // Admin metrics are expensive; cache for 5 min
+    response.headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=120');
+    return response;
   } catch (error) {
     console.error("Admin metrics error:", error);
     return NextResponse.json(

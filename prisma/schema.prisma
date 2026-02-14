@@ -681,6 +681,7 @@ model Swipe {
   @@index([youthId])
   @@index([careerCardId])
   @@index([saved])
+  @@index([youthId, saved]) // Compound: guardian snapshot queries saved cards per user
 }
 
 model ProQuestion {
@@ -854,6 +855,8 @@ model Earning {
   @@index([jobId])
   @@index([status])
   @@index([earnedAt])
+  @@index([youthId, earnedAt]) // Compound: earnings queries filter by user + date range
+  @@index([youthId, status]) // Compound: aggregate queries by user + status (PENDING/CONFIRMED)
 }
 
 // Achievement badges for youth workers
@@ -1382,6 +1385,7 @@ model CommunityReport {
   @@index([targetType, targetId])
   @@index([assignedGuardianUserId])
   @@index([status])
+  @@index([reporterUserId, createdAt]) // Compound: duplicate detection on report creation
 }
 
 // ============================================
@@ -2464,6 +2468,8 @@ model CareerEvent {
   @@index([isVerified])
   @@index([city])
   @@index([country])
+  @@index([isActive, isVerified, startDate]) // Compound: main event listing query
+  @@index([isYouthFocused, startDate]) // Compound: sorted event display
 }
 
 // ============================================
