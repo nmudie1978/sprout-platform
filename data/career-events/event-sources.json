@@ -1,0 +1,175 @@
+{
+  "_meta": {
+    "description": "Canonical source list for Youth Career Events. These URLs are the approved sources from which events are discovered and added to the seed data.",
+    "lastUpdated": "2026-02-14",
+    "usage": "Check these sources periodically to find new events for prisma/seed-career-events.ts"
+  },
+  "sources": [
+    {
+      "url": "https://www.tautdanning.no/studentfairs/",
+      "name": "Ta Utdanning — Student Fairs",
+      "type": "education-fair-organizer",
+      "country": "Norway",
+      "description": "Norway's largest education fair organizer. Runs fairs in 8 cities: Oslo, Bergen, Trondheim, Stavanger, Kristiansand, Sandefjord, Tromsø, Ålesund. Targets upper secondary and middle school students. ~12,000 visitors at the Oslo fair alone.",
+      "schedule": "January-February annually",
+      "youthFocused": true,
+      "knownEvents": [
+        { "city": "Trondheim", "dates": "7-8 Jan 2026", "venue": "TBA" },
+        { "city": "Kristiansand", "dates": "16 Jan 2026", "venue": "TBA" },
+        { "city": "Stavanger", "dates": "19-20 Jan 2026", "venue": "TBA" },
+        { "city": "Bergen", "dates": "22-23 Jan 2026", "venue": "TBA" },
+        { "city": "Tromsø", "dates": "5 Feb 2026", "venue": "TBA" },
+        { "city": "Oslo/Lillestrøm", "dates": "11-12 Feb 2026", "venue": "NOVA Spektrum" }
+      ],
+      "notes": "JS-rendered site — details found via web search. Hours typically 09:00-14:00. Free admission."
+    },
+    {
+      "url": "https://www.educationfair.net/events/education-fairs-in-norway/",
+      "name": "EducationFair.net — Norway Education Fairs",
+      "type": "aggregator",
+      "country": "Norway",
+      "description": "Education fair directory and booking platform. Lists study fairs and education expos across Norway. Useful for discovering fairs from multiple organizers.",
+      "schedule": "Year-round listings",
+      "youthFocused": true,
+      "notes": "JS-rendered site, content loads dynamically. Use as a discovery tool, then verify individual events on their official sites."
+    },
+    {
+      "url": "https://www.oslostudenthub.no/careerfair-oslomet",
+      "name": "Oslo Student Hub — OsloMet Career Fair",
+      "type": "university-career-fair",
+      "country": "Norway",
+      "description": "Annual career fair at OsloMet (Oslo Metropolitan University) organized by Oslo Student Hub in partnership with Oslo Technical Society (OTS). Connects engineering, tech, and data students with leading Norwegian companies.",
+      "schedule": "Annually (date for 2026 not yet confirmed)",
+      "youthFocused": true,
+      "notes": "Wix-based site. Check back for 2026 dates. Previous editions held in autumn."
+    },
+    {
+      "url": "https://www.bi.no/en/study-at-bi/resources-and-opportunities/guidance/karrieredagene/",
+      "name": "BI Karrieredagene (Career Days)",
+      "type": "university-career-fair",
+      "country": "Norway",
+      "description": "One of Scandinavia's largest career events at BI Norwegian Business School. ~100 companies annually. Includes lectures from business leaders, career development courses, internship info sessions, and networking banquet. Run by Student Union volunteers.",
+      "schedule": "September annually",
+      "youthFocused": true,
+      "knownEvents": [
+        { "city": "Oslo", "dates": "22-24 Sep 2026", "venue": "BI Campus Oslo" }
+      ],
+      "officialSite": "https://www.karrieredagene.no/",
+      "notes": "Official event site is karrieredagene.no (Wix). BI page has general info. Bergen campus also has separate career days via biso.no."
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/International_Student_Festival_in_Trondheim",
+      "name": "ISFiT — International Student Festival in Trondheim",
+      "type": "student-festival",
+      "country": "Norway",
+      "description": "World's largest student festival with thematic emphasis. ~450 international students. 10-day festival every two years since 1990. Created by 400 volunteers. Includes debates, workshops, cultural events, and career networking.",
+      "schedule": "Biennial, February (next: Feb 11-21, 2027)",
+      "youthFocused": true,
+      "officialSite": "https://www.isfit.org/",
+      "notes": "2027 theme: 'Changing Winds'. No 2026 edition (biennial). Official site isfit.org, also samfundet.no/en/isfit."
+    },
+    {
+      "url": "https://www.jus.uio.no/smr/english/research/projects/probono/events/probono-career-event.html",
+      "name": "UiO Pro Bono Career Event",
+      "type": "university-career-event",
+      "country": "Norway",
+      "description": "Career event at University of Oslo for students interested in pro bono legal and social impact work. Panel discussions with lawyers, corporate social impact leaders, and student legal aid organizations. Followed by networking reception.",
+      "schedule": "Annually, October (2025 was Oct 9)",
+      "youthFocused": true,
+      "notes": "Small/niche event. Registration via Nettskjema. Conducted in English. Good for law/social science students."
+    },
+    {
+      "url": "https://www.digitallifenorway.org/research-school/events/",
+      "name": "Digital Life Norway — Research School Events",
+      "type": "research-events",
+      "country": "Norway",
+      "description": "Events from the Centre for Digital Life Norway research school. Webinars, workshops, PhD courses, and annual conference. Topics include AI, genetics, computational biology, and scientific communication.",
+      "schedule": "Year-round (30+ events in 2025, no 2026 events listed yet)",
+      "youthFocused": false,
+      "notes": "Primarily aimed at PhD/postdoc level. Some webinars open to alumni. Physical events reserved for active members. Travel grants available."
+    },
+    {
+      "url": "https://www.allinternationalconference.com/country/norway-conference/youth/",
+      "name": "All International Conference — Youth Events Norway",
+      "type": "aggregator",
+      "country": "Norway",
+      "description": "Conference directory listing academic and professional events. Filterable by month, country, and topic. Lists youth conferences, seminars, and workshops in Norway.",
+      "schedule": "Year-round listings",
+      "youthFocused": true,
+      "notes": "JS-rendered directory. Content loads dynamically via AJAX filters. Use as discovery tool."
+    },
+    {
+      "url": "https://www.oslo.kommune.no/english/welcome-to-oslo/daily-life-in-oslo/welcome-to-oslo-events/",
+      "name": "Oslo Kommune — Welcome Events",
+      "type": "municipal-events",
+      "country": "Norway",
+      "description": "Events organized by the City of Oslo, Oslo Business Region, and Oslopolitan to help newcomers integrate. Includes community meetups, seasonal activities, cultural experiences, professional networking, and language exchanges.",
+      "schedule": "Year-round (no specific 2026 dates listed yet)",
+      "youthFocused": false,
+      "notes": "General newcomer events, not youth-specific. Useful for students new to Oslo. Check partner sites for updates."
+    }
+  ],
+  "additionalSources": {
+    "_description": "Sources discovered during research that complement the primary list above",
+    "careerFairs": [
+      {
+        "url": "https://kdntnu.no/",
+        "name": "KarriereDagene NTNU",
+        "description": "Norway's largest career fair. Companies from all sectors meet NTNU students.",
+        "dates": "7-10 Sep 2026",
+        "venue": "NTNU Gløshaugen, Trondheim"
+      },
+      {
+        "url": "https://springbrettet.org/karrieredagen",
+        "name": "Springbrettet Karrieredagen Bergen",
+        "description": "Vestland's largest career fair. 75+ companies across 2 floors at Grieghallen. Student-organized since 2007.",
+        "dates": "Late Sep 2026 (exact date TBC)",
+        "venue": "Grieghallen, Bergen"
+      },
+      {
+        "url": "https://www.karrieredagen.no/",
+        "name": "Karrieredagen Stavanger",
+        "description": "Career fair with festival atmosphere. Networking stands, career coaching, competitions. Free admission.",
+        "dates": "12 Feb 2026, 14:00-18:00",
+        "venue": "SiS Studenthus, Ullandhaug Campus, Stavanger"
+      },
+      {
+        "url": "https://biso.no/en/careerdays-bergen/",
+        "name": "BISO Career Days Bergen",
+        "description": "BI Student Organization career fair at BI Bergen campus.",
+        "dates": "18 Feb 2026, 09:00-14:00",
+        "venue": "BI Campus Bergen"
+      },
+      {
+        "url": "https://charm.se/",
+        "name": "CHARM — Chalmers Career Fair",
+        "description": "One of Scandinavia's leading career fairs. Held every February on Chalmers campus.",
+        "dates": "17-18 Feb 2026",
+        "venue": "Chalmers campus, Gothenburg, Sweden"
+      },
+      {
+        "url": "https://armada.nu/",
+        "name": "THS Armada — KTH Career Fair",
+        "description": "Major student career fair at KTH Royal Institute of Technology.",
+        "dates": "Nov 2026 (exact dates TBC, typically mid-Nov)",
+        "venue": "KTH campus, Stockholm, Sweden"
+      }
+    ],
+    "euYouthEvents": [
+      {
+        "url": "https://youth.europa.eu/youthweek_en",
+        "name": "European Youth Week 2026",
+        "description": "EU-wide youth engagement week. Kick-off at European Parliament with 1,000+ young people. Theme: Solidarity and Fairness. Celebrates 30 years of volunteering in Europe.",
+        "dates": "24 Apr - 1 May 2026",
+        "venue": "European Parliament, Brussels (kick-off) + events across Europe"
+      },
+      {
+        "url": "https://www.arendalsuka.no/",
+        "name": "Arendalsuka 2026",
+        "description": "Norway's largest democracy festival. Youth programme (Arendalsuka Ung) has ~50 events for ages 4-19. ~4,000 children and young people attend.",
+        "dates": "10-14 Aug 2026",
+        "venue": "Arendal, Norway"
+      }
+    ]
+  }
+}

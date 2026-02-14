@@ -8,7 +8,7 @@ These safety invariants are NON-NEGOTIABLE. Any changes to these rules require e
 
 ## A) Age Band Policy
 
-Sprout is designed for young people aged **16-20**.
+Sprout is designed for young people aged **15-23**.
 
 ### Age Bands
 
@@ -50,7 +50,7 @@ Users under 16 cannot create accounts or use the platform.
 - No complex guardian consent flows needed initially
 
 ### User Experience
-- Clear error message during signup: "Sprout is for users aged 16-20"
+- Clear error message during signup: "Sprout is for users aged 15-23"
 - Redirect to `/not-eligible` page with friendly messaging
 - Encourage user to return when they turn 16
 
@@ -165,7 +165,7 @@ model AgeEligibilityAuditLog {
 Current claims on landing page:
 - "Guardian Consent" - **TRUE** (for 16-17 year olds)
 - "Verified Posters" - **TRUE** (age verification required)
-- "Ages 16-20" - **TRUE** (platform target audience)
+- "Ages 15-23" - **TRUE** (platform target audience)
 
 If implementation changes, landing page MUST be updated to match.
 
@@ -180,6 +180,41 @@ If implementation changes, landing page MUST be updated to match.
 | `/src/lib/age-policy/` | Job-specific age rules |
 | `/src/middleware.ts` | Route protection |
 | `/src/app/api/auth/signup/route.ts` | Signup validation |
+
+---
+
+## J) Career Events Integrity
+
+Career events with broken or fabricated registration URLs directly harm users — they click "Register" and hit 404s. These rules prevent fabricated or dead URLs from ever reaching users.
+
+### Rules
+
+1. **Domain Trust** — All event URLs must come from a trusted domain (`TRUSTED_EVENT_DOMAINS`) or an institutional TLD (`.edu`, `.gov`, `.ac.uk`, `.ac.no`, `.europa.eu`)
+2. **URL Structure** — Eventbrite URLs must contain a numeric ticket ID (`tickets-\d+` or `biljetter-\d+`). Fabricated slugs without ticket IDs are rejected.
+3. **HTTPS Only** — All registration URLs must use HTTPS. HTTP links are rejected.
+4. **No Past Events** — Events with start dates in the past are filtered out during seeding and not shown to users.
+5. **Non-Boilerplate Notes** — Every event must have a specific verification note (>= 20 chars, not generic boilerplate). This catches bulk-fabricated entries hiding behind copy-paste notes.
+6. **No Disallowed Patterns** — URL shorteners, social media links, and Google Docs are explicitly blocked.
+
+### Enforcement Points
+
+| Check | File | When |
+|-------|------|------|
+| Domain trust + HTTPS + Eventbrite ticket ID | `src/lib/events/trusted-domains.ts` | Seed pre-validation, CI test |
+| Past event filtering | `prisma/seed-career-events.ts` | Every seed run |
+| Non-boilerplate notes | `src/lib/events/__tests__/seed-events.test.ts` | Every CI build |
+| Duplicate URL detection | `src/lib/events/__tests__/seed-events.test.ts` | Every CI build |
+| Required fields (title, description, organizer, city/country) | `src/lib/events/__tests__/seed-events.test.ts` | Every CI build |
+| Runtime URL verification | `prisma/seed-career-events.ts` | Opt-in (`VERIFY_SEED_URLS=true`) |
+
+### Canonical Source Files
+
+| File | Purpose |
+|------|---------|
+| `src/lib/events/trusted-domains.ts` | Domain allowlist, URL validation functions |
+| `src/lib/events/verify-url.ts` | Runtime HTTP verification |
+| `src/lib/events/__tests__/seed-events.test.ts` | CI validation tests for seed data |
+| `prisma/seed-career-events.ts` | Seed script with pre-validation phase |
 
 ---
 
@@ -201,7 +236,8 @@ Any changes to these invariants MUST:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-01-19 | Initial safety invariants - 16+ minimum age |
+| 1.1 | 2026-02-14 | Add section J: Career Events Integrity |
 
 ---
 
-*Last updated: January 2026*
+*Last updated: February 2026*
