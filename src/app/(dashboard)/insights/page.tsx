@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/page-header";
 import {
   TrendingUp,
@@ -113,6 +114,8 @@ function SectionHeader({
 // ============================================
 
 export default function IndustryInsightsPage() {
+  const t = useTranslations("insights");
+
   // Context hints toggle (OFF by default, persisted to localStorage)
   const [showContextHints, setShowContextHints] = useState(false);
 
@@ -150,9 +153,9 @@ export default function IndustryInsightsPage() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
 
       <PageHeader
-        title="Industry"
-        gradientText="Insights"
-        description="Understanding what's shaping careers globally"
+        title={t("pageTitle")}
+        gradientText={t("pageTitleGradient")}
+        description={t("pageDescription")}
         icon={TrendingUp}
       />
 
@@ -165,14 +168,13 @@ export default function IndustryInsightsPage() {
       >
         <div>
           <p className="text-sm text-muted-foreground max-w-2xl">
-            Industry Insights is your world lens — helping you understand the world beyond job listings.
-            Split into two parts: global career landscape data, and what it means for you (15-23).
+            {t("trustLine")}
           </p>
           <p
             className="text-[10px] text-muted-foreground/40 mt-1.5 cursor-default"
             title="Sources include OECD, WEF, ILO, McKinsey, NAV, SSB, and universities. Broken or outdated links are automatically removed. Data is refreshed quarterly."
           >
-            Verified sources · Refreshed regularly
+            {t("verifiedSources")}
           </p>
         </div>
         <button
@@ -193,7 +195,7 @@ export default function IndustryInsightsPage() {
               `}
             />
           </span>
-          Show context hints
+          {t("showContextHints")}
         </button>
       </motion.div>
 
@@ -212,9 +214,9 @@ export default function IndustryInsightsPage() {
         <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-6">
           <SectionHeader
             icon={Globe2}
-            label="Global Lens"
-            title="Global Industry & Career Landscape"
-            subtitle="Macro trends shaping jobs worldwide — data-led, not youth-specific"
+            label={t("globalLens")}
+            title={t("globalTitle")}
+            subtitle={t("globalSubtitle")}
             gradient="from-blue-500 via-cyan-500 to-blue-500"
             iconBg="bg-blue-100 dark:bg-blue-900/30"
             iconColor="text-blue-600 dark:text-blue-400"
@@ -231,10 +233,10 @@ export default function IndustryInsightsPage() {
             <div className="mb-4">
               <h3 className="text-base font-semibold mb-1 flex items-center gap-2">
                 <Target className="h-4 w-4 text-primary" />
-                Job Market Statistics
+                {t("jobMarketStats")}
               </h3>
               <p className="text-xs text-muted-foreground">
-                Key data points from global employment research
+                {t("jobMarketStatsDesc")}
               </p>
             </div>
             <JobMarketStatsCarousel showContextHints={showContextHints} />
@@ -275,9 +277,9 @@ export default function IndustryInsightsPage() {
         <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-4">
           <SectionHeader
             icon={Sparkles}
-            label="Youth Lens"
-            title="What It Means for You (15–23)"
-            subtitle="How the global landscape connects to your choices — warm, actionable, grounded"
+            label={t("youthLens")}
+            title={t("youthTitle")}
+            subtitle={t("youthSubtitle")}
             gradient="from-amber-400 via-orange-400 to-amber-400"
             iconBg="bg-amber-100 dark:bg-amber-900/30"
             iconColor="text-amber-600 dark:text-amber-400"
@@ -333,9 +335,9 @@ export default function IndustryInsightsPage() {
         <div className="flex items-start gap-3">
           <Calendar className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <div>
-            <p className="font-medium text-sm mb-1">About the Data</p>
+            <p className="font-medium text-sm mb-1">{t("aboutData")}</p>
             <p className="text-xs text-muted-foreground mb-2">
-              All insights are derived from Tier-1 sources and reviewed quarterly. Content is summarised for clarity.
+              {t("aboutDataDesc")}
             </p>
             <div className="flex flex-wrap gap-2 text-[10px]">
               {[
@@ -368,12 +370,12 @@ export default function IndustryInsightsPage() {
       <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-          <span>Refreshed Q1 2025</span>
+          <span>{t("refreshed")}</span>
         </div>
         {modulesData?.meta?.allVerifiedThisQuarter && (
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="h-3 w-3 text-green-600" />
-            <span>Verified</span>
+            <span>{t("verified")}</span>
           </div>
         )}
       </div>
