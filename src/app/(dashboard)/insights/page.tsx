@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Globe2,
   Sparkles,
+  Lightbulb,
   Calendar,
   CheckCircle2,
   Target,
@@ -301,17 +302,41 @@ export default function IndustryInsightsPage() {
             </div>
           </motion.div>
 
+        </div>
+      </motion.section>
+
+      {/* ============================================ */}
+      {/* SECTION 3: OTHER TOPICS TO CONSIDER */}
+      {/* ============================================ */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+        className="mb-4"
+      >
+        <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-4">
+          <SectionHeader
+            icon={Lightbulb}
+            label="Explore"
+            title="Other Topics to Consider"
+            subtitle="Broaden your perspective with global opportunities and upcoming events"
+            gradient="from-emerald-400 via-teal-400 to-emerald-400"
+            iconBg="bg-emerald-100 dark:bg-emerald-900/30"
+            iconColor="text-emerald-600 dark:text-emerald-400"
+            labelColor="text-emerald-500/80"
+          />
+
           {/* Working Beyond Borders */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
+            transition={{ duration: 0.4, delay: 0.65 }}
             className="mb-6"
           >
             <BeyondBordersSection />
           </motion.div>
 
-          {/* 3. Youth Career Events in Norway */}
+          {/* Youth Career Events in Norway */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
