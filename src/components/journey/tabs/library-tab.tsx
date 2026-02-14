@@ -10,18 +10,22 @@ import {
   ExternalLink,
   Trash2,
   Search,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { SavedItemData, SavedItemType } from '@/lib/journey/types';
 import { useViewMode } from '@/hooks/useViewMode';
 import { ViewModeToggle } from '@/components/view/ViewModeToggle';
 import { CuriositySaves } from '@/components/my-journey/CuriositySaves';
 import { RecentlyDeleted } from '@/components/journey/recently-deleted';
+
+const ITEMS_PER_PAGE = 6;
 
 // Icon mapping for item types
 const typeIcons: Record<SavedItemType, React.ComponentType<{ className?: string }>> = {
@@ -167,7 +171,8 @@ export function LibraryTab() {
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<SavedItemType | 'all'>('all');
   const [search, setSearch] = useState('');
-  const { viewMode, setViewMode } = useViewMode({ storageKey: 'libraryViewMode', defaultMode: 'compact' });
+  const { viewMode, setViewMode } = useViewMode({ storageKey: 'libraryViewMode', defaultMode: 'list' });
+  const [page, setPage] = useState(0);
 
   const { data, isLoading, error } = useQuery<{
     success: boolean;
@@ -206,6 +211,13 @@ export function LibraryTab() {
   const items = data?.items || [];
   const counts = data?.counts;
 
+  const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(page, totalPages - 1);
+  const paginatedItems = useMemo(
+    () => items.slice(safePage * ITEMS_PER_PAGE, (safePage + 1) * ITEMS_PER_PAGE),
+    [items, safePage]
+  );
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -230,195 +242,234 @@ export function LibraryTab() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Curiosity Saves */}
-      <CuriositySaves />
-      <hr className="border-muted" />
-
-      {/* Header with Stats */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-blue-500" />
-            Library
-          </h2>
-          {counts && (
-            <p className="text-sm text-muted-foreground mt-1">
-              {counts.total} items saved
-            </p>
-          )}
-        </div>
-        <ViewModeToggle
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          showCompact={true}
-        />
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Left Column — Curiosity Saves */}
+      <div className="lg:col-span-5">
+        <CuriositySaves />
       </div>
 
-      {/* Type Filter Badges */}
-      {counts && (
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={filter === 'all' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setFilter('all')}
-          >
-            All ({counts.total})
-          </Button>
-          {(['ARTICLE', 'VIDEO', 'PODCAST', 'SHORT'] as SavedItemType[]).map((type) => {
-            const Icon = typeIcons[type];
-            const countKey = { ARTICLE: 'articles', VIDEO: 'videos', PODCAST: 'podcasts', SHORT: 'shorts' } as const;
-            const count = counts[countKey[type]] as number;
-            if (count === 0) return null;
-            return (
-              <Button
-                key={type}
-                variant={filter === type ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilter(type)}
-                className="gap-1"
-              >
-                <Icon className="h-3 w-3" />
-                {typeLabels[type]} ({count})
-              </Button>
-            );
-          })}
+      {/* Right Column — Library */}
+      <div className="lg:col-span-7 space-y-4">
+        {/* Header with Stats */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-blue-500" />
+              Library
+            </h2>
+            {counts && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {counts.total} items saved
+              </p>
+            )}
+          </div>
+          <ViewModeToggle
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            showCompact={true}
+          />
         </div>
-      )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search your library..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-9"
-        />
-      </div>
-
-      {/* Items */}
-      {items.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">Your library is empty</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Save articles, videos, and podcasts as you explore careers
-            </p>
-          </CardContent>
-        </Card>
-      ) : viewMode === 'list' ? (
-        <div className="border rounded-lg overflow-hidden divide-y">
-          {items.map((item) => (
-            <LibraryListRow
-              key={item.id}
-              item={item}
-              onDelete={() => deleteMutation.mutate(item.id)}
-              isDeleting={deleteMutation.isPending}
-            />
-          ))}
-        </div>
-      ) : viewMode === 'compact' ? (
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <LibraryCompactCard
-              key={item.id}
-              item={item}
-              onDelete={() => deleteMutation.mutate(item.id)}
-              isDeleting={deleteMutation.isPending}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence>
-            {items.map((item, index) => {
-              const Icon = typeIcons[item.type];
-              const colorClass = typeColors[item.type];
-
+        {/* Type Filter Badges */}
+        {counts && (
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => { setFilter('all'); setPage(0); }}
+            >
+              All ({counts.total})
+            </Button>
+            {(['ARTICLE', 'VIDEO', 'PODCAST', 'SHORT'] as SavedItemType[]).map((type) => {
+              const Icon = typeIcons[type];
+              const countKey = { ARTICLE: 'articles', VIDEO: 'videos', PODCAST: 'podcasts', SHORT: 'shorts' } as const;
+              const count = counts[countKey[type]] as number;
+              if (count === 0) return null;
               return (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: index * 0.05 }}
+                <Button
+                  key={type}
+                  variant={filter === type ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => { setFilter(type); setPage(0); }}
+                  className="gap-1"
                 >
-                  <Card className="h-full hover:shadow-md transition-shadow group">
-                    <CardContent className="p-4 flex flex-col h-full">
-                      {/* Header */}
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className={`p-2 rounded-lg ${colorClass}`}>
-                          <Icon className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm line-clamp-2">{item.title}</p>
-                          {item.source && (
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              {item.source}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Description */}
-                      {item.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-3 flex-1">
-                          {item.description}
-                        </p>
-                      )}
-
-                      {/* Tags */}
-                      {item.tags && item.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {item.tags.slice(0, 3).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {item.tags.length > 3 && (
-                            <Badge variant="secondary" className="text-xs">
-                              +{item.tags.length - 3}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Actions */}
-                      <div className="flex items-center justify-between mt-auto pt-3 border-t">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="gap-1"
-                          asChild
-                        >
-                          <a href={item.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-3 w-3" />
-                            Open
-                          </a>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => deleteMutation.mutate(item.id)}
-                          disabled={deleteMutation.isPending}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                  <Icon className="h-3 w-3" />
+                  {typeLabels[type]} ({count})
+                </Button>
               );
             })}
-          </AnimatePresence>
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* Recently Deleted */}
-      <RecentlyDeleted type="savedItem" />
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search your library..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+            className="pl-9"
+          />
+        </div>
+
+        {/* Items */}
+        {items.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">Your library is empty</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Save articles, videos, and podcasts as you explore careers
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={safePage}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                {viewMode === 'list' ? (
+                  <div className="border rounded-lg overflow-hidden divide-y">
+                    {paginatedItems.map((item) => (
+                      <LibraryListRow
+                        key={item.id}
+                        item={item}
+                        onDelete={() => deleteMutation.mutate(item.id)}
+                        isDeleting={deleteMutation.isPending}
+                      />
+                    ))}
+                  </div>
+                ) : viewMode === 'compact' ? (
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {paginatedItems.map((item) => (
+                      <LibraryCompactCard
+                        key={item.id}
+                        item={item}
+                        onDelete={() => deleteMutation.mutate(item.id)}
+                        isDeleting={deleteMutation.isPending}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {paginatedItems.map((item, index) => {
+                      const Icon = typeIcons[item.type];
+                      const colorClass = typeColors[item.type];
+
+                      return (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <Card className="h-full hover:shadow-md transition-shadow group">
+                            <CardContent className="p-4 flex flex-col h-full">
+                              <div className="flex items-start gap-3 mb-3">
+                                <div className={`p-2 rounded-lg ${colorClass}`}>
+                                  <Icon className="h-4 w-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-medium text-sm line-clamp-2">{item.title}</p>
+                                  {item.source && (
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                      {item.source}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {item.description && (
+                                <p className="text-xs text-muted-foreground line-clamp-2 mb-3 flex-1">
+                                  {item.description}
+                                </p>
+                              )}
+
+                              {item.tags && item.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mb-3">
+                                  {item.tags.slice(0, 3).map((tag) => (
+                                    <Badge key={tag} variant="secondary" className="text-xs">
+                                      {tag}
+                                    </Badge>
+                                  ))}
+                                  {item.tags.length > 3 && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      +{item.tags.length - 3}
+                                    </Badge>
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between mt-auto pt-3 border-t">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="gap-1"
+                                  asChild
+                                >
+                                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                                    <ExternalLink className="h-3 w-3" />
+                                    Open
+                                  </a>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => deleteMutation.mutate(item.id)}
+                                  disabled={deleteMutation.isPending}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Carousel Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={safePage === 0}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {safePage + 1} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={safePage === totalPages - 1}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Recently Deleted */}
+        <RecentlyDeleted type="savedItem" />
+      </div>
     </div>
   );
 }

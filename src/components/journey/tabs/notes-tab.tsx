@@ -24,7 +24,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useViewMode } from "@/hooks/useViewMode";
 import { ViewModeToggle } from "@/components/view/ViewModeToggle";
-import { FearReflection } from "@/components/my-journey/FearReflection";
 import { RecentlyDeleted } from "@/components/journey/recently-deleted";
 
 // Note colors with their Tailwind classes
@@ -836,10 +835,6 @@ export function NotesTab() {
 
       {/* Recently Deleted */}
       <RecentlyDeleted type="journeyNote" />
-
-      {/* Fear Reflection */}
-      <hr className="border-muted mt-6" />
-      <FearReflection />
     </div>
   );
 }
