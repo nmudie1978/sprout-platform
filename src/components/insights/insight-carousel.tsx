@@ -18,7 +18,12 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import {
   ChevronLeft,
   ChevronRight,
@@ -33,6 +38,7 @@ import {
   LayoutGrid,
   List,
   Check,
+  RefreshCw,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -70,13 +76,25 @@ export const NEW_DROP_DAYS = 7;
 // API FUNCTIONS
 // ============================================
 
-async function fetchSectionContent(sectionKey: InsightSectionKey) {
-  const res = await fetch(`/api/insights/section/${sectionKey}`);
+async function fetchSectionContent(
+  sectionKey: InsightSectionKey,
+  contentPage: number = 0
+) {
+  const url =
+    contentPage > 0
+      ? `/api/insights/section/${sectionKey}?page=${contentPage}`
+      : `/api/insights/section/${sectionKey}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch section content");
   return res.json() as Promise<{
     articles: InsightArticle[];
     videos: InsightVideo[];
     podcasts: InsightPodcast[];
+    pagination: {
+      page: number;
+      totalVideoPages: number;
+      totalVideos: number;
+    };
   }>;
 }
 
@@ -740,15 +758,22 @@ export function InsightCarousel({
   const [selectedVideo, setSelectedVideo] = useState<InsightVideo | null>(null);
   const [savedItems, setSavedItems] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(0);
+  const [contentPage, setContentPage] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const cardsPerPage = useCardsPerPage(compact);
 
+  // Reset content page when section changes
+  useEffect(() => {
+    setContentPage(0);
+  }, [sectionKey]);
+
   // Fetch section content
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["insights-section", sectionKey],
-    queryFn: () => fetchSectionContent(sectionKey),
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ["insights-section", sectionKey, contentPage],
+    queryFn: () => fetchSectionContent(sectionKey, contentPage),
     staleTime: 6 * 60 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
   // Fetch watched state
@@ -762,6 +787,7 @@ export function InsightCarousel({
   const articles = data?.articles ?? [];
   const videos = data?.videos ?? [];
   const podcasts = data?.podcasts ?? [];
+  const totalVideoPages = data?.pagination?.totalVideoPages ?? 1;
 
   // Auto-switch to best available tab
   useEffect(() => {
@@ -1104,6 +1130,31 @@ export function InsightCarousel({
                 isSaving={saveMutation.isPending}
               />
             ))}
+        </div>
+      )}
+
+      {/* "Give me more" button — videos tab only, when multiple content pages */}
+      {activeTab === "videos" && totalVideoPages > 1 && !isLoading && (
+        <div className="flex justify-center mt-3">
+          <button
+            onClick={() => {
+              setContentPage((p) =>
+                p < totalVideoPages - 1 ? p + 1 : 0
+              );
+              setPage(0);
+            }}
+            disabled={isFetching}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
+          >
+            {isFetching ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3.5 w-3.5" />
+            )}
+            {contentPage < totalVideoPages - 1
+              ? "Give me more"
+              : "Back to start"}
+          </button>
         </div>
       )}
 
