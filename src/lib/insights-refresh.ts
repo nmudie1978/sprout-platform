@@ -22,10 +22,11 @@ import { prisma } from "./prisma";
 import { InsightsModuleStatus, Prisma } from "@prisma/client";
 import {
   TIER1_SOURCES,
-  type Tier1SourceId,
+  TIER2_SOURCES,
+  type ApprovedSourceId,
   validateSourceMeta,
   formatAttribution,
-  TIER1_SOURCE_METADATA,
+  ALL_APPROVED_SOURCE_METADATA,
 } from "./industry-insights/tier1-sources";
 
 // ============================================
@@ -35,12 +36,12 @@ import {
 export interface ModuleData {
   dataJson: Record<string, unknown>;
   sourceMeta: {
-    /** Must be a Tier-1 source ID */
-    sourceId: Tier1SourceId;
+    /** Must be an approved source ID (Tier-1 or Tier-2) */
+    sourceId: ApprovedSourceId;
     /** Human-readable source name */
     sourceName: string;
     fetchedAt: string;
-    /** URLs must be from Tier-1 domains only */
+    /** URLs must be from approved source domains */
     urls?: string[];
     /** Attribution text for display */
     attribution?: string;
@@ -145,16 +146,16 @@ export interface IndustryDataProvider {
  * - McKinsey & Company (technology, AI, workforce research)
  *
  * Content is explanatory, not sensational.
- * Language is neutral and appropriate for 16-20 year olds.
+ * Language is neutral and appropriate for 15-23 year olds.
  */
 export class Tier1Provider implements IndustryDataProvider {
   name = "Tier1Provider";
 
   private createSourceMeta(
-    sourceId: Tier1SourceId,
+    sourceId: ApprovedSourceId,
     urls?: string[]
   ): ModuleData["sourceMeta"] {
-    const source = TIER1_SOURCE_METADATA[sourceId];
+    const source = ALL_APPROVED_SOURCE_METADATA[sourceId];
     return {
       sourceId,
       sourceName: source.name,

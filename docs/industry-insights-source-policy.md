@@ -5,11 +5,11 @@ This document defines the source policy for Industry Insights content.
 ## Core Principle
 
 Industry Insights must be:
-- **Credible** - from internationally recognised institutions
+- **Credible** - from internationally recognised institutions or specialist publications
 - **Calm** - educational, not sensational
 - **Educational** - helping youth understand industries and careers
 - **Long-term relevant** - timeless over fresh
-- **Understandable** - written for 16-20 year olds
+- **Understandable** - written for 15-23 year olds
 - **Trusted** - by parents, schools, and educators
 
 Industry Insights are **NOT**:
@@ -52,6 +52,27 @@ This is the single source of truth for all approved sources.
 |--------|-----|-----------|
 | Visual Capitalist | `visual_capitalist` | Macro trends, rankings, visual explanations |
 
+## Tier-2 Source Categories
+
+Tier-2 sources supplement Tier-1 with industry-specific publications and specialist platforms. Same content rules apply.
+
+### Consulting (Specialist)
+| Source | ID | Use Cases |
+|--------|-----|-----------|
+| Accenture | `accenture` | Digital transformation, telecom, technology innovations |
+
+### Industry Publications
+| Source | ID | Use Cases |
+|--------|-----|-----------|
+| FierceWireless | `fierce_wireless` | Wireless technology, telecom industry analysis |
+| TelecomTV | `telecom_tv` | Global telecom news, service provider insights |
+| Network World | `network_world` | Networking, telecom, IT infrastructure |
+
+### Labor Market Platforms
+| Source | ID | Use Cases |
+|--------|-----|-----------|
+| Glassdoor | `glassdoor` | Labor market trends, hiring trends, salary benchmarks |
+
 ## Industry-Specific Whitelists
 
 Each industry has a subset of approved sources. Content for an industry may **ONLY** use sources from its whitelist.
@@ -62,6 +83,11 @@ Each industry has a subset of approved sources. Content for an industry may **ON
 - McKinsey
 - BCG
 - Deloitte
+- Accenture (Tier-2)
+- FierceWireless (Tier-2)
+- TelecomTV (Tier-2)
+- Network World (Tier-2)
+- Glassdoor (Tier-2)
 
 ### Healthcare / Medicine
 - WHO (primary)
@@ -106,6 +132,8 @@ Each industry has a subset of approved sources. Content for an industry may **ON
 - Visual Capitalist
 - BCG
 - Deloitte
+- Accenture (Tier-2)
+- Glassdoor (Tier-2)
 
 ## Disallowed Sources
 
@@ -151,7 +179,7 @@ All insights must be:
 Every insight must include:
 1. **Title** - clear, neutral (max 100 chars)
 2. **Body** - 2-4 sentence explanation in plain language
-3. **Source attribution** - Tier-1 source ID
+3. **Source attribution** - approved source ID (Tier-1 or Tier-2)
 4. **Why this matters** - 1 sentence (optional)
 5. **Industry tags** - relevant industry categories
 
@@ -160,6 +188,7 @@ Every insight must include:
 - Updates: Monthly or quarterly
 - No daily refresh
 - Timeless relevance > freshness
+- Tier-2 content reviewed quarterly for accuracy and relevance
 
 ## Adding a New Industry
 
@@ -170,9 +199,9 @@ To add a new industry:
    - `industry`: the category key
    - `name`: human-readable name
    - `description`: what the industry covers
-   - `allowedSources`: array of Tier1SourceId values
+   - `allowedSources`: array of ApprovedSourceId values
    - `notes`: guidance for content creators
-3. Only use sources from `TIER1_SOURCES`
+3. Only use sources from `TIER1_SOURCES` or `TIER2_SOURCES`
 4. Run validation on all existing content for the new industry
 
 ## Adding a New Tier-1 Source
@@ -189,18 +218,32 @@ To add:
 3. Add to relevant industry whitelists
 4. Update this documentation
 
+## Adding a New Tier-2 Source
+
+Before adding a new source, verify it meets criteria:
+- Recognised industry publication or specialist platform
+- Credible analysis or labor market data
+- Not a news aggregator or opinion blog
+
+To add:
+1. Add to `TIER2_SOURCES` enum
+2. Add metadata to `TIER2_SOURCE_METADATA` (name, URL, domain, use cases)
+3. Add to relevant industry whitelists
+4. Update this documentation
+
 ## Validation
 
 Source validation is enforced:
 - At module creation time
 - At module update time
 - Through the `validateSourceMeta()` and `validateInsightStructure()` functions
+- Both Tier-1 and Tier-2 sources pass through the same validation pipeline
 
 If validation fails, the content will not be saved.
 
 ## Related Files
 
-- `/src/lib/industry-insights/tier1-sources.ts` - Source definitions and validation
-- `/src/lib/insights-refresh.ts` - Refresh system using Tier-1 sources
+- `/src/lib/industry-insights/tier1-sources.ts` - Source definitions and validation (both tiers)
+- `/src/lib/industry-insights/SOURCE-ENFORCEMENT.md` - Enforcement documentation
+- `/src/lib/insights-refresh.ts` - Refresh system using approved sources
 - `/src/app/(dashboard)/insights/page.tsx` - Industry Insights page
-- `/docs/insights-refresh.md` - Refresh system documentation

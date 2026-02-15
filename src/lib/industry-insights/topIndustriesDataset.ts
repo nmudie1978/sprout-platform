@@ -16,7 +16,7 @@
  * LAST REVIEWED: January 2025
  */
 
-import { TIER1_SOURCES, type Tier1SourceId } from "./tier1-sources";
+import { TIER1_SOURCES, TIER2_SOURCES, type ApprovedSourceId } from "./tier1-sources";
 
 // ============================================
 // DATASET TYPE DEFINITIONS
@@ -42,8 +42,8 @@ export interface TopIndustriesDataset {
   geographyScope: string;
   /** Year the data represents */
   year: number;
-  /** Tier-1 source identifier */
-  sourceId: Tier1SourceId;
+  /** Approved source identifier (Tier-1 or Tier-2) */
+  sourceId: ApprovedSourceId;
   /** Display name for attribution */
   sourceName: string;
   /** Optional URL to source report */

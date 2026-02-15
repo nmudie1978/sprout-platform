@@ -6,9 +6,8 @@ import {
   initializeInsightsModules,
 } from "@/lib/insights-refresh";
 import {
-  TIER1_SOURCE_METADATA,
-  type Tier1SourceId,
-  isTier1Source,
+  ALL_APPROVED_SOURCE_METADATA,
+  isApprovedSource,
 } from "@/lib/industry-insights/tier1-sources";
 
 /**
@@ -31,16 +30,16 @@ export async function GET() {
       );
       const isVerifiedThisQuarter = daysSinceVerified < 90;
 
-      // Extract Tier-1 source attribution
+      // Extract source attribution (Tier-1 or Tier-2)
       const sourceMeta = m.sourceMeta as { sourceId?: string; sourceName?: string; attribution?: string } | null;
       const sourceId = sourceMeta?.sourceId;
-      const sourceInfo = sourceId && isTier1Source(sourceId)
+      const sourceInfo = sourceId && isApprovedSource(sourceId)
         ? {
             id: sourceId,
-            name: TIER1_SOURCE_METADATA[sourceId].name,
-            shortName: TIER1_SOURCE_METADATA[sourceId].shortName,
-            url: TIER1_SOURCE_METADATA[sourceId].url,
-            attribution: sourceMeta?.attribution || `Based on research from ${TIER1_SOURCE_METADATA[sourceId].name}`,
+            name: ALL_APPROVED_SOURCE_METADATA[sourceId].name,
+            shortName: ALL_APPROVED_SOURCE_METADATA[sourceId].shortName,
+            url: ALL_APPROVED_SOURCE_METADATA[sourceId].url,
+            attribution: sourceMeta?.attribution || `Based on research from ${ALL_APPROVED_SOURCE_METADATA[sourceId].name}`,
           }
         : null;
 
@@ -69,13 +68,13 @@ export async function GET() {
         allVerifiedThisQuarter: allVerified,
         lastVerification: lastVerification?.toISOString(),
         totalModules: modules.length,
-        tier1Sources: Object.values(TIER1_SOURCE_METADATA).map((s) => ({
+        approvedSources: Object.values(ALL_APPROVED_SOURCE_METADATA).map((s) => ({
           id: s.id,
           name: s.name,
           shortName: s.shortName,
           url: s.url,
         })),
-        sourcePolicy: "All insights are derived from Tier-1 sources only: Visual Capitalist, World Economic Forum, and McKinsey & Company.",
+        sourcePolicy: "All insights are derived from approved Tier-1 and Tier-2 sources. Tier-1: global research bodies and consulting firms. Tier-2: specialist industry publications and labor market platforms.",
       },
     });
   } catch (error) {

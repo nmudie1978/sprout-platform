@@ -5,7 +5,7 @@
  *
  * CORE PRINCIPLE:
  * Industry Insights must be credible, calm, educational, long-term relevant,
- * and understandable by a 16-20 year old. Trusted by parents, schools, educators.
+ * and understandable by a 15-23 year old. Trusted by parents, schools, educators.
  *
  * Industry Insights are NOT: news feeds, blog aggregators, opinion content,
  * influencer commentary, or "latest headlines".
@@ -225,6 +225,147 @@ export const TIER1_SOURCE_METADATA: Record<Tier1SourceId, Tier1SourceMeta> = {
 };
 
 // ============================================
+// TIER-2 SOURCE ENUM
+// ============================================
+
+/**
+ * Tier-2 sources supplement Tier-1 with industry-specific publications
+ * and specialist platforms. Same content rules apply: summarise,
+ * rewrite in plain language, no hype. Reviewed quarterly.
+ */
+export const TIER2_SOURCES = {
+  ACCENTURE: "accenture",
+  FIERCE_WIRELESS: "fierce_wireless",
+  TELECOM_TV: "telecom_tv",
+  NETWORK_WORLD: "network_world",
+  GLASSDOOR: "glassdoor",
+} as const;
+
+export type Tier2SourceId = (typeof TIER2_SOURCES)[keyof typeof TIER2_SOURCES];
+
+// ============================================
+// TIER-2 SOURCE METADATA
+// ============================================
+
+export type SourceCategory =
+  | "research"
+  | "consulting"
+  | "visual"
+  | "industry-publication"
+  | "labor-market";
+
+export interface Tier2SourceMeta {
+  id: Tier2SourceId;
+  name: string;
+  shortName: string;
+  url: string;
+  domain: string;
+  description: string;
+  useCases: string[];
+  category: SourceCategory;
+}
+
+export const TIER2_SOURCE_METADATA: Record<Tier2SourceId, Tier2SourceMeta> = {
+  [TIER2_SOURCES.ACCENTURE]: {
+    id: TIER2_SOURCES.ACCENTURE,
+    name: "Accenture",
+    shortName: "Accenture",
+    url: "https://www.accenture.com",
+    domain: "accenture.com",
+    description:
+      "Reports on digital transformation, telecom, and technology innovations",
+    useCases: [
+      "digital transformation trends",
+      "telecom innovation",
+      "technology strategy",
+      "cloud and AI adoption",
+      "workforce reskilling",
+    ],
+    category: "consulting",
+  },
+  [TIER2_SOURCES.FIERCE_WIRELESS]: {
+    id: TIER2_SOURCES.FIERCE_WIRELESS,
+    name: "FierceWireless",
+    shortName: "FierceWireless",
+    url: "https://www.fiercewireless.com",
+    domain: "fiercewireless.com",
+    description: "Wireless technology and telecom industry analysis",
+    useCases: [
+      "wireless technology trends",
+      "5G and next-gen networks",
+      "telecom industry shifts",
+      "spectrum and connectivity",
+    ],
+    category: "industry-publication",
+  },
+  [TIER2_SOURCES.TELECOM_TV]: {
+    id: TIER2_SOURCES.TELECOM_TV,
+    name: "TelecomTV",
+    shortName: "TelecomTV",
+    url: "https://www.telecomtv.com",
+    domain: "telecomtv.com",
+    description:
+      "Global telecom news and insights on service providers and innovations",
+    useCases: [
+      "global telecom trends",
+      "service provider strategy",
+      "network infrastructure",
+      "telecom innovation",
+    ],
+    category: "industry-publication",
+  },
+  [TIER2_SOURCES.NETWORK_WORLD]: {
+    id: TIER2_SOURCES.NETWORK_WORLD,
+    name: "Network World",
+    shortName: "Network World",
+    url: "https://www.networkworld.com",
+    domain: "networkworld.com",
+    description:
+      "Expert commentary on networking, telecom, and IT infrastructure",
+    useCases: [
+      "networking trends",
+      "IT infrastructure analysis",
+      "telecom technology",
+      "enterprise connectivity",
+    ],
+    category: "industry-publication",
+  },
+  [TIER2_SOURCES.GLASSDOOR]: {
+    id: TIER2_SOURCES.GLASSDOOR,
+    name: "Glassdoor",
+    shortName: "Glassdoor",
+    url: "https://www.glassdoor.com",
+    domain: "glassdoor.com",
+    description:
+      "Labor market trends, employee insights, and company reviews for tech and telecom",
+    useCases: [
+      "labor market trends",
+      "employee satisfaction insights",
+      "salary benchmarks",
+      "company culture analysis",
+      "hiring trends",
+    ],
+    category: "labor-market",
+  },
+};
+
+// ============================================
+// COMBINED SOURCE TYPES (TIER-1 + TIER-2)
+// ============================================
+
+/** Union of all approved source IDs across both tiers */
+export type ApprovedSourceId = Tier1SourceId | Tier2SourceId;
+
+/** Lookup metadata for any approved source (Tier-1 or Tier-2) */
+export const ALL_APPROVED_SOURCE_METADATA: Record<
+  ApprovedSourceId,
+  Tier1SourceMeta | Tier2SourceMeta
+> = {
+  ...TIER1_SOURCE_METADATA,
+  ...TIER2_SOURCE_METADATA,
+} as Record<ApprovedSourceId, Tier1SourceMeta | Tier2SourceMeta>;
+
+// ============================================
 // INDUSTRY-SPECIFIC SOURCE WHITELISTS
 // ============================================
 
@@ -246,7 +387,7 @@ export interface IndustrySourceWhitelist {
   industry: IndustryCategory;
   name: string;
   description: string;
-  allowedSources: Tier1SourceId[];
+  allowedSources: ApprovedSourceId[];
   notes?: string;
 }
 
@@ -254,15 +395,21 @@ export const INDUSTRY_SOURCE_WHITELISTS: Record<IndustryCategory, IndustrySource
   technology: {
     industry: "technology",
     name: "Technology / IT",
-    description: "Software, hardware, IT services, digital industries",
+    description: "Software, hardware, IT services, digital industries, telecom",
     allowedSources: [
       TIER1_SOURCES.VISUAL_CAPITALIST,
       TIER1_SOURCES.WORLD_ECONOMIC_FORUM,
       TIER1_SOURCES.MCKINSEY,
       TIER1_SOURCES.BCG,
       TIER1_SOURCES.DELOITTE,
+      TIER2_SOURCES.ACCENTURE,
+      TIER2_SOURCES.FIERCE_WIRELESS,
+      TIER2_SOURCES.TELECOM_TV,
+      TIER2_SOURCES.NETWORK_WORLD,
+      TIER2_SOURCES.GLASSDOOR,
     ],
-    notes: "Focus on AI, automation, skills demand, digital transformation",
+    notes:
+      "Tier-1 for foundational research; Tier-2 for telecom, networking, and labor market specifics",
   },
   healthcare: {
     industry: "healthcare",
@@ -347,8 +494,11 @@ export const INDUSTRY_SOURCE_WHITELISTS: Record<IndustryCategory, IndustrySource
       TIER1_SOURCES.VISUAL_CAPITALIST,
       TIER1_SOURCES.BCG,
       TIER1_SOURCES.DELOITTE,
+      TIER2_SOURCES.ACCENTURE,
+      TIER2_SOURCES.GLASSDOOR,
     ],
-    notes: "For cross-cutting skills, work trends, and macro insights",
+    notes:
+      "Tier-1 for cross-cutting research; Accenture for digital transformation; Glassdoor for labor market trends",
   },
 };
 
@@ -449,6 +599,20 @@ export function isTier1Source(sourceId: string): sourceId is Tier1SourceId {
 }
 
 /**
+ * Check if a source ID is a valid Tier-2 source
+ */
+export function isTier2Source(sourceId: string): sourceId is Tier2SourceId {
+  return Object.values(TIER2_SOURCES).includes(sourceId as Tier2SourceId);
+}
+
+/**
+ * Check if a source ID is any approved source (Tier-1 or Tier-2)
+ */
+export function isApprovedSource(sourceId: string): sourceId is ApprovedSourceId {
+  return isTier1Source(sourceId) || isTier2Source(sourceId);
+}
+
+/**
  * Get Tier-1 source metadata by ID
  * Returns null if source is not Tier-1
  */
@@ -460,17 +624,29 @@ export function getTier1Source(sourceId: string): Tier1SourceMeta | null {
 }
 
 /**
+ * Get metadata for any approved source (Tier-1 or Tier-2)
+ * Returns null if source is not approved
+ */
+export function getApprovedSource(
+  sourceId: string
+): Tier1SourceMeta | Tier2SourceMeta | null {
+  if (isTier1Source(sourceId)) return TIER1_SOURCE_METADATA[sourceId];
+  if (isTier2Source(sourceId)) return TIER2_SOURCE_METADATA[sourceId];
+  return null;
+}
+
+/**
  * Check if a source is allowed for a specific industry
  */
 export function isSourceAllowedForIndustry(
   sourceId: string,
   industry: IndustryCategory
 ): boolean {
-  if (!isTier1Source(sourceId)) {
+  if (!isApprovedSource(sourceId)) {
     return false;
   }
   const whitelist = INDUSTRY_SOURCE_WHITELISTS[industry];
-  return whitelist.allowedSources.includes(sourceId as Tier1SourceId);
+  return whitelist.allowedSources.includes(sourceId as ApprovedSourceId);
 }
 
 /**
@@ -478,9 +654,11 @@ export function isSourceAllowedForIndustry(
  */
 export function getAllowedSourcesForIndustry(
   industry: IndustryCategory
-): Tier1SourceMeta[] {
+): Array<Tier1SourceMeta | Tier2SourceMeta> {
   const whitelist = INDUSTRY_SOURCE_WHITELISTS[industry];
-  return whitelist.allowedSources.map((id) => TIER1_SOURCE_METADATA[id]);
+  return whitelist.allowedSources.map(
+    (id) => ALL_APPROVED_SOURCE_METADATA[id]
+  );
 }
 
 /**
@@ -517,14 +695,35 @@ export function isValidTier1Url(url: string): boolean {
 }
 
 /**
- * Get the Tier-1 source from a URL
+ * Validate a source URL against any approved domain (Tier-1 or Tier-2)
  */
-export function getSourceFromUrl(url: string): Tier1SourceMeta | null {
+export function isValidApprovedUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
 
-    for (const source of Object.values(TIER1_SOURCE_METADATA)) {
+    for (const source of Object.values(ALL_APPROVED_SOURCE_METADATA)) {
+      if (hostname.includes(source.domain)) {
+        return true;
+      }
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get the Tier-1 source from a URL
+ */
+export function getSourceFromUrl(
+  url: string
+): Tier1SourceMeta | Tier2SourceMeta | null {
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase();
+
+    for (const source of Object.values(ALL_APPROVED_SOURCE_METADATA)) {
       if (hostname.includes(source.domain)) {
         return source;
       }
@@ -560,11 +759,12 @@ export function validateSourceMeta(
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  // Check source ID is Tier-1
-  if (!isTier1Source(sourceMeta.sourceId)) {
+  // Check source ID is an approved source (Tier-1 or Tier-2)
+  if (!isApprovedSource(sourceMeta.sourceId)) {
     errors.push(
-      `Source "${sourceMeta.sourceId}" is not a Tier-1 source. ` +
-        `Allowed sources: ${Object.values(TIER1_SOURCES).join(", ")}`
+      `Source "${sourceMeta.sourceId}" is not an approved source. ` +
+        `Allowed Tier-1: ${Object.values(TIER1_SOURCES).join(", ")}. ` +
+        `Allowed Tier-2: ${Object.values(TIER2_SOURCES).join(", ")}`
     );
   } else if (industry) {
     // Check source is allowed for the specific industry
@@ -589,11 +789,11 @@ export function validateSourceMeta(
     }
   }
 
-  // Check URLs are from Tier-1 domains
+  // Check URLs are from approved domains (Tier-1 or Tier-2)
   if (sourceMeta.urls && sourceMeta.urls.length > 0) {
     for (const url of sourceMeta.urls) {
-      if (!isValidTier1Url(url)) {
-        errors.push(`URL "${url}" is not from a Tier-1 source domain`);
+      if (!isValidApprovedUrl(url)) {
+        errors.push(`URL "${url}" is not from an approved source domain`);
       }
     }
   }
@@ -611,13 +811,13 @@ export function validateSourceMeta(
 
 /**
  * Format attribution text for an insight
- * Uses approved phrasing patterns
+ * Uses approved phrasing patterns. Accepts Tier-1 or Tier-2 source IDs.
  */
 export function formatAttribution(
-  sourceId: Tier1SourceId,
+  sourceId: ApprovedSourceId,
   context?: "summary" | "detail" | "footer"
 ): string {
-  const source = TIER1_SOURCE_METADATA[sourceId];
+  const source = ALL_APPROVED_SOURCE_METADATA[sourceId];
 
   const phrases = {
     summary: `Based on research from ${source.name}`,
@@ -629,10 +829,10 @@ export function formatAttribution(
 }
 
 /**
- * Get attribution link for a Tier-1 source
+ * Get attribution link for an approved source
  */
-export function getAttributionLink(sourceId: Tier1SourceId): string {
-  const source = TIER1_SOURCE_METADATA[sourceId];
+export function getAttributionLink(sourceId: ApprovedSourceId): string {
+  const source = ALL_APPROVED_SOURCE_METADATA[sourceId];
   return source.url;
 }
 
@@ -719,7 +919,7 @@ export function checkContentTone(
 export interface InsightContent {
   title: string;
   body: string;
-  sourceId: Tier1SourceId;
+  sourceId: ApprovedSourceId;
   whyMatters?: string;
   dataPoint?: string;
   industryTags?: IndustryCategory[];
@@ -763,8 +963,8 @@ export function validateInsightStructure(
   }
 
   // Source validation
-  if (!isTier1Source(insight.sourceId)) {
-    errors.push(`Source "${insight.sourceId}" is not a Tier-1 source`);
+  if (!isApprovedSource(insight.sourceId)) {
+    errors.push(`Source "${insight.sourceId}" is not an approved source`);
   } else if (industry && !isSourceAllowedForIndustry(insight.sourceId, industry)) {
     errors.push(
       `Source "${insight.sourceId}" is not allowed for industry "${industry}"`
@@ -801,6 +1001,11 @@ export function validateInsightStructure(
 // ============================================
 
 export const ALL_TIER1_SOURCE_IDS = Object.values(TIER1_SOURCES);
+export const ALL_TIER2_SOURCE_IDS = Object.values(TIER2_SOURCES);
+export const ALL_APPROVED_SOURCE_IDS: ApprovedSourceId[] = [
+  ...ALL_TIER1_SOURCE_IDS,
+  ...ALL_TIER2_SOURCE_IDS,
+];
 export const ALL_INDUSTRY_CATEGORIES = Object.keys(
   INDUSTRY_SOURCE_WHITELISTS
 ) as IndustryCategory[];
@@ -820,8 +1025,8 @@ export const ALL_INDUSTRY_CATEGORIES = Object.keys(
  *    - allowedSources: array of Tier1SourceId values
  *    - notes: guidance for content creators
  *
- * 3. Only use sources from TIER1_SOURCES - do not add new sources
- *    without updating this file first
+ * 3. Only use sources from TIER1_SOURCES or TIER2_SOURCES - do not
+ *    add new sources without updating this file first
  *
  * 4. If a new Tier-1 source is needed:
  *    a. Verify it meets all criteria:
@@ -833,5 +1038,14 @@ export const ALL_INDUSTRY_CATEGORIES = Object.keys(
  *    c. Add metadata to TIER1_SOURCE_METADATA
  *    d. Add to relevant industry whitelists
  *
- * 5. Run validation on all existing content for the new industry
+ * 5. If a new Tier-2 source is needed:
+ *    a. Verify it meets criteria:
+ *       - Recognised industry publication or specialist platform
+ *       - Credible analysis or labor market data
+ *       - Not a news aggregator or opinion blog
+ *    b. Add to TIER2_SOURCES enum
+ *    c. Add metadata to TIER2_SOURCE_METADATA
+ *    d. Add to relevant industry whitelists
+ *
+ * 6. Run validation on all existing content for the new industry
  */

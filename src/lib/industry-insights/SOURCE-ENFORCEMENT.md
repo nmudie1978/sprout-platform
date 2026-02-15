@@ -1,16 +1,33 @@
-# Industry Insights - Tier-1 Source Enforcement
+# Industry Insights - Source Enforcement
 
 ## Overview
 
-All Industry Insights content must be derived from, summarised from, or inspired by **Tier-1 sources only**.
+All Industry Insights content must be derived from, summarised from, or inspired by **approved sources only** (Tier-1 or Tier-2).
 
-## Allowed Sources (Tier-1)
+## Tier-1 Sources (Global Research & Consulting)
 
 | Source | ID | Use Cases |
 |--------|-----|-----------|
 | Visual Capitalist | `visual_capitalist` | Macro trends, rankings, visual explanations |
 | World Economic Forum | `world_economic_forum` | Future of Jobs, skills demand, AI impact |
 | McKinsey & Company | `mckinsey` | Technology research, AI, workforce transformation |
+| OECD | `oecd` | Employment statistics, education outcomes |
+| World Bank | `world_bank` | Global economic trends, development indicators |
+| WHO | `who` | Healthcare workforce, health sector employment |
+| ILO | `ilo` | Labour market trends, youth employment |
+| UNESCO | `unesco` | Education trends, skills for the future |
+| BCG | `bcg` | Workforce strategy, industry trends |
+| Deloitte | `deloitte` | Workforce trends, skills analysis |
+
+## Tier-2 Sources (Industry Specialists & Labor Market)
+
+| Source | ID | Use Cases |
+|--------|-----|-----------|
+| Accenture | `accenture` | Digital transformation, telecom, technology innovations |
+| FierceWireless | `fierce_wireless` | Wireless technology, telecom industry analysis |
+| TelecomTV | `telecom_tv` | Global telecom news, service provider insights |
+| Network World | `network_world` | Networking, telecom, IT infrastructure |
+| Glassdoor | `glassdoor` | Labor market trends, hiring trends, salary benchmarks |
 
 ## Explicitly Disallowed Sources
 
@@ -29,17 +46,21 @@ All Industry Insights content must be derived from, summarised from, or inspired
 **File:** `/src/lib/industry-insights/tier1-sources.ts`
 
 Contains:
-- `TIER1_SOURCES` enum with allowed source IDs
+- `TIER1_SOURCES` enum with Tier-1 source IDs
+- `TIER2_SOURCES` enum with Tier-2 source IDs
+- `ALL_APPROVED_SOURCE_METADATA` combined metadata lookup
 - `DISALLOWED_SOURCES` list for explicit blocking
-- `isTier1Source()` - validates a source ID
-- `isValidTier1Url()` - validates URLs against Tier-1 domains
+- `isTier1Source()` - validates a Tier-1 source ID
+- `isTier2Source()` - validates a Tier-2 source ID
+- `isApprovedSource()` - validates any approved source ID
+- `isValidApprovedUrl()` - validates URLs against approved domains
 - `validateSourceMeta()` - comprehensive validation for module creation
 - `checkContentTone()` - detects hype language with suggested replacements
 
 ### 2. Data Provider
 **File:** `/src/lib/insights-refresh.ts`
 
-- `Tier1Provider` class - only returns data with Tier-1 source metadata
+- `Tier1Provider` class - returns data with approved source metadata
 - `validateSourceBeforeSave()` - called before any database write
 - `getDataProvider()` - always returns Tier1Provider (env var ignored for security)
 - `verifyAndRefreshIndustryInsights()` - validates source before regenerating modules
@@ -48,8 +69,8 @@ Contains:
 ### 3. API Routes
 **File:** `/src/app/api/insights/modules/route.ts`
 
-- GET response includes `source` object with Tier-1 attribution
-- Response meta includes `tier1Sources` list and `sourcePolicy` statement
+- GET response includes `source` object with approved source attribution
+- Response meta includes `approvedSources` list and `sourcePolicy` statement
 - POST (admin refresh) delegates to library functions with validation
 
 **File:** `/src/app/api/insights/refresh/route.ts`
@@ -59,17 +80,15 @@ Contains:
 ### 4. UI Layer
 **File:** `/src/app/(dashboard)/insights/page.tsx`
 
-- All hardcoded data uses only Tier-1 source citations
-- "About the Data" section lists only Tier-1 sources
-- Industry cards link to WEF/McKinsey articles only
-- Skills data attributed to WEF Future of Jobs Report
-- AI Impact data attributed to WEF and McKinsey
+- All hardcoded data uses only approved source citations
+- "About the Data" section lists approved sources
+- Industry cards link to approved source articles only
 
 ### 5. Database Schema
 **File:** `/prisma/schema.prisma`
 
 - `IndustryInsightsModule.sourceMeta` stores source attribution as JSON
-- JSON structure includes `sourceId` which must be a Tier-1 source
+- JSON structure includes `sourceId` which must be an approved source
 
 ## Content Guidelines
 
@@ -84,10 +103,17 @@ To add a new Tier-1 source:
 
 1. Add to `TIER1_SOURCES` enum in `tier1-sources.ts`
 2. Add metadata to `TIER1_SOURCE_METADATA` object
-3. Update `isValidTier1Url()` to recognize the new domain
+3. Add to relevant industry whitelists
 4. Update this documentation
 
-**Important**: New sources must be authoritative, globally recognized institutions. Do not add:
+To add a new Tier-2 source:
+
+1. Add to `TIER2_SOURCES` enum in `tier1-sources.ts`
+2. Add metadata to `TIER2_SOURCE_METADATA` object
+3. Add to relevant industry whitelists
+4. Update this documentation
+
+**Important**: New sources must be credible and recognised. Do not add:
 - News outlets
 - Social media platforms
 - Corporate blogs
