@@ -2,7 +2,7 @@
  * Journey Recovery Service
  *
  * Soft-delete, restore, purge, export, import, and snapshot logic
- * for journey data (saved items, notes, trait observations).
+ * for journey data (saved items, notes).
  */
 
 import { prisma } from '@/lib/prisma';
@@ -17,13 +17,26 @@ import { logAuditAction } from '@/lib/safety';
 const RETENTION_DAYS = 30;
 const MAX_SNAPSHOTS_PER_USER = 10;
 
-export const EXPORT_SCHEMA_VERSION = '1.0';
+export const EXPORT_SCHEMA_VERSION = '1.1';
 
 // ============================================
 // TYPES
 // ============================================
 
-export type RecoverableTable = 'savedItem' | 'journeyNote' | 'traitObservation';
+export type RecoverableTable = 'savedItem' | 'journeyNote';
+
+export interface JourneyMachineState {
+  journeyState: string;
+  journeyCompletedSteps: string[];
+  journeySkippedSteps: Record<string, string> | null;
+  journeySummary: Record<string, unknown> | null;
+}
+
+export interface SnapshotClientState {
+  overlayAnnotations?: Record<string, unknown>;
+  timelineStyle?: string;
+  learningGoals?: unknown[];
+}
 
 export interface JourneyExportEnvelope {
   schemaVersion: string;
@@ -31,20 +44,20 @@ export interface JourneyExportEnvelope {
   data: {
     savedItems: Array<Record<string, unknown>>;
     notes: Array<Record<string, unknown>>;
-    traits: Array<Record<string, unknown>>;
     timelineEvents: Array<Record<string, unknown>>;
+    journeyMachine?: JourneyMachineState;
+    clientState?: SnapshotClientState;
   };
 }
 
 export interface ImportResult {
-  imported: { savedItems: number; notes: number; traits: number };
-  skipped: { savedItems: number; notes: number; traits: number };
+  imported: { savedItems: number; notes: number };
+  skipped: { savedItems: number; notes: number };
 }
 
 export interface DeletedItems {
   savedItems: Array<Record<string, unknown>>;
   notes: Array<Record<string, unknown>>;
-  traits: Array<Record<string, unknown>>;
 }
 
 // ============================================
@@ -67,14 +80,6 @@ export async function softDeleteNote(noteId: string, profileId: string): Promise
   return result.count > 0;
 }
 
-export async function softDeleteTrait(traitId: string, profileId: string): Promise<boolean> {
-  const result = await prisma.traitObservation.updateMany({
-    where: { id: traitId, profileId, deletedAt: null },
-    data: { deletedAt: new Date() },
-  });
-  return result.count > 0;
-}
-
 export async function restoreItem(
   table: RecoverableTable,
   itemId: string,
@@ -90,13 +95,6 @@ export async function restoreItem(
     }
     case 'journeyNote': {
       const r = await prisma.journeyNote.updateMany({
-        where: { id: itemId, profileId, deletedAt: { not: null } },
-        data: { deletedAt: null },
-      });
-      return r.count > 0;
-    }
-    case 'traitObservation': {
-      const r = await prisma.traitObservation.updateMany({
         where: { id: itemId, profileId, deletedAt: { not: null } },
         data: { deletedAt: null },
       });
@@ -123,12 +121,6 @@ export async function permanentlyDelete(
       });
       return r.count > 0;
     }
-    case 'traitObservation': {
-      const r = await prisma.traitObservation.deleteMany({
-        where: { id: itemId, profileId, deletedAt: { not: null } },
-      });
-      return r.count > 0;
-    }
   }
 }
 
@@ -142,7 +134,7 @@ export async function getDeletedItems(
   const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
   const deletedWhere = { profileId, deletedAt: { not: null, gte: cutoff } };
 
-  const [savedItems, notes, traits] = await Promise.all([
+  const [savedItems, notes] = await Promise.all([
     !filterType || filterType === 'savedItem'
       ? prisma.savedItem.findMany({
           where: deletedWhere,
@@ -155,35 +147,27 @@ export async function getDeletedItems(
           orderBy: { deletedAt: 'desc' },
         })
       : Promise.resolve([]),
-    !filterType || filterType === 'traitObservation'
-      ? prisma.traitObservation.findMany({
-          where: deletedWhere,
-          orderBy: { deletedAt: 'desc' },
-        })
-      : Promise.resolve([]),
   ]);
 
   return {
     savedItems: savedItems as unknown as Array<Record<string, unknown>>,
     notes: notes as unknown as Array<Record<string, unknown>>,
-    traits: traits as unknown as Array<Record<string, unknown>>,
   };
 }
 
 /**
  * Hard-delete all items past the retention window (for scheduled cleanup).
  */
-export async function purgeExpired(): Promise<{ savedItems: number; notes: number; traits: number }> {
+export async function purgeExpired(): Promise<{ savedItems: number; notes: number }> {
   const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);
   const expiredWhere = { deletedAt: { not: null, lt: cutoff } };
 
-  const [s, n, t] = await Promise.all([
+  const [s, n] = await Promise.all([
     prisma.savedItem.deleteMany({ where: expiredWhere }),
     prisma.journeyNote.deleteMany({ where: expiredWhere }),
-    prisma.traitObservation.deleteMany({ where: expiredWhere }),
   ]);
 
-  return { savedItems: s.count, notes: n.count, traits: t.count };
+  return { savedItems: s.count, notes: n.count };
 }
 
 // ============================================
@@ -193,13 +177,18 @@ export async function purgeExpired(): Promise<{ savedItems: number; notes: numbe
 export async function exportJourney(profileId: string): Promise<JourneyExportEnvelope> {
   const profile = await prisma.youthProfile.findUnique({
     where: { id: profileId },
-    select: { userId: true },
+    select: {
+      userId: true,
+      journeyState: true,
+      journeyCompletedSteps: true,
+      journeySkippedSteps: true,
+      journeySummary: true,
+    },
   });
 
-  const [savedItems, notes, traits, timelineEvents] = await Promise.all([
+  const [savedItems, notes, timelineEvents] = await Promise.all([
     prisma.savedItem.findMany({ where: { profileId, deletedAt: null } }),
     prisma.journeyNote.findMany({ where: { profileId, deletedAt: null } }),
-    prisma.traitObservation.findMany({ where: { profileId, deletedAt: null } }),
     profile
       ? prisma.timelineEvent.findMany({
           where: { userId: profile.userId },
@@ -214,8 +203,15 @@ export async function exportJourney(profileId: string): Promise<JourneyExportEnv
     data: {
       savedItems: savedItems as unknown as Array<Record<string, unknown>>,
       notes: notes as unknown as Array<Record<string, unknown>>,
-      traits: traits as unknown as Array<Record<string, unknown>>,
       timelineEvents: timelineEvents as unknown as Array<Record<string, unknown>>,
+      journeyMachine: profile
+        ? {
+            journeyState: profile.journeyState,
+            journeyCompletedSteps: profile.journeyCompletedSteps,
+            journeySkippedSteps: profile.journeySkippedSteps as Record<string, string> | null,
+            journeySummary: profile.journeySummary as Record<string, unknown> | null,
+          }
+        : undefined,
     },
   };
 }
@@ -233,8 +229,8 @@ export async function importJourney(
   await createSnapshot(profileId, 'pre_import', 'Auto-snapshot before import');
 
   const result: ImportResult = {
-    imported: { savedItems: 0, notes: 0, traits: 0 },
-    skipped: { savedItems: 0, notes: 0, traits: 0 },
+    imported: { savedItems: 0, notes: 0 },
+    skipped: { savedItems: 0, notes: 0 },
   };
 
   // 2. Import saved items (dedupe by profileId + url)
@@ -296,32 +292,7 @@ export async function importJourney(
     }
   }
 
-  // 4. Import traits (dedupe by profileId + traitId — current observation wins)
-  for (const trait of payload.data.traits) {
-    const traitId = trait.traitId as string;
-    if (!traitId) { result.skipped.traits++; continue; }
-
-    const existing = await prisma.traitObservation.findFirst({
-      where: { profileId, traitId, deletedAt: null },
-    });
-
-    if (existing) {
-      result.skipped.traits++;
-    } else {
-      await prisma.traitObservation.create({
-        data: {
-          profileId,
-          traitId,
-          observation: (trait.observation as string) || 'unsure',
-          contextType: (trait.contextType as string) || null,
-          contextId: (trait.contextId as string) || null,
-        },
-      });
-      result.imported.traits++;
-    }
-  }
-
-  // 5. Log audit
+  // 4. Log audit
   await logAuditAction({
     userId,
     action: AuditAction.JOURNEY_DATA_IMPORTED,
@@ -330,7 +301,6 @@ export async function importJourney(
     metadata: {
       importedSavedItems: result.imported.savedItems,
       importedNotes: result.imported.notes,
-      importedTraits: result.imported.traits,
     },
   });
 
@@ -375,6 +345,67 @@ export async function createSnapshot(
   return snapshot;
 }
 
+export async function createSnapshotWithClientState(
+  profileId: string,
+  trigger: string,
+  label?: string,
+  clientState?: SnapshotClientState
+): Promise<{ id: string }> {
+  const envelope = await exportJourney(profileId);
+
+  if (clientState) {
+    envelope.data.clientState = clientState;
+  }
+
+  const snapshot = await prisma.journeySnapshot.create({
+    data: {
+      profileId,
+      trigger,
+      label: label ? label.slice(0, 200) : null,
+      data: envelope as unknown as Prisma.InputJsonValue,
+    },
+    select: { id: true },
+  });
+
+  // Enforce max snapshots per user (keep most recent)
+  const allSnapshots = await prisma.journeySnapshot.findMany({
+    where: { profileId },
+    orderBy: { createdAt: 'desc' },
+    select: { id: true },
+  });
+
+  if (allSnapshots.length > MAX_SNAPSHOTS_PER_USER) {
+    const idsToDelete = allSnapshots.slice(MAX_SNAPSHOTS_PER_USER).map((s) => s.id);
+    await prisma.journeySnapshot.deleteMany({
+      where: { id: { in: idsToDelete } },
+    });
+  }
+
+  return snapshot;
+}
+
+export async function renameSnapshot(
+  snapshotId: string,
+  profileId: string,
+  newLabel: string
+): Promise<boolean> {
+  const result = await prisma.journeySnapshot.updateMany({
+    where: { id: snapshotId, profileId },
+    data: { label: newLabel.trim().slice(0, 200) },
+  });
+  return result.count > 0;
+}
+
+export async function deleteSnapshot(
+  snapshotId: string,
+  profileId: string
+): Promise<boolean> {
+  const result = await prisma.journeySnapshot.deleteMany({
+    where: { id: snapshotId, profileId },
+  });
+  return result.count > 0;
+}
+
 export async function listSnapshots(
   profileId: string
 ): Promise<Array<{ id: string; trigger: string; label: string | null; createdAt: Date }>> {
@@ -391,11 +422,15 @@ export async function listSnapshots(
   });
 }
 
+export interface RestoreResult extends ImportResult {
+  clientState?: SnapshotClientState;
+}
+
 export async function restoreSnapshot(
   snapshotId: string,
   profileId: string,
   userId: string
-): Promise<ImportResult> {
+): Promise<RestoreResult> {
   const snapshot = await prisma.journeySnapshot.findFirst({
     where: { id: snapshotId, profileId },
   });
@@ -418,13 +453,29 @@ export async function restoreSnapshot(
       where: { profileId, deletedAt: null },
       data: { deletedAt: now },
     }),
-    prisma.traitObservation.updateMany({
-      where: { profileId, deletedAt: null },
-      data: { deletedAt: now },
-    }),
   ]);
 
   // 3. Import snapshot data
   const payload = snapshot.data as unknown as JourneyExportEnvelope;
-  return importJourney(profileId, userId, payload);
+  const importResult = await importJourney(profileId, userId, payload);
+
+  // 4. Restore journey state machine fields if present
+  const machine = payload.data?.journeyMachine;
+  if (machine) {
+    await prisma.youthProfile.update({
+      where: { id: profileId },
+      data: {
+        journeyState: machine.journeyState,
+        journeyCompletedSteps: machine.journeyCompletedSteps,
+        journeySkippedSteps: machine.journeySkippedSteps as Prisma.InputJsonValue ?? undefined,
+        journeySummary: machine.journeySummary as Prisma.InputJsonValue ?? undefined,
+        journeyLastUpdated: new Date(),
+      },
+    });
+  }
+
+  return {
+    ...importResult,
+    clientState: payload.data?.clientState,
+  };
 }

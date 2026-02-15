@@ -4,7 +4,8 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Target, AlertCircle, RefreshCw, Info, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { STAGE_CONFIG, STAGE_ORDER, type JourneyItem } from '@/lib/journey/career-journey-types';
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -18,6 +19,7 @@ import { useTimelineStyle, type TimelineStyle } from '@/hooks/use-timeline-style
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { getAllCareers, type Career } from '@/lib/career-pathways';
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
+import { SaveSnapshotButton, SnapshotsSheet } from './snapshots';
 
 const RENDERERS: Record<TimelineStyle, React.ComponentType<RendererProps>> = {
   zigzag: ZigzagRenderer,
@@ -36,6 +38,7 @@ function slugify(text: string): string {
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [showCareerDetail, setShowCareerDetail] = useState(false);
+  const [snapshotsOpen, setSnapshotsOpen] = useState(false);
   const { style, setStyle } = useTimelineStyle();
 
   // Find matching Career object for the detail sheet
@@ -186,6 +189,16 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
         <div className="ml-auto flex items-center gap-2">
           <TimelineStyleSelector value={style} onChange={setStyle} />
           <LayersControl activeLayers={activeLayers} onToggle={toggleLayer} />
+          <SaveSnapshotButton goalId={goalId} disabled={!journey} />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5 text-xs"
+            onClick={() => setSnapshotsOpen(true)}
+          >
+            <History className="h-3.5 w-3.5" />
+            Snapshots
+          </Button>
         </div>
       </div>
 
@@ -238,6 +251,9 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
           onClose={() => setShowCareerDetail(false)}
         />
       )}
+
+      {/* Snapshots management sheet */}
+      <SnapshotsSheet open={snapshotsOpen} onOpenChange={setSnapshotsOpen} />
     </section>
   );
 }
