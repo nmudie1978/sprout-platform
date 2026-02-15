@@ -21,11 +21,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import type { CareerEvent } from "@prisma/client";
 import type {
   EventItem,
   EventCategory,
   EventFormat,
+  EventProvider,
   YouthEventsResponse,
 } from "@/lib/events/types";
 import {
@@ -56,7 +56,7 @@ const YOUTH_EXCLUDE_KEYWORDS = [
   "bransjedagene", "fagmesse", "tungbil",
 ];
 
-function isYouthRelevantDbEvent(event: CareerEvent): boolean {
+function isYouthRelevantDbEvent(event: DbEvent): boolean {
   const searchText = `${event.title} ${event.description ?? ""}`.toLowerCase();
   if (YOUTH_EXCLUDE_KEYWORDS.some((kw) => searchText.includes(kw))) return false;
   if (event.isYouthFocused) return true;
@@ -67,7 +67,40 @@ function isYouthRelevantDbEvent(event: CareerEvent): boolean {
 // DB → EventItem MAPPER
 // ============================================
 
-function toEventItem(event: CareerEvent): EventItem {
+/** Selected fields from CareerEvent (matches the select clause in GET) */
+type DbEvent = {
+  id: string;
+  title: string;
+  type: string;
+  description: string;
+  organizer: string;
+  startDate: Date;
+  endDate: Date | null;
+  locationMode: string;
+  city: string | null;
+  country: string | null;
+  registrationUrl: string;
+  isYouthFocused: boolean;
+  industryTypes: string[];
+  isVerified: boolean;
+  verifiedAt: Date | null;
+};
+
+/** Derive provider from organizer name */
+const ORGANIZER_TO_PROVIDER: Array<[RegExp, EventProvider]> = [
+  [/oslomet/i, "oslomet"],
+  [/bi\b|karrieredagene/i, "bi-karrieredagene"],
+  [/eures/i, "eures"],
+];
+
+function inferProvider(organizer: string): EventProvider {
+  for (const [pattern, provider] of ORGANIZER_TO_PROVIDER) {
+    if (pattern.test(organizer)) return provider;
+  }
+  return "tautdanning";
+}
+
+function toEventItem(event: DbEvent): EventItem {
   const format = mapLocationMode(event.locationMode);
   const category = mapEventType(event.type);
   const searchText = `${event.title} ${event.description ?? ""}`;
@@ -76,10 +109,11 @@ function toEventItem(event: CareerEvent): EventItem {
   if (isYouthFriendly(audienceFit, searchText)) {
     tags.push("youth-friendly");
   }
+  const provider = inferProvider(event.organizer);
 
   return {
     id: event.id,
-    provider: "tautdanning",
+    provider,
     providerEventId: event.id,
     title: event.title,
     description: event.description || undefined,
@@ -144,17 +178,47 @@ export async function GET(request: NextRequest) {
     const maxDate = new Date();
     maxDate.setMonth(maxDate.getMonth() + months);
 
-    // Query verified, active events within the date window
+    // Build DB-level where clause — push filters to Prisma
+    const where: Parameters<typeof prisma.careerEvent.findMany>[0]["where"] = {
+      isActive: true,
+      isVerified: true,
+      startDate: { gte: now, lte: maxDate },
+    };
+    if (city) {
+      where.city = { equals: city, mode: "insensitive" };
+    }
+    if (formatParam) {
+      const modeMap: Record<string, string> = { "In-person": "IN_PERSON", "Online": "ONLINE", "Hybrid": "HYBRID" };
+      if (modeMap[formatParam]) where.locationMode = modeMap[formatParam] as never;
+    }
+    if (categoryParam) {
+      const typeMap: Record<string, string> = { "Job Fair": "JOBFAIR", "Workshop": "WORKSHOP", "Webinar/Seminar": "WEBINAR", "Meetup": "MEETUP", "Conference": "CONFERENCE" };
+      if (typeMap[categoryParam]) where.type = typeMap[categoryParam] as never;
+    }
+
     const dbEvents = await prisma.careerEvent.findMany({
-      where: {
-        isActive: true,
-        isVerified: true,
-        startDate: { gte: now, lte: maxDate },
-      },
+      where,
       orderBy: [
         { isYouthFocused: "desc" },
         { startDate: "asc" },
       ],
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        description: true,
+        organizer: true,
+        startDate: true,
+        endDate: true,
+        locationMode: true,
+        city: true,
+        country: true,
+        registrationUrl: true,
+        isYouthFocused: true,
+        industryTypes: true,
+        isVerified: true,
+        verifiedAt: true,
+      },
     });
 
     // Map to EventItem and apply youth-relevance filter
@@ -162,18 +226,9 @@ export async function GET(request: NextRequest) {
       .filter(isYouthRelevantDbEvent)
       .map(toEventItem);
 
-    // Apply client filters
+    // Apply text search filter (can't push keyword search to DB easily)
     if (query) {
       events = events.filter((e) => matchesSearch(e, query));
-    }
-    if (city) {
-      events = events.filter((e) => e.city?.toLowerCase() === city.toLowerCase());
-    }
-    if (categoryParam) {
-      events = events.filter((e) => e.category === categoryParam);
-    }
-    if (formatParam) {
-      events = events.filter((e) => e.format === formatParam);
     }
 
     // Sort
@@ -201,6 +256,7 @@ export async function GET(request: NextRequest) {
 
     // Build filter options from all matched events (not just current page)
     const cities = [...new Set(events.map((e) => e.city).filter(Boolean))] as string[];
+    const providers = [...new Set(events.map((e) => e.provider))] as EventProvider[];
 
     const response: YouthEventsResponse = {
       items: paginatedEvents,
@@ -213,7 +269,7 @@ export async function GET(request: NextRequest) {
         cities: cities.sort(),
         categories: ["Job Fair", "Workshop", "Webinar/Seminar", "Meetup", "Conference", "Other"] as EventCategory[],
         formats: ["In-person", "Online", "Hybrid"] as EventFormat[],
-        providers: ["tautdanning"],
+        providers,
       },
     };
 
