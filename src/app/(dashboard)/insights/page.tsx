@@ -42,10 +42,6 @@ const InsightSection = dynamic(
   () => import("@/components/insights/insight-section").then((m) => m.InsightSection),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
-const YouthEventsTable = dynamic(
-  () => import("@/components/insights/youth-events-table").then((m) => m.YouthEventsTable),
-  { ssr: false, loading: () => <div className="h-64 animate-pulse rounded-xl bg-muted/50" /> }
-);
 const JobsEconomySpotlight = dynamic(
   () => import("@/components/insights/jobs-economy-spotlight").then((m) => m.JobsEconomySpotlight),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
@@ -58,8 +54,8 @@ const DidYouKnowCard = dynamic(
   () => import("@/components/insights/did-you-know-card").then((m) => m.DidYouKnowCard),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-xl bg-muted/50" /> }
 );
-const BeyondBordersSection = dynamic(
-  () => import("@/components/insights/beyond-borders-section").then((m) => m.BeyondBordersSection),
+const GoFurtherTabs = dynamic(
+  () => import("@/components/insights/go-further-tabs").then((m) => m.GoFurtherTabs),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
 
@@ -306,7 +302,7 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 3: OTHER TOPICS TO CONSIDER */}
+      {/* SECTION 3: GO FURTHER */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -318,33 +314,15 @@ export default function IndustryInsightsPage() {
           <SectionHeader
             icon={Lightbulb}
             label="Explore"
-            title="Other Topics to Consider"
-            subtitle="Broaden your perspective with global opportunities and upcoming events"
+            title="Go Further"
+            subtitle="Explore global perspectives and find upcoming career events"
             gradient="from-emerald-400 via-teal-400 to-emerald-400"
             iconBg="bg-emerald-100 dark:bg-emerald-900/30"
             iconColor="text-emerald-600 dark:text-emerald-400"
             labelColor="text-emerald-500/80"
           />
 
-          {/* Working Beyond Borders */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.65 }}
-            className="mb-6"
-          >
-            <BeyondBordersSection />
-          </motion.div>
-
-          {/* Youth Career Events in Norway */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.7 }}
-            className="mb-4"
-          >
-            <YouthEventsTable />
-          </motion.div>
+          <GoFurtherTabs />
         </div>
       </motion.section>
 

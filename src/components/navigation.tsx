@@ -48,7 +48,6 @@ interface NavigationProps {
   userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
   userName?: string;
   userEmail?: string;
-  userAvatarId?: string | null;
   userProfilePic?: string | null;
 }
 
@@ -121,26 +120,11 @@ function MobileMenuSection({
   );
 }
 
-export function Navigation({ userRole, userName, userEmail, userAvatarId: initialAvatarId, userProfilePic }: NavigationProps) {
+export function Navigation({ userRole, userName, userEmail, userProfilePic }: NavigationProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
-
-  // Fetch avatar dynamically for youth users so it updates when changed
-  const { data: profile } = useQuery({
-    queryKey: ["my-profile", session?.user?.id],
-    queryFn: async () => {
-      const response = await fetch("/api/profile");
-      if (!response.ok) {
-        if (response.status === 404) return null;
-        throw new Error("Failed to fetch profile");
-      }
-      return response.json();
-    },
-    enabled: userRole === "YOUTH" && !!session?.user?.id,
-    staleTime: 0, // Always check for fresh data
-  });
 
   // Check if user is a guardian (for any role)
   const { data: guardianInfo } = useQuery({
@@ -155,13 +139,10 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const isGuardian = guardianInfo?.isGuardian || guardianInfo?.isAdmin;
 
-  // Use fetched avatar if available, otherwise fall back to initial
-  const userAvatarId = userRole === "YOUTH" ? (profile?.avatarId ?? initialAvatarId) : initialAvatarId;
-
   // Role badge configuration with accent colors
   const roleConfig = {
     YOUTH: {
-      label: "Youth Worker",
+      label: "Youth",
       icon: BadgeIcon,
       className: "bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0",
       accentColor: "from-blue-500 to-cyan-500",
@@ -192,16 +173,19 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
 
   const currentRole = roleConfig[userRole];
 
-  // 3 Pillars - core navigation items with tooltips
+  // Navigation tooltips for youth users
   const pillarTooltips: Record<string, string> = {
+    "/my-journey": "Your guided path: Discover. Understand. Act.",
     "/jobs": "Find small local jobs to earn, learn, and build confidence.",
     "/careers": "Discover career paths, skills, and what it takes to get there.",
     "/insights": "See what's shaping careers globally — trends, forces, and opportunities.",
   };
 
-  // Primary navigation - 3 pillars + dashboard icon
+  // Primary navigation - Dashboard, My Journey, then 3 pillars
+  // Order: Dashboard → My Journey → Small Jobs → Explore Careers → Industry Insights
   const youthLinks: NavLink[] = [
     { href: "/dashboard", label: "", icon: LayoutDashboard, isCore: false, iconOnly: true },
+    { href: "/my-journey", label: "My Journey", icon: Route, isCore: true },
     { href: "/jobs", label: "Small Jobs", icon: Briefcase, isCore: true },
     { href: "/careers", label: "Explore Careers", icon: Compass, isCore: true },
     { href: "/insights", label: "Industry Insights", icon: BarChart3, isCore: true },
@@ -336,13 +320,16 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
             </div>
           </TooltipProvider>
 
-          {/* Right side - Notifications + Avatar Menu only */}
-          <div className="hidden md:flex md:items-center md:space-x-2">
+          {/* Right side - Notifications + Role Badge + User Name + Avatar Menu */}
+          <div className="hidden md:flex md:items-center md:space-x-3">
             <NotificationBell />
+            <Badge className={cn("text-xs", currentRole.className)}>
+              <currentRole.icon className="mr-1 h-3 w-3" />
+              {currentRole.label}
+            </Badge>
             <UserAvatarMenu
               userRole={userRole}
               userName={userName}
-              userAvatarId={userAvatarId}
               userProfilePic={userProfilePic}
             />
           </div>
@@ -399,9 +386,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 transition={{ delay: 0.1 }}
               >
                 <div className="flex items-center gap-3">
-                  {userRole === "YOUTH" && userAvatarId ? (
-                    <Avatar avatarId={userAvatarId} size="sm" className="border-2 border-white/30" />
-                  ) : userProfilePic ? (
+                  {userProfilePic ? (
                     <Image
                       src={userProfilePic}
                       alt={userName || "Profile"}
@@ -410,9 +395,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                       className="h-10 w-10 rounded-full object-cover border-2 border-white/30"
                     />
                   ) : (
-                    <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-bold">
-                      {userName?.charAt(0).toUpperCase() || "U"}
-                    </div>
+                    <Avatar name={userName} size="sm" className="border-2 border-white/30" />
                   )}
                   <span className="text-sm font-medium text-white">{userName}</span>
                 </div>
@@ -462,7 +445,7 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 title="Account"
                 items={[
                   { href: "/profile", label: "Profile", icon: "user" },
-                  { href: userRole === "EMPLOYER" ? "/employer/settings" : "/settings", label: "Settings", icon: "settings" },
+                  ...(userRole === "EMPLOYER" ? [{ href: "/employer/settings", label: "Settings", icon: "settings" as const }] : []),
                 ]}
                 pathname={pathname}
                 currentRole={currentRole}
@@ -470,19 +453,6 @@ export function Navigation({ userRole, userName, userEmail, userAvatarId: initia
                 delay={0.15 + links.length * 0.05}
               />
 
-              {userRole === "YOUTH" && (
-                <MobileMenuSection
-                  title="My Space"
-                  items={[
-                    { href: "/my-journey", label: "My Journey", icon: "route" },
-                    { href: "/shadows", label: "Career Shadows", icon: "eye" },
-                  ]}
-                  pathname={pathname}
-                  currentRole={currentRole}
-                  onClose={() => setMobileMenuOpen(false)}
-                  delay={0.2 + links.length * 0.05}
-                />
-              )}
 
               <MobileMenuSection
                 title="Safety"

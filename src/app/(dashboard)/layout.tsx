@@ -31,7 +31,7 @@ export default async function DashboardLayout({
     redirect("/employer/dashboard");
   }
 
-  // Run legal check and profile fetch in parallel instead of sequentially
+  // Run legal check, profile fetch, and preferences in parallel
   const [legalAcceptance, profileData] = await Promise.all([
     prisma.legalAcceptance.findUnique({
       where: { userId: session.user.id },
@@ -40,7 +40,7 @@ export default async function DashboardLayout({
     session.user.role === "YOUTH"
       ? prisma.youthProfile.findUnique({
           where: { userId: session.user.id },
-          select: { avatarId: true, displayName: true },
+          select: { displayName: true },
         })
       : session.user.role === "EMPLOYER"
         ? prisma.employerProfile.findUnique({
@@ -54,12 +54,10 @@ export default async function DashboardLayout({
     redirect("/legal/accept");
   }
 
-  let userAvatarId: string | null = null;
   let displayName: string | null = null;
   let userProfilePic: string | null = null;
 
-  if (session.user.role === "YOUTH" && profileData && "avatarId" in profileData) {
-    userAvatarId = profileData.avatarId || null;
+  if (session.user.role === "YOUTH" && profileData && "displayName" in profileData) {
     displayName = profileData.displayName || null;
   } else if (session.user.role === "EMPLOYER" && profileData && "companyName" in profileData) {
     displayName = profileData.companyName || null;
@@ -72,7 +70,6 @@ export default async function DashboardLayout({
         userRole={session.user.role}
         userName={displayName || session.user.email || "User"}
         userEmail={session.user.email || undefined}
-        userAvatarId={userAvatarId}
         userProfilePic={userProfilePic}
       />
       {/* Main content with bottom padding for mobile nav */}
