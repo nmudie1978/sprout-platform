@@ -202,22 +202,7 @@ export default function LandingPage() {
               </FadeReveal>
             </div>
 
-            {/* Right — video */}
-            <div className="flex items-center justify-center">
-              <ShineBorder
-                borderRadius={16}
-                borderWidth={2}
-                duration={10}
-                color={["#10b981", "#14b8a6", "#059669"]}
-                className="w-full min-w-0 bg-slate-900/60 p-1"
-              >
-                <HeroVideo
-                  src="/videos/endeavrly-intro.mp4"
-                  ariaLabel="Endeavrly — 1 minute overview of the platform"
-                  className="w-full"
-                />
-              </ShineBorder>
-            </div>
+            {/* Right — video (coming soon) */}
           </div>
         </div>
       </section>
