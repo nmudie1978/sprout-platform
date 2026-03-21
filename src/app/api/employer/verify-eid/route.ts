@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Mock EID (BankID/Vipps) Verification Endpoint
  *

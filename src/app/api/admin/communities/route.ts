@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Admin Communities API
  * GET - List all communities

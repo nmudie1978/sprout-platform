@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Guardian-Worker Link Management API
  * PUT - Update link status (accept/reject) or visibility scope

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Guardian-Worker Link API
  * POST - Create a link request (guardian requests to link with worker, or worker generates invite)

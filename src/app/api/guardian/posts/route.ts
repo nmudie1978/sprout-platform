@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Guardian Posts API
  * GET - Get job posts in guardian's community (read-only)

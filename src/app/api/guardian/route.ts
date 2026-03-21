@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Guardian Overview API
  * GET - Get guardian's overview (assignment, counts, etc.)

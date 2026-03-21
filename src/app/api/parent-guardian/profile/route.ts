@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Parent/Guardian Profile API
  * GET - Get the authenticated user's guardian profile

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Community Report Detail API
  * GET - Get a specific report

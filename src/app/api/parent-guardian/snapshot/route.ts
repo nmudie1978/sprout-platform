@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Guardian Activity Snapshot API
  * GET - Get activity summary for linked youth workers

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Admin Community Guardian Assignment API
  * GET - Get current guardian for community

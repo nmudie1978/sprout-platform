@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * @deprecated This API is deprecated. Use /api/goals instead.
  *

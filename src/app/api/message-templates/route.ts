@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * Message Templates API
  *

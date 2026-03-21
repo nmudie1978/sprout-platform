@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 /**
  * GDPR Data Export Endpoint
  * Allows users to download all their personal data (Article 20)
