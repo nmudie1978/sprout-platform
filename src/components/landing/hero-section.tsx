@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Sprout, ArrowRight } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 
 /**
  * Hero Section Configuration
@@ -54,7 +54,7 @@ export function HeroSection() {
             <div
               className="inline-flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/30 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-green-700 dark:text-green-400 mb-4 sm:mb-5 animate-fade-in-scale animation-delay-200"
             >
-              <Sprout className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Your Path, Your Pace
             </div>
 
@@ -66,7 +66,7 @@ export function HeroSection() {
             </h1>
 
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-7 leading-relaxed">
-              Not sure what comes next? Sprout helps you explore careers, find local gigs,
+              Not sure what comes next? Endeavrly helps you explore careers, find local gigs,
               and take small steps toward a future that fits you—no pressure, just real experience and guidance.
             </p>
 
@@ -76,7 +76,7 @@ export function HeroSection() {
               <Button size="lg" asChild className="bg-green-600 hover:bg-green-700 text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11 shadow-sm">
                 <Link href="/auth/signup">
                   Start Exploring
-                  <Sprout className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  <Star className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base sm:text-lg px-6 sm:px-8 h-12 sm:h-11">
@@ -91,7 +91,7 @@ export function HeroSection() {
                 href="/about"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
               >
-                Learn how Sprout works
+                Learn how Endeavrly works
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </div>

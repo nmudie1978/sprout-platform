@@ -59,14 +59,14 @@ SEED=789 npm run db:seed-scale
 
 ### Email Domain
 
-All scale test accounts use the email domain `@scale.sprout.test`. This makes it easy to identify and clean up test data:
+All scale test accounts use the email domain `@scale.endeavrly.test`. This makes it easy to identify and clean up test data:
 
 ```sql
 -- Find all scale test users
-SELECT * FROM "User" WHERE email LIKE '%@scale.sprout.test';
+SELECT * FROM "User" WHERE email LIKE '%@scale.endeavrly.test';
 
 -- Delete all scale test data (handled by reset script)
-DELETE FROM "User" WHERE email LIKE '%@scale.sprout.test';
+DELETE FROM "User" WHERE email LIKE '%@scale.endeavrly.test';
 ```
 
 ## Test Credentials
@@ -77,21 +77,21 @@ After running `npm run db:seed-scale`, you can log in with these accounts:
 
 | Email | Password | Name | City |
 |-------|----------|------|------|
-| youth1@scale.sprout.test | Test1234! | Alex Thompson | Oslo |
-| youth2@scale.sprout.test | Test1234! | Jordan Smith | Bergen |
-| youth3@scale.sprout.test | Test1234! | Taylor Williams | Trondheim |
-| youth4@scale.sprout.test | Test1234! | Morgan Davis | Stavanger |
-| youth5@scale.sprout.test | Test1234! | Casey Brown | Oslo |
+| youth1@scale.endeavrly.test | Test1234! | Alex Thompson | Oslo |
+| youth2@scale.endeavrly.test | Test1234! | Jordan Smith | Bergen |
+| youth3@scale.endeavrly.test | Test1234! | Taylor Williams | Trondheim |
+| youth4@scale.endeavrly.test | Test1234! | Morgan Davis | Stavanger |
+| youth5@scale.endeavrly.test | Test1234! | Casey Brown | Oslo |
 
 ### Employer Users (5 known accounts)
 
 | Email | Password | Company | City |
 |-------|----------|---------|------|
-| employer1@scale.sprout.test | Test1234! | Tech Solutions AS | Oslo |
-| employer2@scale.sprout.test | Test1234! | Green Gardens | Bergen |
-| employer3@scale.sprout.test | Test1234! | Family Services | Trondheim |
-| employer4@scale.sprout.test | Test1234! | Nordic Consulting | Stavanger |
-| employer5@scale.sprout.test | Test1234! | Local Market | Oslo |
+| employer1@scale.endeavrly.test | Test1234! | Tech Solutions AS | Oslo |
+| employer2@scale.endeavrly.test | Test1234! | Green Gardens | Bergen |
+| employer3@scale.endeavrly.test | Test1234! | Family Services | Trondheim |
+| employer4@scale.endeavrly.test | Test1234! | Nordic Consulting | Stavanger |
+| employer5@scale.endeavrly.test | Test1234! | Local Market | Oslo |
 
 ## Career Shadows Mock API
 

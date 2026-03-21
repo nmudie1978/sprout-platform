@@ -146,7 +146,7 @@ export async function verifyUrl(url: string, skipCache = false): Promise<UrlChec
         {
           method: "HEAD",
           headers: {
-            "User-Agent": "Mozilla/5.0 (compatible; Sprout-EventVerifier/1.0)",
+            "User-Agent": "Mozilla/5.0 (compatible; Endeavrly-EventVerifier/1.0)",
           },
           redirect: "follow",
         },
@@ -159,7 +159,7 @@ export async function verifyUrl(url: string, skipCache = false): Promise<UrlChec
         {
           method: "GET",
           headers: {
-            "User-Agent": "Mozilla/5.0 (compatible; Sprout-EventVerifier/1.0)",
+            "User-Agent": "Mozilla/5.0 (compatible; Endeavrly-EventVerifier/1.0)",
           },
           redirect: "follow",
         },

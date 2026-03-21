@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
           </div>
           <CardTitle className="text-2xl text-white">Admin Portal</CardTitle>
           <CardDescription className="text-slate-400">
-            Sprout Platform Administration
+            Endeavrly Platform Administration
           </CardDescription>
         </CardHeader>
         <CardContent>

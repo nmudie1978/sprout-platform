@@ -1,6 +1,6 @@
 # Demo Data Seeding
 
-This script creates realistic demo data for development and testing of the Sprout platform.
+This script creates realistic demo data for development and testing of the Endeavrly platform.
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ DEMO_DATA_RESET=true npm run db:seed-demo
 
 - **Production blocked**: Script refuses to run if `NODE_ENV=production`
 - **Explicit opt-in**: Requires `ENABLE_DEMO_DATA=true` to run
-- **Identifiable data**: All demo users use `@demo.sprout.local` email domain
+- **Identifiable data**: All demo users use `@demo.endeavrly.local` email domain
 - **Clean reset**: `DEMO_DATA_RESET=true` removes all demo data before reseeding
 - **Idempotent**: Running multiple times won't create duplicates
 
@@ -30,22 +30,22 @@ DEMO_DATA_RESET=true npm run db:seed-demo
 **8 Teen Workers:**
 | Email | Name | North Star Career | City |
 |-------|------|------------------|------|
-| emma.berg@demo.sprout.local | Emma B. | Lawyer | Oslo |
-| noah.hansen@demo.sprout.local | Noah H. | Software Developer | Bergen |
-| sofia.larsen@demo.sprout.local | Sofia L. | Nurse | Trondheim |
-| oliver.johansen@demo.sprout.local | Oliver J. | Electrician | Stavanger |
-| mia.olsen@demo.sprout.local | Mia O. | UX Designer | Oslo |
-| lucas.nilsen@demo.sprout.local | Lucas N. | Teacher | Drammen |
-| ella.pedersen@demo.sprout.local | Ella P. | Accountant | Fredrikstad |
-| william.kristiansen@demo.sprout.local | William K. | Network Engineer | Sandnes |
+| emma.berg@demo.endeavrly.local | Emma B. | Lawyer | Oslo |
+| noah.hansen@demo.endeavrly.local | Noah H. | Software Developer | Bergen |
+| sofia.larsen@demo.endeavrly.local | Sofia L. | Nurse | Trondheim |
+| oliver.johansen@demo.endeavrly.local | Oliver J. | Electrician | Stavanger |
+| mia.olsen@demo.endeavrly.local | Mia O. | UX Designer | Oslo |
+| lucas.nilsen@demo.endeavrly.local | Lucas N. | Teacher | Drammen |
+| ella.pedersen@demo.endeavrly.local | Ella P. | Accountant | Fredrikstad |
+| william.kristiansen@demo.endeavrly.local | William K. | Network Engineer | Sandnes |
 
 **4 Job Posters:**
 | Email | Name |
 |-------|------|
-| kari.nordmann@demo.sprout.local | Kari Nordmann |
-| erik.svendsen@demo.sprout.local | Erik Svendsen |
-| marie.haug@demo.sprout.local | Marie Haug |
-| torstein.berg@demo.sprout.local | Berg Family |
+| kari.nordmann@demo.endeavrly.local | Kari Nordmann |
+| erik.svendsen@demo.endeavrly.local | Erik Svendsen |
+| marie.haug@demo.endeavrly.local | Marie Haug |
+| torstein.berg@demo.endeavrly.local | Berg Family |
 
 **Password for all demo users:** `demo123`
 
@@ -81,7 +81,7 @@ To remove all demo data without reseeding:
 DEMO_DATA_RESET=true ENABLE_DEMO_DATA=true npm run db:seed-demo
 ```
 
-Demo data is identified by the `@demo.sprout.local` email domain pattern.
+Demo data is identified by the `@demo.endeavrly.local` email domain pattern.
 
 ## Testing My Growth
 
@@ -92,7 +92,7 @@ After seeding, sign in as any demo teen to see:
 3. **Vault**: Saved careers and learning resources
 4. **Insights**: Generated from skill signals and completions
 
-Recommended demo user for full experience: `emma.berg@demo.sprout.local`
+Recommended demo user for full experience: `emma.berg@demo.endeavrly.local`
 
 ## Testing Messaging
 

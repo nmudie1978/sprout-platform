@@ -4,8 +4,8 @@ import { AlertCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Health & Safety Disclaimer | Sprout",
-  description: "Health and safety disclaimer for using the Sprout platform",
+  title: "Health & Safety Disclaimer | Endeavrly",
+  description: "Health and safety disclaimer for using the Endeavrly platform",
 };
 
 export default function DisclaimerPage() {
@@ -34,12 +34,12 @@ export default function DisclaimerPage() {
           <section className="mb-8">
             <h2>Platform Role</h2>
             <p>
-              Sprout is a platform that connects young people with job opportunities.
+              Endeavrly is a platform that connects young people with job opportunities.
               We facilitate introductions between job seekers and job posters, but we
               do not supervise, manage, or control the work itself.
             </p>
             <p>
-              Sprout is <strong>not an employer</strong>. We do not hire, employ, or
+              Endeavrly is <strong>not an employer</strong>. We do not hire, employ, or
               contract workers. Any work arrangement is directly between the youth
               worker and the job poster.
             </p>
@@ -92,7 +92,7 @@ export default function DisclaimerPage() {
           <section className="mb-8">
             <h2>Limitation of Liability</h2>
             <p>
-              Sprout does not supervise jobs or work performed through connections
+              Endeavrly does not supervise jobs or work performed through connections
               made on the platform. We are not liable for:
             </p>
             <ul>
@@ -111,7 +111,7 @@ export default function DisclaimerPage() {
           <section className="mb-8">
             <h2>Payments</h2>
             <p>
-              Sprout does not handle payments between users. All payments are arranged
+              Endeavrly does not handle payments between users. All payments are arranged
               and completed outside our platform. We are not responsible for:
             </p>
             <ul>
@@ -127,7 +127,7 @@ export default function DisclaimerPage() {
           <section className="mb-8">
             <h2>Insurance</h2>
             <p>
-              Sprout does not provide insurance coverage for users. We recommend:
+              Endeavrly does not provide insurance coverage for users. We recommend:
             </p>
             <ul>
               <li>Youth workers check if their family's insurance provides any coverage</li>

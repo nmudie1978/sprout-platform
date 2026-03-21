@@ -13,7 +13,7 @@ const REQUEST_TIMEOUT_MS = 8_000;
 const MIN_BODY_LENGTH = 1_000; // Detect soft 404 pages
 
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; Sprout-InsightsVerifier/1.0)";
+  "Mozilla/5.0 (compatible; Endeavrly-InsightsVerifier/1.0)";
 
 /** Common login/auth redirect indicators */
 const LOGIN_SIGNALS = [

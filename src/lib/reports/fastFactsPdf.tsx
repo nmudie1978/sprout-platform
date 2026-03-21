@@ -16,9 +16,9 @@ const colors = {
   surface: "#F8FAFC",
   surfaceAlt: "#F1F5F9",
   divider: "#E2E8F0",
-  sproutGreen: "#10B981",
-  sproutGreenLight: "#D1FAE5",
-  sproutGreenDark: "#059669",
+  endeavrlyGreen: "#10B981",
+  endeavrlyGreenLight: "#D1FAE5",
+  endeavrlyGreenDark: "#059669",
   accent: "#3B82F6",
   accentLight: "#DBEAFE",
 };
@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     fontSize: 14,
     lineHeight: 1.4,
-    color: colors.sproutGreenDark,
+    color: colors.endeavrlyGreenDark,
     marginBottom: 16,
     paddingLeft: 12,
     borderLeftWidth: 3,
-    borderLeftColor: colors.sproutGreen,
+    borderLeftColor: colors.endeavrlyGreen,
   },
   body: {
     fontFamily: "Inter",
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     width: 14,
     fontFamily: "Inter",
     fontSize: 10,
-    color: colors.sproutGreen,
+    color: colors.endeavrlyGreen,
   },
   bulletText: {
     fontFamily: "Inter",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   calloutBox: {
-    backgroundColor: colors.sproutGreenLight,
+    backgroundColor: colors.endeavrlyGreenLight,
     borderRadius: 8,
     padding: 14,
     marginTop: 12,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
     fontWeight: 600,
     fontSize: 11,
-    color: colors.sproutGreenDark,
+    color: colors.endeavrlyGreenDark,
     marginBottom: 8,
   },
   calloutText: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
     fontWeight: 600,
     fontSize: 10,
-    color: colors.sproutGreen,
+    color: colors.endeavrlyGreen,
   },
 });
 
@@ -221,7 +221,7 @@ function Page1() {
   return (
     <Page size="A4" style={styles.page}>
       {/* Header */}
-      <Text style={styles.wordmark}>Sprout</Text>
+      <Text style={styles.wordmark}>Endeavrly</Text>
 
       {/* Page Title */}
       <Text style={[styles.pageTitle, { marginTop: 16 }]}>
@@ -280,7 +280,7 @@ function Page1() {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Sprout Fast Facts</Text>
+        <Text style={styles.footerText}>Endeavrly Fast Facts</Text>
         <Text style={styles.footerText}>Page 1 of 2</Text>
       </View>
     </Page>
@@ -292,7 +292,7 @@ function Page2() {
   return (
     <Page size="A4" style={styles.page}>
       {/* Header */}
-      <Text style={styles.wordmark}>Sprout</Text>
+      <Text style={styles.wordmark}>Endeavrly</Text>
 
       {/* Page Title */}
       <Text style={[styles.pageTitle, { marginTop: 16 }]}>
@@ -336,9 +336,9 @@ function Page2() {
         build useful skills, and be ready to adapt.
       </Text>
 
-      {/* Sprout Callout Box */}
+      {/* Endeavrly Callout Box */}
       <View style={styles.calloutBox}>
-        <Text style={styles.calloutTitle}>What This Means for You on Sprout</Text>
+        <Text style={styles.calloutTitle}>What This Means for You on Endeavrly</Text>
         <Text style={styles.calloutText}>
           • Small jobs help you build independence and real experience
         </Text>
@@ -363,14 +363,14 @@ function Page2() {
           Curiosity matters more than early decisions.
         </Text>
         <Text style={[styles.closingText, { marginTop: 8 }]}>
-          Sprout helps you explore safely and gradually —
+          Endeavrly helps you explore safely and gradually —
           at your own pace, on your own terms.
         </Text>
       </View>
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Sprout Fast Facts</Text>
+        <Text style={styles.footerText}>Endeavrly Fast Facts</Text>
         <Text style={styles.footerText}>Page 2 of 2</Text>
       </View>
     </Page>
@@ -382,9 +382,9 @@ export function FastFactsPdf() {
   return (
     <Document
       title="Fast Facts: The World of Innovation"
-      author="Sprout"
+      author="Endeavrly"
       subject="A quick snapshot of global innovation and what it means for young people"
-      creator="Sprout"
+      creator="Endeavrly"
     >
       <Page1 />
       <Page2 />

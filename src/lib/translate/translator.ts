@@ -13,7 +13,7 @@ Rules:
 - Translate the provided text accurately and naturally.
 - Use clear, youth-friendly language appropriate for ages 15-23.
 - Preserve all formatting (markdown, line breaks, bullet points).
-- Do NOT translate brand names (Sprout, NAV, SSB, NHO, WEF, ILO, OECD, CFYE).
+- Do NOT translate brand names (Endeavrly, NAV, SSB, NHO, WEF, ILO, OECD, CFYE).
 - Do NOT translate URLs or email addresses.
 - Keep Norwegian-specific terms like "fagbrev", "lærling", etc. as-is.
 - Maintain the same tone — professional but friendly.`;

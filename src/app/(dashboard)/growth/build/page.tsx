@@ -400,7 +400,7 @@ export default function BuildStagePage() {
               <div className="flex-1">
                 <h3 className="font-semibold">Need guidance?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Ask Sprout AI what to focus on next
+                  Ask Endeavrly AI what to focus on next
                 </p>
               </div>
               <Link

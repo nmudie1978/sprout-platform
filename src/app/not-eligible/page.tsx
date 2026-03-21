@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sprout, ArrowLeft, Clock, Heart } from "lucide-react";
+import { Star, ArrowLeft, Clock, Heart } from "lucide-react";
 
 /**
  * Not Eligible Page
@@ -21,21 +21,21 @@ export default function NotEligiblePage() {
         <CardHeader className="text-center space-y-3">
           <div className="flex justify-center">
             <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900/30">
-              <Sprout className="h-10 w-10 text-amber-600" />
+              <Star className="h-10 w-10 text-amber-600" />
             </div>
           </div>
           <CardTitle className="text-2xl">
             Thanks for Your Interest!
           </CardTitle>
           <CardDescription className="text-base">
-            Sprout is designed for young people aged 15-23
+            Endeavrly is designed for young people aged 15-23
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
           <div className="text-center space-y-4">
             <p className="text-muted-foreground">
-              We appreciate your interest in Sprout! Our platform is specifically designed
+              We appreciate your interest in Endeavrly! Our platform is specifically designed
               for young people between 15 and 23 years old to find safe, age-appropriate
               work opportunities.
             </p>
@@ -73,8 +73,8 @@ export default function NotEligiblePage() {
 
           <p className="text-xs text-center text-muted-foreground">
             Questions? Contact us at{" "}
-            <a href="mailto:hello@sprout.no" className="text-primary hover:underline">
-              hello@sprout.no
+            <a href="mailto:hello@endeavrly.no" className="text-primary hover:underline">
+              hello@endeavrly.no
             </a>
           </p>
         </CardContent>

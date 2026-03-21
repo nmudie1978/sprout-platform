@@ -8,7 +8,7 @@ import {
   type NodeOverlayData,
 } from '@/lib/journey/overlay-types';
 
-const STORAGE_KEY = 'sprout-roadmap-overlays';
+const STORAGE_KEY = 'endeavrly-roadmap-overlays';
 
 function loadState(goalId: string): OverlayState {
   if (typeof window === 'undefined') return DEFAULT_OVERLAY_STATE;

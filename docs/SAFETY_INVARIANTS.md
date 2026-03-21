@@ -8,7 +8,7 @@ These safety invariants are NON-NEGOTIABLE. Any changes to these rules require e
 
 ## A) Age Band Policy
 
-Sprout is designed for young people aged **15-23**.
+Endeavrly is designed for young people aged **15-23**.
 
 ### Age Bands
 
@@ -50,7 +50,7 @@ Users under 16 cannot create accounts or use the platform.
 - No complex guardian consent flows needed initially
 
 ### User Experience
-- Clear error message during signup: "Sprout is for users aged 15-23"
+- Clear error message during signup: "Endeavrly is for users aged 15-23"
 - Redirect to `/not-eligible` page with friendly messaging
 - Encourage user to return when they turn 16
 
@@ -59,7 +59,7 @@ Users under 16 cannot create accounts or use the platform.
 // /src/app/api/auth/signup/route.ts
 if (age < PLATFORM_MIN_AGE) {
   return NextResponse.json({
-    error: `Sprout is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}.`
+    error: `Endeavrly is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}.`
   }, { status: 400 });
 }
 ```

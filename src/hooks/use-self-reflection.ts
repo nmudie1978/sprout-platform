@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ReflectionEntry } from '@/lib/my-journey/reflection-types';
 
-const STORAGE_KEY = 'sprout-self-reflections';
+const STORAGE_KEY = 'endeavrly-self-reflections';
 
 function loadReflections(): ReflectionEntry[] {
   if (typeof window === 'undefined') return [];

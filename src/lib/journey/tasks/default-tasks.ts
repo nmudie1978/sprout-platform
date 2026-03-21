@@ -48,7 +48,7 @@ export const DEFAULT_TASKS: DefaultTaskDefinition[] = [
   {
     stageId: 'foundation',
     mode: 'act',
-    title: 'Complete your Sprout profile',
+    title: 'Complete your Endeavrly profile',
     tooltipTitle: 'Make yourself visible',
     tooltipBody: 'A complete profile is your first step toward real opportunities and connections.',
   },

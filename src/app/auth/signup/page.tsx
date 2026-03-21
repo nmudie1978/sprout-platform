@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Sprout, AlertCircle, Loader2 } from "lucide-react";
+import { Star, AlertCircle, Loader2 } from "lucide-react";
 
 function SignUpForm() {
   const router = useRouter();
@@ -87,7 +87,7 @@ function SignUpForm() {
           throw new Error("Invalid date of birth");
         }
         if (ageInfo.age < 16) {
-          throw new Error("Sprout is for users aged 15-23. You must be at least 15 to create an account.");
+          throw new Error("Endeavrly is for users aged 15-23. You must be at least 15 to create an account.");
         }
         if (ageInfo.age > 20) {
           throw new Error("Youth workers must be 20 or younger. Consider registering as a job poster.");
@@ -143,11 +143,11 @@ function SignUpForm() {
       <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
-            <Sprout className="h-10 w-10 text-green-600" />
+            <Star className="h-10 w-10 text-green-600" />
           </div>
           <CardTitle className="text-2xl text-center">Create an account</CardTitle>
           <CardDescription className="text-base text-center">
-            Join Sprout to gain practical experience and build your future
+            Join Endeavrly to gain practical experience and build your future
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -257,7 +257,7 @@ function SignUpForm() {
                     {ageInfo.age >= 16 && ageInfo.age <= 20
                       ? `You are ${ageInfo.age} years old - eligible to join!`
                       : ageInfo.age < 16
-                        ? "Sprout is for ages 15-23. You must be at least 15 to register."
+                        ? "Endeavrly is for ages 15-23. You must be at least 15 to register."
                         : "Youth workers must be 20 or younger. Consider registering as a job poster."}
                   </p>
                 )}

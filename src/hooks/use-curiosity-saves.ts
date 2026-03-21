@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { SavedCuriosity } from '@/lib/my-journey/human-features-types';
 
-const STORAGE_KEY = 'sprout-curiosity-saves';
+const STORAGE_KEY = 'endeavrly-curiosity-saves';
 
 function load(): SavedCuriosity[] {
   if (typeof window === 'undefined') return [];

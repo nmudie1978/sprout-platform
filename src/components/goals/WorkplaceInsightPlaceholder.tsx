@@ -19,7 +19,7 @@ interface WorkplaceInsightPlaceholderProps {
  * 4. Add proper form/modal for requests
  *
  * NOTE: This feature is REQUEST-ONLY and observation-based.
- * Sprout does not arrange or supervise visits.
+ * Endeavrly does not arrange or supervise visits.
  */
 
 // Feature toggle - set to true to enable the feature in the future

@@ -3,8 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, AlertTriangle } from "lucide-react";
 
 export const metadata = {
-  title: "Privacy Policy | Sprout",
-  description: "Privacy Policy for the Sprout platform",
+  title: "Privacy Policy | Endeavrly",
+  description: "Privacy Policy for the Endeavrly platform",
 };
 
 export default function PrivacyPolicyPage() {
@@ -33,7 +33,7 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2>1. Introduction</h2>
             <p>
-              [PLACEHOLDER: Introduce your privacy policy. Explain that this policy describes how Sprout collects, uses, and shares personal information. Reference GDPR compliance and Norwegian data protection law (Personopplysningsloven).]
+              [PLACEHOLDER: Introduce your privacy policy. Explain that this policy describes how Endeavrly collects, uses, and shares personal information. Reference GDPR compliance and Norwegian data protection law (Personopplysningsloven).]
             </p>
           </section>
 
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
               <li>Company name: [Your company name]</li>
               <li>Organization number: [Norwegian org number]</li>
               <li>Address: [Your registered address]</li>
-              <li>Email: [privacy@sprout.com]</li>
+              <li>Email: [privacy@endeavrly.com]</li>
               <li>Data Protection Officer (if applicable): [Contact details]</li>
             </ul>
           </section>
@@ -220,7 +220,7 @@ export default function PrivacyPolicyPage() {
               [PLACEHOLDER: Explain how to lodge complaints:]
             </p>
             <ul>
-              <li>Contact us first at: [privacy@sprout.com]</li>
+              <li>Contact us first at: [privacy@endeavrly.com]</li>
               <li>Norwegian Data Protection Authority (Datatilsynet): datatilsynet.no</li>
             </ul>
           </section>
@@ -231,7 +231,7 @@ export default function PrivacyPolicyPage() {
               [PLACEHOLDER: Provide contact information for privacy inquiries:]
             </p>
             <ul>
-              <li>Email: [privacy@sprout.com]</li>
+              <li>Email: [privacy@endeavrly.com]</li>
               <li>Address: [Your registered business address]</li>
             </ul>
           </section>

@@ -4,8 +4,8 @@ import { Users, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Age & Eligibility | Sprout",
-  description: "Age requirements and eligibility criteria for using the Sprout platform",
+  title: "Age & Eligibility | Endeavrly",
+  description: "Age requirements and eligibility criteria for using the Endeavrly platform",
 };
 
 export default function EligibilityPage() {
@@ -32,9 +32,9 @@ export default function EligibilityPage() {
       <Card className="border-2">
         <CardContent className="p-6 md:p-8 prose prose-slate dark:prose-invert max-w-none">
           <section className="mb-8">
-            <h2>Who Can Use Sprout</h2>
+            <h2>Who Can Use Endeavrly</h2>
             <p>
-              Sprout is designed for young people in Norway seeking appropriate work opportunities.
+              Endeavrly is designed for young people in Norway seeking appropriate work opportunities.
               Our platform has specific requirements depending on your role.
             </p>
           </section>
@@ -42,7 +42,7 @@ export default function EligibilityPage() {
           <section className="mb-8">
             <h2>Youth Workers (Job Seekers)</h2>
             <p>
-              To register as a youth worker on Sprout, you must:
+              To register as a youth worker on Endeavrly, you must:
             </p>
             <ul>
               <li>Be between <strong>15 and 20 years old</strong></li>
@@ -74,7 +74,7 @@ export default function EligibilityPage() {
           <section className="mb-8">
             <h2>Adults (Job Posters / Employers)</h2>
             <p>
-              To post jobs on Sprout, you must:
+              To post jobs on Endeavrly, you must:
             </p>
             <ul>
               <li>Be at least <strong>18 years old</strong></li>
@@ -96,7 +96,7 @@ export default function EligibilityPage() {
             </p>
             <ul>
               <li>Guardian consent is requested via email during registration</li>
-              <li>The guardian must confirm they approve of the young person using Sprout</li>
+              <li>The guardian must confirm they approve of the young person using Endeavrly</li>
               <li>Guardian consent can be revoked at any time by contacting us</li>
             </ul>
           </section>
@@ -113,14 +113,14 @@ export default function EligibilityPage() {
               <li>Hazardous work is prohibited for all workers under 18</li>
             </ul>
             <p>
-              Job postings on Sprout will indicate any specific age requirements.
+              Job postings on Endeavrly will indicate any specific age requirements.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>Verification Process</h2>
             <p>
-              Sprout uses the following methods to verify users:
+              Endeavrly uses the following methods to verify users:
             </p>
             <ul>
               <li><strong>Youth (15-23):</strong> Vipps login or age verification during sign-up</li>
@@ -149,7 +149,7 @@ export default function EligibilityPage() {
           <div className="bg-muted/50 p-4 rounded-lg text-sm">
             <p className="font-medium mb-2">Questions about eligibility?</p>
             <p className="text-muted-foreground">
-              Contact us at: [support@sprout.no]
+              Contact us at: [support@endeavrly.no]
             </p>
           </div>
         </CardContent>

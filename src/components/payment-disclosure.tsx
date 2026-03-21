@@ -12,7 +12,7 @@ interface PaymentDisclosureProps {
 /**
  * PaymentDisclosure component
  * Displays a calm, non-alarming disclosure that payments are handled
- * directly between users and not processed by Sprout.
+ * directly between users and not processed by Endeavrly.
  */
 export function PaymentDisclosure({
   variant = "compact",

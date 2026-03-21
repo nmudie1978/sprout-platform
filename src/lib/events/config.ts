@@ -32,7 +32,7 @@ export interface EventsConfig {
 // DEFAULT SCRAPE USER AGENT
 // ============================================
 
-export const SCRAPE_USER_AGENT = "SproutYouthPlatform/1.0 (+https://sprout.no/about)";
+export const SCRAPE_USER_AGENT = "EndeavrlyYouthPlatform/1.0 (+https://endeavrly.no/about)";
 
 // ============================================
 // PROVIDER BASE URLS

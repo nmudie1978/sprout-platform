@@ -97,7 +97,7 @@ export default async function DashboardLayout({
             </Link>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-3">
-            © {new Date().getFullYear()} Sprout. All rights reserved.
+            © {new Date().getFullYear()} Endeavrly. All rights reserved.
           </p>
         </div>
       </footer>

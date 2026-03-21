@@ -1,4 +1,4 @@
--- Row Level Security (RLS) Policies for Sprout Youth Platform
+-- Row Level Security (RLS) Policies for Endeavrly Youth Platform
 -- These policies enforce data access at the database level as a defense-in-depth measure
 
 -- Enable RLS on all tables

@@ -16,7 +16,7 @@ import {
   Badge as BadgeIcon,
   Building2,
   Shield,
-  Sprout,
+  Star,
   Menu,
   X,
   Settings,
@@ -245,10 +245,10 @@ export function Navigation({ userRole, userName, userEmail, userProfilePic }: Na
               whileHover={{ rotate: 360, scale: 1.1 }}
               transition={{ duration: 0.6 }}
             >
-              <Sprout className="h-8 w-8 text-green-600" />
+              <Star className="h-8 w-8 text-green-600" />
             </motion.div>
             <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              Sprout
+              Endeavrly
             </span>
           </Link>
 

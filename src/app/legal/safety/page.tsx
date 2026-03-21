@@ -4,8 +4,8 @@ import { Shield, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Safety & Community Guidelines | Sprout",
-  description: "Safety and community guidelines for using the Sprout platform",
+  title: "Safety & Community Guidelines | Endeavrly",
+  description: "Safety and community guidelines for using the Endeavrly platform",
 };
 
 export default function SafetyGuidelinesPage() {
@@ -34,7 +34,7 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>Our Commitment to Safety</h2>
             <p>
-              Sprout is designed with safety as a core principle. We connect young people with
+              Endeavrly is designed with safety as a core principle. We connect young people with
               appropriate work opportunities in a protected environment. These guidelines help
               ensure everyone has a positive and safe experience.
             </p>
@@ -43,7 +43,7 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>Appropriate Tasks Only</h2>
             <p>
-              All jobs posted on Sprout must be appropriate for young workers. The following
+              All jobs posted on Endeavrly must be appropriate for young workers. The following
               types of work are not permitted:
             </p>
             <ul>
@@ -62,7 +62,7 @@ export default function SafetyGuidelinesPage() {
               All communication should remain professional and work-focused:
             </p>
             <ul>
-              <li>Keep conversations on the Sprout platform when possible</li>
+              <li>Keep conversations on the Endeavrly platform when possible</li>
               <li>Never pressure anyone to share personal contact information</li>
               <li>Do not request meetings outside of agreed work arrangements</li>
               <li>Report any communication that makes you uncomfortable</li>
@@ -105,7 +105,7 @@ export default function SafetyGuidelinesPage() {
             <ul>
               <li><strong>Norway Emergency Services:</strong> 112 (Police), 113 (Ambulance), 110 (Fire)</li>
               <li>Contact local authorities first — do not rely solely on platform reporting</li>
-              <li>After ensuring your safety, you may also report to Sprout</li>
+              <li>After ensuring your safety, you may also report to Endeavrly</li>
             </ul>
           </section>
 
@@ -113,7 +113,7 @@ export default function SafetyGuidelinesPage() {
             <h2>For Parents and Guardians</h2>
             <p>
               We encourage open communication between young people and their parents or guardians
-              about their activities on Sprout. You can:
+              about their activities on Endeavrly. You can:
             </p>
             <ul>
               <li>Review the types of jobs your young person is interested in</li>
@@ -125,7 +125,7 @@ export default function SafetyGuidelinesPage() {
           <section className="mb-8">
             <h2>How Does Payment Work?</h2>
             <p>
-              Sprout does not process payments or hold money. Workers and employers agree
+              Endeavrly does not process payments or hold money. Workers and employers agree
               payment terms directly with each other.
             </p>
             <ul>
@@ -135,7 +135,7 @@ export default function SafetyGuidelinesPage() {
               <li>Keep records of completed work if requested</li>
             </ul>
             <p className="text-muted-foreground">
-              This approach allows Sprout to stay focused on safety, trust, and connecting
+              This approach allows Endeavrly to stay focused on safety, trust, and connecting
               young people with local opportunities.
             </p>
           </section>
@@ -159,7 +159,7 @@ export default function SafetyGuidelinesPage() {
             <p className="font-medium mb-2">Contact Us</p>
             <p className="text-muted-foreground">
               For safety concerns or questions about these guidelines, contact us at:{" "}
-              <a href="mailto:safety@sprout.no" className="text-primary hover:underline">safety@sprout.no</a>
+              <a href="mailto:safety@endeavrly.no" className="text-primary hover:underline">safety@endeavrly.no</a>
             </p>
           </div>
         </CardContent>

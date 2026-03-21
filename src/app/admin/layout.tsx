@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin Portal - Sprout",
-  description: "Sprout Platform Administration Dashboard",
+  title: "Admin Portal - Endeavrly",
+  description: "Endeavrly Platform Administration Dashboard",
   robots: "noindex, nofollow", // Prevent search engine indexing
 };
 

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { GrowthSnapshot } from '@/lib/my-journey/human-features-types';
 
-const STORAGE_KEY = 'sprout-growth-snapshots';
+const STORAGE_KEY = 'endeavrly-growth-snapshots';
 
 function load(): GrowthSnapshot[] {
   if (typeof window === 'undefined') return [];

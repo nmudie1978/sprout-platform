@@ -2537,7 +2537,7 @@ async function main() {
     {
       slug: 'getting-started',
       title: 'Getting Started',
-      content: `# Welcome to Sprout
+      content: `# Welcome to Endeavrly
 
 This platform helps you earn money through micro-jobs while discovering potential career paths. Growth from small beginnings.
 

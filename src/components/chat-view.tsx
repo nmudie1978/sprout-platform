@@ -696,7 +696,7 @@ export function ChatView({ conversationId }: { conversationId: string }) {
           <DialogHeader>
             <DialogTitle>Report Conversation</DialogTitle>
             <DialogDescription>
-              Help us keep Sprout safe by reporting inappropriate behavior.
+              Help us keep Endeavrly safe by reporting inappropriate behavior.
               Your report will be reviewed by our safety team.
             </DialogDescription>
           </DialogHeader>

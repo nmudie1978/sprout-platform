@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Sprout, Trash2 } from 'lucide-react';
+import { Star, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -57,7 +57,7 @@ export function GrowthMirror() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold flex items-center gap-1.5">
-              <Sprout className="h-4 w-4 text-emerald-500" />
+              <Star className="h-4 w-4 text-emerald-500" />
               Growth mirror
             </h3>
             <p className="text-xs text-muted-foreground">Small changes add up.</p>

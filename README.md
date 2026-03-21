@@ -1,4 +1,4 @@
-# Sprout - Growth from Small Beginnings 🌱
+# Endeavrly - Growth from Small Beginnings 🌱
 
 **Connecting young people with meaningful work experiences that shape their future.**
 
@@ -16,7 +16,7 @@ More than a job board, we provide a career development pathway. Each completed t
 
 ## 🎯 Overview
 
-Sprout helps young people:
+Endeavrly helps young people:
 - 📝 Find and complete micro-jobs (babysitting, dog walking, tech help, etc.)
 - 🎓 Build real-world skills automatically from job experience
 - 🔍 Discover careers that match their developed skills (Tinder-style swipe)
@@ -109,11 +109,11 @@ cp .env.example .env
 Edit `.env` and update:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/sprout"
+DATABASE_URL="postgresql://user:password@localhost:5432/endeavrly"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="generate-a-random-secret-here"
 EMAIL_SERVER="smtp://user:pass@smtp.example.com:587"
-EMAIL_FROM="noreply@sprout.no"
+EMAIL_FROM="noreply@endeavrly.no"
 ```
 
 ### 3. Run Migrations and Seed
@@ -134,7 +134,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 📁 Project Structure
 
 ```
-sprout/
+endeavrly/
 ├── prisma/
 │   ├── schema.prisma          # Database schema
 │   └── seed.ts                # Seed data script

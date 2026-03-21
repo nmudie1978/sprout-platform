@@ -336,7 +336,7 @@ export default function InsightsPage() {
                 <div>
                   <h4 className="font-semibold">Want deeper insights?</h4>
                   <p className="text-sm text-muted-foreground">
-                    Ask Sprout AI for personalised advice about {effectiveGoal}
+                    Ask Endeavrly AI for personalised advice about {effectiveGoal}
                   </p>
                 </div>
               </div>

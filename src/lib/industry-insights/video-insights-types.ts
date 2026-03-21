@@ -14,7 +14,7 @@
 
 export type VideoInsightType = "story" | "day_in_life" | "explainer";
 
-export type VideoInsightSource = "youtube" | "ted" | "sprout";
+export type VideoInsightSource = "youtube" | "ted" | "endeavrly";
 
 export interface VideoInsight {
   id: string;
@@ -53,5 +53,5 @@ export const VIDEO_TYPE_LABELS: Record<VideoInsightType, string> = {
 export const VIDEO_SOURCE_LABELS: Record<VideoInsightSource, string> = {
   youtube: "YouTube",
   ted: "TED",
-  sprout: "Sprout Original",
+  endeavrly: "Endeavrly Original",
 };

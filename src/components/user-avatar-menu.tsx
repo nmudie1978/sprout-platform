@@ -158,7 +158,7 @@ export function UserAvatarMenu({
         {/* About */}
         <DropdownMenuItem onClick={() => navigateTo("/about")} className="cursor-pointer">
           <Info className="mr-2 h-4 w-4" />
-          About Sprout
+          About Endeavrly
         </DropdownMenuItem>
 
         {/* Theme toggle */}

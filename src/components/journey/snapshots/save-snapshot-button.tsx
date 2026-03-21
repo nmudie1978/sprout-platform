@@ -37,7 +37,7 @@ export function SaveSnapshotButton({ goalId, disabled }: SaveSnapshotButtonProps
 
     // Collect overlay annotations for the current goal
     if (goalId) {
-      const raw = localStorage.getItem(`sprout-roadmap-overlays-${goalId}`);
+      const raw = localStorage.getItem(`endeavrly-roadmap-overlays-${goalId}`);
       if (raw) {
         try {
           state.overlayAnnotations = { [goalId]: JSON.parse(raw) };
@@ -46,11 +46,11 @@ export function SaveSnapshotButton({ goalId, disabled }: SaveSnapshotButtonProps
     }
 
     // Timeline style
-    const style = localStorage.getItem('sprout-timeline-style');
+    const style = localStorage.getItem('endeavrly-timeline-style');
     if (style) state.timelineStyle = style;
 
     // Learning goals
-    const goalsRaw = localStorage.getItem('sprout-learning-goals');
+    const goalsRaw = localStorage.getItem('endeavrly-learning-goals');
     if (goalsRaw) {
       try {
         state.learningGoals = JSON.parse(goalsRaw);

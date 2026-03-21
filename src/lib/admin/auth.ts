@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 
-const ADMIN_SESSION_COOKIE = "sprout_admin_session";
+const ADMIN_SESSION_COOKIE = "endeavrly_admin_session";
 const SESSION_EXPIRY_DAYS = 7;
 
 // Get secrets from environment

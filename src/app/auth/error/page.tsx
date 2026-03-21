@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sprout, AlertTriangle, XCircle, ShieldX, UserX, Loader2 } from "lucide-react";
+import { Star, AlertTriangle, XCircle, ShieldX, UserX, Loader2 } from "lucide-react";
 
 interface ErrorInfo {
   title: string;
@@ -153,8 +153,8 @@ function AuthErrorContent() {
               href="/"
               className="inline-flex items-center text-sm text-muted-foreground hover:text-primary"
             >
-              <Sprout className="h-4 w-4 mr-1" />
-              Back to Sprout
+              <Star className="h-4 w-4 mr-1" />
+              Back to Endeavrly
             </Link>
           </div>
 

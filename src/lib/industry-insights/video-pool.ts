@@ -1,7 +1,7 @@
 /**
  * INSIGHT VIDEO POOL — Industry Insights
  *
- * Curated pool of educational videos aligned to Sprout pillars.
+ * Curated pool of educational videos aligned to Endeavrly pillars.
  * Maximum 25 videos in pool, maximum 5 displayed at any time.
  *
  * REFRESH CADENCE:

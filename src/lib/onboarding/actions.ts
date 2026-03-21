@@ -74,7 +74,7 @@ const PRIORITY_SUGGESTIONS: Record<string, NextStepSuggestion[]> = {
     {
       suggestion: "Chat with the AI Career Advisor",
       reason: "Get personalised guidance based on your goals",
-      action: { label: "Ask Sprout AI", href: "/career-advisor" },
+      action: { label: "Ask Endeavrly AI", href: "/career-advisor" },
       priority: "explore",
     },
   ],

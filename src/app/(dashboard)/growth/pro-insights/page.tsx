@@ -214,7 +214,7 @@ export default function ProInsightsPage() {
                   Real people. Real careers. Launching soon.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  This feature will unlock as Sprout grows and real professionals contribute their insights.
+                  This feature will unlock as Endeavrly grows and real professionals contribute their insights.
                 </p>
               </div>
             </div>

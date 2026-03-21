@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { InsightHistoryEntry } from '@/lib/insights/pool-types';
 
-const STORAGE_KEY = 'sprout-insights-history';
+const STORAGE_KEY = 'endeavrly-insights-history';
 const MAX_AGE_DAYS = 90;
 const DEFAULT_EXCLUDE_WINDOW_DAYS = 30;
 

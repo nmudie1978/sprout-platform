@@ -18,9 +18,9 @@ const colors = {
   background: "#FFFFFF",
   surface: "#F8FAFC",
   divider: "#E2E8F0",
-  sproutGreen: "#10B981",
-  sproutGreenLight: "#D1FAE5",
-  sproutGreenDark: "#059669",
+  endeavrlyGreen: "#10B981",
+  endeavrlyGreenLight: "#D1FAE5",
+  endeavrlyGreenDark: "#059669",
   // Status colors
   exploringBg: "#DBEAFE",
   exploringText: "#1D4ED8",
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
     fontWeight: 600,
     fontSize: 14,
-    color: colors.sproutGreen,
+    color: colors.endeavrlyGreen,
   },
   accentBar: {
     width: 6,
     height: 72,
-    backgroundColor: colors.sproutGreen,
+    backgroundColor: colors.endeavrlyGreen,
     borderRadius: 3,
     marginRight: 12,
   },
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1.5,
-    borderColor: colors.sproutGreen,
+    borderColor: colors.endeavrlyGreen,
     marginRight: 8,
     marginTop: 2,
   },
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.sproutGreen,
+    backgroundColor: colors.endeavrlyGreen,
     marginRight: 8,
     marginTop: 2,
   },
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   chip: {
-    backgroundColor: colors.sproutGreenLight,
+    backgroundColor: colors.endeavrlyGreenLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: 500,
     fontSize: 9,
-    color: colors.sproutGreenDark,
+    color: colors.endeavrlyGreenDark,
   },
   // Notes
   noteBlock: {
@@ -350,7 +350,7 @@ function getTimeframeLabel(timeframe: string): string {
 function Footer({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) {
   return (
     <View style={styles.footer} fixed>
-      <Text style={styles.footerText}>Sprout • My Journey Report</Text>
+      <Text style={styles.footerText}>Endeavrly • My Journey Report</Text>
       <Text style={styles.footerText}>
         Page {pageNumber} / {totalPages}
       </Text>
@@ -375,7 +375,7 @@ function CoverPage({ data }: { data: ReportData }) {
   return (
     <Page size="A4" style={[styles.page, { paddingBottom: 36 }]}>
       {/* Wordmark */}
-      <Text style={styles.wordmark}>Sprout</Text>
+      <Text style={styles.wordmark}>Endeavrly</Text>
 
       {/* Title Block with accent bar */}
       <View style={styles.titleBlock}>
@@ -823,9 +823,9 @@ function ClosingPage({ data }: { data: ReportData }) {
         </View>
       )}
 
-      {/* Sprout wordmark at bottom */}
+      {/* Endeavrly wordmark at bottom */}
       <View style={{ marginTop: "auto", alignItems: "center" }}>
-        <Text style={[styles.wordmark, { fontSize: 12 }]}>Sprout</Text>
+        <Text style={[styles.wordmark, { fontSize: 12 }]}>Endeavrly</Text>
         <Text style={[styles.small, { marginTop: 4 }]}>
           Supporting youth in their career journey
         </Text>
@@ -841,9 +841,9 @@ export function MyJourneyPdfDocument({ data }: { data: ReportData }) {
   return (
     <Document
       title="My Journey Report"
-      author="Sprout"
+      author="Endeavrly"
       subject="Career exploration and progress summary"
-      creator="Sprout"
+      creator="Endeavrly"
     >
       <CoverPage data={data} />
       <SnapshotPage data={data} />

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sprout, ArrowLeft } from "lucide-react";
+import { Star, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AboutLayout({
@@ -13,9 +13,9 @@ export default function AboutLayout({
       <header className="sticky top-0 z-50 border-b backdrop-blur-lg bg-background/80">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <Sprout className="h-7 w-7 text-green-600" />
+            <Star className="h-7 w-7 text-green-600" />
             <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              Sprout
+              Endeavrly
             </span>
           </Link>
           <Button variant="ghost" size="sm" asChild>
@@ -53,7 +53,7 @@ export default function AboutLayout({
             </Link>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            © {new Date().getFullYear()} Sprout. All rights reserved.
+            © {new Date().getFullYear()} Endeavrly. All rights reserved.
           </p>
         </div>
       </footer>

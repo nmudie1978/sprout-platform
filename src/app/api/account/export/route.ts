@@ -229,7 +229,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": "application/json",
-        "Content-Disposition": `attachment; filename="sprout-data-export-${userId}-${new Date().toISOString().split("T")[0]}.json"`,
+        "Content-Disposition": `attachment; filename="endeavrly-data-export-${userId}-${new Date().toISOString().split("T")[0]}.json"`,
       },
     });
   } catch (error) {

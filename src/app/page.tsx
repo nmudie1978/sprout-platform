@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Sprout,
+  Star,
   ArrowRight,
   Sparkles,
   Check,
@@ -114,10 +114,10 @@ export default function LandingPage() {
         <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-5">
           <Link href="/" className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
-              <Sprout className="h-4.5 w-4.5 text-white" />
+              <Star className="h-4.5 w-4.5 text-white" />
             </div>
             <span className="font-semibold text-lg tracking-tight text-white">
-              Sprout
+              Endeavrly
             </span>
           </Link>
 
@@ -175,7 +175,7 @@ export default function LandingPage() {
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    Sprout is a space for young people to explore careers honestly,
+                    Endeavrly is a space for young people to explore careers honestly,
                     try small real-world experiences, and reflect on what fits —
                     without anyone telling them what to think or who to become.
                   </p>
@@ -196,7 +196,7 @@ export default function LandingPage() {
                   href="#how-it-works"
                   className="inline-flex items-center gap-2 text-sm text-emerald-400/80 hover:text-emerald-300 transition-colors group"
                 >
-                  Explore Sprout
+                  Explore Endeavrly
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </a>
               </FadeReveal>
@@ -212,8 +212,8 @@ export default function LandingPage() {
                 className="w-full min-w-0 bg-slate-900/60 p-1"
               >
                 <HeroVideo
-                  src="/videos/sprout-intro.mp4"
-                  ariaLabel="Sprout — 1 minute overview of the platform"
+                  src="/videos/endeavrly-intro.mp4"
+                  ariaLabel="Endeavrly — 1 minute overview of the platform"
                   className="w-full"
                 />
               </ShineBorder>
@@ -468,10 +468,10 @@ export default function LandingPage() {
           <div className="flex flex-col items-center gap-5">
             <div className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-emerald-500 to-teal-600">
-                <Sprout className="h-3.5 w-3.5 text-white" />
+                <Star className="h-3.5 w-3.5 text-white" />
               </div>
               <span className="font-semibold text-base text-white">
-                Sprout
+                Endeavrly
               </span>
             </div>
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-neutral-500">
@@ -519,7 +519,7 @@ export default function LandingPage() {
               </Link>
             </div>
             <p className="text-xs text-neutral-600">
-              &copy; {new Date().getFullYear()} Sprout. Helping young people
+              &copy; {new Date().getFullYear()} Endeavrly. Helping young people
               build life skills and grow in confidence.
             </p>
           </div>

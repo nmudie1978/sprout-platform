@@ -16,9 +16,9 @@ const colors = {
   surface: "#F8FAFC",
   surfaceAlt: "#F1F5F9",
   divider: "#E2E8F0",
-  sproutGreen: "#10B981",
-  sproutGreenLight: "#D1FAE5",
-  sproutGreenDark: "#059669",
+  endeavrlyGreen: "#10B981",
+  endeavrlyGreenLight: "#D1FAE5",
+  endeavrlyGreenDark: "#059669",
   // Chart colors
   blue: "#3B82F6",
   rose: "#F43F5E",
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
     fontWeight: 600,
     fontSize: 28,
-    color: colors.sproutGreen,
+    color: colors.endeavrlyGreen,
     marginBottom: 2,
   },
   statLabel: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   chip: {
-    backgroundColor: colors.sproutGreenLight,
+    backgroundColor: colors.endeavrlyGreenLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: 500,
     fontSize: 8,
-    color: colors.sproutGreenDark,
+    color: colors.endeavrlyGreenDark,
   },
   // Salary range
   salaryRow: {
@@ -275,12 +275,12 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins",
     fontWeight: 600,
     fontSize: 14,
-    color: colors.sproutGreen,
+    color: colors.endeavrlyGreen,
   },
   accentBar: {
     width: 5,
     height: 60,
-    backgroundColor: colors.sproutGreen,
+    backgroundColor: colors.endeavrlyGreen,
     borderRadius: 2.5,
     marginRight: 12,
   },
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   sectionIcon: {
     width: 24,
     height: 24,
-    backgroundColor: colors.sproutGreenLight,
+    backgroundColor: colors.endeavrlyGreenLight,
     borderRadius: 12,
     marginRight: 10,
     alignItems: "center",
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: 600,
     fontSize: 10,
-    color: colors.sproutGreenDark,
+    color: colors.endeavrlyGreenDark,
   },
 });
 
@@ -344,7 +344,7 @@ function Footer({ pageNumber }: { pageNumber: number }) {
   return (
     <View style={styles.footer} fixed>
       <Text style={styles.footerText}>
-        Sprout - The World of Work: Career & Industry Snapshot
+        Endeavrly - The World of Work: Career & Industry Snapshot
       </Text>
       <Text style={styles.footerText}>Page {pageNumber}</Text>
     </View>
@@ -426,7 +426,7 @@ function CoverPage() {
   return (
     <Page size="A4" style={[styles.page, { paddingBottom: 40 }]}>
       {/* Wordmark */}
-      <Text style={styles.wordmark}>Sprout</Text>
+      <Text style={styles.wordmark}>Endeavrly</Text>
 
       {/* Title Block */}
       <View style={styles.titleBlock}>
@@ -860,8 +860,8 @@ function FutureOfWorkPage() {
   );
 }
 
-// Page 6: How Sprout Helps
-function SproutHelpPage() {
+// Page 6: How Endeavrly Helps
+function EndeavrlyHelpPage() {
   const features = [
     {
       title: "Explore careers",
@@ -887,10 +887,10 @@ function SproutHelpPage() {
 
   return (
     <Page size="A4" style={styles.page}>
-      <SectionHeader number="6" title="How Sprout Helps You Start" />
+      <SectionHeader number="6" title="How Endeavrly Helps You Start" />
 
       <Text style={[styles.body, { marginBottom: 20 }]}>
-        Sprout is designed to support young people in exploring careers without
+        Endeavrly is designed to support young people in exploring careers without
         pressure. We believe career exploration should be curious, honest, and
         grounded in reality.
       </Text>
@@ -944,7 +944,7 @@ function SproutHelpPage() {
           paddingTop: 24,
         }}
       >
-        <Text style={[styles.wordmark, { fontSize: 12 }]}>Sprout</Text>
+        <Text style={[styles.wordmark, { fontSize: 12 }]}>Endeavrly</Text>
         <Text style={[styles.small, { marginTop: 4, textAlign: "center" }]}>
           Supporting young people in exploring their future
         </Text>
@@ -954,7 +954,7 @@ function SproutHelpPage() {
             { marginTop: 8, color: colors.muted, textAlign: "center" },
           ]}
         >
-          sprout.app
+          endeavrly.app
         </Text>
       </View>
 
@@ -968,9 +968,9 @@ export function CareerIndustrySnapshotPdf() {
   return (
     <Document
       title="The World of Work - Career & Industry Snapshot"
-      author="Sprout"
+      author="Endeavrly"
       subject="A high-level overview of careers, industries, and salaries for young people"
-      creator="Sprout"
+      creator="Endeavrly"
     >
       <CoverPage />
       <ExecutiveOverviewPage />
@@ -978,7 +978,7 @@ export function CareerIndustrySnapshotPdf() {
       <SalaryRealityPage />
       <GlobalEmployersPage />
       <FutureOfWorkPage />
-      <SproutHelpPage />
+      <EndeavrlyHelpPage />
     </Document>
   );
 }

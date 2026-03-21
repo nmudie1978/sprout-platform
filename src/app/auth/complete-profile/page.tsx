@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Sprout, AlertCircle, Loader2, User, Briefcase, CheckCircle } from "lucide-react";
+import { Star, AlertCircle, Loader2, User, Briefcase, CheckCircle } from "lucide-react";
 
 export default function CompleteProfilePage() {
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function CompleteProfilePage() {
       }
 
       toast({
-        title: "Welcome to Sprout!",
+        title: "Welcome to Endeavrly!",
         description: data.message,
       });
 
@@ -126,7 +126,7 @@ export default function CompleteProfilePage() {
       <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
-            <Sprout className="h-10 w-10 text-green-600" />
+            <Star className="h-10 w-10 text-green-600" />
           </div>
           <CardTitle className="text-2xl text-center">Complete Your Profile</CardTitle>
           <CardDescription className="text-base text-center">
@@ -135,7 +135,7 @@ export default function CompleteProfilePage() {
                 Welcome, <strong>{session.user.vippsProfile.name}</strong>!
               </span>
             )}
-            Choose how you want to use Sprout
+            Choose how you want to use Endeavrly
           </CardDescription>
         </CardHeader>
         <CardContent>

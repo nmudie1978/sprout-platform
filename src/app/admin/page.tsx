@@ -215,7 +215,7 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
-              <p className="text-sm text-slate-400">Sprout Platform Metrics</p>
+              <p className="text-sm text-slate-400">Endeavrly Platform Metrics</p>
             </div>
           </div>
 

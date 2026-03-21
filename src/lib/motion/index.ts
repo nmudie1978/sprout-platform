@@ -1,5 +1,5 @@
 /**
- * Motion Utilities for Sprout
+ * Motion Utilities for Endeavrly
  *
  * Premium, calm, intentional animations following Apple Education aesthetic.
  * No bounce, no confetti, no gamification effects.

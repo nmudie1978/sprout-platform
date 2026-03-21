@@ -270,7 +270,7 @@ export default function ExploreStagePage() {
               <div className="flex-1">
                 <h3 className="font-semibold">Not sure where to start?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Ask Sprout AI for career suggestions based on your interests
+                  Ask Endeavrly AI for career suggestions based on your interests
                 </p>
               </div>
               <Link href="/career-advisor?prompt=What careers might suit me?">

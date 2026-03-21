@@ -770,7 +770,7 @@ export default function ProfilePage() {
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground leading-relaxed">
-                        Guardian verification is required for users aged 16–17. This helps keep Sprout safe for young users.
+                        Guardian verification is required for users aged 16–17. This helps keep Endeavrly safe for young users.
                       </p>
                       {!profile.guardianConsent && (
                         <Link
@@ -1448,7 +1448,7 @@ export default function ProfilePage() {
                 </Badge>
               </CardTitle>
               <CardDescription>
-                Share your thoughts on how Sprout works for you
+                Share your thoughts on how Endeavrly works for you
               </CardDescription>
             </CardHeader>
             <CardContent className="relative">

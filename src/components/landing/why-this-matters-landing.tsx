@@ -69,7 +69,7 @@ export function WhyThisMattersLanding() {
         {/* Connection to My Journey */}
         <div className="text-center mb-6">
           <p className="text-sm text-muted-foreground">
-            That&apos;s why Sprout guides you through{" "}
+            That&apos;s why Endeavrly guides you through{" "}
             <span className="font-semibold text-blue-600">Discover</span>
             {" · "}
             <span className="font-semibold text-purple-600">Understand</span>
@@ -88,7 +88,7 @@ export function WhyThisMattersLanding() {
             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <p className="text-[10px] sm:text-xs text-muted-foreground/60">
-            See the sources behind Sprout&apos;s mission
+            See the sources behind Endeavrly&apos;s mission
           </p>
         </div>
       </div>

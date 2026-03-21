@@ -6,7 +6,7 @@ import {
   type AcknowledgementMessage,
 } from '@/lib/acknowledgements/messages';
 
-const STORAGE_KEY = 'sprout-acknowledgements';
+const STORAGE_KEY = 'endeavrly-acknowledgements';
 
 /** Rolling window: max 3 acknowledgements in 7 days */
 const WINDOW_DAYS = 7;

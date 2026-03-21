@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       // Double-check age constraints server-side (defense in depth)
       if (age === null || age < PLATFORM_MIN_AGE) {
         return NextResponse.json(
-          { error: `Sprout is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}. You must be at least ${PLATFORM_MIN_AGE} to create an account.` },
+          { error: `Endeavrly is for users aged ${PLATFORM_MIN_AGE}-${PLATFORM_MAX_AGE}. You must be at least ${PLATFORM_MIN_AGE} to create an account.` },
           { status: 400 }
         );
       }

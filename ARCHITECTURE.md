@@ -205,7 +205,7 @@ All shadcn/ui components built on Radix UI:
 
 ### 🎯 CORE PRODUCT INVARIANT: Career Goals
 
-**CRITICAL: Sprout is fundamentally driven by CAREER GOALS.**
+**CRITICAL: Endeavrly is fundamentally driven by CAREER GOALS.**
 
 Every user can have:
 - **EXACTLY ONE Primary Career Goal** - The anchor, default lens for all personalisation

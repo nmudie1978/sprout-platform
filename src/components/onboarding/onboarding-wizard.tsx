@@ -201,7 +201,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
             <div className="p-2 rounded-full bg-primary/10">
               <Sparkles className="h-5 w-5 text-primary" />
             </div>
-            <DialogTitle className="text-xl">Welcome to Sprout</DialogTitle>
+            <DialogTitle className="text-xl">Welcome to Endeavrly</DialogTitle>
           </div>
           <DialogDescription>
             Let&apos;s personalise your experience in {4 - step === 0 ? "one" : 4 - step + 1} quick step{4 - step !== 1 ? "s" : ""}
@@ -321,7 +321,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
 
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Sprout helps you find real jobs and connect with people in your local community.
+                    Endeavrly helps you find real jobs and connect with people in your local community.
                   </p>
 
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
@@ -332,14 +332,14 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
                           Payment is agreed and handled directly between you and the job poster.
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Sprout does not handle money or take fees.
+                          Endeavrly does not handle money or take fees.
                         </p>
                       </div>
                     </div>
                   </div>
 
                   <p className="text-xs text-muted-foreground text-center pt-2">
-                    This keeps Sprout simple, safe, and focused on helping you find work.
+                    This keeps Endeavrly simple, safe, and focused on helping you find work.
                   </p>
                 </div>
               </motion.div>

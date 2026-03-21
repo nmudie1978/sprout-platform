@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export type TimelineStyle = 'zigzag' | 'rail' | 'stepping';
 
-const STORAGE_KEY = 'sprout-timeline-style';
+const STORAGE_KEY = 'endeavrly-timeline-style';
 const VALID: TimelineStyle[] = ['zigzag', 'rail', 'stepping'];
 
 export function useTimelineStyle() {

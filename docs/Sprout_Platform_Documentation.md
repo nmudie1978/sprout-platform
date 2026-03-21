@@ -1,4 +1,4 @@
-# Sprout Youth Job Platform
+# Endeavrly Youth Job Platform
 
 ## Comprehensive Platform Documentation
 
@@ -10,11 +10,11 @@
 
 # 1. Executive Summary
 
-## 1.1 What is Sprout?
+## 1.1 What is Endeavrly?
 
-Sprout is a purpose-built digital platform connecting young people aged 15–23 in Norway with local, legal micro-jobs. The platform facilitates safe, age-appropriate work opportunities such as dog walking, babysitting, snow clearing, and tech assistance, while providing integrated career guidance through an AI-powered assistant.
+Endeavrly is a purpose-built digital platform connecting young people aged 15–23 in Norway with local, legal micro-jobs. The platform facilitates safe, age-appropriate work opportunities such as dog walking, babysitting, snow clearing, and tech assistance, while providing integrated career guidance through an AI-powered assistant.
 
-## 1.2 Who Sprout Serves
+## 1.2 Who Endeavrly Serves
 
 ### Primary User Groups
 
@@ -906,9 +906,9 @@ You can also chat at mentalhelse.no. Your wellbeing matters."
 
 # 10. Conclusion
 
-## 10.1 Summary of Sprout's Mission and User Value
+## 10.1 Summary of Endeavrly's Mission and User Value
 
-Sprout exists to **empower young people in Norway** to take their first steps into the workforce through safe, legal, and rewarding micro-job opportunities. By combining:
+Endeavrly exists to **empower young people in Norway** to take their first steps into the workforce through safe, legal, and rewarding micro-job opportunities. By combining:
 
 - **Smart Matching**: Connecting youth with age-appropriate local jobs
 - **Legal Compliance**: Automatically enforcing Norwegian labor laws
@@ -916,7 +916,7 @@ Sprout exists to **empower young people in Norway** to take their first steps in
 - **Career Guidance**: AI-powered exploration of future possibilities
 - **Community Safety**: Guardian consent and employer verification
 
-Sprout creates a **protected environment** where young people can earn money, build skills, and explore careers—while employers gain access to a reliable, verified pool of young workers.
+Endeavrly creates a **protected environment** where young people can earn money, build skills, and explore careers—while employers gain access to a reliable, verified pool of young workers.
 
 ### Value Delivered
 
@@ -930,7 +930,7 @@ Sprout creates a **protected environment** where young people can earn money, bu
 
 ## 10.2 Legal and Ethical Commitment
 
-Sprout is committed to operating with the **highest standards** of legal compliance and ethical conduct:
+Endeavrly is committed to operating with the **highest standards** of legal compliance and ethical conduct:
 
 ### Legal Compliance
 - Full adherence to **Arbeidsmiljøloven** (Norwegian Working Environment Act)
@@ -955,7 +955,7 @@ Sprout is committed to operating with the **highest standards** of legal complia
 
 *This document is confidential and intended for internal and stakeholder use only.*
 
-**Sprout Youth Job Platform**
+**Endeavrly Youth Job Platform**
 *Empowering Norway's Next Generation*
 
 ---
@@ -964,5 +964,5 @@ Sprout is committed to operating with the **highest standards** of legal complia
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | January 2026 | Sprout Team | Initial comprehensive documentation |
+| 1.0 | January 2026 | Endeavrly Team | Initial comprehensive documentation |
 

@@ -1,11 +1,11 @@
 /**
- * Demo Data Seeding Script for Sprout
+ * Demo Data Seeding Script for Endeavrly
  *
  * Creates realistic demo data for development and testing.
  *
  * SAFETY CONTROLS:
  * - Only runs when ENABLE_DEMO_DATA=true AND NODE_ENV !== 'production'
- * - All demo data uses @demo.sprout.local email domain for identification
+ * - All demo data uses @demo.endeavrly.local email domain for identification
  * - DEMO_DATA_RESET=true will delete all demo data before reseeding
  * - Idempotent: running multiple times won't create duplicates
  *
@@ -41,7 +41,7 @@ const prisma = new PrismaClient();
 // SAFETY CHECKS
 // ============================================
 
-const DEMO_EMAIL_DOMAIN = '@demo.sprout.local';
+const DEMO_EMAIL_DOMAIN = '@demo.endeavrly.local';
 const ENABLE_DEMO_DATA = process.env.ENABLE_DEMO_DATA === 'true';
 const DEMO_DATA_RESET = process.env.DEMO_DATA_RESET === 'true';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -1050,7 +1050,7 @@ async function seedConversationsAndMessages(
 
 async function main() {
   console.log('');
-  console.log('🌱 Sprout Demo Data Seeder');
+  console.log('🌱 Endeavrly Demo Data Seeder');
   console.log('==========================');
   console.log('');
 

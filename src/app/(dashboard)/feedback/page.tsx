@@ -144,7 +144,7 @@ export default function FeedbackPage() {
             </div>
             <h1 className="text-2xl font-bold mb-3">Thank you</h1>
             <p className="text-muted-foreground">
-              Your feedback helps improve Sprout.
+              Your feedback helps improve Endeavrly.
             </p>
           </CardContent>
         </Card>
@@ -166,7 +166,7 @@ export default function FeedbackPage() {
           </span>
         </div>
         <p className="text-muted-foreground text-sm">
-          Help us understand how well Sprout works for you. Takes about 1 minute.
+          Help us understand how well Endeavrly works for you. Takes about 1 minute.
         </p>
       </div>
 

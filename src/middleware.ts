@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { getToken } from "next-auth/jwt";
 
-const ADMIN_SESSION_COOKIE = "sprout_admin_session";
+const ADMIN_SESSION_COOKIE = "endeavrly_admin_session";
 
 // Routes that don't require age verification
 const PUBLIC_ROUTES = [

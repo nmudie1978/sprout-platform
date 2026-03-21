@@ -1,5 +1,5 @@
 /**
- * Scale Data Seeding Script for Sprout
+ * Scale Data Seeding Script for Endeavrly
  *
  * Creates large-scale realistic test data for development and testing.
  * Deterministic: Same SEED value produces identical dataset.
@@ -48,7 +48,7 @@ const prisma = new PrismaClient();
 
 const SEED = parseInt(process.env.SEED || '123', 10);
 const SCALE_DATA_RESET = process.env.SCALE_DATA_RESET === 'true';
-const SCALE_EMAIL_DOMAIN = '@scale.sprout.test';
+const SCALE_EMAIL_DOMAIN = '@scale.endeavrly.test';
 const DEFAULT_PASSWORD = 'Test1234!';
 
 // Counts
@@ -857,7 +857,7 @@ async function seedShadowRequests(
 async function main(): Promise<void> {
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════╗');
-  console.log('║          SPROUT SCALE DATA SEEDER                        ║');
+  console.log('║          ENDEAVRLY SCALE DATA SEEDER                        ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   console.log('');
   console.log(`🎲 Seed value: ${SEED}`);

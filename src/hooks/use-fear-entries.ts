@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { FearEntry } from '@/lib/my-journey/human-features-types';
 
-const STORAGE_KEY = 'sprout-fear-entries';
+const STORAGE_KEY = 'endeavrly-fear-entries';
 
 function load(): FearEntry[] {
   if (typeof window === 'undefined') return [];

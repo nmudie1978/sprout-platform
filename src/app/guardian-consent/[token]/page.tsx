@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sprout, Shield, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import { Star, Shield, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 
 interface ConsentInfo {
   displayName: string;
@@ -172,7 +172,7 @@ export default function GuardianConsentPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-center">
             <p className="text-sm text-muted-foreground">
-              {consentInfo?.displayName} can now apply to jobs and message job posters on Sprout.
+              {consentInfo?.displayName} can now apply to jobs and message job posters on Endeavrly.
               We'll ensure their safety through our moderation systems.
             </p>
             <div className="pt-4">
@@ -192,14 +192,14 @@ export default function GuardianConsentPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Sprout className="h-10 w-10 text-green-600" />
+            <Star className="h-10 w-10 text-green-600" />
             <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              Sprout
+              Endeavrly
             </span>
           </div>
           <h1 className="text-2xl font-bold mb-2">Guardian Consent Request</h1>
           <p className="text-muted-foreground">
-            Your child has requested permission to use Sprout Youth Platform
+            Your child has requested permission to use Endeavrly Youth Platform
           </p>
         </div>
 
@@ -243,11 +243,11 @@ export default function GuardianConsentPage() {
               </div>
             </div>
 
-            {/* What Sprout Is */}
+            {/* What Endeavrly Is */}
             <div className="space-y-2">
-              <h3 className="font-semibold">What is Sprout?</h3>
+              <h3 className="font-semibold">What is Endeavrly?</h3>
               <p className="text-sm text-muted-foreground">
-                Sprout is a platform that connects young people (ages 15-23) with local micro-jobs
+                Endeavrly is a platform that connects young people (ages 15-23) with local micro-jobs
                 like babysitting, dog walking, lawn care, and more. We prioritise safety with
                 verified job posters, messaging moderation, and age-appropriate job listings.
               </p>
@@ -303,7 +303,7 @@ export default function GuardianConsentPage() {
                     onCheckedChange={(checked) => setAgreeTerms(checked === true)}
                   />
                   <Label htmlFor="agreeTerms" className="text-sm leading-tight cursor-pointer">
-                    I have read and agree to Sprout's{" "}
+                    I have read and agree to Endeavrly's{" "}
                     <a href="/legal/terms" target="_blank" className="text-primary underline">
                       Terms of Service
                     </a>{" "}
@@ -322,7 +322,7 @@ export default function GuardianConsentPage() {
                   />
                   <Label htmlFor="agreeMonitoring" className="text-sm leading-tight cursor-pointer">
                     I understand that {consentInfo?.displayName} will be able to apply for jobs,
-                    communicate with job posters, and share their availability on Sprout
+                    communicate with job posters, and share their availability on Endeavrly
                   </Label>
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default function GuardianConsentPage() {
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">
-                You can revoke consent at any time by contacting support@sprout.no
+                You can revoke consent at any time by contacting support@endeavrly.no
               </p>
             </form>
           </CardContent>

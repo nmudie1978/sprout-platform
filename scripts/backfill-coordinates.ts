@@ -54,7 +54,7 @@ async function geocodeAddress(
 
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "SproutApp/1.0 (youth-platform)",
+        "User-Agent": "EndeavrlyApp/1.0 (youth-platform)",
       },
     });
 

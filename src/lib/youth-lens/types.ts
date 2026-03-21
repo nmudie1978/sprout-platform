@@ -11,7 +11,7 @@
 
 export type VideoType = "story" | "day_in_life" | "explainer";
 
-export type VideoSource = "youtube" | "ted" | "sprout";
+export type VideoSource = "youtube" | "ted" | "endeavrly";
 
 export interface VideoAsset {
   id: string;
@@ -128,7 +128,7 @@ export const VIDEO_TYPE_LABELS: Record<VideoType, string> = {
 export const VIDEO_SOURCE_LABELS: Record<VideoSource, string> = {
   youtube: "YouTube",
   ted: "TED",
-  sprout: "Sprout Original",
+  endeavrly: "Endeavrly Original",
 };
 
 /**

@@ -1,7 +1,7 @@
-# CLAUDE.md — Sprout (Youth Community Jobs & Career Platform)
+# CLAUDE.md — Endeavrly (Youth Community Jobs & Career Platform)
 
 <project_context>
-Sprout is a youth-first (ages 15–23) small jobs and career development platform.
+Endeavrly is a youth-first (ages 15–23) small jobs and career development platform.
 It is safety-by-design, privacy-first, and does NOT include in-app payments.
 It emphasizes skill development, responsibility signals, and structured growth — not gamification.
 </project_context>

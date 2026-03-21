@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Sprout, Loader2 } from "lucide-react";
+import { Star, Loader2 } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -121,9 +121,9 @@ export default function SignInPage() {
       <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
         <CardHeader className="space-y-2">
           <div className="flex justify-center mb-2">
-            <Sprout className="h-10 w-10 text-green-600" />
+            <Star className="h-10 w-10 text-green-600" />
           </div>
-          <CardTitle className="text-2xl text-center">Welcome back to Sprout</CardTitle>
+          <CardTitle className="text-2xl text-center">Welcome back to Endeavrly</CardTitle>
           <CardDescription className="text-base text-center">
             Sign in to continue your growth journey
           </CardDescription>

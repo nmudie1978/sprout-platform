@@ -38,7 +38,7 @@ import {
 // Only NEXT_PUBLIC_ vars are available on client-side
 const ADMIN_EMAILS = [
   process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-  "admin@sprout.no",
+  "admin@endeavrly.no",
 ].filter(Boolean);
 
 const categoryLabels: Record<string, string> = {

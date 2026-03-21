@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Sprout, Loader2 } from "lucide-react";
+import { Star, Loader2 } from "lucide-react";
 
 export default function AcceptTermsPage() {
   const router = useRouter();
@@ -53,11 +53,11 @@ export default function AcceptTermsPage() {
       <Card className="w-full max-w-lg border-2">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Sprout className="h-10 w-10 text-green-600" />
+            <Star className="h-10 w-10 text-green-600" />
           </div>
           <CardTitle className="text-2xl">Updated Terms</CardTitle>
           <CardDescription className="text-base">
-            Please review and accept our Terms of Service and Privacy Policy to continue using Sprout.
+            Please review and accept our Terms of Service and Privacy Policy to continue using Endeavrly.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -70,7 +70,7 @@ export default function AcceptTermsPage() {
                 <Link href="/legal/terms" className="text-primary hover:underline" target="_blank">
                   Terms of Service
                 </Link>{" "}
-                — How you can use Sprout
+                — How you can use Endeavrly
               </li>
               <li>
                 <Link href="/legal/privacy" className="text-primary hover:underline" target="_blank">
@@ -88,7 +88,7 @@ export default function AcceptTermsPage() {
                 <Link href="/legal/eligibility" className="text-primary hover:underline" target="_blank">
                   Age & Eligibility
                 </Link>{" "}
-                — Who can use Sprout
+                — Who can use Endeavrly
               </li>
               <li>
                 <Link href="/legal/disclaimer" className="text-primary hover:underline" target="_blank">

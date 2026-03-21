@@ -1,5 +1,5 @@
 /**
- * Motion Components for Sprout Motion Trial
+ * Motion Components for Endeavrly Motion Trial
  *
  * Premium, calm animations following Apple Education aesthetic.
  * All components respect prefers-reduced-motion and the feature flag.

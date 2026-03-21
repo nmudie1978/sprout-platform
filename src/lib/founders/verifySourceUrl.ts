@@ -140,7 +140,7 @@ async function performVerification(url: string): Promise<UrlVerificationResult> 
       method: "HEAD",
       signal: controller.signal,
       headers: {
-        "User-Agent": "Sprout-Platform/1.0 (Founder Story Verification)",
+        "User-Agent": "Endeavrly-Platform/1.0 (Founder Story Verification)",
       },
       redirect: "follow",
     });
@@ -151,7 +151,7 @@ async function performVerification(url: string): Promise<UrlVerificationResult> 
         method: "GET",
         signal: controller.signal,
         headers: {
-          "User-Agent": "Sprout-Platform/1.0 (Founder Story Verification)",
+          "User-Agent": "Endeavrly-Platform/1.0 (Founder Story Verification)",
           Range: "bytes=0-0", // Request minimal content
         },
         redirect: "follow",

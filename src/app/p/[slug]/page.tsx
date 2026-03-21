@@ -224,7 +224,7 @@ export default async function PublicProfilePage({
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
-                  This profile is verified by Sprout. All reviews are
+                  This profile is verified by Endeavrly. All reviews are
                   authenticated and privacy-protected.
                 </p>
               </CardContent>
@@ -238,7 +238,7 @@ export default async function PublicProfilePage({
             <p>
               This is a public profile on{" "}
               <a href="/" className="text-primary hover:underline">
-                Sprout
+                Endeavrly
               </a>
             </p>
           </div>

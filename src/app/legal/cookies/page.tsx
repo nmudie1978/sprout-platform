@@ -3,8 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Cookie, AlertTriangle } from "lucide-react";
 
 export const metadata = {
-  title: "Cookie Policy | Sprout",
-  description: "Cookie Policy for the Sprout platform",
+  title: "Cookie Policy | Endeavrly",
+  description: "Cookie Policy for the Endeavrly platform",
 };
 
 export default function CookiePolicyPage() {
@@ -40,7 +40,7 @@ export default function CookiePolicyPage() {
           <section className="mb-8">
             <h2>2. How We Use Cookies</h2>
             <p>
-              [PLACEHOLDER: Explain the general purposes for using cookies on Sprout, such as:]
+              [PLACEHOLDER: Explain the general purposes for using cookies on Endeavrly, such as:]
             </p>
             <ul>
               <li>Keeping you signed in</li>
@@ -218,7 +218,7 @@ export default function CookiePolicyPage() {
               [PLACEHOLDER: Provide contact information for cookie-related inquiries:]
             </p>
             <ul>
-              <li>Email: [privacy@sprout.com]</li>
+              <li>Email: [privacy@endeavrly.com]</li>
               <li>Address: [Your registered business address]</li>
             </ul>
           </section>

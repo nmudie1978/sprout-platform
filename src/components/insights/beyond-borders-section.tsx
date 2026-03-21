@@ -103,7 +103,7 @@ export function BeyondBordersSection() {
           type: "ARTICLE",
           title: article.title,
           url: `/insights/beyond-borders/${article.slug}`,
-          source: "Sprout",
+          source: "Endeavrly",
           description: article.subtitle,
         }),
       });

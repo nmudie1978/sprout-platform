@@ -40,7 +40,7 @@ export async function GET() {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="sprout-fast-facts-innovation.pdf"`,
+        "Content-Disposition": `attachment; filename="endeavrly-fast-facts-innovation.pdf"`,
         "Content-Length": pdfBuffer.length.toString(),
         // Cache for 24 hours since this is static content
         "Cache-Control": "public, max-age=86400, s-maxage=86400",

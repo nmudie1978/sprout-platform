@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Sprout - Growth from Small Beginnings",
+  title: "Endeavrly - Growth from Small Beginnings",
   description: "Connecting young people with meaningful work experiences that shape their future. We bridge the gap between local community needs and young people ready to contribute.",
 };
 

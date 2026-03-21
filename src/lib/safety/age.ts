@@ -145,7 +145,7 @@ export function isAllowedToUsePlatform(
       return {
         allowed: false,
         ageBand,
-        reason: "Sprout is for users aged 15-23. You must be at least 15 to use this platform.",
+        reason: "Endeavrly is for users aged 15-23. You must be at least 15 to use this platform.",
         requiresGuardianConsent: false,
       };
 
@@ -339,7 +339,7 @@ export function validateSignupAge(dateOfBirth: string | Date): { valid: boolean;
   if (ageBand === "UNDER_15") {
     return {
       valid: false,
-      error: "Sprout is for users aged 15-23. You must be at least 15 to create an account.",
+      error: "Endeavrly is for users aged 15-23. You must be at least 15 to create an account.",
       ageBand,
     };
   }

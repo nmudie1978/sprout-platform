@@ -14,7 +14,7 @@
 import { useState } from "react";
 import {
   Leaf,
-  Sprout,
+  Star,
   Wind,
   Clock,
   ExternalLink,
@@ -148,7 +148,7 @@ const CATEGORY_CONFIG: Record<
   },
   emerging: {
     label: "Emerging",
-    icon: Sprout,
+    icon: Star,
     color: "text-blue-600 dark:text-blue-400",
     bgColor: "bg-blue-100 dark:bg-blue-900/30",
     description: "Growing rapidly in demand",

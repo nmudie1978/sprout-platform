@@ -216,7 +216,7 @@ export function ProgressTimeline({
       {
         id: "1",
         type: "milestone",
-        title: "Joined Sprout",
+        title: "Joined Endeavrly",
         description: "Started your career exploration journey",
         date: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
       },

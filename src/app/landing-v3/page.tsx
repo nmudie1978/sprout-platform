@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  Sprout,
+  Star,
   ArrowRight,
   Sparkles,
   Check,
@@ -128,10 +128,10 @@ export default function LandingPageV3() {
         <div className="mx-auto flex h-14 sm:h-16 max-w-6xl items-center justify-between px-5">
           <Link href="/landing-v3" className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
-              <Sprout className="h-4.5 w-4.5 text-white" />
+              <Star className="h-4.5 w-4.5 text-white" />
             </div>
             <span className="font-semibold text-lg tracking-tight text-white">
-              Sprout
+              Endeavrly
             </span>
           </Link>
 
@@ -185,16 +185,16 @@ export default function LandingPageV3() {
                 <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed max-w-lg">
                   Most young people feel pressure to have their career figured
                   out — before they&apos;ve had a chance to try anything real.
-                  Sprout is a space where that pressure doesn&apos;t exist.
+                  Endeavrly is a space where that pressure doesn&apos;t exist.
                 </p>
               </div>
 
               {/* CTA — understated text link */}
               <a
-                href="#what-is-sprout"
+                href="#what-is-endeavrly"
                 className="inline-flex items-center gap-2 text-sm text-emerald-400/80 hover:text-emerald-300 transition-colors group"
               >
-                Explore Sprout
+                Explore Endeavrly
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </a>
             </div>
@@ -209,8 +209,8 @@ export default function LandingPageV3() {
                 className="w-full min-w-0 bg-slate-900/60 p-1"
               >
                 <HeroVideo
-                  src="/videos/sprout-intro.mp4"
-                  ariaLabel="Sprout — 1 minute overview of the platform"
+                  src="/videos/endeavrly-intro.mp4"
+                  ariaLabel="Endeavrly — 1 minute overview of the platform"
                   className="w-full"
                 />
               </ShineBorder>
@@ -248,16 +248,16 @@ export default function LandingPageV3() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 3 — WHAT SPROUT IS */}
+      {/* SECTION 3 — WHAT ENDEAVRLY IS */}
       {/* ============================================ */}
       <section
-        id="what-is-sprout"
+        id="what-is-endeavrly"
         className="border-t border-slate-800/60 bg-slate-900/40 scroll-mt-20"
       >
         <div className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
           <div className="max-w-2xl">
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white mb-8 sm:mb-10">
-              What Sprout actually is
+              What Endeavrly actually is
             </h2>
 
             <div className="space-y-6 max-w-xl">
@@ -523,10 +523,10 @@ export default function LandingPageV3() {
           <div className="flex flex-col items-center gap-5">
             <div className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-emerald-500 to-teal-600">
-                <Sprout className="h-3.5 w-3.5 text-white" />
+                <Star className="h-3.5 w-3.5 text-white" />
               </div>
               <span className="font-semibold text-base text-white">
-                Sprout
+                Endeavrly
               </span>
             </div>
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-sm text-neutral-500">
@@ -574,7 +574,7 @@ export default function LandingPageV3() {
               </Link>
             </div>
             <p className="text-xs text-neutral-600">
-              &copy; {new Date().getFullYear()} Sprout. Helping young people
+              &copy; {new Date().getFullYear()} Endeavrly. Helping young people
               build life skills and grow in confidence.
             </p>
           </div>

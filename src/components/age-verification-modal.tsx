@@ -130,7 +130,7 @@ export function AgeVerificationModal({ open, onOpenChange }: AgeVerificationModa
     }
 
     if (age < 18) {
-      setError("You must be at least 18 years old to post jobs on Sprout.");
+      setError("You must be at least 18 years old to post jobs on Endeavrly.");
       return;
     }
 

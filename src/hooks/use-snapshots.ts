@@ -126,16 +126,16 @@ export function useRestoreSnapshot() {
           // Overlay annotations are stored per goalId
           for (const [key, value] of Object.entries(clientState.overlayAnnotations)) {
             localStorage.setItem(
-              `sprout-roadmap-overlays-${key}`,
+              `endeavrly-roadmap-overlays-${key}`,
               JSON.stringify(value)
             );
           }
         }
         if (clientState.timelineStyle) {
-          localStorage.setItem('sprout-timeline-style', clientState.timelineStyle);
+          localStorage.setItem('endeavrly-timeline-style', clientState.timelineStyle);
         }
         if (clientState.learningGoals) {
-          localStorage.setItem('sprout-learning-goals', JSON.stringify(clientState.learningGoals));
+          localStorage.setItem('endeavrly-learning-goals', JSON.stringify(clientState.learningGoals));
         }
       }
 

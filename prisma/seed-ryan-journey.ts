@@ -142,7 +142,7 @@ async function main() {
   console.log('🏢 Step 3: Setting up employer for jobs...');
 
   let employer = await prisma.user.findFirst({
-    where: { email: 'employer1@scale.sprout.test' },
+    where: { email: 'employer1@scale.endeavrly.test' },
   });
 
   if (!employer) {
@@ -486,7 +486,7 @@ async function main() {
 
   // Find or create a host for shadows
   let shadowHost = await prisma.user.findFirst({
-    where: { email: 'employer2@scale.sprout.test' },
+    where: { email: 'employer2@scale.endeavrly.test' },
   });
 
   if (!shadowHost) {

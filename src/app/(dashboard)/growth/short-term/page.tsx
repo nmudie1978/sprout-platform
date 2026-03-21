@@ -358,7 +358,7 @@ export default function ShortTermGrowthPage() {
                 Trust Signals
               </CardTitle>
               <CardDescription>
-                Private indicators that help Sprout match you to safer, better opportunities.
+                Private indicators that help Endeavrly match you to safer, better opportunities.
               </CardDescription>
             </CardHeader>
             <CardContent>

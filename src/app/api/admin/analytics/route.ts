@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 const ADMIN_EMAILS = [
   process.env.ADMIN_EMAIL,
   process.env.NEXT_PUBLIC_ADMIN_EMAIL,
-  "admin@sprout.no",
+  "admin@endeavrly.no",
 ].filter(Boolean);
 
 export async function GET(req: NextRequest) {

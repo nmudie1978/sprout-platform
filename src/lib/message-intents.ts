@@ -224,12 +224,12 @@ export function validateIntentVariables(
       if (userAgeBracket === "SIXTEEN_SEVENTEEN") {
         // BLOCK for 16-17 year olds
         errors.push(
-          `For your safety, sharing contact information is not allowed. Please keep all communication on Sprout.`
+          `For your safety, sharing contact information is not allowed. Please keep all communication on Endeavrly.`
         );
       } else if (userAgeBracket === "EIGHTEEN_TWENTY") {
         // WARN for 18-20 year olds (but still block)
         errors.push(
-          `Please keep all communication on Sprout for your safety. Contact sharing detected.`
+          `Please keep all communication on Endeavrly for your safety. Contact sharing detected.`
         );
       } else {
         // Block for all others too

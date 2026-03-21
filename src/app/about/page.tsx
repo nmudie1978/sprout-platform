@@ -1,10 +1,10 @@
-import { Sprout, ExternalLink } from "lucide-react";
+import { Star, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
 export const metadata = {
-  title: "About Sprout",
-  description: "What Sprout is, what it isn't, and why it exists.",
+  title: "About Endeavrly",
+  description: "What Endeavrly is, what it isn't, and why it exists.",
 };
 
 function TheGapSection() {
@@ -46,7 +46,7 @@ function TheGapSection() {
       </div>
 
       <p className="text-muted-foreground leading-relaxed">
-        That&apos;s why Sprout is built around <strong className="text-foreground">Discover</strong> (know yourself),{" "}
+        That&apos;s why Endeavrly is built around <strong className="text-foreground">Discover</strong> (know yourself),{" "}
         <strong className="text-foreground">Understand</strong> (know the world), and{" "}
         <strong className="text-foreground">Act</strong> (take aligned action) — a structured approach
         to help young people build career clarity through self-discovery, planning, and purposeful action.
@@ -72,16 +72,16 @@ export default function AboutPage() {
         {/* Header */}
         <div className="mb-12">
           <Link href="/" className="inline-flex items-center gap-2 text-green-600 mb-8">
-            <Sprout className="h-6 w-6" />
-            <span className="font-semibold">Sprout</span>
+            <Star className="h-6 w-6" />
+            <span className="font-semibold">Endeavrly</span>
           </Link>
 
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
-            About Sprout
+            About Endeavrly
           </h1>
 
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Sprout is not a job board, a gig app, or a career quiz.
+            Endeavrly is not a job board, a gig app, or a career quiz.
           </p>
           <p className="text-lg text-foreground leading-relaxed mt-4">
             It&apos;s a place where young people can take on small, local jobs, reflect on what they&apos;re learning,
@@ -98,7 +98,7 @@ export default function AboutPage() {
               The journey matters more than the destination
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Sprout is designed around growth, not goals. There are no rankings, no leaderboards,
+              Endeavrly is designed around growth, not goals. There are no rankings, no leaderboards,
               and no pressure to optimise. Progress here is personal — it belongs to you, not to an algorithm.
             </p>
           </section>
@@ -109,7 +109,7 @@ export default function AboutPage() {
               Self-discovery comes first
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Before you can act with purpose, it helps to know yourself. Sprout guides you to reflect on
+              Before you can act with purpose, it helps to know yourself. Endeavrly guides you to reflect on
               your strengths, explore careers that interest you, and build a plan — so that when you take
               action, it&apos;s aligned with who you actually are.
             </p>
@@ -133,7 +133,7 @@ export default function AboutPage() {
               Safety is a foundation, not a feature
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Sprout doesn&apos;t handle payments. Adults are verified before they can post jobs or message
+              Endeavrly doesn&apos;t handle payments. Adults are verified before they can post jobs or message
               young people. Conversations are structured. Reporting tools are always available. These
               choices are deliberate — safety isn&apos;t something we added later.
             </p>
@@ -145,7 +145,7 @@ export default function AboutPage() {
               Your growth is private
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              What you do on Sprout stays yours. There are no public profiles, no follower counts,
+              What you do on Endeavrly stays yours. There are no public profiles, no follower counts,
               and no way for others to compare themselves to you. Reflection and growth happen
               better without an audience.
             </p>
@@ -157,7 +157,7 @@ export default function AboutPage() {
               Built for a specific stage of life
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Sprout is designed for people roughly aged 15 to 23. That&apos;s not a limitation — it&apos;s
+              Endeavrly is designed for people roughly aged 15 to 23. That&apos;s not a limitation — it&apos;s
               a focus. This is a time when small experiences can have a big impact, and when honest
               information matters more than polished advice.
             </p>

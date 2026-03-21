@@ -8,7 +8,7 @@ import {
 } from "@/lib/researchEvidence";
 
 export const metadata = {
-  title: "Research & Evidence | Sprout",
+  title: "Research & Evidence | Endeavrly",
   description:
     "Research-backed evidence on youth career readiness from OECD, Gallup, and leading education research organizations.",
 };
@@ -90,7 +90,7 @@ export default function ResearchPage() {
         </h1>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
           Many young people report uncertainty about future pathways, and real-world exposure
-          is uneven. Sprout exists to make the journey clearer and more practical.
+          is uneven. Endeavrly exists to make the journey clearer and more practical.
         </p>
         <p className="text-[10px] text-muted-foreground/70 mt-2">
           Last updated: {RESEARCH_LAST_UPDATED}
@@ -160,7 +160,7 @@ export default function ResearchPage() {
 
           <div className="mt-4 pt-3 border-t">
             <p className="text-[10px] text-muted-foreground">
-              This is why Sprout is built around{" "}
+              This is why Endeavrly is built around{" "}
               <strong className="text-foreground">Discover</strong> (exploration),{" "}
               <strong className="text-foreground">Understand</strong> (reflection), and{" "}
               <strong className="text-foreground">Act</strong> (real experiences).
@@ -169,11 +169,11 @@ export default function ResearchPage() {
         </div>
       </section>
 
-      {/* Section 3: What Sprout Does Differently */}
+      {/* Section 3: What Endeavrly Does Differently */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-4">
           <Lightbulb className="h-4 w-4 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">What Sprout Does Differently</h2>
+          <h2 className="text-lg font-semibold text-foreground">What Endeavrly Does Differently</h2>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">

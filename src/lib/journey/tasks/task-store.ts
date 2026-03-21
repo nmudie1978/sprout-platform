@@ -12,7 +12,7 @@ import { DEFAULT_TASKS } from './default-tasks';
 // STORAGE KEY
 // ============================================
 
-const STORAGE_PREFIX = 'sprout:journey-tasks';
+const STORAGE_PREFIX = 'endeavrly:journey-tasks';
 
 function storageKey(userId: string, goalId: string): string {
   return `${STORAGE_PREFIX}:${userId}:${goalId}`;

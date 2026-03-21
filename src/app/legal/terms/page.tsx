@@ -4,8 +4,8 @@ import { FileText, AlertTriangle } from "lucide-react";
 import { PAYMENT_COPY } from "@/lib/copy/payments";
 
 export const metadata = {
-  title: "Terms of Service | Sprout",
-  description: "Terms of Service for using the Sprout platform",
+  title: "Terms of Service | Endeavrly",
+  description: "Terms of Service for using the Endeavrly platform",
 };
 
 export default function TermsOfServicePage() {
@@ -34,14 +34,14 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2>1. Agreement to Terms</h2>
             <p>
-              [PLACEHOLDER: Insert your agreement to terms clause here. This should explain that by accessing or using Sprout, users agree to be bound by these Terms of Service.]
+              [PLACEHOLDER: Insert your agreement to terms clause here. This should explain that by accessing or using Endeavrly, users agree to be bound by these Terms of Service.]
             </p>
           </section>
 
           <section className="mb-8">
             <h2>2. Description of Service</h2>
             <p>
-              [PLACEHOLDER: Describe what Sprout is - a platform connecting youth workers with employers for micro-jobs and short-term work opportunities. Clarify that Sprout is a marketplace/platform and not an employer.]
+              [PLACEHOLDER: Describe what Endeavrly is - a platform connecting youth workers with employers for micro-jobs and short-term work opportunities. Clarify that Endeavrly is a marketplace/platform and not an employer.]
             </p>
           </section>
 
@@ -128,7 +128,7 @@ export default function TermsOfServicePage() {
           <section className="mb-8">
             <h2>10. Termination</h2>
             <p>
-              [PLACEHOLDER: Explain when and how accounts can be terminated, either by the user or by Sprout.]
+              [PLACEHOLDER: Explain when and how accounts can be terminated, either by the user or by Endeavrly.]
             </p>
           </section>
 
@@ -145,7 +145,7 @@ export default function TermsOfServicePage() {
               [PLACEHOLDER: Provide contact information for legal inquiries:]
             </p>
             <ul>
-              <li>Email: [legal@sprout.com]</li>
+              <li>Email: [legal@endeavrly.com]</li>
               <li>Address: [Your registered business address]</li>
             </ul>
           </section>

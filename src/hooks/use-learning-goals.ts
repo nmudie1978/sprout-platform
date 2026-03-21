@@ -7,7 +7,7 @@ import type {
   LearningGoalStatus,
 } from '@/lib/learning/types';
 
-const STORAGE_KEY = 'sprout-learning-goals';
+const STORAGE_KEY = 'endeavrly-learning-goals';
 
 function loadGoals(): LearningGoal[] {
   if (typeof window === 'undefined') return [];
