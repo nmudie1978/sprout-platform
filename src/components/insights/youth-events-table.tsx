@@ -9,7 +9,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Calendar,
   MapPin,
@@ -26,6 +26,7 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -441,9 +442,14 @@ function Pagination({
 // MAIN COMPONENT
 // ============================================
 
+// Page-size steps for "Give me more" expansion
+const PAGE_SIZE_STEPS = [5, 10, 20, 50];
+
 export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEventsTableProps) {
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(defaultPageSize);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     query: "", city: "", category: "", format: "", provider: "", months: 12,
   });
@@ -474,7 +480,34 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
   const handleFiltersChange = useCallback((newFilters: Filters) => {
     setFilters(newFilters);
     setPage(1);
-  }, []);
+    setPageSize(defaultPageSize);
+  }, [defaultPageSize]);
+
+  // Whether all events are already visible
+  const allLoaded = data ? data.items.length >= data.total : false;
+
+  // "Give me more" — expand pageSize to show more events
+  const handleGiveMore = useCallback(async () => {
+    if (allLoaded) {
+      // All events visible — refresh from server
+      setIsRefreshing(true);
+      setPage(1);
+      setPageSize(defaultPageSize);
+      await queryClient.invalidateQueries({ queryKey: ["youth-events"] });
+      setIsRefreshing(false);
+    } else {
+      // Bump to next page-size step
+      setPage(1);
+      setPageSize((prev) => {
+        const currentIdx = PAGE_SIZE_STEPS.indexOf(prev);
+        if (currentIdx >= 0 && currentIdx < PAGE_SIZE_STEPS.length - 1) {
+          return PAGE_SIZE_STEPS[currentIdx + 1];
+        }
+        // If not on a step or already at max, double it capped at 50
+        return Math.min(prev * 2, 50);
+      });
+    }
+  }, [allLoaded, defaultPageSize, queryClient]);
 
   // Stale-data empty state — only when stale AND no events at all
   if (!isLoading && data && data.dataFresh === false && data.items.length === 0 && data.total === 0) {
@@ -626,6 +659,15 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
             </div>
 
             <Pagination page={page} pageSize={pageSize} total={data.total} onPageChange={setPage} />
+
+            {/* "Give me more" button */}
+            <GiveMoreButton
+              allLoaded={allLoaded}
+              isRefreshing={isRefreshing}
+              totalEvents={data.total}
+              visibleCount={data.items.length}
+              onGiveMore={handleGiveMore}
+            />
           </>
         )}
 
@@ -641,6 +683,60 @@ export function YouthEventsTable({ className, defaultPageSize = 5 }: YouthEvents
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+// ============================================
+// "GIVE ME MORE" BUTTON
+// ============================================
+
+function GiveMoreButton({
+  allLoaded,
+  isRefreshing,
+  totalEvents,
+  visibleCount,
+  onGiveMore,
+}: {
+  allLoaded: boolean;
+  isRefreshing: boolean;
+  totalEvents: number;
+  visibleCount: number;
+  onGiveMore: () => void;
+}) {
+  const remaining = totalEvents - visibleCount;
+
+  return (
+    <div className="flex flex-col items-center gap-1.5 pt-3 border-t">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onGiveMore}
+        disabled={isRefreshing}
+        className="text-xs gap-1.5"
+      >
+        {isRefreshing ? (
+          <>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Refreshing...
+          </>
+        ) : allLoaded ? (
+          <>
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh for new events
+          </>
+        ) : (
+          <>
+            <Sparkles className="h-3.5 w-3.5" />
+            Give me more
+          </>
+        )}
+      </Button>
+      <p className="text-[10px] text-muted-foreground/50">
+        {allLoaded
+          ? `Showing all ${totalEvents} events — refresh to check for new ones`
+          : `Showing ${visibleCount} of ${totalEvents} events · ${remaining} more available`}
+      </p>
+    </div>
   );
 }
 

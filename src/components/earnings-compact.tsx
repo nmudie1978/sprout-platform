@@ -22,9 +22,9 @@ export function EarningsCompact() {
   if (isLoading) {
     return (
       <Card className="border relative z-10">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-center h-16">
-            <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <CardContent className="p-2.5">
+          <div className="flex items-center justify-center h-12">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         </CardContent>
       </Card>
@@ -40,37 +40,37 @@ export function EarningsCompact() {
 
   return (
     <Card className="border hover:shadow-md transition-shadow relative z-10">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-emerald-500/10">
-              <Wallet className="h-4 w-4 text-emerald-600" />
+      <CardContent className="p-2.5">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5">
+            <div className="p-1 rounded-md bg-emerald-500/10">
+              <Wallet className="h-3.5 w-3.5 text-emerald-600" />
             </div>
-            <span className="text-sm font-medium">Earnings</span>
+            <span className="text-xs font-medium">Earnings</span>
           </div>
           {totalEarned > 0 && (
             <Link href="/earnings" className="inline-block">
-              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-emerald-600 hover:text-emerald-700 pointer-events-auto">
-                <BarChart3 className="h-3 w-3 mr-1" />
+              <Button variant="ghost" size="sm" className="h-6 px-1.5 text-[10px] text-emerald-600 hover:text-emerald-700 pointer-events-auto">
+                <BarChart3 className="h-2.5 w-2.5 mr-0.5" />
                 Chart
               </Button>
             </Link>
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           <div className="flex items-baseline justify-between">
-            <span className="text-xs text-muted-foreground">Total</span>
-            <span className="text-lg font-bold text-gray-600 dark:text-gray-400">
+            <span className="text-[10px] text-muted-foreground">Total</span>
+            <span className="text-sm font-bold text-gray-600 dark:text-gray-400">
               {formatCurrency(totalEarned)}
             </span>
           </div>
-          <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center justify-between text-[10px]">
             <span className="text-muted-foreground">This month</span>
             <span className="font-medium">{formatCurrency(thisMonthEarnings)}</span>
           </div>
           {pendingAmount > 0 && (
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-[10px]">
               <span className="text-muted-foreground">Pending</span>
               <span className="font-medium text-gray-600 dark:text-gray-400">{formatCurrency(pendingAmount)}</span>
             </div>
@@ -78,8 +78,8 @@ export function EarningsCompact() {
         </div>
 
         {totalEarned === 0 && (
-          <div className="mt-3 pt-3 border-t">
-            <p className="text-xs text-muted-foreground text-center">
+          <div className="mt-2 pt-2 border-t">
+            <p className="text-[10px] text-muted-foreground text-center">
               Complete small jobs to start earning
             </p>
           </div>

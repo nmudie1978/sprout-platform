@@ -187,8 +187,15 @@ export default function JobsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 relative">
-      {/* Background gradient - matches Industry Insights */}
+      {/* Background — subtle dot texture for action-oriented feel */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 pointer-events-none" />
+      <div
+        className="absolute inset-0 -z-10 pointer-events-none opacity-[0.03] dark:opacity-[0.04]"
+        style={{
+          backgroundImage: "radial-gradient(circle, currentColor 0.5px, transparent 0.5px)",
+          backgroundSize: "16px 16px",
+        }}
+      />
 
       <PageHeader
         title="Find"
@@ -196,6 +203,11 @@ export default function JobsPage() {
         description="Earn money while building real-world skills"
         icon={Briefcase}
       />
+
+      {/* Mode marker */}
+      <p className="text-xs text-muted-foreground -mt-4 mb-6 tracking-wide">
+        Try real work. Build skills. Prove reliability.
+      </p>
 
       {/* Stats Bar */}
       <motion.div
@@ -463,10 +475,10 @@ export default function JobsPage() {
               transition={{ delay: 0.25 }}
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
                   : viewMode === "list"
                     ? "border rounded-lg overflow-hidden bg-background"
-                    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
+                    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5"
               }
             >
               {filteredJobs.map((job: any, index: number) => (

@@ -1,6 +1,6 @@
 /**
  * Entry-Level Youth Career Cards
- * These are realistic first jobs for Norwegian youth ages 15-20
+ * These are realistic first jobs for Norwegian youth ages 15-23
  * Designed to complement the tech/professional careers with accessible options
  */
 

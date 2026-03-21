@@ -162,7 +162,7 @@ export function JobRecommendations({ jobId, isEmployer }: JobRecommendationsProp
                   className="flex items-center gap-3 p-3 cursor-pointer hover:bg-muted/30 transition-colors"
                   onClick={() => setExpandedId(isExpanded ? null : rec.id)}
                 >
-                  <Avatar avatarId={profile?.avatarId} size="sm" />
+                  <Avatar name={profile?.displayName} size="sm" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium truncate">

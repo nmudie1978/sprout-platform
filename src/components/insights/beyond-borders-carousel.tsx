@@ -5,8 +5,7 @@
  *
  * Replaces the old accordion-based BeyondBordersSection with:
  * A) Article carousel — swipe/arrow/keyboard navigation, dot indicators
- * B) Real Paths — horizontal-scroll mini profile cards
- * C) Small Steps — tap-to-expand chips (replaces hover tooltips)
+ * B) Small Steps — tap-to-expand chips (replaces hover tooltips)
  *
  * Preserves: save-to-journey mutation, translation support, all data.
  */
@@ -23,7 +22,6 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  MapPin,
   Plane,
   Laptop,
   Globe,
@@ -31,7 +29,6 @@ import {
   Users,
   AlertTriangle,
   Lightbulb,
-  ArrowRight,
   Languages,
   Clock,
 } from "lucide-react";
@@ -42,7 +39,6 @@ import {
   type BeyondBordersArticle,
   type SmallStep,
   BEYOND_BORDERS_ARTICLES,
-  REAL_PATH_STORIES,
   SMALL_STEPS,
 } from "@/lib/industry-insights/beyond-borders-data";
 
@@ -81,10 +77,6 @@ export function BeyondBordersCarousel() {
         { key: `bb-title-${a.id}`, text: a.title },
         { key: `bb-subtitle-${a.id}`, text: a.subtitle },
         { key: `bb-takeaway-${a.id}`, text: a.takeaway },
-      ]),
-      ...REAL_PATH_STORIES.flatMap((s) => [
-        { key: `bb-harder-${s.id}`, text: s.harderThanExpected },
-        { key: `bb-helped-${s.id}`, text: s.helpedGrowth },
       ]),
       ...SMALL_STEPS.flatMap((s) => [
         { key: `bb-step-title-${s.id}`, text: s.title },
@@ -168,10 +160,7 @@ export function BeyondBordersCarousel() {
         getText={getText}
       />
 
-      {/* B) Real Paths — horizontal scroll */}
-      <RealPathsStrip getText={getText} />
-
-      {/* C) Small Steps — tap to expand */}
+      {/* B) Small Steps — tap to expand */}
       <SmallStepsChips getText={getText} />
     </div>
   );
@@ -407,108 +396,7 @@ function ArticleCarousel({ articles, savedSlugs, onSave, getText }: ArticleCarou
 }
 
 // ============================================
-// B) REAL PATHS — HORIZONTAL SCROLL
-// ============================================
-
-interface RealPathsStripProps {
-  getText: (key: string, original: string) => string;
-}
-
-function RealPathsStrip({ getText }: RealPathsStripProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  const toggleStory = useCallback((id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }, []);
-
-  return (
-    <div className="space-y-2">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        Real Paths — one possible path, not a blueprint
-      </p>
-
-      {/* Horizontal scroll container */}
-      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-        {REAL_PATH_STORIES.map((story) => {
-          const isExpanded = expandedId === story.id;
-          return (
-            <div
-              key={story.id}
-              role="button"
-              tabIndex={0}
-              aria-expanded={isExpanded}
-              onClick={() => toggleStory(story.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  toggleStory(story.id);
-                }
-              }}
-              className={`min-w-[240px] max-w-[280px] snap-start rounded-xl border p-3 cursor-pointer transition-all shrink-0 ${
-                isExpanded
-                  ? "border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-950/10"
-                  : "border-border hover:border-teal-200 dark:hover:border-teal-800"
-              }`}
-            >
-              {/* Profile row */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/40 shrink-0">
-                  <MapPin className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-medium truncate">{story.name}</span>
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-teal-200 dark:border-teal-800">
-                      {story.age}
-                    </Badge>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground truncate">{story.role}</p>
-                </div>
-              </div>
-
-              {/* From → To */}
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                <span className="truncate">{story.fromLocation}</span>
-                <ArrowRight className="h-2.5 w-2.5 shrink-0" />
-                <span className="truncate">{story.toLocation}</span>
-              </div>
-
-              {/* Expanded Q&A */}
-              {isExpanded && (
-                <div className="mt-2 pt-2 border-t border-border/50 space-y-2">
-                  <div>
-                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-0.5">
-                      Harder than expected
-                    </p>
-                    <p className="text-xs text-foreground/80 leading-relaxed">
-                      {getText(`bb-harder-${story.id}`, story.harderThanExpected)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-0.5">
-                      What helped growth
-                    </p>
-                    <p className="text-xs text-foreground/80 leading-relaxed">
-                      {getText(`bb-helped-${story.id}`, story.helpedGrowth)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Swipe hint — mobile only */}
-      <p className="text-[10px] text-muted-foreground/50 text-center sm:hidden">
-        Swipe to see more
-      </p>
-    </div>
-  );
-}
-
-// ============================================
-// C) SMALL STEPS — TAP TO EXPAND
+// B) SMALL STEPS — TAP TO EXPAND
 // ============================================
 
 interface SmallStepsChipsProps {

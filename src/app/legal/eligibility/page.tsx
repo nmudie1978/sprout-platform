@@ -123,7 +123,7 @@ export default function EligibilityPage() {
               Sprout uses the following methods to verify users:
             </p>
             <ul>
-              <li><strong>Youth (15-20):</strong> Vipps login or age verification during sign-up</li>
+              <li><strong>Youth (15-23):</strong> Vipps login or age verification during sign-up</li>
               <li><strong>Adults (18+):</strong> BankID or equivalent identity verification</li>
             </ul>
             <p>

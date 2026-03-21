@@ -94,11 +94,11 @@ function GoalCard({
   const isPrimary = slot === "primary";
 
   const addNextStep = () => {
-    if (!editForm || editForm.nextSteps.length >= 5) return;
+    if (!editForm || (editForm.nextSteps ?? []).length >= 5) return;
     setEditForm({
       ...editForm,
       nextSteps: [
-        ...editForm.nextSteps,
+        ...(editForm.nextSteps ?? []),
         { id: crypto.randomUUID(), text: "", completed: false },
       ],
     });
@@ -108,7 +108,7 @@ function GoalCard({
     if (!editForm) return;
     setEditForm({
       ...editForm,
-      nextSteps: editForm.nextSteps.map((s) =>
+      nextSteps: (editForm.nextSteps ?? []).map((s) =>
         s.id === id ? { ...s, text } : s
       ),
     });
@@ -118,16 +118,16 @@ function GoalCard({
     if (!editForm) return;
     setEditForm({
       ...editForm,
-      nextSteps: editForm.nextSteps.filter((s) => s.id !== id),
+      nextSteps: (editForm.nextSteps ?? []).filter((s) => s.id !== id),
     });
   };
 
   const addSkill = (skill: string) => {
-    if (!editForm || !skill.trim() || editForm.skills.length >= 8) return;
-    if (editForm.skills.includes(skill.trim())) return;
+    if (!editForm || !skill.trim() || (editForm.skills ?? []).length >= 8) return;
+    if ((editForm.skills ?? []).includes(skill.trim())) return;
     setEditForm({
       ...editForm,
-      skills: [...editForm.skills, skill.trim()],
+      skills: [...(editForm.skills ?? []), skill.trim()],
     });
   };
 
@@ -135,7 +135,7 @@ function GoalCard({
     if (!editForm) return;
     setEditForm({
       ...editForm,
-      skills: editForm.skills.filter((s) => s !== skill),
+      skills: (editForm.skills ?? []).filter((s) => s !== skill),
     });
   };
 
@@ -253,7 +253,6 @@ function GoalCard({
                 <SelectContent>
                   <SelectItem value="exploring">Exploring</SelectItem>
                   <SelectItem value="committed">Committed</SelectItem>
-                  <SelectItem value="paused">Paused</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -306,10 +305,10 @@ function GoalCard({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium">Next Steps</label>
-              <span className="text-xs text-muted-foreground">{editForm.nextSteps.length}/5</span>
+              <span className="text-xs text-muted-foreground">{(editForm.nextSteps ?? []).length}/5</span>
             </div>
             <div className="space-y-2">
-              {editForm.nextSteps.map((step) => (
+              {(editForm.nextSteps ?? []).map((step) => (
                 <div key={step.id} className="flex items-center gap-2">
                   <Input
                     value={step.text}
@@ -328,7 +327,7 @@ function GoalCard({
                   </Button>
                 </div>
               ))}
-              {editForm.nextSteps.length < 5 && (
+              {(editForm.nextSteps ?? []).length < 5 && (
                 <Button variant="outline" size="sm" onClick={addNextStep} className="w-full">
                   <Plus className="h-4 w-4 mr-1" /> Add Step
                 </Button>
@@ -339,10 +338,10 @@ function GoalCard({
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium">Skills to Build</label>
-              <span className="text-xs text-muted-foreground">{editForm.skills.length}/8</span>
+              <span className="text-xs text-muted-foreground">{(editForm.skills ?? []).length}/8</span>
             </div>
             <div className="flex flex-wrap gap-2 mb-2">
-              {editForm.skills.map((skill) => (
+              {(editForm.skills ?? []).map((skill) => (
                 <Badge
                   key={skill}
                   variant="secondary"
@@ -354,7 +353,7 @@ function GoalCard({
                 </Badge>
               ))}
             </div>
-            {editForm.skills.length < 8 && (
+            {(editForm.skills ?? []).length < 8 && (
               <Input
                 placeholder="Add a skill..."
                 onKeyDown={(e) => {
@@ -431,14 +430,14 @@ function GoalCard({
           </div>
         )}
 
-        {goal!.nextSteps.length > 0 && (
+        {(goal!.nextSteps ?? []).length > 0 && (
           <div>
             <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-green-500" />
               Next Steps
             </h4>
             <div className="space-y-1">
-              {goal!.nextSteps.map((step) => (
+              {(goal!.nextSteps ?? []).map((step) => (
                 <div key={step.id} className="flex items-center gap-2 text-sm">
                   <Checkbox checked={step.completed} disabled className="h-4 w-4" />
                   <span className={step.completed ? "line-through text-muted-foreground" : ""}>
@@ -450,14 +449,14 @@ function GoalCard({
           </div>
         )}
 
-        {goal!.skills.length > 0 && (
+        {(goal!.skills ?? []).length > 0 && (
           <div>
             <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
               <Lightbulb className="h-4 w-4 text-amber-500" />
               Skills to Build
             </h4>
             <div className="flex flex-wrap gap-1.5">
-              {goal!.skills.map((skill) => (
+              {(goal!.skills ?? []).map((skill) => (
                 <Badge key={skill} variant="secondary" className="text-xs">
                   {skill}
                 </Badge>

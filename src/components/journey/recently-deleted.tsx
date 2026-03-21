@@ -6,14 +6,12 @@ import { ChevronDown, ChevronRight, RotateCcw, Trash2, Clock } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type RecoverableTable = 'savedItem' | 'journeyNote' | 'traitObservation';
+type RecoverableTable = 'savedItem' | 'journeyNote';
 
 interface DeletedItem {
   id: string;
   title?: string | null;
   content?: string | null;
-  traitId?: string;
-  observation?: string;
   deletedAt: string;
 }
 
@@ -25,8 +23,7 @@ const RETENTION_DAYS = 30;
 
 function getLabel(item: DeletedItem, type: RecoverableTable): string {
   if (type === 'savedItem') return item.title || 'Untitled item';
-  if (type === 'journeyNote') return item.title || item.content?.slice(0, 60) || 'Untitled note';
-  return item.traitId || 'Unknown trait';
+  return item.title || item.content?.slice(0, 60) || 'Untitled note';
 }
 
 function getDaysLeft(deletedAt: string): number {
@@ -47,7 +44,7 @@ export function RecentlyDeleted({ type }: RecentlyDeletedProps) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading } = useQuery<{ savedItems: DeletedItem[]; notes: DeletedItem[]; traits: DeletedItem[] }>({
+  const { data, isLoading } = useQuery<{ savedItems: DeletedItem[]; notes: DeletedItem[] }>({
     queryKey: ['journey-deleted', type],
     queryFn: async () => {
       const response = await fetch(`/api/journey/deleted?type=${type}`);
@@ -71,7 +68,6 @@ export function RecentlyDeleted({ type }: RecentlyDeletedProps) {
       queryClient.invalidateQueries({ queryKey: ['journey-deleted', type] });
       queryClient.invalidateQueries({ queryKey: ['journey-library'] });
       queryClient.invalidateQueries({ queryKey: ['journey-notes'] });
-      queryClient.invalidateQueries({ queryKey: ['trait-observations'] });
     },
   });
 
@@ -91,9 +87,7 @@ export function RecentlyDeleted({ type }: RecentlyDeletedProps) {
   const items: DeletedItem[] =
     type === 'savedItem'
       ? data?.savedItems || []
-      : type === 'journeyNote'
-        ? data?.notes || []
-        : data?.traits || [];
+      : data?.notes || [];
 
   const count = items.length;
 

@@ -1,0 +1,56 @@
+{
+  "common": {
+    "save": "Lagre",
+    "cancel": "Avbryt",
+    "close": "Lukk",
+    "loading": "Laster…",
+    "showOriginal": "Vis original",
+    "translateToNorwegian": "Oversett til norsk",
+    "translating": "Oversetter…"
+  },
+  "nav": {
+    "dashboard": "Oversikt",
+    "jobs": "Småjobber",
+    "insights": "Bransjeanalyse",
+    "myJourney": "Min reise",
+    "explore": "Utforsk karrierer",
+    "feedback": "Tilbakemelding"
+  },
+  "insights": {
+    "pageTitle": "Bransje",
+    "pageTitleGradient": "Innsikt",
+    "pageDescription": "Forstå hva som former karrierer globalt",
+    "trustLine": "Bransjeinnsikt er ditt verdensblikk — den hjelper deg å forstå verden bortom stillingsannonser. Delt i to: globale karrieretrender og hva det betyr for deg (15–23).",
+    "verifiedSources": "Verifiserte kilder · Oppdateres jevnlig",
+    "showContextHints": "Vis konteksttips",
+    "globalLens": "Globalt blikk",
+    "globalTitle": "Globalt karriere- og bransjebilde",
+    "globalSubtitle": "Makrotrender som former jobber verden over — datadrevet, ikke ungdomsspesifikk",
+    "jobMarketStats": "Arbeidsmarkedsstatistikk",
+    "jobMarketStatsDesc": "Nøkkeltall fra global arbeidsmarkedsforskning",
+    "youthLens": "Ungdomsblikk",
+    "youthTitle": "Hva det betyr for deg (15–23)",
+    "youthSubtitle": "Hvordan det globale bildet kobles til dine valg — varmt, handlingsrettet, jordnært",
+    "aboutData": "Om dataene",
+    "aboutDataDesc": "All innsikt er hentet fra Tier-1-kilder og gjennomgås kvartalsvis. Innhold er oppsummert for klarhet.",
+    "refreshed": "Oppdatert Q1 2025",
+    "verified": "Verifisert"
+  },
+  "userMenu": {
+    "account": "Konto",
+    "profile": "Profil",
+    "settings": "Innstillinger",
+    "tools": "Verktøy",
+    "aiCareerAdvisor": "AI Karriererådgiver",
+    "safety": "Sikkerhet",
+    "healthSafety": "Helse og sikkerhet",
+    "reportConcern": "Meld en bekymring",
+    "aboutSprout": "Om Sprout",
+    "lightMode": "Lyst tema",
+    "darkMode": "Mørkt tema",
+    "logOut": "Logg ut",
+    "language": "Språk",
+    "english": "English",
+    "norwegian": "Norsk"
+  }
+}

@@ -11,7 +11,7 @@ import {
   type RecoverableTable,
 } from '@/lib/journey/recovery-service';
 
-const VALID_TABLES: RecoverableTable[] = ['savedItem', 'journeyNote', 'traitObservation'];
+const VALID_TABLES: RecoverableTable[] = ['savedItem', 'journeyNote'];
 
 function isValidTable(t: string): t is RecoverableTable {
   return VALID_TABLES.includes(t as RecoverableTable);
@@ -20,7 +20,7 @@ function isValidTable(t: string): t is RecoverableTable {
 /**
  * GET /api/journey/deleted
  * Returns soft-deleted items within the 30-day retention window.
- * Optional query param: ?type=savedItem|journeyNote|traitObservation
+ * Optional query param: ?type=savedItem|journeyNote
  */
 export async function GET(req: NextRequest) {
   try {
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 /**
  * POST /api/journey/deleted
  * Restore a soft-deleted item.
- * Body: { table: "savedItem" | "journeyNote" | "traitObservation", itemId: string }
+ * Body: { table: "savedItem" | "journeyNote", itemId: string }
  */
 export async function POST(req: NextRequest) {
   try {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     const { table, itemId } = body;
 
     if (!table || !isValidTable(table)) {
-      return NextResponse.json({ error: 'Invalid table. Must be savedItem, journeyNote, or traitObservation' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid table. Must be savedItem or journeyNote' }, { status: 400 });
     }
 
     if (!itemId || typeof itemId !== 'string') {

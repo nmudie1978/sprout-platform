@@ -5,11 +5,11 @@
  * All age gating decisions MUST use this module.
  *
  * PLATFORM AGE POLICY (v1.0):
- * - Target audience: 16-20 years old
- * - Under 16: HARD BLOCKED from platform (MVP)
- * - 16-17: Minor-safe defaults, guardian consent required for sensitive actions
- * - 18-20: Standard flow
- * - Over 20: Allowed but marked as "out of target" (may restrict in future)
+ * - Target audience: 15-23 years old
+ * - Under 15: HARD BLOCKED from platform (MVP)
+ * - 15-17: Minor-safe defaults, guardian consent required for sensitive actions
+ * - 18-23: Standard flow
+ * - Over 23: Allowed but marked as "out of target" (may restrict in future)
  *
  * IMPORTANT: Never expose actual DOB to clients. Use age bands instead.
  */
@@ -22,10 +22,10 @@ import type { YouthAgeBand, AccountStatus } from "@prisma/client";
 // ============================================
 
 /** Platform minimum age - hard blocked below this */
-export const PLATFORM_MIN_AGE = 16;
+export const PLATFORM_MIN_AGE = 15;
 
 /** Platform maximum target age */
-export const PLATFORM_MAX_AGE = 20;
+export const PLATFORM_MAX_AGE = 23;
 
 /** Adult age threshold - no guardian consent needed */
 export const ADULT_AGE = 18;
@@ -35,7 +35,7 @@ export const ADULT_AGE = 18;
 // ============================================
 
 /** Age bands for platform access decisions */
-export type AgeBand = "UNDER_16" | "AGE_16_17" | "AGE_18_20" | "OVER_20" | "UNKNOWN";
+export type AgeBand = "UNDER_15" | "AGE_15_17" | "AGE_18_23" | "OVER_23" | "UNKNOWN";
 
 /** Guardian consent status */
 export type ConsentStatus = "NOT_REQUIRED" | "PENDING" | "VERIFIED" | "REJECTED";
@@ -95,10 +95,10 @@ export function getAge(dateOfBirth: Date | string | null | undefined, now: Date 
  */
 export function getAgeBand(age: number | null): AgeBand {
   if (age === null) return "UNKNOWN";
-  if (age < 16) return "UNDER_16";
-  if (age <= 17) return "AGE_16_17";
-  if (age <= 20) return "AGE_18_20";
-  return "OVER_20";
+  if (age < 15) return "UNDER_15";
+  if (age <= 17) return "AGE_15_17";
+  if (age <= 23) return "AGE_18_23";
+  return "OVER_23";
 }
 
 /**
@@ -110,11 +110,11 @@ export function mapYouthAgeBandToAgeBand(youthAgeBand: YouthAgeBand | null): Age
 
   switch (youthAgeBand) {
     case "UNDER_SIXTEEN":
-      return "UNDER_16";
+      return "UNDER_15";
     case "SIXTEEN_SEVENTEEN":
-      return "AGE_16_17";
+      return "AGE_15_17";
     case "EIGHTEEN_TWENTY":
-      return "AGE_18_20";
+      return "AGE_18_23";
     default:
       return "UNKNOWN";
   }
@@ -124,10 +124,10 @@ export function mapYouthAgeBandToAgeBand(youthAgeBand: YouthAgeBand | null): Age
  * Determine if a user is allowed to use the platform based on age band and consent.
  *
  * CORE SAFETY INVARIANT:
- * - UNDER_16: NEVER allowed (hard block)
- * - AGE_16_17: Allowed only with guardian consent for sensitive actions
- * - AGE_18_20: Always allowed (standard flow)
- * - OVER_20: Allowed (out of target but permitted)
+ * - UNDER_15: NEVER allowed (hard block)
+ * - AGE_15_17: Allowed only with guardian consent for sensitive actions
+ * - AGE_18_23: Always allowed (standard flow)
+ * - OVER_23: Allowed (out of target but permitted)
  * - UNKNOWN: NOT allowed (fail-safe)
  *
  * @param ageBand - User's age band
@@ -141,15 +141,15 @@ export function isAllowedToUsePlatform(
   checkSensitiveAction: boolean = false
 ): PlatformAccessResult {
   switch (ageBand) {
-    case "UNDER_16":
+    case "UNDER_15":
       return {
         allowed: false,
         ageBand,
-        reason: "Sprout is for users aged 16-20. You must be at least 16 to use this platform.",
+        reason: "Sprout is for users aged 15-23. You must be at least 15 to use this platform.",
         requiresGuardianConsent: false,
       };
 
-    case "AGE_16_17":
+    case "AGE_15_17":
       // For sensitive actions (messaging, applying), require guardian consent
       if (checkSensitiveAction) {
         const hasConsent = consentStatus === "VERIFIED";
@@ -172,7 +172,7 @@ export function isAllowedToUsePlatform(
         consentStatus: consentStatus || "PENDING",
       };
 
-    case "AGE_18_20":
+    case "AGE_18_23":
       return {
         allowed: true,
         ageBand,
@@ -181,7 +181,7 @@ export function isAllowedToUsePlatform(
         consentStatus: "NOT_REQUIRED",
       };
 
-    case "OVER_20":
+    case "OVER_23":
       return {
         allowed: true,
         ageBand,
@@ -205,14 +205,14 @@ export function isAllowedToUsePlatform(
  * Check if a user is a minor (under 18).
  */
 export function isMinor(ageBand: AgeBand): boolean {
-  return ageBand === "UNDER_16" || ageBand === "AGE_16_17";
+  return ageBand === "UNDER_15" || ageBand === "AGE_15_17";
 }
 
 /**
  * Check if guardian consent is required for this age band.
  */
 export function requiresConsent(ageBand: AgeBand): boolean {
-  return ageBand === "AGE_16_17";
+  return ageBand === "AGE_15_17";
 }
 
 // ============================================
@@ -336,20 +336,20 @@ export function validateSignupAge(dateOfBirth: string | Date): { valid: boolean;
     return { valid: false, error: "Invalid date of birth", ageBand: "UNKNOWN" };
   }
 
-  if (ageBand === "UNDER_16") {
+  if (ageBand === "UNDER_15") {
     return {
       valid: false,
-      error: "Sprout is for users aged 16-20. You must be at least 16 to create an account.",
+      error: "Sprout is for users aged 15-23. You must be at least 15 to create an account.",
       ageBand,
     };
   }
 
-  if (age > 25) {
+  if (age > 28) {
     // Soft limit for youth platform
     return {
       valid: false,
-      error: "This platform is designed for young people aged 16-20.",
-      ageBand: "OVER_20",
+      error: "This platform is designed for young people aged 15-23.",
+      ageBand: "OVER_23",
     };
   }
 

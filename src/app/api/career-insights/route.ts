@@ -29,7 +29,7 @@ export async function GET() {
     const totalCompletedJobs = youthProfile?.completedJobsCount || 0;
 
     // Get recommended careers based on primary goal title and skills
-    const recommendations = getRecommendationsFromAspiration(careerAspiration, goalSkills);
+    const recommendations = getRecommendationsFromAspiration(careerAspiration);
 
     // Get top categories from recommendations
     const categoryCount: Record<CareerCategory, number> = {} as Record<CareerCategory, number>;

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { getAvatarById } from "@/lib/avatars";
+import { Avatar } from "@/components/avatar";
 
 interface Conversation {
   id: string;
@@ -103,18 +103,12 @@ export function ConversationList() {
                 <div className="flex items-start gap-3">
                   {/* Avatar - show based on role */}
                   <div className="flex-shrink-0">
-                    {conversation.otherParty.role === "YOUTH" && conversation.otherParty.avatar ? (
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xl">
-                        {getAvatarById(conversation.otherParty.avatar)?.emoji || "⭐"}
-                      </div>
-                    ) : conversation.otherParty.role === "EMPLOYER" ? (
+                    {conversation.otherParty.role === "EMPLOYER" ? (
                       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                         <Building2 className="h-5 w-5 text-muted-foreground" />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <User className="h-5 w-5 text-muted-foreground" />
-                      </div>
+                      <Avatar name={conversation.otherParty.name} size="sm" />
                     )}
                   </div>
 

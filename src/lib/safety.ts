@@ -7,9 +7,9 @@ import { prisma } from "@/lib/prisma";
 import { AccountStatus, AuditAction, UserRole } from "@prisma/client";
 
 // Age thresholds
-// SAFETY INVARIANT: Platform is for ages 16-20. Under-16 is HARD BLOCKED.
-export const MIN_YOUTH_AGE = 16; // Updated from 15 - platform minimum is now 16
-export const MAX_YOUTH_AGE = 20;
+// SAFETY INVARIANT: Platform is for ages 15-23. Under-15 is HARD BLOCKED.
+export const MIN_YOUTH_AGE = 15;
+export const MAX_YOUTH_AGE = 23;
 export const ADULT_AGE = 18;
 export const MIN_EMPLOYER_AGE = 18;
 
@@ -586,7 +586,7 @@ export function validateAgeBracket(dateOfBirth: Date): "SIXTEEN_SEVENTEEN" | "EI
 
   if (age >= 15 && age <= 17) {
     return "SIXTEEN_SEVENTEEN";
-  } else if (age >= 18 && age <= 20) {
+  } else if (age >= 18 && age <= 23) {
     return "EIGHTEEN_TWENTY";
   }
 

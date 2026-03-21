@@ -494,7 +494,7 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
       {/* Youth-focused legend */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
         <Star className="h-3 w-3 text-yellow-500" />
-        <span>Events marked with a star are specifically designed for ages 15-20</span>
+        <span>Events marked with a star are specifically designed for ages 15-23</span>
       </div>
 
       {/* Location Change Modal */}

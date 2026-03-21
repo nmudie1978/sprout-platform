@@ -32,6 +32,8 @@ interface HeroVideoProps {
   tracks?: VideoTrack[];
   ariaLabel?: string;
   caption?: string;
+  /** Override the outer container classes (width, padding, etc.) */
+  className?: string;
 }
 
 export function HeroVideo({
@@ -40,6 +42,7 @@ export function HeroVideo({
   tracks = [],
   ariaLabel = "Explainer video",
   caption,
+  className,
 }: HeroVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +123,7 @@ export function HeroVideo({
   }, [isVisible]);
 
   return (
-    <div className="w-full max-w-xs sm:max-w-sm mx-auto px-4">
+    <div className={className ?? "w-full max-w-xs sm:max-w-sm mx-auto px-4"}>
       {/* Video Container */}
       <div
         ref={containerRef}

@@ -2,7 +2,7 @@
  * Verified Learning Recommendations System
  *
  * ACCURACY-FIRST APPROACH: Only surfaces courses and certifications that have been
- * verified as real, current, and appropriate for youth (16-20).
+ * verified as real, current, and appropriate for youth (15-23).
  *
  * HARD RULES:
  * - Never hallucinate courses, providers, or URLs

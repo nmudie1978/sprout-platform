@@ -26,8 +26,6 @@ const colors = {
   exploringText: "#1D4ED8",
   committedBg: "#D1FAE5",
   committedText: "#047857",
-  pausedBg: "#FEF3C7",
-  pausedText: "#92400E",
 };
 
 // Styles
@@ -321,8 +319,6 @@ function getStatusColors(status: GoalStatus): { bg: string; text: string } {
       return { bg: colors.exploringBg, text: colors.exploringText };
     case "committed":
       return { bg: colors.committedBg, text: colors.committedText };
-    case "paused":
-      return { bg: colors.pausedBg, text: colors.pausedText };
   }
 }
 
@@ -333,8 +329,6 @@ function getStatusLabel(status: GoalStatus): string {
       return "Exploring";
     case "committed":
       return "Committed";
-    case "paused":
-      return "Paused";
   }
 }
 
@@ -504,11 +498,11 @@ function PrimaryGoalPage({ data }: { data: ReportData }) {
       )}
 
       {/* Next Steps */}
-      {goal.nextSteps.length > 0 && (
+      {(goal.nextSteps ?? []).length > 0 && (
         <View style={styles.card}>
           <Text style={styles.labelCaps}>MY NEXT STEPS</Text>
           <View style={{ marginTop: 8 }}>
-            {goal.nextSteps.slice(0, 5).map((step) => (
+            {(goal.nextSteps ?? []).slice(0, 5).map((step) => (
               <View key={step.id} style={styles.stepItem}>
                 <View style={step.completed ? styles.stepCircleFilled : styles.stepCircle} />
                 <Text style={[styles.stepText, step.completed ? { color: colors.muted } : {}]}>
@@ -521,11 +515,11 @@ function PrimaryGoalPage({ data }: { data: ReportData }) {
       )}
 
       {/* Skills */}
-      {goal.skills.length > 0 && (
+      {(goal.skills ?? []).length > 0 && (
         <View style={styles.card}>
           <Text style={styles.labelCaps}>SKILLS I&apos;M BUILDING</Text>
           <View style={[styles.chipRow, { marginTop: 8 }]}>
-            {goal.skills.map((skill, idx) => (
+            {(goal.skills ?? []).map((skill, idx) => (
               <View key={idx} style={styles.chip}>
                 <Text style={styles.chipText}>{skill}</Text>
               </View>
@@ -566,11 +560,11 @@ function SecondaryGoalPage({ data }: { data: ReportData }) {
       )}
 
       {/* Next Steps */}
-      {goal.nextSteps.length > 0 && (
+      {(goal.nextSteps ?? []).length > 0 && (
         <View style={styles.card}>
           <Text style={styles.labelCaps}>NEXT STEPS</Text>
           <View style={{ marginTop: 8 }}>
-            {goal.nextSteps.slice(0, 5).map((step) => (
+            {(goal.nextSteps ?? []).slice(0, 5).map((step) => (
               <View key={step.id} style={styles.stepItem}>
                 <View style={step.completed ? styles.stepCircleFilled : styles.stepCircle} />
                 <Text style={[styles.stepText, step.completed ? { color: colors.muted } : {}]}>
@@ -583,11 +577,11 @@ function SecondaryGoalPage({ data }: { data: ReportData }) {
       )}
 
       {/* Skills */}
-      {goal.skills.length > 0 && (
+      {(goal.skills ?? []).length > 0 && (
         <View style={styles.card}>
           <Text style={styles.labelCaps}>SKILLS</Text>
           <View style={[styles.chipRow, { marginTop: 8 }]}>
-            {goal.skills.map((skill, idx) => (
+            {(goal.skills ?? []).map((skill, idx) => (
               <View key={idx} style={styles.chip}>
                 <Text style={styles.chipText}>{skill}</Text>
               </View>
@@ -803,7 +797,7 @@ function ClosingPage({ data }: { data: ReportData }) {
   const pageNum = data.secondaryGoal ? 8 : 7;
   const totalPages = data.secondaryGoal ? 8 : 7;
 
-  const nextStep = data.primaryGoal?.nextSteps.find((s) => !s.completed);
+  const nextStep = (data.primaryGoal?.nextSteps ?? []).find((s) => !s.completed);
 
   return (
     <Page size="A4" style={styles.page}>

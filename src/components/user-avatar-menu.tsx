@@ -13,9 +13,10 @@ import {
   LogOut,
   ChevronDown,
   Bot,
-  Route,
-  Eye,
+  Info,
+  Languages,
 } from "lucide-react";
+import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,18 +32,17 @@ import Image from "next/image";
 interface UserAvatarMenuProps {
   userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
   userName?: string;
-  userAvatarId?: string | null;
   userProfilePic?: string | null;
 }
 
 export function UserAvatarMenu({
   userRole,
   userName,
-  userAvatarId,
   userProfilePic,
 }: UserAvatarMenuProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
 
   const roleLabels = {
     YOUTH: "Youth",
@@ -63,9 +63,7 @@ export function UserAvatarMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 rounded-full p-1 hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
-          {userRole === "YOUTH" && userAvatarId ? (
-            <Avatar avatarId={userAvatarId} size="sm" />
-          ) : userProfilePic ? (
+          {userProfilePic ? (
             <Image
               src={userProfilePic}
               alt={userName || "Profile"}
@@ -74,9 +72,7 @@ export function UserAvatarMenu({
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
-              {userName?.charAt(0).toUpperCase() || "U"}
-            </div>
+            <Avatar name={userName} size="sm" />
           )}
           <ChevronDown className="h-4 w-4 text-muted-foreground hidden sm:block" />
         </button>
@@ -85,9 +81,7 @@ export function UserAvatarMenu({
       <DropdownMenuContent align="end" className="w-56">
         {/* User header */}
         <div className="flex items-center gap-3 p-3 border-b">
-          {userRole === "YOUTH" && userAvatarId ? (
-            <Avatar avatarId={userAvatarId} size="sm" />
-          ) : userProfilePic ? (
+          {userProfilePic ? (
             <Image
               src={userProfilePic}
               alt={userName || "Profile"}
@@ -96,9 +90,7 @@ export function UserAvatarMenu({
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">
-              {userName?.charAt(0).toUpperCase() || "U"}
-            </div>
+            <Avatar name={userName} size="sm" />
           )}
           <div className="flex flex-col">
             <span className="text-sm font-medium truncate max-w-[150px]">
@@ -119,13 +111,8 @@ export function UserAvatarMenu({
             <User className="mr-2 h-4 w-4" />
             Profile
           </DropdownMenuItem>
-          {userRole === "EMPLOYER" ? (
+          {userRole === "EMPLOYER" && (
             <DropdownMenuItem onClick={() => navigateTo("/employer/settings")} className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem onClick={() => navigateTo("/settings")} className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
@@ -134,21 +121,13 @@ export function UserAvatarMenu({
 
         <DropdownMenuSeparator />
 
-        {/* MY SPACE Section - Only for Youth */}
+        {/* TOOLS Section - Only for Youth */}
         {userRole === "YOUTH" && (
           <>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider">
-                My Space
+                Tools
               </DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigateTo("/my-journey")} className="cursor-pointer">
-                <Route className="mr-2 h-4 w-4" />
-                My Journey
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigateTo("/shadows")} className="cursor-pointer">
-                <Eye className="mr-2 h-4 w-4" />
-                Career Shadows
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigateTo("/career-advisor")} className="cursor-pointer">
                 <Bot className="mr-2 h-4 w-4" />
                 AI Career Advisor
@@ -176,6 +155,12 @@ export function UserAvatarMenu({
 
         <DropdownMenuSeparator />
 
+        {/* About */}
+        <DropdownMenuItem onClick={() => navigateTo("/about")} className="cursor-pointer">
+          <Info className="mr-2 h-4 w-4" />
+          About Sprout
+        </DropdownMenuItem>
+
         {/* Theme toggle */}
         <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
           {theme === "dark" ? (
@@ -184,6 +169,12 @@ export function UserAvatarMenu({
             <Moon className="mr-2 h-4 w-4" />
           )}
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        </DropdownMenuItem>
+
+        {/* Language toggle */}
+        <DropdownMenuItem onClick={toggleLocale} disabled={isLocalePending} className="cursor-pointer">
+          <Languages className="mr-2 h-4 w-4" />
+          {currentLocale === "en-GB" ? "Norsk" : "English"}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

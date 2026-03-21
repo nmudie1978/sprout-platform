@@ -8,7 +8,7 @@ Industry Insight videos must be:
 - **Credible** - from internationally recognised institutions only
 - **Educational** - explaining systems and trends, not opinions
 - **Brief** - 2-6 minutes target, 8 minutes maximum
-- **Appropriate** - suitable for 16-20 year olds and trusted by parents/educators
+- **Appropriate** - suitable for 15-23 year olds and trusted by parents/educators
 - **Non-promotional** - no company marketing or influencer content
 
 ## Video Source Whitelist Location

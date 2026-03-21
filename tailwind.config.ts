@@ -128,6 +128,15 @@ const config: Config = {
             transform: "translate(-10px, 10px) scale(0.95)",
           },
         },
+        grid: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        shine: {
+          "0%": { "background-position": "0% 0%" },
+          "50%": { "background-position": "100% 100%" },
+          to: { "background-position": "0% 0%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -138,6 +147,8 @@ const config: Config = {
         shimmer: "shimmer 2s linear infinite",
         "fade-in": "fade-in 0.5s ease-out",
         "slide-up": "slide-up 0.5s ease-out",
+        grid: "grid 15s linear infinite",
+        shine: "shine var(--duration) infinite linear",
       },
     },
   },

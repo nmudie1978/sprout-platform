@@ -96,7 +96,7 @@ URLs from unknown domains are automatically rejected.
 
 ## Age Suitability
 
-For youth users (16-20), every resource is checked for:
+For youth users (15-23), every resource is checked for:
 
 1. **Explicit minimum age requirements**
 2. **Academic prerequisites** (e.g., "requires bachelor's degree")

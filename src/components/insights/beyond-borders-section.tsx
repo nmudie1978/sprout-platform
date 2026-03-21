@@ -20,7 +20,6 @@ import {
   BookmarkCheck,
   ChevronDown,
   ChevronUp,
-  MapPin,
   Plane,
   Laptop,
   Globe,
@@ -28,18 +27,14 @@ import {
   Users,
   AlertTriangle,
   Lightbulb,
-  ArrowRight,
   Languages,
 } from "lucide-react";
 import { useTranslateContent } from "@/hooks/use-translate-content";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   type BeyondBordersArticle,
-  type RealPathStory,
   type SmallStep,
   BEYOND_BORDERS_ARTICLES,
-  REAL_PATH_STORIES,
   SMALL_STEPS,
 } from "@/lib/industry-insights/beyond-borders-data";
 
@@ -61,7 +56,6 @@ const STEP_ICONS: Record<SmallStep["icon"], typeof Plane> = {
 
 export function BeyondBordersSection() {
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
-  const [expandedStory, setExpandedStory] = useState<string | null>(null);
   const [showAllSteps, setShowAllSteps] = useState(false);
   const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
   const locale = useLocale();
@@ -75,10 +69,6 @@ export function BeyondBordersSection() {
         { key: `bb-title-${a.id}`, text: a.title },
         { key: `bb-subtitle-${a.id}`, text: a.subtitle },
         { key: `bb-takeaway-${a.id}`, text: a.takeaway },
-      ]),
-      ...REAL_PATH_STORIES.flatMap((s) => [
-        { key: `bb-harder-${s.id}`, text: s.harderThanExpected },
-        { key: `bb-helped-${s.id}`, text: s.helpedGrowth },
       ]),
       ...SMALL_STEPS.flatMap((s) => [
         { key: `bb-step-title-${s.id}`, text: s.title },
@@ -102,10 +92,6 @@ export function BeyondBordersSection() {
 
   const toggleArticle = useCallback((slug: string) => {
     setExpandedSlug((prev) => (prev === slug ? null : slug));
-  }, []);
-
-  const toggleStory = useCallback((id: string) => {
-    setExpandedStory((prev) => (prev === id ? null : id));
   }, []);
 
   const saveMutation = useMutation({
@@ -242,86 +228,6 @@ export function BeyondBordersSection() {
                         {getText(`bb-takeaway-${article.id}`, article.takeaway)}
                       </p>
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Real Paths — compact rows */}
-      <div className="space-y-2">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Real Paths — one possible path, not a blueprint
-        </p>
-        {REAL_PATH_STORIES.map((story) => {
-          const isExpanded = expandedStory === story.id;
-          return (
-            <div
-              key={story.id}
-              role="button"
-              tabIndex={0}
-              aria-expanded={isExpanded}
-              onClick={() => toggleStory(story.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  toggleStory(story.id);
-                }
-              }}
-              className={`rounded-xl border px-4 py-3 cursor-pointer transition-all ${
-                isExpanded
-                  ? "border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-950/10"
-                  : "border-border hover:border-teal-200 dark:hover:border-teal-800"
-              }`}
-            >
-              {/* Summary row */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/40 shrink-0">
-                  <MapPin className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{story.name}</span>
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-teal-200 dark:border-teal-800">
-                      {story.age}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground hidden sm:inline">
-                      · {story.role}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span>{story.fromLocation}</span>
-                    <ArrowRight className="h-2.5 w-2.5 shrink-0" />
-                    <span>{story.toLocation}</span>
-                  </div>
-                </div>
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
-                )}
-              </div>
-
-              {/* Expanded Q&A */}
-              {isExpanded && (
-                <div className="mt-3 pt-3 border-t border-border/50 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                      Harder than expected
-                    </p>
-                    <p className="text-sm text-foreground/80">
-                      {getText(`bb-harder-${story.id}`, story.harderThanExpected)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                      What helped growth
-                    </p>
-                    <p className="text-sm text-foreground/80">
-                      {getText(`bb-helped-${story.id}`, story.helpedGrowth)}
-                    </p>
                   </div>
                 </div>
               )}

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
-import { getAllCareers, type Career } from "@/lib/career-pathways";
+import { getAllCareers, getAllCategories, type Career } from "@/lib/career-pathways";
 
 interface CareerInsight {
   career: Career;
@@ -206,7 +206,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                 Categories
               </div>
               <div className="text-2xl font-bold text-cyan-700 dark:text-cyan-400">
-                {topCategories.length}
+                {getAllCategories().length}
               </div>
             </div>
             <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
@@ -224,7 +224,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                 Top Match
               </div>
               <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
-                {recommendations[0]?.matchScore || 0}%
+                {Math.min(Math.round(recommendations[0]?.matchScore || 0), 100)}%
               </div>
             </div>
           </div>
@@ -239,7 +239,9 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
               <div>
                 <CardTitle className="text-lg">Recommended Careers</CardTitle>
                 <CardDescription>
-                  Based on your career goal
+                  {hasAspiration
+                    ? `Based on your goal: "${careerAspiration}"`
+                    : "Based on your career goal"}
                 </CardDescription>
               </div>
               <Button asChild variant="outline">

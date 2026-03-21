@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MobileSheet, MobileSheetFooter } from "@/components/mobile/MobileSheet";
-import { ConfirmDialogChoice } from "@/components/mobile/ConfirmDialog";
+import { ConfirmDialog, ConfirmDialogChoice } from "@/components/mobile/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { searchCareers, getAllCareers, type Career } from "@/lib/career-pathways";
-import { createEmptyGoal, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
+import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface GoalSelectionSheetProps {
@@ -53,6 +53,7 @@ export function GoalSelectionSheet({
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [slotChoice, setSlotChoice] = useState<GoalSlot | null>(targetSlot);
   const [showSwapDialog, setShowSwapDialog] = useState(false);
+  const [showPrimaryConfirm, setShowPrimaryConfirm] = useState(false);
 
   const debouncedQuery = useDebounce(searchQuery, 200);
 
@@ -80,13 +81,14 @@ export function GoalSelectionSheet({
       setSelectedCareer(null);
       setSlotChoice(targetSlot);
       setShowSwapDialog(false);
+      setShowPrimaryConfirm(false);
     }
   }, [open, targetSlot]);
 
   // Mutation to set goal
   const setGoalMutation = useMutation({
     mutationFn: async ({ slot, title }: { slot: GoalSlot; title: string }) => {
-      const goal = createEmptyGoal(title);
+      const goal = createGoalWithMilestones(title);
       const response = await fetch("/api/goals", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -135,17 +137,38 @@ export function GoalSelectionSheet({
   // Handle slot selection from swap dialog
   const handleSwapChoice = useCallback((slot: string) => {
     const goalSlot = slot as GoalSlot;
-    if (selectedCareer) {
-      setGoalMutation.mutate({ slot: goalSlot, title: selectedCareer.title });
-    }
     setShowSwapDialog(false);
-  }, [selectedCareer, setGoalMutation]);
+    if (!selectedCareer) return;
+    // If replacing primary and there's an existing primary goal, require confirmation
+    if (goalSlot === "primary" && primaryGoal && primaryGoal.title !== selectedCareer.title) {
+      setSlotChoice("primary");
+      setShowPrimaryConfirm(true);
+      return;
+    }
+    setGoalMutation.mutate({ slot: goalSlot, title: selectedCareer.title });
+  }, [selectedCareer, setGoalMutation, primaryGoal]);
 
   // Handle confirm button click
   const handleConfirm = useCallback(() => {
     if (!selectedCareer || !slotChoice) return;
+    // If changing primary goal and there's already a different primary goal, require confirmation
+    if (
+      slotChoice === "primary" &&
+      primaryGoal &&
+      primaryGoal.title !== selectedCareer.title
+    ) {
+      setShowPrimaryConfirm(true);
+      return;
+    }
     setGoalMutation.mutate({ slot: slotChoice, title: selectedCareer.title });
-  }, [selectedCareer, slotChoice, setGoalMutation]);
+  }, [selectedCareer, slotChoice, setGoalMutation, primaryGoal]);
+
+  // Handle confirmed primary goal change
+  const handlePrimaryChangeConfirmed = useCallback(() => {
+    if (!selectedCareer) return;
+    setShowPrimaryConfirm(false);
+    setGoalMutation.mutate({ slot: "primary", title: selectedCareer.title });
+  }, [selectedCareer, setGoalMutation]);
 
   // Determine what to show
   const showSuggestions = searchQuery.length < 2 && suggestedCareers.length > 0;
@@ -348,6 +371,22 @@ export function GoalSelectionSheet({
         ]}
         onSelect={handleSwapChoice}
         isPending={setGoalMutation.isPending}
+      />
+
+      {/* Confirmation dialog when changing existing primary goal */}
+      <ConfirmDialog
+        open={showPrimaryConfirm}
+        onClose={() => {
+          setShowPrimaryConfirm(false);
+          setSelectedCareer(null);
+        }}
+        title="Change Primary Goal?"
+        description={`Changing your primary goal from "${primaryGoal?.title}" to "${selectedCareer?.title}" may affect your Journey timeline. Are you sure?`}
+        confirmText="Change Goal"
+        cancelText="Cancel"
+        onConfirm={handlePrimaryChangeConfirmed}
+        isPending={setGoalMutation.isPending}
+        icon={<Star className="h-5 w-5 text-purple-500" />}
       />
     </>
   );

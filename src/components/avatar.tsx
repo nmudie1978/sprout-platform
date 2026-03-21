@@ -1,104 +1,92 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { getAvatarById, defaultAvatarId, type AvatarDefinition } from "@/lib/avatars";
 
 interface AvatarProps {
-  avatarId?: string | null;
-  fallbackInitial?: string;
+  name?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
   className?: string;
   showBorder?: boolean;
-  animated?: boolean;
-  style?: React.CSSProperties;
 }
 
 const sizeClasses = {
-  xs: "w-6 h-6 text-sm",
-  sm: "w-8 h-8 text-lg",
-  md: "w-12 h-12 text-2xl",
-  lg: "w-16 h-16 text-3xl",
-  xl: "w-20 h-20 text-4xl",
-  "2xl": "w-24 h-24 text-5xl",
+  xs: "w-6 h-6 text-[10px]",
+  sm: "w-8 h-8 text-xs",
+  md: "w-12 h-12 text-base",
+  lg: "w-16 h-16 text-xl",
+  xl: "w-20 h-20 text-2xl",
+  "2xl": "w-24 h-24 text-3xl",
 };
 
-const pixelatedStyle = {
-  imageRendering: "pixelated" as const,
-};
+const GRADIENTS = [
+  "from-rose-500 to-pink-500",
+  "from-violet-500 to-purple-500",
+  "from-blue-500 to-indigo-500",
+  "from-cyan-500 to-teal-500",
+  "from-emerald-500 to-green-500",
+  "from-amber-500 to-orange-500",
+  "from-red-500 to-rose-500",
+  "from-fuchsia-500 to-pink-500",
+  "from-sky-500 to-blue-500",
+  "from-teal-500 to-cyan-500",
+  "from-lime-500 to-emerald-500",
+  "from-orange-500 to-amber-500",
+];
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+function getColorFromName(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
+}
 
 export function Avatar({
-  avatarId,
-  fallbackInitial = "?",
+  name,
   size = "md",
   className,
   showBorder = true,
-  animated = true,
-  style,
 }: AvatarProps) {
-  const avatar = avatarId ? getAvatarById(avatarId) : getAvatarById(defaultAvatarId);
-
-  if (!avatar) {
-    // Fallback to initial-based avatar
-    return (
-      <div
-        className={cn(
-          "rounded-full flex items-center justify-center font-bold bg-gradient-to-br from-primary to-purple-500 text-white",
-          sizeClasses[size],
-          showBorder && "border-2 border-white shadow-lg",
-          className
-        )}
-        style={style}
-      >
-        {fallbackInitial.charAt(0).toUpperCase()}
-      </div>
-    );
-  }
-
-  const isPixel = avatar.style === "pixel";
+  const displayName = name || "?";
+  const initials = displayName === "?" ? "?" : getInitials(displayName);
+  const gradient = getColorFromName(displayName);
 
   return (
     <div
       className={cn(
-        "rounded-full flex items-center justify-center bg-gradient-to-br shadow-lg transition-transform",
-        avatar.bgGradient,
+        "rounded-full flex items-center justify-center font-semibold bg-gradient-to-br text-white select-none",
+        gradient,
         sizeClasses[size],
-        showBorder && `border-2 ${avatar.borderColor}`,
-        animated && "hover:scale-110",
-        isPixel && "rounded-lg", // Pixel avatars are slightly squared
+        showBorder && "ring-2 ring-white/80 shadow-md",
         className
       )}
-      style={{ ...(isPixel ? pixelatedStyle : {}), ...style }}
+      aria-label={displayName}
     >
-      <span
-        className={cn(
-          "select-none",
-          animated && "transition-transform hover:scale-110"
-        )}
-        role="img"
-        aria-label={avatar.name}
-      >
-        {avatar.emoji}
-      </span>
+      {initials}
     </div>
   );
 }
 
-// Avatar with name display
 interface AvatarWithNameProps extends AvatarProps {
-  name?: string;
   subtitle?: string;
 }
 
 export function AvatarWithName({
   name,
   subtitle,
-  avatarId,
   size = "md",
   ...props
 }: AvatarWithNameProps) {
   return (
     <div className="flex items-center gap-3">
-      <Avatar avatarId={avatarId} size={size} {...props} />
+      <Avatar name={name} size={size} {...props} />
       {name && (
         <div className="flex flex-col">
           <span className="font-semibold">{name}</span>
@@ -111,26 +99,24 @@ export function AvatarWithName({
   );
 }
 
-// Mini avatar grid preview
 interface AvatarGridProps {
-  avatarIds: string[];
+  names: string[];
   maxDisplay?: number;
   size?: "xs" | "sm";
 }
 
-export function AvatarGrid({ avatarIds, maxDisplay = 4, size = "xs" }: AvatarGridProps) {
-  const displayAvatars = avatarIds.slice(0, maxDisplay);
-  const remaining = avatarIds.length - maxDisplay;
+export function AvatarGrid({ names, maxDisplay = 4, size = "xs" }: AvatarGridProps) {
+  const displayNames = names.slice(0, maxDisplay);
+  const remaining = names.length - maxDisplay;
 
   return (
     <div className="flex -space-x-2">
-      {displayAvatars.map((id, index) => (
+      {displayNames.map((name, index) => (
         <Avatar
-          key={id}
-          avatarId={id}
+          key={name + index}
+          name={name}
           size={size}
           className="ring-2 ring-background"
-          style={{ zIndex: displayAvatars.length - index }}
         />
       ))}
       {remaining > 0 && (

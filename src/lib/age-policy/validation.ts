@@ -31,7 +31,7 @@ export const jobAgeSettingsSchema = z.object({
   minimumAge: z.number()
     .int()
     .min(PLATFORM_MINIMUM_AGE, `Minimum age cannot be below ${PLATFORM_MINIMUM_AGE}`)
-    .max(21, 'Maximum age cannot exceed 21')
+    .max(23, 'Maximum age cannot exceed 23')
     .optional(),
   requiresAdultPresent: z.boolean().optional(),
 })
@@ -40,9 +40,9 @@ export const jobAgeSettingsSchema = z.object({
  * Age policy JSON schema
  */
 export const agePolicyJsonSchema = z.object({
-  LOW_RISK: z.object({ minAge: z.number().int().min(15).max(21) }),
-  MEDIUM_RISK: z.object({ minAge: z.number().int().min(15).max(21) }),
-  HIGH_RISK: z.object({ minAge: z.number().int().min(15).max(21) }),
+  LOW_RISK: z.object({ minAge: z.number().int().min(15).max(23) }),
+  MEDIUM_RISK: z.object({ minAge: z.number().int().min(15).max(23) }),
+  HIGH_RISK: z.object({ minAge: z.number().int().min(15).max(23) }),
 })
 
 /**

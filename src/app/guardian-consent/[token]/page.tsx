@@ -247,7 +247,7 @@ export default function GuardianConsentPage() {
             <div className="space-y-2">
               <h3 className="font-semibold">What is Sprout?</h3>
               <p className="text-sm text-muted-foreground">
-                Sprout is a platform that connects young people (ages 15-20) with local micro-jobs
+                Sprout is a platform that connects young people (ages 15-23) with local micro-jobs
                 like babysitting, dog walking, lawn care, and more. We prioritise safety with
                 verified job posters, messaging moderation, and age-appropriate job listings.
               </p>

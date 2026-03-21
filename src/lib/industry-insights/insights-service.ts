@@ -524,7 +524,7 @@ function formatDuration(isoDuration: string): string {
 
 export async function fetchArticlesBySection(
   sectionKey: InsightSectionKey,
-  maxResults: number = 4
+  maxResults: number = 30
 ): Promise<InsightArticle[]> {
   const cacheKey = `articles-${sectionKey}`;
   const cached = getFromCache<InsightArticle[]>(cacheKey);
@@ -625,6 +625,246 @@ const CURATED_ARTICLES: InsightArticle[] = [
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
   },
+  {
+    id: "art-jr-4",
+    title: "AI Jobs Are Booming — Here's Where They Are",
+    description:
+      "Analysis of AI-related job postings showing explosive growth in machine learning, NLP, and AI ethics roles.",
+    url: "https://www.mckinsey.com/capabilities/quantumblack/our-insights",
+    source: "McKinsey & Company",
+    publishedAt: "2025-01-20",
+    thumbnail:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-5",
+    title: "Cybersecurity Workforce Gap Reaches 4 Million",
+    description:
+      "The global cybersecurity workforce shortage and what it means for young professionals entering the field.",
+    url: "https://www.weforum.org/agenda/cybersecurity-workforce-gap",
+    source: "World Economic Forum",
+    publishedAt: "2025-01-12",
+    thumbnail:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-6",
+    title: "The Data Science Career Landscape in 2025",
+    description:
+      "How data science roles are evolving and branching into specialised fields like MLOps and data engineering.",
+    url: "https://hbr.org/topic/subject/data",
+    source: "Harvard Business Review",
+    publishedAt: "2024-12-18",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-7",
+    title: "Renewable Energy Jobs Hit Record 16.2 Million",
+    description:
+      "Global renewable energy employment surges as countries accelerate their clean energy transitions.",
+    url: "https://www.ilo.org/resource/news/renewable-energy-jobs",
+    source: "International Labour Organization",
+    publishedAt: "2024-12-05",
+    thumbnail:
+      "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-8",
+    title: "Cloud Computing Careers: The Infrastructure Behind Everything",
+    description:
+      "Why cloud engineering, DevOps, and platform roles are among the fastest-growing career paths.",
+    url: "https://www2.deloitte.com/insights/cloud-computing-trends",
+    source: "Deloitte",
+    publishedAt: "2024-11-25",
+    thumbnail:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-9",
+    title: "Healthcare Roles Beyond the Hospital",
+    description:
+      "How health tech, telemedicine, and public health are creating diverse career paths for young professionals.",
+    url: "https://www.who.int/news-room/health-workforce",
+    source: "World Health Organization",
+    publishedAt: "2024-11-10",
+    thumbnail:
+      "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-10",
+    title: "The Rise of the UX Career Path",
+    description:
+      "User experience design is now one of the most in-demand skill sets across technology and beyond.",
+    url: "https://www.bcg.com/publications/digital-design-careers",
+    source: "Boston Consulting Group",
+    publishedAt: "2024-11-01",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-11",
+    title: "Fintech Is Reshaping Financial Services Careers",
+    description:
+      "New roles in digital banking, payments technology, and regulatory tech for early-career professionals.",
+    url: "https://www.weforum.org/agenda/fintech-careers",
+    source: "World Economic Forum",
+    publishedAt: "2024-10-22",
+    thumbnail:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-12",
+    title: "Supply Chain Roles in a Post-Pandemic World",
+    description:
+      "How global supply chain disruptions created lasting demand for logistics and operations professionals.",
+    url: "https://www.mckinsey.com/capabilities/operations/our-insights",
+    source: "McKinsey & Company",
+    publishedAt: "2024-10-08",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-13",
+    title: "Biotech Careers: Where Biology Meets Technology",
+    description:
+      "The biotech sector is booming, creating roles in genomics, bioinformatics, and pharmaceutical development.",
+    url: "https://www2.deloitte.com/insights/life-sciences-outlook",
+    source: "Deloitte",
+    publishedAt: "2024-09-28",
+    thumbnail:
+      "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-14",
+    title: "Digital Marketing Is Still One of the Fastest-Growing Fields",
+    description:
+      "Content strategy, SEO, and social media management continue to see strong hiring demand.",
+    url: "https://hbr.org/topic/subject/marketing",
+    source: "Harvard Business Review",
+    publishedAt: "2024-09-15",
+    thumbnail:
+      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-15",
+    title: "Robotics and Automation: New Roles for a New Era",
+    description:
+      "As automation expands, so does the need for robotics engineers, technicians, and AI trainers.",
+    url: "https://www.weforum.org/agenda/robotics-jobs-future",
+    source: "World Economic Forum",
+    publishedAt: "2024-09-01",
+    thumbnail:
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-16",
+    title: "The Global Demand for Software Developers",
+    description:
+      "Software development remains one of the most sought-after skill sets across all industries worldwide.",
+    url: "https://www.oecd.org/digital/software-skills-demand",
+    source: "OECD",
+    publishedAt: "2024-08-18",
+    thumbnail:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-17",
+    title: "Climate Adaptation Careers Are on the Rise",
+    description:
+      "New roles focused on helping communities and businesses adapt to climate change impacts.",
+    url: "https://www.worldbank.org/en/topic/climatechange/jobs",
+    source: "World Bank",
+    publishedAt: "2024-08-05",
+    thumbnail:
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-18",
+    title: "Product Management: The Career Everyone Wants In On",
+    description:
+      "Why product management has become one of the most competitive and rewarding career paths in tech.",
+    url: "https://www.mckinsey.com/industries/technology/product-management",
+    source: "McKinsey & Company",
+    publishedAt: "2024-07-22",
+    thumbnail:
+      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-19",
+    title: "Mental Health Careers Are Expanding Rapidly",
+    description:
+      "Growing awareness of mental health is driving demand for counsellors, therapists, and wellness professionals.",
+    url: "https://www.who.int/news-room/mental-health-workforce",
+    source: "World Health Organization",
+    publishedAt: "2024-07-10",
+    thumbnail:
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-20",
+    title: "The Emerging Field of AI Ethics and Governance",
+    description:
+      "As AI scales, so does the need for professionals who can ensure it is developed responsibly.",
+    url: "https://www.bcg.com/publications/responsible-ai",
+    source: "Boston Consulting Group",
+    publishedAt: "2024-06-28",
+    thumbnail:
+      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-21",
+    title: "DevOps and Site Reliability: Careers That Keep the Internet Running",
+    description:
+      "The growing demand for DevOps engineers and SREs as companies shift to cloud-native infrastructure.",
+    url: "https://www2.deloitte.com/insights/devops-talent-demand",
+    source: "Deloitte",
+    publishedAt: "2024-06-15",
+    thumbnail:
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-22",
+    title: "Electric Vehicle Industry Creates Thousands of New Roles",
+    description:
+      "From battery engineers to charging network planners, the EV transition is opening up new career paths.",
+    url: "https://www.ilo.org/resource/green-transition-employment",
+    source: "International Labour Organization",
+    publishedAt: "2024-06-02",
+    thumbnail:
+      "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "art-jr-23",
+    title: "Careers in the Creator Economy",
+    description:
+      "How content creation, community management, and creator tools are becoming legitimate career paths.",
+    url: "https://hbr.org/topic/subject/creative-economy",
+    source: "Harvard Business Review",
+    publishedAt: "2024-05-20",
+    thumbnail:
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
 
   // Skills That Matter
   {
@@ -661,6 +901,246 @@ const CURATED_ARTICLES: InsightArticle[] = [
     publishedAt: "2024-07-20",
     thumbnail:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-4",
+    title: "The Most In-Demand Soft Skills for 2025",
+    description:
+      "Research reveals communication, adaptability, and problem-solving top employer wishlists worldwide.",
+    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights",
+    source: "McKinsey & Company",
+    publishedAt: "2025-01-18",
+    thumbnail:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-5",
+    title: "Why Emotional Intelligence Matters More Than IQ at Work",
+    description:
+      "How emotional intelligence drives team performance, leadership effectiveness, and career advancement.",
+    url: "https://hbr.org/topic/subject/emotional-intelligence",
+    source: "Harvard Business Review",
+    publishedAt: "2025-01-05",
+    thumbnail:
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-6",
+    title: "Critical Thinking: The Skill Employers Can't Find Enough Of",
+    description:
+      "Survey data showing critical thinking as the most cited skill gap across industries.",
+    url: "https://www.weforum.org/agenda/critical-thinking-skills-gap",
+    source: "World Economic Forum",
+    publishedAt: "2024-12-20",
+    thumbnail:
+      "https://images.unsplash.com/photo-1456406644174-8ddd4cd52a06?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-7",
+    title: "The Reskilling Revolution: 1 Billion People by 2030",
+    description:
+      "Global initiative to provide better education, skills, and economic opportunity to one billion people.",
+    url: "https://www.weforum.org/projects/reskilling-revolution",
+    source: "World Economic Forum",
+    publishedAt: "2024-12-08",
+    thumbnail:
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-8",
+    title: "Leadership Skills for Early-Career Professionals",
+    description:
+      "How young professionals can develop leadership capabilities from day one in their careers.",
+    url: "https://www.bcg.com/publications/leadership-development",
+    source: "Boston Consulting Group",
+    publishedAt: "2024-11-28",
+    thumbnail:
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-9",
+    title: "AI Literacy: The New Must-Have Skill",
+    description:
+      "Why understanding AI tools and concepts is becoming essential across every profession.",
+    url: "https://www.oecd.org/digital/artificial-intelligence-skills",
+    source: "OECD",
+    publishedAt: "2024-11-15",
+    thumbnail:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-10",
+    title: "Collaboration in the Remote Work Era",
+    description:
+      "How teamwork and collaboration skills are evolving for hybrid and distributed workplaces.",
+    url: "https://www.mckinsey.com/capabilities/people-and-organizational-performance/collaboration",
+    source: "McKinsey & Company",
+    publishedAt: "2024-11-02",
+    thumbnail:
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-11",
+    title: "The Growing Importance of Data Literacy",
+    description:
+      "Data literacy is no longer just for analysts — every role now requires understanding data.",
+    url: "https://hbr.org/topic/subject/data-literacy",
+    source: "Harvard Business Review",
+    publishedAt: "2024-10-20",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-12",
+    title: "Adaptability: The Meta-Skill for an Uncertain World",
+    description:
+      "Research on why adaptability is the foundation skill that enables all other skills to remain relevant.",
+    url: "https://www2.deloitte.com/insights/adaptability-workforce",
+    source: "Deloitte",
+    publishedAt: "2024-10-08",
+    thumbnail:
+      "https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-13",
+    title: "Communication Skills Drive Career Progression",
+    description:
+      "Studies show that strong communicators earn more and advance faster across all industries.",
+    url: "https://www.bcg.com/publications/communication-career-impact",
+    source: "Boston Consulting Group",
+    publishedAt: "2024-09-25",
+    thumbnail:
+      "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-14",
+    title: "Creative Problem-Solving: Why It's a Top Employer Priority",
+    description:
+      "How creative thinking and innovative problem-solving have become critical differentiators in hiring.",
+    url: "https://www.weforum.org/agenda/creative-problem-solving",
+    source: "World Economic Forum",
+    publishedAt: "2024-09-12",
+    thumbnail:
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-15",
+    title: "Time Management in the Age of Distraction",
+    description:
+      "Strategies for managing focus and productivity in a world of constant digital interruptions.",
+    url: "https://hbr.org/topic/subject/time-management",
+    source: "Harvard Business Review",
+    publishedAt: "2024-08-30",
+    thumbnail:
+      "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-16",
+    title: "Youth Skills Development: What Works",
+    description:
+      "Evidence-based approaches to building employability skills in young people aged 15–24.",
+    url: "https://www.ilo.org/resource/youth-skills-development",
+    source: "International Labour Organization",
+    publishedAt: "2024-08-15",
+    thumbnail:
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-17",
+    title: "Negotiation Skills Every Young Professional Needs",
+    description:
+      "From salary discussions to project scope, negotiation is a career-defining skill at every level.",
+    url: "https://www.mckinsey.com/featured-insights/negotiation-skills",
+    source: "McKinsey & Company",
+    publishedAt: "2024-08-01",
+    thumbnail:
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-18",
+    title: "Building Resilience in Early Careers",
+    description:
+      "How to develop resilience and cope with setbacks during the critical first years of work.",
+    url: "https://www2.deloitte.com/insights/resilience-workforce",
+    source: "Deloitte",
+    publishedAt: "2024-07-18",
+    thumbnail:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-19",
+    title: "Green Skills for the Sustainability Transition",
+    description:
+      "The specific skills needed to participate in the green economy and sustainability-focused careers.",
+    url: "https://www.oecd.org/environment/green-skills",
+    source: "OECD",
+    publishedAt: "2024-07-05",
+    thumbnail:
+      "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-20",
+    title: "Cross-Cultural Communication in a Global Workplace",
+    description:
+      "Essential skills for working effectively across cultures and geographies in today's connected world.",
+    url: "https://www.bcg.com/publications/cross-cultural-skills",
+    source: "Boston Consulting Group",
+    publishedAt: "2024-06-22",
+    thumbnail:
+      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-21",
+    title: "Writing Skills Still Matter in the Digital Age",
+    description:
+      "Clear writing remains one of the most valued skills — and one of the hardest to find in new hires.",
+    url: "https://hbr.org/topic/subject/business-writing",
+    source: "Harvard Business Review",
+    publishedAt: "2024-06-10",
+    thumbnail:
+      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-22",
+    title: "Learning Agility: The Skill Behind All Other Skills",
+    description:
+      "Research on why the ability to learn quickly and continuously is the key predictor of career success.",
+    url: "https://www.weforum.org/agenda/learning-agility",
+    source: "World Economic Forum",
+    publishedAt: "2024-05-28",
+    thumbnail:
+      "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "art-sm-23",
+    title: "Personal Branding and Networking for Young Professionals",
+    description:
+      "Building a professional reputation and network in the early stages of your career.",
+    url: "https://www.mckinsey.com/featured-insights/professional-development",
+    source: "McKinsey & Company",
+    publishedAt: "2024-05-15",
+    thumbnail:
+      "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=600&h=400&fit=crop",
     section: "skills-that-matter",
   },
 
@@ -837,6 +1317,286 @@ const CURATED_PODCASTS: InsightPodcast[] = [
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop",
     section: "jobs-on-the-rise",
   },
+  {
+    id: "pod-jr-4",
+    title: "AI Careers Explained: What Roles Actually Exist",
+    description:
+      "A breakdown of the different AI career paths — from machine learning engineering to AI ethics.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2025-01-15",
+    duration: "34 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-5",
+    title: "Why Cybersecurity Needs Young People",
+    description:
+      "The massive talent shortage in cybersecurity and why it's a great entry point for young professionals.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2025-01-08",
+    duration: "38 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-6",
+    title: "The Boom in Healthcare Tech Careers",
+    description:
+      "How telemedicine, health apps, and biotech are creating roles that blend tech and patient care.",
+    podcastName: "Freakonomics Radio",
+    host: "Stephen Dubner",
+    publishedAt: "2024-12-22",
+    duration: "43 min",
+    externalUrl: "https://freakonomics.com/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-7",
+    title: "Data Science: From Hype to Reality",
+    description:
+      "What a data science career actually looks like day-to-day, and how to get started without a PhD.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-12-10",
+    duration: "36 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-8",
+    title: "The Clean Energy Job Revolution",
+    description:
+      "Solar, wind, and green hydrogen are creating millions of jobs — hear from the people filling them.",
+    podcastName: "How I Built This",
+    host: "Guy Raz",
+    publishedAt: "2024-12-01",
+    duration: "45 min",
+    externalUrl: "https://www.npr.org/podcasts/510313/how-i-built-this",
+    thumbnail:
+      "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-9",
+    title: "Cloud Computing: The Career Nobody Talks About",
+    description:
+      "Why cloud engineering and DevOps roles are quietly becoming some of the best-paid careers in tech.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-11-20",
+    duration: "31 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-10",
+    title: "Fintech Founders: Building the Future of Money",
+    description:
+      "Young entrepreneurs reshaping banking, payments, and financial access through technology.",
+    podcastName: "How I Built This",
+    host: "Guy Raz",
+    publishedAt: "2024-11-05",
+    duration: "48 min",
+    externalUrl: "https://www.npr.org/podcasts/510313/how-i-built-this",
+    thumbnail:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-11",
+    title: "Biotech Careers: Where Science Meets Opportunity",
+    description:
+      "The biotech industry is booming — a look at roles in genomics, lab tech, and pharmaceutical development.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2024-10-25",
+    duration: "40 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-12",
+    title: "Supply Chain Careers After the Global Disruption",
+    description:
+      "How pandemic-era supply chain chaos created lasting demand for logistics and operations talent.",
+    podcastName: "Planet Money",
+    host: "Mary Childs",
+    publishedAt: "2024-10-12",
+    duration: "25 min",
+    externalUrl: "https://www.npr.org/podcasts/510289/planet-money",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-13",
+    title: "The Rise of Product Management",
+    description:
+      "Why every tech company is hiring product managers, and how to break into the field.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-09-28",
+    duration: "37 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-14",
+    title: "UX Design: Careers at the Intersection of Tech and People",
+    description:
+      "How user experience design became one of the most in-demand career paths across industries.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-09-15",
+    duration: "30 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-15",
+    title: "Robotics: The Jobs Humans Will Still Do",
+    description:
+      "As automation grows, new roles are emerging for people who design, maintain, and work alongside robots.",
+    podcastName: "Freakonomics Radio",
+    host: "Stephen Dubner",
+    publishedAt: "2024-09-02",
+    duration: "44 min",
+    externalUrl: "https://freakonomics.com/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-16",
+    title: "Mental Health Careers Are Booming",
+    description:
+      "The growing demand for counsellors, therapists, and wellness professionals — and how to train for these roles.",
+    podcastName: "Hidden Brain",
+    host: "Shankar Vedantam",
+    publishedAt: "2024-08-20",
+    duration: "42 min",
+    externalUrl: "https://hiddenbrain.org/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-17",
+    title: "Digital Marketing: Still One of the Fastest On-Ramps",
+    description:
+      "Content strategy, SEO, and social media management remain accessible career paths for young people.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2024-08-05",
+    duration: "35 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-18",
+    title: "The EV Revolution and the Jobs It's Creating",
+    description:
+      "From battery engineers to charging network planners — the electric vehicle transition is hiring.",
+    podcastName: "Planet Money",
+    host: "Mary Childs",
+    publishedAt: "2024-07-22",
+    duration: "27 min",
+    externalUrl: "https://www.npr.org/podcasts/510289/planet-money",
+    thumbnail:
+      "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-19",
+    title: "AI Ethics: The Career That Didn't Exist Five Years Ago",
+    description:
+      "As AI scales, so does the need for professionals ensuring it's developed responsibly.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-07-08",
+    duration: "33 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-20",
+    title: "Software Engineering in 2025: What's Changed",
+    description:
+      "How the role of software developers is evolving with AI assistants, cloud-native tools, and new frameworks.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-06-25",
+    duration: "29 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-21",
+    title: "Climate Adaptation: The Careers Nobody Expected",
+    description:
+      "New roles focused on helping communities and businesses adapt to climate change impacts.",
+    podcastName: "Future Economies Start with Youth",
+    host: "Kevin Eustatia",
+    publishedAt: "2024-06-10",
+    duration: "31 min",
+    externalUrl: "https://fundforyouthemployment.nl/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-22",
+    title: "The Creator Economy as a Real Career",
+    description:
+      "Content creation, community management, and creator tools are becoming legitimate career paths.",
+    podcastName: "How I Built This",
+    host: "Guy Raz",
+    publishedAt: "2024-05-28",
+    duration: "46 min",
+    externalUrl: "https://www.npr.org/podcasts/510313/how-i-built-this",
+    thumbnail:
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
+  {
+    id: "pod-jr-23",
+    title: "Agri-Tech: How Technology Is Making Farming a Career Choice",
+    description:
+      "Precision agriculture, drone monitoring, and smart farming are attracting a new generation of workers.",
+    podcastName: "Future Economies Start with Youth",
+    host: "Kevin Eustatia",
+    publishedAt: "2024-05-15",
+    duration: "33 min",
+    externalUrl: "https://fundforyouthemployment.nl/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&h=400&fit=crop",
+    section: "jobs-on-the-rise",
+  },
 
   // ──────────────────────────────────────────
   // SKILLS THAT MATTER
@@ -881,6 +1641,286 @@ const CURATED_PODCASTS: InsightPodcast[] = [
     externalUrl: "https://fundforyouthemployment.nl/podcast/",
     thumbnail:
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-4",
+    title: "Why Communication Is the Number One Career Skill",
+    description:
+      "Research shows clear communication is the single most important skill across all industries and levels.",
+    podcastName: "Freakonomics Radio",
+    host: "Stephen Dubner",
+    publishedAt: "2024-12-18",
+    duration: "40 min",
+    externalUrl: "https://freakonomics.com/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-5",
+    title: "Critical Thinking in an Age of Misinformation",
+    description:
+      "How to develop the analytical thinking skills that employers desperately need in the AI era.",
+    podcastName: "Hidden Brain",
+    host: "Shankar Vedantam",
+    publishedAt: "2024-12-05",
+    duration: "44 min",
+    externalUrl: "https://hiddenbrain.org/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1456406644174-8ddd4cd52a06?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-6",
+    title: "The Science of Emotional Intelligence",
+    description:
+      "What emotional intelligence actually is, why it matters at work, and how to develop it.",
+    podcastName: "Hidden Brain",
+    host: "Shankar Vedantam",
+    publishedAt: "2024-11-22",
+    duration: "46 min",
+    externalUrl: "https://hiddenbrain.org/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-7",
+    title: "Adaptability: The Skill Behind Every Successful Career",
+    description:
+      "How the ability to adapt to change is becoming the foundation skill for all other competencies.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-11-08",
+    duration: "35 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-8",
+    title: "Learning How to Learn: The Most Underrated Skill",
+    description:
+      "Why learning agility — the ability to learn new things quickly — is the top predictor of career success.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2024-10-28",
+    duration: "42 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-9",
+    title: "Teamwork Doesn't Mean What You Think It Does",
+    description:
+      "New research on what actually makes teams effective — it's not about personalities, it's about psychological safety.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-10-15",
+    duration: "38 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-10",
+    title: "Negotiation Skills for Young Professionals",
+    description:
+      "Practical negotiation strategies for salary discussions, project scope, and workplace dynamics.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-09-30",
+    duration: "33 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-11",
+    title: "AI Literacy: The New Must-Have Skill",
+    description:
+      "Why understanding AI tools and concepts is becoming essential across every profession, not just tech.",
+    podcastName: "Freakonomics Radio",
+    host: "Stephen Dubner",
+    publishedAt: "2024-09-18",
+    duration: "41 min",
+    externalUrl: "https://freakonomics.com/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-12",
+    title: "Time Management Secrets from Productive People",
+    description:
+      "Evidence-based strategies for focus, prioritisation, and getting things done without burning out.",
+    podcastName: "The Tim Ferriss Show",
+    host: "Tim Ferriss",
+    publishedAt: "2024-09-05",
+    duration: "52 min",
+    externalUrl: "https://tim.blog/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-13",
+    title: "Data Literacy: Why Every Career Needs It Now",
+    description:
+      "Data literacy is no longer just for analysts — understanding data is essential in every role.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-08-22",
+    duration: "28 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-14",
+    title: "Creative Problem-Solving at Work",
+    description:
+      "How to develop creative thinking as a practical skill for solving real workplace challenges.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2024-08-08",
+    duration: "39 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-15",
+    title: "Building Resilience for Your First Career Setback",
+    description:
+      "How to bounce back from failure, rejection, and disappointment in the early years of your career.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-07-25",
+    duration: "36 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-16",
+    title: "The Art of Giving and Receiving Feedback",
+    description:
+      "Why feedback is a career accelerator and how to get comfortable with constructive criticism.",
+    podcastName: "Hidden Brain",
+    host: "Shankar Vedantam",
+    publishedAt: "2024-07-10",
+    duration: "43 min",
+    externalUrl: "https://hiddenbrain.org/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-17",
+    title: "Writing Well: The Silent Career Superpower",
+    description:
+      "Clear writing remains one of the most valued and scarce skills in the modern workplace.",
+    podcastName: "The Knowledge Project",
+    host: "Shane Parrish",
+    publishedAt: "2024-06-28",
+    duration: "47 min",
+    externalUrl: "https://fs.blog/knowledge-project-podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-18",
+    title: "Green Skills for the Sustainability Transition",
+    description:
+      "The specific skills young people need to participate in the growing green economy.",
+    podcastName: "Future Economies Start with Youth",
+    host: "Kevin Eustatia",
+    publishedAt: "2024-06-15",
+    duration: "30 min",
+    externalUrl: "https://fundforyouthemployment.nl/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-19",
+    title: "Cross-Cultural Skills in a Global Workplace",
+    description:
+      "How to work effectively across cultures, languages, and geographies in today's connected world.",
+    podcastName: "HBR IdeaCast",
+    host: "Alison Beard",
+    publishedAt: "2024-05-30",
+    duration: "32 min",
+    externalUrl: "https://hbr.org/2020/01/podcast-ideacast",
+    thumbnail:
+      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-20",
+    title: "Networking Without Being Awkward",
+    description:
+      "Practical, low-pressure approaches to building professional relationships when you're just starting out.",
+    podcastName: "The Tim Ferriss Show",
+    host: "Tim Ferriss",
+    publishedAt: "2024-05-15",
+    duration: "50 min",
+    externalUrl: "https://tim.blog/podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-21",
+    title: "Public Speaking: Getting Over the Fear",
+    description:
+      "How to build confidence in presentations and public speaking — one of the most career-boosting skills.",
+    podcastName: "TED Radio Hour",
+    host: "Manoush Zomorodi",
+    publishedAt: "2024-05-01",
+    duration: "37 min",
+    externalUrl: "https://www.npr.org/programs/ted-radio-hour/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-22",
+    title: "Conflict Resolution: Turning Disagreements Into Growth",
+    description:
+      "How to handle workplace conflict productively and use disagreements as opportunities to build trust.",
+    podcastName: "WorkLife with Adam Grant",
+    host: "Adam Grant",
+    publishedAt: "2024-04-18",
+    duration: "34 min",
+    externalUrl: "https://www.ted.com/podcasts/worklife",
+    thumbnail:
+      "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&h=400&fit=crop",
+    section: "skills-that-matter",
+  },
+  {
+    id: "pod-sm-23",
+    title: "Personal Branding: How to Stand Out Early in Your Career",
+    description:
+      "Building a professional reputation and online presence that opens doors to opportunities.",
+    podcastName: "The Knowledge Project",
+    host: "Shane Parrish",
+    publishedAt: "2024-04-05",
+    duration: "45 min",
+    externalUrl: "https://fs.blog/knowledge-project-podcast/",
+    thumbnail:
+      "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop",
     section: "skills-that-matter",
   },
 

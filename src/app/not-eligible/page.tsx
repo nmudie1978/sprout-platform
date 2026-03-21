@@ -8,8 +8,8 @@ import { Sprout, ArrowLeft, Clock, Heart } from "lucide-react";
 /**
  * Not Eligible Page
  *
- * Shown to users who are under 16 years old.
- * This is part of the CORE SAFETY INVARIANT - platform is for ages 16-20.
+ * Shown to users who are under 15 years old.
+ * This is part of the CORE SAFETY INVARIANT - platform is for ages 15-23.
  */
 export default function NotEligiblePage() {
   return (
@@ -28,7 +28,7 @@ export default function NotEligiblePage() {
             Thanks for Your Interest!
           </CardTitle>
           <CardDescription className="text-base">
-            Sprout is designed for young people aged 16-20
+            Sprout is designed for young people aged 15-23
           </CardDescription>
         </CardHeader>
 
@@ -36,14 +36,14 @@ export default function NotEligiblePage() {
           <div className="text-center space-y-4">
             <p className="text-muted-foreground">
               We appreciate your interest in Sprout! Our platform is specifically designed
-              for young people between 16 and 20 years old to find safe, age-appropriate
+              for young people between 15 and 23 years old to find safe, age-appropriate
               work opportunities.
             </p>
 
             <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
               <Clock className="h-5 w-5 text-blue-600" />
               <p className="text-sm text-blue-700 dark:text-blue-400">
-                Come back when you turn 16!
+                Come back when you turn 15!
               </p>
             </div>
 
@@ -55,7 +55,7 @@ export default function NotEligiblePage() {
                   <p className="text-xs text-muted-foreground">
                     We work closely with labor regulations to ensure all opportunities
                     on our platform are safe and legal for young workers. The minimum
-                    working age for most jobs is 16 in Norway.
+                    working age for most jobs is 15 in Norway.
                   </p>
                 </div>
               </div>

@@ -4,29 +4,20 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import {
-  Compass,
   TrendingUp,
   Eye,
   Briefcase,
-  ChevronRight,
 } from "lucide-react";
 
 interface ExploreLink {
   href: string;
   label: string;
   description: string;
-  icon: typeof Compass;
+  icon: typeof TrendingUp;
   color: string;
 }
 
 const exploreLinks: ExploreLink[] = [
-  {
-    href: "/careers",
-    label: "Explore careers",
-    description: "See what paths interest you",
-    icon: Compass,
-    color: "text-purple-500",
-  },
   {
     href: "/insights",
     label: "Industry insights",

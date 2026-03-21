@@ -191,7 +191,7 @@ export function RecommendFriendDialog({
                     onClick={() => handleSelectYouth(youth)}
                     className="w-full flex items-center gap-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors text-left"
                   >
-                    <Avatar avatarId={youth.avatarId} size="sm" />
+                    <Avatar name={youth.displayName} size="sm" />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{youth.displayName}</div>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -223,7 +223,7 @@ export function RecommendFriendDialog({
             >
               {/* Selected youth card */}
               <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-                <Avatar avatarId={selectedYouth.avatarId} size="lg" />
+                <Avatar name={selectedYouth.displayName} size="lg" />
                 <div className="flex-1">
                   <div className="font-semibold text-lg">{selectedYouth.displayName}</div>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground">

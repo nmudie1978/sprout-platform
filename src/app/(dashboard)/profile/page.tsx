@@ -32,7 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AvatarSelectorInline } from "@/components/avatar-selector-inline";
+import { Avatar } from "@/components/avatar";
 import { LifeSkillsSettings } from "@/components/life-skills-settings";
 import { SavedLifeSkills } from "@/components/saved-life-skills";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
@@ -89,7 +89,6 @@ export default function ProfilePage() {
     city: "",
     interests: [] as string[],
     guardianEmail: "",
-    avatarId: "" as string,
   });
   const formInitializedRef = useRef(false);
   const lastUserIdRef = useRef<string | null>(null);
@@ -158,7 +157,6 @@ export default function ProfilePage() {
         city: profile.city || "",
         interests: profile.interests || [],
         guardianEmail: profile.guardianEmail || "",
-        avatarId: profile.avatarId || "",
       });
       // Initialize DOB dropdowns from existing date
       if (profile.user?.dateOfBirth) {
@@ -170,101 +168,14 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  // DEDICATED AVATAR SAVE MUTATION
-  // This saves avatars IMMEDIATELY when selected, with guaranteed server persistence
-  const saveAvatarMutation = useMutation({
-    mutationFn: async (avatarId: string) => {
-      const response = await fetch("/api/profile/avatar", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ avatarId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to save avatar");
-      }
-
-      // Verify the response contains the expected avatar
-      if (data.avatarId !== avatarId) {
-        throw new Error("Avatar save verification failed - please try again");
-      }
-
-      return data;
-    },
-    onSuccess: (data) => {
-      // Update local form state with the server-confirmed avatar
-      setFormData((prev) => ({ ...prev, avatarId: data.avatarId }));
-
-      toast({
-        title: "Avatar saved!",
-        description: "Your avatar has been updated and will persist across sessions.",
-      });
-
-      // CRITICAL: Directly update ALL cached profile queries with the new avatar
-      // This ensures Navigation and other components see the change immediately
-      queryClient.setQueriesData(
-        { queryKey: ["my-profile"] },
-        (oldData: Record<string, unknown> | undefined) => {
-          if (!oldData) return oldData;
-          return { ...oldData, avatarId: data.avatarId };
-        }
-      );
-
-      // Also force an immediate refetch of all active profile queries
-      queryClient.refetchQueries({
-        queryKey: ["my-profile"],
-        type: "active",
-      });
-    },
-    // onError receives the context with previousAvatarId from onMutate
-    onError: (error: Error, _avatarId: string, context: { previousAvatarId: string } | undefined) => {
-      // Rollback to previous avatar on failure
-      if (context?.previousAvatarId) {
-        setFormData((prev) => ({ ...prev, avatarId: context.previousAvatarId }));
-      }
-      toast({
-        title: "Failed to save avatar",
-        description: error.message,
-        variant: "destructive",
-      });
-      console.error("[Avatar Save Error]", error);
-    },
-  });
-
-  // Handler for immediate avatar save when user selects one
-  const handleAvatarSelect = (avatarId: string) => {
-    // Capture current avatar for rollback
-    const previousAvatarId = formData.avatarId || profile?.avatarId || "";
-    // Optimistically update the UI
-    setFormData((prev) => ({ ...prev, avatarId }));
-    // Persist to server, passing context for rollback
-    saveAvatarMutation.mutate(avatarId, {
-      onError: (error) => {
-        // Rollback to previous avatar
-        setFormData((prev) => ({ ...prev, avatarId: previousAvatarId }));
-        toast({
-          title: "Failed to save avatar",
-          description: error.message + ". Your previous avatar has been restored.",
-          variant: "destructive",
-        });
-        console.error("[Avatar Save Error]", error);
-      },
-    });
-  };
-
   const saveProfileMutation = useMutation({
     mutationFn: async () => {
       const method = profile ? "PATCH" : "POST";
 
-      // Exclude avatarId — avatar changes go exclusively through /api/profile/avatar
-      const { avatarId: _excludedAvatarId, ...profileDataWithoutAvatar } = formData;
-
       const response = await fetch("/api/profile", {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profileDataWithoutAvatar),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -275,9 +186,7 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: (data) => {
-      // Sync form data with saved values, keeping current avatarId from form state
-      // (avatar is managed separately and not returned by the profile save)
-      setFormData((prev) => ({
+      setFormData({
         displayName: data.displayName || "",
         bio: data.bio || "",
         availability: data.availability || "",
@@ -285,8 +194,7 @@ export default function ProfilePage() {
         city: data.city || "",
         interests: data.interests || [],
         guardianEmail: data.guardianEmail || "",
-        avatarId: prev.avatarId,
-      }));
+      });
       toast({
         title: "Profile saved!",
         description: "Your profile has been updated successfully.",
@@ -719,7 +627,6 @@ export default function ProfilePage() {
         const missingRecommended: string[] = [];
 
         // Required fields
-        if (!profile.avatarId) missingRequired.push("Avatar");
         if (!profile.displayName) missingRequired.push("Display Name");
         if (!profile.user?.dateOfBirth) missingRequired.push("Date of Birth");
         if (!profile.phoneNumber) missingRequired.push("Phone Number");
@@ -911,32 +818,17 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-5 relative z-10">
-              {/* Avatar Selector - Saves immediately on selection */}
+              {/* Avatar Preview — generated from display name */}
               <div className="pb-5 border-b">
-                <Label className="text-sm font-medium mb-3 flex items-center gap-2">
+                <Label className="text-sm font-medium mb-3 block">
                   Your Avatar
-                  <span className="text-[10px] text-red-600 font-normal">*</span>
-                  {saveAvatarMutation.isPending && (
-                    <span className="text-[10px] text-blue-600 font-normal animate-pulse">
-                      Saving...
-                    </span>
-                  )}
                 </Label>
-                <AvatarSelectorInline
-                  currentAvatarId={profile?.avatarId || formData.avatarId}
-                  onSelect={handleAvatarSelect}
-                  disabled={saveProfileMutation.isPending || saveAvatarMutation.isPending}
-                />
-                {saveAvatarMutation.isError && (
-                  <p className="mt-2 text-xs text-red-600">
-                    Failed to save avatar. Please try again.
+                <div className="flex flex-col items-center gap-2">
+                  <Avatar name={formData.displayName || profile?.displayName} size="xl" />
+                  <p className="text-xs text-muted-foreground">
+                    Generated from your display name
                   </p>
-                )}
-                {!formData.avatarId && !profile?.avatarId && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Choose an avatar to represent you
-                  </p>
-                )}
+                </div>
               </div>
 
               <div>

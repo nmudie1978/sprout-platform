@@ -1500,11 +1500,12 @@ model LifeSkillView {
 
 // User Preferences - stores user settings
 model UserPreferences {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  showLifeSkills Boolean  @default(true) // Toggle for life skills tips
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  showLifeSkills  Boolean  @default(true) // Toggle for life skills tips
+  preferredLocale String?  @db.VarChar(5)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -2926,4 +2927,25 @@ model ContentInteraction {
 
   @@unique([profileId, contentUrl, interactionType])
   @@index([profileId])
+}
+
+// ============================================
+// TRANSLATION CACHE
+// ============================================
+
+model TranslationCache {
+  id           String   @id @default(cuid())
+  contentHash  String   // SHA-256 of source text
+  sourceLocale String   @db.VarChar(5)
+  targetLocale String   @db.VarChar(5)
+  sourceText   String   @db.Text
+  translated   String   @db.Text
+  contentType  String   @db.VarChar(50)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  expiresAt    DateTime
+
+  @@unique([contentHash, targetLocale])
+  @@index([contentHash, targetLocale])
+  @@index([expiresAt])
 }

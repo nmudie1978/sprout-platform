@@ -53,7 +53,7 @@ import { format, isToday, isYesterday } from "date-fns";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { getAvatarById } from "@/lib/avatars";
+import { Avatar } from "@/components/avatar";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { MessageIntentSheet } from "@/components/messages/MessageIntentSheet";
 import { PaymentDisclosure } from "@/components/payment-disclosure";
@@ -352,26 +352,14 @@ export function ChatView({ conversationId }: { conversationId: string }) {
 
   // Render avatar
   const renderAvatar = () => {
-    if (conversation.otherParty.role === "YOUTH" && conversation.otherParty.avatar) {
-      const avatar = getAvatarById(conversation.otherParty.avatar);
-      return (
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xl">
-          {avatar?.emoji || "?"}
-        </div>
-      );
-    } else if (conversation.otherParty.role === "EMPLOYER") {
+    if (conversation.otherParty.role === "EMPLOYER") {
       return (
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
           <Building2 className="h-5 w-5 text-muted-foreground" />
         </div>
       );
-    } else {
-      return (
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-          <User className="h-5 w-5 text-muted-foreground" />
-        </div>
-      );
     }
+    return <Avatar name={conversation.otherParty.name} size="sm" />;
   };
 
   return (

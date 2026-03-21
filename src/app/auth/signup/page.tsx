@@ -28,7 +28,7 @@ function SignUpForm() {
   const [loading, setLoading] = useState(false);
 
   // Calculate age and bracket from date of birth
-  // SAFETY INVARIANT: Platform is for ages 16-20. Under-16 is HARD BLOCKED.
+  // SAFETY INVARIANT: Platform is for ages 15-23. Under-15 is HARD BLOCKED.
   const calculateAgeInfo = (dob: string) => {
     if (!dob) return { age: null, bracket: null, ageBand: null };
     const today = new Date();
@@ -41,16 +41,16 @@ function SignUpForm() {
     // Age bands: UNDER_SIXTEEN (blocked), SIXTEEN_SEVENTEEN (minor), EIGHTEEN_TWENTY (adult)
     let bracket = null;
     let ageBand = null;
-    if (age >= 16 && age <= 17) {
+    if (age >= 15 && age <= 17) {
       bracket = "SIXTEEN_SEVENTEEN";
-      ageBand = "AGE_16_17";
-    } else if (age >= 18 && age <= 20) {
+      ageBand = "AGE_15_17";
+    } else if (age >= 18 && age <= 23) {
       bracket = "EIGHTEEN_TWENTY";
-      ageBand = "AGE_18_20";
-    } else if (age < 16) {
-      ageBand = "UNDER_16";
-    } else if (age > 20) {
-      ageBand = "OVER_20";
+      ageBand = "AGE_18_23";
+    } else if (age < 15) {
+      ageBand = "UNDER_15";
+    } else if (age > 23) {
+      ageBand = "OVER_23";
     }
     return { age, bracket, ageBand };
   };
@@ -87,7 +87,7 @@ function SignUpForm() {
           throw new Error("Invalid date of birth");
         }
         if (ageInfo.age < 16) {
-          throw new Error("Sprout is for users aged 16-20. You must be at least 16 to create an account.");
+          throw new Error("Sprout is for users aged 15-23. You must be at least 15 to create an account.");
         }
         if (ageInfo.age > 20) {
           throw new Error("Youth workers must be 20 or younger. Consider registering as a job poster.");
@@ -257,7 +257,7 @@ function SignUpForm() {
                     {ageInfo.age >= 16 && ageInfo.age <= 20
                       ? `You are ${ageInfo.age} years old - eligible to join!`
                       : ageInfo.age < 16
-                        ? "Sprout is for ages 16-20. You must be at least 16 to register."
+                        ? "Sprout is for ages 15-23. You must be at least 15 to register."
                         : "Youth workers must be 20 or younger. Consider registering as a job poster."}
                   </p>
                 )}

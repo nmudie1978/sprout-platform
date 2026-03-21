@@ -11,7 +11,7 @@ import {
   Target,
   ArrowRight,
   ArrowLeftRight,
-  Fingerprint,
+  GraduationCap,
   Loader2,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,7 +24,6 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -32,9 +31,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 // Journey Components - lightweight, loaded eagerly
-import { JourneyTitle } from '@/components/journey/journey-title';
 import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
-import { useAcknowledgements } from '@/hooks/use-acknowledgements';
 
 // Heavy components - loaded lazily to reduce initial bundle
 const PersonalCareerTimeline = dynamic(
@@ -61,13 +58,9 @@ const ConfirmDialog = dynamic(
   () => import('@/components/mobile/ConfirmDialog').then((m) => m.ConfirmDialog),
   { ssr: false }
 );
-const SelfReflection = dynamic(
-  () => import('@/components/my-journey/SelfReflection').then((m) => m.SelfReflection),
+const LearningGoalsTab = dynamic(
+  () => import('@/components/journey/tabs').then((m) => m.LearningGoalsTab),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
-);
-const CalmAcknowledgement = dynamic(
-  () => import('@/components/journey/CalmAcknowledgement').then((m) => m.CalmAcknowledgement),
-  { ssr: false }
 );
 
 // Types
@@ -185,7 +178,7 @@ const DEMO_JOURNEY: JourneyUIState = {
 // TAB CONFIGURATION
 // ============================================
 
-type JourneyTab = 'timeline' | 'library' | 'notes' | 'self-reflection';
+type JourneyTab = 'timeline' | 'library' | 'notes' | 'learning-goals';
 
 interface TabConfig {
   id: JourneyTab;
@@ -204,11 +197,11 @@ const TAB_CONFIG: TabConfig[] = [
     subtitle: 'Possible paths and steps over time — not a fixed plan.',
   },
   {
-    id: 'self-reflection',
-    label: 'Self-Reflection',
-    icon: Fingerprint,
-    tooltip: 'A space for checking in with yourself — no right pace, nothing to achieve.',
-    subtitle: 'A space for checking in with yourself — no right pace and nothing you need to achieve.',
+    id: 'learning-goals',
+    label: 'Learning Goals',
+    icon: GraduationCap,
+    tooltip: 'Track your learning objectives and find courses to build new skills.',
+    subtitle: 'Set learning goals, track your progress, and discover courses to help you grow.',
   },
   {
     id: 'library',
@@ -302,8 +295,6 @@ export default function MyJourneyPage() {
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
-
-  const { currentMessage, maybeShowAcknowledgement } = useAcknowledgements();
 
   // Fetch goals
   const isYouth = session?.user?.role === 'YOUTH';
@@ -531,14 +522,8 @@ export default function MyJourneyPage() {
 
             {/* Timeline Tab */}
             <TabsContent value="timeline" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'timeline')?.subtitle || ''} />
               {journey && (
-                <>
-                  <JourneyTitle
-                    firstName={(session?.user?.youthProfile?.displayName ?? session?.user?.name ?? '').split(' ')[0] || 'You'}
-                  />
-                  <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-                </>
+                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
               )}
             </TabsContent>
 
@@ -554,11 +539,10 @@ export default function MyJourneyPage() {
               <NotesTab />
             </TabsContent>
 
-            {/* Self-Reflection Tab */}
-            <TabsContent value="self-reflection" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'self-reflection')?.subtitle || ''} />
-              <CalmAcknowledgement message={currentMessage} />
-              <SelfReflection onReflectionSaved={maybeShowAcknowledgement} />
+            {/* Learning Goals Tab */}
+            <TabsContent value="learning-goals" className="mt-6">
+              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'learning-goals')?.subtitle || ''} />
+              <LearningGoalsTab />
             </TabsContent>
           </Tabs>
         </div>

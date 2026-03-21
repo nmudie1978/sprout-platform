@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ import {
   Target,
   AlertTriangle,
   ChevronRight,
+  ChevronDown,
   Check,
   Loader2,
   Star,
@@ -37,6 +39,7 @@ import {
   Video,
   Bookmark,
   BookmarkCheck,
+  BookOpen,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
@@ -93,6 +96,57 @@ interface CareerPathProgression {
   entry: string[];
   core: string[];
   next: string[];
+}
+
+/* ------------------------------------------------------------------ */
+/*  AccordionSection — independently collapsible section               */
+/* ------------------------------------------------------------------ */
+
+function AccordionSection({
+  icon,
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  icon: ReactNode;
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border rounded-lg overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2 px-3 py-3 text-left hover:bg-muted/50 transition-colors"
+      >
+        {icon}
+        <span className="text-sm font-semibold flex-1">{title}</span>
+        <motion.span
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        </motion.span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3 border-t pt-3">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 // Swap Modal Component
@@ -322,7 +376,14 @@ export function CareerDetailSheet({
                 <div className="flex items-start gap-3">
                   <span className="text-3xl">{career.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <DialogTitle className="text-lg leading-tight">{career.title}</DialogTitle>
+                    <div className="flex items-center gap-2">
+                      <DialogTitle className="text-lg leading-tight">{career.title}</DialogTitle>
+                      {career.entryLevel && (
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
+                          Entry Level
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground mt-1">
                       {career.description}
                     </p>
@@ -388,6 +449,30 @@ export function CareerDetailSheet({
                     <p className={`text-sm font-semibold ${growth.color}`}>{growth.label}</p>
                   </div>
                 </div>
+
+                {/* Action Buttons */}
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <Button variant="outline" size="sm" className="text-xs" asChild>
+                    <a
+                      href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <BookOpen className="h-3.5 w-3.5 mr-1.5" />
+                      Start Learning
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs" asChild>
+                    <a
+                      href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(career.title)}&location=Norway`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+                      See Job Listings
+                    </a>
+                  </Button>
+                </div>
               </DialogHeader>
 
               <div className="p-4 space-y-5">
@@ -399,32 +484,16 @@ export function CareerDetailSheet({
                   </div>
                 )}
 
-                {/* Content - only show when loaded */}
+                {/* Content - accordion sections, only show when loaded */}
                 {details && (
-                  <>
-                    {/* Entry Point & Progression - Only show if progression data exists */}
-                    {progression && (
-                      <div>
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <Target className="h-4 w-4 text-indigo-500" />
-                          <h3 className="text-sm font-semibold">Entry Point & Progression</h3>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground mb-3">
-                          A typical path — there are many ways to get there.
-                        </p>
-                        <CareerProgressionFlow progression={progression} />
-                      </div>
-                    )}
-
-                    {/* A TYPICAL DAY - Most Important Section */}
-                    <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-4 border border-blue-200 dark:border-blue-900">
-                      <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-blue-600" />
-                        A Typical Day
-                      </h3>
-
+                  <div className="space-y-2">
+                    {/* A Typical Day — most important, open by default */}
+                    <AccordionSection
+                      icon={<Clock className="h-4 w-4 text-blue-600" />}
+                      title="A Typical Day"
+                      defaultOpen
+                    >
                       <div className="space-y-3">
-                        {/* Morning */}
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Sun className="h-3.5 w-3.5 text-amber-500" />
@@ -440,7 +509,6 @@ export function CareerDetailSheet({
                           </ul>
                         </div>
 
-                        {/* Midday */}
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Clock className="h-3.5 w-3.5 text-blue-500" />
@@ -456,7 +524,6 @@ export function CareerDetailSheet({
                           </ul>
                         </div>
 
-                        {/* Afternoon */}
                         <div>
                           <div className="flex items-center gap-1.5 mb-1">
                             <Sunset className="h-3.5 w-3.5 text-orange-500" />
@@ -472,9 +539,8 @@ export function CareerDetailSheet({
                           </ul>
                         </div>
 
-                        {/* Tools & Environment */}
                         {(details.typicalDay.tools || details.typicalDay.environment) && (
-                          <div className="pt-2 border-t border-blue-200/50 dark:border-blue-800/50">
+                          <div className="pt-2 border-t border-muted">
                             {details.typicalDay.tools && (
                               <div className="flex items-center gap-1.5 flex-wrap mb-1">
                                 <Wrench className="h-3 w-3 text-muted-foreground" />
@@ -494,8 +560,7 @@ export function CareerDetailSheet({
                           </div>
                         )}
 
-                        {/* Day in the Life Video Link */}
-                        <div className="pt-2 border-t border-blue-200/50 dark:border-blue-800/50">
+                        <div className="pt-2 border-t border-muted">
                           <a
                             href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`"a day in the life" ${career.title}`)}`}
                             target="_blank"
@@ -508,14 +573,13 @@ export function CareerDetailSheet({
                           </a>
                         </div>
                       </div>
-                    </div>
+                    </AccordionSection>
 
                     {/* What You Actually Do */}
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Briefcase className="h-4 w-4 text-amber-500" />
-                        <h3 className="text-sm font-semibold">What You Actually Do</h3>
-                      </div>
+                    <AccordionSection
+                      icon={<Briefcase className="h-4 w-4 text-amber-500" />}
+                      title="What You Actually Do"
+                    >
                       <ul className="space-y-1">
                         {details.whatYouActuallyDo.map((task, i) => (
                           <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
@@ -524,30 +588,13 @@ export function CareerDetailSheet({
                           </li>
                         ))}
                       </ul>
-                    </div>
-
-                    {/* Who This Is Good For */}
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Users className="h-4 w-4 text-green-500" />
-                        <h3 className="text-sm font-semibold">Who This Role Is Good For</h3>
-                      </div>
-                      <ul className="space-y-1">
-                        {details.whoThisIsGoodFor.map((trait, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                            <span className="text-green-500 mt-0.5">✓</span>
-                            {trait}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    </AccordionSection>
 
                     {/* Skills You'll Use Most */}
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Sparkles className="h-4 w-4 text-purple-500" />
-                        <h3 className="text-sm font-semibold">Skills You'll Use Most</h3>
-                      </div>
+                    <AccordionSection
+                      icon={<Sparkles className="h-4 w-4 text-purple-500" />}
+                      title="Skills You'll Use Most"
+                    >
                       <div className="flex flex-wrap gap-1.5">
                         {details.topSkills.map((skill) => (
                           <Badge
@@ -559,14 +606,28 @@ export function CareerDetailSheet({
                           </Badge>
                         ))}
                       </div>
-                    </div>
+                    </AccordionSection>
+
+                    {/* Who This Role Is Good For */}
+                    <AccordionSection
+                      icon={<Users className="h-4 w-4 text-green-500" />}
+                      title="Who This Role Is Good For"
+                    >
+                      <ul className="space-y-1">
+                        {details.whoThisIsGoodFor.map((trait, i) => (
+                          <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                            <span className="text-green-500 mt-0.5">✓</span>
+                            {trait}
+                          </li>
+                        ))}
+                      </ul>
+                    </AccordionSection>
 
                     {/* Entry Paths */}
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Target className="h-4 w-4 text-blue-500" />
-                        <h3 className="text-sm font-semibold">Entry Paths</h3>
-                      </div>
+                    <AccordionSection
+                      icon={<Target className="h-4 w-4 text-blue-500" />}
+                      title="Entry Paths"
+                    >
                       <ul className="space-y-1">
                         {details.entryPaths.map((path, i) => (
                           <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
@@ -575,33 +636,52 @@ export function CareerDetailSheet({
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </AccordionSection>
 
-                    {/* Real-World Examples - Live Job Search Links */}
-                    <RealWorldExamplesLinks careerTitle={career.title} />
+                    {/* Career Progression */}
+                    {progression && (
+                      <AccordionSection
+                        icon={<TrendingUp className="h-4 w-4 text-indigo-500" />}
+                        title="Career Progression"
+                      >
+                        <p className="text-[10px] text-muted-foreground mb-3">
+                          A typical path — there are many ways to get there.
+                        </p>
+                        <CareerProgressionFlow progression={progression} />
+                      </AccordionSection>
+                    )}
 
-                    {/* Education Path from Career */}
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <GraduationCap className="h-4 w-4 text-indigo-500" />
-                        <h3 className="text-sm font-semibold">Education Overview</h3>
-                      </div>
+                    {/* Education Path */}
+                    <AccordionSection
+                      icon={<GraduationCap className="h-4 w-4 text-indigo-500" />}
+                      title="Education Overview"
+                    >
                       <p className="text-xs text-muted-foreground">{career.educationPath}</p>
-                    </div>
+                      <a
+                        href={`https://www.classcentral.com/search?q=${encodeURIComponent(career.title)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2"
+                      >
+                        <BookOpen className="h-3 w-3" />
+                        Find courses
+                      </a>
+                    </AccordionSection>
 
                     {/* Reality Check */}
                     {details.realityCheck && (
-                      <div className="bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 border border-amber-200 dark:border-amber-900">
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-                          <h3 className="text-xs font-semibold text-amber-800 dark:text-amber-400">Reality Check</h3>
-                        </div>
+                      <AccordionSection
+                        icon={<AlertTriangle className="h-4 w-4 text-amber-500" />}
+                        title="Reality Check"
+                      >
                         <p className="text-xs text-amber-700 dark:text-amber-300">
                           {details.realityCheck}
                         </p>
-                      </div>
+                      </AccordionSection>
                     )}
 
+                    {/* Real-World Examples */}
+                    <RealWorldExamplesLinks careerTitle={career.title} />
 
                     {/* Content note */}
                     {!hasSpecificContent && (
@@ -609,7 +689,7 @@ export function CareerDetailSheet({
                         General information shown. More detailed content coming soon.
                       </p>
                     )}
-                  </>
+                  </div>
                 )}
 
                 {/* Actions - always show */}

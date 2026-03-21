@@ -1,11 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatSkillName } from "@/lib/skills-mapping";
-import { MapPin, Star, Award, Calendar, Shield, Trophy } from "lucide-react";
+import { MapPin, Star, Award, Calendar, Shield } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { ProfileReportButton } from "@/components/profile-report-button";
-import { UserBadgesDisplay } from "@/components/user-badges-display";
 
 async function getPublicProfile(slug: string) {
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -38,11 +37,9 @@ export default async function PublicProfilePage({
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex justify-center">
             <Avatar
-              avatarId={profile.avatarId}
-              fallbackInitial={profile.displayName.charAt(0)}
+              name={profile.displayName}
               size="2xl"
               showBorder
-              animated
             />
           </div>
           <h1 className="text-3xl font-bold">{profile.displayName}</h1>
@@ -185,14 +182,6 @@ export default async function PublicProfilePage({
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Achievement Badges */}
-            {profile.badges && profile.badges.length > 0 && (
-              <UserBadgesDisplay
-                badges={profile.badges}
-                variant="full"
-              />
-            )}
-
             {/* Availability */}
             {profile.availability && (
               <Card>

@@ -1,0 +1,50 @@
+{
+  "https://oslotechshow.com/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T20:14:36.063Z",
+    "ttlExpiresAtISO": "2026-01-23T20:14:36.172Z"
+  },
+  "https://www.oiw.no/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T20:14:36.063Z",
+    "ttlExpiresAtISO": "2026-01-23T20:14:36.353Z"
+  },
+  "https://ndcoslo.com/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T20:14:36.063Z",
+    "ttlExpiresAtISO": "2026-01-23T20:14:36.440Z"
+  },
+  "https://europeanjobdays.eu/en/who-are-you": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T21:54:42.525Z",
+    "ttlExpiresAtISO": "2026-01-23T21:54:42.566Z"
+  },
+  "https://www.tautdanning.no/studentfairs/alesund/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T21:54:42.525Z",
+    "ttlExpiresAtISO": "2026-01-23T21:54:42.948Z"
+  },
+  "https://www.tautdanning.no/studentfairs/tromso/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T21:54:42.525Z",
+    "ttlExpiresAtISO": "2026-01-23T21:54:42.956Z"
+  },
+  "https://www.tautdanning.no/studentfairs/transport-services/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T21:54:42.525Z",
+    "ttlExpiresAtISO": "2026-01-23T21:54:42.970Z"
+  },
+  "https://www.tautdanning.no/studentfairs/oslo/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-01-22T21:54:42.525Z",
+    "ttlExpiresAtISO": "2026-01-23T21:54:42.984Z"
+  }
+}

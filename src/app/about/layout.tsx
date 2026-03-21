@@ -39,6 +39,9 @@ export default function AboutLayout({
             <Link href="/about" className="hover:text-foreground transition-colors font-medium text-foreground">
               About
             </Link>
+            <Link href="/about/research" className="hover:text-foreground transition-colors">
+              Research & Evidence
+            </Link>
             <Link href="/legal/terms" className="hover:text-foreground transition-colors">
               Terms of Service
             </Link>

@@ -110,9 +110,9 @@ function parseEventsListing(html: string): RawEventData[] {
           title,
           dateStr: dateStr || "",
           url,
-          summary,
+          summary: summary ?? undefined,
           isOnline,
-          country,
+          country: country ?? undefined,
         });
       }
     }

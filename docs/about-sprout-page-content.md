@@ -4,7 +4,7 @@
 
 ## Sprout Helps Young People Take Their First Steps Into Work
 
-Sprout is a platform designed for young people in Norway, aged 16 to 20, who want to earn money, gain experience, and understand what the working world has to offer.
+Sprout is a platform designed for young people in Norway, aged 15 to 23, who want to earn money, gain experience, and understand what the working world has to offer.
 
 We connect youth with small, local jobs — things like helping a neighbour move furniture, assisting at a community event, or doing seasonal work for a local business. These are real opportunities to earn, learn responsibility, and build confidence.
 
@@ -26,7 +26,7 @@ Sprout exists to solve both problems: help young people find safe, appropriate w
 
 ## Who Sprout Is For
 
-### Young People (16–20)
+### Young People (15–23)
 
 Sprout is built for you. Whether you want to earn some extra money, try different types of work, or just figure out what interests you — this is your space to explore at your own pace.
 

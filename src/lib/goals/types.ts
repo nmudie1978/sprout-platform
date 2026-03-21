@@ -1,5 +1,5 @@
 // Goal status options
-export type GoalStatus = "exploring" | "committed" | "paused";
+export type GoalStatus = "exploring" | "committed";
 
 // Confidence levels
 export type GoalConfidence = "low" | "medium" | "high";
@@ -47,7 +47,6 @@ export interface SuggestedAction {
 export const STATUS_CONFIG: Record<GoalStatus, { label: string; color: string }> = {
   exploring: { label: "Exploring", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300" },
   committed: { label: "Committed", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
-  paused: { label: "Paused", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300" },
 };
 
 export const CONFIDENCE_CONFIG: Record<GoalConfidence, { label: string; color: string }> = {
@@ -111,6 +110,23 @@ export const SUGGESTED_ACTIONS_BY_CAREER: Record<string, SuggestedAction[]> = {
     { id: "6", text: "Network with local creative communities", icon: "network" },
   ],
 };
+
+// Helper to create goal with optional milestones.
+export function createGoalWithMilestones(
+  title: string,
+  milestones?: NextStep[],
+): CareerGoal {
+  return {
+    title,
+    status: "exploring",
+    confidence: "medium",
+    timeframe: "1-2-years",
+    why: "",
+    nextSteps: milestones ?? [],
+    skills: [],
+    updatedAt: new Date().toISOString(),
+  };
+}
 
 // Onboarding suggestions when no primary goal
 export const ONBOARDING_SUGGESTIONS: SuggestedAction[] = [

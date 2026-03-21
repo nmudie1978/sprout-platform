@@ -296,8 +296,7 @@ export default function TalentBrowsePage() {
                       {/* Avatar */}
                       <div className="relative">
                         <Avatar
-                          avatarId={profile.avatarId}
-                          fallbackInitial={profile.displayName?.[0] || "?"}
+                          name={profile.displayName}
                           size="lg"
                         />
                         {/* Availability indicator */}

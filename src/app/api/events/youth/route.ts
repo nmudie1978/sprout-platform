@@ -179,7 +179,7 @@ export async function GET(request: NextRequest) {
     maxDate.setMonth(maxDate.getMonth() + months);
 
     // Build DB-level where clause — push filters to Prisma
-    const where: Parameters<typeof prisma.careerEvent.findMany>[0]["where"] = {
+    const where: NonNullable<Parameters<typeof prisma.careerEvent.findMany>[0]>["where"] = {
       isActive: true,
       isVerified: true,
       startDate: { gte: now, lte: maxDate },

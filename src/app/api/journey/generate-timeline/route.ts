@@ -30,13 +30,13 @@ function getOpenAIClient(): OpenAI | null {
 // SYSTEM PROMPT
 // ============================================
 
-const SYSTEM_PROMPT = `You are a career timeline generator for a youth platform (ages 16-20).
+const SYSTEM_PROMPT = `You are a career timeline generator for a youth platform (ages 15-23).
 Given a career goal, generate a realistic journey with 7 items across 4 stages.
 
 Rules:
 - Output ONLY valid JSON matching the schema below
 - All text must be in English
-- Items should be age-appropriate (starting age 16)
+- Items should be age-appropriate (starting age 15)
 - Include practical, actionable microActions (2-3 per item)
 - Be encouraging but realistic
 - No jargon or overly complex language

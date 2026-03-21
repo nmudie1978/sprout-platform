@@ -2,7 +2,7 @@
  * Norwegian Youth Labor Law Compliance
  *
  * Enforces Arbeidsmiljøloven (Working Environment Act) regulations
- * for workers aged 15-20 in Norway.
+ * for workers aged 15-23 in Norway.
  *
  * Key regulations:
  * - Chapter 11: Working hours for young workers

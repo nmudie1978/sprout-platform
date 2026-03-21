@@ -53,7 +53,7 @@ const CLARITY_OPTIONS: { value: ClarityTopic; label: string }[] = [
 
 // Role options
 const ROLE_OPTIONS: { value: FeedbackRole; label: string }[] = [
-  { value: "TEEN_16_20", label: "Teen (16–20)" },
+  { value: "TEEN_16_20", label: "Teen (15–23)" },
   { value: "PARENT_GUARDIAN", label: "Parent / Guardian" },
   { value: "ADULT_OTHER", label: "Adult (teacher / mentor / other)" },
 ];

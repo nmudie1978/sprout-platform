@@ -91,6 +91,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Get job details for earning amount
+    const jobDetails = await prisma.microJob.findUnique({
+      where: { id: validatedCompletion.jobId },
+      select: { payAmount: true },
+    });
+
     // Create job completion and feedback in transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create job completion
@@ -129,6 +135,37 @@ export async function POST(req: NextRequest) {
         where: { id: validatedCompletion.jobId },
         data: { status: 'COMPLETED' },
       });
+
+      // Create earning record if job was completed successfully
+      if (validatedCompletion.outcome === 'COMPLETED' && jobDetails) {
+        await tx.earning.upsert({
+          where: {
+            youthId_jobId: {
+              youthId: validatedCompletion.youthId,
+              jobId: validatedCompletion.jobId,
+            },
+          },
+          update: {
+            amount: jobDetails.payAmount,
+            earnedAt: new Date(),
+          },
+          create: {
+            youthId: validatedCompletion.youthId,
+            jobId: validatedCompletion.jobId,
+            amount: jobDetails.payAmount,
+            status: 'PENDING',
+            earnedAt: new Date(),
+          },
+        });
+
+        // Update youth profile completed jobs count
+        await tx.youthProfile.update({
+          where: { userId: validatedCompletion.youthId },
+          data: {
+            completedJobsCount: { increment: 1 },
+          },
+        });
+      }
 
       return { completion, feedback };
     });

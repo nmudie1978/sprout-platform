@@ -443,7 +443,7 @@ function CoverPage() {
       <View style={styles.infoGrid}>
         <View style={styles.infoItem}>
           <Text style={styles.labelCaps}>AUDIENCE</Text>
-          <Text style={styles.body}>Young people aged 15-20</Text>
+          <Text style={styles.body}>Young people aged 15-23</Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.labelCaps}>PURPOSE</Text>

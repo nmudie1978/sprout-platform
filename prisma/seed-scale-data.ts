@@ -282,8 +282,8 @@ function generateRealisticTimestamp(daysBack: number): Date {
   return faker.date.between({ from: pastDate, to: now });
 }
 
-function pickRandom<T>(arr: T[]): T | undefined {
-  if (arr.length === 0) return undefined;
+function pickRandom<T>(arr: T[]): T {
+  if (arr.length === 0) throw new Error('pickRandom called with empty array');
   return arr[faker.number.int({ min: 0, max: arr.length - 1 })];
 }
 

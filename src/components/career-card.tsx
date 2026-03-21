@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, memo } from "react";
+import { useState, memo, type ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,9 @@ import {
   ChevronUp,
   Briefcase,
   Sparkles,
+  BookOpen,
+  ExternalLink,
+  AlertTriangle,
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
 import { CareerRealityCheck } from "./career-reality-check";
@@ -49,6 +52,112 @@ const growthConfig = {
   },
 };
 
+/* ------------------------------------------------------------------ */
+/*  AccordionSection — internal collapsible section                   */
+/* ------------------------------------------------------------------ */
+
+function AccordionSection({
+  icon,
+  title,
+  iconColor,
+  children,
+  defaultOpen = false,
+}: {
+  icon: ReactNode;
+  title: string;
+  iconColor?: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border-t">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-2 px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+      >
+        <span className={iconColor}>{icon}</span>
+        <span className="text-sm font-medium flex-1">{title}</span>
+        <motion.span
+          animate={{ rotate: open ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        </motion.span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Action buttons (shared between full & compact)                    */
+/* ------------------------------------------------------------------ */
+
+function ActionButtons({
+  title,
+  small = false,
+}: {
+  title: string;
+  small?: boolean;
+}) {
+  const q = encodeURIComponent(title);
+
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <Button
+        variant="outline"
+        size={small ? "sm" : "default"}
+        className={small ? "text-xs h-7" : "text-sm"}
+        asChild
+      >
+        <a
+          href={`https://www.coursera.org/search?query=${q}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <BookOpen className={small ? "h-3 w-3 mr-1" : "h-4 w-4 mr-1.5"} />
+          Start Learning
+        </a>
+      </Button>
+      <Button
+        variant="outline"
+        size={small ? "sm" : "default"}
+        className={small ? "text-xs h-7" : "text-sm"}
+        asChild
+      >
+        <a
+          href={`https://www.linkedin.com/jobs/search/?keywords=${q}&location=Norway`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <ExternalLink className={small ? "h-3 w-3 mr-1" : "h-4 w-4 mr-1.5"} />
+          See Job Listings
+        </a>
+      </Button>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  CareerCard                                                        */
+/* ------------------------------------------------------------------ */
+
 export const CareerCard = memo(function CareerCard({
   career,
   compact = false,
@@ -60,6 +169,7 @@ export const CareerCard = memo(function CareerCard({
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
 
+  /* ---------- COMPACT MODE ---------- */
   if (compact) {
     return (
       <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors">
@@ -84,6 +194,9 @@ export const CareerCard = memo(function CareerCard({
                     <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />
                     <span className={growth.color}>{career.growthOutlook}</span>
                   </Badge>
+                </div>
+                <div className="mt-2">
+                  <ActionButtons title={career.title} small />
                 </div>
               </div>
               {matchScore !== undefined && (
@@ -206,6 +319,9 @@ export const CareerCard = memo(function CareerCard({
     );
   }
 
+  /* ---------- FULL MODE ---------- */
+  const searchQuery = encodeURIComponent(career.title);
+
   return (
     <Card className="overflow-hidden border hover:border-purple-500/30 transition-colors">
       <CardContent className="p-0">
@@ -215,7 +331,14 @@ export const CareerCard = memo(function CareerCard({
             <div className="flex items-start gap-3">
               <span className="text-3xl">{career.emoji}</span>
               <div>
-                <h3 className="font-semibold text-lg tracking-tight">{career.title}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-lg tracking-tight">{career.title}</h3>
+                  {career.entryLevel && (
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                      Entry Level
+                    </Badge>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground mt-1">
                   {career.description}
                 </p>
@@ -255,29 +378,36 @@ export const CareerCard = memo(function CareerCard({
             )}
           </div>
 
-          {/* Quick Stats */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            <Badge variant="secondary" className="text-xs">
-              <Banknote className="h-3 w-3 mr-1" />
-              {career.avgSalary}
-            </Badge>
-            <Badge variant="outline" className={`text-xs ${growth.bg}`}>
-              <GrowthIcon className={`h-3 w-3 mr-1 ${growth.color}`} />
-              <span className={growth.color}>{growth.label}</span>
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              <GraduationCap className="h-3 w-3 mr-1" />
-              {career.educationPath.split(" ").slice(0, 3).join(" ")}...
-            </Badge>
+          {/* Salary & Growth stat boxes */}
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <div className="rounded-lg bg-muted/50 px-3 py-2.5 flex items-center gap-2">
+              <Banknote className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Salary</p>
+                <p className="text-sm font-semibold truncate">{career.avgSalary}</p>
+              </div>
+            </div>
+            <div className={`rounded-lg px-3 py-2.5 flex items-center gap-2 border ${growth.bg}`}>
+              <GrowthIcon className={`h-4 w-4 shrink-0 ${growth.color}`} />
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Growth</p>
+                <p className={`text-sm font-semibold ${growth.color}`}>{growth.label}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="mt-3">
+            <ActionButtons title={career.title} />
           </div>
         </div>
 
-        {/* Key Skills */}
-        <div className="px-4 py-3 border-t">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="h-4 w-4 text-purple-500" />
-            <span className="text-sm font-medium">Key Skills</span>
-          </div>
+        {/* Accordion Sections */}
+        <AccordionSection
+          icon={<Sparkles className="h-4 w-4" />}
+          title="Skills You'll Use"
+          iconColor="text-purple-500"
+        >
           <div className="flex flex-wrap gap-1.5">
             {career.keySkills.map((skill) => (
               <Badge
@@ -289,84 +419,58 @@ export const CareerCard = memo(function CareerCard({
               </Badge>
             ))}
           </div>
-        </div>
+        </AccordionSection>
 
-        {/* Expandable Details */}
-        {showExpandButton && (
-          <>
-            <AnimatePresence>
-              {expanded && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-4 py-3 border-t space-y-4">
-                    {/* Career Progression */}
-                    <CareerProgression careerId={career.id} />
+        <AccordionSection
+          icon={<Briefcase className="h-4 w-4" />}
+          title="What You'll Do"
+          iconColor="text-amber-500"
+        >
+          <ul className="text-sm text-muted-foreground space-y-1">
+            {career.dailyTasks.map((task, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <span className="text-purple-500 mt-1">•</span>
+                {task}
+              </li>
+            ))}
+          </ul>
+        </AccordionSection>
 
-                    {/* Education Path */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <GraduationCap className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm font-medium">Education Path</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground pl-6">
-                        {career.educationPath}
-                      </p>
-                    </div>
+        <AccordionSection
+          icon={<GraduationCap className="h-4 w-4" />}
+          title="Education Path"
+          iconColor="text-blue-500"
+        >
+          <p className="text-sm text-muted-foreground">
+            {career.educationPath}
+          </p>
+          <a
+            href={`https://www.classcentral.com/search?q=${searchQuery}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2"
+          >
+            <BookOpen className="h-3 w-3" />
+            Find courses
+          </a>
+        </AccordionSection>
 
-                    {/* Daily Tasks */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Briefcase className="h-4 w-4 text-amber-500" />
-                        <span className="text-sm font-medium">What You'll Do</span>
-                      </div>
-                      <ul className="text-sm text-muted-foreground pl-6 space-y-1">
-                        {career.dailyTasks.map((task, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span className="text-purple-500 mt-1">•</span>
-                            {task}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+        <AccordionSection
+          icon={<TrendingUp className="h-4 w-4" />}
+          title="Career Progression"
+          iconColor="text-emerald-500"
+        >
+          <CareerProgression careerId={career.id} />
+        </AccordionSection>
 
-                    {/* Reality Check (if enabled) */}
-                    {showRealityCheck && (
-                      <div className="mt-4">
-                        <CareerRealityCheck roleSlug={career.id} />
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <Button
-              type="button"
-              variant="ghost"
-              className="w-full rounded-none border-t h-10 text-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                setExpanded(!expanded);
-              }}
-            >
-              {expanded ? (
-                <>
-                  <ChevronUp className="h-4 w-4 mr-1" />
-                  Show Less
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="h-4 w-4 mr-1" />
-                  Learn More
-                </>
-              )}
-            </Button>
-          </>
+        {showRealityCheck && (
+          <AccordionSection
+            icon={<AlertTriangle className="h-4 w-4" />}
+            title="Reality Check"
+            iconColor="text-amber-500"
+          >
+            <CareerRealityCheck roleSlug={career.id} />
+          </AccordionSection>
         )}
       </CardContent>
     </Card>

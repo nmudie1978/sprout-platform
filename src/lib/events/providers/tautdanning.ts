@@ -110,7 +110,7 @@ function parseCityPage(html: string, city: string, pageUrl: string): RawFairData
           title: title.includes(city) ? title : `${title} ${city}`,
           city,
           dates,
-          venue,
+          venue: venue ?? undefined,
           url: detailLink || pageUrl,
         });
       }
@@ -128,7 +128,7 @@ function parseCityPage(html: string, city: string, pageUrl: string): RawFairData
         title: pageTitle || `Student Fair ${city}`,
         city,
         dates: pageDates,
-        venue: pageVenue,
+        venue: pageVenue ?? undefined,
         url: pageUrl,
       });
     }

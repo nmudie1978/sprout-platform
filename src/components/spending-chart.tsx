@@ -403,7 +403,7 @@ export function SpendingChart() {
                         >
                           <div className="flex items-center gap-3">
                             <div className="relative">
-                              <Avatar avatarId={worker.avatarId} size="sm" />
+                              <Avatar name={worker.displayName} size="sm" />
                               {index < 3 && (
                                 <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 flex items-center justify-center text-[10px] font-bold text-white">
                                   {index + 1}

@@ -15,13 +15,13 @@ import { MilestoneTimeline } from '@/components/timeline/milestone-timeline';
 import type { TimelineMilestone } from '@/components/timeline/types';
 
 const MILESTONES: TimelineMilestone[] = [
-  { age: 15, title: 'First Exploration', state: 'done' },
-  { age: 16, title: 'Micro-Job Experience', state: 'done' },
-  { age: 17, title: 'Skill Discovery', state: 'current' },
-  { age: 18, title: 'Career Direction', state: 'future' },
-  { age: 19, title: 'Deep Specialisation', state: 'future' },
-  { age: 20, title: 'Industry Entry', state: 'future' },
-  { age: 21, title: 'Career Launch', state: 'future' },
+  { age: 15, title: 'First Curiosity', state: 'done' },
+  { age: 16, title: 'Trying Things Out', state: 'done' },
+  { age: 17, title: 'Understanding Strengths', state: 'current' },
+  { age: 18, title: 'Exploring Directions', state: 'future' },
+  { age: 19, title: 'Building Confidence', state: 'future' },
+  { age: 20, title: 'Gaining Experience', state: 'future' },
+  { age: 21, title: 'Finding Your Path', state: 'future' },
 ];
 
 export function YourTimelineSection() {
@@ -37,15 +37,15 @@ export function YourTimelineSection() {
 
       {/* Heading */}
       <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
-        See the{' '}
+        Your journey,{' '}
         <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-          whole picture.
+          your pace.
         </span>
       </h2>
 
       {/* Subtext */}
       <p className="text-neutral-400 text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-        Map your journey from first exploration to career launch — one step at a time.
+        Everyone grows differently. See your progress as a gentle unfolding, not a race.
       </p>
 
       {/* Timeline Card */}

@@ -450,13 +450,13 @@ export const careerEvents: CareerEventSeed[] = [
   // Source: Official university career fair sites
   // ================================================
   {
-    title: "CHARM 2026 — Chalmers Career Fair",
+    title: "CHARM 2027 — Chalmers Career Fair",
     type: CareerEventType.JOBFAIR,
     description:
       "One of Scandinavia's leading career fairs, held every February on Chalmers campus. Students meet employers from engineering, tech, and science sectors. Organised by Chalmers Student Union.",
     organizer: "Chalmers Studentkår",
-    startDate: new Date("2026-02-17T10:00:00Z"),
-    endDate: new Date("2026-02-18T16:00:00Z"),
+    startDate: new Date("2027-02-15T10:00:00Z"),
+    endDate: new Date("2027-02-16T16:00:00Z"),
     time: "10:00 - 16:00",
     locationMode: LocationMode.IN_PERSON,
     city: "Gothenburg",

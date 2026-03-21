@@ -2,12 +2,31 @@
  * AI Assistant Guardrails
  * Ensures the assistant stays within safe, helpful boundaries
  *
- * LANGUAGE POLICY: This app is English-only by design.
- * All AI-generated content must be in English, regardless of user input language.
+ * LANGUAGE POLICY (HYBRID):
+ * - Chat / career advisor: English-only (enforced by ENGLISH_ONLY_RULE)
+ * - UI chrome: bilingual via next-intl message files (en-GB / nb-NO)
+ * - Long-form content: on-demand AI translation via /api/translate
+ *
  * See /docs/english-only.md for full policy documentation.
  */
 
 import { getCondensedNorwegianContext } from "./norwegian-context";
+
+/**
+ * Contexts in which AI is used. The English-only guardrail only
+ * applies to interactive chat — translation is explicitly multilingual.
+ */
+export type AIOperationContext = "chat" | "translation";
+
+/**
+ * Returns true when the English-only rule should be enforced.
+ * Translation operations are exempt by design.
+ */
+export function shouldEnforceEnglishOnly(
+  context: AIOperationContext = "chat"
+): boolean {
+  return context === "chat";
+}
 
 /**
  * English-only enforcement rule - MUST be included in all AI prompts
@@ -20,7 +39,7 @@ LANGUAGE REQUIREMENT (MANDATORY - NO EXCEPTIONS):
 - Do NOT translate your response into other languages.
 - Do NOT switch languages mid-response.
 - If the user writes in Norwegian or another language, understand their intent but respond in English.
-- Use simple, clear English suitable for ages 15-20.
+- Use simple, clear English suitable for ages 15-23.
 - You may include Norwegian terminology for local concepts (e.g., "fagbrev", "NAV", "skattekort") but explain them in English.
 `.trim();
 
@@ -158,7 +177,7 @@ export function getSystemPrompt(intent: IntentType, careerAspiration?: string | 
   // Get Norwegian-specific context
   const norwegianContext = getCondensedNorwegianContext();
 
-  const basePrompt = `You are a helpful career guidance assistant for a Norwegian youth platform (ages 15-20). You help with:
+  const basePrompt = `You are a helpful career guidance assistant for a Norwegian youth platform (ages 15-23). You help with:
 - Platform navigation (how to find jobs, create profiles, explore careers)
 - Career information (what careers involve, required skills, realistic salaries in Norway)
 - Next steps advice (how to get started in a career, education paths)
@@ -375,7 +394,7 @@ export function getEnglishOnlyRegenerationPrompt(): string {
   return `CRITICAL INSTRUCTION: Your previous response was not in English.
 Rewrite your response in English only. Do not include any translations.
 Output language: English (en). No exceptions.
-Respond in clear, simple English suitable for ages 15-20.`;
+Respond in clear, simple English suitable for ages 15-23.`;
 }
 
 /**

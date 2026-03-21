@@ -172,7 +172,7 @@ export default function CompleteProfilePage() {
                     </p>
                     {!canBeYouth && age !== null && (
                       <p className="text-xs text-red-500 mt-1">
-                        Youth workers must be between 15-20 years old
+                        Youth workers must be between 15-23 years old
                       </p>
                     )}
                   </div>

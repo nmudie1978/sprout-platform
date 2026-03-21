@@ -76,10 +76,10 @@ function parseProgramPage(html: string): RawProgramEntry[] {
         entries.push({
           title,
           dateStr: dateStr || "",
-          time,
-          venue,
+          time: time ?? undefined,
+          venue: venue ?? undefined,
           url,
-          description,
+          description: description ?? undefined,
         });
       }
     }

@@ -5,7 +5,7 @@
  *
  * CORE PRINCIPLE:
  * Videos must be educational, calm, factual, system-level (not personality-driven),
- * understandable by 16-20 year olds, and trusted by parents, schools, educators.
+ * understandable by 15-23 year olds, and trusted by parents, schools, educators.
  *
  * Videos are NOT: social media content, influencer videos, vlogs, promotional
  * material, or entertainment-first content.

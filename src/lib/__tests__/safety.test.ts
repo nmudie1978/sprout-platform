@@ -104,17 +104,17 @@ describe('Safety Module', () => {
       expect(validateAgeBracket(age17)).toBe('SIXTEEN_SEVENTEEN')
     })
 
-    it('should return EIGHTEEN_TWENTY for 18-20 year olds', () => {
+    it('should return EIGHTEEN_TWENTY for 18-23 year olds', () => {
       const today = new Date()
 
       const age18 = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate())
       expect(validateAgeBracket(age18)).toBe('EIGHTEEN_TWENTY')
 
-      const age19 = new Date(today.getFullYear() - 19, today.getMonth(), today.getDate())
-      expect(validateAgeBracket(age19)).toBe('EIGHTEEN_TWENTY')
-
       const age20 = new Date(today.getFullYear() - 20, today.getMonth(), today.getDate())
       expect(validateAgeBracket(age20)).toBe('EIGHTEEN_TWENTY')
+
+      const age23 = new Date(today.getFullYear() - 23, today.getMonth(), today.getDate())
+      expect(validateAgeBracket(age23)).toBe('EIGHTEEN_TWENTY')
     })
 
     it('should return null for users under 15', () => {
@@ -123,10 +123,10 @@ describe('Safety Module', () => {
       expect(validateAgeBracket(age14)).toBeNull()
     })
 
-    it('should return null for users over 20', () => {
+    it('should return null for users over 23', () => {
       const today = new Date()
-      const age21 = new Date(today.getFullYear() - 21, today.getMonth(), today.getDate())
-      expect(validateAgeBracket(age21)).toBeNull()
+      const age24 = new Date(today.getFullYear() - 24, today.getMonth(), today.getDate())
+      expect(validateAgeBracket(age24)).toBeNull()
     })
   })
 
@@ -146,11 +146,11 @@ describe('Safety Module', () => {
 
   describe('Age Constants', () => {
     it('should have correct minimum youth age', () => {
-      expect(MIN_YOUTH_AGE).toBe(16) // Platform minimum is 16
+      expect(MIN_YOUTH_AGE).toBe(15) // Platform minimum is 15
     })
 
     it('should have correct maximum youth age', () => {
-      expect(MAX_YOUTH_AGE).toBe(20)
+      expect(MAX_YOUTH_AGE).toBe(23)
     })
 
     it('should have correct minimum employer age', () => {
@@ -165,8 +165,8 @@ describe('Safety Module', () => {
 
 describe('Safety Rules - Business Logic', () => {
   describe('Youth Registration Rules', () => {
-    it('should allow registration for ages 16-20', () => {
-      const validAges = [16, 17, 18, 19, 20] // Platform minimum is 16
+    it('should allow registration for ages 15-23', () => {
+      const validAges = [15, 16, 17, 18, 19, 20, 21, 22, 23] // Platform range is 15-23
       validAges.forEach(age => {
         const today = new Date()
         const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate())
@@ -176,9 +176,9 @@ describe('Safety Rules - Business Logic', () => {
       })
     })
 
-    it('should require guardian consent for ages 16-17', () => {
+    it('should require guardian consent for ages 15-17', () => {
       const today = new Date()
-      for (let age = 16; age <= 17; age++) { // Platform minimum is 16
+      for (let age = 15; age <= 17; age++) { // Platform minimum is 15
         const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate())
         expect(isMinor(birthDate)).toBe(true)
       }
@@ -186,7 +186,7 @@ describe('Safety Rules - Business Logic', () => {
 
     it('should NOT require guardian consent for ages 18+', () => {
       const today = new Date()
-      for (let age = 18; age <= 20; age++) {
+      for (let age = 18; age <= 23; age++) {
         const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate())
         expect(isMinor(birthDate)).toBe(false)
       }

@@ -1,0 +1,56 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "loading": "Loading…",
+    "showOriginal": "Show original",
+    "translateToNorwegian": "Translate to Norwegian",
+    "translating": "Translating…"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "jobs": "Small Jobs",
+    "insights": "Industry Insights",
+    "myJourney": "My Journey",
+    "explore": "Explore Careers",
+    "feedback": "Feedback"
+  },
+  "insights": {
+    "pageTitle": "Industry",
+    "pageTitleGradient": "Insights",
+    "pageDescription": "Understanding what's shaping careers globally",
+    "trustLine": "Industry Insights is your world lens — helping you understand the world beyond job listings. Split into two parts: global career landscape data, and what it means for you (15-23).",
+    "verifiedSources": "Verified sources · Refreshed regularly",
+    "showContextHints": "Show context hints",
+    "globalLens": "Global Lens",
+    "globalTitle": "Global Industry & Career Landscape",
+    "globalSubtitle": "Macro trends shaping jobs worldwide — data-led, not youth-specific",
+    "jobMarketStats": "Job Market Statistics",
+    "jobMarketStatsDesc": "Key data points from global employment research",
+    "youthLens": "Youth Lens",
+    "youthTitle": "What It Means for You (15–23)",
+    "youthSubtitle": "How the global landscape connects to your choices — warm, actionable, grounded",
+    "aboutData": "About the Data",
+    "aboutDataDesc": "All insights are derived from Tier-1 sources and reviewed quarterly. Content is summarised for clarity.",
+    "refreshed": "Refreshed Q1 2025",
+    "verified": "Verified"
+  },
+  "userMenu": {
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "tools": "Tools",
+    "aiCareerAdvisor": "AI Career Advisor",
+    "safety": "Safety",
+    "healthSafety": "Health & Safety",
+    "reportConcern": "Report a concern",
+    "aboutSprout": "About Sprout",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "logOut": "Log out",
+    "language": "Language",
+    "english": "English",
+    "norwegian": "Norsk"
+  }
+}

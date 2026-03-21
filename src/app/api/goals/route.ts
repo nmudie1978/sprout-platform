@@ -15,7 +15,7 @@ const nextStepSchema = z.object({
 
 const goalSchema = z.object({
   title: z.string().min(1).max(100),
-  status: z.enum(["exploring", "committed", "paused"]),
+  status: z.enum(["exploring", "committed"]),
   confidence: z.enum(["low", "medium", "high"]),
   timeframe: z.enum(["this-year", "1-2-years", "3-plus-years"]),
   why: z.string().max(500).optional().default(""),
@@ -73,6 +73,24 @@ export async function PUT(request: Request) {
     const goalWithTimestamp = goal
       ? { ...goal, updatedAt: new Date().toISOString() }
       : Prisma.DbNull;
+
+    // Prevent primary and secondary from having the same title
+    if (goal) {
+      const profile = await prisma.youthProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { primaryGoal: true, secondaryGoal: true },
+      });
+
+      const otherSlot = slot === "primary" ? "secondaryGoal" : "primaryGoal";
+      const otherGoal = profile?.[otherSlot] as CareerGoal | null;
+
+      if (otherGoal && otherGoal.title === goal.title) {
+        return NextResponse.json(
+          { error: "Primary and secondary goals cannot be the same career" },
+          { status: 400 }
+        );
+      }
+    }
 
     // Determine which field to update
     const updateData =

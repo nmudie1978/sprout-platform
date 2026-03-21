@@ -171,14 +171,21 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
         animate={{ opacity: 1, y: 0 }}
       >
         <Card className="border overflow-hidden">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Trophy className="h-4 w-4 text-amber-600" />
-              <span className="text-sm font-medium">Achievements</span>
-              <span className="text-xs text-muted-foreground">({earnedBadges.length})</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <TooltipProvider>
+          <CardContent className="p-2.5">
+            <TooltipProvider>
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Trophy className="h-3.5 w-3.5 text-amber-600" />
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-xs font-medium cursor-help">Achievements</span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[200px]">
+                    <p className="text-xs">Badges you earn by completing jobs, getting great reviews, and building your reputation. They help employers see your experience at a glance.</p>
+                  </TooltipContent>
+                </Tooltip>
+                <span className="text-[10px] text-muted-foreground">({earnedBadges.length})</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
                 {earnedBadges.slice(0, 8).map((badge: any, index: number) => (
                   <Tooltip key={badge.id}>
                     <TooltipTrigger asChild>
@@ -186,7 +193,7 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: index * 0.05 }}
-                        className={`h-8 w-8 rounded-lg bg-gradient-to-br ${badge.color} flex items-center justify-center text-base cursor-pointer shadow hover:scale-110 transition-transform`}
+                        className={`h-6 w-6 rounded-md bg-gradient-to-br ${badge.color} flex items-center justify-center text-sm cursor-pointer shadow hover:scale-110 transition-transform`}
                       >
                         {badge.emoji}
                       </motion.div>
@@ -200,12 +207,12 @@ export function BadgesDisplay({ showLocked = false, compact = false }: BadgesDis
                   </Tooltip>
                 ))}
                 {earnedBadges.length > 8 && (
-                  <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-xs font-medium">
+                  <div className="h-6 w-6 rounded-md bg-muted flex items-center justify-center text-[10px] font-medium">
                     +{earnedBadges.length - 8}
                   </div>
                 )}
-              </TooltipProvider>
-            </div>
+              </div>
+            </TooltipProvider>
           </CardContent>
         </Card>
       </motion.div>

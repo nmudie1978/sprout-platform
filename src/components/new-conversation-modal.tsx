@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Building2, User, Loader2, MessageCircle, CheckCircle2, Briefcase, ArrowLeft, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getAvatarById } from "@/lib/avatars";
+import { Avatar } from "@/components/avatar";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -172,26 +172,14 @@ export function NewConversationModal({ open, onOpenChange }: NewConversationModa
   };
 
   const renderAvatar = (user: SearchUser) => {
-    if (user.role === "YOUTH" && user.avatar) {
-      const avatar = getAvatarById(user.avatar);
-      return (
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-xl">
-          {avatar?.emoji || "⭐"}
-        </div>
-      );
-    } else if (user.role === "EMPLOYER") {
+    if (user.role === "EMPLOYER") {
       return (
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
           <Building2 className="h-5 w-5 text-muted-foreground" />
         </div>
       );
-    } else {
-      return (
-        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-          <User className="h-5 w-5 text-muted-foreground" />
-        </div>
-      );
     }
+    return <Avatar name={user.name} size="sm" />;
   };
 
   const getAvailabilityBadge = (status?: string) => {
