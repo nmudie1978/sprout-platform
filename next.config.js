@@ -38,6 +38,8 @@ const nextConfig = {
   compress: true,
   // Reduce unused polyfills
   reactStrictMode: true,
+  // Remove X-Powered-By header
+  poweredByHeader: false,
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',

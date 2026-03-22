@@ -54,7 +54,7 @@ function GlassCard({ children, className = "", glow }: {
   children: React.ReactNode; className?: string; glow?: string;
 }) {
   return (
-    <div className={`bg-card/80 backdrop-blur-xl border border-border/40 rounded-3xl ${glow || ""} ${className}`}>
+    <div className={`bg-card/80 backdrop-blur-sm border border-border/40 rounded-3xl ${glow || ""} ${className}`}>
       {children}
     </div>
   );
@@ -202,7 +202,7 @@ function InsightTicker({ videos }: { videos: InsightVideo[] }) {
             className="flex items-center gap-2.5 shrink-0 group/item"
           >
             <div className="relative w-16 h-10 rounded-lg overflow-hidden shrink-0">
-              <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
+              <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover/item:bg-black/40 transition-colors">
                 <Play className="h-3 w-3 text-white fill-white opacity-70" />
               </div>
