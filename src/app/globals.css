@@ -62,12 +62,12 @@
     letter-spacing: -0.01em;
   }
 
-  /* Consistent heading styles */
+  /* Consistent heading styles — mobile-first */
   h1 {
-    @apply text-2xl font-bold tracking-tight;
+    @apply text-xl sm:text-2xl font-bold tracking-tight;
   }
   h2 {
-    @apply text-xl font-semibold tracking-tight;
+    @apply text-lg sm:text-xl font-semibold tracking-tight;
   }
   h3 {
     @apply text-base font-semibold;
@@ -79,10 +79,43 @@
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent iOS zoom on input focus (text-base = 16px) */
+  @media (max-width: 640px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
   }
 }
 
 @layer components {
+  /* Mobile page container — consistent padding across all pages */
+  .page-container {
+    @apply px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8;
+  }
+
+  /* Safe area bottom padding for pages with bottom nav */
+  .safe-bottom {
+    @apply pb-20 lg:pb-0;
+  }
+
+  /* Touch-friendly minimum tap target */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile-friendly horizontal scroll container */
+  .scroll-x-mobile {
+    @apply flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 -mx-3 px-3;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scroll-x-mobile::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Japandi palette utilities for landing-v2 */
   .bg-sage-muted {
     background-color: rgb(156 175 136 / 0.15);

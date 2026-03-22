@@ -89,7 +89,7 @@ export default function NewShadowPage() {
 
   if (sessionStatus === "loading") {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl">
         <div className="space-y-6">
           <Skeleton className="h-16 w-64" />
           <Skeleton className="h-8 w-96" />
@@ -101,7 +101,7 @@ export default function NewShadowPage() {
 
   if (!session || session.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl">
         <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -121,7 +121,7 @@ export default function NewShadowPage() {
   if (showGuide) {
     return (
       <div className="min-h-full">
-        <div className="container mx-auto px-4 py-8 max-w-2xl relative">
+        <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
           {/* Background gradient */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
 
@@ -141,7 +141,7 @@ export default function NewShadowPage() {
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-4 py-8 max-w-2xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
         {/* Background gradient */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
 

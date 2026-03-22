@@ -209,7 +209,7 @@ export default function ApplicationsPage() {
 
   if (sessionStatus === "loading" || isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
@@ -222,7 +222,7 @@ export default function ApplicationsPage() {
 
   if (session?.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">This page is only available for youth workers.</p>

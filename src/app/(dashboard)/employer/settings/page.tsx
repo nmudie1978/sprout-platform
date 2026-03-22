@@ -162,7 +162,7 @@ export default function EmployerSettingsPage() {
 
   if (session?.user.role !== "EMPLOYER") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p>Access denied. Employers only.</p>

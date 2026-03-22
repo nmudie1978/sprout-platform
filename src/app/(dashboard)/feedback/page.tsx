@@ -153,7 +153,7 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">

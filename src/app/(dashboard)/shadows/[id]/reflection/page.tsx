@@ -85,7 +85,7 @@ export default function ShadowReflectionPage({
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl">
         <div className="space-y-6">
           <Skeleton className="h-10 w-32" />
           <Skeleton className="h-24 w-full" />
@@ -97,7 +97,7 @@ export default function ShadowReflectionPage({
 
   if (!shadow) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl">
         <Card>
           <CardContent className="py-12 text-center">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -114,7 +114,7 @@ export default function ShadowReflectionPage({
   // Check if user is the youth who did the shadow
   if (shadow.youthId !== session?.user?.id) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl">
         <Card>
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -133,7 +133,7 @@ export default function ShadowReflectionPage({
   // Check if shadow is completed
   if (shadow.status !== "COMPLETED") {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl">
         <Card>
           <CardContent className="py-12 text-center">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -152,7 +152,7 @@ export default function ShadowReflectionPage({
   // Success state
   if (submitted) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -184,7 +184,7 @@ export default function ShadowReflectionPage({
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-4 py-8 max-w-xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-xl relative">
         {/* Background gradient */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-emerald-500/5 pointer-events-none" />
 

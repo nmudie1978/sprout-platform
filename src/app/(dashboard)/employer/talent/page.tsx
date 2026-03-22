@@ -116,7 +116,7 @@ export default function TalentBrowsePage() {
   const hasActiveFilters = availabilityFilter || locationFilter || ageBracketFilter || interestsFilter.length > 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 relative min-h-screen">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative min-h-screen">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 pointer-events-none" />
 

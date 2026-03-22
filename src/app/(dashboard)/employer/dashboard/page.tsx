@@ -758,7 +758,7 @@ export default function EmployerDashboardPage() {
 
   if (session?.user.role !== "EMPLOYER") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p>Access denied. Employers only.</p>
@@ -857,7 +857,7 @@ export default function EmployerDashboardPage() {
         />
       </div>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative z-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>

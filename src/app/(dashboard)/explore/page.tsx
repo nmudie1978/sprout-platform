@@ -130,7 +130,7 @@ export default function ExplorePage() {
 
   if (session?.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p>Only youth users can explore careers.</p>
@@ -142,7 +142,7 @@ export default function ExplorePage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <div className="flex items-center justify-center min-h-[300px]">
           <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
         </div>

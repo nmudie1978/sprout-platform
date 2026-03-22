@@ -291,7 +291,7 @@ export default function CareerAdvisorPage() {
   // Show loading state while checking auth
   if (isLoadingAuth) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
         {/* Background gradient - matches Industry Insights */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
         <PageHeader
@@ -313,7 +313,7 @@ export default function CareerAdvisorPage() {
   // Show login prompt if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
         {/* Background gradient - matches Industry Insights */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
         <PageHeader
@@ -372,7 +372,7 @@ export default function CareerAdvisorPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
       {/* Background gradient - matches Industry Insights */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
 

@@ -370,7 +370,7 @@ export default function MyJourneyPage() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl">
         <div className="space-y-6">
           <Skeleton className="h-16 w-64" />
           <Skeleton className="h-8 w-96" />
@@ -387,7 +387,7 @@ export default function MyJourneyPage() {
   // Auth guard
   if (session?.user?.role !== 'YOUTH') {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl">
         <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -409,7 +409,7 @@ export default function MyJourneyPage() {
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-4 py-8 max-w-6xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl relative">
         {/* Career Path Header */}
         {journey && (
           <div className="mb-8">

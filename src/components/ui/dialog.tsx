@@ -35,7 +35,17 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-[50%] top-[50%] z-[100] grid w-[calc(100%-2rem)] sm:w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-4 sm:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg sm:rounded-lg max-h-[calc(100vh-2rem)] overflow-y-auto",
+        // Mobile: bottom sheet style
+        "fixed z-[100] grid gap-4 border bg-background shadow-lg duration-200 overflow-y-auto",
+        "inset-x-0 bottom-0 w-full rounded-t-2xl p-4 max-h-[85vh]",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+        // Desktop: centered modal
+        "sm:inset-auto sm:left-[50%] sm:top-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:bottom-auto",
+        "sm:w-full sm:max-w-lg sm:rounded-lg sm:p-6 sm:max-h-[calc(100vh-2rem)]",
+        "sm:data-[state=closed]:slide-out-to-top-[2%] sm:data-[state=open]:slide-in-from-top-[2%]",
+        "sm:data-[state=closed]:zoom-out-95 sm:data-[state=open]:zoom-in-95",
         className
       )}
       {...props}

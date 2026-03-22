@@ -113,7 +113,7 @@ export default function AskAProPage() {
 
   if (session?.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p>Only youth users can ask questions.</p>

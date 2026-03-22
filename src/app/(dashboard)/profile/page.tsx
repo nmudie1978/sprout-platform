@@ -395,7 +395,7 @@ export default function ProfilePage() {
 
   if (session?.user.role !== "YOUTH") {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card>
           <CardContent className="py-12 text-center">
             <p>Only youth users can access profiles.</p>
@@ -407,7 +407,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <div className="text-center">Loading profile...</div>
       </div>
     );

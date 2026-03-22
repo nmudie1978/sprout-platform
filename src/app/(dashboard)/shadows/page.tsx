@@ -86,7 +86,7 @@ export default function ShadowsPage() {
 
   if (sessionStatus === "loading" || isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl">
         <div className="space-y-6">
           <Skeleton className="h-16 w-64" />
           <Skeleton className="h-8 w-96" />
@@ -102,7 +102,7 @@ export default function ShadowsPage() {
 
   if (!session || (!isYouth && !isEmployer)) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl">
         <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -120,7 +120,7 @@ export default function ShadowsPage() {
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-4 py-8 max-w-4xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
         {/* Background gradient */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
 

@@ -259,7 +259,7 @@ export default function ShadowDetailPage({
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl">
         <div className="space-y-6">
           <Skeleton className="h-10 w-32" />
           <Skeleton className="h-24 w-full" />
@@ -271,7 +271,7 @@ export default function ShadowDetailPage({
 
   if (!shadow) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl">
         <Card>
           <CardContent className="py-12 text-center">
             <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -293,7 +293,7 @@ export default function ShadowDetailPage({
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-4 py-8 max-w-2xl relative">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
         {/* Background gradient */}
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
 

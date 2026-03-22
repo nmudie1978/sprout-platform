@@ -92,7 +92,7 @@ export default function CategoryPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
         <Card className="border-2 border-dashed">
           <CardContent className="py-16 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
@@ -115,7 +115,7 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 relative">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 pointer-events-none" />
 

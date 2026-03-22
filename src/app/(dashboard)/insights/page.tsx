@@ -91,18 +91,18 @@ function SectionHeader({
   labelColor,
 }: SectionHeaderProps) {
   return (
-    <div className="mb-6">
-      <div className={`h-1 rounded-full bg-gradient-to-r ${gradient} mb-5`} />
-      <div className="flex flex-col items-center text-center gap-3">
-        <div className={`p-3 rounded-2xl ${iconBg} ring-2 ring-offset-2 ring-offset-background ${labelColor.replace('text-', 'ring-').replace(/\/\d+$/, '/20')}`}>
-          <Icon className={`h-7 w-7 ${iconColor}`} />
+    <div className="mb-4 sm:mb-6">
+      <div className={`h-1 rounded-full bg-gradient-to-r ${gradient} mb-3 sm:mb-5`} />
+      <div className="flex flex-col items-center text-center gap-2 sm:gap-3">
+        <div className={`p-2.5 sm:p-3 rounded-2xl ${iconBg} ring-2 ring-offset-2 ring-offset-background ${labelColor.replace('text-', 'ring-').replace(/\/\d+$/, '/20')}`}>
+          <Icon className={`h-6 w-6 sm:h-7 sm:w-7 ${iconColor}`} />
         </div>
         <div>
           <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${labelColor}`}>
             {label}
           </span>
-          <h2 className="text-2xl font-bold text-foreground mt-0.5">{title}</h2>
-          <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+          <h2 className="text-lg sm:text-2xl font-bold text-foreground mt-0.5">{title}</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{subtitle}</p>
         </div>
       </div>
     </div>
@@ -148,7 +148,7 @@ export default function IndustryInsightsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 relative">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
 
@@ -195,7 +195,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.15 }}
         className="mb-2"
       >
-        <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-6">
+        <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-3 sm:p-6">
           <div className="relative">
             <SectionHeader
               icon={Globe2}
