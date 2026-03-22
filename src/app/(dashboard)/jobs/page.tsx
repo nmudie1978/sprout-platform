@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageHeader } from "@/components/page-header";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -31,7 +32,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
-import { JobCardV2 } from "@/components/job-card-v2";
+import { JobCardV2, JobListHeader } from "@/components/job-card-v2";
 import { ViewModeToggle } from "@/components/view/ViewModeToggle";
 import { useViewMode } from "@/hooks/useViewMode";
 
@@ -78,7 +79,7 @@ export default function JobsPage() {
   const [standardCategoryFilter, setStandardCategoryFilter] = useState<string>(""); // New taxonomy
   const [locationFilter, setLocationFilter] = useState<string>("");
   const [startDateFilter, setStartDateFilter] = useState<string>("");
-  const { viewMode, setViewMode } = useViewMode({ storageKey: "jobViewMode", defaultMode: "grid" });
+  const { viewMode, setViewMode } = useViewMode({ storageKey: "jobViewMode", defaultMode: "list" });
   const [showFilters, setShowFilters] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -199,26 +200,21 @@ export default function JobsPage() {
 
       <PageHeader
         title="Find"
-        gradientText="Micro-Jobs"
-        description="Earn money while building real-world skills"
+        gradientText="Small Jobs"
+        description="Small jobs are your first step into real work — a chance to earn your own money, discover what you're good at, and build a track record that shows you're reliable. Every job you complete adds to your journey and helps you grow toward your bigger career goals."
         icon={Briefcase}
       />
-
-      {/* Mode marker */}
-      <p className="text-xs text-muted-foreground -mt-4 mb-6 tracking-wide">
-        Try real work. Build skills. Prove reliability.
-      </p>
 
       {/* Stats Bar */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8"
+        className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8"
       >
         <Card className="border-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30">
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{totalJobs}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{totalJobs}</div>
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
               <Briefcase className="h-3 w-3" />
               Available Jobs
@@ -227,7 +223,7 @@ export default function JobsPage() {
         </Card>
         <Card className="border-2 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30">
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{standardCategories.length || 12}</div>
+            <div className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{standardCategories.length || 12}</div>
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
               <LayoutGrid className="h-3 w-3" />
               Categories
@@ -236,7 +232,7 @@ export default function JobsPage() {
         </Card>
         {userCity ? (
           <Card
-            className={`border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 col-span-2 sm:col-span-1 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md ${
+            className={`border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 col-span-1 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] ${
               locationFilter.toLowerCase() === userCity.toLowerCase() ? 'ring-2 ring-purple-500 ring-offset-2' : ''
             }`}
             onClick={() => {
@@ -248,7 +244,7 @@ export default function JobsPage() {
             }}
           >
             <CardContent className="pt-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+              <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                 {jobsNearYou}
               </div>
               <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
@@ -261,10 +257,10 @@ export default function JobsPage() {
             </CardContent>
           </Card>
         ) : (
-          <Link href="/profile" className="col-span-2 sm:col-span-1">
-            <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-md h-full">
+          <Link href="/profile" className="col-span-1">
+            <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] h-full">
               <CardContent className="pt-6 text-center">
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
                   —
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
@@ -397,47 +393,42 @@ export default function JobsPage() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Category Pills - Sticky Navigation */}
+      {/* Category Select - Sticky Navigation */}
       <div className="sticky top-0 z-40 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b mb-6">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {/* All Jobs button */}
-          <button
-            onClick={() => {
+        <Select
+          value={standardCategoryFilter || "ALL"}
+          onValueChange={(value) => {
+            if (value === "ALL") {
               setStandardCategoryFilter("");
               setCategoryFilter("ALL");
-              setPage(1);
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-              !standardCategoryFilter && categoryFilter === "ALL"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-muted/80"
-            }`}
-          >
-            <span>🌟</span>
-            <span>All Jobs</span>
-          </button>
-
-          {/* Standard taxonomy categories */}
-          {standardCategories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleStandardCategorySelect(cat.slug)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                standardCategoryFilter === cat.slug
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted hover:bg-muted/80"
-              }`}
-            >
-              <span>{categoryIconMap[cat.slug] || "📋"}</span>
-              <span>{cat.name}</span>
-              {cat.jobCount !== undefined && cat.jobCount > 0 && (
-                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
-                  {cat.jobCount}
-                </Badge>
-              )}
-            </button>
-          ))}
-        </div>
+            } else {
+              handleStandardCategorySelect(value);
+            }
+            setPage(1);
+          }}
+        >
+          <SelectTrigger className="w-full sm:w-64">
+            <SelectValue placeholder="All Jobs" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ALL">
+              <span className="flex items-center gap-2">
+                <span>🌟</span> All Jobs
+              </span>
+            </SelectItem>
+            {standardCategories.map((cat) => (
+              <SelectItem key={cat.id} value={cat.slug}>
+                <span className="flex items-center gap-2">
+                  <span>{categoryIconMap[cat.slug] || "📋"}</span>
+                  {cat.name}
+                  {cat.jobCount !== undefined && cat.jobCount > 0 && (
+                    <span className="text-muted-foreground text-xs ml-1">({cat.jobCount})</span>
+                  )}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Results Count */}
@@ -481,6 +472,7 @@ export default function JobsPage() {
                     : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5"
               }
             >
+              {viewMode === "list" && <JobListHeader />}
               {filteredJobs.map((job: any, index: number) => (
                 <motion.div
                   key={job.id}

@@ -45,6 +45,52 @@ export function useUpdateGoal() {
 }
 
 /**
+ * Clear a specific goal slot, or both slots.
+ */
+export function useClearGoal() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (slot: GoalSlot | "both") => {
+      if (slot === "both") {
+        const res1 = await fetch("/api/goals", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slot: "primary", goal: null }),
+        });
+        if (!res1.ok) throw new Error("Failed to clear primary goal");
+        const res2 = await fetch("/api/goals", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slot: "secondary", goal: null }),
+        });
+        if (!res2.ok) throw new Error("Failed to clear secondary goal");
+        return res2.json();
+      }
+      const res = await fetch("/api/goals", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slot, goal: null }),
+      });
+      if (!res.ok) throw new Error("Failed to clear goal");
+      return res.json();
+    },
+    onSuccess: (_data, slot) => {
+      toast.success(
+        slot === "both" ? "Both goals cleared" : `${slot === "primary" ? "Primary" : "Secondary"} goal cleared`
+      );
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+    },
+    onError: () => {
+      toast.error("Failed to clear goal");
+    },
+  });
+}
+
+/**
  * Promote secondary goal to primary (swap them).
  */
 export function usePromoteGoal() {

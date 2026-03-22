@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * SIDEBAR NAVIGATION — Style 6 "Campus"
+ * SIDEBAR NAVIGATION
  *
  * Always-dark sidebar with grouped navigation sections.
  * Priorities: Journey & Growth first, Small Jobs second.
@@ -9,7 +9,7 @@
  * Collapsible on tablet (icon-only mode). Hidden on mobile (bottom nav used instead).
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -25,8 +25,8 @@ import {
   TrendingUp,
   BarChart3,
   User,
-  Target,
   HelpCircle,
+  Info,
   Star,
   Bot,
   Wallet,
@@ -77,20 +77,31 @@ function NavItem({ href, icon: Icon, label, active, badge, collapsed }: NavItemP
   }, [router, href]);
 
   return (
-    <Link href={href} prefetch={true} className="block group" title={collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
+    <Link href={href} prefetch={true} className="block group relative" title={collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
+      {/* Active glow indicator */}
+      {active && (
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)]" />
+      )}
       <div
         className={cn(
-          "flex items-center gap-3 rounded-xl text-sm transition-all",
+          "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
           collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
           active
-            ? "bg-indigo-500/20 text-indigo-300 font-medium"
-            : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+            ? "bg-indigo-500/15 text-indigo-300 font-medium shadow-[inset_0_0_20px_rgba(99,102,241,0.08)]"
+            : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
         )}
       >
-        <Icon className="h-[18px] w-[18px] shrink-0" />
+        {/* Hover glow effect */}
+        {!active && (
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-indigo-500/[0.06] via-transparent to-transparent pointer-events-none" />
+        )}
+        <Icon className={cn(
+          "h-[18px] w-[18px] shrink-0 transition-all duration-200 ease-out",
+          active ? "text-indigo-400 drop-shadow-[0_0_6px_rgba(129,140,248,0.5)]" : "group-hover:scale-110 group-hover:text-slate-200"
+        )} />
         {!collapsed && <span className="flex-1 truncate">{label}</span>}
         {!collapsed && badge !== undefined && badge > 0 && (
-          <span className="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
+          <span className="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none animate-pulse">
             {badge}
           </span>
         )}
@@ -121,8 +132,13 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Check guardian status — cached for 10 min, rarely changes
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Check guardian status
   const { data: guardianInfo } = useQuery({
     queryKey: ["my-guardian-status"],
     queryFn: async () => {
@@ -136,7 +152,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
   const isGuardian = guardianInfo?.isGuardian || guardianInfo?.isAdmin;
 
-  // Pending applications count — cached for 2 min
+  // Pending applications count
   const { data: applicationsData } = useQuery({
     queryKey: ["my-applications"],
     queryFn: async () => {
@@ -158,22 +174,50 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   const initials = displayName.charAt(0).toUpperCase();
 
   return (
-    <aside
+    <div
       className={cn(
-        "hidden lg:flex flex-col bg-slate-950 border-r border-slate-800/50 sticky top-0 h-screen overflow-y-auto overflow-x-hidden transition-all duration-200 shrink-0",
+        "hidden lg:block relative sticky top-0 h-screen shrink-0 transition-all duration-300 ease-out",
         collapsed ? "w-16" : "w-56"
       )}
     >
-      {/* Brand */}
-      <div className={cn("flex items-center gap-2.5 p-4 mb-2", collapsed && "justify-center")}>
-        <div className="w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0">
-          <Star className="h-4 w-4 text-indigo-400" />
-        </div>
-        {!collapsed && <span className="font-bold text-base tracking-tight text-slate-100">Endeavrly</span>}
+      {/* Animated shine border */}
+      <div
+        style={
+          {
+            "--border-width": "1px",
+            "--border-radius": "0px",
+            "--duration": "14s",
+            "--mask-linear-gradient": "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            "--background-radial-gradient": "radial-gradient(transparent,transparent,#6366f1,#14b8a6,transparent,transparent)",
+          } as React.CSSProperties
+        }
+        className="before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
+      />
+      <aside
+        className="relative flex flex-col bg-slate-950 h-full overflow-y-auto overflow-x-hidden"
+      >
+      {/* Floating ambient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-indigo-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
+        <div className="absolute top-1/2 -right-10 w-32 h-32 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-medium_15s_ease-in-out_infinite]" />
+        <div className="absolute -bottom-10 left-1/2 w-36 h-36 rounded-full bg-purple-500/[0.02] blur-3xl animate-[float-fast_12s_ease-in-out_infinite]" />
       </div>
 
-      {/* Navigation — varies by role */}
-      <nav className="flex-1 px-2">
+      {/* Brand */}
+      <div className={cn("flex items-center gap-2.5 p-4 mb-2 relative", collapsed && "justify-center")}>
+        <div className="relative w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0 group/logo cursor-default">
+          <Star className="h-4 w-4 text-indigo-400 transition-transform duration-500 group-hover/logo:rotate-[360deg] group-hover/logo:scale-110" />
+          <div className="absolute inset-0 rounded-xl bg-indigo-400/20 opacity-0 group-hover/logo:opacity-100 blur-md transition-opacity duration-500" />
+        </div>
+        {!collapsed && (
+          <span className="font-bold text-base tracking-tight text-slate-100 bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text">
+            Endeavrly
+          </span>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-2 relative">
         {userRole === "YOUTH" && (
           <>
             <NavSection title="Explore" collapsed={collapsed}>
@@ -193,11 +237,11 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             <NavSection title="Account" collapsed={collapsed}>
               <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} />
               <NavItem href="/earnings" icon={Wallet} label="Earnings" active={isActive("/earnings")} collapsed={collapsed} />
-              <NavItem href="/goals" icon={Target} label="Goals" active={isActive("/goals")} collapsed={collapsed} />
               {isGuardian && (
                 <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} />
               )}
               <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
+              <NavItem href="/about" icon={Info} label="About" active={isActive("/about")} collapsed={collapsed} />
             </NavSection>
           </>
         )}
@@ -239,31 +283,38 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         )}
       </nav>
 
-      {/* Bottom section: user, theme toggle, collapse */}
-      <div className="px-2 pb-3 mt-auto space-y-1">
+      {/* Bottom section */}
+      <div className="px-2 pb-3 mt-auto space-y-1 relative">
+        {/* Subtle top fade */}
+        <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none" />
+
         {/* Theme toggle */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-colors",
+            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 group/theme",
             collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2"
           )}
           title={collapsed ? (theme === "dark" ? "Light Mode" : "Dark Mode") : undefined}
         >
-          {theme === "dark" ? <Sun className="h-[18px] w-[18px] shrink-0" /> : <Moon className="h-[18px] w-[18px] shrink-0" />}
-          {!collapsed && <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>}
+          {mounted && theme === "dark" ? (
+            <Sun className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:rotate-90 group-hover/theme:text-amber-400" />
+          ) : (
+            <Moon className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:-rotate-12 group-hover/theme:text-blue-400" />
+          )}
+          {!collapsed && <span>{mounted && theme === "dark" ? "Light Mode" : "Dark Mode"}</span>}
         </button>
 
         {/* Sign out */}
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors",
+            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout",
             collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2"
           )}
           title={collapsed ? "Sign Out" : undefined}
         >
-          <LogOut className="h-[18px] w-[18px] shrink-0" />
+          <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/signout:translate-x-0.5" />
           {!collapsed && <span>Sign Out</span>}
         </button>
 
@@ -271,7 +322,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 hover:text-slate-400 hover:bg-white/5 transition-colors",
+            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 hover:text-slate-400 hover:bg-white/5 transition-all duration-200",
             collapsed ? "justify-center px-2 py-2" : "px-3 py-2"
           )}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -280,7 +331,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           {!collapsed && <span className="text-xs">Collapse</span>}
         </button>
       </div>
-    </aside>
+      </aside>
+    </div>
   );
 }
 

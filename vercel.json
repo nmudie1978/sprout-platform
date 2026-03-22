@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/revalidate?target=did-you-know",
+      "schedule": "0 6 1,15 * *"
+    },
+    {
+      "path": "/api/revalidate?target=content-all",
+      "schedule": "0 3 1,15 * *"
+    }
+  ]
+}

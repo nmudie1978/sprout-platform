@@ -192,7 +192,7 @@ function ViewToggle({
 // ── Main Component ──────────────────────────────────────
 export function WhyThisMatters() {
   const stats = getWhyThisMattersStats();
-  const [view, setView] = useState<ViewMode>("grid");
+  const [view, setView] = useState<ViewMode>("compact");
   const locale = useLocale();
   const t = useTranslations("common");
   const { translate, isTranslating, getTranslation } = useTranslateContent();
@@ -246,7 +246,7 @@ export function WhyThisMatters() {
 
       {/* Compact view */}
       {view === "compact" && (
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[260px] overflow-y-auto">
           {stats.map((stat) => (
             <CompactCard key={stat.id} stat={{
               ...stat,
@@ -259,7 +259,7 @@ export function WhyThisMatters() {
 
       {/* Grid view */}
       {view === "grid" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[260px] overflow-y-auto">
           {stats.map((stat) => (
             <CompactCard key={stat.id} stat={{
               ...stat,

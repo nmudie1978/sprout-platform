@@ -1,9 +1,11 @@
 /**
  * INDUSTRY INSIGHTS PAGE
  *
- * Two-section architecture:
- * 1) Global Industry & Career Landscape - macro job market data (not youth-specific)
- * 2) Youth Lens (15-23) - interpretation of global data for young people
+ * Four-section architecture:
+ * 1) Global Lens — macro job market data + featured reports/podcasts
+ * 2) Youth Lens (15-23) — interpretation of global data for young people
+ * 3) Dig Deeper — trending roles and in-demand skills
+ * 4) Go Further — global perspectives, beyond borders, events
  *
  * Features:
  * - Clear section dividers
@@ -27,6 +29,7 @@ import {
   Calendar,
   CheckCircle2,
   Target,
+  Layers,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -156,44 +159,28 @@ export default function IndustryInsightsPage() {
         icon={TrendingUp}
       />
 
-      {/* Trust line + context hints toggle */}
+      {/* Trust line + section guide */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8"
+        className="mb-8"
       >
-        <div>
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            {t("trustLine")}
-          </p>
-          <p
-            className="text-[10px] text-muted-foreground/40 mt-1.5 cursor-default"
-            title="Sources include OECD, WEF, ILO, McKinsey, NAV, SSB, and universities. Broken or outdated links are automatically removed. Data is refreshed quarterly."
-          >
-            {t("verifiedSources")}
-          </p>
-        </div>
-        <button
-          onClick={toggleContextHints}
-          className="flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors self-start sm:self-auto flex-shrink-0"
-          aria-pressed={showContextHints}
-        >
-          <span
-            className={`
-              relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-200
-              ${showContextHints ? "bg-primary/60" : "bg-muted-foreground/20"}
-            `}
-          >
-            <span
-              className={`
-                inline-block h-3 w-3 rounded-full bg-white shadow-sm transition-transform duration-200
-                ${showContextHints ? "translate-x-3.5" : "translate-x-0.5"}
-              `}
-            />
+        <p className="text-sm text-muted-foreground">
+          {t("trustLine")}
+        </p>
+        <div className="flex flex-wrap items-center gap-2 mt-4">
+          <span className="text-[11px] text-muted-foreground/50 mr-1">This page:</span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400">
+            <Globe2 className="h-3 w-3" /> Global Lens
           </span>
-          {t("showContextHints")}
-        </button>
+          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400">
+            <Sparkles className="h-3 w-3" /> Youth Lens
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400">
+            <Lightbulb className="h-3 w-3" /> Explore
+          </span>
+        </div>
       </motion.div>
 
       {/* Weekly Mobile Nudge (shows once per week on mobile) */}
@@ -206,19 +193,41 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
-        className="mb-4"
+        className="mb-2"
       >
         <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-6">
-          <SectionHeader
-            icon={Globe2}
-            label={t("globalLens")}
-            title={t("globalTitle")}
-            subtitle={t("globalSubtitle")}
-            gradient="from-blue-500 via-cyan-500 to-blue-500"
-            iconBg="bg-blue-100 dark:bg-blue-900/30"
-            iconColor="text-blue-600 dark:text-blue-400"
-            labelColor="text-blue-500/80"
-          />
+          <div className="relative">
+            <SectionHeader
+              icon={Globe2}
+              label={t("globalLens")}
+              title={t("globalTitle")}
+              subtitle={t("globalSubtitle")}
+              gradient="from-blue-500 via-cyan-500 to-blue-500"
+              iconBg="bg-blue-100 dark:bg-blue-900/30"
+              iconColor="text-blue-600 dark:text-blue-400"
+              labelColor="text-blue-500/80"
+            />
+            <button
+              onClick={toggleContextHints}
+              className="absolute top-8 right-0 flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
+              aria-pressed={showContextHints}
+            >
+              <span
+                className={`
+                  relative inline-flex h-4 w-7 items-center rounded-full transition-colors duration-200
+                  ${showContextHints ? "bg-primary/60" : "bg-muted-foreground/20"}
+                `}
+              >
+                <span
+                  className={`
+                    inline-block h-3 w-3 rounded-full bg-white shadow-sm transition-transform duration-200
+                    ${showContextHints ? "translate-x-3.5" : "translate-x-0.5"}
+                  `}
+                />
+              </span>
+              {t("showContextHints")}
+            </button>
+          </div>
 
           {/* 1. Job Market Statistics */}
           <motion.div
@@ -239,22 +248,11 @@ export default function IndustryInsightsPage() {
             <JobMarketStatsCarousel showContextHints={showContextHints} />
           </motion.div>
 
-          {/* 2. Jobs & Roles on the Rise + 3. Skills That Matter (side-by-side) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
-            <div className="lg:col-span-6">
-              <InsightSection sectionKey="jobs-on-the-rise" delay={0.25} compact contained defaultViewMode="list" />
-            </div>
-            <div className="lg:col-span-6">
-              <InsightSection sectionKey="skills-that-matter" delay={0.3} compact contained defaultViewMode="list" />
-            </div>
-          </div>
-
           {/* Future of Jobs & Economies (WEF Report + CFYE Podcast) */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.38 }}
-            className="mb-4"
+            transition={{ duration: 0.4, delay: 0.3 }}
           >
             <JobsEconomySpotlight />
           </motion.div>
@@ -268,8 +266,8 @@ export default function IndustryInsightsPage() {
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45 }}
-        className="mb-4"
+        transition={{ duration: 0.5, delay: 0.35 }}
+        className="mb-3"
       >
         <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-4">
           <SectionHeader
@@ -287,8 +285,8 @@ export default function IndustryInsightsPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
-            className="mb-6 grid grid-cols-1 lg:grid-cols-12 gap-4"
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="mb-4 grid grid-cols-1 lg:grid-cols-12 gap-4"
           >
             <div className="lg:col-span-7">
               <WhyThisMatters />
@@ -302,12 +300,49 @@ export default function IndustryInsightsPage() {
       </motion.section>
 
       {/* ============================================ */}
-      {/* SECTION 3: GO FURTHER */}
+      {/* SECTION 3: DIG DEEPER */}
       {/* ============================================ */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="mb-3"
+      >
+        <div className="rounded-2xl border-2 border-violet-200/50 dark:border-violet-800/30 bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/10 p-4">
+          <SectionHeader
+            icon={Layers}
+            label="Explore"
+            title="Dig Deeper"
+            subtitle="Curated videos, podcasts, and articles on growing careers and the skills behind them"
+            gradient="from-violet-400 via-purple-400 to-violet-400"
+            iconBg="bg-violet-100 dark:bg-violet-900/30"
+            iconColor="text-violet-600 dark:text-violet-400"
+            labelColor="text-violet-500/80"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.55 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8"
+          >
+            <div className="lg:col-span-6">
+              <InsightSection sectionKey="jobs-on-the-rise" delay={0.25} compact contained defaultViewMode="list" />
+            </div>
+            <div className="lg:col-span-6">
+              <InsightSection sectionKey="skills-that-matter" delay={0.3} compact contained defaultViewMode="list" />
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* ============================================ */}
+      {/* SECTION 4: GO FURTHER */}
+      {/* ============================================ */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.65 }}
         className="mb-4"
       >
         <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-4">

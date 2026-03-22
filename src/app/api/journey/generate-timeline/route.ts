@@ -32,7 +32,8 @@ function getOpenAIClient(): OpenAI | null {
 // ============================================
 
 const SYSTEM_PROMPT = `You are a career timeline generator for a youth platform (ages 15-23).
-Given a career goal, generate a realistic journey with 7 items across 4 stages.
+Given a career goal, generate a realistic journey with 7 items across 4 stages,
+PLUS a parallel school/learning track showing relevant subjects at each stage.
 
 Rules:
 - Output ONLY valid JSON matching the schema below
@@ -41,6 +42,7 @@ Rules:
 - Include practical, actionable microActions (2-3 per item)
 - Be encouraging but realistic
 - No jargon or overly complex language
+- schoolTrack subjects should be specific to the career (e.g. "Physics" not "Science")
 
 Required JSON schema:
 {
@@ -59,10 +61,21 @@ Required JSON schema:
       "description": "string (1-2 sentences)",
       "microActions": ["string", "string", "string"]
     }
+  ],
+  "schoolTrack": [
+    {
+      "stage": "foundation" | "education" | "experience" | "career",
+      "title": "string (e.g. 'Focus on STEM subjects')",
+      "subjects": ["string", "string"] (2-4 specific school subjects or courses),
+      "personalLearning": "string (optional self-directed activity)",
+      "startAge": number,
+      "endAge": number | null
+    }
   ]
 }
 
-Distribution: 2 foundation, 2 education, 2 experience, 1 career.
+Distribution for items: 2 foundation, 2 education, 2 experience, 1 career.
+Distribution for schoolTrack: 1 per stage (4 total).
 Mark milestone items with isMilestone: true (at least 3 milestones).`;
 
 // ============================================
@@ -180,6 +193,17 @@ export async function POST(req: NextRequest) {
             id: `ai-${i}-${Math.random().toString(36).slice(2, 7)}`,
             ...item,
           })),
+          schoolTrack: Array.isArray(parsed.schoolTrack)
+            ? parsed.schoolTrack.map((st: any, i: number) => ({
+                id: `st-${i}-${Math.random().toString(36).slice(2, 7)}`,
+                stage: st.stage,
+                title: st.title || '',
+                subjects: Array.isArray(st.subjects) ? st.subjects : [],
+                personalLearning: st.personalLearning || undefined,
+                startAge: st.startAge || 16,
+                endAge: st.endAge || undefined,
+              }))
+            : undefined,
         };
       } catch (aiError) {
         console.error('[Timeline API] OpenAI generation failed, using fallback:', aiError);

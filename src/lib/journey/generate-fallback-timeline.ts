@@ -5,7 +5,7 @@
  * Interpolates the career title into generic but useful milestone descriptions.
  */
 
-import type { Journey, JourneyItem, JourneyStage } from './career-journey-types';
+import type { Journey, JourneyItem, JourneyStage, SchoolTrackItem } from './career-journey-types';
 
 function id(): string {
   return `fb-${Math.random().toString(36).slice(2, 9)}`;
@@ -131,11 +131,50 @@ export function generateFallbackTimeline(career: string): Journey {
     },
   ];
 
+  const schoolTrack: SchoolTrackItem[] = [
+    {
+      id: id(),
+      stage: 'foundation',
+      title: 'Choose relevant subjects',
+      subjects: ['Mathematics', 'English', 'ICT / Digital Skills'],
+      personalLearning: `Research what ${career} involves day-to-day`,
+      startAge: 16,
+      endAge: 17,
+    },
+    {
+      id: id(),
+      stage: 'education',
+      title: 'Specialise your studies',
+      subjects: ['Relevant A-levels or vocational courses'],
+      personalLearning: `Take online courses related to ${career}`,
+      startAge: 17,
+      endAge: 18,
+    },
+    {
+      id: id(),
+      stage: 'experience',
+      title: 'Apply knowledge practically',
+      subjects: ['Degree or apprenticeship modules'],
+      personalLearning: `Work on personal projects related to ${career}`,
+      startAge: 18,
+      endAge: 20,
+    },
+    {
+      id: id(),
+      stage: 'career',
+      title: 'Continuous development',
+      subjects: ['Professional certifications'],
+      personalLearning: 'Stay current with industry developments',
+      startAge: 20,
+    },
+  ];
+
   return {
     id: `fallback-${career.toLowerCase().replace(/\s+/g, '-')}`,
     career,
     startAge,
     startYear: currentYear,
     items,
+    schoolTrack,
   };
 }

@@ -26,12 +26,23 @@ export interface JourneyItem {
   microActions?: string[];
 }
 
+export interface SchoolTrackItem {
+  id: string;
+  stage: JourneyStage;
+  title: string;
+  subjects: string[];
+  personalLearning?: string;
+  startAge: number;
+  endAge?: number;
+}
+
 export interface Journey {
   id: string;
   career: string;
   startAge: number;
   startYear: number;
   items: JourneyItem[];
+  schoolTrack?: SchoolTrackItem[];
 }
 
 // ============================================

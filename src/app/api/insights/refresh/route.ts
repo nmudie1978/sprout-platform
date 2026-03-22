@@ -6,6 +6,7 @@ import {
   verifyAndRefreshIndustryInsights,
   getModulesNeedingVerification,
 } from "@/lib/insights-refresh";
+import { invalidateFactsCache } from "@/lib/researchFacts";
 
 /**
  * GET /api/insights/refresh
@@ -72,6 +73,9 @@ export async function POST(req: NextRequest) {
 
     console.log("[Insights Refresh] Starting verify and refresh job...");
     const startTime = Date.now();
+
+    // Clear facts cache so recency filters re-evaluate
+    invalidateFactsCache();
 
     const result = await verifyAndRefreshIndustryInsights();
 

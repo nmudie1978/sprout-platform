@@ -9,11 +9,15 @@
  *   exclude — comma-separated content IDs to exclude
  *   types   — comma-separated content types to prefer
  *   tags    — comma-separated tags to prefer
+ *
+ * Cache: Tagged with content-insights-pool for on-demand revalidation.
+ * Falls back to last-known-good response via stale-while-revalidate.
  */
 
 import { NextResponse } from "next/server";
 import { readPool, getNextBatch } from "@/lib/insights/pool-service";
 import type { PoolContentType, PoolBatchRequest } from "@/lib/insights/pool-types";
+import { REVALIDATE_INTERVALS } from "@/lib/content-refresh";
 
 const VALID_TYPES = new Set<PoolContentType>(["article", "video", "stat_report", "pdf"]);
 
@@ -56,13 +60,40 @@ export async function GET(request: Request) {
     tags: tags && tags.length > 0 ? tags : undefined,
   };
 
-  // Read pool and serve batch
-  const pool = await readPool();
-  const batch = getNextBatch(pool, batchRequest);
+  try {
+    const pool = await readPool();
+    const batch = getNextBatch(pool, batchRequest);
 
-  return NextResponse.json(batch, {
-    headers: {
-      "Cache-Control": "s-maxage=300, stale-while-revalidate=60",
-    },
-  });
+    // Validate: never return empty if pool has items
+    if (batch.items.length === 0 && pool.length > 0) {
+      console.warn("[Insights Pool] Empty batch from non-empty pool, returning without exclude filter");
+      const fallbackBatch = getNextBatch(pool, { batchSize });
+      return NextResponse.json(fallbackBatch, {
+        headers: {
+          "Cache-Control": `s-maxage=${REVALIDATE_INTERVALS.INSIGHTS_POOL}, stale-while-revalidate=3600`,
+        },
+      });
+    }
+
+    return NextResponse.json(batch, {
+      headers: {
+        "Cache-Control": `s-maxage=${REVALIDATE_INTERVALS.INSIGHTS_POOL}, stale-while-revalidate=3600`,
+      },
+    });
+  } catch (error) {
+    console.error("[Insights Pool] Error reading pool:", error);
+    // Return empty batch rather than 500 — UI handles empty gracefully
+    return NextResponse.json(
+      { items: [], total: 0, hasMore: false },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "s-maxage=60, stale-while-revalidate=3600",
+        },
+      }
+    );
+  }
 }
+
+/** ISR: revalidate via tag */
+export const revalidate = REVALIDATE_INTERVALS.INSIGHTS_POOL;

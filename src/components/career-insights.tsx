@@ -16,6 +16,8 @@ import {
   Rocket,
   Banknote,
   Info,
+  List,
+  LayoutGrid,
 } from "lucide-react";
 import Link from "next/link";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
@@ -48,6 +50,157 @@ const growthConfig = {
   stable: { label: "Stable", color: "text-blue-600" },
 };
 
+function RecommendedCareersSection({
+  recommendations,
+  careerAspiration,
+  hasAspiration,
+  growthConfig,
+  onSelectCareer,
+}: {
+  recommendations: CareerInsight[];
+  careerAspiration: string;
+  hasAspiration: boolean;
+  growthConfig: Record<string, { label: string; color: string }>;
+  onSelectCareer: (c: { career: Career; matchScore: number }) => void;
+}) {
+  const [recView, setRecView] = useState<"grid" | "list">("grid");
+
+  return (
+    <Card className="border-2">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg">Recommended Careers</CardTitle>
+            <CardDescription>
+              {hasAspiration
+                ? `Based on your primary goal: "${careerAspiration}"`
+                : "Based on your primary goal"}
+            </CardDescription>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center border rounded-md p-0.5 bg-background">
+              <Button
+                variant={recView === "list" ? "secondary" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setRecView("list")}
+                title="List view"
+              >
+                <List className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant={recView === "grid" ? "secondary" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setRecView("grid")}
+                title="Grid view"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/careers">
+                Explore All
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {recView === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {recommendations.slice(0, 4).map((rec, index) => {
+              const growth = growthConfig[rec.career.growthOutlook];
+              const matchScore = Math.min(Math.round(rec.matchScore), 100);
+              return (
+                <motion.div
+                  key={rec.career.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors cursor-pointer group">
+                    <CardContent className="p-0">
+                      <div className="p-3">
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl">{rec.career.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-sm truncate">{rec.career.title}</h4>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+                              {rec.career.description}
+                            </p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="secondary" className="text-xs px-1.5 py-0">
+                                <Banknote className="h-3 w-3 mr-1" />
+                                {rec.career.avgSalary.split(" ")[0]}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs px-1.5 py-0">
+                                <TrendingUp className={`h-3 w-3 mr-1 ${growth.color}`} />
+                                <span className={growth.color}>{rec.career.growthOutlook}</span>
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="relative w-10 h-10">
+                              <svg className="w-10 h-10 transform -rotate-90">
+                                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
+                                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${matchScore} 100`} className="text-purple-500" strokeLinecap="round" />
+                              </svg>
+                              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                                {matchScore}%
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">Match</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="w-full rounded-none border-t h-8 text-xs"
+                        onClick={() => onSelectCareer({ career: rec.career, matchScore })}
+                      >
+                        <Info className="h-3 w-3 mr-1" />
+                        Learn More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="divide-y">
+            {recommendations.slice(0, 6).map((rec) => {
+              const growth = growthConfig[rec.career.growthOutlook];
+              const matchScore = Math.min(Math.round(rec.matchScore), 100);
+              return (
+                <button
+                  key={rec.career.id}
+                  onClick={() => onSelectCareer({ career: rec.career, matchScore })}
+                  className="flex items-center gap-3 w-full py-2.5 px-1 text-left hover:bg-muted/50 transition-colors rounded-lg"
+                >
+                  <span className="text-lg shrink-0">{rec.career.emoji}</span>
+                  <span className="flex-1 min-w-0 text-sm font-medium truncate">{rec.career.title}</span>
+                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
+                    <TrendingUp className={`h-3 w-3 mr-0.5 ${growth.color}`} />
+                    <span className={growth.color}>{rec.career.growthOutlook}</span>
+                  </Badge>
+                  {matchScore > 0 && (
+                    <span className="text-xs font-semibold text-purple-500 shrink-0 w-10 text-right">{matchScore}%</span>
+                  )}
+                  <span className="text-xs text-muted-foreground shrink-0">{rec.career.avgSalary.split(" ")[0]}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export function CareerInsights({ compact = false }: CareerInsightsProps) {
   const [selectedCareer, setSelectedCareer] = useState<{ career: Career; matchScore: number } | null>(null);
 
@@ -73,7 +226,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
   }
 
   const { totalCompletedJobs = 0, careerAspiration = "", recommendations = [], insightsMessage = "", topCategories = [] } = data || {};
-  const hasAspiration = careerAspiration && careerAspiration.trim().length > 0;
+  const hasAspiration = !!(careerAspiration && careerAspiration.trim().length > 0);
 
   // Compact view for dashboard
   if (compact) {
@@ -184,7 +337,6 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
             </div>
             <div>
               <CardTitle className="text-xl">Your Career Insights</CardTitle>
-              <CardDescription>{insightsMessage}</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -233,91 +385,13 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
 
       {/* Recommended Careers */}
       {recommendations.length > 0 && (
-        <Card className="border-2">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg">Recommended Careers</CardTitle>
-                <CardDescription>
-                  {hasAspiration
-                    ? `Based on your goal: "${careerAspiration}"`
-                    : "Based on your career goal"}
-                </CardDescription>
-              </div>
-              <Button asChild variant="outline">
-                <Link href="/careers">
-                  View All
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {recommendations.slice(0, 4).map((rec, index) => {
-                const growth = growthConfig[rec.career.growthOutlook];
-                const matchScore = Math.min(Math.round(rec.matchScore), 100);
-                return (
-                  <motion.div
-                    key={rec.career.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors cursor-pointer group">
-                      <CardContent className="p-0">
-                        <div className="p-3">
-                          <div className="flex items-start gap-3">
-                            <span className="text-2xl">{rec.career.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-sm truncate">{rec.career.title}</h4>
-                              <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-                                {rec.career.description}
-                              </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary" className="text-xs px-1.5 py-0">
-                                  <Banknote className="h-3 w-3 mr-1" />
-                                  {rec.career.avgSalary.split(" ")[0]}
-                                </Badge>
-                                <Badge variant="outline" className="text-xs px-1.5 py-0">
-                                  <TrendingUp className={`h-3 w-3 mr-1 ${growth.color}`} />
-                                  <span className={growth.color}>{rec.career.growthOutlook}</span>
-                                </Badge>
-                              </div>
-                            </div>
-                            {/* Match Score */}
-                            <div className="flex flex-col items-center">
-                              <div className="relative w-10 h-10">
-                                <svg className="w-10 h-10 transform -rotate-90">
-                                  <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
-                                  <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${matchScore} 100`} className="text-purple-500" strokeLinecap="round" />
-                                </svg>
-                                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                                  {matchScore}%
-                                </span>
-                              </div>
-                              <span className="text-[10px] text-muted-foreground">Match</span>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Learn More Button */}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="w-full rounded-none border-t h-8 text-xs"
-                          onClick={() => setSelectedCareer({ career: rec.career, matchScore })}
-                        >
-                          <Info className="h-3 w-3 mr-1" />
-                          Learn More
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <RecommendedCareersSection
+          recommendations={recommendations}
+          careerAspiration={careerAspiration}
+          hasAspiration={hasAspiration}
+          growthConfig={growthConfig}
+          onSelectCareer={setSelectedCareer}
+        />
       )}
 
       {/* Career Detail Sheet */}

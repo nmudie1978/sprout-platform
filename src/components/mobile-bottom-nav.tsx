@@ -78,8 +78,8 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-slate-950/95 backdrop-blur-md border-t border-slate-800/50 safe-area-bottom">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-slate-950/95 backdrop-blur-md border-t border-slate-800/50 pb-[env(safe-area-inset-bottom,0px)]">
+      <div className="flex items-center justify-around h-14 px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item);
@@ -90,15 +90,15 @@ export function MobileBottomNav() {
               href={item.href}
               prefetch={true}
               className={cn(
-                "flex flex-col items-center justify-center flex-1 h-full min-w-[56px] py-2 transition-colors rounded-lg",
+                "flex flex-col items-center justify-center flex-1 min-h-[44px] min-w-[44px] transition-colors rounded-lg",
                 active
                   ? "text-indigo-400"
-                  : "text-slate-500 hover:text-slate-300"
+                  : "text-slate-500 active:text-slate-300"
               )}
             >
-              <Icon className={cn("h-5 w-5", active && "text-indigo-400")} />
+              <Icon className={cn("h-5 w-5 shrink-0", active && "text-indigo-400")} />
               <span className={cn(
-                "text-[10px] mt-1 font-medium",
+                "text-[11px] mt-0.5 font-medium leading-none",
                 active ? "text-indigo-400" : "text-slate-500"
               )}>
                 {item.label}

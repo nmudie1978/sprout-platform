@@ -435,19 +435,10 @@ export function LearningGoalsTab() {
           No goals match your filters.
         </div>
       ) : (
-        <div className="text-center py-12">
-          <GraduationCap className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
-          <p className="text-sm font-medium text-muted-foreground">Add your first learning goal</p>
-          <p className="text-xs text-muted-foreground/70 mt-1 max-w-xs mx-auto">
-            Track what you want to learn, see course suggestions, and measure your progress over time.
-          </p>
+        <div className="text-center py-8">
+          <p className="text-sm text-muted-foreground">No learning goals yet.</p>
         </div>
       )}
-
-      {/* Storage note */}
-      <p className="text-[10px] text-muted-foreground/50 text-center pt-2">
-        Your goals are saved on this device.
-      </p>
 
       {/* Add/Edit dialog */}
       <GoalDialog

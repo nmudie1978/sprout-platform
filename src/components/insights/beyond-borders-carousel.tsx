@@ -1,27 +1,31 @@
 "use client";
 
 /**
- * BEYOND BORDERS CAROUSEL
+ * BEYOND BORDERS CAROUSEL — Redesigned
  *
- * Replaces the old accordion-based BeyondBordersSection with:
- * A) Article carousel — swipe/arrow/keyboard navigation, dot indicators
- * B) Small Steps — tap-to-expand chips (replaces hover tooltips)
+ * Visual redesign:
+ * - Side-by-side article cards (horizontal scroll on mobile, grid on desktop)
+ * - Each card has a gradient header with travel-themed icon
+ * - Warm indigo/violet/sky color palette instead of teal
+ * - "Read more" expands within the card
+ * - Small Steps as visual cards with icons, not dashed chips
+ * - Plane icon in the section header
  *
- * Preserves: save-to-journey mutation, translation support, all data.
+ * Preserved: save-to-journey mutation, translation support, all data, accessibility.
  */
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import { AnimatePresence, motion, type PanInfo } from "framer-motion";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Compass,
   BookmarkPlus,
   BookmarkCheck,
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Plane,
   Laptop,
   Globe,
@@ -31,9 +35,10 @@ import {
   Lightbulb,
   Languages,
   Clock,
+  MapPin,
+  ArrowRight,
 } from "lucide-react";
 import { useTranslateContent } from "@/hooks/use-translate-content";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   type BeyondBordersArticle,
@@ -42,9 +47,7 @@ import {
   SMALL_STEPS,
 } from "@/lib/industry-insights/beyond-borders-data";
 
-// ============================================
-// ICON MAP
-// ============================================
+// ── Icon Map ─────────────────────────────────────────────────────────
 
 const STEP_ICONS: Record<SmallStep["icon"], typeof Plane> = {
   plane: Plane,
@@ -54,15 +57,14 @@ const STEP_ICONS: Record<SmallStep["icon"], typeof Plane> = {
   users: Users,
 };
 
-// ============================================
-// CONSTANTS
-// ============================================
+// Card gradient & icon per article (cycling)
+const CARD_THEMES = [
+  { gradient: "from-indigo-500 via-violet-500 to-purple-600", icon: Plane, iconBg: "bg-white/20" },
+  { gradient: "from-sky-500 via-blue-500 to-indigo-600", icon: Globe, iconBg: "bg-white/20" },
+  { gradient: "from-violet-500 via-purple-500 to-fuchsia-600", icon: MapPin, iconBg: "bg-white/20" },
+];
 
-const SWIPE_THRESHOLD = 50;
-
-// ============================================
-// MAIN COMPONENT
-// ============================================
+// ── Main Component ───────────────────────────────────────────────────
 
 export function BeyondBordersCarousel() {
   const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
@@ -70,6 +72,9 @@ export function BeyondBordersCarousel() {
   const tc = useTranslations("common");
   const { translate, isTranslating, getTranslation } = useTranslateContent();
   const [showTranslated, setShowTranslated] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const handleTranslate = useCallback(async () => {
     const items = [
@@ -127,351 +132,305 @@ export function BeyondBordersCarousel() {
     [savedSlugs, saveMutation]
   );
 
+  // Scroll state tracking
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 10);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScroll, { passive: true });
+      window.addEventListener("resize", checkScroll);
+      return () => {
+        el.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, [checkScroll]);
+
+  const scroll = useCallback((dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector("[data-card]")?.clientWidth || 340;
+    el.scrollBy({ left: dir === "right" ? cardWidth + 16 : -(cardWidth + 16), behavior: "smooth" });
+  }, []);
+
   return (
     <div role="region" aria-label="Working Beyond Borders" className="space-y-6">
-      {/* Section Header */}
+      {/* ── Section Header ────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Compass className="h-5 w-5 text-teal-500" />
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/40 dark:to-violet-900/40">
+            <Plane className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+          </div>
           <div>
-            <h3 className="text-lg font-semibold leading-tight">Working Beyond Borders</h3>
+            <h3 className="text-lg font-bold leading-tight tracking-tight">Working Beyond Borders</h3>
             <p className="text-xs text-muted-foreground">
               Careers can span borders — but they don&apos;t have to. For awareness, not advice.
             </p>
           </div>
         </div>
-        {locale === "nb-NO" && (
-          <button
-            onClick={showTranslated ? () => setShowTranslated(false) : handleTranslate}
-            disabled={isTranslating}
-            className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
-          >
-            <Languages className="h-3 w-3" />
-            {isTranslating ? tc("translating") : showTranslated ? tc("showOriginal") : tc("translateToNorwegian")}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {locale === "nb-NO" && (
+            <button
+              onClick={showTranslated ? () => setShowTranslated(false) : handleTranslate}
+              disabled={isTranslating}
+              className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
+            >
+              <Languages className="h-3 w-3" />
+              {isTranslating ? tc("translating") : showTranslated ? tc("showOriginal") : tc("translateToNorwegian")}
+            </button>
+          )}
+          {/* Scroll arrows — visible when needed */}
+          <div className="hidden sm:flex items-center gap-1">
+            <button
+              onClick={() => scroll("left")}
+              disabled={!canScrollLeft}
+              className="p-1.5 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              disabled={!canScrollRight}
+              className="p-1.5 rounded-full border border-border bg-background hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* A) Article Carousel */}
-      <ArticleCarousel
-        articles={BEYOND_BORDERS_ARTICLES}
-        savedSlugs={savedSlugs}
-        onSave={handleSave}
-        getText={getText}
-      />
-
-      {/* B) Small Steps — tap to expand */}
-      <SmallStepsChips getText={getText} />
-    </div>
-  );
-}
-
-// ============================================
-// A) ARTICLE CAROUSEL
-// ============================================
-
-interface ArticleCarouselProps {
-  articles: BeyondBordersArticle[];
-  savedSlugs: Set<string>;
-  onSave: (article: BeyondBordersArticle) => void;
-  getText: (key: string, original: string) => string;
-}
-
-function ArticleCarousel({ articles, savedSlugs, onSave, getText }: ArticleCarouselProps) {
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const total = articles.length;
-
-  // Reduced motion detection
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  const goTo = useCallback(
-    (index: number) => {
-      setDirection(index > current ? 1 : -1);
-      setCurrent(index);
-      setExpandedSlug(null);
-    },
-    [current]
-  );
-
-  const goNext = useCallback(() => {
-    setDirection(1);
-    setCurrent((prev) => (prev + 1) % total);
-    setExpandedSlug(null);
-  }, [total]);
-
-  const goPrev = useCallback(() => {
-    setDirection(-1);
-    setCurrent((prev) => (prev - 1 + total) % total);
-    setExpandedSlug(null);
-  }, [total]);
-
-  // Keyboard navigation
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        goPrev();
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        goNext();
-      }
-    },
-    [goPrev, goNext]
-  );
-
-  // Swipe gesture handler
-  const handleDragEnd = useCallback(
-    (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      if (info.offset.x < -SWIPE_THRESHOLD) {
-        goNext();
-      } else if (info.offset.x > SWIPE_THRESHOLD) {
-        goPrev();
-      }
-    },
-    [goNext, goPrev]
-  );
-
-  const article = articles[current];
-  const isSaved = savedSlugs.has(article.slug);
-  const isExpanded = expandedSlug === article.slug;
-
-  const variants = prefersReducedMotion
-    ? undefined
-    : {
-        enter: (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
-        center: { x: 0, opacity: 1 },
-        exit: (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0 }),
-      };
-
-  return (
-    <div
-      ref={containerRef}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      role="region"
-      aria-roledescription="carousel"
-      aria-label="Perspectives"
-      className="outline-none"
-    >
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <AnimatePresence mode="wait" custom={direction}>
+      {/* ── Article Cards — Horizontal Scroll ─────────────────────── */}
+      <div
+        ref={scrollRef}
+        className="flex items-start gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 -mx-1 px-1"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {BEYOND_BORDERS_ARTICLES.map((article, idx) => (
           <motion.div
             key={article.id}
-            custom={direction}
-            variants={variants}
-            initial={prefersReducedMotion ? undefined : "enter"}
-            animate="center"
-            exit={prefersReducedMotion ? undefined : "exit"}
-            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.25, ease: "easeInOut" }}
-            drag={prefersReducedMotion ? false : "x"}
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.15}
-            onDragEnd={handleDragEnd}
-            className="p-4 sm:p-5 touch-pan-y"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.4, delay: idx * 0.1, ease: "easeOut" }}
           >
-            {/* Card header */}
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300">
-                    <Clock className="h-2.5 w-2.5 mr-0.5" />
-                    {article.readTime} min read
-                  </Badge>
-                </div>
-                <h4 className="text-base font-semibold leading-snug">
-                  {getText(`bb-title-${article.id}`, article.title)}
-                </h4>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  {getText(`bb-subtitle-${article.id}`, article.subtitle)}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 shrink-0"
-                onClick={() => onSave(article)}
-                disabled={isSaved}
-                aria-label={isSaved ? "Saved to journey" : "Save to journey"}
-              >
-                {isSaved ? (
-                  <BookmarkCheck className="h-4 w-4 text-teal-600" />
-                ) : (
-                  <BookmarkPlus className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-
-            {/* Key takeaway */}
-            <div className="flex items-start gap-2 rounded-lg bg-teal-50 dark:bg-teal-950/30 px-3 py-2 mb-3">
-              <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
-              <p className="text-sm text-teal-800 dark:text-teal-300">
-                {getText(`bb-takeaway-${article.id}`, article.takeaway)}
-              </p>
-            </div>
-
-            {/* Read more / expanded content */}
-            <button
-              onClick={() => setExpandedSlug(isExpanded ? null : article.slug)}
-              className="text-xs font-medium text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
-            >
-              {isExpanded ? "Show less" : "Read more"}
-              {isExpanded ? (
-                <ChevronUp className="h-3 w-3" />
-              ) : (
-                <ChevronDown className="h-3 w-3" />
-              )}
-            </button>
-
-            <AnimatePresence>
-              {isExpanded && (
-                <motion.div
-                  initial={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
-                  transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-3 space-y-3">
-                    {article.paragraphs.map((p, i) => (
-                      <p key={i} className="text-sm leading-relaxed text-foreground/80">
-                        {p}
-                      </p>
-                    ))}
-                    {article.callout && <CalloutBox callout={article.callout} />}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Navigation: arrows + dots */}
-      <div className="flex items-center justify-center gap-4 mt-3">
-        <button
-          onClick={goPrev}
-          className="p-1.5 rounded-full bg-muted/50 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-          aria-label="Previous article"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-
-        <div className="flex items-center gap-2" role="tablist" aria-label="Article slides">
-          {articles.map((a, idx) => (
-            <button
-              key={a.id}
-              onClick={() => goTo(idx)}
-              role="tab"
-              aria-selected={current === idx}
-              aria-label={`Go to article ${idx + 1}`}
-              className={`h-2 rounded-full transition-all duration-200 ${
-                current === idx
-                  ? "w-6 bg-teal-500"
-                  : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
+            <ArticleCard
+              article={article}
+              theme={CARD_THEMES[idx % CARD_THEMES.length]}
+              isSaved={savedSlugs.has(article.slug)}
+              onSave={() => handleSave(article)}
+              getText={getText}
             />
-          ))}
-        </div>
-
-        <button
-          onClick={goNext}
-          className="p-1.5 rounded-full bg-muted/50 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-          aria-label="Next article"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
+          </motion.div>
+        ))}
       </div>
+
+      {/* ── Small Steps — Visual Cards ────────────────────────────── */}
+      <SmallStepsSection getText={getText} />
     </div>
   );
 }
 
-// ============================================
-// B) SMALL STEPS — TAP TO EXPAND
-// ============================================
+// ── Article Card ─────────────────────────────────────────────────────
 
-interface SmallStepsChipsProps {
+interface ArticleCardProps {
+  article: BeyondBordersArticle;
+  theme: (typeof CARD_THEMES)[0];
+  isSaved: boolean;
+  onSave: () => void;
   getText: (key: string, original: string) => string;
 }
 
-function SmallStepsChips({ getText }: SmallStepsChipsProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  const toggleStep = useCallback((id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }, []);
-
-  const expandedStep = expandedId ? SMALL_STEPS.find((s) => s.id === expandedId) : null;
+function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const Icon = theme.icon;
 
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        Small steps if you&apos;re curious
-      </p>
+    <motion.div
+      data-card
+      layout
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className={`flex-shrink-0 w-[340px] sm:w-[360px] snap-start rounded-2xl border bg-card overflow-hidden transition-all duration-300 ${
+        expanded
+          ? "border-indigo-400/50 dark:border-indigo-500/30 shadow-lg shadow-indigo-500/10 dark:shadow-indigo-500/5"
+          : "border-border shadow-sm hover:shadow-md"
+      }`}
+    >
+      {/* Gradient header with icon */}
+      <div className={`relative bg-gradient-to-br ${theme.gradient} px-5 py-6`}>
+        {/* Decorative background icon */}
+        <Icon className="absolute right-4 top-4 h-16 w-16 text-white/10" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-white/80 bg-white/15 backdrop-blur-sm rounded-full px-2 py-0.5">
+              <Clock className="h-2.5 w-2.5" />
+              {article.readTime} min read
+            </span>
+          </div>
+          <h4 className="text-base font-bold text-white leading-snug pr-8">
+            {getText(`bb-title-${article.id}`, article.title)}
+          </h4>
+          <p className="text-sm text-white/70 mt-1">
+            {getText(`bb-subtitle-${article.id}`, article.subtitle)}
+          </p>
+        </div>
+      </div>
 
-      {/* Chips row */}
-      <div className="flex flex-wrap gap-2">
+      {/* Card body */}
+      <div className="px-5 py-4 space-y-3">
+        {/* Key takeaway */}
+        <div className="flex items-start gap-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 px-3.5 py-2.5">
+          <Lightbulb className="h-4 w-4 text-indigo-500 dark:text-indigo-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">
+            {getText(`bb-takeaway-${article.id}`, article.takeaway)}
+          </p>
+        </div>
+
+        {/* Expandable content */}
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 pt-1">
+                {article.paragraphs.map((p, i) => (
+                  <p key={i} className="text-sm leading-relaxed text-foreground/75">
+                    {p}
+                  </p>
+                ))}
+                {article.callout && <CalloutBox callout={article.callout} />}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Actions row */}
+        <div className="flex items-center justify-between pt-1">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+          >
+            {expanded ? "Show less" : "Read more"}
+            {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          </button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2 text-xs gap-1"
+            onClick={onSave}
+            disabled={isSaved}
+            aria-label={isSaved ? "Saved to journey" : "Save to journey"}
+          >
+            {isSaved ? (
+              <>
+                <BookmarkCheck className="h-3.5 w-3.5 text-indigo-600" />
+                <span className="text-indigo-600">Saved</span>
+              </>
+            ) : (
+              <>
+                <BookmarkPlus className="h-3.5 w-3.5" />
+                Save
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Small Steps Section ──────────────────────────────────────────────
+
+interface SmallStepsSectionProps {
+  getText: (key: string, original: string) => string;
+}
+
+function SmallStepsSection({ getText }: SmallStepsSectionProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Compass className="h-4 w-4 text-indigo-500" />
+        <p className="text-sm font-semibold text-foreground">
+          Small steps if you&apos;re curious
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {SMALL_STEPS.map((step) => {
           const Icon = STEP_ICONS[step.icon];
           const isActive = expandedId === step.id;
+
           return (
             <button
               key={step.id}
-              onClick={() => toggleStep(step.id)}
+              onClick={() => setExpandedId(isActive ? null : step.id)}
               aria-expanded={isActive}
-              className={`inline-flex items-center gap-2 rounded-full border border-dashed px-3 py-1.5 text-sm transition-colors ${
+              className={`text-left rounded-xl border p-3.5 transition-all ${
                 isActive
-                  ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 dark:border-teal-600"
-                  : "border-teal-300 dark:border-teal-700 bg-background hover:bg-teal-50 dark:hover:bg-teal-950/20"
+                  ? "border-indigo-300 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/20 shadow-sm"
+                  : "border-border hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-sm"
               }`}
             >
-              <Icon className="h-3.5 w-3.5 text-teal-500 shrink-0" />
-              <span className="font-medium text-foreground/90">
-                {getText(`bb-step-title-${step.id}`, step.title)}
-              </span>
+              <div className="flex items-start gap-3">
+                <div className={`p-2 rounded-lg shrink-0 ${
+                  isActive
+                    ? "bg-indigo-100 dark:bg-indigo-900/40"
+                    : "bg-muted/60"
+                }`}>
+                  <Icon className={`h-4 w-4 ${
+                    isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
+                  }`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-medium leading-tight ${
+                    isActive ? "text-indigo-700 dark:text-indigo-300" : "text-foreground/90"
+                  }`}>
+                    {getText(`bb-step-title-${step.id}`, step.title)}
+                  </p>
+
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs text-foreground/70 mt-2 leading-relaxed">
+                          {getText(`bb-step-desc-${step.id}`, step.description)}
+                        </p>
+                        <p className="text-[11px] italic text-muted-foreground mt-1.5">
+                          {step.reassurance}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
             </button>
           );
         })}
       </div>
-
-      {/* Expanded detail panel */}
-      <AnimatePresence>
-        {expandedStep && (
-          <motion.div
-            key={expandedStep.id}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="rounded-lg border border-teal-200 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-950/20 p-3 space-y-1.5">
-              <p className="text-sm text-foreground/80">
-                {getText(`bb-step-desc-${expandedStep.id}`, expandedStep.description)}
-              </p>
-              <p className="text-xs italic text-muted-foreground">
-                {expandedStep.reassurance}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
 
-// ============================================
-// CALLOUT BOX (reused from original)
-// ============================================
+// ── Callout Box ──────────────────────────────────────────────────────
 
 function CalloutBox({
   callout,
@@ -482,34 +441,34 @@ function CalloutBox({
 
   return (
     <div
-      className={`rounded-lg border p-3 ${
+      className={`rounded-xl border p-3.5 ${
         isRealityCheck
           ? "border-amber-200 bg-amber-50/50 dark:border-amber-800/40 dark:bg-amber-950/20"
-          : "border-teal-200 bg-teal-50/50 dark:border-teal-800/40 dark:bg-teal-950/20"
+          : "border-indigo-200 bg-indigo-50/50 dark:border-indigo-800/40 dark:bg-indigo-950/20"
       }`}
     >
-      <div className="mb-1.5 flex items-center gap-1.5">
+      <div className="mb-2 flex items-center gap-1.5">
         {isRealityCheck ? (
           <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
         ) : (
-          <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
+          <Lightbulb className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
         )}
         <span
           className={`text-xs font-semibold ${
             isRealityCheck
               ? "text-amber-800 dark:text-amber-300"
-              : "text-teal-800 dark:text-teal-300"
+              : "text-indigo-800 dark:text-indigo-300"
           }`}
         >
           {callout.title}
         </span>
       </div>
-      <ul className="space-y-1">
+      <ul className="space-y-1.5">
         {callout.items.map((item, i) => (
-          <li key={i} className="flex items-start gap-1.5 text-xs text-foreground/80">
+          <li key={i} className="flex items-start gap-2 text-xs text-foreground/75">
             <span
               className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${
-                isRealityCheck ? "bg-amber-400" : "bg-teal-400"
+                isRealityCheck ? "bg-amber-400" : "bg-indigo-400"
               }`}
             />
             {item}

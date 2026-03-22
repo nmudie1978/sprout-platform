@@ -10,13 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { CareerCardV2, type ViewMode } from "@/components/career-card-v2";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
-import { CareerInsights } from "@/components/career-insights";
 import { CareerFilterBar } from "@/components/careers/career-filter-bar";
 import { CareerActiveChips } from "@/components/careers/career-active-chips";
 import { MobileFilterDrawer } from "@/components/careers/mobile-filter-drawer";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { motion } from "framer-motion";
-import { Compass, Search, Sparkles, Loader2 } from "lucide-react";
+import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import {
   CAREER_PATHWAYS,
@@ -52,9 +51,9 @@ function CareersPageContent() {
   // Load view preference from localStorage
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("careerViewMode") as ViewMode) || "small";
+      return (localStorage.getItem("careerViewMode") as ViewMode) || "list";
     }
-    return "small";
+    return "list";
   });
 
   const isYouth = session?.user?.role === "YOUTH";
@@ -237,16 +236,30 @@ function CareersPageContent() {
         icon={Compass}
       />
 
-      {/* Personal Insights for Youth - Compact */}
-      {isYouth && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-4"
-        >
-          <CareerInsights />
-        </motion.div>
-      )}
+      {/* Quick Stats */}
+      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+        {[
+          { icon: Briefcase, label: "Careers", value: getAllCareers().length, color: "text-primary" },
+          { icon: Search, label: "Showing", value: totalItems, color: "text-teal-500" },
+          { icon: Layers, label: "Categories", value: Object.keys(CAREER_PATHWAYS).length, color: "text-blue-500" },
+        ].map((stat) => (
+          <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-card/80 border border-border/40 rounded-xl px-2 sm:px-3 py-1.5 shrink-0">
+            <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+            <span className="text-[11px] sm:text-xs text-muted-foreground">{stat.label}</span>
+            <span className={`text-xs sm:text-sm font-semibold tabular-nums ${stat.color}`}>{stat.value}</span>
+          </div>
+        ))}
+        {insightsData?.recommendations?.length > 0 && (
+          <button
+            onClick={() => document.getElementById("recommended-careers")?.scrollIntoView({ behavior: "smooth" })}
+            className="flex items-center gap-1.5 sm:gap-2 bg-card/80 border border-border/40 rounded-xl px-2 sm:px-3 py-1.5 active:border-pink-500/40 sm:hover:border-pink-500/40 active:bg-pink-500/5 sm:hover:bg-pink-500/5 transition-colors group shrink-0"
+          >
+            <Heart className="h-3.5 w-3.5 text-pink-500" />
+            <span className="text-[11px] sm:text-xs text-muted-foreground group-hover:text-pink-400 transition-colors">Matches</span>
+            <span className="text-xs sm:text-sm font-semibold tabular-nums text-pink-500">{insightsData.recommendations.length}</span>
+          </button>
+        )}
+      </div>
 
       {/* Primary Filters Bar */}
       <CareerFilterBar
@@ -293,6 +306,9 @@ function CareersPageContent() {
       )}
 
       {/* Results Header */}
+      <div className="mt-6 mb-4 pt-6 border-t border-border">
+        <h2 className="text-lg font-semibold mb-1">All Careers</h2>
+      </div>
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
@@ -327,8 +343,8 @@ function CareersPageContent() {
               viewMode === "list"
                 ? "border rounded-md overflow-hidden bg-background"
                 : viewMode === "small"
-                ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-                : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
             }
           >
             {paginatedCareers.map((career, index) => (
@@ -405,6 +421,41 @@ function CareersPageContent() {
             </CardContent>
           </Card>
         </motion.div>
+      )}
+
+      {/* Recommended Careers (anchor for Matches pill) */}
+      {isYouth && insightsData?.recommendations?.length > 0 && (
+        <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">
+          <div className="flex items-center gap-2 mb-4">
+            <Heart className="h-5 w-5 text-pink-500" />
+            <h2 className="text-lg font-semibold">Recommended for You</h2>
+            <span className="text-xs text-muted-foreground">Based on your primary goal</span>
+          </div>
+          <div className="border rounded-xl overflow-hidden bg-card">
+            {insightsData.recommendations.slice(0, 6).map((rec: any) => {
+              const career = rec.career;
+              const matchScore = Math.min(Math.round(rec.matchScore), 100);
+              return (
+                <button
+                  key={career.id}
+                  onClick={() => setSelectedCareer(career)}
+                  className="flex items-center gap-3 w-full px-4 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors text-left"
+                >
+                  <span className="text-lg shrink-0">{career.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{career.title}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{career.description}</p>
+                  </div>
+                  {matchScore > 0 && (
+                    <span className="text-xs font-semibold text-pink-500 shrink-0">{matchScore}%</span>
+                  )}
+                  <span className="text-xs text-muted-foreground shrink-0">{career.avgSalary?.split(" ")[0]}</span>
+                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {/* Career Detail Sheet with Learn More content */}

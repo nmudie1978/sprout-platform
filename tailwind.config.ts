@@ -137,6 +137,10 @@ const config: Config = {
           "50%": { "background-position": "100% 100%" },
           to: { "background-position": "0% 0%" },
         },
+        "border-spin": {
+          "0%": { transform: "translate(-50%, -50%) rotate(0deg)" },
+          "100%": { transform: "translate(-50%, -50%) rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

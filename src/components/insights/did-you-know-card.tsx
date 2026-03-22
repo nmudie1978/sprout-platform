@@ -490,7 +490,7 @@ export function DidYouKnowCard({
 
       {/* ── List: Stacked rows ─────────────────────────── */}
       {view === "list" && (
-        <div className="divide-y divide-white/5 max-h-[280px] overflow-y-auto">
+        <div className="divide-y divide-white/5 max-h-[220px] overflow-y-auto">
           {facts.map((fact) => (
             <FactListRow
               key={fact.id}

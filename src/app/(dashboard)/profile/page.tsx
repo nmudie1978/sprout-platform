@@ -36,6 +36,7 @@ import { Avatar } from "@/components/avatar";
 import { LifeSkillsSettings } from "@/components/life-skills-settings";
 import { SavedLifeSkills } from "@/components/saved-life-skills";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
+import { useClearGoal } from "@/hooks/use-goals";
 import Link from "next/link";
 import type { GoalSlot } from "@/lib/goals/types";
 
@@ -101,6 +102,7 @@ export default function ProfilePage() {
   // Goal sheet state
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
+  const clearGoal = useClearGoal();
 
   // Two-step account deletion state
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
@@ -696,6 +698,73 @@ export default function ProfilePage() {
         );
       })()}
 
+      {/* Career Goal — Prominent, top of profile */}
+      {profile && (
+        <Card className="mb-6 border-2 border-primary/20 overflow-hidden relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+          <CardContent className="relative z-10 p-5 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="p-2.5 rounded-xl bg-primary/10 shrink-0">
+                  <Target className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg font-bold">Career Goal</h2>
+                  {goalsData?.primaryGoal ? (
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-sm font-medium truncate">{goalsData.primaryGoal.title}</p>
+                      <Badge
+                        variant="secondary"
+                        className={`text-[10px] shrink-0 ${
+                          goalsData.primaryGoal.status === "committed"
+                            ? "bg-green-500/10 text-green-700 dark:text-green-400"
+                            : "bg-blue-500/10 text-blue-700 dark:text-blue-400"
+                        }`}
+                      >
+                        {goalsData.primaryGoal.status === "committed" ? "Committed" : "Exploring"}
+                      </Badge>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No goal set — your journey starts here
+                    </p>
+                  )}
+                  {goalsData?.secondaryGoal && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Backup: {goalsData.secondaryGoal.title}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {goalsData?.primaryGoal && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-muted-foreground hover:text-destructive"
+                    disabled={clearGoal.isPending}
+                    onClick={() => clearGoal.mutate("both")}
+                  >
+                    {clearGoal.isPending ? "Clearing..." : "Clear"}
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  variant={goalsData?.primaryGoal ? "outline" : "default"}
+                  onClick={() => {
+                    setGoalSheetTargetSlot("primary");
+                    setShowGoalSheet(true);
+                  }}
+                >
+                  <Target className="h-4 w-4 mr-1.5" />
+                  {goalsData?.primaryGoal ? "Edit Goals" : "Set a Goal"}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
         <div className="lg:col-span-2 space-y-6 relative z-10">
@@ -1126,6 +1195,58 @@ export default function ProfilePage() {
 
         {/* Sidebar */}
         <div className="space-y-6 relative z-10">
+          {/* Work Availability — compact */}
+          {profile && (
+            <Card className="border shadow-sm relative z-10">
+              <CardContent className="p-3 space-y-1.5">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Availability</p>
+                {(["AVAILABLE", "BUSY", "NOT_LOOKING"] as const).map((status) => {
+                  const isActive = profile.availabilityStatus === status;
+                  const config = {
+                    AVAILABLE: {
+                      icon: CheckCircle2, label: "Available",
+                      active: "border-green-500 bg-green-500/10",
+                      hover: "border-border hover:border-green-500/50",
+                      iconActive: "text-green-500",
+                      dot: "bg-green-500",
+                    },
+                    BUSY: {
+                      icon: Clock, label: "Busy",
+                      active: "border-yellow-500 bg-yellow-500/10",
+                      hover: "border-border hover:border-yellow-500/50",
+                      iconActive: "text-yellow-500",
+                      dot: "bg-yellow-500",
+                    },
+                    NOT_LOOKING: {
+                      icon: XCircle, label: "Not Looking",
+                      active: "border-red-500 bg-red-500/10",
+                      hover: "border-border hover:border-red-500/50",
+                      iconActive: "text-red-500",
+                      dot: "bg-red-500",
+                    },
+                  }[status];
+                  const Icon = config.icon;
+                  return (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => updateAvailabilityMutation.mutate(status)}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg border text-left transition-all cursor-pointer text-xs ${
+                        isActive ? config.active : config.hover
+                      }`}
+                    >
+                      <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? config.iconActive : "text-muted-foreground"}`} />
+                      <span className={`font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}>{config.label}</span>
+                      {isActive && (
+                        <div className={`ml-auto h-2 w-2 rounded-full ${config.dot} animate-pulse`} />
+                      )}
+                    </button>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Privacy Controls */}
           {profile && (
             <Card className="border-2 shadow-lg hover-lift relative z-10">
@@ -1237,92 +1358,7 @@ export default function ProfilePage() {
           {/* Saved Life Skills */}
           {profile && <SavedLifeSkills />}
 
-          {/* Career Goal - Read Only (managed in My Goals) */}
-          {profile && (
-            <Card className="border-2 shadow-lg hover-lift overflow-hidden relative z-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-50 pointer-events-none" />
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Target className="h-5 w-5 text-orange-500" />
-                  Career Goal
-                </CardTitle>
-                <CardDescription>
-                  Your primary career goal
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="relative z-10 space-y-4">
-                {goalsData?.primaryGoal ? (
-                  <>
-                    <div className="rounded-lg bg-gradient-to-br from-purple-500/10 to-orange-500/5 border border-purple-500/20 p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-lg truncate">
-                            {goalsData.primaryGoal.title}
-                          </p>
-                          {goalsData.primaryGoal.status && (
-                            <Badge
-                              variant="secondary"
-                              className={`mt-1 text-xs ${
-                                goalsData.primaryGoal.status === "committed"
-                                  ? "bg-green-500/10 text-green-700 dark:text-green-400"
-                                  : "bg-blue-500/10 text-blue-700 dark:text-blue-400"
-                              }`}
-                            >
-                              {goalsData.primaryGoal.status === "committed"
-                                ? "Committed"
-                                : "Exploring"}
-                            </Badge>
-                          )}
-                        </div>
-                        <Badge variant="outline" className="text-xs shrink-0">
-                          Primary
-                        </Badge>
-                      </div>
-                      {goalsData.primaryGoal.why && (
-                        <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-                          {goalsData.primaryGoal.why}
-                        </p>
-                      )}
-                    </div>
-                    {goalsData.secondaryGoal && (
-                      <div className="rounded-lg bg-muted/50 border p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-medium truncate">
-                            {goalsData.secondaryGoal.title}
-                          </p>
-                          <Badge variant="outline" className="text-xs shrink-0">
-                            Secondary
-                          </Badge>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="rounded-lg bg-muted/50 border border-dashed p-4 text-center">
-                    <Target className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      No career goal set yet
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Define your goals in My Goals
-                    </p>
-                  </div>
-                )}
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  size="sm"
-                  onClick={() => {
-                    setGoalSheetTargetSlot("primary");
-                    setShowGoalSheet(true);
-                  }}
-                >
-                  <Target className="h-4 w-4 mr-2" />
-                  {goalsData?.primaryGoal ? "Edit my Goals" : "Set Goals"}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+          {/* Career Goal moved to top of page */}
 
           {/* Goal Selection Sheet (overlay, stays on /profile) */}
           <GoalSelectionSheet
@@ -1335,106 +1371,6 @@ export default function ProfilePage() {
               queryClient.invalidateQueries({ queryKey: ["goals"] });
             }}
           />
-
-          {/* Availability Status */}
-          {profile && (
-            <Card className="border-2 shadow-lg hover-lift relative z-10">
-              <CardHeader>
-                <CardTitle className="text-xl">Work Availability</CardTitle>
-                <CardDescription>
-                  Let job posters know if you're available for new jobs
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => updateAvailabilityMutation.mutate("AVAILABLE")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
-                    profile.availabilityStatus === "AVAILABLE"
-                      ? "border-green-500 bg-green-500/10"
-                      : "border-border hover:border-green-500/50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2
-                      className={`h-5 w-5 ${
-                        profile.availabilityStatus === "AVAILABLE"
-                          ? "text-green-500"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <div className="text-left">
-                      <p className="font-medium">Available for Work</p>
-                      <p className="text-xs text-muted-foreground">
-                        Ready to take on new jobs
-                      </p>
-                    </div>
-                  </div>
-                  {profile.availabilityStatus === "AVAILABLE" && (
-                    <div className="h-3 w-3 rounded-full bg-green-500 animate-pulse" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => updateAvailabilityMutation.mutate("BUSY")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
-                    profile.availabilityStatus === "BUSY"
-                      ? "border-yellow-500 bg-yellow-500/10"
-                      : "border-border hover:border-yellow-500/50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Clock
-                      className={`h-5 w-5 ${
-                        profile.availabilityStatus === "BUSY"
-                          ? "text-yellow-500"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <div className="text-left">
-                      <p className="font-medium">Busy Right Now</p>
-                      <p className="text-xs text-muted-foreground">
-                        Not available at the moment
-                      </p>
-                    </div>
-                  </div>
-                  {profile.availabilityStatus === "BUSY" && (
-                    <div className="h-3 w-3 rounded-full bg-yellow-500 animate-pulse" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => updateAvailabilityMutation.mutate("NOT_LOOKING")}
-                  className={`w-full flex items-center justify-between p-4 rounded-lg border-2 transition-all cursor-pointer relative z-10 ${
-                    profile.availabilityStatus === "NOT_LOOKING"
-                      ? "border-red-500 bg-red-500/10"
-                      : "border-border hover:border-red-500/50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <XCircle
-                      className={`h-5 w-5 ${
-                        profile.availabilityStatus === "NOT_LOOKING"
-                          ? "text-red-500"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                    <div className="text-left">
-                      <p className="font-medium">Not Looking</p>
-                      <p className="text-xs text-muted-foreground">
-                        Not interested in new jobs
-                      </p>
-                    </div>
-                  </div>
-                  {profile.availabilityStatus === "NOT_LOOKING" && (
-                    <div className="h-3 w-3 rounded-full bg-red-500 animate-pulse" />
-                  )}
-                </button>
-              </CardContent>
-            </Card>
-          )}
 
           {/* Give Feedback (Beta) */}
           <Card className="border-2 border-blue-500/20 shadow-lg hover-lift overflow-hidden relative">

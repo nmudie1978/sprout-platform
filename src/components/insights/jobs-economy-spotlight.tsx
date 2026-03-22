@@ -59,11 +59,10 @@ export function JobsEconomySpotlight() {
   const episodes = getRecentEpisodes(5);
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden">
-      {/* Accent bar */}
-      <div className="h-0.5 bg-gradient-to-r from-blue-500 via-emerald-500 to-blue-500" />
+    <div className="pt-2">
+        {/* Divider */}
+        <div className="border-t border-border/30 mb-5" />
 
-      <div className="p-5 sm:p-6">
         {/* Header */}
         <div className="mb-5">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -201,7 +200,6 @@ export function JobsEconomySpotlight() {
             fundforyouthemployment.nl
           </a>
         </p>
-      </div>
     </div>
   );
 }

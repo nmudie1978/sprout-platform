@@ -77,7 +77,7 @@ export default async function DashboardLayout({
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Main content with bottom padding for mobile nav */}
-        <main className="flex-1 pb-20 lg:pb-0">{children}</main>
+        <main className="flex-1 pb-16 lg:pb-0">{children}</main>
         <AiChatWidget />
 
         {/* Footer with legal links — hidden on mobile */}

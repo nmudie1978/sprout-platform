@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/tooltip';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { ShineBorder } from '@/components/ui/shine-border';
 
 
 import dynamic from 'next/dynamic';
@@ -414,36 +415,44 @@ export default function MyJourneyPage() {
           <div className="mb-8">
             {goalTitle && secondaryGoal ? (
               /* Two-pill swap layout */
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 {/* Primary pill */}
-                <div className="flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 sm:px-4 sm:py-2 min-w-0">
-                  <Target className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-[9px] font-medium uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 leading-none mb-0.5">Primary</p>
-                    <p className="text-sm font-semibold truncate">{goalTitle}</p>
+                <ShineBorder
+                  borderRadius={9999}
+                  borderWidth={1.5}
+                  duration={10}
+                  color={["#10b981", "#14b8a6", "#6366f1"]}
+                  className="min-w-0 min-h-0 p-0"
+                >
+                  <div className="flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2.5 sm:px-5 min-w-0">
+                    <Target className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[9px] font-medium uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 leading-none mb-0.5">Primary</p>
+                      <p className="text-sm font-semibold truncate">{goalTitle}</p>
+                    </div>
                   </div>
-                </div>
+                </ShineBorder>
 
                 {/* Swap button */}
                 <button
                   onClick={() => setShowSwapConfirm(true)}
                   disabled={promoteGoal.isPending}
-                  className="flex-shrink-0 p-1.5 rounded-full hover:bg-muted/60 transition-colors disabled:opacity-50"
+                  className="flex-shrink-0 self-center p-2 rounded-full active:bg-muted/60 sm:hover:bg-muted/60 transition-colors disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
                   title="Swap goals"
                 >
                   {promoteGoal.isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                   ) : (
-                    <ArrowLeftRight className="h-4 w-4 text-muted-foreground" />
+                    <ArrowLeftRight className="h-4 w-4 text-muted-foreground rotate-90 sm:rotate-0" />
                   )}
                 </button>
 
-                {/* Secondary pill */}
-                <div className="flex items-center gap-2 rounded-full bg-purple-50 dark:bg-purple-900/20 px-3 py-1.5 sm:px-4 sm:py-2 min-w-0">
-                  <Target className="h-4 w-4 text-purple-400 flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-[9px] font-medium uppercase tracking-wider text-purple-500/70 dark:text-purple-400/70 leading-none mb-0.5">Secondary</p>
-                    <p className="text-sm font-semibold truncate">{secondaryGoal.title}</p>
+                {/* Secondary pill (de-emphasised) */}
+                <div className="flex items-center gap-2 rounded-full bg-muted/30 dark:bg-muted/20 px-3 py-2 sm:px-4 min-w-0 opacity-50">
+                  <Target className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/70 leading-none mb-0.5">Secondary</p>
+                    <p className="text-sm font-semibold truncate text-muted-foreground">{secondaryGoal.title}</p>
                   </div>
                 </div>
               </div>
@@ -491,7 +500,7 @@ export default function MyJourneyPage() {
                       <TooltipTrigger asChild>
                         <TabsTrigger
                           value={tab.id}
-                          className="relative flex flex-col items-center gap-0.5 py-2 text-xs sm:text-sm data-[state=active]:bg-background"
+                          className="relative flex flex-col items-center gap-0.5 py-3 sm:py-2 text-xs sm:text-sm data-[state=active]:bg-background min-h-[44px]"
                         >
                           <motion.div
                             className="flex items-center gap-1.5"
@@ -521,7 +530,7 @@ export default function MyJourneyPage() {
             </TooltipProvider>
 
             {/* Timeline Tab */}
-            <TabsContent value="timeline" className="mt-6">
+            <TabsContent value="timeline" className="mt-4 sm:mt-6">
               {journey && (
                 <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
               )}
@@ -547,12 +556,6 @@ export default function MyJourneyPage() {
           </Tabs>
         </div>
 
-        {/* Footer Note */}
-        <div className="mt-12 text-center">
-          <p className="text-xs text-muted-foreground">
-            Your journey is unique. There's no rush — explore at your own pace.
-          </p>
-        </div>
       </div>
 
       {/* Step Content Modal */}

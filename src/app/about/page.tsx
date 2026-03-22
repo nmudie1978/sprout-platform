@@ -1,10 +1,10 @@
-import { Star, ExternalLink } from "lucide-react";
+import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
 export const metadata = {
   title: "About Endeavrly",
-  description: "What Endeavrly is, what it isn't, and why it exists.",
+  description: "Why Endeavrly exists and how it helps young people explore careers, gain independence, and understand themselves.",
 };
 
 function TheGapSection() {
@@ -13,11 +13,12 @@ function TheGapSection() {
   return (
     <div className="mt-16 pt-10 border-t border-border">
       <h2 className="text-xl font-semibold text-foreground mb-4">
-        The gap we&apos;re addressing
+        The problem we&apos;re solving
       </h2>
       <p className="text-muted-foreground leading-relaxed mb-6">
-        Research shows that many young people face uncertainty about their future path —
-        not because they lack ambition, but because they lack exposure.
+        Research consistently shows that young people face a gap — not in ambition, but in exposure.
+        Most teenagers have never set foot in a real workplace, can&apos;t name a career they&apos;d want,
+        and have no structured way to explore what&apos;s out there.
       </p>
 
       <div className="space-y-4 mb-6">
@@ -46,10 +47,11 @@ function TheGapSection() {
       </div>
 
       <p className="text-muted-foreground leading-relaxed">
-        That&apos;s why Endeavrly is built around <strong className="text-foreground">Discover</strong> (know yourself),{" "}
-        <strong className="text-foreground">Understand</strong> (know the world), and{" "}
-        <strong className="text-foreground">Act</strong> (take aligned action) — a structured approach
-        to help young people build career clarity through self-discovery, planning, and purposeful action.
+        Endeavrly addresses this with a structured journey:{" "}
+        <strong className="text-foreground">Discover</strong> (understand yourself),{" "}
+        <strong className="text-foreground">Understand</strong> (explore what&apos;s out there), and{" "}
+        <strong className="text-foreground">Act</strong> (take your first steps) — so young people
+        can build career clarity through experience, not guesswork.
       </p>
 
       <div className="mt-4">
@@ -71,111 +73,138 @@ export default function AboutPage() {
       <div className="mx-auto max-w-2xl px-6 py-16 sm:py-24">
         {/* Header */}
         <div className="mb-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-green-600 mb-8">
+          <Link href="/" className="inline-flex items-center gap-2 text-primary mb-8">
             <Star className="h-6 w-6" />
             <span className="font-semibold">Endeavrly</span>
           </Link>
 
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
-            About Endeavrly
+            Why Endeavrly Exists
           </h1>
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Endeavrly is not a job board, a gig app, or a career quiz.
+          <p className="text-lg text-foreground leading-relaxed">
+            Most young people are expected to make career decisions without ever experiencing real work,
+            without understanding what careers actually exist, and without a way to figure out what
+            they&apos;re genuinely good at.
           </p>
-          <p className="text-lg text-foreground leading-relaxed mt-4">
-            It&apos;s a place where young people can take on small, local jobs, reflect on what they&apos;re learning,
-            and start to understand what kind of work might suit them — without pressure, without competition,
-            and without anyone telling them who they should become.
+          <p className="text-lg text-muted-foreground leading-relaxed mt-4">
+            Endeavrly gives them a place to explore, try things, and learn about themselves — before
+            the pressure of choosing a path kicks in.
           </p>
         </div>
 
-        {/* Principles */}
+        {/* What it does */}
         <div className="space-y-10">
-          {/* Principle 1: Journey-first */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              The journey matters more than the destination
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <Compass className="h-5 w-5 text-teal-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                See what&apos;s actually out there
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              Endeavrly is designed around growth, not goals. There are no rankings, no leaderboards,
-              and no pressure to optimise. Progress here is personal — it belongs to you, not to an algorithm.
+              How do you choose a career if you don&apos;t know what careers exist? Endeavrly opens up
+              the full landscape — hundreds of roles across every industry, with honest details about
+              what the work involves, what it pays, what qualifications you need, and whether the field
+              is growing or shrinking. No spin, no hype. Just the information you need to start forming
+              your own view.
             </p>
           </section>
 
-          {/* Principle 2: Self-discovery first */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Self-discovery comes first
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <BarChart3 className="h-5 w-5 text-blue-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Understand the global job market — early
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              Before you can act with purpose, it helps to know yourself. Endeavrly guides you to reflect on
-              your strengths, explore careers that interest you, and build a plan — so that when you take
-              action, it&apos;s aligned with who you actually are.
+              Young people rarely get access to the kind of job market data that shapes real career
+              decisions. Endeavrly brings global insights from sources like the OECD, ILO, and World
+              Economic Forum into a format that makes sense at 16, not just at 36. Which industries are
+              growing? What skills do employers actually value? What&apos;s changing in the world of work?
+              You shouldn&apos;t have to wait until university to find out.
             </p>
           </section>
 
-          {/* Principle 3: Career insight grounded in reality */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Career information without the hype
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <Briefcase className="h-5 w-5 text-amber-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Try real work and learn what you like
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              When you explore careers here, you&apos;ll find honest information — what the work actually
-              involves, what it pays, what qualifications are needed, and what the job market looks like.
-              No spin, no promises.
+              Do you like working with your hands? Solving problems for people? Being outdoors?
+              You won&apos;t know until you try. Endeavrly connects young people with small, local
+              jobs — mowing lawns, helping with tech, pet sitting, event setup, cleaning. These aren&apos;t
+              career-defining roles. They&apos;re experiments. Each one teaches you something about
+              yourself: what you enjoy, what drains you, whether you&apos;re reliable, how you handle
+              responsibility. That self-knowledge is worth more than any career quiz.
             </p>
           </section>
 
-          {/* Principle 4: Safety as foundation */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Safety is a foundation, not a feature
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <Target className="h-5 w-5 text-emerald-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Earn independence, not just money
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              Endeavrly doesn&apos;t handle payments. Adults are verified before they can post jobs or message
-              young people. Conversations are structured. Reporting tools are always available. These
-              choices are deliberate — safety isn&apos;t something we added later.
+              A first job isn&apos;t really about the pay. It&apos;s about showing up on time,
+              communicating with someone who&apos;s counting on you, and proving to yourself that you
+              can do it. Endeavrly tracks the skills you build along the way — reliability,
+              communication, initiative — and helps you see your own growth over time. The money is
+              a bonus. The confidence is the real reward.
             </p>
           </section>
 
-          {/* Principle 5: Private, non-competitive growth */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Your growth is private
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <Route className="h-5 w-5 text-purple-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                A journey, not a decision
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              What you do on Endeavrly stays yours. There are no public profiles, no follower counts,
-              and no way for others to compare themselves to you. Reflection and growth happen
-              better without an audience.
+              Endeavrly doesn&apos;t ask you to pick a career. It asks you to explore. Set a goal
+              if you want, change it whenever you need to, or leave it blank and just try things.
+              There are no rankings, no leaderboards, and no algorithm telling you what to become.
+              Your progress is personal and private. The only person it needs to make sense to is you.
             </p>
           </section>
 
-          {/* Principle 6: Built for 15-23 year olds */}
           <section>
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Built for a specific stage of life
-            </h2>
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="h-5 w-5 text-rose-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Safe by design
+              </h2>
+            </div>
             <p className="text-muted-foreground leading-relaxed">
-              Endeavrly is designed for people roughly aged 15 to 23. That&apos;s not a limitation — it&apos;s
-              a focus. This is a time when small experiences can have a big impact, and when honest
-              information matters more than polished advice.
+              Endeavrly is built for ages 15 to 23. That means safety isn&apos;t an afterthought.
+              Adults are verified before they can post jobs. Conversations are structured — no open
+              messaging between minors and strangers. There are no payments inside the app, no public
+              profiles, no follower counts, and no way for anyone to compare themselves to someone else.
+              Reporting tools are always available. These aren&apos;t features we added. They&apos;re
+              decisions we made from the start.
             </p>
           </section>
         </div>
 
-        {/* The Gap We're Addressing */}
+        {/* The Gap */}
         <TheGapSection />
 
         {/* Closing */}
         <div className="mt-16 pt-10 border-t border-border">
           <p className="text-muted-foreground leading-relaxed">
             If you have questions or concerns, you can reach us through the{" "}
-            <Link href="/report" className="text-foreground underline underline-offset-4 hover:text-green-600">
+            <Link href="/report" className="text-foreground underline underline-offset-4 hover:text-primary">
               Report a concern
             </Link>{" "}
             page or the contact details in our{" "}
-            <Link href="/legal/privacy" className="text-foreground underline underline-offset-4 hover:text-green-600">
+            <Link href="/legal/privacy" className="text-foreground underline underline-offset-4 hover:text-primary">
               Privacy Policy
             </Link>.
           </p>

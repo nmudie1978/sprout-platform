@@ -1,12 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Building2, User, Briefcase } from "lucide-react";
+import { MessageCircle, Building2, Briefcase, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/avatar";
 
@@ -41,136 +39,123 @@ export function ConversationList() {
       if (!response.ok) throw new Error("Failed to fetch conversations");
       return response.json();
     },
-    staleTime: 15 * 1000, // Cache for 15 seconds (messages update more frequently)
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    staleTime: 15 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
-          <div className="flex items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="border rounded-xl overflow-hidden bg-card">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-3 p-4 border-b last:border-b-0 animate-pulse">
+            <div className="w-10 h-10 rounded-full bg-muted" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3.5 bg-muted rounded w-1/3" />
+              <div className="h-3 bg-muted rounded w-2/3" />
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        ))}
+      </div>
     );
   }
 
   if (!conversations || conversations.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <div className="text-4xl mb-4">💬</div>
-          <h3 className="font-semibold text-lg mb-2">No conversations yet</h3>
-          <p className="text-muted-foreground">
-            Start a conversation by messaging someone
-          </p>
-        </CardContent>
-      </Card>
+      <div className="border rounded-xl bg-card py-16 text-center">
+        <MessageCircle className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+        <h3 className="font-medium text-sm mb-1">No conversations yet</h3>
+        <p className="text-xs text-muted-foreground">
+          Start a conversation by messaging a job poster
+        </p>
+      </div>
     );
   }
 
+  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">Messages</CardTitle>
-          {conversations.some((c) => c.unreadCount > 0) && (
-            <Badge variant="destructive" className="ml-auto">
-              {conversations.reduce((sum, c) => sum + c.unreadCount, 0)} new
-            </Badge>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="divide-y">
-          {conversations.map((conversation, index) => (
-            <motion.div
-              key={conversation.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-            >
-              <Link
-                href={`/messages/${conversation.id}`}
-                className={cn(
-                  "block p-4 hover:bg-muted/50 transition-colors",
-                  conversation.unreadCount > 0 && "bg-primary/5"
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  {/* Avatar - show based on role */}
-                  <div className="flex-shrink-0">
-                    {conversation.otherParty.role === "EMPLOYER" ? (
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <Building2 className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                    ) : (
-                      <Avatar name={conversation.otherParty.name} size="sm" />
-                    )}
-                  </div>
+    <div>
+      {/* Inbox count bar */}
+      <div className="flex items-center justify-between mb-2 px-1">
+        <span className="text-xs text-muted-foreground">
+          {conversations.length} conversation{conversations.length !== 1 ? "s" : ""}
+        </span>
+        {totalUnread > 0 && (
+          <Badge variant="destructive" className="text-[10px] h-5 px-1.5">
+            {totalUnread} unread
+          </Badge>
+        )}
+      </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn(
-                            "font-medium truncate",
-                            conversation.unreadCount > 0 && "font-semibold"
-                          )}
-                        >
-                          {conversation.otherParty.name}
-                        </span>
-                        {conversation.otherParty.role === "EMPLOYER" && (
-                          <Badge variant="secondary" className="text-xs">
-                            Job Poster
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="text-xs text-muted-foreground flex-shrink-0">
-                        {formatDistanceToNow(new Date(conversation.lastMessageAt), {
-                          addSuffix: true,
-                        })}
-                      </span>
-                    </div>
-
-                    {conversation.job && (
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                        <Briefcase className="h-3 w-3" />
-                        <span className="truncate">{conversation.job.title}</span>
-                      </div>
-                    )}
-
-                    {conversation.lastMessage && (
-                      <p
-                        className={cn(
-                          "text-sm truncate mt-1",
-                          conversation.unreadCount > 0
-                            ? "text-foreground font-medium"
-                            : "text-muted-foreground"
-                        )}
-                      >
-                        {conversation.lastMessage.isFromMe && "You: "}
-                        {conversation.lastMessage.content}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Unread badge */}
-                  {conversation.unreadCount > 0 && (
-                    <Badge className="flex-shrink-0 bg-primary">
-                      {conversation.unreadCount}
-                    </Badge>
-                  )}
+      {/* Conversation rows */}
+      <div className="border rounded-xl overflow-hidden bg-card divide-y">
+        {conversations.map((conversation) => (
+          <Link
+            key={conversation.id}
+            href={`/messages/${conversation.id}`}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 hover:bg-muted/50 active:bg-muted/60 transition-colors group",
+              conversation.unreadCount > 0 && "bg-primary/5"
+            )}
+          >
+            {/* Avatar */}
+            <div className="shrink-0 relative">
+              {conversation.otherParty.role === "EMPLOYER" ? (
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
                 </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+              ) : (
+                <Avatar name={conversation.otherParty.name} size="sm" />
+              )}
+              {conversation.unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-primary rounded-full border-2 border-card" />
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              {/* Name + time */}
+              <div className="flex items-center justify-between gap-2">
+                <span className={cn(
+                  "text-sm truncate",
+                  conversation.unreadCount > 0 ? "font-semibold" : "font-medium"
+                )}>
+                  {conversation.otherParty.name}
+                </span>
+                <span className="text-[11px] text-muted-foreground shrink-0">
+                  {formatDistanceToNow(new Date(conversation.lastMessageAt), { addSuffix: false })}
+                </span>
+              </div>
+
+              {/* Job context */}
+              {conversation.job && (
+                <div className="flex items-center gap-1 text-[11px] text-muted-foreground/70 mt-0.5">
+                  <Briefcase className="h-2.5 w-2.5 shrink-0" />
+                  <span className="truncate">{conversation.job.title}</span>
+                </div>
+              )}
+
+              {/* Last message preview */}
+              {conversation.lastMessage && (
+                <p className={cn(
+                  "text-xs truncate mt-0.5",
+                  conversation.unreadCount > 0
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                )}>
+                  {conversation.lastMessage.isFromMe && (
+                    <span className="text-muted-foreground">You: </span>
+                  )}
+                  {conversation.lastMessage.content}
+                </p>
+              )}
+            </div>
+
+            {/* Chevron */}
+            <ChevronRight className="h-4 w-4 text-muted-foreground/30 shrink-0 group-hover:text-muted-foreground transition-colors" />
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

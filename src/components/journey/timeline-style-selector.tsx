@@ -85,17 +85,17 @@ interface TimelineStyleSelectorProps {
 
 export function TimelineStyleSelector({ value, onChange }: TimelineStyleSelectorProps) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm px-1.5 py-1">
       {OPTIONS.map((opt) => (
         <button
           key={opt.id}
           onClick={() => onChange(opt.id)}
           title={`${opt.label} — ${opt.description}`}
           className={cn(
-            'flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition-colors',
+            'flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs transition-colors',
             value === opt.id
-              ? 'border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300'
-              : 'border-transparent hover:border-border text-muted-foreground hover:text-foreground'
+              ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
           )}
         >
           <span className="w-5 h-3.5">{opt.preview}</span>

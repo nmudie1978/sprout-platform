@@ -649,6 +649,37 @@ export function getFactCount(): number {
 }
 
 /**
+ * Invalidate the cached facts so the next call to getResearchFacts()
+ * re-evaluates recency filters. Called during content revalidation.
+ */
+export function invalidateFactsCache(): void {
+  _cachedFacts = null;
+}
+
+/**
+ * Get metadata about the facts pool for monitoring.
+ */
+export function getFactsMetadata() {
+  const allFacts = RESEARCH_FACTS_RAW;
+  const currentFacts = getResearchFacts();
+  const expired = allFacts.filter((f) => !isFactRecent(f));
+
+  return {
+    totalRaw: allFacts.length,
+    totalCurrent: currentFacts.length,
+    totalExpired: expired.length,
+    expiredIds: expired.map((f) => f.id),
+    categories: Object.fromEntries(
+      [...new Set(currentFacts.map((f) => f.category))].map((cat) => [
+        cat,
+        currentFacts.filter((f) => f.category === cat).length,
+      ])
+    ),
+    lastEvaluatedAt: new Date().toISOString(),
+  };
+}
+
+/**
  * Export raw facts for testing purposes only.
  * @internal
  */
