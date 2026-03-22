@@ -50,7 +50,7 @@ function TheGapSection() {
         Endeavrly addresses this with a structured journey:{" "}
         <strong className="text-foreground">Discover</strong> (understand yourself),{" "}
         <strong className="text-foreground">Understand</strong> (explore what&apos;s out there), and{" "}
-        <strong className="text-foreground">Act</strong> (take your first steps) — so young people
+        <strong className="text-foreground">Grow</strong> (take action and grow) — so young people
         can build career clarity through experience, not guesswork.
       </p>
 
@@ -129,7 +129,7 @@ export default function AboutPage() {
             <div className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">3</span>
-                <h3 className="font-semibold text-foreground">Act — Take aligned action</h3>
+                <h3 className="font-semibold text-foreground">Grow — Take action and grow</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
                 Now you&apos;re ready to do something real — take on a job, start a course, build a project.

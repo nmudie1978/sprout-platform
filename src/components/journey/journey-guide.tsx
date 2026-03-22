@@ -47,8 +47,8 @@ const LENSES = [
   },
   {
     id: 'ACT' as const,
-    title: 'Act',
-    subtitle: 'Take aligned action',
+    title: 'Grow',
+    subtitle: 'Take action and grow',
     description: 'Follow your roadmap. Set learning goals. Complete real-world actions. Reflect on what you learn and update your next move.',
     icon: Zap,
     color: '#d97706',

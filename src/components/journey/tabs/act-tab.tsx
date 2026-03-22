@@ -7,7 +7,7 @@
  * alongside learning goals, real-world actions, and reflection loops.
  *
  * Sections:
- * 1. Act Steps — journey progression
+ * 1. Grow Steps — journey progression
  * 2. Your Next Best Step — prominent next action
  * 3. Your Roadmap — career timeline (zigzag/rail/stepping)
  * 4. Learning Goals — skill building
@@ -127,7 +127,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         <div className="flex items-center gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-1">
-              Act Progress
+              Grow Progress
             </p>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-1.5 rounded-full bg-amber-500/10">
@@ -162,7 +162,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
                 </p>
                 {onStartStep && (
                   <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => onStartStep(nextStep.id)}>
-                    Take action
+                    Get started
                     <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                   </Button>
                 )}
@@ -172,11 +172,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         </Card>
       )}
 
-      {/* Act Steps */}
+      {/* Grow Steps */}
       <div>
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <Lightbulb className="h-4 w-4 text-amber-500" />
-          Your Act Steps
+          Your Grow Steps
         </h3>
         <div className="space-y-2">
           {actSteps.map((step, i) => (

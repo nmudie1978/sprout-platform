@@ -207,9 +207,9 @@ const TAB_CONFIG: TabConfig[] = [
   },
   {
     id: 'act',
-    label: 'Act',
+    label: 'Grow',
     icon: Zap,
-    tooltip: 'Take action — roadmap, learning goals, real-world actions, and reflection.',
+    tooltip: 'Take action and grow — roadmap, learning goals, real-world actions, and reflection.',
     color: 'amber',
   },
 ];

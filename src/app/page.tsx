@@ -246,8 +246,8 @@ export default function LandingPage() {
               },
               {
                 step: "3",
-                title: "Act",
-                subtitle: "Take aligned action",
+                title: "Grow",
+                subtitle: "Take action and grow",
                 description: "Do something real — a job, a course, a project. Then reflect on what you learned and update your plan.",
                 subtitleClass: "text-amber-400",
                 accent: "from-amber-500 to-orange-600",
