@@ -10,7 +10,7 @@ import { OverlayBadges } from '../overlays/overlay-badges';
 
 const NODE_SIZE = 40;
 const H_SPACING = 180;
-const HIGH_Y = 80;
+const HIGH_Y = 90;
 const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
@@ -18,18 +18,8 @@ const AGE_MARKER_HEIGHT = 24;
 export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
   const items = journey.items;
 
-  // Determine which item the user is currently at based on their age
-  const currentItemIndex = useMemo(() => {
-    if (!userAge) return -1;
-    for (let i = items.length - 1; i >= 0; i--) {
-      const item = items[i];
-      const endAge = item.endAge ?? item.startAge + 2;
-      if (userAge >= item.startAge && userAge <= endAge) return i;
-    }
-    // If user is younger than first item, mark first
-    if (items.length > 0 && userAge < items[0].startAge) return 0;
-    return -1;
-  }, [items, userAge]);
+  // The user is always at the start of their roadmap — it's generated from their current age
+  const currentItemIndex = userAge != null && items.length > 0 ? 0 : -1;
 
   const positions = useMemo(
     () =>
@@ -120,16 +110,22 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 {/* "YOU ARE HERE" marker for current item */}
                 {isCurrent && isHigh && (
                   <div
-                    className="flex justify-center mb-1"
-                    style={{ marginTop: -AGE_MARKER_HEIGHT - 28 }}
+                    className="flex flex-col items-center mb-1"
+                    style={{ marginTop: -AGE_MARKER_HEIGHT - 36 }}
                   >
                     <span
-                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white animate-pulse"
-                      style={{ backgroundColor: stageColor, boxShadow: `0 0 12px ${stageColor}80` }}
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg"
+                      style={{ backgroundColor: stageColor, boxShadow: `0 0 20px ${stageColor}90, 0 0 40px ${stageColor}40` }}
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                      <span className="h-2 w-2 rounded-full bg-white animate-ping absolute" />
+                      <span className="h-2 w-2 rounded-full bg-white relative" />
                       You are here
                     </span>
+                    {/* Downward arrow */}
+                    <div
+                      className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent mt-[-1px]"
+                      style={{ borderTopColor: stageColor }}
+                    />
                   </div>
                 )}
                 {/* Age marker above node for high positions */}
@@ -208,13 +204,21 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     </span>
                     {/* "YOU ARE HERE" marker for current low-position item */}
                     {isCurrent && (
-                      <span
-                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 mt-1.5 text-[10px] font-bold uppercase tracking-wider text-white animate-pulse"
-                        style={{ backgroundColor: stageColor, boxShadow: `0 0 12px ${stageColor}80` }}
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                        You are here
-                      </span>
+                      <>
+                        {/* Upward arrow */}
+                        <div
+                          className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-transparent mb-[-1px]"
+                          style={{ borderBottomColor: stageColor }}
+                        />
+                        <span
+                          className="relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg"
+                          style={{ backgroundColor: stageColor, boxShadow: `0 0 20px ${stageColor}90, 0 0 40px ${stageColor}40` }}
+                        >
+                          <span className="h-2 w-2 rounded-full bg-white animate-ping absolute left-3" />
+                          <span className="h-2 w-2 rounded-full bg-white relative" />
+                          You are here
+                        </span>
+                      </>
                     )}
                   </div>
                 )}
