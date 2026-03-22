@@ -66,12 +66,7 @@ export function JourneyGuide({ journey }: JourneyGuideProps) {
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === null) {
-      // First visit — show expanded
-      setCollapsed(false);
-    } else {
-      setCollapsed(stored === 'true');
-    }
+    setCollapsed(stored !== 'false');
   }, []);
 
   const toggleCollapsed = () => {
