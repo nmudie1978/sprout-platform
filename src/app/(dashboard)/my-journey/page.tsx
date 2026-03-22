@@ -6,12 +6,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Route,
   Lock,
-  BookOpen,
-  StickyNote,
+  Search,
+  Globe,
+  Zap,
   Target,
   ArrowRight,
   ArrowLeftRight,
-  GraduationCap,
   Loader2,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,21 +38,9 @@ import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
 import { JourneyGuide } from '@/components/journey/journey-guide';
 
 // Heavy components - loaded lazily to reduce initial bundle
-const PersonalCareerTimeline = dynamic(
-  () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
-);
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
   { ssr: false }
-);
-const LibraryTab = dynamic(
-  () => import('@/components/journey/tabs').then((m) => m.LibraryTab),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
-);
-const NotesTab = dynamic(
-  () => import('@/components/journey/tabs').then((m) => m.NotesTab),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
 );
 const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
@@ -62,9 +50,19 @@ const ConfirmDialog = dynamic(
   () => import('@/components/mobile/ConfirmDialog').then((m) => m.ConfirmDialog),
   { ssr: false }
 );
-const LearningGoalsTab = dynamic(
-  () => import('@/components/journey/tabs').then((m) => m.LearningGoalsTab),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
+
+// D/U/A Tab Components
+const DiscoverTab = dynamic(
+  () => import('@/components/journey/tabs/discover-tab').then((m) => m.DiscoverTab),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const UnderstandTab = dynamic(
+  () => import('@/components/journey/tabs/understand-tab').then((m) => m.UnderstandTab),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
+);
+const ActTab = dynamic(
+  () => import('@/components/journey/tabs/act-tab').then((m) => m.ActTab),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
 
 // Types
@@ -182,44 +180,37 @@ const DEMO_JOURNEY: JourneyUIState = {
 // TAB CONFIGURATION
 // ============================================
 
-type JourneyTab = 'timeline' | 'library' | 'notes' | 'learning-goals';
+type JourneyTab = 'discover' | 'understand' | 'act';
 
 interface TabConfig {
   id: JourneyTab;
   label: string;
   icon: typeof Route;
   tooltip: string;
-  subtitle: string;
+  color: string;
 }
 
 const TAB_CONFIG: TabConfig[] = [
   {
-    id: 'timeline',
-    label: 'Roadmap',
-    icon: Route,
-    tooltip: 'Your AI-generated career timeline based on your primary goal.',
-    subtitle: 'Possible paths and steps over time — not a fixed plan.',
+    id: 'discover',
+    label: 'Discover',
+    icon: Search,
+    tooltip: 'Know yourself — reflect on strengths, interests, and career direction.',
+    color: 'violet',
   },
   {
-    id: 'learning-goals',
-    label: 'Learning Goals',
-    icon: GraduationCap,
-    tooltip: 'Track your learning objectives and find courses to build new skills.',
-    subtitle: 'Set learning goals, track your progress, and discover courses to help you grow.',
+    id: 'understand',
+    label: 'Understand',
+    icon: Globe,
+    tooltip: 'Know the world — explore industries, roles, and saved content.',
+    color: 'emerald',
   },
   {
-    id: 'library',
-    label: 'My Content',
-    icon: BookOpen,
-    tooltip: 'Insights and resources you\'ve saved along the way.',
-    subtitle: 'Things you\'ve saved or explored, kept here for whenever you want to revisit them.',
-  },
-  {
-    id: 'notes',
-    label: 'Notes',
-    icon: StickyNote,
-    tooltip: 'Your personal thoughts across the journey.',
-    subtitle: 'A free space for thoughts, ideas, or anything worth remembering.',
+    id: 'act',
+    label: 'Act',
+    icon: Zap,
+    tooltip: 'Take action — roadmap, learning goals, real-world actions, and reflection.',
+    color: 'amber',
   },
 ];
 
@@ -280,14 +271,6 @@ function PrimaryGoalHero({
 // TAB SUBTITLE COMPONENT
 // ============================================
 
-function TabSubtitle({ subtitle }: { subtitle: string }) {
-  return (
-    <p className="text-sm text-muted-foreground mb-4">
-      {subtitle}
-    </p>
-  );
-}
-
 // ============================================
 // MAIN PAGE COMPONENT
 // ============================================
@@ -295,7 +278,7 @@ function TabSubtitle({ subtitle }: { subtitle: string }) {
 export default function MyJourneyPage() {
   const { data: session, status: sessionStatus } = useSession();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<JourneyTab>('timeline');
+    const [activeTab, setActiveTab] = useState<JourneyTab>('discover');
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showSwapConfirm, setShowSwapConfirm] = useState(false);
@@ -493,20 +476,25 @@ export default function MyJourneyPage() {
           icon={<ArrowLeftRight className="h-5 w-5 text-purple-500" />}
         />
 
-        {/* Tab Navigation */}
+        {/* D/U/A Tab Navigation */}
         <div className="mb-6">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as JourneyTab)}>
             <TooltipProvider>
-              <TabsList className="grid w-full max-w-3xl grid-cols-4 h-auto relative">
+              <TabsList className="grid w-full max-w-3xl grid-cols-3 h-auto relative">
                 {TAB_CONFIG.map((tab) => {
                   const TabIcon = tab.icon;
                   const isActive = activeTab === tab.id;
+                  const colorMap: Record<string, string> = {
+                    violet: 'bg-violet-500',
+                    emerald: 'bg-emerald-500',
+                    amber: 'bg-amber-500',
+                  };
                   return (
                     <Tooltip key={tab.id}>
                       <TooltipTrigger asChild>
                         <TabsTrigger
                           value={tab.id}
-                          className="relative flex flex-col items-center gap-0.5 py-3 sm:py-2 text-xs sm:text-sm data-[state=active]:bg-background min-h-[44px]"
+                          className="relative flex flex-col items-center gap-0.5 py-3 sm:py-2.5 text-xs sm:text-sm data-[state=active]:bg-background min-h-[44px]"
                         >
                           <motion.div
                             className="flex items-center gap-1.5"
@@ -515,12 +503,12 @@ export default function MyJourneyPage() {
                             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                           >
                             <TabIcon className="h-4 w-4" />
-                            <span className="hidden sm:inline">{tab.label}</span>
+                            <span>{tab.label}</span>
                           </motion.div>
                           {isActive && (
                             <motion.div
                               layoutId="journey-tab-indicator"
-                              className="absolute bottom-0 left-2 right-2 h-0.5 bg-emerald-500 rounded-full"
+                              className={`absolute bottom-0 left-2 right-2 h-0.5 rounded-full ${colorMap[tab.color] || 'bg-primary'}`}
                               transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                             />
                           )}
@@ -535,29 +523,30 @@ export default function MyJourneyPage() {
               </TabsList>
             </TooltipProvider>
 
-            {/* Timeline Tab */}
-            <TabsContent value="timeline" className="mt-4 sm:mt-6">
-              {journey && (
-                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-              )}
+            {/* Discover Tab */}
+            <TabsContent value="discover" className="mt-4 sm:mt-6">
+              <DiscoverTab
+                journey={journey}
+                onSetGoal={() => setGoalSheetOpen(true)}
+                onStartStep={(stepId) => setActiveStepId(stepId as any)}
+              />
             </TabsContent>
 
-            {/* Library Tab */}
-            <TabsContent value="library" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'library')?.subtitle || ''} />
-              <LibraryTab />
+            {/* Understand Tab */}
+            <TabsContent value="understand" className="mt-4 sm:mt-6">
+              <UnderstandTab
+                journey={journey}
+                onStartStep={(stepId) => setActiveStepId(stepId as any)}
+              />
             </TabsContent>
 
-            {/* Notes Tab */}
-            <TabsContent value="notes" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'notes')?.subtitle || ''} />
-              <NotesTab />
-            </TabsContent>
-
-            {/* Learning Goals Tab */}
-            <TabsContent value="learning-goals" className="mt-6">
-              <TabSubtitle subtitle={TAB_CONFIG.find(t => t.id === 'learning-goals')?.subtitle || ''} />
-              <LearningGoalsTab />
+            {/* Act Tab */}
+            <TabsContent value="act" className="mt-4 sm:mt-6">
+              <ActTab
+                journey={journey}
+                goalTitle={goalTitle}
+                onStartStep={(stepId) => setActiveStepId(stepId as any)}
+              />
             </TabsContent>
           </Tabs>
         </div>
