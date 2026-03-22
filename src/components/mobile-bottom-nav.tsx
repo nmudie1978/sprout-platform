@@ -1,9 +1,29 @@
 "use client";
 
+/**
+ * MOBILE BOTTOM NAV — Updated for Style 6
+ *
+ * Priority order reflects app focus:
+ * Journey > Careers > Dashboard (Home) > Jobs > Profile
+ *
+ * Supports YOUTH, EMPLOYER, ADMIN, COMMUNITY_GUARDIAN roles.
+ */
+
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Home, Briefcase, MessageSquare, User, PlusCircle, LayoutDashboard, TrendingUp } from "lucide-react";
+import {
+  Home,
+  Briefcase,
+  MessageSquare,
+  User,
+  PlusCircle,
+  LayoutDashboard,
+  Route,
+  Compass,
+  Search,
+  Shield,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -14,11 +34,11 @@ interface NavItem {
 }
 
 const youthNavItems: NavItem[] = [
+  { href: "/my-journey", label: "Journey", icon: Route, activePattern: /^\/my-journey/ },
+  { href: "/careers", label: "Careers", icon: Compass, activePattern: /^\/careers|^\/insights/ },
   { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/growth", label: "Growth", icon: TrendingUp, activePattern: /^\/growth/ },
-  { href: "/jobs", label: "Small Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
-  { href: "/messages", label: "Messages", icon: MessageSquare, activePattern: /^\/messages/ },
-  { href: "/profile", label: "", icon: User, activePattern: /^\/profile/ },
+  { href: "/jobs", label: "Jobs", icon: Search, activePattern: /^\/jobs/ },
+  { href: "/profile", label: "Profile", icon: User, activePattern: /^\/profile/ },
 ];
 
 const employerNavItems: NavItem[] = [
@@ -28,21 +48,27 @@ const employerNavItems: NavItem[] = [
   { href: "/employer/settings", label: "Settings", icon: User, activePattern: /^\/employer\/settings/ },
 ];
 
+const guardianNavItems: NavItem[] = [
+  { href: "/guardian", label: "Guardian", icon: Shield },
+  { href: "/jobs", label: "Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
+];
+
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  // Don't show on auth pages or landing page
   if (pathname === "/" || pathname.startsWith("/auth") || pathname.startsWith("/legal")) {
     return null;
   }
 
-  // Don't show if not authenticated
   if (status !== "authenticated" || !session?.user) {
     return null;
   }
 
-  const navItems = session.user.role === "EMPLOYER" ? employerNavItems : youthNavItems;
+  const navItems =
+    session.user.role === "EMPLOYER" ? employerNavItems :
+    session.user.role === "COMMUNITY_GUARDIAN" ? guardianNavItems :
+    youthNavItems;
 
   const isActive = (item: NavItem) => {
     if (item.activePattern) {
@@ -52,7 +78,7 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-slate-950/95 backdrop-blur-md border-t border-slate-800/50 safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -62,23 +88,21 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className={cn(
-                "flex flex-col items-center justify-center flex-1 h-full min-w-[64px] py-2 transition-colors",
-                "active:bg-muted/50 rounded-lg",
+                "flex flex-col items-center justify-center flex-1 h-full min-w-[56px] py-2 transition-colors rounded-lg",
                 active
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-indigo-400"
+                  : "text-slate-500 hover:text-slate-300"
               )}
             >
-              <Icon className={cn("h-6 w-6", active && "text-primary")} />
-              {item.label && (
-                <span className={cn(
-                  "text-[10px] mt-1 font-medium",
-                  active ? "text-primary" : "text-muted-foreground"
-                )}>
-                  {item.label}
-                </span>
-              )}
+              <Icon className={cn("h-5 w-5", active && "text-indigo-400")} />
+              <span className={cn(
+                "text-[10px] mt-1 font-medium",
+                active ? "text-indigo-400" : "text-slate-500"
+              )}>
+                {item.label}
+              </span>
             </Link>
           );
         })}

@@ -7,8 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { LifeSkillsProvider } from "@/components/life-skills-provider";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import type { Session } from "next-auth";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, session }: { children: React.ReactNode; session?: Session | null }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -34,7 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      <SessionProvider refetchOnWindowFocus={false} refetchInterval={0}>
+      <SessionProvider session={session} refetchOnWindowFocus={false} refetchInterval={0}>
         <QueryClientProvider client={queryClient}>
           <LifeSkillsProvider>
             {children}
