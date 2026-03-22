@@ -24,19 +24,19 @@ export function PageHeader({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className={cn("mb-8", className)}
+      className={cn("mb-5 sm:mb-8", className)}
     >
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
         {Icon && (
           <motion.div
-            className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center"
+            className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shrink-0"
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ type: "spring", stiffness: 400 }}
           >
-            <Icon className="h-6 w-6 text-primary" />
+            <Icon className="h-4.5 w-4.5 sm:h-6 sm:w-6 text-primary" />
           </motion.div>
         )}
-        <h1 className="text-4xl font-bold tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-bold tracking-tight">
           {title}
           {gradientText && (
             <>
@@ -49,7 +49,7 @@ export function PageHeader({
         </h1>
       </div>
       {description && (
-        <p className="text-lg text-muted-foreground max-w-3xl">
+        <p className="text-sm sm:text-lg text-muted-foreground max-w-3xl">
           {description}
         </p>
       )}

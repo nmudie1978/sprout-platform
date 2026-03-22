@@ -412,7 +412,7 @@ export default function MyJourneyPage() {
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl relative">
         {/* Career Path Header */}
         {journey && (
-          <div className="mb-8">
+          <div className="mb-5 sm:mb-8">
             {goalTitle && secondaryGoal ? (
               /* Two-pill swap layout */
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">

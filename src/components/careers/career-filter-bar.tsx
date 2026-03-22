@@ -78,7 +78,7 @@ function FilterDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 h-8 px-2.5 rounded-md border bg-background text-xs hover:bg-muted/80 transition-colors whitespace-nowrap"
+        className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border bg-background text-xs hover:bg-muted/80 transition-colors whitespace-nowrap"
       >
         {label}
         {badge !== undefined && badge > 0 && (
@@ -109,7 +109,7 @@ function DropdownItem({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left hover:bg-muted/80 transition-colors ${
+      className={`flex items-center gap-2 w-full px-3 py-2.5 sm:py-1.5 text-xs text-left hover:bg-muted/80 transition-colors ${
         selected ? "text-primary font-medium" : "text-foreground"
       }`}
     >
@@ -194,16 +194,16 @@ export function CareerFilterBar({
       : categoryConfig[filters.category]?.label || "Category";
 
   return (
-    <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-background/95 backdrop-blur-sm border-b mb-4">
+    <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-background/95 backdrop-blur-sm border-b mb-4">
       <div className="flex flex-wrap items-center gap-2">
         {/* Search */}
-        <div className="relative flex-1 min-w-[160px] max-w-xs">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        <div className="relative w-full sm:flex-1 sm:w-auto sm:min-w-[160px] sm:max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
           <Input
             placeholder="Search careers or skills..."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="h-8 pl-7 text-xs"
+            className="h-10 sm:h-8 pl-8 sm:pl-7 text-sm sm:text-xs"
           />
           {localSearch && (
             <button
@@ -253,7 +253,7 @@ export function CareerFilterBar({
         <select
           value={filters.growthFilter}
           onChange={(e) => onGrowthChange(e.target.value)}
-          className="h-8 px-2 rounded-md border bg-background text-xs"
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
           title="Growth reflects how fast demand for this career is expected to increase over the next 5–10 years"
         >
           {growthFilters.map((filter) => (

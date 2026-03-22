@@ -765,9 +765,9 @@ export default function ProfilePage() {
         </Card>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3 relative z-10">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
-        <div className="lg:col-span-2 space-y-6 relative z-10">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6 relative z-10">
           {/* Basic Information - Read-only summary */}
           {profile && (
             <Card className="border bg-card/50 backdrop-blur-sm">

@@ -209,7 +209,7 @@ export default function IndustryInsightsPage() {
             />
             <button
               onClick={toggleContextHints}
-              className="absolute top-8 right-0 flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
+              className="absolute top-0 right-0 sm:top-8 flex items-center gap-2 text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors z-10"
               aria-pressed={showContextHints}
             >
               <span
@@ -225,7 +225,7 @@ export default function IndustryInsightsPage() {
                   `}
                 />
               </span>
-              {t("showContextHints")}
+              <span className="hidden sm:inline">{t("showContextHints")}</span>
             </button>
           </div>
 
@@ -269,7 +269,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.35 }}
         className="mb-3"
       >
-        <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-4">
+        <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Sparkles}
             label={t("youthLens")}
@@ -308,7 +308,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-3"
       >
-        <div className="rounded-2xl border-2 border-violet-200/50 dark:border-violet-800/30 bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/10 p-4">
+        <div className="rounded-2xl border-2 border-violet-200/50 dark:border-violet-800/30 bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Layers}
             label="Explore"
@@ -345,7 +345,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.65 }}
         className="mb-4"
       >
-        <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-4">
+        <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Lightbulb}
             label="Explore"

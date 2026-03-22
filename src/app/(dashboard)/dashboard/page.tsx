@@ -363,7 +363,7 @@ export default function DashboardPage() {
     <div className="min-h-[100vh] bg-background text-foreground" style={{ fontFamily: "'Inter', 'Nunito', system-ui, sans-serif" }}>
       <OnboardingWizard open={showOnboarding} onComplete={handleOnboardingComplete} />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* ── Header ───────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate mr-3">

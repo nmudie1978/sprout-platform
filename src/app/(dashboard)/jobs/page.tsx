@@ -394,7 +394,7 @@ export default function JobsPage() {
       </motion.div>
 
       {/* Category Select - Sticky Navigation */}
-      <div className="sticky top-0 z-40 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b mb-6">
+      <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-3 bg-background/95 backdrop-blur-sm border-b mb-4 sm:mb-6">
         <Select
           value={standardCategoryFilter || "ALL"}
           onValueChange={(value) => {
