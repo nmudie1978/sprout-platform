@@ -211,6 +211,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
             onItemClick={(item) => setSelectedItem(item)}
             overlayData={nodeAnnotations}
             activeLayers={activeLayers}
+            userAge={journey.startAge}
           />
         );
       })()}

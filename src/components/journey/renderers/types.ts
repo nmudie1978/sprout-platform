@@ -6,4 +6,6 @@ export interface RendererProps {
   onItemClick: (item: JourneyItem) => void;
   overlayData?: Record<string, NodeOverlayData>;
   activeLayers?: Record<OverlayLayerId, boolean>;
+  /** User's current age — used to show "You Are Here" marker */
+  userAge?: number;
 }

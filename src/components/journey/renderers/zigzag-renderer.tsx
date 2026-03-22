@@ -10,13 +10,26 @@ import { OverlayBadges } from '../overlays/overlay-badges';
 
 const NODE_SIZE = 40;
 const H_SPACING = 180;
-const HIGH_Y = 60;
+const HIGH_Y = 80;
 const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
 
-export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers }: RendererProps) {
+export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
   const items = journey.items;
+
+  // Determine which item the user is currently at based on their age
+  const currentItemIndex = useMemo(() => {
+    if (!userAge) return -1;
+    for (let i = items.length - 1; i >= 0; i--) {
+      const item = items[i];
+      const endAge = item.endAge ?? item.startAge + 2;
+      if (userAge >= item.startAge && userAge <= endAge) return i;
+    }
+    // If user is younger than first item, mark first
+    if (items.length > 0 && userAge < items[0].startAge) return 0;
+    return -1;
+  }, [items, userAge]);
 
   const positions = useMemo(
     () =>
@@ -92,7 +105,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
             ? `Age ${item.startAge}–${item.endAge}`
             : `Age ${item.startAge}`;
           const stageColor = STAGE_CONFIG[item.stage].color;
-          const isCurrent = i === 0;
+          const isCurrent = i === currentItemIndex;
 
           return (
             <div
@@ -104,17 +117,32 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               }}
             >
               <div className="flex flex-col items-center" style={{ width: CARD_WIDTH }}>
+                {/* "YOU ARE HERE" marker for current item */}
+                {isCurrent && isHigh && (
+                  <div
+                    className="flex justify-center mb-1"
+                    style={{ marginTop: -AGE_MARKER_HEIGHT - 28 }}
+                  >
+                    <span
+                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white animate-pulse"
+                      style={{ backgroundColor: stageColor, boxShadow: `0 0 12px ${stageColor}80` }}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                      You are here
+                    </span>
+                  </div>
+                )}
                 {/* Age marker above node for high positions */}
                 {isHigh && (
                   <div
                     className="flex justify-center mb-1"
-                    style={{ marginTop: -AGE_MARKER_HEIGHT - 4 }}
+                    style={{ marginTop: isCurrent ? 2 : -AGE_MARKER_HEIGHT - 4 }}
                   >
                     <span
                       className={cn(
                         'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
                         isCurrent
-                          ? 'ring-1'
+                          ? 'ring-2 font-semibold'
                           : 'bg-muted text-muted-foreground'
                       )}
                       style={
@@ -122,7 +150,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                           ? {
                               backgroundColor: `${stageColor}20`,
                               color: stageColor,
-                              boxShadow: `0 0 0 1px ${stageColor}40`,
+                              boxShadow: `0 0 0 2px ${stageColor}60`,
                             }
                           : undefined
                       }
@@ -138,12 +166,13 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     onClick={() => onItemClick(item)}
                     overlayNodeData={overlayData?.[item.id]}
                     activeLayers={activeLayers}
+                    isCurrent={isCurrent}
                   />
                 )}
                 <SharedNode
                   item={item}
                   onClick={() => onItemClick(item)}
-                  size={NODE_SIZE}
+                  size={isCurrent ? NODE_SIZE + 6 : NODE_SIZE}
                 />
                 {/* Card below node for high positions */}
                 {isHigh && (
@@ -152,19 +181,41 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     onClick={() => onItemClick(item)}
                     overlayNodeData={overlayData?.[item.id]}
                     activeLayers={activeLayers}
+                    isCurrent={isCurrent}
                   />
                 )}
                 {/* Age marker below card for low positions */}
                 {!isHigh && (
-                  <div className="flex justify-center mt-1">
+                  <div className="flex flex-col items-center mt-1">
                     <span
                       className={cn(
                         'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
-                        'bg-muted text-muted-foreground'
+                        isCurrent
+                          ? 'ring-2 font-semibold'
+                          : 'bg-muted text-muted-foreground'
                       )}
+                      style={
+                        isCurrent
+                          ? {
+                              backgroundColor: `${stageColor}20`,
+                              color: stageColor,
+                              boxShadow: `0 0 0 2px ${stageColor}60`,
+                            }
+                          : undefined
+                      }
                     >
                       {ageLabel}
                     </span>
+                    {/* "YOU ARE HERE" marker for current low-position item */}
+                    {isCurrent && (
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 mt-1.5 text-[10px] font-bold uppercase tracking-wider text-white animate-pulse"
+                        style={{ backgroundColor: stageColor, boxShadow: `0 0 12px ${stageColor}80` }}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                        You are here
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -181,11 +232,13 @@ function ZigzagCard({
   onClick,
   overlayNodeData,
   activeLayers,
+  isCurrent,
 }: {
   item: JourneyItem;
   onClick: () => void;
   overlayNodeData?: NodeOverlayData;
   activeLayers?: Record<OverlayLayerId, boolean>;
+  isCurrent?: boolean;
 }) {
   const stage = STAGE_CONFIG[item.stage];
 
@@ -193,11 +246,15 @@ function ZigzagCard({
     <button
       onClick={onClick}
       className={cn(
-        'w-full text-left rounded-lg border border-border/50 bg-card/80 backdrop-blur-sm p-2 my-2 shadow-sm transition-all',
+        'w-full text-left rounded-lg border bg-card/80 backdrop-blur-sm p-2 my-2 shadow-sm transition-all',
         'hover:shadow-md hover:-translate-y-0.5 hover:border-border',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'cursor-pointer'
+        'cursor-pointer',
+        isCurrent
+          ? 'border-2 shadow-lg'
+          : 'border-border/50'
       )}
+      style={isCurrent ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` } : undefined}
     >
       <div className="flex items-center gap-1 mb-0.5">
         <span
