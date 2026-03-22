@@ -34,6 +34,9 @@ import dynamic from 'next/dynamic';
 // Journey Components - lightweight, loaded eagerly
 import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
 
+// Journey guide - lightweight, loaded eagerly
+import { JourneyGuide } from '@/components/journey/journey-guide';
+
 // Heavy components - loaded lazily to reduce initial bundle
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -410,6 +413,9 @@ export default function MyJourneyPage() {
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl relative">
+        {/* Journey Guide — explains the framework */}
+        <JourneyGuide journey={journey} />
+
         {/* Career Path Header */}
         {journey && (
           <div className="mb-5 sm:mb-8">

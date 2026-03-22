@@ -93,8 +93,59 @@ export default function AboutPage() {
           </p>
         </div>
 
+        {/* The Framework */}
+        <div className="mt-16 pt-10 border-t border-border">
+          <h2 className="text-xl font-semibold text-foreground mb-4">
+            The framework: Discover, Understand, Act
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-6">
+            Everything in Endeavrly is built around three lenses. They&apos;re sequential on purpose —
+            each one gives you what you need for the next.
+          </p>
+
+          <div className="space-y-4 mb-6">
+            <div className="p-4 rounded-lg bg-violet-50/50 dark:bg-violet-950/20 border border-violet-200/50 dark:border-violet-800/30">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold">1</span>
+                <h3 className="font-semibold text-foreground">Discover — Know yourself</h3>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+                Before you can make good decisions, it helps to know what you&apos;re good at and what interests you.
+                This lens guides you to reflect on your strengths, explore different careers, and research what roles actually involve.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold">2</span>
+                <h3 className="font-semibold text-foreground">Understand — Know the world</h3>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+                Once you have a direction, you need to understand the reality of that path. Review industry trends,
+                shadow someone in the field, and turn your research into a concrete plan.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">3</span>
+                <h3 className="font-semibold text-foreground">Act — Take aligned action</h3>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+                Now you&apos;re ready to do something real — take on a job, start a course, build a project.
+                Then reflect on what you learned, update your plan, and keep going.
+              </p>
+            </div>
+          </div>
+
+          <p className="text-muted-foreground leading-relaxed">
+            You can&apos;t skip ahead. That&apos;s deliberate — understanding yourself before understanding the world,
+            and understanding the world before taking action, leads to decisions that are aligned with who you actually are.
+          </p>
+        </div>
+
         {/* What it does */}
-        <div className="space-y-10">
+        <div className="space-y-10 mt-16 pt-10 border-t border-border">
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Compass className="h-5 w-5 text-teal-500" />

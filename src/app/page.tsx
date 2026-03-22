@@ -208,23 +208,78 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================ */}
-      {/* SECTION 3 — A GENTLE STRUCTURE */}
+      {/* SECTION 3 — THE FRAMEWORK */}
       {/* ============================================ */}
       <section id="how-it-works" className="border-t border-slate-800/60 scroll-mt-20">
         <div className="mx-auto max-w-6xl px-5 py-24 sm:py-32">
           {/* Section header */}
           <div className="text-center mb-14 sm:mb-18">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-white">
-              A gentle{" "}
-              <span className="text-emerald-400">structure.</span>
+              Three lenses.{" "}
+              <span className="text-emerald-400">One journey.</span>
             </h2>
             <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-              Not a rigid path. A way to explore, reflect, and build confidence
-              over time.
+              Each step builds on the last. You can't skip ahead — because
+              understanding yourself comes before understanding the world, and
+              both come before taking action.
             </p>
           </div>
 
-          {/* Feature Cards — 2×2 grid */}
+          {/* Three Lenses — the core framework */}
+          <div className="grid sm:grid-cols-3 gap-4 sm:gap-5 max-w-5xl mx-auto mb-16 sm:mb-20">
+            {[
+              {
+                step: "1",
+                title: "Discover",
+                subtitle: "Know yourself",
+                description: "Reflect on your strengths. Explore careers that interest you. Research what roles actually involve day to day.",
+                subtitleClass: "text-violet-400",
+                accent: "from-violet-500 to-purple-600",
+              },
+              {
+                step: "2",
+                title: "Understand",
+                subtitle: "Know the world",
+                description: "Review industry trends. Shadow someone in your field. Turn what you've learned into a concrete plan.",
+                subtitleClass: "text-emerald-400",
+                accent: "from-emerald-500 to-teal-600",
+              },
+              {
+                step: "3",
+                title: "Act",
+                subtitle: "Take aligned action",
+                description: "Do something real — a job, a course, a project. Then reflect on what you learned and update your plan.",
+                subtitleClass: "text-amber-400",
+                accent: "from-amber-500 to-orange-600",
+              },
+            ].map((lens, i) => (
+              <div key={lens.title} className="relative">
+                {/* Connector line */}
+                {i < 2 && (
+                  <div className="hidden sm:block absolute top-10 -right-3 w-6 h-px bg-slate-700/60" />
+                )}
+                <div className="rounded-2xl border border-slate-700/40 bg-slate-900/60 p-6 sm:p-7 h-full">
+                  <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${lens.accent} mb-4`}>
+                    <span className="text-sm font-bold text-white">{lens.step}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold tracking-tight text-white mb-0.5">
+                    {lens.title}
+                  </h3>
+                  <p className={`text-xs font-medium ${lens.subtitleClass} mb-3`}>
+                    {lens.subtitle}
+                  </p>
+                  <p className="text-sm text-neutral-400 leading-relaxed">
+                    {lens.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature Cards — what makes it different */}
+          <div className="text-center mb-8">
+            <p className="text-sm font-medium uppercase tracking-wider text-neutral-500">Built around</p>
+          </div>
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 max-w-4xl mx-auto">
             {FEATURES.map((feature) => {
               const Icon = feature.icon;
@@ -233,14 +288,11 @@ export default function LandingPage() {
                   key={feature.title}
                   className="flex items-start gap-5 rounded-2xl border border-slate-700/40 bg-slate-900/60 p-6 sm:p-7"
                 >
-                  {/* Icon */}
                   <div
                     className={`flex-shrink-0 flex h-11 w-11 items-center justify-center rounded-xl ${feature.accentBg}`}
                   >
                     <Icon className={`h-5 w-5 ${feature.accentText}`} />
                   </div>
-
-                  {/* Content */}
                   <div>
                     <h3 className="text-base font-semibold tracking-tight text-white mb-1.5">
                       {feature.title}
