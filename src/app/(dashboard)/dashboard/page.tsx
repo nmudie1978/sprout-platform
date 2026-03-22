@@ -13,7 +13,7 @@
  * - Journey-first: growth and careers are primary, small jobs secondary
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
   Clock,
   Loader2,
   ChevronRight,
+  ChevronLeft,
   Briefcase,
   ArrowUpRight,
   TrendingUp,
@@ -38,7 +39,10 @@ import {
   Sparkles,
   Wallet,
   User,
+  Play,
+  ExternalLink,
 } from "lucide-react";
+import { getDisplayVideos } from "@/lib/industry-insights/video-pool";
 import Link from "next/link";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
@@ -107,6 +111,71 @@ function JobRow({ job }: { job: any }) {
   );
 }
 
+// ── Saved Careers Carousel ───────────────────────────────────────────
+function SavedCareersCarousel({ careers }: { careers: any[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  const scroll = (direction: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction === "left" ? -200 : 200, behavior: "smooth" });
+  };
+
+  return (
+    <div className="relative">
+      {canScrollLeft && (
+        <button
+          onClick={() => scroll("left")}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-slate-400 hover:text-white transition-colors"
+        >
+          <ChevronLeft className="h-3.5 w-3.5" />
+        </button>
+      )}
+      <div
+        ref={scrollRef}
+        onScroll={checkScroll}
+        className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {careers.slice(0, 10).map((swipe: any) => {
+          const career = swipe.careerCard;
+          if (!career) return null;
+          return (
+            <Link key={swipe.id} href="/careers" className="block shrink-0 group">
+              <div className="w-36 p-3 rounded-2xl bg-slate-700/20 border border-slate-700/30 hover:border-teal-500/30 hover:bg-slate-700/30 transition-all">
+                <p className="text-xs font-medium text-slate-200 truncate group-hover:text-teal-300 transition-colors mb-1">
+                  {career.roleName}
+                </p>
+                <p className="text-[10px] text-slate-500 line-clamp-2 mb-2">{career.summary}</p>
+                {career.salaryBand && (
+                  <p className="text-[10px] text-teal-400/70">{career.salaryBand}</p>
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+      {canScrollRight && careers.length > 2 && (
+        <button
+          onClick={() => scroll("right")}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-slate-400 hover:text-white transition-colors"
+        >
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 const journeyStages = ["Discover", "Understand", "Act", "Reflect"];
 
 export default function DashboardPage() {
@@ -163,6 +232,24 @@ export default function DashboardPage() {
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
   });
+
+  // Fetch saved/explored careers for carousel
+  const { data: savedCareersData } = useQuery({
+    queryKey: ["saved-careers"],
+    queryFn: async () => {
+      const response = await fetch("/api/careers/saved");
+      if (!response.ok) return [];
+      return response.json();
+    },
+    enabled: session?.user.role === "YOUTH",
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+  });
+
+  const savedCareers = Array.isArray(savedCareersData) ? savedCareersData : [];
+
+  // Get a recommended video from the curated pool
+  const { videos: recommendedVideos } = getDisplayVideos();
 
   const jobs = Array.isArray(jobsData) ? jobsData : (jobsData?.jobs || []);
   const applications = Array.isArray(applicationsData) ? applicationsData : (applicationsData?.applications || []);
@@ -296,50 +383,98 @@ export default function DashboardPage() {
           </GlassCard>
         </Link>
 
-        {/* ── Primary row: Career Explorer + Industry Insights + AI Advisor ── */}
-        <div className="grid md:grid-cols-3 gap-4 mb-6">
-          {/* Career Explorer */}
-          <Link href="/careers" className="block group">
-            <GlassCard className="p-5 h-full" glow="shadow-[0_0_20px_rgba(20,184,166,0.08)] hover:shadow-[0_0_25px_rgba(20,184,166,0.14)]">
-              <div className="p-2.5 rounded-2xl bg-teal-500/15 w-fit mb-3">
-                <Compass className="h-5 w-5 text-teal-400" />
+        {/* ── Primary row: Saved Careers Carousel + Recommended Video ── */}
+        <div className="grid md:grid-cols-2 gap-4 mb-6">
+          {/* Saved Careers Carousel */}
+          <GlassCard className="p-5 overflow-hidden" glow="shadow-[0_0_20px_rgba(20,184,166,0.08)]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Compass className="h-4 w-4 text-teal-400" />
+                <h3 className="text-sm font-semibold text-slate-100">Careers You Explored</h3>
               </div>
-              <h3 className="text-sm font-semibold text-slate-100 mb-1">Career Explorer</h3>
-              <p className="text-xs text-slate-500 mb-4">Discover paths, skills, and what it takes to get there</p>
-              <span className="text-xs text-teal-400 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Explore Careers <ArrowRight className="h-3 w-3" />
-              </span>
-            </GlassCard>
-          </Link>
+              <Link href="/careers" className="text-[11px] text-teal-400 hover:text-teal-300 flex items-center gap-1">
+                Explore More <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {savedCareers.length > 0 ? (
+              <SavedCareersCarousel careers={savedCareers} />
+            ) : (
+              <Link href="/careers" className="block">
+                <div className="py-6 text-center rounded-2xl border border-dashed border-slate-700/50 hover:border-teal-500/30 transition-colors">
+                  <Compass className="h-8 w-8 text-slate-600 mx-auto mb-2" />
+                  <p className="text-sm text-slate-500 mb-1">No careers explored yet</p>
+                  <span className="text-xs text-teal-400">Start exploring careers</span>
+                </div>
+              </Link>
+            )}
+          </GlassCard>
 
-          {/* Industry Insights */}
-          <Link href="/insights" className="block group">
-            <GlassCard className="p-5 h-full" glow="shadow-[0_0_20px_rgba(59,130,246,0.08)] hover:shadow-[0_0_25px_rgba(59,130,246,0.14)]">
-              <div className="p-2.5 rounded-2xl bg-blue-500/15 w-fit mb-3">
-                <BookOpen className="h-5 w-5 text-blue-400" />
+          {/* Recommended Video/Podcast */}
+          <GlassCard className="p-5" glow="shadow-[0_0_20px_rgba(59,130,246,0.08)]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-blue-400" />
+                <h3 className="text-sm font-semibold text-slate-100">Recommended for You</h3>
               </div>
-              <h3 className="text-sm font-semibold text-slate-100 mb-1">Industry Insights</h3>
-              <p className="text-xs text-slate-500 mb-4">Real-world trends, stories, and advice from professionals</p>
-              <span className="text-xs text-blue-400 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Browse Insights <ArrowRight className="h-3 w-3" />
-              </span>
-            </GlassCard>
-          </Link>
+              <Link href="/insights" className="text-[11px] text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                All Insights <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {recommendedVideos.length > 0 ? (
+              <a
+                href={`https://www.youtube.com/watch?v=${recommendedVideos[0].videoUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <div className="relative rounded-2xl overflow-hidden mb-3">
+                  <img
+                    src={recommendedVideos[0].thumbnail}
+                    alt={recommendedVideos[0].title}
+                    className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="p-3 rounded-full bg-white/20 backdrop-blur-sm">
+                      <Play className="h-5 w-5 text-white fill-white" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/70 text-[10px] text-white font-medium">
+                    {recommendedVideos[0].duration}
+                  </div>
+                  <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-blue-500/80 text-[9px] text-white font-bold uppercase">
+                    {recommendedVideos[0].pillarTag}
+                  </div>
+                </div>
+                <p className="text-sm text-slate-200 font-medium line-clamp-2 group-hover:text-blue-300 transition-colors mb-1">
+                  {recommendedVideos[0].title}
+                </p>
+                <p className="text-[11px] text-slate-500">{recommendedVideos[0].sourceName}</p>
+              </a>
+            ) : (
+              <div className="py-6 text-center">
+                <p className="text-sm text-slate-500">No recommendations right now</p>
+              </div>
+            )}
+          </GlassCard>
+        </div>
 
-          {/* AI Advisor */}
-          <Link href="/career-advisor" className="block group">
-            <GlassCard className="p-5 h-full" glow="shadow-[0_0_20px_rgba(147,51,234,0.08)] hover:shadow-[0_0_25px_rgba(147,51,234,0.14)]">
-              <div className="p-2.5 rounded-2xl bg-purple-500/15 w-fit mb-3">
-                <Sparkles className="h-5 w-5 text-purple-400" />
+        {/* ── AI Advisor Banner ─────────────────────────────────────── */}
+        <Link href="/career-advisor" className="block mb-6 group">
+          <GlassCard className="px-5 py-3" glow="shadow-[0_0_15px_rgba(147,51,234,0.08)] hover:shadow-[0_0_20px_rgba(147,51,234,0.14)]">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-purple-500/15 shrink-0">
+                <Sparkles className="h-4 w-4 text-purple-400" />
               </div>
-              <h3 className="text-sm font-semibold text-slate-100 mb-1">AI Advisor</h3>
-              <p className="text-xs text-slate-500 mb-4">Get personalised career guidance and job recommendations</p>
-              <span className="text-xs text-purple-400 flex items-center gap-1 group-hover:gap-2 transition-all">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-slate-200">AI Career Advisor</p>
+                <p className="text-[11px] text-slate-500">Get personalised career guidance and job recommendations</p>
+              </div>
+              <span className="text-xs text-purple-400 flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity shrink-0">
                 Start Chat <ArrowRight className="h-3 w-3" />
               </span>
-            </GlassCard>
-          </Link>
-        </div>
+            </div>
+          </GlassCard>
+        </Link>
 
         {/* ── Coming Up ───────────────────────────────────────────── */}
         {upcomingJob && (
@@ -360,86 +495,67 @@ export default function DashboardPage() {
           </Link>
         )}
 
-        {/* ── Secondary: Small Jobs & Activity ────────────────────── */}
-        <div className="grid lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 space-y-5">
-            {/* Recent Activity */}
-            {recentActivity.length > 0 && (
-              <GlassCard className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-semibold text-slate-200">Recent Activity</h2>
-                  <Link href="/applications" className="text-[11px] text-teal-400 hover:text-teal-300">View all</Link>
+        {/* ── Activity + Applications + Small Jobs — side by side ── */}
+        <div className="grid lg:grid-cols-3 gap-4">
+          {/* Recent Activity — compact */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-slate-200">Activity</h2>
+              <Link href="/applications" className="text-[11px] text-teal-400 hover:text-teal-300">View all</Link>
+            </div>
+            {recentActivity.length > 0 ? (
+              recentActivity.map((a, i) => (
+                <div key={i} className="flex items-center gap-2 py-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-teal-400/60 shrink-0" />
+                  <span className="text-xs text-slate-400 flex-1 truncate">{a.text} — {a.detail}</span>
+                  <span className="text-[10px] text-slate-600 shrink-0">{a.time}</span>
                 </div>
-                {recentActivity.map((a, i) => (
-                  <div key={i} className="flex items-center gap-3 py-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-teal-400/60 shrink-0" />
-                    <span className="text-sm text-slate-300 flex-1 truncate">{a.text} — <span className="text-slate-500">{a.detail}</span></span>
-                    <span className="text-[10px] text-slate-600 shrink-0">{a.time}</span>
-                  </div>
-                ))}
-              </GlassCard>
+              ))
+            ) : (
+              <p className="text-xs text-slate-500 py-3 text-center">No recent activity</p>
             )}
+          </GlassCard>
 
-            {/* My Applications */}
-            <GlassCard className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-slate-200">My Applications</h2>
-                <Link href="/jobs" className="text-[11px] text-teal-400 hover:text-teal-300 flex items-center gap-1">
-                  Find Jobs <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-              {applications.length > 0 ? (
-                <>
-                  {sortedApps.slice(0, 4).map((app: any) => <AppRow key={app.id} app={app} />)}
-                  {applications.length > 4 && (
-                    <div className="mt-3 pt-3 border-t border-slate-700/30 text-center">
-                      <Link href="/applications" className="text-xs text-teal-400 hover:text-teal-300">View all {applications.length}</Link>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="py-6 text-center">
-                  <p className="text-sm text-slate-500 mb-3">No applications yet</p>
-                  <Link href="/jobs" className="text-sm text-teal-400 hover:text-teal-300">Browse Jobs</Link>
-                </div>
-              )}
-            </GlassCard>
-          </div>
-
-          {/* ── Right sidebar ─────────────────────────────────────── */}
-          <div className="space-y-5">
-            {/* Small Jobs */}
-            <GlassCard className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4 text-slate-500" />
-                  <h3 className="text-sm font-semibold text-slate-200">Small Jobs</h3>
-                </div>
-                <Link href="/jobs" className="text-[11px] text-teal-400 hover:text-teal-300 flex items-center gap-1">View All <ArrowRight className="h-3 w-3" /></Link>
-              </div>
-              {jobs.length > 0 ? (
-                jobs.slice(0, 4).map((job: any) => <JobRow key={job.id} job={job} />)
-              ) : (
-                <div className="py-4 text-center"><p className="text-sm text-slate-500">No new jobs right now</p></div>
-              )}
-            </GlassCard>
-
-            {/* Quick Links */}
-            <GlassCard className="p-3">
-              {[
-                { href: "/earnings", label: "My Earnings", icon: Wallet },
-                { href: "/profile", label: "Edit Profile", icon: User },
-              ].map((item) => (
-                <Link key={item.href} href={item.href} className="block group">
-                  <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-2xl hover:bg-white/5 transition-colors">
-                    <item.icon className="h-4 w-4 text-slate-500 group-hover:text-teal-400 transition-colors" />
-                    <span className="text-sm text-slate-400 flex-1 group-hover:text-slate-200 transition-colors">{item.label}</span>
-                    <ChevronRight className="h-3 w-3 text-slate-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+          {/* My Applications — compact */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-slate-200">Applications</h2>
+              <Link href="/jobs" className="text-[11px] text-teal-400 hover:text-teal-300 flex items-center gap-1">
+                Find Jobs <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {applications.length > 0 ? (
+              <>
+                {sortedApps.slice(0, 3).map((app: any) => <AppRow key={app.id} app={app} />)}
+                {applications.length > 3 && (
+                  <div className="mt-2 pt-2 border-t border-slate-700/30 text-center">
+                    <Link href="/applications" className="text-[11px] text-teal-400 hover:text-teal-300">View all {applications.length}</Link>
                   </div>
-                </Link>
-              ))}
-            </GlassCard>
-          </div>
+                )}
+              </>
+            ) : (
+              <div className="py-4 text-center">
+                <p className="text-xs text-slate-500 mb-2">No applications yet</p>
+                <Link href="/jobs" className="text-xs text-teal-400 hover:text-teal-300">Browse Jobs</Link>
+              </div>
+            )}
+          </GlassCard>
+
+          {/* Small Jobs — compact */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-3.5 w-3.5 text-slate-500" />
+                <h3 className="text-sm font-semibold text-slate-200">Small Jobs</h3>
+              </div>
+              <Link href="/jobs" className="text-[11px] text-teal-400 hover:text-teal-300 flex items-center gap-1">View All <ArrowRight className="h-3 w-3" /></Link>
+            </div>
+            {jobs.length > 0 ? (
+              jobs.slice(0, 3).map((job: any) => <JobRow key={job.id} job={job} />)
+            ) : (
+              <div className="py-4 text-center"><p className="text-xs text-slate-500">No new jobs right now</p></div>
+            )}
+          </GlassCard>
         </div>
       </div>
     </div>
