@@ -341,6 +341,10 @@ export interface JourneySummary {
   futureOutlookNotes: string[];
   roleRealityNotes: string[];
   industryInsightNotes: string[];
+  pathQualifications: string[];
+  pathSkills: string[];
+  pathCourses: string[];
+  pathRequirements: string[];
   nextActions: NextAction[];
 
   // Aligned actions (replaces job-centric tracking)
@@ -692,6 +696,10 @@ export interface CareerShadowData {
   shadowRequestId?: string;
   skipped?: boolean;
   skipReason?: string;
+  qualifications?: string[];
+  keySkills?: string[];
+  courses?: string[];
+  requirements?: string[];
 }
 
 export interface SaveInsightsData {
@@ -764,6 +772,10 @@ export const DEFAULT_JOURNEY_SUMMARY: JourneySummary = {
   futureOutlookNotes: [],
   roleRealityNotes: [],
   industryInsightNotes: [],
+  pathQualifications: [],
+  pathSkills: [],
+  pathCourses: [],
+  pathRequirements: [],
   nextActions: [],
   // Aligned actions
   alignedActions: [],

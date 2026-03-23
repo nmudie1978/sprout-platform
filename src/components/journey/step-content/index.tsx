@@ -707,7 +707,7 @@ function IndustryInsightsContent({
           onChange={(e) => setRoleReality(e.target.value)}
           placeholder="e.g., The role involves more patient interaction than I expected&#10;Physical therapists need to keep up with new treatment methods&#10;Most work in hospitals, clinics, or private practices"
           rows={4}
-          className="text-sm"
+          className="text-sm border-border/80 focus:border-emerald-500/50"
         />
       </div>
 
@@ -727,7 +727,7 @@ function IndustryInsightsContent({
           onChange={(e) => setIndustryInsights(e.target.value)}
           placeholder="e.g., Healthcare sector is growing due to ageing population&#10;Demand for physiotherapists is high in Norway&#10;Technology like telehealth is changing how care is delivered"
           rows={4}
-          className="text-sm"
+          className="text-sm border-border/80 focus:border-emerald-500/50"
         />
       </div>
 
@@ -771,32 +771,148 @@ function IndustryInsightsContent({
 // ============================================
 
 function CareerShadowContent({
+  onComplete,
   onClose,
 }: {
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
 }) {
+  const [qualifications, setQualifications] = useState('');
+  const [skills, setSkills] = useState('');
+  const [courses, setCourses] = useState('');
+  const [requirements, setRequirements] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = qualifications.trim() || skills.trim() || courses.trim() || requirements.trim();
+
+  const toList = (text: string) => text.split('\n').filter((l) => l.trim());
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await onComplete({
+        type: 'CAREER_SHADOW',
+        qualifications: toList(qualifications),
+        keySkills: toList(skills),
+        courses: toList(courses),
+        requirements: toList(requirements),
+      });
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800">
-            Find a person who works in your chosen field and ask about a typical day.
-            Or watch a video online to learn about the job.
-          </p>
+      {/* Qualifications */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">Qualifications</h3>
         </div>
-      </div>
-
-      <div className="text-center py-4">
-        <p className="text-sm text-muted-foreground">
-          Visit the Shadows tab to browse and request career shadow opportunities.
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          What degrees, diplomas, or certifications are needed?
         </p>
+        <Textarea
+          value={qualifications}
+          onChange={(e) => setQualifications(e.target.value)}
+          placeholder="e.g., Bachelor's in Physiotherapy (3 years)&#10;Must be authorised by the Norwegian Directorate of Health"
+          rows={3}
+          className="text-sm border-border/80 focus:border-emerald-500/50"
+        />
       </div>
 
-      <div className="flex justify-center pt-4 border-t border-border">
-        <Button onClick={onClose}>
-          Go to Shadows
+      <div className="border-t border-border/30" />
+
+      {/* Key Skills */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">Key Skills</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          What skills are most important for this role?
+        </p>
+        <Textarea
+          value={skills}
+          onChange={(e) => setSkills(e.target.value)}
+          placeholder="e.g., Anatomy knowledge&#10;Communication and empathy&#10;Physical fitness and manual therapy"
+          rows={3}
+          className="text-sm border-border/80 focus:border-emerald-500/50"
+        />
+      </div>
+
+      <div className="border-t border-border/30" />
+
+      {/* Courses */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">Relevant Courses</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Any specific courses or training programmes you've found?
+        </p>
+        <Textarea
+          value={courses}
+          onChange={(e) => setCourses(e.target.value)}
+          placeholder="e.g., OsloMet Bachelor in Physiotherapy&#10;First Aid certification&#10;Sports Science modules"
+          rows={3}
+          className="text-sm border-border/80 focus:border-emerald-500/50"
+        />
+      </div>
+
+      <div className="border-t border-border/30" />
+
+      {/* General Requirements */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">General Requirements</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Any other entry requirements or things you need to know?
+        </p>
+        <Textarea
+          value={requirements}
+          onChange={(e) => setRequirements(e.target.value)}
+          placeholder="e.g., Good grades in science subjects&#10;Internship or practical experience preferred&#10;Police clearance certificate required"
+          rows={3}
+          className="text-sm border-border/80 focus:border-emerald-500/50"
+        />
+      </div>
+
+      <p className="text-[11px] text-muted-foreground/40">
+        One point per line. Fill in at least one section to save.
+      </p>
+
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          disabled={!canSubmit || isSubmitting}
+          className="bg-emerald-600 hover:bg-emerald-700"
+        >
+          {isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Check className="mr-2 h-4 w-4" />
+          )}
+          Save
         </Button>
       </div>
     </div>
@@ -1134,8 +1250,8 @@ export function StepContent({
       description: 'Capture what you\'ve learned about this career and its industry',
     },
     CAREER_SHADOW: {
-      title: 'Career Shadow',
-      description: 'Find a person who works in your chosen field and ask about a typical day',
+      title: 'Path, Skills & Requirements',
+      description: 'Capture the qualifications, skills, and courses needed for this career',
     },
     CREATE_ACTION_PLAN: {
       title: 'Build Your Plan',

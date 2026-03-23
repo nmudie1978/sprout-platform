@@ -77,7 +77,7 @@ function QuickLink({
   href: string;
 }) {
   return (
-    <Link href={href} className="block group">
+    <Link href={href} target="_blank" className="block group">
       <div className="rounded-lg border border-border/30 bg-card/30 hover:border-border/50 hover:bg-card/50 p-2.5 flex items-center gap-2.5 transition-all">
         <div className="p-1.5 rounded-md bg-muted/50 shrink-0">
           <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
@@ -98,6 +98,11 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
   const understandComplete = journey.summary?.lenses?.understand?.isComplete;
   const roleRealityNotes = journey.summary?.roleRealityNotes || [];
   const industryInsightNotes = journey.summary?.industryInsightNotes || [];
+  const pathQualifications = journey.summary?.pathQualifications || [];
+  const pathSkills = journey.summary?.pathSkills || [];
+  const pathCourses = journey.summary?.pathCourses || [];
+  const pathRequirements = journey.summary?.pathRequirements || [];
+  const hasPathData = pathQualifications.length > 0 || pathSkills.length > 0 || pathCourses.length > 0 || pathRequirements.length > 0;
 
   // Look up career data from the primary goal title
   const goalCareer = useMemo(() => {
@@ -214,14 +219,14 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
             {isComplete && config.id === 'REVIEW_INDUSTRY_OUTLOOK' && (roleRealityNotes.length > 0 || industryInsightNotes.length > 0) && (
               <div className="mt-3 pt-3 border-t border-border/30 grid gap-3 sm:grid-cols-2">
                 {roleRealityNotes.length > 0 && (
-                  <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-500/60 mb-2">
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
                       Role Reality
                     </p>
                     <ul className="space-y-1.5">
                       {roleRealityNotes.map((note, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                          <span className="h-1 w-1 rounded-full bg-emerald-500/50 mt-1.5 shrink-0" />
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
                           {note}
                         </li>
                       ))}
@@ -229,14 +234,80 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
                   </div>
                 )}
                 {industryInsightNotes.length > 0 && (
-                  <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-500/60 mb-2">
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
                       Industry Insights
                     </p>
                     <ul className="space-y-1.5">
                       {industryInsightNotes.map((note, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                          <span className="h-1 w-1 rounded-full bg-emerald-500/50 mt-1.5 shrink-0" />
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Output — saved data for completed CAREER_SHADOW (Path, Skills & Requirements) */}
+            {isComplete && config.id === 'CAREER_SHADOW' && hasPathData && (
+              <div className="mt-3 pt-3 border-t border-border/30 grid gap-3 sm:grid-cols-2">
+                {pathQualifications.length > 0 && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Qualifications
+                    </p>
+                    <ul className="space-y-1.5">
+                      {pathQualifications.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {pathSkills.length > 0 && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Key Skills
+                    </p>
+                    <ul className="space-y-1.5">
+                      {pathSkills.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {pathCourses.length > 0 && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Courses
+                    </p>
+                    <ul className="space-y-1.5">
+                      {pathCourses.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {pathRequirements.length > 0 && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Requirements
+                    </p>
+                    <ul className="space-y-1.5">
+                      {pathRequirements.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
                           {note}
                         </li>
                       ))}

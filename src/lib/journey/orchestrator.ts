@@ -413,18 +413,23 @@ export class JourneyOrchestrator {
         break;
 
       case 'CAREER_SHADOW':
-        if (data.skipped) {
-          // User skipped this step
-          this.summary.shadowSummary.skipped = true;
-          this.summary.shadowSummary.skipReason = data.skipReason || null;
-          this.context.shadowsSkipped = true;
-        } else if (data.shadowRequestId) {
-          // User created a shadow request
-          this.summary.shadowSummary.total += 1;
-          this.summary.shadowSummary.pending += 1;
-          this.summary.shadowSummary.lastUpdatedAt = new Date().toISOString();
-          this.context.shadowsCompleted += 1;
+        // Save path, skills & requirements data
+        if (data.qualifications) {
+          this.summary.pathQualifications = data.qualifications;
         }
+        if (data.keySkills) {
+          this.summary.pathSkills = data.keySkills;
+        }
+        if (data.courses) {
+          this.summary.pathCourses = data.courses;
+        }
+        if (data.requirements) {
+          this.summary.pathRequirements = data.requirements;
+        }
+        // Mark shadow as completed for state machine
+        this.summary.shadowSummary.completed = (this.summary.shadowSummary.completed || 0) + 1;
+        this.summary.shadowSummary.lastUpdatedAt = new Date().toISOString();
+        this.context.shadowsCompleted += 1;
         break;
 
       // ACT lens steps
@@ -689,9 +694,9 @@ export function validateStepCompletionData(
       break;
 
     case 'CAREER_SHADOW':
-      // A shadow request must be created (mandatory step)
-      if (!data.shadowRequestId) {
-        return { valid: false, error: 'A shadow request is required to complete this step' };
+      // At least one field must be filled
+      if (!data.qualifications?.length && !data.keySkills?.length && !data.courses?.length && !data.requirements?.length) {
+        return { valid: false, error: 'Fill in at least one section to continue' };
       }
       break;
 
