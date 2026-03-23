@@ -403,6 +403,8 @@ export interface JourneySummary {
   // Plan status
   planCreated: boolean;
   planUpdatedAt: string | null;
+  planChangeReason: string | null;
+  externalFeedback: { source: string; summary: string; receivedAt: string }[];
 }
 
 export interface AlignedAction {
@@ -827,6 +829,8 @@ export const DEFAULT_JOURNEY_SUMMARY: JourneySummary = {
   // Plan
   planCreated: false,
   planUpdatedAt: null,
+  planChangeReason: null,
+  externalFeedback: [],
 };
 
 // ============================================

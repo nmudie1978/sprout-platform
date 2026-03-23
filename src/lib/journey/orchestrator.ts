@@ -468,11 +468,20 @@ export class JourneyOrchestrator {
           };
         }
         this.summary.planUpdatedAt = new Date().toISOString();
+        this.summary.planChangeReason = data.changeReason || null;
         this.context.planUpdatedAfterAction = true;
         break;
 
       case 'EXTERNAL_FEEDBACK':
-        // Record external feedback received
+        this.summary.externalFeedback = [
+          ...(this.summary.externalFeedback || []),
+          {
+            source: data.feedbackSource,
+            summary: data.feedbackSummary,
+            receivedAt: data.receivedAt || new Date().toISOString(),
+          },
+        ];
+        this.context.externalFeedbackReceived = true;
         break;
     }
 

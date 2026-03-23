@@ -131,6 +131,8 @@ const DEMO_JOURNEY: JourneyUIState = {
     requirementsReviewed: false,
     planCreated: false,
     planUpdatedAt: null,
+    planChangeReason: null,
+    externalFeedback: [],
   },
 };
 

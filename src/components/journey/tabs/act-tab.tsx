@@ -92,6 +92,8 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
   const alignedActions = journey.summary?.alignedActions || [];
   const reflections = journey.summary?.alignedActionReflections || [];
+  const planChangeReason = journey.summary?.planChangeReason || null;
+  const externalFeedback = (journey.summary as unknown as Record<string, unknown>)?.externalFeedback as Array<{ source: string; summary: string }> || [];
 
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
     const step = journey.steps.find((s) => s.id === stepId);
@@ -104,108 +106,127 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
   // Find the first "next" step — only this one should show Start
   const firstNextStepId = ACT_STEPS.find((s) => getStepStatus(s.id) === 'next')?.id || null;
 
-  return (
-    <div className="space-y-3">
-      {/* Step cards — matching Discover/Understand style */}
-      {ACT_STEPS.map((config) => {
-        const status = getStepStatus(config.id);
-        const isLocked = status === 'locked';
-        const isComplete = status === 'completed';
-        // Only the first next step is truly current
-        const isCurrent = status === 'next' && config.id === firstNextStepId;
-        // If it's "next" but not the first, treat as locked
-        const isEffectivelyLocked = isLocked || (status === 'next' && config.id !== firstNextStepId);
+  // Helper to render a step card
+  const renderStep = (config: typeof ACT_STEPS[number]) => {
+    const status = getStepStatus(config.id);
+    const isComplete = status === 'completed';
+    const isCurrent = status === 'next' && config.id === firstNextStepId;
+    const isEffectivelyLocked = status === 'locked' || (status === 'next' && config.id !== firstNextStepId);
 
-        return (
+    return (
+      <div
+        key={config.id}
+        className={cn(
+          'rounded-xl border p-3 transition-all',
+          isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
+          isComplete && 'border-border/60 bg-card/60',
+          isEffectivelyLocked && 'border-border/30 opacity-40',
+        )}
+        style={isCurrent ? {
+          boxShadow: '0 0 15px rgba(245, 158, 11, 0.15)',
+        } : undefined}
+      >
+        <div className="flex items-center gap-2.5">
           <div
-            key={config.id}
             className={cn(
-              'rounded-xl border p-4 transition-all',
-              isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
-              isComplete && 'border-border/60 bg-card/60',
-              isEffectivelyLocked && 'border-border/30 opacity-40',
+              'flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold shrink-0',
+              isComplete && 'bg-emerald-500/20 text-emerald-500',
+              isCurrent && 'bg-amber-500/20 text-amber-500',
+              isEffectivelyLocked && 'bg-muted text-muted-foreground/50',
             )}
-            style={isCurrent ? {
-              boxShadow: '0 0 15px rgba(245, 158, 11, 0.15), 0 0 30px rgba(245, 158, 11, 0.05)',
-            } : undefined}
           >
-            <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
-                  isComplete && 'bg-emerald-500/20 text-emerald-500',
-                  isCurrent && 'bg-amber-500/20 text-amber-500',
-                  isEffectivelyLocked && 'bg-muted text-muted-foreground/50',
-                )}
-              >
-                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : config.stepNumber}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className={cn(
-                    'text-sm font-semibold',
-                    isComplete && 'text-foreground',
-                    isEffectivelyLocked && 'text-muted-foreground/50',
-                  )}>
-                    {config.title}
-                  </p>
-                  {config.optional && <Badge variant="secondary" className="text-[9px] h-4">Optional</Badge>}
-                </div>
-                {(isCurrent || isEffectivelyLocked) && (
-                  <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
-                )}
-              </div>
-              {isCurrent && onStartStep && (
-                <Button size="sm" className="h-8 text-xs px-4 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
-                  Start <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
-              )}
-              {isComplete && onStartStep && (
-                <button
-                  onClick={() => onStartStep(config.id)}
-                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-amber-500 hover:opacity-80"
-                >
-                  <Pencil className="h-3 w-3" />
-                  Update
-                </button>
-              )}
+            {isComplete ? <CheckCircle2 className="h-3.5 w-3.5" /> : config.stepNumber}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <p className={cn(
+                'text-xs font-semibold',
+                isComplete && 'text-foreground',
+                isEffectivelyLocked && 'text-muted-foreground/50',
+              )}>
+                {config.title}
+              </p>
+              {config.optional && <Badge variant="secondary" className="text-[8px] h-3.5 px-1">Optional</Badge>}
             </div>
-
-            {/* Output — saved actions for COMPLETE_ALIGNED_ACTION */}
-            {isComplete && config.id === 'COMPLETE_ALIGNED_ACTION' && alignedActions.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-border/30 grid gap-2 sm:grid-cols-2">
-                {alignedActions.map((action, i) => (
-                  <div key={action.id || i} className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
-                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-1">
-                      {ACTION_TYPE_LABELS[action.type] || action.type}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{action.title}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Output — saved reflections for SUBMIT_ACTION_REFLECTION */}
-            {isComplete && config.id === 'SUBMIT_ACTION_REFLECTION' && reflections.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-border/30">
-                <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
-                    Your Reflections
-                  </p>
-                  <ul className="space-y-1.5">
-                    {reflections.map((r, i) => (
-                      <li key={r.id || i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                        <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
-                        {r.response}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+            {(isCurrent || isEffectivelyLocked) && (
+              <p className="text-[11px] text-muted-foreground/60 mt-0.5 line-clamp-1">{config.description}</p>
             )}
           </div>
-        );
-      })}
+          {isCurrent && onStartStep && (
+            <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
+              Start <ArrowRight className="h-3 w-3 ml-1" />
+            </Button>
+          )}
+          {isComplete && onStartStep && (
+            <button
+              onClick={() => onStartStep(config.id)}
+              className="inline-flex items-center gap-1 text-[11px] font-medium shrink-0 text-amber-500 hover:opacity-80"
+            >
+              <Pencil className="h-3 w-3" />
+              Update
+            </button>
+          )}
+        </div>
+
+        {/* Output — saved data per step */}
+        {isComplete && config.id === 'COMPLETE_ALIGNED_ACTION' && alignedActions.length > 0 && (
+          <div className="mt-2 pt-2 border-t border-border/30 grid gap-1.5 sm:grid-cols-2">
+            {alignedActions.map((action, i) => (
+              <div key={action.id || i} className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
+                <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60">{ACTION_TYPE_LABELS[action.type] || action.type}</p>
+                <p className="text-[11px] text-muted-foreground">{action.title}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {isComplete && config.id === 'SUBMIT_ACTION_REFLECTION' && reflections.length > 0 && (
+          <div className="mt-2 pt-2 border-t border-border/30">
+            <ul className="space-y-1">
+              {reflections.map((r, i) => (
+                <li key={r.id || i} className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                  {r.response}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {isComplete && config.id === 'UPDATE_PLAN' && planChangeReason && (
+          <div className="mt-2 pt-2 border-t border-border/30">
+            <div className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
+              <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60 mb-0.5">What Changed</p>
+              <p className="text-[11px] text-muted-foreground">{planChangeReason}</p>
+            </div>
+          </div>
+        )}
+
+        {isComplete && config.id === 'EXTERNAL_FEEDBACK' && externalFeedback.length > 0 && (
+          <div className="mt-2 pt-2 border-t border-border/30 grid gap-1.5 sm:grid-cols-2">
+            {externalFeedback.map((fb, i) => (
+              <div key={i} className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
+                <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60">{fb.source}</p>
+                <p className="text-[11px] text-muted-foreground">{fb.summary}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Mandatory steps — full width */}
+      {renderStep(ACT_STEPS[0])}
+      {renderStep(ACT_STEPS[1])}
+
+      {/* Optional steps — side by side */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {renderStep(ACT_STEPS[2])}
+        {renderStep(ACT_STEPS[3])}
+      </div>
 
       <div className="my-2 border-t border-amber-500/20" />
 
