@@ -240,7 +240,7 @@ export default function LandingPage() {
                 step: "2",
                 title: "Understand",
                 subtitle: "Know the world",
-                description: "Review industry trends. Shadow someone in your field. Turn what you've learned into a concrete plan.",
+                description: "Research your chosen career, understand the path and requirements, and validate your understanding with a plan.",
                 subtitleClass: "text-emerald-400",
                 accent: "from-emerald-500 to-teal-600",
               },

@@ -121,8 +121,8 @@ export default function AboutPage() {
                 <h3 className="font-semibold text-foreground">Understand — Know the world</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
-                Once you have a direction, you need to understand the reality of that path. Review industry trends,
-                shadow someone in the field, and turn your research into a concrete plan.
+                Once you have a direction, you need to understand the reality of that path. Research the role,
+                understand the qualifications and skills needed, and validate your understanding with a plan.
               </p>
             </div>
 
