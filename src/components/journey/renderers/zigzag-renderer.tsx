@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode } from './shared-node';
 import { OverlayBadges } from '../overlays/overlay-badges';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const NODE_SIZE = 40;
 const H_SPACING = 180;
@@ -266,8 +267,30 @@ function ZigzagCard({
   isCurrent?: boolean;
 }) {
   const stage = STAGE_CONFIG[item.stage];
+  const cardData = getCardStatus(item.id);
+  const isDone = cardData === 'done';
 
-  return (
+  // Build tooltip text from saved data
+  const savedData = (() => {
+    try {
+      const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
+      return all[item.id] || null;
+    } catch { return null; }
+  })();
+
+  const tooltipLines: string[] = [];
+  if (savedData) {
+    if (savedData.status && savedData.status !== 'not_started') {
+      tooltipLines.push(`Status: ${savedData.status === 'done' ? '✓ Done' : '⏳ In Progress'}`);
+    }
+    if (savedData.notes) tooltipLines.push(`Notes: ${savedData.notes.slice(0, 80)}${savedData.notes.length > 80 ? '...' : ''}`);
+    if (savedData.resourceLink) tooltipLines.push(`Resource: ${savedData.resourceLink.slice(0, 60)}`);
+    if (savedData.confidence) tooltipLines.push(`Confidence: ${savedData.confidence === 'high' ? '😊 High' : savedData.confidence === 'medium' ? '😐 Medium' : '😟 Low'}`);
+  }
+
+  const hasTooltip = isDone && tooltipLines.length > 0;
+
+  const card = (
     <button
       onClick={onClick}
       className={cn(
@@ -277,19 +300,38 @@ function ZigzagCard({
         'cursor-pointer',
         isCurrent
           ? 'border-2 shadow-lg'
-          : 'border-border/50'
+          : isDone
+            ? 'border-emerald-500/30 bg-emerald-500/5'
+            : 'border-border/50'
       )}
       style={isCurrent ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` } : undefined}
     >
-      <p className="text-xs font-semibold leading-tight text-foreground">{item.title}</p>
-      {item.subtitle && (
-        <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">
-          {item.subtitle}
-        </p>
-      )}
-      {activeLayers && (
-        <OverlayBadges nodeData={overlayNodeData} activeLayers={activeLayers} />
-      )}
+      <div className="flex items-start gap-1.5">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold leading-tight text-foreground">{item.title}</p>
+          {item.subtitle && (
+            <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">
+              {item.subtitle}
+            </p>
+          )}
+        </div>
+        {isDone && <span className="text-emerald-500 text-[10px] shrink-0">✓</span>}
+      </div>
     </button>
+  );
+
+  if (!hasTooltip) return card;
+
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>{card}</TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[250px] text-xs space-y-1 p-3">
+          {tooltipLines.map((line, i) => (
+            <p key={i} className="text-[11px]">{line}</p>
+          ))}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
