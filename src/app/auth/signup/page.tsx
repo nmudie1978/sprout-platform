@@ -18,6 +18,8 @@ function SignUpForm() {
   const { toast } = useToast();
   const isEmployer = searchParams.get("role") === "employer";
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -67,6 +69,11 @@ function SignUpForm() {
         throw new Error("You must accept the Terms of Service and Privacy Policy to create an account");
       }
 
+      // Validate name
+      if (!firstName.trim() || !lastName.trim()) {
+        throw new Error("First name and last name are required");
+      }
+
       // Validate password match
       if (password !== confirmPassword) {
         throw new Error("Passwords do not match");
@@ -99,6 +106,8 @@ function SignUpForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           email,
           password,
           role,
@@ -182,6 +191,37 @@ function SignUpForm() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="First name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  maxLength={50}
+                  className="h-11 sm:h-10"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  placeholder="Last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  maxLength={50}
+                  className="h-11 sm:h-10"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

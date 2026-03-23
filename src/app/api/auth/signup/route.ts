@@ -18,7 +18,7 @@ import {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role, ageBracket, dateOfBirth, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, email, password, role, ageBracket, dateOfBirth, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Validate legal acceptance
     if (!acceptedTerms || !acceptedPrivacy) {
@@ -35,6 +35,17 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Validate name
+    const trimmedFirst = (firstName || "").trim();
+    const trimmedLast = (lastName || "").trim();
+    if (!trimmedFirst || !trimmedLast) {
+      return NextResponse.json(
+        { error: "First name and last name are required" },
+        { status: 400 }
+      );
+    }
+    const fullName = `${trimmedFirst} ${trimmedLast}`;
 
     // Validate password length
     if (password.length < 8) {
@@ -146,14 +157,23 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword,
         role,
+        fullName,
         ageBracket: ageBracket || null,
         dateOfBirth: birthDate,
         accountStatus: initialAccountStatus,
       },
     });
 
-    // Create employer profile if role is EMPLOYER
-    if (role === "EMPLOYER") {
+    // Create role-specific profiles
+    if (role === "YOUTH") {
+      await prisma.youthProfile.create({
+        data: {
+          userId: newUser.id,
+          displayName: trimmedFirst,
+          guardianConsent: age !== null && age >= 18,
+        },
+      });
+    } else if (role === "EMPLOYER") {
       await prisma.employerProfile.create({
         data: {
           userId: newUser.id,
