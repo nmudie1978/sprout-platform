@@ -27,14 +27,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get profile ID
-    const profile = await prisma.youthProfile.findUnique({
+    // Get or create profile
+    let profile = await prisma.youthProfile.findUnique({
       where: { userId: session.user.id },
       select: { id: true },
     });
 
     if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+      profile = await prisma.youthProfile.create({
+        data: {
+          userId: session.user.id,
+          displayName: session.user.email?.split('@')[0] || 'User',
+        },
+        select: { id: true },
+      });
     }
 
     const { searchParams } = new URL(req.url);
@@ -89,14 +95,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get profile ID
-    const profile = await prisma.youthProfile.findUnique({
+    // Get or create profile (handles accounts created before auto-profile was added)
+    let profile = await prisma.youthProfile.findUnique({
       where: { userId: session.user.id },
       select: { id: true },
     });
 
     if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+      profile = await prisma.youthProfile.create({
+        data: {
+          userId: session.user.id,
+          displayName: session.user.email?.split('@')[0] || 'User',
+        },
+        select: { id: true },
+      });
     }
 
     const body = await req.json();
@@ -156,7 +168,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get profile ID
+    // Get profile
     const profile = await prisma.youthProfile.findUnique({
       where: { userId: session.user.id },
       select: { id: true },

@@ -763,6 +763,22 @@ export function InsightCarousel({
   const queryClient = useQueryClient();
   const cardsPerPage = useCardsPerPage(compact);
 
+  // Load existing saved URLs so bookmarks show as filled
+  const { data: libraryData } = useQuery<{ items?: { url: string }[] }>({
+    queryKey: ["journey-library"],
+    queryFn: async () => {
+      const res = await fetch("/api/journey/saved-items?limit=500");
+      if (!res.ok) return { items: [] };
+      return res.json();
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+  useEffect(() => {
+    if (libraryData?.items?.length) {
+      setSavedItems(new Set(libraryData.items.map((i) => i.url)));
+    }
+  }, [libraryData]);
+
   // Reset content page when section changes
   useEffect(() => {
     setContentPage(0);
