@@ -466,7 +466,7 @@ export function NotesTab() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [activeGroup, setActiveGroup] = useState<string | "all" | "ungrouped">("all");
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
-  const { viewMode, setViewMode } = useViewMode({ storageKey: "notesViewMode", defaultMode: "list" });
+  const { viewMode, setViewMode } = useViewMode({ storageKey: "notesViewMode", defaultMode: "grid" });
 
   // Fetch notes
   const { data, isLoading, error } = useQuery<{ notes: JourneyNote[] }>({
