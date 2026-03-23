@@ -70,19 +70,19 @@ function StepModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+          className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-border/50 shadow-2xl shadow-black/20"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-white border-b border-neutral-100 px-6 py-4">
+          <div className="sticky top-0 z-10 bg-card border-b border-border px-6 py-4">
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 p-2 rounded-full hover:bg-neutral-100 transition-colors"
+              className="absolute right-4 top-4 p-2 rounded-full hover:bg-muted transition-colors"
             >
-              <X className="h-5 w-5 text-neutral-500" />
+              <X className="h-5 w-5 text-muted-foreground" />
             </button>
-            <h2 className="text-xl font-semibold text-neutral-900 pr-8">{title}</h2>
+            <h2 className="text-xl font-semibold text-foreground pr-8">{title}</h2>
             {description && (
-              <p className="mt-1 text-sm text-neutral-500">{description}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             )}
           </div>
 
@@ -159,11 +159,11 @@ function CapabilityReflectionContent({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-blue-50 border border-blue-100 p-4">
+      <div className="rounded-xl bg-primary/10 border border-primary/20 p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-primary">
               Think about what you've done well in jobs, school, or personal projects.
               Select at least 3 strengths that best describe you.
             </p>
@@ -172,7 +172,7 @@ function CapabilityReflectionContent({
       </div>
 
       <div>
-        <p className="text-sm font-medium text-neutral-700 mb-3">
+        <p className="text-sm font-medium text-foreground/80 mb-3">
           Select your top strengths ({selectedStrengths.length}/3 minimum, 5 max)
         </p>
         <div className="flex flex-wrap gap-2">
@@ -183,8 +183,8 @@ function CapabilityReflectionContent({
               className={cn(
                 'px-3 py-2 rounded-full text-sm font-medium transition-colors',
                 selectedStrengths.includes(strength)
-                  ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-300'
-                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 border-2 border-transparent'
+                  ? 'bg-teal-500/15 text-teal-400 border-2 border-teal-500/40'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80 border-2 border-transparent'
               )}
             >
               {selectedStrengths.includes(strength) && (
@@ -211,7 +211,7 @@ function CapabilityReflectionContent({
 
       {selectedStrengths.length > 0 && (
         <div>
-          <p className="text-sm font-medium text-neutral-700 mb-2">Your selections:</p>
+          <p className="text-sm font-medium text-foreground/80 mb-2">Your selections:</p>
           <div className="flex flex-wrap gap-2">
             {selectedStrengths.map((strength, index) => (
               <Badge
@@ -219,7 +219,7 @@ function CapabilityReflectionContent({
                 variant="secondary"
                 className={cn(
                   'text-sm',
-                  index < 3 ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100'
+                  index < 3 ? 'bg-teal-500/15 text-teal-400' : 'bg-muted'
                 )}
               >
                 {index < 3 && <span className="mr-1">#{index + 1}</span>}
@@ -236,14 +236,14 @@ function CapabilityReflectionContent({
         </div>
       )}
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={selectedStrengths.length < 3 || isSubmitting}
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-teal-600 hover:bg-teal-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -315,10 +315,10 @@ function CareerDiscoveryContent({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-blue-50 border border-blue-100 p-4">
+      <div className="rounded-xl bg-primary/10 border border-primary/20 p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-800">
+          <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-primary">
             Select up to 3 career areas you'd like to explore. Don't worry - you can always change
             these later!
           </p>
@@ -334,8 +334,8 @@ function CareerDiscoveryContent({
               className={cn(
                 'p-3 rounded-xl text-sm font-medium text-left transition-all',
                 selectedCareers.includes(career)
-                  ? 'bg-blue-100 text-blue-800 border-2 border-blue-300 shadow-sm'
-                  : 'bg-neutral-50 text-neutral-600 hover:bg-neutral-100 border-2 border-transparent'
+                  ? 'bg-blue-100 text-primary border-2 border-blue-300 shadow-sm'
+                  : 'bg-muted/50 text-muted-foreground hover:bg-muted border-2 border-transparent'
               )}
             >
               {selectedCareers.includes(career) && (
@@ -347,7 +347,7 @@ function CareerDiscoveryContent({
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -426,7 +426,7 @@ function RoleDeepDiveContent({
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Role Title <span className="text-red-500">*</span>
           </label>
           <Input
@@ -438,7 +438,7 @@ function RoleDeepDiveContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Education Paths
           </label>
           <Input
@@ -446,11 +446,11 @@ function RoleDeepDiveContent({
             onChange={(e) => setEducationPaths(e.target.value)}
             placeholder="e.g., Bachelor's in CS, Bootcamp, Self-taught (comma separated)"
           />
-          <p className="mt-1 text-xs text-neutral-500">Separate multiple with commas</p>
+          <p className="mt-1 text-xs text-muted-foreground">Separate multiple with commas</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Required Certifications
           </label>
           <Input
@@ -461,7 +461,7 @@ function RoleDeepDiveContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Example Companies (Norway + Global)
           </label>
           <Input
@@ -472,7 +472,7 @@ function RoleDeepDiveContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Human Skills Required
           </label>
           <Input
@@ -483,7 +483,7 @@ function RoleDeepDiveContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Entry Expectations
           </label>
           <Textarea
@@ -495,7 +495,7 @@ function RoleDeepDiveContent({
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -575,7 +575,7 @@ function PlanBuildContent({
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Target Role <span className="text-red-500">*</span>
           </label>
           <Input
@@ -586,11 +586,11 @@ function PlanBuildContent({
           />
         </div>
 
-        <div className="rounded-xl border border-neutral-200 p-4 space-y-4">
-          <h4 className="font-medium text-neutral-800">Short-term Actions (next 1-3 months)</h4>
+        <div className="rounded-xl border border-border p-4 space-y-4">
+          <h4 className="font-medium text-foreground">Short-term Actions (next 1-3 months)</h4>
 
           <div>
-            <label className="block text-sm text-neutral-600 mb-1">Action 1 <span className="text-red-500">*</span></label>
+            <label className="block text-sm text-muted-foreground mb-1">Action 1 <span className="text-red-500">*</span></label>
             <Input
               value={action1}
               onChange={(e) => setAction1(e.target.value)}
@@ -599,7 +599,7 @@ function PlanBuildContent({
           </div>
 
           <div>
-            <label className="block text-sm text-neutral-600 mb-1">Action 2 <span className="text-red-500">*</span></label>
+            <label className="block text-sm text-muted-foreground mb-1">Action 2 <span className="text-red-500">*</span></label>
             <Input
               value={action2}
               onChange={(e) => setAction2(e.target.value)}
@@ -609,7 +609,7 @@ function PlanBuildContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Mid-term Milestone (3-12 months) <span className="text-red-500">*</span>
           </label>
           <Input
@@ -620,7 +620,7 @@ function PlanBuildContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Skill to Build Next <span className="text-red-500">*</span>
           </label>
           <Input
@@ -631,14 +631,14 @@ function PlanBuildContent({
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={!isValid || isSubmitting}
-          className="bg-emerald-600 hover:bg-emerald-700"
+          className="bg-teal-600 hover:bg-teal-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -695,9 +695,9 @@ function IndustryInsightsContent({
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-xl bg-neutral-50 p-4">
-          <h4 className="font-medium text-neutral-800 mb-3">Things to consider:</h4>
-          <ul className="space-y-2 text-sm text-neutral-600">
+        <div className="rounded-xl bg-muted/50 p-4">
+          <h4 className="font-medium text-foreground mb-3">Things to consider:</h4>
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
               <Check className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
               Is this industry growing or shrinking?
@@ -718,7 +718,7 @@ function IndustryInsightsContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Your Industry Outlook Notes <span className="text-red-500">*</span>
           </label>
           <Textarea
@@ -727,13 +727,13 @@ function IndustryInsightsContent({
             placeholder="Write your key takeaways about the industry outlook...&#10;&#10;You can write multiple points, one per line."
             rows={5}
           />
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-muted-foreground">
             One insight per line. At least one note is required.
           </p>
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -781,12 +781,12 @@ function CareerShadowContent({
       </div>
 
       <div className="text-center py-4">
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-muted-foreground">
           Visit the Shadows tab to browse and request career shadow opportunities.
         </p>
       </div>
 
-      <div className="flex justify-center pt-4 border-t border-neutral-100">
+      <div className="flex justify-center pt-4 border-t border-border">
         <Button onClick={onClose}>
           Go to Shadows
         </Button>
@@ -821,20 +821,20 @@ function AlignedActionContent({
       </div>
 
       <div className="text-center py-8">
-        <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 mb-4">
+        <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-teal-500/15 mb-4">
           <span className="text-3xl font-bold text-emerald-600">
             {actionsCompleted}
           </span>
         </div>
-        <h3 className="text-lg font-semibold text-neutral-800">
+        <h3 className="text-lg font-semibold text-foreground">
           Actions Completed
         </h3>
-        <p className="mt-2 text-sm text-neutral-600 max-w-sm mx-auto">
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
           Complete jobs, shadows, projects, or courses that align with your goals.
         </p>
       </div>
 
-      <div className="flex justify-center pt-4 border-t border-neutral-100">
+      <div className="flex justify-center pt-4 border-t border-border">
         <Button onClick={onClose}>
           Got it
         </Button>
@@ -875,17 +875,17 @@ function ActionReflectionContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-blue-50 border border-blue-100 p-4">
+      <div className="rounded-xl bg-primary/10 border border-primary/20 p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-800">
+          <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-primary">
             Reflecting on your experiences helps you grow and make better decisions.
           </p>
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-2">
+        <label className="block text-sm font-medium text-foreground/80 mb-2">
           What did you learn from this experience? <span className="text-red-500">*</span>
         </label>
         <Textarea
@@ -896,7 +896,7 @@ function ActionReflectionContent({
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -966,7 +966,7 @@ function UpdatePlanContent({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-2">
+        <label className="block text-sm font-medium text-foreground/80 mb-2">
           What changes are you making and why?
         </label>
         <Textarea
@@ -977,7 +977,7 @@ function UpdatePlanContent({
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
@@ -1043,7 +1043,7 @@ function ExternalFeedbackContent({
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Feedback Source
           </label>
           <div className="flex gap-2">
@@ -1061,7 +1061,7 @@ function ExternalFeedbackContent({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">
+          <label className="block text-sm font-medium text-foreground/80 mb-2">
             Summary of Feedback <span className="text-red-500">*</span>
           </label>
           <Textarea
@@ -1073,7 +1073,7 @@ function ExternalFeedbackContent({
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>

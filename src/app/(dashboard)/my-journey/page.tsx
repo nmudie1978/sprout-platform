@@ -395,35 +395,34 @@ export default function MyJourneyPage() {
         {/* Header row */}
         <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="min-w-0 flex-1">
-            {goalTitle ? (
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-teal-500/10 shrink-0">
-                  <Target className="h-4 w-4 text-teal-400" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
-                    My Journey
-                  </p>
-                  <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
-                    {goalTitle}
-                  </h1>
-                </div>
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-teal-500/10 shrink-0">
+                <Target className="h-4 w-4 text-teal-400" />
               </div>
-            ) : (
-              <div>
+              <div className="min-w-0">
                 <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
                   My Journey
                 </p>
-                <button
-                  onClick={() => setGoalSheetOpen(true)}
-                  className="mt-1 inline-flex items-center gap-1.5 text-sm text-teal-400 hover:text-teal-300 transition-colors"
-                >
-                  <Target className="h-3.5 w-3.5" />
-                  Set a career goal
-                  <ArrowRight className="h-3 w-3" />
-                </button>
+                {goalTitle ? (
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
+                      {goalTitle}
+                    </h1>
+                    <button
+                      onClick={() => setGoalSheetOpen(true)}
+                      className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
+                      title="Change career goal"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                    </button>
+                  </div>
+                ) : (
+                  <h1 className="text-base sm:text-lg font-semibold tracking-tight text-muted-foreground">
+                    Begin your journey
+                  </h1>
+                )}
               </div>
-            )}
+            </div>
           </div>
           <Link
             href="/my-journey/how-it-works"
