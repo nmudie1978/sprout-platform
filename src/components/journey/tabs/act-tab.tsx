@@ -119,7 +119,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         className={cn(
           'rounded-xl border p-3 transition-all',
           isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
-          isComplete && 'border-border/60 bg-card/60',
+          isComplete && 'border-sky-500/20 bg-card/60',
           isEffectivelyLocked && 'border-border/30 opacity-40',
         )}
         style={isCurrent ? {
@@ -218,11 +218,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
   return (
     <div className="space-y-3">
-      {/* Mandatory steps — full width */}
-      {renderStep(ACT_STEPS[0])}
-      {renderStep(ACT_STEPS[1])}
-
-      {/* Optional steps — side by side */}
+      {/* All steps — side by side in pairs */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {renderStep(ACT_STEPS[0])}
+        {renderStep(ACT_STEPS[1])}
+      </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {renderStep(ACT_STEPS[2])}
         {renderStep(ACT_STEPS[3])}
