@@ -414,30 +414,58 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
             </div>
 
             {eduContext ? (
-              <div>
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <p className="text-sm font-medium text-foreground/80">
-                    {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
-                  </p>
+              <div className="space-y-3">
+                {/* Stage + details grid */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Stage</p>
+                    <p className="text-sm font-medium text-foreground/80">
+                      {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+                    </p>
+                  </div>
                   {eduContext.ageBand && (
-                    <span className="text-[10px] text-muted-foreground/40">Age {eduContext.ageBand}</span>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Age</p>
+                      <p className="text-sm text-foreground/70">{eduContext.ageBand}</p>
+                    </div>
+                  )}
+                  {eduContext.schoolName && (
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">School</p>
+                      <p className="text-sm text-foreground/70">{eduContext.schoolName}</p>
+                    </div>
+                  )}
+                  {eduContext.studyProgram && (
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Program</p>
+                      <p className="text-sm text-foreground/70">{eduContext.studyProgram}</p>
+                    </div>
+                  )}
+                  {eduContext.yearLevel && (
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Year</p>
+                      <p className="text-sm text-foreground/70">{eduContext.yearLevel}</p>
+                    </div>
                   )}
                   {eduContext.expectedCompletion && (
-                    <span className="text-[10px] text-muted-foreground/40">Finishing {eduContext.expectedCompletion}</span>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Finishing</p>
+                      <p className="text-sm text-foreground/70">{eduContext.expectedCompletion}</p>
+                    </div>
                   )}
                 </div>
-                {(eduContext.schoolName || eduContext.studyProgram || eduContext.yearLevel) && (
-                  <p className="text-xs text-muted-foreground/50 mt-0.5">
-                    {[eduContext.schoolName, eduContext.studyProgram, eduContext.yearLevel].filter(Boolean).join(' · ')}
-                  </p>
-                )}
+
+                {/* Subjects */}
                 {eduContext.currentSubjects.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {eduContext.currentSubjects.map((s) => (
-                      <span key={s} className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500">
-                        {s}
-                      </span>
-                    ))}
+                  <div>
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-1.5">Subjects</p>
+                    <div className="flex flex-wrap gap-1">
+                      {eduContext.currentSubjects.map((s) => (
+                        <span key={s} className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
