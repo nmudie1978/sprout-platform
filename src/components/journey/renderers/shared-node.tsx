@@ -67,15 +67,14 @@ export function SharedNode({ item, onClick, size = 40 }: SharedNodeProps) {
   const iconSize = Math.round(size * 0.45);
 
   return (
-    <button
-      onClick={onClick}
-      className="relative z-10 flex items-center justify-center rounded-full border-2 border-white shadow-md cursor-pointer transition-transform hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    <div
+      className="relative z-10 flex items-center justify-center rounded-full border-2 border-white shadow-md"
       style={{
         width: size,
         height: size,
         background: `linear-gradient(135deg, ${stage.gradientFrom}, ${stage.gradientTo})`,
       }}
-      aria-label={`${item.title} — click for details`}
+      aria-label={item.title}
     >
       <IconComponent
         className="text-white"
@@ -87,6 +86,6 @@ export function SharedNode({ item, onClick, size = 40 }: SharedNodeProps) {
           style={{ backgroundColor: stage.color }}
         />
       )}
-    </button>
+    </div>
   );
 }
