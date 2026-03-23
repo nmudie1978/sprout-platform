@@ -369,14 +369,17 @@ export function LearningGoalsTab() {
 
       {/* Add Goal + Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          size="sm"
-          onClick={() => { setEditingGoal(null); setDialogOpen(true); }}
-          className="gap-1.5"
-        >
-          <Plus className="h-4 w-4" />
-          Add Goal
-        </Button>
+        {total > 0 && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-xs gap-1.5"
+            onClick={() => { setEditingGoal(null); setDialogOpen(true); }}
+          >
+            <Plus className="h-3 w-3" />
+            Add
+          </Button>
+        )}
 
         {total > 0 && (
           <>
@@ -435,9 +438,13 @@ export function LearningGoalsTab() {
           No goals match your filters.
         </div>
       ) : (
-        <div className="text-center py-8">
-          <p className="text-sm text-muted-foreground">No learning goals yet.</p>
-        </div>
+        <button
+          onClick={() => { setEditingGoal(null); setDialogOpen(true); }}
+          className="w-full text-left rounded-lg border border-dashed border-border/40 hover:border-border/60 bg-muted/10 hover:bg-muted/20 px-3 py-2.5 transition-all flex items-center gap-2 text-xs text-muted-foreground/50 hover:text-muted-foreground/70"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add a learning goal...
+        </button>
       )}
 
       {/* Add/Edit dialog */}
