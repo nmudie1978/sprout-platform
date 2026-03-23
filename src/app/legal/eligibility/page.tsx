@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Users, AlertTriangle } from "lucide-react";
+import { Users } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
@@ -19,13 +18,9 @@ export default function EligibilityPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Age & Eligibility</h1>
-            <p className="text-muted-foreground">Last updated: [DATE]</p>
+            <p className="text-muted-foreground">Last updated: 23 March 2026</p>
           </div>
         </div>
-        <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-500/10">
-          <AlertTriangle className="h-3 w-3 mr-1" />
-          Placeholder - To be reviewed by legal counsel before launch
-        </Badge>
       </div>
 
       {/* Content */}
@@ -34,19 +29,19 @@ export default function EligibilityPage() {
           <section className="mb-8">
             <h2>Who Can Use Endeavrly</h2>
             <p>
-              Endeavrly is designed for young people in Norway seeking appropriate work opportunities.
-              Our platform has specific requirements depending on your role.
+              Endeavrly is designed for young people in Norway seeking career development support and
+              appropriate work opportunities. Our Platform has specific requirements depending on your role.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2>Youth Workers (Job Seekers)</h2>
+            <h2>Youth Users (Ages 15–23)</h2>
             <p>
-              To register as a youth worker on Endeavrly, you must:
+              To register as a youth user on Endeavrly, you must:
             </p>
             <ul>
-              <li>Be between <strong>15 and 20 years old</strong></li>
-              <li>Be legally permitted to work in Norway</li>
+              <li>Be between <strong>15 and 23 years old</strong></li>
+              <li>Be legally permitted to reside in Norway</li>
               <li>Provide accurate information about your age during registration</li>
             </ul>
 
@@ -60,44 +55,45 @@ export default function EligibilityPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="p-2 border-b">15-17 years</td>
-                  <td className="p-2 border-b">Guardian consent required before applying for jobs</td>
+                  <td className="p-2 border-b">15–17 years</td>
+                  <td className="p-2 border-b">Guardian consent required before applying for jobs. Career exploration and journey features are available without guardian consent.</td>
                 </tr>
                 <tr>
-                  <td className="p-2 border-b">18-20 years</td>
-                  <td className="p-2 border-b">No guardian consent required</td>
+                  <td className="p-2 border-b">18–23 years</td>
+                  <td className="p-2 border-b">No guardian consent required. Full access to all Platform features.</td>
                 </tr>
               </tbody>
             </table>
           </section>
 
           <section className="mb-8">
-            <h2>Adults (Job Posters / Employers)</h2>
+            <h2>Adults (Job Posters)</h2>
             <p>
               To post jobs on Endeavrly, you must:
             </p>
             <ul>
               <li>Be at least <strong>18 years old</strong></li>
               <li>Complete identity verification (BankID or equivalent)</li>
-              <li>Agree to follow all applicable employment laws for young workers</li>
+              <li>Agree to comply with all applicable Norwegian employment laws for young workers</li>
             </ul>
             <p>
-              Identity verification is required for all adults before they can contact
-              youth workers. This helps protect young people on our platform.
+              Identity verification is required for all adults before they can post jobs or
+              contact youth users. This helps protect young people on our Platform.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>Guardian Consent</h2>
             <p>
-              For youth workers under 18, we require guardian consent before they can
-              apply for jobs. This ensures that a parent or guardian is aware of their
-              activity on the platform.
+              For youth users under 18, we require guardian consent before they can
+              apply for jobs. This ensures that a parent or legal guardian is aware of their
+              activity on the Platform.
             </p>
             <ul>
               <li>Guardian consent is requested via email during registration</li>
-              <li>The guardian must confirm they approve of the young person using Endeavrly</li>
-              <li>Guardian consent can be revoked at any time by contacting us</li>
+              <li>The guardian must confirm they approve of the young person using Endeavrly for job-related features</li>
+              <li>Guardian consent can be revoked at any time by contacting us at <a href="mailto:support@endeavrly.no" className="text-primary hover:underline">support@endeavrly.no</a></li>
+              <li>Revoking consent will restrict the user&apos;s ability to apply for jobs but will not delete their account or journey progress</li>
             </ul>
           </section>
 
@@ -105,15 +101,16 @@ export default function EligibilityPage() {
             <h2>Restricted Categories</h2>
             <p>
               Certain job categories may have additional age restrictions based on
-              Norwegian labour law:
+              Norwegian labour law (<em>Arbeidsmiljøloven</em>):
             </p>
             <ul>
-              <li>Some jobs may only be available to those 16 or older</li>
-              <li>Night work and certain hours are restricted for minors</li>
+              <li>Some jobs may only be available to those aged 16 or older</li>
+              <li>Night work (between 21:00 and 06:00) is restricted for workers under 18</li>
               <li>Hazardous work is prohibited for all workers under 18</li>
+              <li>Working hours for minors are limited in accordance with Norwegian law</li>
             </ul>
             <p>
-              Job postings on Endeavrly will indicate any specific age requirements.
+              Job postings on Endeavrly will indicate any specific age requirements where applicable.
             </p>
           </section>
 
@@ -123,12 +120,12 @@ export default function EligibilityPage() {
               Endeavrly uses the following methods to verify users:
             </p>
             <ul>
-              <li><strong>Youth (15-23):</strong> Vipps login or age verification during sign-up</li>
+              <li><strong>Youth (15–23):</strong> age verification during sign-up via date of birth and, where available, Vipps login</li>
               <li><strong>Adults (18+):</strong> BankID or equivalent identity verification</li>
             </ul>
             <p>
-              These verification methods help ensure users are who they say they are
-              and meet our age requirements.
+              These verification methods help ensure users meet our age requirements and
+              that adults interacting with minors have been identified.
             </p>
           </section>
 
@@ -138,9 +135,10 @@ export default function EligibilityPage() {
               Accounts may be suspended or removed if:
             </p>
             <ul>
-              <li>False age information was provided</li>
+              <li>False age information was provided during registration</li>
               <li>A user no longer meets eligibility requirements</li>
-              <li>Our <Link href="/legal/safety" className="text-primary hover:underline">Safety Guidelines</Link> are violated</li>
+              <li>Our <Link href="/legal/safety" className="text-primary hover:underline">Safety & Community Guidelines</Link> are violated</li>
+              <li>A guardian revokes consent for a minor&apos;s account</li>
             </ul>
           </section>
 
@@ -149,7 +147,7 @@ export default function EligibilityPage() {
           <div className="bg-muted/50 p-4 rounded-lg text-sm">
             <p className="font-medium mb-2">Questions about eligibility?</p>
             <p className="text-muted-foreground">
-              Contact us at: [support@endeavrly.no]
+              Contact us at: <a href="mailto:support@endeavrly.no" className="text-primary hover:underline">support@endeavrly.no</a>
             </p>
           </div>
         </CardContent>

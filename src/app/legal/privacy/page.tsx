@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Shield, AlertTriangle } from "lucide-react";
+import { Shield } from "lucide-react";
 
 export const metadata = {
   title: "Privacy Policy | Endeavrly",
@@ -18,13 +17,9 @@ export default function PrivacyPolicyPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Privacy Policy</h1>
-            <p className="text-muted-foreground">Last updated: [DATE]</p>
+            <p className="text-muted-foreground">Last updated: 23 March 2026</p>
           </div>
         </div>
-        <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-500/10">
-          <AlertTriangle className="h-3 w-3 mr-1" />
-          Placeholder - Replace with actual legal text
-        </Badge>
       </div>
 
       {/* Content */}
@@ -33,221 +28,215 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2>1. Introduction</h2>
             <p>
-              [PLACEHOLDER: Introduce your privacy policy. Explain that this policy describes how Endeavrly collects, uses, and shares personal information. Reference GDPR compliance and Norwegian data protection law (Personopplysningsloven).]
+              This Privacy Policy explains how Endeavrly AS (&quot;Endeavrly&quot;, &quot;we&quot;, &quot;us&quot;) collects, uses, stores, and shares your personal data when you use our platform. We are committed to protecting your privacy, particularly because many of our users are young people.
+            </p>
+            <p>
+              This policy is written in accordance with the EU General Data Protection Regulation (GDPR) and the Norwegian Personal Data Act (<em>Personopplysningsloven</em>).
             </p>
           </section>
 
           <section className="mb-8">
             <h2>2. Data Controller</h2>
-            <p>
-              [PLACEHOLDER: Identify who is responsible for data processing:]
-            </p>
+            <p>The data controller responsible for your personal data is:</p>
             <ul>
-              <li>Company name: [Your company name]</li>
-              <li>Organization number: [Norwegian org number]</li>
-              <li>Address: [Your registered address]</li>
-              <li>Email: [privacy@endeavrly.com]</li>
-              <li>Data Protection Officer (if applicable): [Contact details]</li>
+              <li>Endeavrly AS</li>
+              <li>Oslo, Norway</li>
+              <li>Email: <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2>3. Information We Collect</h2>
+
             <h3>3.1 Information You Provide</h3>
-            <p>
-              [PLACEHOLDER: List all data collected directly from users:]
-            </p>
             <ul>
-              <li>Account information (email, password)</li>
-              <li>Profile information (name, age bracket, skills, profile photo)</li>
-              <li>Job application data</li>
-              <li>Messages and communications</li>
-              <li>Payment information (if applicable)</li>
+              <li><strong>Account information:</strong> email address and authentication credentials</li>
+              <li><strong>Profile information:</strong> name, date of birth, skills, interests, career goals, and optional profile photo</li>
+              <li><strong>Journey data:</strong> your reflections, strengths, career explorations, and learning progress</li>
+              <li><strong>Job-related data:</strong> job applications, structured messages, and feedback</li>
+              <li><strong>Guardian information:</strong> where a user is under 18, we collect limited parent or guardian contact details for consent purposes</li>
             </ul>
 
             <h3>3.2 Information Collected Automatically</h3>
-            <p>
-              [PLACEHOLDER: List automatically collected data:]
-            </p>
             <ul>
-              <li>Device information</li>
-              <li>IP address</li>
-              <li>Browser type</li>
-              <li>Usage data and analytics</li>
-              <li>Cookies (reference Cookie Policy)</li>
+              <li>Device type, browser type, and operating system</li>
+              <li>IP address (truncated or anonymised where possible)</li>
+              <li>Pages visited and features used</li>
+              <li>Session duration and interaction patterns</li>
             </ul>
 
-            <h3>3.3 Special Categories of Data</h3>
-            <p>
-              [PLACEHOLDER: Address any sensitive data. Note: Age data for minors requires special consideration under GDPR Article 8.]
-            </p>
+            <h3>3.3 Information We Do Not Collect</h3>
+            <p>We do not collect or process:</p>
+            <ul>
+              <li>Financial or payment information (we do not process payments)</li>
+              <li>Biometric data</li>
+              <li>Data relating to political opinions, religious beliefs, trade union membership, or sexual orientation</li>
+              <li>Behavioural profiling for advertising purposes</li>
+            </ul>
           </section>
 
           <section className="mb-8">
             <h2>4. How We Use Your Information</h2>
-            <p>
-              [PLACEHOLDER: Explain all purposes for data processing:]
-            </p>
+            <p>We use your personal data to:</p>
             <ul>
-              <li>Providing and maintaining the platform</li>
-              <li>Matching youth with job opportunities</li>
-              <li>Communicating with users</li>
-              <li>Processing applications and payments</li>
-              <li>Improving our services</li>
-              <li>Ensuring safety and security</li>
-              <li>Compliance with legal obligations</li>
+              <li>Provide and operate the Platform, including account management and authentication</li>
+              <li>Enable the My Journey feature, including career exploration and skill development tracking</li>
+              <li>Facilitate connections between youth workers and job posters through structured messaging</li>
+              <li>Verify user age and, where required, guardian consent</li>
+              <li>Moderate content and enforce our Safety Guidelines</li>
+              <li>Respond to reports and safeguarding concerns</li>
+              <li>Send essential service communications (e.g., account verification, safety alerts)</li>
+              <li>Improve and maintain the Platform through aggregated, anonymised usage analytics</li>
             </ul>
+            <p>
+              We do not use your data for targeted advertising, behavioural profiling, or sale to third parties.
+            </p>
           </section>
 
           <section className="mb-8">
             <h2>5. Legal Basis for Processing</h2>
-            <p>
-              [PLACEHOLDER: Under GDPR, explain the legal basis for each type of processing:]
-            </p>
+            <p>Under GDPR, we process your personal data on the following legal bases:</p>
             <ul>
-              <li><strong>Contract:</strong> Processing necessary to provide our services</li>
-              <li><strong>Consent:</strong> Where you have given explicit consent (e.g., marketing)</li>
-              <li><strong>Legitimate Interests:</strong> For improving and securing our services</li>
-              <li><strong>Legal Obligation:</strong> Where required by law</li>
+              <li><strong>Performance of contract (Art. 6(1)(b)):</strong> processing necessary to provide the Platform and its features to you</li>
+              <li><strong>Consent (Art. 6(1)(a)):</strong> where you have given explicit consent, such as for optional analytics cookies or marketing communications. You may withdraw consent at any time.</li>
+              <li><strong>Legitimate interests (Art. 6(1)(f)):</strong> for platform security, fraud prevention, and service improvement, where these interests are not overridden by your rights</li>
+              <li><strong>Legal obligation (Art. 6(1)(c)):</strong> where we are required to process data to comply with applicable law</li>
             </ul>
+
+            <h3>5.1 Processing Data of Minors</h3>
             <p>
-              [PLACEHOLDER: Note special rules for processing data of minors under 16 - requires parental consent under GDPR Article 8.]
+              For users under 16 years of age, we obtain verifiable parental or guardian consent before processing personal data, in accordance with GDPR Article 8 and Norwegian law. Users aged 16 and over may consent independently to data processing in the context of our services.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>6. Data Sharing and Disclosure</h2>
-            <h3>6.1 Sharing Between Users</h3>
+
+            <h3>6.1 Between Users</h3>
             <p>
-              [PLACEHOLDER: Explain what information is shared between youth and employers when they connect through the platform.]
+              When you apply for a job or interact with another user, limited profile information (such as your first name, age bracket, and relevant skills) may be visible to that user. Full contact details are not shared unless you choose to provide them.
             </p>
 
-            <h3>6.2 Third-Party Service Providers</h3>
-            <p>
-              [PLACEHOLDER: List categories of third-party processors:]
-            </p>
+            <h3>6.2 Service Providers</h3>
+            <p>We share data with a limited number of trusted service providers who help us operate the Platform:</p>
             <ul>
-              <li>Hosting providers (e.g., Vercel, Supabase)</li>
-              <li>Authentication services</li>
-              <li>Payment processors (if applicable)</li>
-              <li>Analytics providers</li>
-              <li>Email service providers</li>
+              <li><strong>Hosting:</strong> Vercel (application hosting, EU/US regions)</li>
+              <li><strong>Database:</strong> Supabase (PostgreSQL database hosting, EU region)</li>
+              <li><strong>Authentication:</strong> NextAuth.js (open-source, self-hosted authentication)</li>
+              <li><strong>Email:</strong> transactional email provider for account verification and notifications</li>
             </ul>
+            <p>
+              All service providers are bound by data processing agreements and process data only on our instructions.
+            </p>
 
             <h3>6.3 Legal Requirements</h3>
             <p>
-              [PLACEHOLDER: Explain when data may be disclosed to authorities.]
+              We may disclose personal data where required by law, court order, or regulatory authority, or where necessary to protect the safety of a user, particularly a minor.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>7. International Data Transfers</h2>
             <p>
-              [PLACEHOLDER: If using services outside the EEA (e.g., US-based services), explain the safeguards in place such as Standard Contractual Clauses or EU-US Data Privacy Framework.]
+              We store data primarily within the European Economic Area (EEA). Where data is processed by service providers outside the EEA (for example, infrastructure services with US-based components), we ensure adequate safeguards are in place, including EU Standard Contractual Clauses or an adequacy decision by the European Commission.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>8. Data Retention</h2>
-            <p>
-              [PLACEHOLDER: Explain how long different types of data are kept:]
-            </p>
+            <p>We retain personal data only for as long as necessary for the purposes described in this policy:</p>
             <ul>
-              <li>Active account data: Duration of account</li>
-              <li>Deleted accounts: [X days/months]</li>
-              <li>Job posting history: [X months/years]</li>
-              <li>Application data: [X months/years]</li>
-              <li>Legal/compliance records: As required by law</li>
+              <li><strong>Active accounts:</strong> data is retained for the duration of your account</li>
+              <li><strong>Deleted accounts:</strong> personal data is erased within 30 days of account deletion, except where retention is required by law</li>
+              <li><strong>Job applications:</strong> retained for 12 months after the related job has closed</li>
+              <li><strong>Reports and safeguarding records:</strong> retained for up to 3 years, or longer where required for legal proceedings</li>
+              <li><strong>Anonymised analytics data:</strong> may be retained indefinitely as it cannot identify individuals</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2>9. Your Rights</h2>
-            <p>
-              [PLACEHOLDER: Under GDPR, users have the following rights:]
-            </p>
+            <p>Under GDPR, you have the following rights in relation to your personal data:</p>
             <ul>
-              <li><strong>Right of Access:</strong> Request a copy of your personal data</li>
-              <li><strong>Right to Rectification:</strong> Correct inaccurate data</li>
-              <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
-              <li><strong>Right to Restrict Processing:</strong> Limit how we use your data</li>
-              <li><strong>Right to Data Portability:</strong> Receive your data in a portable format</li>
-              <li><strong>Right to Object:</strong> Object to certain processing</li>
-              <li><strong>Right to Withdraw Consent:</strong> Withdraw consent at any time</li>
+              <li><strong>Right of access:</strong> request a copy of the personal data we hold about you</li>
+              <li><strong>Right to rectification:</strong> request correction of inaccurate or incomplete data</li>
+              <li><strong>Right to erasure:</strong> request deletion of your personal data (&quot;right to be forgotten&quot;)</li>
+              <li><strong>Right to restrict processing:</strong> request that we limit how we use your data</li>
+              <li><strong>Right to data portability:</strong> receive your data in a structured, machine-readable format</li>
+              <li><strong>Right to object:</strong> object to processing based on legitimate interests</li>
+              <li><strong>Right to withdraw consent:</strong> withdraw consent at any time, without affecting the lawfulness of processing before withdrawal</li>
             </ul>
             <p>
-              [PLACEHOLDER: Explain how users can exercise these rights (email, in-app settings, etc.)]
+              To exercise any of these rights, contact us at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a>. We will respond within 30 days. You may also delete your account and associated data through your profile settings.
+            </p>
+            <p>
+              If you are under 18, your parent or guardian may exercise these rights on your behalf.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>10. Children&apos;s Privacy</h2>
             <p>
-              [PLACEHOLDER: Important section for a youth platform. Address:]
+              Endeavrly is designed for users aged 15 and above. We take the privacy of young users seriously and implement the following protections:
             </p>
             <ul>
-              <li>Minimum age requirements</li>
-              <li>Parental consent requirements for users under 16</li>
-              <li>Additional protections for minor users</li>
-              <li>How parents/guardians can manage their child&apos;s data</li>
+              <li>We collect only the minimum data necessary for the Platform to function</li>
+              <li>We do not serve targeted advertising or engage in behavioural profiling</li>
+              <li>We require parental or guardian consent for users under 16</li>
+              <li>Personal contact information is not publicly displayed</li>
+              <li>Communication between minors and adults is restricted to structured messaging formats</li>
+              <li>Parents or guardians may request access to, correction of, or deletion of their child&apos;s data at any time</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2>11. Data Security</h2>
-            <p>
-              [PLACEHOLDER: Describe security measures in place:]
-            </p>
+            <p>We implement appropriate technical and organisational measures to protect your data, including:</p>
             <ul>
-              <li>Encryption (in transit and at rest)</li>
-              <li>Access controls</li>
-              <li>Regular security assessments</li>
-              <li>Employee training</li>
-              <li>Incident response procedures</li>
+              <li>Encryption of data in transit (TLS/HTTPS) and at rest</li>
+              <li>Role-based access controls limiting who can access personal data</li>
+              <li>Regular security reviews and monitoring</li>
+              <li>Secure authentication with magic link or verified login methods</li>
+              <li>Row-level security policies in our database</li>
             </ul>
+            <p>
+              No system can guarantee absolute security. If we become aware of a data breach that is likely to result in a risk to your rights, we will notify you and the Norwegian Data Protection Authority (Datatilsynet) within 72 hours.
+            </p>
           </section>
 
           <section className="mb-8">
             <h2>12. Changes to This Policy</h2>
             <p>
-              [PLACEHOLDER: Explain how users will be notified of privacy policy changes and when changes take effect.]
+              We may update this Privacy Policy from time to time. When we make material changes, we will notify you by email or through a notice on the Platform. The updated policy will indicate the new effective date at the top of this page.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>13. Complaints</h2>
             <p>
-              [PLACEHOLDER: Explain how to lodge complaints:]
+              If you believe we have not handled your personal data in accordance with applicable law, you have the right to lodge a complaint with:
             </p>
             <ul>
-              <li>Contact us first at: [privacy@endeavrly.com]</li>
-              <li>Norwegian Data Protection Authority (Datatilsynet): datatilsynet.no</li>
+              <li>Us first, at <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
+              <li>The Norwegian Data Protection Authority (Datatilsynet): <a href="https://www.datatilsynet.no" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">datatilsynet.no</a></li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2>14. Contact Us</h2>
-            <p>
-              [PLACEHOLDER: Provide contact information for privacy inquiries:]
-            </p>
+            <p>For any questions about this Privacy Policy or our data practices, contact us at:</p>
             <ul>
-              <li>Email: [privacy@endeavrly.com]</li>
-              <li>Address: [Your registered business address]</li>
+              <li>Email: <a href="mailto:privacy@endeavrly.no" className="text-primary hover:underline">privacy@endeavrly.no</a></li>
+              <li>Post: Endeavrly AS, Oslo, Norway</li>
             </ul>
           </section>
 
           <hr className="my-8" />
 
           <div className="bg-muted/50 p-4 rounded-lg text-sm">
-            <p className="font-medium mb-2">Important Notes for Implementation:</p>
-            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Have this policy reviewed by a GDPR/data protection specialist</li>
-              <li>Ensure compliance with Norwegian Data Protection Authority guidelines</li>
-              <li>Special attention needed for processing data of minors (under 16)</li>
-              <li>Document all data processing activities in a Record of Processing Activities (ROPA)</li>
-              <li>Consider appointing a Data Protection Officer if required</li>
-              <li>Keep this policy updated as your data practices change</li>
-            </ul>
+            <p className="text-muted-foreground">
+              This Privacy Policy should be reviewed by a qualified data protection professional before being relied upon. It is provided as a working draft and does not constitute legal advice.
+            </p>
           </div>
         </CardContent>
       </Card>
