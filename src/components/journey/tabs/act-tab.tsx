@@ -76,8 +76,6 @@ const ACT_STEPS = [
 // ── Main Component ──────────────────────────────────────────────────
 
 export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
-  const alignedActions = journey.summary?.alignedActionsCount || 0;
-  const reflections = journey.summary?.reflectionSummary;
 
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
     const step = journey.steps.find((s) => s.id === stepId);
@@ -154,23 +152,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         );
       })}
 
-      {/* Quick Stats — compact inline row */}
-      <div className="flex items-center gap-4 rounded-lg border border-border/30 bg-muted/10 px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="text-base font-bold text-amber-500">{alignedActions}</span>
-          <span className="text-[10px] text-muted-foreground/50">actions</span>
-        </div>
-        <div className="h-3 w-px bg-border/30" />
-        <div className="flex items-center gap-2">
-          <span className="text-base font-bold text-amber-500">{reflections?.total || 0}</span>
-          <span className="text-[10px] text-muted-foreground/50">reflections</span>
-        </div>
-        <div className="h-3 w-px bg-border/30" />
-        <div className="flex items-center gap-2">
-          <span className="text-base font-bold text-amber-500">{reflections?.thisMonth || 0}</span>
-          <span className="text-[10px] text-muted-foreground/50">this month</span>
-        </div>
-      </div>
+      <div className="border-t border-border/20" />
 
       {/* Your Roadmap — elevated position */}
       <div className="pt-2">
