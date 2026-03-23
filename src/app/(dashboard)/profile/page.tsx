@@ -155,6 +155,7 @@ export default function ProfilePage() {
   // Goal sheet state
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
+  const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
   const clearGoal = useClearGoal();
 
   // Two-step account deletion state
@@ -670,7 +671,7 @@ export default function ProfilePage() {
                 My <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">Profile</span>
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base truncate">
-                Build your profile to stand out to job posters
+                Set your career direction, showcase your skills, and stand out to job posters
               </p>
             </div>
           </div>
@@ -806,8 +807,12 @@ export default function ProfilePage() {
                   size="sm"
                   variant={goalsData?.primaryGoal ? "outline" : "default"}
                   onClick={() => {
-                    setGoalSheetTargetSlot("primary");
-                    setShowGoalSheet(true);
+                    if (goalsData?.primaryGoal) {
+                      setShowGoalChangeWarning(true);
+                    } else {
+                      setGoalSheetTargetSlot("primary");
+                      setShowGoalSheet(true);
+                    }
                   }}
                 >
                   <Target className="h-4 w-4 mr-1.5" />
@@ -1408,6 +1413,38 @@ export default function ProfilePage() {
           {profile && <SavedLifeSkills />}
 
           {/* Career Goal moved to top of page */}
+
+          {/* Goal Change Warning */}
+          {showGoalChangeWarning && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
+              <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Your progress for <strong>{goalsData?.primaryGoal?.title}</strong> will be saved. You can switch back anytime and pick up where you left off.
+                </p>
+                <div className="rounded-lg bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
+                  <p className="text-[11px] font-medium text-muted-foreground/80">What happens when you switch:</p>
+                  <ul className="text-[11px] text-muted-foreground/60 space-y-1 ml-3">
+                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
+                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
+                    <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
+                  </ul>
+                </div>
+                <div className="flex justify-end gap-3">
+                  <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
+                    Keep current goal
+                  </Button>
+                  <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => {
+                    setShowGoalChangeWarning(false);
+                    setGoalSheetTargetSlot("primary");
+                    setShowGoalSheet(true);
+                  }}>
+                    Change goal
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Goal Selection Sheet (overlay, stays on /profile) */}
           <GoalSelectionSheet

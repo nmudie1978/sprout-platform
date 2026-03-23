@@ -381,13 +381,21 @@ export function GoalSelectionSheet({
           setSelectedCareer(null);
         }}
         title="Change Primary Goal?"
-        description={`Changing your primary goal from "${primaryGoal?.title}" to "${selectedCareer?.title}" may affect your Journey timeline. Are you sure?`}
+        description={`Your progress for "${primaryGoal?.title}" will be saved. You can switch back anytime and pick up where you left off.`}
         confirmText="Change Goal"
         cancelText="Cancel"
         onConfirm={handlePrimaryChangeConfirmed}
         isPending={setGoalMutation.isPending}
         icon={<Star className="h-5 w-5 text-teal-500" />}
-      />
+      >
+        <div className="rounded-lg bg-muted/50 border border-border/50 p-2.5 space-y-1">
+          <p className="text-[11px] font-medium text-muted-foreground/80">What&apos;s preserved:</p>
+          <ul className="text-[11px] text-muted-foreground/60 space-y-0.5 ml-2.5">
+            <li>&#10003; Strengths and interests carry over</li>
+            <li>&#10003; Research, actions, and roadmap saved per goal</li>
+          </ul>
+        </div>
+      </ConfirmDialog>
     </>
   );
 }

@@ -404,6 +404,26 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
                 </div>
               </div>
             )}
+
+            {/* Current Goal — shown when goal is already set */}
+            {config.id === 'ROLE_DEEP_DIVE' && !isLocked && hasGoal && (
+              <div className="mt-3 pt-3 border-t border-border/30 ml-11">
+                <div className="flex items-center gap-3 rounded-lg bg-teal-500/5 border border-teal-500/15 p-3">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/15 text-teal-500 shrink-0">
+                    <Target className="h-3 w-3" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold truncate">{goalTitle}</p>
+                    <p className="text-[10px] text-muted-foreground/50 mt-0.5">
+                      Your progress is saved — you can switch back anytime.
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" className="text-[11px] h-7 shrink-0 border-teal-500/30 text-teal-500 hover:bg-teal-500/10" onClick={onSetGoal}>
+                    Change goal
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         );
       })}

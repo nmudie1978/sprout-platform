@@ -44,8 +44,8 @@ import {
 } from "lucide-react";
 import { getDisplayVideos, type InsightVideo } from "@/lib/industry-insights/video-pool";
 import type { CareerGoal, GoalsResponse } from "@/lib/goals/types";
-import { TIMEFRAME_CONFIG } from "@/lib/goals/types";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 
@@ -112,67 +112,64 @@ function SavedCareersCarousel({ careers }: { careers: any[] }) {
 
 // ── Goal Summary Card ────────────────────────────────────────────────
 function GoalCard({ goal, slot, accentClass }: { goal: CareerGoal | null; slot: "primary" | "secondary"; accentClass: string }) {
+  const isSecondary = slot === "secondary";
+
   if (!goal) {
-    return (
-      <Link href="/goals" className="block h-full">
-        <GlassCard className="p-5 h-full flex flex-col items-center justify-center hover:border-border/60 transition-colors">
-          <div className="py-4 text-center">
-            <Target className="h-7 w-7 text-muted-foreground/50 mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground mb-1">
-              {slot === "primary" ? "Set your primary goal" : "Add a backup path"}
-            </p>
-            <span className={`text-xs ${accentClass}`}>
-              {slot === "primary" ? "Choose a career direction" : "Explore alternatives"}
-            </span>
-          </div>
-        </GlassCard>
-      </Link>
+    const inner = (
+      <GlassCard className={cn("p-5 h-full flex flex-col items-center justify-center transition-colors", isSecondary ? "opacity-50" : "hover:border-border/60")}>
+        <div className="py-4 text-center">
+          <Target className="h-7 w-7 text-muted-foreground/50 mx-auto mb-2" />
+          <p className="text-sm text-muted-foreground mb-1">
+            {slot === "primary" ? "Set your primary goal" : "Add a backup path"}
+          </p>
+          <span className={`text-xs ${isSecondary ? "text-muted-foreground/50" : accentClass}`}>
+            {slot === "primary" ? "Choose a career direction" : "Explore alternatives"}
+          </span>
+        </div>
+      </GlassCard>
     );
+
+    if (isSecondary) return <div className="h-full cursor-default">{inner}</div>;
+    return <Link href="/goals" className="block h-full">{inner}</Link>;
   }
 
   const completedSteps = goal.nextSteps.filter((s) => s.completed).length;
   const totalSteps = goal.nextSteps.length;
   const statusColor = goal.status === "committed" ? "bg-emerald-500/20 text-emerald-300" : "bg-blue-500/20 text-blue-300";
-  const confidenceDots = goal.confidence === "high" ? 3 : goal.confidence === "medium" ? 2 : 1;
 
+  const cardContent = (
+    <GlassCard className={cn("p-5 h-full transition-colors", isSecondary ? "opacity-50" : "hover:border-border/60")}>
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-1">
+            {slot === "primary" ? "Primary Goal" : "Secondary Goal"}
+          </p>
+          <p className={cn("text-sm font-semibold truncate transition-colors", isSecondary ? "text-muted-foreground" : "text-foreground group-hover:" + accentClass)}>
+            {goal.title}
+          </p>
+        </div>
+        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ml-2 ${statusColor}`}>
+          {goal.status === "committed" ? "Committed" : "Exploring"}
+        </span>
+      </div>
+
+      {totalSteps > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] text-muted-foreground/70">{completedSteps}/{totalSteps} steps</span>
+          </div>
+          <div className="w-full h-1 bg-muted/50 rounded-full">
+            <div className="h-full rounded-full transition-all bg-teal-400" style={{ width: `${(completedSteps / totalSteps) * 100}%` }} />
+          </div>
+        </div>
+      )}
+    </GlassCard>
+  );
+
+  if (isSecondary) return <div className="h-full cursor-default">{cardContent}</div>;
   return (
     <Link href="/goals" className="block h-full group">
-      <GlassCard className="p-5 h-full hover:border-border/60 transition-colors">
-        <div className="flex items-start justify-between mb-2">
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-1">
-              {slot === "primary" ? "Primary Goal" : "Secondary Goal"}
-            </p>
-            <p className={`text-sm font-semibold text-foreground truncate group-hover:${accentClass} transition-colors`}>
-              {goal.title}
-            </p>
-          </div>
-          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0 ml-2 ${statusColor}`}>
-            {goal.status === "committed" ? "Committed" : "Exploring"}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center gap-1">
-            {[1, 2, 3].map((d) => (
-              <div key={d} className={`w-1.5 h-1.5 rounded-full ${d <= confidenceDots ? "bg-teal-400" : "bg-muted"}`} />
-            ))}
-            <span className="text-[10px] text-muted-foreground/70 ml-1">confidence</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground/70">{TIMEFRAME_CONFIG[goal.timeframe]?.label}</span>
-        </div>
-
-        {totalSteps > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] text-muted-foreground/70">{completedSteps}/{totalSteps} steps</span>
-            </div>
-            <div className="w-full h-1 bg-muted/50 rounded-full">
-              <div className={`h-full rounded-full transition-all ${slot === "primary" ? "bg-teal-400" : "bg-teal-400"}`} style={{ width: `${(completedSteps / totalSteps) * 100}%` }} />
-            </div>
-          </div>
-        )}
-      </GlassCard>
+      {cardContent}
     </Link>
   );
 }

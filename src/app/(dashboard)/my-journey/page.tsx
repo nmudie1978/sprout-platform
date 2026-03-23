@@ -30,7 +30,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Info, X } from 'lucide-react';
 
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
@@ -323,6 +323,12 @@ export default function MyJourneyPage() {
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
+  const [goalBannerDismissed, setGoalBannerDismissed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('journey-goal-banner-dismissed') === 'true';
+    }
+    return false;
+  });
 
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData } = useGoals(isYouth);
@@ -530,6 +536,25 @@ export default function MyJourneyPage() {
           </Link>
         </div>
 
+        {/* Goal swap reminder — dismissible */}
+        {goalTitle && !goalBannerDismissed && (
+          <div className="flex items-center gap-2 rounded-lg bg-teal-500/5 border border-teal-500/15 px-3 py-2 mb-4">
+            <Info className="h-3.5 w-3.5 text-teal-500 shrink-0" />
+            <p className="text-[11px] text-muted-foreground/70 flex-1">
+              You can change your career goal anytime — your progress is always saved per goal.
+            </p>
+            <button
+              onClick={() => {
+                setGoalBannerDismissed(true);
+                localStorage.setItem('journey-goal-banner-dismissed', 'true');
+              }}
+              className="p-0.5 rounded text-muted-foreground/40 hover:text-muted-foreground transition-colors shrink-0"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        )}
+
         {/* Stage Tab Bar */}
         <div className="mb-6 sm:mb-8">
           <StageTabBar
@@ -590,12 +615,17 @@ export default function MyJourneyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
           <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
-            <p className="text-sm text-muted-foreground mb-1">
-              Your current progress for <strong>{goalTitle}</strong> will be saved and can be restored later.
+            <p className="text-sm text-muted-foreground mb-3">
+              Your progress for <strong>{goalTitle}</strong> will be saved. You can switch back anytime and pick up where you left off.
             </p>
-            <p className="text-xs text-muted-foreground/60 mb-4">
-              Your strengths and interests will carry over. Role-specific research, actions, and roadmap progress are saved per goal.
-            </p>
+            <div className="rounded-lg bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
+              <p className="text-[11px] font-medium text-muted-foreground/80">What happens when you switch:</p>
+              <ul className="text-[11px] text-muted-foreground/60 space-y-1 ml-3">
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
+              </ul>
+            </div>
             <div className="flex justify-end gap-3">
               <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
                 Keep current goal

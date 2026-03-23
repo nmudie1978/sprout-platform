@@ -14,7 +14,6 @@ import {
   Pencil,
   Route,
   GraduationCap,
-  MessageSquare,
   Maximize2,
   X,
 } from 'lucide-react';
@@ -30,10 +29,6 @@ const PersonalCareerTimeline = dynamic(
 );
 const LearningGoalsTab = dynamic(
   () => import('./learning-goals-tab').then((m) => m.LearningGoalsTab),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
-);
-const NotesTab = dynamic(
-  () => import('./notes-tab').then((m) => m.NotesTab),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
 );
 
@@ -318,16 +313,6 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             </summary>
             <div className="px-3 pb-3">
               <LearningGoalsTab />
-            </div>
-          </details>
-          <details className="group rounded-lg border border-border/30 bg-card/50">
-            <summary className="flex items-center gap-1.5 p-3 cursor-pointer text-xs font-semibold text-foreground/70 select-none">
-              <MessageSquare className="h-3.5 w-3.5" />
-              Reflect & Update
-              <span className="ml-auto text-[10px] text-muted-foreground/40 group-open:hidden">Click to expand</span>
-            </summary>
-            <div className="px-3 pb-3">
-              <NotesTab />
             </div>
           </details>
         </div>
