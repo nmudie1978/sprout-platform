@@ -446,6 +446,16 @@ export default function MyJourneyPage() {
     }
   }, [discoverComplete, understandComplete]);
 
+  // Gate goal sheet — warn if changing an existing goal
+  const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
+  const handleOpenGoalSheet = useCallback(() => {
+    if (currentGoalTitle) {
+      setShowGoalChangeWarning(true);
+    } else {
+      setGoalSheetOpen(true);
+    }
+  }, [currentGoalTitle]);
+
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
   if (isLoading) {
@@ -482,15 +492,6 @@ export default function MyJourneyPage() {
 
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
-
-  // Gate goal sheet — warn if changing an existing goal
-  const handleOpenGoalSheet = useCallback(() => {
-    if (goalTitle) {
-      setShowGoalChangeWarning(true);
-    } else {
-      setGoalSheetOpen(true);
-    }
-  }, [goalTitle]);
 
   return (
     <div className="min-h-full">
