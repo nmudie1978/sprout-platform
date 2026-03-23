@@ -123,9 +123,9 @@ const RESEARCH_STATS_RAW: ResearchStat[] = [
   },
   {
     id: "oecd-job-shadowing",
-    headline: "Only 45% of students have experienced real workplaces",
+    headline: "Only 45% of students have any real-world career exposure",
     description:
-      "Fewer than half of students have participated in job shadowing or work-site visits, missing valuable exposure to how careers actually work in practice.",
+      "Fewer than half of students have gained practical exposure to how careers actually work — leaving most to make decisions based on guesswork, not experience.",
     sourceName: "OECD PISA",
     sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
     sourcePublishedAt: "2024-06-01",
@@ -276,7 +276,7 @@ export function getAboutPageStats(): ResearchStatWithYear[] {
   return RESEARCH_STATS.filter((stat) =>
     [
       "oecd-career-uncertainty",
-      "oecd-job-shadowing",
+      "gallup-path-uncertainty",
       "gallup-preparedness",
     ].includes(stat.id)
   );

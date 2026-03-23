@@ -105,8 +105,8 @@ const RESEARCH_FACTS_RAW: ResearchFact[] = [
   },
   {
     id: "oecd-45-percent-workplace",
-    headline: "Only 45% of students have visited a real workplace",
-    context: "Job shadowing provides valuable exposure to how careers actually work in practice.",
+    headline: "Only 45% of students have any real-world career exposure",
+    context: "Practical exposure to how careers actually work is critical for informed decision-making.",
     sourceName: "OECD PISA",
     sourceUrl: "https://www.oecd.org/en/data/dashboards/teenage-career-readiness.html",
     sourcePublishedAt: "2024-06-01",
