@@ -507,6 +507,7 @@ export interface JourneyStateContext {
   shadowsRequested: number;
   shadowsCompleted: number;
   shadowsSkipped: boolean;
+  pathDataSaved: boolean;
   savedItemsCount: number;
   // ACT lens data
   alignedActionsCompleted: number;

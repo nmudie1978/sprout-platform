@@ -112,6 +112,12 @@ export async function POST(req: NextRequest) {
       shadowsRequested: existingSummary?.shadowSummary?.total || 0,
       shadowsCompleted,
       shadowsSkipped: Boolean(existingSkippedSteps['CAREER_SHADOW']),
+      pathDataSaved: Boolean(
+        (existingSummary?.pathQualifications?.length) ||
+        (existingSummary?.pathSkills?.length) ||
+        (existingSummary?.pathCourses?.length) ||
+        (existingSummary?.pathRequirements?.length)
+      ),
       savedItemsCount: existingSummary?.industryInsightsSummary?.insightsSaved || 0,
       // ACT lens data
       alignedActionsCompleted: existingSummary?.alignedActionsCount || 0,

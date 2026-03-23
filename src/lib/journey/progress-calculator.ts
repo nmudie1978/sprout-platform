@@ -266,7 +266,8 @@ export function calculateAllLensProgress(summary: JourneySummary): AllLensProgre
   // UNDERSTAND lens
   const understandProgress = calculateUnderstandProgress({
     industryOutlookReviewed: (summary.industryInsightsSummary?.trendsReviewed ?? 0) >= 3,
-    careerShadowCompleted: (summary.shadowSummary?.completed ?? 0) > 0,
+    careerShadowCompleted: (summary.shadowSummary?.completed ?? 0) > 0 ||
+      Boolean(summary.pathQualifications?.length || summary.pathSkills?.length || summary.pathCourses?.length || summary.pathRequirements?.length),
     planCreated: summary.planCreated ?? false,
   });
 
@@ -305,7 +306,7 @@ export function calculateProgressFromContext(context: JourneyStateContext): AllL
 
   const understandProgress = calculateUnderstandProgress({
     industryOutlookReviewed: context.industryOutlookReviewed,
-    careerShadowCompleted: context.shadowsCompleted > 0,
+    careerShadowCompleted: context.shadowsCompleted > 0 || context.pathDataSaved === true,
     planCreated: context.planCreated,
   });
 

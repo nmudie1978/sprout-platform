@@ -91,6 +91,12 @@ export async function GET() {
       shadowsRequested: journeySummary?.shadowSummary?.total || 0,
       shadowsCompleted,
       shadowsSkipped: Boolean(skippedSteps['CAREER_SHADOW']),
+      pathDataSaved: Boolean(
+        (journeySummary?.pathQualifications?.length) ||
+        (journeySummary?.pathSkills?.length) ||
+        (journeySummary?.pathCourses?.length) ||
+        (journeySummary?.pathRequirements?.length)
+      ),
       savedItemsCount: journeySummary?.industryInsightsSummary?.insightsSaved || 0,
       // ACT lens data
       alignedActionsCompleted: journeySummary?.alignedActionsCount || 0,
@@ -216,6 +222,12 @@ export async function PATCH(req: NextRequest) {
       shadowsRequested: patchSummary?.shadowSummary?.total || 0,
       shadowsCompleted,
       shadowsSkipped: Boolean(patchSkippedSteps['CAREER_SHADOW']),
+      pathDataSaved: Boolean(
+        (patchSummary?.pathQualifications?.length) ||
+        (patchSummary?.pathSkills?.length) ||
+        (patchSummary?.pathCourses?.length) ||
+        (patchSummary?.pathRequirements?.length)
+      ),
       savedItemsCount: patchSummary?.industryInsightsSummary?.insightsSaved || 0,
       // ACT lens data
       alignedActionsCompleted: patchSummary?.alignedActionsCount || 0,

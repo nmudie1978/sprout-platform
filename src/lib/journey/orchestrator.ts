@@ -426,9 +426,8 @@ export class JourneyOrchestrator {
         if (data.requirements) {
           this.summary.pathRequirements = data.requirements;
         }
-        // Mark shadow as completed for state machine
-        this.summary.shadowSummary.completed = (this.summary.shadowSummary.completed || 0) + 1;
-        this.summary.shadowSummary.lastUpdatedAt = new Date().toISOString();
+        // Sync context for state machine
+        this.context.pathDataSaved = true;
         this.context.shadowsCompleted += 1;
         break;
 

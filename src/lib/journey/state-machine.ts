@@ -312,8 +312,8 @@ function checkIndustryOutlookComplete(context: JourneyStateContext): boolean {
 }
 
 function checkCareerShadowComplete(context: JourneyStateContext): boolean {
-  // At least one shadow completed (mandatory step)
-  return context.shadowsCompleted >= 1;
+  // Step completed when path data is saved OR shadow completed (legacy)
+  return context.shadowsCompleted >= 1 || context.pathDataSaved === true;
 }
 
 function checkActionPlanComplete(context: JourneyStateContext): boolean {
