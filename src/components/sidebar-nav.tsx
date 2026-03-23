@@ -240,8 +240,11 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               {isGuardian && (
                 <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} />
               )}
-              <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
+            </NavSection>
+
+            <NavSection title="Endeavrly" collapsed={collapsed}>
               <NavItem href="/about" icon={Info} label="About" active={isActive("/about")} collapsed={collapsed} />
+              <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
             </NavSection>
           </>
         )}
