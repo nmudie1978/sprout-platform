@@ -154,34 +154,36 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
       <div className="my-2 border-t border-amber-500/20" />
 
-      {/* Your Roadmap — elevated position */}
-      <div className="pt-2">
+      {/* Your Roadmap — with extra bottom padding to prevent clipping */}
+      <div className="pt-2 pb-4">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <Route className="h-4 w-4 text-amber-500" />
           Your Career Roadmap
         </h3>
-        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        <div className="min-h-[400px]">
+          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        </div>
       </div>
 
-      {/* Supporting sections — muted container */}
-      <div className="mt-2 rounded-xl border border-border/30 bg-muted/10 p-4 space-y-4">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+      {/* Supporting sections — muted container with more top spacing */}
+      <div className="mt-8 rounded-xl border border-border/40 bg-muted/10 p-5 space-y-5">
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/60">
           Supporting Tools
         </h3>
 
         <div>
-          <p className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1.5 mb-2">
-            <GraduationCap className="h-3.5 w-3.5" />
+          <h4 className="text-sm font-medium text-foreground/80 flex items-center gap-2 mb-2">
+            <GraduationCap className="h-4 w-4 text-amber-500/70" />
             Learning Goals
-          </p>
+          </h4>
           <LearningGoalsTab />
         </div>
 
-        <div className="pt-2 border-t border-border/20">
-          <p className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1.5 mb-2">
-            <MessageSquare className="h-3.5 w-3.5" />
+        <div className="pt-3 border-t border-border/30">
+          <h4 className="text-sm font-medium text-foreground/80 flex items-center gap-2 mb-2">
+            <MessageSquare className="h-4 w-4 text-amber-500/70" />
             Reflect & Update
-          </p>
+          </h4>
           <NotesTab />
         </div>
       </div>
