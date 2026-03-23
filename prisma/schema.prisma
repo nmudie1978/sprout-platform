@@ -321,6 +321,9 @@ model User {
   // Journey timeline
   timelineEvents TimelineEvent[]
 
+  // Goal-scoped journey data
+  journeyGoalData JourneyGoalData[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -2948,4 +2951,43 @@ model TranslationCache {
   @@unique([contentHash, targetLocale])
   @@index([contentHash, targetLocale])
   @@index([expiresAt])
+}
+
+// ============================================
+// GOAL-SCOPED JOURNEY DATA
+// ============================================
+// Stores all journey progress and data per goal per user.
+// When a user switches goals, their data is preserved here
+// and can be loaded back when they return to that goal.
+
+model JourneyGoalData {
+  id        String   @id @default(cuid())
+  userId    String
+  goalId    String   // Slugified goal title (e.g., "physiotherapist-fysioterapeut")
+  goalTitle String   // Human-readable goal title
+
+  // Journey state for this goal
+  journeyState          String   @default("REFLECT_ON_STRENGTHS")
+  journeyCompletedSteps String[] @default([])
+  journeySkippedSteps   Json?
+
+  // Goal-specific summary (role reality, path, actions, reflections, etc.)
+  journeySummary Json?
+
+  // Roadmap card annotations (status, notes, resource, confidence per card)
+  roadmapCardData Json? // { [itemId]: { status, notes, resourceLink, confidence } }
+
+  // Cached generated roadmap
+  generatedTimeline Json?
+
+  // Status
+  isActive  Boolean  @default(false) // Is this the currently active goal?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, goalId])
+  @@index([userId])
+  @@index([userId, isActive])
 }

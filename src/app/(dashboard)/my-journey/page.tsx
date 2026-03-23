@@ -322,6 +322,7 @@ export default function MyJourneyPage() {
   const [activeTab, setActiveTab] = useState<JourneyTab>('discover');
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
+  const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
 
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData } = useGoals(isYouth);
@@ -340,6 +341,15 @@ export default function MyJourneyPage() {
     },
     enabled: isYouth,
   });
+
+  // Auto-migrate existing data to goal-scoped model on first load
+  const migrationDone = useRef(false);
+  useEffect(() => {
+    if (isYouth && !migrationDone.current) {
+      migrationDone.current = true;
+      fetch('/api/journey/goal-data/migrate', { method: 'POST' }).catch(() => {});
+    }
+  }, [isYouth]);
 
   const completeStepMutation = useMutation({
     mutationFn: async ({ stepId, data }: { stepId: JourneyStateId; data: StepCompletionData }) => {
@@ -467,6 +477,15 @@ export default function MyJourneyPage() {
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
 
+  // Gate goal sheet — warn if changing an existing goal
+  const handleOpenGoalSheet = useCallback(() => {
+    if (goalTitle) {
+      setShowGoalChangeWarning(true);
+    } else {
+      setGoalSheetOpen(true);
+    }
+  }, [goalTitle]);
+
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
@@ -487,7 +506,7 @@ export default function MyJourneyPage() {
                       {goalTitle}
                     </h1>
                     <button
-                      onClick={() => setGoalSheetOpen(true)}
+                      onClick={handleOpenGoalSheet}
                       className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
                       title="Change career goal"
                     >
@@ -526,7 +545,7 @@ export default function MyJourneyPage() {
             <DiscoverTab
               journey={journey}
               goalTitle={goalTitle}
-              onSetGoal={() => setGoalSheetOpen(true)}
+              onSetGoal={handleOpenGoalSheet}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
               onConfirmExploration={handleConfirmExploration}
               onContinueToUnderstand={() => setActiveTab('understand')}
@@ -566,6 +585,32 @@ export default function MyJourneyPage() {
         />
       )}
 
+      {/* Goal Change Warning */}
+      {showGoalChangeWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
+          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
+            <p className="text-sm text-muted-foreground mb-1">
+              Your current progress for <strong>{goalTitle}</strong> will be saved and can be restored later.
+            </p>
+            <p className="text-xs text-muted-foreground/60 mb-4">
+              Your strengths and interests will carry over. Role-specific research, actions, and roadmap progress are saved per goal.
+            </p>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
+                Keep current goal
+              </Button>
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => {
+                setShowGoalChangeWarning(false);
+                setGoalSheetOpen(true);
+              }}>
+                Change goal
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Goal Selection Sheet */}
       <GoalSelectionSheet
         open={goalSheetOpen}
@@ -573,7 +618,35 @@ export default function MyJourneyPage() {
         primaryGoal={primaryGoal}
         secondaryGoal={secondaryGoal}
         onSuccess={async () => {
+          // Save current goal data before switching
+          if (goalTitle) {
+            const currentGoalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            try {
+              await fetch('/api/journey/goal-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  goalId: currentGoalId,
+                  goalTitle,
+                  journeyState: journey.currentState,
+                  journeyCompletedSteps: journey.completedSteps,
+                  journeySummary: journey.summary,
+                }),
+              });
+            } catch {
+              // Non-blocking
+            }
+          }
+
           setGoalSheetOpen(false);
+
+          // Trigger migration for new goal data
+          try {
+            await fetch('/api/journey/goal-data/migrate', { method: 'POST' });
+          } catch {
+            // Non-blocking
+          }
+
           // Auto-complete ROLE_DEEP_DIVE when a goal is set
           const currentStep = journey.steps.find((s) => s.id === 'ROLE_DEEP_DIVE');
           if (currentStep && currentStep.status !== 'completed') {
@@ -594,7 +667,7 @@ export default function MyJourneyPage() {
                 },
               });
             } catch {
-              // Step completion failed — non-blocking, journey state will reconcile
+              // Step completion failed — non-blocking
             }
           }
         }}

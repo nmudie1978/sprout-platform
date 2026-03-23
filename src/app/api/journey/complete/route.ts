@@ -165,15 +165,43 @@ export async function POST(req: NextRequest) {
     }
 
     // Persist to database - convert summary to JSON-compatible format
+    const summaryJson = JSON.parse(JSON.stringify(updatedSummary));
     await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
         journeyState: orchestrator.getCurrentState(),
         journeyCompletedSteps: orchestrator.getCompletedSteps(),
-        journeySummary: JSON.parse(JSON.stringify(updatedSummary)),
+        journeySummary: summaryJson,
         journeyLastUpdated: new Date(),
       },
     });
+
+    // Also sync to goal-scoped data if a primary goal exists
+    const goalTitle = (profile.primaryGoal as Record<string, unknown>)?.title as string | undefined;
+    if (goalTitle) {
+      const goalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      await prisma.journeyGoalData.upsert({
+        where: { userId_goalId: { userId: session.user.id, goalId } },
+        create: {
+          userId: session.user.id,
+          goalId,
+          goalTitle,
+          journeyState: orchestrator.getCurrentState(),
+          journeyCompletedSteps: orchestrator.getCompletedSteps(),
+          journeySummary: summaryJson,
+          isActive: true,
+        },
+        update: {
+          journeyState: orchestrator.getCurrentState(),
+          journeyCompletedSteps: orchestrator.getCompletedSteps(),
+          journeySummary: summaryJson,
+          updatedAt: new Date(),
+        },
+      }).catch((err) => {
+        // Non-blocking — goal data sync failure shouldn't break step completion
+        console.error('Failed to sync goal data:', err);
+      });
+    }
 
     return NextResponse.json({
       success: true,

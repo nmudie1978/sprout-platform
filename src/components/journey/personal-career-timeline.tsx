@@ -9,6 +9,11 @@ import { STAGE_CONFIG, STAGE_ORDER, type JourneyItem } from '@/lib/journey/caree
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { ZigzagRenderer } from './renderers';
 import { TimelineDetailDialog } from './timeline';
+import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
+
+function slugify(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
@@ -17,6 +22,8 @@ interface PersonalCareerTimelineProps {
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
+  const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
+  useRoadmapCardData(goalId); // Syncs localStorage ↔ DB
 
   const {
     data,
