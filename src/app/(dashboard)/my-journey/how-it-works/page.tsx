@@ -130,8 +130,10 @@ export default function HowItWorksPage() {
 
               <div className="grid sm:grid-cols-2 gap-2">
                 {stage.items.map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-sm">
-                    <span className={`h-1.5 w-1.5 rounded-full mt-1.5 shrink-0 bg-${stage.color}-500/40`} />
+                  <div key={item} className="flex items-start gap-2.5 text-sm">
+                    <div className={`flex h-5 w-5 items-center justify-center rounded-md shrink-0 mt-0.5 bg-${stage.color}-500/10`}>
+                      <div className={`h-1.5 w-1.5 rounded-full bg-${stage.color}-500`} />
+                    </div>
                     <span className="text-foreground/80">{item}</span>
                   </div>
                 ))}

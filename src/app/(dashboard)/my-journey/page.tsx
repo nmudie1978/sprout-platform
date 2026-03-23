@@ -266,10 +266,10 @@ function StageTabBar({
 
             {/* Framework items */}
             {isActive && (
-              <ul className="mt-2 space-y-0.5">
+              <ul className="mt-2 space-y-1">
                 {tab.items.map((item) => (
-                  <li key={item} className={cn('text-[10px] sm:text-[11px] flex items-center gap-1.5', `text-${tab.color}-500/60`)}>
-                    <span className={cn('h-1 w-1 rounded-full shrink-0', `bg-${tab.color}-500/40`)} />
+                  <li key={item} className={cn('text-[10px] sm:text-[11px] flex items-center gap-2', `text-${tab.color}-500/70`)}>
+                    <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', `bg-${tab.color}-500`)} />
                     {item}
                   </li>
                 ))}
