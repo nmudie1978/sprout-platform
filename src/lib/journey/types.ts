@@ -120,7 +120,7 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
     id: 'ROLE_DEEP_DIVE',
     lens: 'DISCOVER',
     phase: 'EXPLORATION',
-    title: 'Deep Dive into Role',
+    title: 'Set Your Career Direction',
     description: 'Pick a career path you like and find out more about what the job looks like daily.',
     order: 2,
     mandatory: true,

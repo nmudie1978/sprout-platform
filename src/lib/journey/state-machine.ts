@@ -57,7 +57,7 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   },
   ROLE_DEEP_DIVE: {
     id: 'ROLE_DEEP_DIVE',
-    title: 'Deep Dive into Role',
+    title: 'Set Your Career Direction',
     description: 'Pick a career path you like and find out more about what the job looks like daily',
     order: 2,
     allowedTransitions: ['REVIEW_INDUSTRY_OUTLOOK'],

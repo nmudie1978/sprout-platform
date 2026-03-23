@@ -202,7 +202,7 @@ const DISCOVER_STEPS: StepConfig[] = [
   {
     id: 'ROLE_DEEP_DIVE',
     stepNumber: 3,
-    title: 'Deep Dive into a Role',
+    title: 'Set Your Career Direction',
     description: 'Pick a career and research what the job actually involves day to day.',
     icon: Compass,
     colorClass: 'text-emerald-500',

@@ -1383,7 +1383,7 @@ export function StepContent({
       description: 'Look up 3 career paths that interest you',
     },
     ROLE_DEEP_DIVE: {
-      title: 'Deep Dive into a Role',
+      title: 'Set Your Career Direction',
       description: 'Pick a career path you like and find out more about what the job looks like daily',
     },
     // UNDERSTAND lens
