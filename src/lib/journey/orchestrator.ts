@@ -222,6 +222,16 @@ export class JourneyOrchestrator {
   }
 
   /**
+   * Manually mark a step as completed (for last steps with no next transition)
+   */
+  markStepCompleted(stepId: JourneyStateId): void {
+    if (!this.completedSteps.includes(stepId)) {
+      this.completedSteps.push(stepId);
+      this.updateLensProgress();
+    }
+  }
+
+  /**
    * Check if user can advance to next step
    */
   canAdvanceToNext(): { canAdvance: boolean; reason: string | null } {

@@ -146,13 +146,14 @@ export async function POST(req: NextRequest) {
     // Mark step as completed and try to advance
     const currentState = orchestrator.getCurrentState();
     if (!orchestrator.getCompletedSteps().includes(stepId)) {
-      // If stepId is the current state, transition is same-state (no-op for completedSteps)
-      // So we need to explicitly add it and advance
       if (stepId === currentState) {
-        // The step is current — try to advance past it
         const nextStep = orchestrator.getNextAllowedStep();
         if (nextStep) {
+          // Advance to next step (this adds current to completedSteps)
           orchestrator.transitionTo(nextStep);
+        } else {
+          // Last step — no next step, so manually mark as completed
+          orchestrator.markStepCompleted(stepId);
         }
       } else {
         orchestrator.transitionTo(stepId);

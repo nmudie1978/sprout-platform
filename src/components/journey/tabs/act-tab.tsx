@@ -230,6 +230,25 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
       <div className="my-2 border-t border-amber-500/20" />
 
+      {/* Journey Complete message — when mandatory Grow steps are done */}
+      {getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
+       getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed' && (
+        <div
+          className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 flex items-center gap-4"
+          style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.1)' }}
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 shrink-0">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-emerald-400">Your guided journey is complete!</p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">
+              Keep using the roadmap below to track your long-term progress. Click any step to add notes, resources, and mark your advancement.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Your Roadmap — with extra bottom padding to prevent clipping */}
       <div className="pt-2 pb-4">
         <div className="flex items-center justify-between mb-3">
