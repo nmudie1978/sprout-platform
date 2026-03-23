@@ -182,7 +182,8 @@ export async function POST(req: NextRequest) {
       journey: orchestrator.getUIState(),
     });
   } catch (error) {
-    console.error('Failed to complete journey step:', error);
-    return NextResponse.json({ error: 'Failed to complete journey step' }, { status: 500 });
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Failed to complete journey step:', errorMsg, error);
+    return NextResponse.json({ error: `Failed to complete journey step: ${errorMsg}` }, { status: 500 });
   }
 }

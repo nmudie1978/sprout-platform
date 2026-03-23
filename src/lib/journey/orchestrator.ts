@@ -443,8 +443,9 @@ export class JourneyOrchestrator {
 
       // ACT lens steps
       case 'COMPLETE_ALIGNED_ACTION':
-        this.summary.alignedActionsCount += 1;
+        this.summary.alignedActionsCount = (this.summary.alignedActionsCount || 0) + 1;
         this.context.alignedActionsCompleted = this.summary.alignedActionsCount;
+        if (!this.summary.alignedActions) this.summary.alignedActions = [];
         this.summary.alignedActions.push({
           id: data.actionId,
           type: data.actionType,
@@ -456,6 +457,9 @@ export class JourneyOrchestrator {
         break;
 
       case 'SUBMIT_ACTION_REFLECTION':
+        if (!this.summary.alignedActionReflections) {
+          this.summary.alignedActionReflections = [];
+        }
         this.summary.alignedActionReflections.push({
           id: `reflection-${Date.now()}`,
           actionId: data.actionId,
@@ -463,6 +467,9 @@ export class JourneyOrchestrator {
           response: data.reflectionResponse,
           createdAt: new Date().toISOString(),
         });
+        if (!this.summary.reflectionSummary) {
+          this.summary.reflectionSummary = { total: 0, thisMonth: 0, lastReflectionAt: null };
+        }
         this.summary.reflectionSummary.total += 1;
         this.summary.reflectionSummary.lastReflectionAt = new Date().toISOString();
         this.context.actionReflectionsSubmitted = this.summary.alignedActionReflections.length;
