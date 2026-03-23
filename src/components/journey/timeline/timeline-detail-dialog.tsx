@@ -132,23 +132,46 @@ export function TimelineDetailDialog({
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-xs font-medium text-foreground/70">Status</p>
-              {status === 'done' && allItems && item && (() => {
-                const currentIdx = allItems.findIndex((i) => i.id === item.id);
-                if (currentIdx <= 0) return null;
-                const prevItem = allItems[currentIdx - 1];
+              {allItems && allItems.length > 0 && (() => {
+                // Find the current "YOU ARE HERE" position (first non-done)
+                const youAreHereIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
+                const effectiveIdx = youAreHereIdx === -1 ? allItems.length - 1 : youAreHereIdx;
+                const canGoBack = effectiveIdx > 0;
+                const canGoForward = effectiveIdx < allItems.length && loadCardData(allItems[effectiveIdx]?.id).status !== 'done';
+
                 return (
-                  <button
-                    onClick={() => {
-                      // Reset previous item to not_started
-                      const prevData = loadCardData(prevItem.id);
-                      saveCardData(prevItem.id, { ...prevData, status: 'not_started' });
-                      onSaved?.();
-                      onOpenChange(false);
-                    }}
-                    className="text-[10px] text-muted-foreground/50 hover:text-red-400 transition-colors underline underline-offset-2"
-                  >
-                    Go back to previous step
-                  </button>
+                  <div className="flex items-center gap-3">
+                    {canGoBack && (
+                      <button
+                        onClick={() => {
+                          // Reset the last completed card (one before YOU ARE HERE)
+                          const prevItem = allItems[effectiveIdx - 1];
+                          const prevData = loadCardData(prevItem.id);
+                          saveCardData(prevItem.id, { ...prevData, status: 'not_started' });
+                          onSaved?.();
+                          onOpenChange(false);
+                        }}
+                        className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                      >
+                        &larr; Previous step
+                      </button>
+                    )}
+                    {canGoForward && (
+                      <button
+                        onClick={() => {
+                          // Mark the current YOU ARE HERE card as done
+                          const currentItem = allItems[effectiveIdx];
+                          const currentData = loadCardData(currentItem.id);
+                          saveCardData(currentItem.id, { ...currentData, status: 'done' });
+                          onSaved?.();
+                          onOpenChange(false);
+                        }}
+                        className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2"
+                      >
+                        Next step &rarr;
+                      </button>
+                    )}
+                  </div>
                 );
               })()}
             </div>
