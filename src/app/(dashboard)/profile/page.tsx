@@ -11,7 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info } from "lucide-react";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
 import {
@@ -755,71 +756,90 @@ export default function ProfilePage() {
 
       {/* Career Goal — Prominent, top of profile */}
       {profile && (
-        <Card className="mb-6 border-2 border-primary/20 overflow-hidden relative z-10">
+        <Card className="mb-6 border border-primary/20 overflow-hidden relative z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
           <CardContent className="relative z-10 p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="p-2.5 rounded-xl bg-primary/10 shrink-0">
-                  <Target className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-lg font-bold">Career Goal</h2>
-                  {goalsData?.primaryGoal ? (
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="text-sm font-medium truncate">{goalsData.primaryGoal.title}</p>
-                      <Badge
-                        variant="secondary"
-                        className={`text-[10px] shrink-0 ${
-                          goalsData.primaryGoal.status === "committed"
-                            ? "bg-green-500/10 text-green-700 dark:text-green-400"
-                            : "bg-blue-500/10 text-blue-700 dark:text-blue-400"
-                        }`}
-                      >
-                        {goalsData.primaryGoal.status === "committed" ? "Committed" : "Exploring"}
-                      </Badge>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      No goal set — your journey starts here
-                    </p>
-                  )}
-                  {goalsData?.secondaryGoal && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Backup: {goalsData.secondaryGoal.title}
-                    </p>
-                  )}
-                </div>
+            {/* Header with tooltip */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Career Direction</h2>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-[260px] text-xs p-3">
+                      <p className="font-medium mb-1">Why this matters</p>
+                      <p className="text-muted-foreground">Your primary goal drives your entire My Journey experience — from research and career roadmap to action planning. You can change it anytime; your progress is saved per goal.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                {goalsData?.primaryGoal && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-muted-foreground hover:text-destructive"
-                    disabled={clearGoal.isPending}
-                    onClick={() => clearGoal.mutate("both")}
-                  >
-                    {clearGoal.isPending ? "Clearing..." : "Clear"}
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  variant={goalsData?.primaryGoal ? "outline" : "default"}
-                  onClick={() => {
-                    if (goalsData?.primaryGoal) {
-                      setShowGoalChangeWarning(true);
-                    } else {
-                      setGoalSheetTargetSlot("primary");
-                      setShowGoalSheet(true);
-                    }
-                  }}
-                >
-                  <Target className="h-4 w-4 mr-1.5" />
-                  {goalsData?.primaryGoal ? "Edit Goals" : "Set a Goal"}
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                variant={goalsData?.primaryGoal ? "ghost" : "default"}
+                className={goalsData?.primaryGoal ? "text-xs text-muted-foreground/50 hover:text-muted-foreground" : "text-xs"}
+                onClick={() => {
+                  if (goalsData?.primaryGoal) {
+                    setShowGoalChangeWarning(true);
+                  } else {
+                    setGoalSheetTargetSlot("primary");
+                    setShowGoalSheet(true);
+                  }
+                }}
+              >
+                <Target className="h-3.5 w-3.5 mr-1" />
+                {goalsData?.primaryGoal ? "Change" : "Set a Goal"}
+              </Button>
             </div>
+
+            {/* Goals grid */}
+            {goalsData?.primaryGoal ? (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {/* Primary Goal */}
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
+                    <Badge
+                      variant="secondary"
+                      className={`text-[9px] h-4 ${
+                        goalsData.primaryGoal.status === "committed"
+                          ? "bg-green-500/10 text-green-400"
+                          : "bg-blue-500/10 text-blue-400"
+                      }`}
+                    >
+                      {goalsData.primaryGoal.status === "committed" ? "Committed" : "Exploring"}
+                    </Badge>
+                  </div>
+                  <p className="text-sm font-semibold truncate">{goalsData.primaryGoal.title}</p>
+                </div>
+
+                {/* Secondary Goal */}
+                <div className={`rounded-lg border p-3 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
+                    {goalsData.secondaryGoal && (
+                      <Badge variant="secondary" className="text-[9px] h-4 bg-muted/50 text-muted-foreground/60">
+                        {goalsData.secondaryGoal.status === "committed" ? "Committed" : "Exploring"}
+                      </Badge>
+                    )}
+                  </div>
+                  {goalsData.secondaryGoal ? (
+                    <p className="text-sm font-medium truncate text-muted-foreground">{goalsData.secondaryGoal.title}</p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground/40">No backup goal set</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed border-primary/20 p-6 text-center">
+                <Target className="h-8 w-8 mx-auto text-primary/30 mb-2" />
+                <p className="text-sm font-medium text-muted-foreground">No career goal set yet</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">
+                  Setting a goal powers your entire journey — research, roadmap, and action planning
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
