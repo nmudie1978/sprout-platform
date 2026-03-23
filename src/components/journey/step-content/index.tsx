@@ -530,6 +530,7 @@ function PlanBuildContent({
   const [milestone, setMilestone] = useState('');
   const [skill, setSkill] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!roleTitle.trim() || !action1.trim() || !action2.trim() || !milestone.trim() || !skill.trim()) {
@@ -537,6 +538,7 @@ function PlanBuildContent({
     }
 
     setIsSubmitting(true);
+    setError(null);
     try {
       const plan: RolePlan = {
         roleTitle: roleTitle.trim(),
@@ -551,6 +553,8 @@ function PlanBuildContent({
         plan,
       });
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -600,7 +604,7 @@ function PlanBuildContent({
             <Input
               value={action2}
               onChange={(e) => setAction2(e.target.value)}
-              placeholder="e.g., Shadow someone in this role"
+              placeholder="e.g., Volunteer at a relevant organisation"
             />
           </div>
         </div>
@@ -628,6 +632,12 @@ function PlanBuildContent({
         </div>
       </div>
 
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>
           Cancel
@@ -635,7 +645,7 @@ function PlanBuildContent({
         <Button
           onClick={handleSubmit}
           disabled={!isValid || isSubmitting}
-          className="bg-teal-600 hover:bg-teal-700"
+          className="bg-emerald-600 hover:bg-emerald-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -707,7 +717,7 @@ function IndustryInsightsContent({
           onChange={(e) => setRoleReality(e.target.value)}
           placeholder="e.g., The role involves more patient interaction than I expected&#10;Physical therapists need to keep up with new treatment methods&#10;Most work in hospitals, clinics, or private practices"
           rows={4}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 
@@ -727,7 +737,7 @@ function IndustryInsightsContent({
           onChange={(e) => setIndustryInsights(e.target.value)}
           placeholder="e.g., Healthcare sector is growing due to ageing population&#10;Demand for physiotherapists is high in Norway&#10;Technology like telehealth is changing how care is delivered"
           rows={4}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 
@@ -824,7 +834,7 @@ function CareerShadowContent({
           onChange={(e) => setQualifications(e.target.value)}
           placeholder="e.g., Bachelor's in Physiotherapy (3 years)&#10;Must be authorised by the Norwegian Directorate of Health"
           rows={3}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 
@@ -844,7 +854,7 @@ function CareerShadowContent({
           onChange={(e) => setSkills(e.target.value)}
           placeholder="e.g., Anatomy knowledge&#10;Communication and empathy&#10;Physical fitness and manual therapy"
           rows={3}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 
@@ -864,7 +874,7 @@ function CareerShadowContent({
           onChange={(e) => setCourses(e.target.value)}
           placeholder="e.g., OsloMet Bachelor in Physiotherapy&#10;First Aid certification&#10;Sports Science modules"
           rows={3}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 
@@ -884,7 +894,7 @@ function CareerShadowContent({
           onChange={(e) => setRequirements(e.target.value)}
           placeholder="e.g., Good grades in science subjects&#10;Internship or practical experience preferred&#10;Police clearance certificate required"
           rows={3}
-          className="text-sm border-border/80 focus:border-emerald-500/50"
+          className="text-sm"
         />
       </div>
 

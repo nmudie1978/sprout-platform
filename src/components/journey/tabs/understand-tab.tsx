@@ -103,6 +103,7 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
   const pathCourses = journey.summary?.pathCourses || [];
   const pathRequirements = journey.summary?.pathRequirements || [];
   const hasPathData = pathQualifications.length > 0 || pathSkills.length > 0 || pathCourses.length > 0 || pathRequirements.length > 0;
+  const actionPlan = journey.summary?.rolePlans?.[0] || null;
 
   // Look up career data from the primary goal title
   const goalCareer = useMemo(() => {
@@ -312,6 +313,49 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Output — saved data for completed CREATE_ACTION_PLAN */}
+            {isComplete && config.id === 'CREATE_ACTION_PLAN' && actionPlan && (
+              <div className="mt-3 pt-3 border-t border-border/30 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                    Target Role
+                  </p>
+                  <p className="text-xs text-muted-foreground font-medium">{actionPlan.roleTitle}</p>
+                </div>
+                {actionPlan.shortTermActions.length > 0 && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Short-term Actions
+                    </p>
+                    <ul className="space-y-1.5">
+                      {actionPlan.shortTermActions.map((action, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                          {action}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {actionPlan.midTermMilestone && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Mid-term Milestone
+                    </p>
+                    <p className="text-xs text-muted-foreground">{actionPlan.midTermMilestone}</p>
+                  </div>
+                )}
+                {actionPlan.skillToBuild && (
+                  <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                      Skill to Build
+                    </p>
+                    <p className="text-xs text-muted-foreground">{actionPlan.skillToBuild}</p>
                   </div>
                 )}
               </div>
