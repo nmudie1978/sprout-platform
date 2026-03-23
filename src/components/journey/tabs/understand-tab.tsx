@@ -17,6 +17,7 @@ import {
   Briefcase,
   Pencil,
   Info,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
@@ -31,6 +32,7 @@ interface UnderstandTabProps {
   goalTitle?: string | null;
   onStartStep?: (stepId: string) => void;
   onContinueToGrow?: () => void;
+  onDeleteItem?: (stepId: string, field: string, index: number) => void;
 }
 
 // ── Step Config ─────────────────────────────────────────────────────
@@ -94,7 +96,7 @@ function QuickLink({
 
 // ── Main Component ──────────────────────────────────────────────────
 
-export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow }: UnderstandTabProps) {
+export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow, onDeleteItem }: UnderstandTabProps) {
   const understandComplete = journey.summary?.lenses?.understand?.isComplete;
   const roleRealityNotes = journey.summary?.roleRealityNotes || [];
   const industryInsightNotes = journey.summary?.industryInsightNotes || [];

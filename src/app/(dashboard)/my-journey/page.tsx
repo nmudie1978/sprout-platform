@@ -542,6 +542,7 @@ export default function MyJourneyPage() {
             completedJobs: journey.summary.alignedActionsCount,
             savedCareers: journey.summary.careerInterests,
             profile: undefined,
+            summary: journey.summary as unknown as Record<string, unknown>,
           }}
         />
       )}

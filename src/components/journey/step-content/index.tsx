@@ -34,6 +34,7 @@ interface StepContentProps {
       bio?: string;
       city?: string;
     };
+    summary?: Record<string, unknown>;
   };
 }
 
@@ -520,15 +521,20 @@ function RoleDeepDiveContent({
 function PlanBuildContent({
   onComplete,
   onClose,
+  context,
 }: {
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
+  context?: StepContentProps['context'];
 }) {
-  const [roleTitle, setRoleTitle] = useState('');
-  const [action1, setAction1] = useState('');
-  const [action2, setAction2] = useState('');
-  const [milestone, setMilestone] = useState('');
-  const [skill, setSkill] = useState('');
+  const s = context?.summary as Record<string, unknown> | undefined;
+  const existingPlan = ((s?.rolePlans as Array<Record<string, unknown>>) || [])[0];
+  const existingActions = (existingPlan?.shortTermActions as string[]) || [];
+  const [roleTitle, setRoleTitle] = useState((existingPlan?.roleTitle as string) || '');
+  const [action1, setAction1] = useState(existingActions[0] || '');
+  const [action2, setAction2] = useState(existingActions[1] || '');
+  const [milestone, setMilestone] = useState((existingPlan?.midTermMilestone as string) || '');
+  const [skill, setSkill] = useState((existingPlan?.skillToBuild as string) || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -666,12 +672,17 @@ function PlanBuildContent({
 function IndustryInsightsContent({
   onComplete,
   onClose,
+  context,
 }: {
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
+  context?: StepContentProps['context'];
 }) {
-  const [roleReality, setRoleReality] = useState('');
-  const [industryInsights, setIndustryInsights] = useState('');
+  const s = context?.summary as Record<string, unknown> | undefined;
+  const existingRole = (s?.roleRealityNotes as string[]) || [];
+  const existingInsights = (s?.industryInsightNotes as string[]) || [];
+  const [roleReality, setRoleReality] = useState(existingRole.join('\n'));
+  const [industryInsights, setIndustryInsights] = useState(existingInsights.join('\n'));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -783,14 +794,17 @@ function IndustryInsightsContent({
 function CareerShadowContent({
   onComplete,
   onClose,
+  context,
 }: {
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
+  context?: StepContentProps['context'];
 }) {
-  const [qualifications, setQualifications] = useState('');
-  const [skills, setSkills] = useState('');
-  const [courses, setCourses] = useState('');
-  const [requirements, setRequirements] = useState('');
+  const s = context?.summary as Record<string, unknown> | undefined;
+  const [qualifications, setQualifications] = useState(((s?.pathQualifications as string[]) || []).join('\n'));
+  const [skills, setSkills] = useState(((s?.pathSkills as string[]) || []).join('\n'));
+  const [courses, setCourses] = useState(((s?.pathCourses as string[]) || []).join('\n'));
+  const [requirements, setRequirements] = useState(((s?.pathRequirements as string[]) || []).join('\n'));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -1304,13 +1318,13 @@ export function StepContent({
 
       // UNDERSTAND lens
       case 'REVIEW_INDUSTRY_OUTLOOK':
-        return <IndustryInsightsContent onComplete={onComplete} onClose={onClose} />;
+        return <IndustryInsightsContent onComplete={onComplete} onClose={onClose} context={context} />;
 
       case 'CAREER_SHADOW':
-        return <CareerShadowContent onComplete={onComplete} onClose={onClose} />;
+        return <CareerShadowContent onComplete={onComplete} onClose={onClose} context={context} />;
 
       case 'CREATE_ACTION_PLAN':
-        return <PlanBuildContent onComplete={onComplete} onClose={onClose} />;
+        return <PlanBuildContent onComplete={onComplete} onClose={onClose} context={context} />;
 
       // ACT lens
       case 'COMPLETE_ALIGNED_ACTION':
