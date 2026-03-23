@@ -46,14 +46,14 @@ interface EarningsChartData {
 }
 
 const categoryConfig: Record<string, { emoji: string; label: string; color: string }> = {
-  BABYSITTING: { emoji: "👶", label: "Babysitting", color: "bg-pink-500" },
-  DOG_WALKING: { emoji: "🐕", label: "Dog Walking", color: "bg-amber-500" },
-  SNOW_CLEARING: { emoji: "❄️", label: "Snow Clearing", color: "bg-cyan-500" },
-  CLEANING: { emoji: "🧹", label: "Cleaning", color: "bg-emerald-500" },
-  DIY_HELP: { emoji: "🔧", label: "DIY Help", color: "bg-orange-500" },
-  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-teal-500" },
-  ERRANDS: { emoji: "🏃", label: "Errands", color: "bg-blue-500" },
-  OTHER: { emoji: "✨", label: "Other", color: "bg-gray-500" },
+  BABYSITTING: { emoji: "👶", label: "Babysitting", color: "bg-pink-500/50" },
+  DOG_WALKING: { emoji: "🐕", label: "Dog Walking", color: "bg-amber-500/50" },
+  SNOW_CLEARING: { emoji: "❄️", label: "Snow Clearing", color: "bg-cyan-500/50" },
+  CLEANING: { emoji: "🧹", label: "Cleaning", color: "bg-emerald-500/50" },
+  DIY_HELP: { emoji: "🔧", label: "DIY Help", color: "bg-orange-500/50" },
+  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-teal-500/50" },
+  ERRANDS: { emoji: "🏃", label: "Errands", color: "bg-blue-500/50" },
+  OTHER: { emoji: "✨", label: "Other", color: "bg-gray-500/50" },
 };
 
 export function EarningsChart() {
@@ -85,7 +85,7 @@ export function EarningsChart() {
   const canScrollRight = scrollPosition < maxScroll;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Back Button */}
         <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
@@ -99,48 +99,44 @@ export function EarningsChart() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative mb-6 rounded-2xl overflow-hidden"
+          className="mb-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm px-6 py-6"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-green-600 to-teal-600 opacity-90" />
-          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-          <div className="relative px-6 py-8 text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-xl bg-white/20 backdrop-blur-sm">
-                <BarChart3 className="h-6 w-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Earnings Overview</h1>
-                <p className="text-white/80 text-sm">Track your income over time</p>
-              </div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-xl bg-muted/50">
+              <BarChart3 className="h-5 w-5 text-muted-foreground" />
             </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold text-foreground">Earnings Overview</h1>
+              <p className="text-xs text-muted-foreground/60">Track your income over time</p>
+            </div>
+          </div>
 
-            {/* Year Range Selector */}
-            <div className="flex flex-wrap gap-2">
-              {[1, 2, 3, 4, 5].map((y) => (
-                <Button
-                  key={y}
-                  variant={years === y ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => {
-                    setYears(y);
-                    setScrollPosition(0);
-                  }}
-                  className={`rounded-full ${
-                    years === y
-                      ? "bg-white text-emerald-700 hover:bg-white/90"
-                      : "bg-white/20 text-white hover:bg-white/30"
-                  }`}
-                >
-                  {y} Year{y > 1 ? "s" : ""}
-                </Button>
-              ))}
-            </div>
+          {/* Year Range Selector */}
+          <div className="flex flex-wrap gap-2">
+            {[1, 2, 3, 4, 5].map((y) => (
+              <Button
+                key={y}
+                variant={years === y ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => {
+                  setYears(y);
+                  setScrollPosition(0);
+                }}
+                className={`rounded-full text-xs ${
+                  years === y
+                    ? "bg-foreground/10 text-foreground border border-border/50"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                }`}
+              >
+                {y} Year{y > 1 ? "s" : ""}
+              </Button>
+            ))}
           </div>
         </motion.div>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-emerald-500 mb-3" />
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground/50 mb-3" />
             <p className="text-sm text-muted-foreground">Loading earnings data...</p>
           </div>
         ) : (
@@ -152,50 +148,50 @@ export function EarningsChart() {
               transition={{ delay: 0.1 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
             >
-              <Card className="border-2">
+              <Card className="border border-border/40 bg-card/80">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <Wallet className="h-4 w-4" />
                     Total Earned
                   </div>
-                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                  <div className="text-2xl font-bold text-foreground/80">
                     {formatCurrency(summary?.totalEarnings || 0)}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground/50">
                     over {years} year{years > 1 ? "s" : ""}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border border-border/40 bg-card/80">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <Calendar className="h-4 w-4" />
                     Monthly Avg
                   </div>
-                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                  <div className="text-2xl font-bold text-foreground/80">
                     {formatCurrency(summary?.avgMonthly || 0)}
                   </div>
-                  <div className="text-xs text-muted-foreground">per month</div>
+                  <div className="text-xs text-muted-foreground/50">per month</div>
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border border-border/40 bg-card/80">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     <Trophy className="h-4 w-4" />
                     Best Month
                   </div>
-                  <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
+                  <div className="text-2xl font-bold text-foreground/80">
                     {formatCurrency(summary?.bestMonthAmount || 0)}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground/50">
                     {summary?.bestMonth || "N/A"}
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-2">
+              <Card className="border border-border/40 bg-card/80">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                     {(summary?.yearOverYearGrowth ?? 0) >= 0 ? (
@@ -209,16 +205,16 @@ export function EarningsChart() {
                     className={`text-2xl font-bold ${
                       summary?.yearOverYearGrowth != null
                         ? (summary?.yearOverYearGrowth ?? 0) >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "text-teal-500/80"
+                          : "text-red-400/70"
                         : "text-muted-foreground"
                     }`}
                   >
                     {summary?.yearOverYearGrowth != null
                       ? `${(summary?.yearOverYearGrowth ?? 0) >= 0 ? "+" : ""}${summary.yearOverYearGrowth.toFixed(1)}%`
-                      : "—"}
+                      : "\u2014"}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground/50">
                     {summary?.yearOverYearGrowth != null ? "vs last year" : "Need 2+ years"}
                   </div>
                 </CardContent>
@@ -231,7 +227,7 @@ export function EarningsChart() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="border-2">
+              <Card className="border border-border/40 bg-card/80">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <div>
@@ -320,16 +316,16 @@ export function EarningsChart() {
                                         className="absolute bottom-full mb-2 z-10 px-3 py-2 bg-popover border rounded-lg shadow-lg text-sm whitespace-nowrap"
                                       >
                                         <div className="font-semibold">{point.monthLabel}</div>
-                                        <div className="text-emerald-600">
+                                        <div className="text-foreground/80">
                                           Total: {formatCurrency(point.total)}
                                         </div>
                                         {point.confirmed > 0 && (
-                                          <div className="text-green-600 text-xs">
+                                          <div className="text-teal-500/80 text-xs">
                                             Confirmed: {formatCurrency(point.confirmed)}
                                           </div>
                                         )}
                                         {point.pending > 0 && (
-                                          <div className="text-amber-600 text-xs">
+                                          <div className="text-muted-foreground text-xs">
                                             Pending: {formatCurrency(point.pending)}
                                           </div>
                                         )}
@@ -350,19 +346,19 @@ export function EarningsChart() {
                                   >
                                     {/* Confirmed portion (bottom) */}
                                     <div
-                                      className="absolute bottom-0 left-0 right-0 bg-emerald-500 transition-all"
+                                      className="absolute bottom-0 left-0 right-0 bg-teal-600/60 transition-all"
                                       style={{ height: `${(confirmedHeight / height) * 100}%` }}
                                     />
                                     {/* Pending portion (top) */}
                                     <div
-                                      className="absolute top-0 left-0 right-0 bg-amber-400 transition-all"
+                                      className="absolute top-0 left-0 right-0 bg-muted-foreground/25 transition-all"
                                       style={{
                                         height: `${((height - confirmedHeight) / height) * 100}%`,
                                       }}
                                     />
                                     {/* Hover overlay */}
                                     <div
-                                      className={`absolute inset-0 bg-white/20 transition-opacity ${
+                                      className={`absolute inset-0 bg-white/10 transition-opacity ${
                                         isHovered ? "opacity-100" : "opacity-0"
                                       }`}
                                     />
@@ -394,13 +390,13 @@ export function EarningsChart() {
                   )}
 
                   {/* Legend */}
-                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t">
+                  <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-border/30">
                     <div className="flex items-center gap-2 text-sm">
-                      <div className="w-3 h-3 rounded bg-emerald-500" />
+                      <div className="w-3 h-3 rounded bg-teal-600/60" />
                       <span className="text-muted-foreground">Confirmed</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <div className="w-3 h-3 rounded bg-amber-400" />
+                      <div className="w-3 h-3 rounded bg-muted-foreground/25" />
                       <span className="text-muted-foreground">Pending</span>
                     </div>
                   </div>
@@ -416,7 +412,7 @@ export function EarningsChart() {
                 transition={{ delay: 0.3 }}
                 className="mt-6"
               >
-                <Card className="border-2">
+                <Card className="border border-border/40 bg-card/80">
                   <CardHeader>
                     <CardTitle className="text-lg">Earnings by Category</CardTitle>
                     <CardDescription>Where your income comes from</CardDescription>
