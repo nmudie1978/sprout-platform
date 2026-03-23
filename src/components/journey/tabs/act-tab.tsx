@@ -152,7 +152,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         );
       })}
 
-      <div className="border-t border-border/20" />
+      <div className="my-2 border-t border-amber-500/20" />
 
       {/* Your Roadmap — elevated position */}
       <div className="pt-2">
