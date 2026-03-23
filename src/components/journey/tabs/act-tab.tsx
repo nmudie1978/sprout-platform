@@ -118,11 +118,12 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         key={config.id}
         className={cn(
           'rounded-xl border p-3 transition-all',
-          isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
+          isCurrent && !config.optional && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
+          isCurrent && config.optional && 'border-border/50 bg-card/60',
           isComplete && 'border-sky-500/20 bg-card/60',
           isEffectivelyLocked && 'border-border/30 opacity-40',
         )}
-        style={isCurrent ? {
+        style={isCurrent && !config.optional ? {
           boxShadow: '0 0 15px rgba(245, 158, 11, 0.15)',
         } : undefined}
       >
@@ -153,9 +154,19 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             )}
           </div>
           {isCurrent && onStartStep && (
-            <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
-              Start <ArrowRight className="h-3 w-3 ml-1" />
-            </Button>
+            config.optional ? (
+              <button
+                onClick={() => onStartStep(config.id)}
+                className="inline-flex items-center gap-1 text-[11px] font-medium shrink-0 text-muted-foreground/60 hover:text-amber-500 transition-colors"
+              >
+                <Pencil className="h-3 w-3" />
+                Add
+              </button>
+            ) : (
+              <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
+                Start <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            )
           )}
           {isComplete && onStartStep && (
             <button
