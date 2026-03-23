@@ -1,43 +1,36 @@
 'use client';
 
+/**
+ * MY JOURNEY PAGE
+ *
+ * Redesigned layout: clean header, stage-aware tab bar with progress
+ * indicators and lock states, no goal swap clutter.
+ *
+ * Stages: Discover → Understand → Grow (sequential, gated)
+ */
+
 import { useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Route,
   Lock,
   Search,
   Globe,
-  Zap,
+  Rocket,
   Target,
   ArrowRight,
-  ArrowLeftRight,
-  Loader2,
+  CheckCircle2,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from '@/components/ui/tooltip';
-import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { ShineBorder } from '@/components/ui/shine-border';
-
-
 import dynamic from 'next/dynamic';
 
-// Journey Components - lightweight, loaded eagerly
-import { useGoals, usePromoteGoal } from '@/hooks/use-goals';
-
-// Journey guide - lightweight, loaded eagerly
+import { useGoals } from '@/hooks/use-goals';
 import { JourneyGuide } from '@/components/journey/journey-guide';
 
-// Heavy components - loaded lazily to reduce initial bundle
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
   { ssr: false }
@@ -46,12 +39,6 @@ const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
   { ssr: false }
 );
-const ConfirmDialog = dynamic(
-  () => import('@/components/mobile/ConfirmDialog').then((m) => m.ConfirmDialog),
-  { ssr: false }
-);
-
-// D/U/A Tab Components
 const DiscoverTab = dynamic(
   () => import('@/components/journey/tabs/discover-tab').then((m) => m.DiscoverTab),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
@@ -65,22 +52,19 @@ const ActTab = dynamic(
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
 
-// Types
 import type {
   JourneyUIState,
   JourneyStateId,
   JourneyStepStatus,
   StepCompletionData,
   StateConfig,
+  LensProgress,
 } from '@/lib/journey/types';
 import type { CareerGoal } from '@/lib/goals/types';
-
-import {
-  JOURNEY_STATE_CONFIG,
-} from '@/lib/journey/types';
+import { JOURNEY_STATE_CONFIG } from '@/lib/journey/types';
 
 // ============================================
-// DEMO JOURNEY (Test data fallback)
+// DEMO JOURNEY (fallback)
 // ============================================
 
 const DEMO_JOURNEY: JourneyUIState = {
@@ -98,7 +82,6 @@ const DEMO_JOURNEY: JourneyUIState = {
       let status: JourneyStepStatus = 'locked';
       if (completed.includes(config.id)) status = 'completed';
       else if (config.id === current) status = 'next';
-
       return {
         id: config.id,
         title: config.title,
@@ -113,45 +96,16 @@ const DEMO_JOURNEY: JourneyUIState = {
     }),
   summary: {
     lenses: {
-      discover: {
-        progress: 67,
-        completedMandatory: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'],
-        completedOptional: [],
-        totalMandatory: 3,
-        totalOptional: 0,
-        isComplete: false,
-      },
-      understand: {
-        progress: 0,
-        completedMandatory: [],
-        completedOptional: [],
-        totalMandatory: 3,
-        totalOptional: 0,
-        isComplete: false,
-      },
-      act: {
-        progress: 0,
-        completedMandatory: [],
-        completedOptional: [],
-        totalMandatory: 2,
-        totalOptional: 2,
-        isComplete: false,
-      },
+      discover: { progress: 67, completedMandatory: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'], completedOptional: [], totalMandatory: 3, totalOptional: 0, isComplete: false },
+      understand: { progress: 0, completedMandatory: [], completedOptional: [], totalMandatory: 3, totalOptional: 0, isComplete: false },
+      act: { progress: 0, completedMandatory: [], completedOptional: [], totalMandatory: 2, totalOptional: 2, isComplete: false },
     },
     overallProgress: 22,
     primaryGoal: { title: null, selectedAt: null },
     strengths: ['Communication', 'Problem Solving', 'Teamwork'],
     demonstratedSkills: [],
     careerInterests: ['Software Development'],
-    exploredRoles: [{
-      title: 'Junior Software Developer',
-      exploredAt: new Date().toISOString(),
-      educationPaths: ['Computer Science degree', 'Coding bootcamp'],
-      certifications: [],
-      companies: [],
-      humanSkills: ['Communication', 'Collaboration'],
-      entryExpectations: 'Entry-level, some coding experience preferred.',
-    }],
+    exploredRoles: [{ title: 'Junior Software Developer', exploredAt: new Date().toISOString(), educationPaths: ['Computer Science degree', 'Coding bootcamp'], certifications: [], companies: [], humanSkills: ['Communication', 'Collaboration'], entryExpectations: 'Entry-level, some coding experience preferred.' }],
     rolePlans: [],
     certificationsRequired: [],
     companiesOfInterest: [],
@@ -164,10 +118,7 @@ const DEMO_JOURNEY: JourneyUIState = {
     recentSavedItems: [],
     timelineSummary: { totalEvents: 2, thisMonth: 1 },
     lastTimelineEventAt: new Date().toISOString(),
-    shadowSummary: {
-      total: 0, accepted: 0, skipped: false, skipReason: null,
-      pending: 0, completed: 0, declined: 0, lastUpdatedAt: null,
-    },
+    shadowSummary: { total: 0, accepted: 0, skipped: false, skipReason: null, pending: 0, completed: 0, declined: 0, lastUpdatedAt: null },
     reflectionSummary: { total: 0, thisMonth: 0, lastReflectionAt: null },
     industryInsightsSummary: { trendsReviewed: 0, insightsSaved: 0, lastReviewedAt: null },
     requirementsReviewed: false,
@@ -182,116 +133,168 @@ const DEMO_JOURNEY: JourneyUIState = {
 
 type JourneyTab = 'discover' | 'understand' | 'act';
 
-interface TabConfig {
+interface TabDef {
   id: JourneyTab;
   label: string;
-  icon: typeof Route;
-  tooltip: string;
-  color: string;
+  subtitle: string;
+  icon: typeof Search;
+  lensKey: 'discover' | 'understand' | 'act';
+  color: string;        // tailwind color name
+  activeRing: string;   // ring color class
+  activeBg: string;     // active bg
+  progressBg: string;   // progress bar bg
+  progressFill: string; // progress bar fill
 }
 
-const TAB_CONFIG: TabConfig[] = [
+const TABS: TabDef[] = [
   {
     id: 'discover',
     label: 'Discover',
+    subtitle: 'Know Yourself',
     icon: Search,
-    tooltip: 'Know yourself — reflect on strengths, interests, and career direction.',
+    lensKey: 'discover',
     color: 'violet',
+    activeRing: 'ring-violet-500/60',
+    activeBg: 'bg-violet-500/10',
+    progressBg: 'bg-violet-500/15',
+    progressFill: 'bg-violet-500',
   },
   {
     id: 'understand',
     label: 'Understand',
+    subtitle: 'Know the World',
     icon: Globe,
-    tooltip: 'Know the world — explore industries, roles, and saved content.',
+    lensKey: 'understand',
     color: 'emerald',
+    activeRing: 'ring-emerald-500/60',
+    activeBg: 'bg-emerald-500/10',
+    progressBg: 'bg-emerald-500/15',
+    progressFill: 'bg-emerald-500',
   },
   {
     id: 'act',
     label: 'Grow',
-    icon: Zap,
-    tooltip: 'Take action and grow — roadmap, learning goals, real-world actions, and reflection.',
+    subtitle: 'Take Action',
+    icon: Rocket,
+    lensKey: 'act',
     color: 'amber',
+    activeRing: 'ring-amber-500/60',
+    activeBg: 'bg-amber-500/10',
+    progressBg: 'bg-amber-500/15',
+    progressFill: 'bg-amber-500',
   },
 ];
 
 // ============================================
-// PRIMARY GOAL HERO — Identity-first header
+// STAGE TAB BAR
 // ============================================
 
-function PrimaryGoalHero({
-  goal,
-  fallbackTitle,
-  onSetGoal,
+function StageTabBar({
+  activeTab,
+  onTabChange,
+  lenses,
 }: {
-  goal: CareerGoal | null;
-  fallbackTitle?: string | null;
-  onSetGoal: () => void;
+  activeTab: JourneyTab;
+  onTabChange: (tab: JourneyTab) => void;
+  lenses: { discover: LensProgress; understand: LensProgress; act: LensProgress };
 }) {
-  const title = goal?.title ?? fallbackTitle;
-
-  if (!title) {
-    return (
-      <button
-        onClick={onSetGoal}
-        className="w-full rounded-xl border-2 border-dashed border-muted-foreground/25 p-4 text-center transition-colors hover:border-primary/40 hover:bg-muted/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-      >
-        <Target className="h-6 w-6 mx-auto text-muted-foreground/50 mb-1.5" />
-        <p className="text-sm font-semibold text-muted-foreground">Where are you heading?</p>
-        <p className="text-xs text-muted-foreground/70 mt-0.5">Set a career goal to anchor your journey</p>
-        <span className="inline-flex items-center gap-1 mt-2 text-xs font-medium text-primary">
-          Choose a goal <ArrowRight className="h-3.5 w-3.5" />
-        </span>
-      </button>
-    );
-  }
-
-  const skills = goal?.skills ?? [];
-  const meta = skills.length > 0
-    ? skills.slice(0, 4).join(' \u00B7 ')
-    : null;
+  const isLocked = (tab: TabDef): boolean => {
+    if (tab.id === 'discover') return false;
+    if (tab.id === 'understand') return !lenses.discover.isComplete;
+    if (tab.id === 'act') return !lenses.understand.isComplete;
+    return false;
+  };
 
   return (
-    <div className="space-y-1 min-w-0">
-      <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/40">
-        Career Path
-      </p>
-      <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground/80 truncate">
-        {title}
-      </h1>
-      {meta && (
-        <p className="text-sm text-muted-foreground/40 pt-0.5 truncate">
-          {meta}
-        </p>
-      )}
+    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      {TABS.map((tab, i) => {
+        const TabIcon = tab.icon;
+        const isActive = activeTab === tab.id;
+        const locked = isLocked(tab);
+        const progress = lenses[tab.lensKey];
+        const isComplete = progress.isComplete;
+
+        return (
+          <button
+            key={tab.id}
+            onClick={() => !locked && onTabChange(tab.id)}
+            disabled={locked}
+            className={cn(
+              'relative rounded-xl border p-3 sm:p-4 text-left transition-all',
+              isActive && `${tab.activeBg} border-${tab.color}-500/40 ring-1 ${tab.activeRing}`,
+              !isActive && !locked && 'border-border/40 hover:border-border/80 hover:bg-muted/30',
+              locked && 'border-border/20 opacity-40 cursor-not-allowed',
+            )}
+          >
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <div className="flex items-center gap-2">
+                {isComplete ? (
+                  <CheckCircle2 className={cn('h-4 w-4 sm:h-5 sm:w-5', `text-${tab.color}-500`)} />
+                ) : locked ? (
+                  <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground/50" />
+                ) : (
+                  <TabIcon className={cn('h-4 w-4 sm:h-5 sm:w-5', isActive ? `text-${tab.color}-500` : 'text-muted-foreground')} />
+                )}
+                <span className={cn(
+                  'text-sm sm:text-base font-semibold',
+                  isActive ? 'text-foreground' : 'text-muted-foreground',
+                  locked && 'text-muted-foreground/50',
+                )}>
+                  {tab.label}
+                </span>
+              </div>
+              {!locked && progress.progress > 0 && (
+                <span className={cn('text-[10px] sm:text-xs font-semibold', `text-${tab.color}-500`)}>
+                  {progress.progress}%
+                </span>
+              )}
+            </div>
+
+            {/* Subtitle */}
+            <p className={cn(
+              'text-[10px] sm:text-xs mb-2 sm:mb-3',
+              isActive ? `text-${tab.color}-500/70` : 'text-muted-foreground/60',
+              locked && 'text-muted-foreground/30',
+            )}>
+              {tab.subtitle}
+            </p>
+
+            {/* Progress bar */}
+            {!locked && (
+              <div className={cn('h-1 rounded-full', tab.progressBg)}>
+                <div
+                  className={cn('h-full rounded-full transition-all duration-500', tab.progressFill)}
+                  style={{ width: `${progress.progress}%` }}
+                />
+              </div>
+            )}
+            {locked && (
+              <div className="h-1 rounded-full bg-muted/30" />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
 // ============================================
-// TAB SUBTITLE COMPONENT
-// ============================================
-
-// ============================================
-// MAIN PAGE COMPONENT
+// MAIN PAGE
 // ============================================
 
 export default function MyJourneyPage() {
   const { data: session, status: sessionStatus } = useSession();
   const queryClient = useQueryClient();
-    const [activeTab, setActiveTab] = useState<JourneyTab>('discover');
+  const [activeTab, setActiveTab] = useState<JourneyTab>('discover');
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
-  const [showSwapConfirm, setShowSwapConfirm] = useState(false);
 
-  // Fetch goals
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData } = useGoals(isYouth);
   const primaryGoal = goalsData?.primaryGoal ?? null;
   const secondaryGoal = goalsData?.secondaryGoal ?? null;
 
-  // Goal mutations
-  const promoteGoal = usePromoteGoal();
-  // Fetch journey state from API
   const {
     data: journeyData,
     isLoading: journeyLoading,
@@ -299,34 +302,23 @@ export default function MyJourneyPage() {
     queryKey: ['journey-state'],
     queryFn: async () => {
       const response = await fetch('/api/journey');
-      if (!response.ok) {
-        throw new Error('Failed to fetch journey state');
-      }
+      if (!response.ok) throw new Error('Failed to fetch journey state');
       return response.json();
     },
-    enabled: session?.user?.role === 'YOUTH',
+    enabled: isYouth,
   });
 
-  // Mutation for completing steps
   const completeStepMutation = useMutation({
-    mutationFn: async ({
-      stepId,
-      data,
-    }: {
-      stepId: JourneyStateId;
-      data: StepCompletionData;
-    }) => {
+    mutationFn: async ({ stepId, data }: { stepId: JourneyStateId; data: StepCompletionData }) => {
       const response = await fetch('/api/journey/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ stepId, data }),
       });
-
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to complete step');
       }
-
       return response.json();
     },
     onSuccess: () => {
@@ -334,14 +326,6 @@ export default function MyJourneyPage() {
       setActiveStepId(null);
     },
   });
-
-  // Handlers
-  const handleStepClick = useCallback((stepId: JourneyStateId) => {
-    const step = journeyData?.journey.steps.find((s) => s.id === stepId);
-    if (step && step.status !== 'locked') {
-      setActiveStepId(stepId);
-    }
-  }, [journeyData]);
 
   const handleCompleteStep = useCallback(
     async (data: StepCompletionData) => {
@@ -353,33 +337,29 @@ export default function MyJourneyPage() {
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl">
+      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
         <div className="space-y-6">
-          <Skeleton className="h-16 w-64" />
-          <Skeleton className="h-8 w-96" />
-          <div className="grid gap-4 md:grid-cols-3">
-            <Skeleton className="h-96" />
-            <Skeleton className="h-96" />
-            <Skeleton className="h-96" />
+          <Skeleton className="h-12 w-48" />
+          <div className="grid grid-cols-3 gap-3">
+            <Skeleton className="h-24" />
+            <Skeleton className="h-24" />
+            <Skeleton className="h-24" />
           </div>
+          <Skeleton className="h-96" />
         </div>
       </div>
     );
   }
 
-  // Auth guard
   if (session?.user?.role !== 'YOUTH') {
     return (
-      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl">
+      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-4xl">
         <Card className="border-2">
           <CardContent className="py-12 text-center">
             <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              This page is only available for youth members.
-            </p>
+            <p className="text-muted-foreground">This page is only available for youth members.</p>
             <Button className="mt-4" asChild>
               <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
@@ -390,167 +370,81 @@ export default function MyJourneyPage() {
   }
 
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
-
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
 
   return (
     <div className="min-h-full">
-      <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-6xl relative">
-        {/* Journey Guide — explains the framework */}
-        <JourneyGuide journey={journey} />
-
-        {/* Career Path Header */}
-        {journey && (
-          <div className="mb-5 sm:mb-8">
-            {goalTitle && secondaryGoal ? (
-              /* Two-pill swap layout */
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-                {/* Primary pill */}
-                <ShineBorder
-                  borderRadius={9999}
-                  borderWidth={1.5}
-                  duration={10}
-                  color={["#10b981", "#14b8a6", "#6366f1"]}
-                  className="min-w-0 min-h-0 p-0"
-                >
-                  <div className="flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2.5 sm:px-5 min-w-0">
-                    <Target className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[9px] font-medium uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 leading-none mb-0.5">Primary</p>
-                      <p className="text-sm font-semibold truncate">{goalTitle}</p>
-                    </div>
-                  </div>
-                </ShineBorder>
-
-                {/* Swap button */}
-                <button
-                  onClick={() => setShowSwapConfirm(true)}
-                  disabled={promoteGoal.isPending}
-                  className="flex-shrink-0 self-center p-2 rounded-full active:bg-muted/60 sm:hover:bg-muted/60 transition-colors disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                  title="Swap goals"
-                >
-                  {promoteGoal.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                  ) : (
-                    <ArrowLeftRight className="h-4 w-4 text-muted-foreground rotate-90 sm:rotate-0" />
-                  )}
-                </button>
-
-                {/* Secondary pill (de-emphasised) */}
-                <div className="flex items-center gap-2 rounded-full bg-muted/30 dark:bg-muted/20 px-3 py-2 sm:px-4 min-w-0 opacity-50">
-                  <Target className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/70 leading-none mb-0.5">Secondary</p>
-                    <p className="text-sm font-semibold truncate text-muted-foreground">{secondaryGoal.title}</p>
-                  </div>
+      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
+        {/* Header row: goal + guide */}
+        <div className="flex items-start justify-between gap-4 mb-6 sm:mb-8">
+          <div className="min-w-0 flex-1">
+            {goalTitle ? (
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-emerald-500/10 shrink-0">
+                  <Target className="h-4 w-4 text-emerald-500" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
+                    My Journey
+                  </p>
+                  <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
+                    {goalTitle}
+                  </h1>
                 </div>
               </div>
             ) : (
-              <PrimaryGoalHero
-                goal={primaryGoal}
-                fallbackTitle={journey.summary?.primaryGoal?.title}
-                onSetGoal={() => setGoalSheetOpen(true)}
-              />
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
+                  My Journey
+                </p>
+                <button
+                  onClick={() => setGoalSheetOpen(true)}
+                  className="mt-1 inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Target className="h-3.5 w-3.5" />
+                  Set a career goal
+                  <ArrowRight className="h-3 w-3" />
+                </button>
+              </div>
             )}
           </div>
-        )}
-
-        {/* Goal swap confirmation */}
-        <ConfirmDialog
-          open={showSwapConfirm}
-          onClose={() => setShowSwapConfirm(false)}
-          title="Swap Goals?"
-          description="Your current primary goal will become your secondary goal, and your secondary goal will become primary."
-          confirmText="Swap Goals"
-          cancelText="Cancel"
-          onConfirm={() => {
-            setShowSwapConfirm(false);
-            if (secondaryGoal) {
-              promoteGoal.mutate({
-                currentPrimary: primaryGoal,
-                currentSecondary: secondaryGoal,
-              });
-            }
-          }}
-          isPending={promoteGoal.isPending}
-          icon={<ArrowLeftRight className="h-5 w-5 text-purple-500" />}
-        />
-
-        {/* D/U/A Tab Navigation */}
-        <div className="mb-6">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as JourneyTab)}>
-            <TooltipProvider>
-              <TabsList className="grid w-full max-w-3xl grid-cols-3 h-auto relative">
-                {TAB_CONFIG.map((tab) => {
-                  const TabIcon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  const colorMap: Record<string, string> = {
-                    violet: 'bg-violet-500',
-                    emerald: 'bg-emerald-500',
-                    amber: 'bg-amber-500',
-                  };
-                  return (
-                    <Tooltip key={tab.id}>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger
-                          value={tab.id}
-                          className="relative flex flex-col items-center gap-0.5 py-3 sm:py-2.5 text-xs sm:text-sm data-[state=active]:bg-background min-h-[44px]"
-                        >
-                          <motion.div
-                            className="flex items-center gap-1.5"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.97 }}
-                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                          >
-                            <TabIcon className="h-4 w-4" />
-                            <span>{tab.label}</span>
-                          </motion.div>
-                          {isActive && (
-                            <motion.div
-                              layoutId="journey-tab-indicator"
-                              className={`absolute bottom-0 left-2 right-2 h-0.5 rounded-full ${colorMap[tab.color] || 'bg-primary'}`}
-                              transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                            />
-                          )}
-                        </TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="max-w-xs text-center">
-                        <p className="text-xs">{tab.tooltip}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </TabsList>
-            </TooltipProvider>
-
-            {/* Discover Tab */}
-            <TabsContent value="discover" className="mt-4 sm:mt-6">
-              <DiscoverTab
-                journey={journey}
-                onSetGoal={() => setGoalSheetOpen(true)}
-                onStartStep={(stepId) => setActiveStepId(stepId as any)}
-              />
-            </TabsContent>
-
-            {/* Understand Tab */}
-            <TabsContent value="understand" className="mt-4 sm:mt-6">
-              <UnderstandTab
-                journey={journey}
-                onStartStep={(stepId) => setActiveStepId(stepId as any)}
-              />
-            </TabsContent>
-
-            {/* Act Tab */}
-            <TabsContent value="act" className="mt-4 sm:mt-6">
-              <ActTab
-                journey={journey}
-                goalTitle={goalTitle}
-                onStartStep={(stepId) => setActiveStepId(stepId as any)}
-              />
-            </TabsContent>
-          </Tabs>
         </div>
 
+        {/* Journey Guide — collapsible explainer */}
+        <JourneyGuide journey={journey} />
+
+        {/* Stage Tab Bar */}
+        <div className="mb-6 sm:mb-8">
+          <StageTabBar
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            lenses={journey.summary.lenses}
+          />
+        </div>
+
+        {/* Tab Content */}
+        <div>
+          {activeTab === 'discover' && (
+            <DiscoverTab
+              journey={journey}
+              onSetGoal={() => setGoalSheetOpen(true)}
+              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
+            />
+          )}
+          {activeTab === 'understand' && (
+            <UnderstandTab
+              journey={journey}
+              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
+            />
+          )}
+          {activeTab === 'act' && (
+            <ActTab
+              journey={journey}
+              goalTitle={goalTitle}
+              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
+            />
+          )}
+        </div>
       </div>
 
       {/* Step Content Modal */}
