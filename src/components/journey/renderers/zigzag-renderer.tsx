@@ -15,11 +15,26 @@ const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
 
+function getCardStatus(itemId: string): string {
+  try {
+    const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
+    return all[itemId]?.status || 'not_started';
+  } catch {
+    return 'not_started';
+  }
+}
+
 export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
   const items = journey.items;
 
-  // The user is always at the start of their roadmap — it's generated from their current age
-  const currentItemIndex = userAge != null && items.length > 0 ? 0 : -1;
+  // Find the first item that isn't marked "done" in localStorage
+  const currentItemIndex = useMemo(() => {
+    if (userAge == null || items.length === 0) return -1;
+    for (let i = 0; i < items.length; i++) {
+      if (getCardStatus(items[i].id) !== 'done') return i;
+    }
+    return items.length - 1; // all done — stay on last
+  }, [items, userAge]);
 
   const positions = useMemo(
     () =>
