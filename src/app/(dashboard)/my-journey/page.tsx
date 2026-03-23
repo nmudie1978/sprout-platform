@@ -29,7 +29,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
-import { JourneyGuide } from '@/components/journey/journey-guide';
+import { HelpCircle } from 'lucide-react';
 
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
@@ -137,13 +137,14 @@ interface TabDef {
   id: JourneyTab;
   label: string;
   subtitle: string;
+  items: string[];
   icon: typeof Search;
   lensKey: 'discover' | 'understand' | 'act';
-  color: string;        // tailwind color name
-  activeRing: string;   // ring color class
-  activeBg: string;     // active bg
-  progressBg: string;   // progress bar bg
-  progressFill: string; // progress bar fill
+  color: string;
+  activeRing: string;
+  activeBg: string;
+  progressBg: string;
+  progressFill: string;
 }
 
 const TABS: TabDef[] = [
@@ -151,6 +152,7 @@ const TABS: TabDef[] = [
     id: 'discover',
     label: 'Discover',
     subtitle: 'Know Yourself',
+    items: ['Strengths', 'Interests', 'Ambitions / motivations', 'Primary direction (career goal)'],
     icon: Search,
     lensKey: 'discover',
     color: 'violet',
@@ -163,6 +165,7 @@ const TABS: TabDef[] = [
     id: 'understand',
     label: 'Understand',
     subtitle: 'Know the World',
+    items: ['Role reality', 'Path & requirements', 'Skills that matter', 'Industry insights'],
     icon: Globe,
     lensKey: 'understand',
     color: 'emerald',
@@ -174,7 +177,8 @@ const TABS: TabDef[] = [
   {
     id: 'act',
     label: 'Grow',
-    subtitle: 'Take Action',
+    subtitle: 'Take Action & Grow',
+    items: ['Growth path (roadmap)', 'Learning goals', 'Real-world actions', 'Next step'],
     icon: Rocket,
     lensKey: 'act',
     color: 'amber',
@@ -253,25 +257,38 @@ function StageTabBar({
 
             {/* Subtitle */}
             <p className={cn(
-              'text-[10px] sm:text-xs mb-2 sm:mb-3',
+              'text-[10px] sm:text-xs',
               isActive ? `text-${tab.color}-500/70` : 'text-muted-foreground/60',
               locked && 'text-muted-foreground/30',
             )}>
               {tab.subtitle}
             </p>
 
+            {/* Framework items */}
+            {isActive && (
+              <ul className="mt-2 space-y-0.5">
+                {tab.items.map((item) => (
+                  <li key={item} className={cn('text-[10px] sm:text-[11px] flex items-center gap-1.5', `text-${tab.color}-500/60`)}>
+                    <span className={cn('h-1 w-1 rounded-full shrink-0', `bg-${tab.color}-500/40`)} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+
             {/* Progress bar */}
-            {!locked && (
-              <div className={cn('h-1 rounded-full', tab.progressBg)}>
-                <div
-                  className={cn('h-full rounded-full transition-all duration-500', tab.progressFill)}
-                  style={{ width: `${progress.progress}%` }}
-                />
-              </div>
-            )}
-            {locked && (
-              <div className="h-1 rounded-full bg-muted/30" />
-            )}
+            <div className="mt-2 sm:mt-3">
+              {!locked ? (
+                <div className={cn('h-1 rounded-full', tab.progressBg)}>
+                  <div
+                    className={cn('h-full rounded-full transition-all duration-500', tab.progressFill)}
+                    style={{ width: `${progress.progress}%` }}
+                  />
+                </div>
+              ) : (
+                <div className="h-1 rounded-full bg-muted/30" />
+              )}
+            </div>
           </button>
         );
       })}
@@ -375,13 +392,13 @@ export default function MyJourneyPage() {
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
-        {/* Header row: goal + guide */}
-        <div className="flex items-start justify-between gap-4 mb-6 sm:mb-8">
+        {/* Header row */}
+        <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="min-w-0 flex-1">
             {goalTitle ? (
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-emerald-500/10 shrink-0">
-                  <Target className="h-4 w-4 text-emerald-500" />
+                <div className="p-1.5 rounded-lg bg-teal-500/10 shrink-0">
+                  <Target className="h-4 w-4 text-teal-400" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
@@ -399,7 +416,7 @@ export default function MyJourneyPage() {
                 </p>
                 <button
                   onClick={() => setGoalSheetOpen(true)}
-                  className="mt-1 inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
+                  className="mt-1 inline-flex items-center gap-1.5 text-sm text-teal-400 hover:text-teal-300 transition-colors"
                 >
                   <Target className="h-3.5 w-3.5" />
                   Set a career goal
@@ -408,10 +425,14 @@ export default function MyJourneyPage() {
               </div>
             )}
           </div>
+          <Link
+            href="/my-journey/how-it-works"
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">How it works</span>
+          </Link>
         </div>
-
-        {/* Journey Guide — collapsible explainer */}
-        <JourneyGuide journey={journey} />
 
         {/* Stage Tab Bar */}
         <div className="mb-6 sm:mb-8">

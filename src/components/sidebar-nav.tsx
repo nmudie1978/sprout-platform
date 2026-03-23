@@ -80,28 +80,28 @@ function NavItem({ href, icon: Icon, label, active, badge, collapsed }: NavItemP
     <Link href={href} prefetch={true} className="block group relative" title={collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
       {/* Active glow indicator */}
       {active && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.6)]" />
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
       )}
       <div
         className={cn(
           "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
           collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
           active
-            ? "bg-indigo-500/15 text-indigo-300 font-medium shadow-[inset_0_0_20px_rgba(99,102,241,0.08)]"
+            ? "bg-teal-500/15 text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
             : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
         )}
       >
         {/* Hover glow effect */}
         {!active && (
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-indigo-500/[0.06] via-transparent to-transparent pointer-events-none" />
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-teal-500/[0.06] via-transparent to-transparent pointer-events-none" />
         )}
         <Icon className={cn(
           "h-[18px] w-[18px] shrink-0 transition-all duration-200 ease-out",
-          active ? "text-indigo-400 drop-shadow-[0_0_6px_rgba(129,140,248,0.5)]" : "group-hover:scale-110 group-hover:text-slate-200"
+          active ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]" : "group-hover:scale-110 group-hover:text-slate-200"
         )} />
         {!collapsed && <span className="flex-1 truncate">{label}</span>}
         {!collapsed && badge !== undefined && badge > 0 && (
-          <span className="bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none animate-pulse">
+          <span className="bg-teal-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none animate-pulse">
             {badge}
           </span>
         )}
@@ -188,7 +188,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             "--border-radius": "0px",
             "--duration": "14s",
             "--mask-linear-gradient": "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-            "--background-radial-gradient": "radial-gradient(transparent,transparent,#6366f1,#14b8a6,transparent,transparent)",
+            "--background-radial-gradient": "radial-gradient(transparent,transparent,#14b8a6,#2dd4bf,transparent,transparent)",
           } as React.CSSProperties
         }
         className="before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
@@ -198,16 +198,16 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
       >
       {/* Floating ambient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-indigo-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
+        <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
         <div className="absolute top-1/2 -right-10 w-32 h-32 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-medium_15s_ease-in-out_infinite]" />
         <div className="absolute -bottom-10 left-1/2 w-36 h-36 rounded-full bg-purple-500/[0.02] blur-3xl animate-[float-fast_12s_ease-in-out_infinite]" />
       </div>
 
       {/* Brand */}
       <div className={cn("flex items-center gap-2.5 p-4 mb-2 relative", collapsed && "justify-center")}>
-        <div className="relative w-8 h-8 rounded-xl bg-indigo-500/20 flex items-center justify-center shrink-0 group/logo cursor-default">
-          <Star className="h-4 w-4 text-indigo-400 transition-transform duration-500 group-hover/logo:rotate-[360deg] group-hover/logo:scale-110" />
-          <div className="absolute inset-0 rounded-xl bg-indigo-400/20 opacity-0 group-hover/logo:opacity-100 blur-md transition-opacity duration-500" />
+        <div className="relative w-8 h-8 rounded-xl bg-teal-500/20 flex items-center justify-center shrink-0 group/logo cursor-default">
+          <Star className="h-4 w-4 text-teal-400 transition-transform duration-500 group-hover/logo:rotate-[360deg] group-hover/logo:scale-110" />
+          <div className="absolute inset-0 rounded-xl bg-teal-400/20 opacity-0 group-hover/logo:opacity-100 blur-md transition-opacity duration-500" />
         </div>
         {!collapsed && (
           <span className="font-bold text-base tracking-tight text-slate-100 bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text">
