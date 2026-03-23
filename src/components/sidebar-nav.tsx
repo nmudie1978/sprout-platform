@@ -243,7 +243,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             </NavSection>
 
             <NavSection title="Endeavrly" collapsed={collapsed}>
-              <NavItem href="/about" icon={Info} label="About" active={isActive("/about")} collapsed={collapsed} />
+              <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} />
               <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
             </NavSection>
           </>

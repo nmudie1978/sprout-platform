@@ -145,118 +145,207 @@ function ReflectionCard({
   );
 }
 
+// ── Sequential Step with Output ─────────────────────────────────────
+
+interface StepConfig {
+  id: string;
+  stepNumber: number;
+  title: string;
+  description: string;
+  icon: typeof Sparkles;
+  colorClass: string;
+  bgClass: string;
+  outputTitle: string;
+  emptyOutput: string;
+}
+
+const DISCOVER_STEPS: StepConfig[] = [
+  {
+    id: 'REFLECT_ON_STRENGTHS',
+    stepNumber: 1,
+    title: 'Reflect on Strengths',
+    description: 'Identify what you\'re naturally good at. These shape the roles that\'ll suit you.',
+    icon: Sparkles,
+    colorClass: 'text-teal-500',
+    bgClass: 'bg-teal-500/10',
+    outputTitle: 'Your Strengths',
+    emptyOutput: 'Complete this step to see your strengths here.',
+  },
+  {
+    id: 'EXPLORE_CAREERS',
+    stepNumber: 2,
+    title: 'Explore Careers',
+    description: 'Browse career paths that interest you. Save the ones that catch your attention.',
+    icon: Heart,
+    colorClass: 'text-pink-500',
+    bgClass: 'bg-pink-500/10',
+    outputTitle: 'Your Interests',
+    emptyOutput: 'Complete this step to discover your interests.',
+  },
+  {
+    id: 'ROLE_DEEP_DIVE',
+    stepNumber: 3,
+    title: 'Deep Dive into a Role',
+    description: 'Pick a career and research what the job actually involves day to day.',
+    icon: Compass,
+    colorClass: 'text-emerald-500',
+    bgClass: 'bg-emerald-500/10',
+    outputTitle: 'Roles Explored',
+    emptyOutput: 'Complete this step to see your explored roles.',
+  },
+];
+
 // ── Main Component ──────────────────────────────────────────────────
 
 export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProps) {
   const summary = journey.summary;
-  const discoverSteps = journey.steps.filter((s) =>
-    ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'].includes(s.id)
-  );
+
+  // Get step status from journey data
+  const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
+    const step = journey.steps.find((s) => s.id === stepId);
+    if (!step) return 'locked';
+    if (step.status === 'completed') return 'completed';
+    if (step.status === 'next') return 'next';
+    return 'locked';
+  };
+
+  // Get output data for each step
+  const getStepOutput = (stepId: string): string[] | null => {
+    switch (stepId) {
+      case 'REFLECT_ON_STRENGTHS':
+        return summary?.strengths?.length ? summary.strengths : null;
+      case 'EXPLORE_CAREERS':
+        return summary?.careerInterests?.length ? summary.careerInterests : null;
+      case 'ROLE_DEEP_DIVE':
+        return summary?.exploredRoles?.length ? summary.exploredRoles.map((r) => r.title) : null;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Two-column: Steps + Career Direction */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        {/* Steps */}
-        <div className="rounded-xl border border-border/40 bg-card/60 p-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-500 mb-3">
-            Steps to Complete
-          </h3>
-          <div className="space-y-1">
-            {discoverSteps.map((step, i) => (
-              <StepRow
-                key={step.id}
-                stepNumber={i + 1}
-                title={step.title}
-                status={step.status === 'completed' ? 'completed' : step.status === 'next' ? 'next' : 'locked'}
-                onStart={step.status === 'next' && onStartStep ? () => onStartStep(step.id) : undefined}
-              />
-            ))}
+    <div className="space-y-3">
+      {/* Sequential steps — each one unlocks the next */}
+      {DISCOVER_STEPS.map((config) => {
+        const status = getStepStatus(config.id);
+        const output = getStepOutput(config.id);
+        const isLocked = status === 'locked';
+        const isComplete = status === 'completed';
+        const isCurrent = status === 'next';
+        const Icon = config.icon;
+
+        return (
+          <div
+            key={config.id}
+            className={cn(
+              'rounded-xl border p-4 transition-all',
+              isCurrent && 'border-teal-500/40 bg-teal-500/5 ring-1 ring-teal-500/20',
+              isComplete && 'border-border/40 bg-card/60',
+              isLocked && 'border-border/20 opacity-40',
+            )}
+          >
+            {/* Step header */}
+            <div className="flex items-center gap-3">
+              <div
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
+                  isComplete && 'bg-emerald-500/20 text-emerald-500',
+                  isCurrent && 'bg-teal-500/20 text-teal-500',
+                  isLocked && 'bg-muted text-muted-foreground/50',
+                )}
+              >
+                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : config.stepNumber}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={cn(
+                  'text-sm font-semibold',
+                  isComplete && 'text-foreground',
+                  isLocked && 'text-muted-foreground/50',
+                )}>
+                  {config.title}
+                </p>
+                {(isCurrent || isLocked) && (
+                  <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
+                )}
+              </div>
+              {isCurrent && onStartStep && (
+                <Button size="sm" className="h-8 text-xs px-4 bg-teal-600 hover:bg-teal-700 shrink-0" onClick={() => onStartStep(config.id)}>
+                  Start <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+              )}
+              {isComplete && onStartStep && (
+                <button
+                  onClick={() => onStartStep(config.id)}
+                  className={cn('inline-flex items-center gap-1 text-xs font-medium shrink-0', config.colorClass, 'hover:opacity-80')}
+                >
+                  <Pencil className="h-3 w-3" />
+                  Update
+                </button>
+              )}
+            </div>
+
+            {/* Output — shown when completed or has data */}
+            {isComplete && (
+              <div className="mt-3 pt-3 border-t border-border/30">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={cn('p-1 rounded-md', config.bgClass)}>
+                    <Icon className={cn('h-3 w-3', config.colorClass)} />
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground">{config.outputTitle}</span>
+                </div>
+                {output ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {output.map((item) => (
+                      <span
+                        key={item}
+                        className={cn('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', config.bgClass, config.colorClass)}
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground/50">{config.emptyOutput}</p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* Career Direction — unlocks after all 3 steps or anytime user wants */}
+      <div className="rounded-xl border border-border/40 bg-card/60 p-4 mt-4">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-xs font-bold shrink-0">
+            <Target className="h-4 w-4" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold">Set Your Direction</p>
+            <p className="text-xs text-muted-foreground/60 mt-0.5">
+              Choose a primary career goal to guide your Understand and Grow phases.
+            </p>
           </div>
         </div>
-
-        {/* Career Direction */}
-        <div className="rounded-xl border border-border/40 bg-card/60 p-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-500 mb-3">
-            Career Direction
-          </h3>
-          {summary?.primaryGoal?.title ? (
-            <div>
-              <div className="flex items-center gap-2 rounded-lg bg-primary/5 border border-primary/10 p-3 mb-3">
-                <Target className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm font-semibold">{summary.primaryGoal.title}</p>
-              </div>
-              <button
-                onClick={onSetGoal}
-                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:opacity-80 transition-colors"
-              >
-                <Pencil className="h-3 w-3" />
-                Change goal
-              </button>
+        {summary?.primaryGoal?.title ? (
+          <div className="flex items-center justify-between gap-2 rounded-lg bg-primary/5 border border-primary/10 p-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <Target className="h-4 w-4 text-primary shrink-0" />
+              <p className="text-sm font-semibold truncate">{summary.primaryGoal.title}</p>
             </div>
-          ) : (
-            <div className="text-center py-4">
-              <Target className="h-6 w-6 mx-auto text-muted-foreground/40 mb-2" />
-              <p className="text-xs text-muted-foreground/60 mb-3">
-                Set a goal to anchor your journey
-              </p>
-              <Button size="sm" className="text-xs h-8" onClick={onSetGoal}>
-                <Target className="h-3 w-3 mr-1.5" />
-                Choose a goal
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Reflection cards — 3 columns on desktop */}
-      <div className="grid gap-3 sm:grid-cols-3">
-        <ReflectionCard
-          icon={Sparkles}
-          title="Strengths"
-          items={summary?.strengths || []}
-          emptyMessage="Reflect on strengths to see them here."
-          colorClass="text-teal-500"
-          bgClass="bg-teal-500/10"
-          actionLabel={summary?.strengths?.length ? 'Update' : 'Reflect'}
-          onAction={onStartStep ? () => onStartStep('REFLECT_ON_STRENGTHS') : undefined}
-        />
-
-        <ReflectionCard
-          icon={Heart}
-          title="Interests"
-          items={summary?.careerInterests || []}
-          emptyMessage="Explore careers to discover interests."
-          colorClass="text-pink-500"
-          bgClass="bg-pink-500/10"
-          actionLabel="Explore"
-          onAction={onStartStep ? () => onStartStep('EXPLORE_CAREERS') : undefined}
-        />
-
-        <ReflectionCard
-          icon={Compass}
-          title="Roles Explored"
-          emptyMessage="Deep dive into a role to see it here."
-          colorClass="text-emerald-500"
-          bgClass="bg-emerald-500/10"
-          actionLabel="Explore a role"
-          onAction={onStartStep ? () => onStartStep('ROLE_DEEP_DIVE') : undefined}
-        >
-          {summary?.exploredRoles && summary.exploredRoles.length > 0 ? (
-            <div className="space-y-1.5 mb-3">
-              {summary.exploredRoles.map((role) => (
-                <div key={role.title} className="rounded-md bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-2">
-                  <p className="text-xs font-medium">{role.title}</p>
-                  {role.educationPaths && role.educationPaths.length > 0 && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {role.educationPaths.join(' · ')}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </ReflectionCard>
+            <button
+              onClick={onSetGoal}
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:opacity-80 transition-colors shrink-0"
+            >
+              <Pencil className="h-3 w-3" />
+              Change
+            </button>
+          </div>
+        ) : (
+          <Button size="sm" className="text-xs h-8" onClick={onSetGoal}>
+            <Target className="h-3 w-3 mr-1.5" />
+            Choose a goal
+          </Button>
+        )}
       </div>
     </div>
   );
