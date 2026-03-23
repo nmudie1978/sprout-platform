@@ -325,36 +325,56 @@ function ZigzagCard({
     <button
       onClick={onClick}
       className={cn(
-        'w-full text-left rounded-lg border bg-card/80 backdrop-blur-sm p-2 my-2 shadow-sm transition-all',
-        'hover:shadow-md hover:-translate-y-0.5 hover:border-border',
+        'w-full text-left rounded-lg border backdrop-blur-sm p-2 my-2 transition-all',
+        'hover:shadow-md hover:-translate-y-0.5',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         'cursor-pointer',
         isCurrent
-          ? 'border-2 shadow-lg'
+          ? 'border-2 shadow-lg bg-card/80'
           : isDone
-            ? 'border-emerald-500/30 bg-emerald-500/5'
-            : 'border-border/50'
+            ? 'border-emerald-500/50 bg-emerald-500/10 shadow-sm'
+            : 'border-border/50 bg-card/80 shadow-sm'
       )}
-      style={isCurrent ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` } : undefined}
+      style={
+        isCurrent
+          ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` }
+          : isDone
+            ? { boxShadow: '0 0 12px rgba(16,185,129,0.15), 0 0 4px rgba(16,185,129,0.1)' }
+            : undefined
+      }
     >
+      {/* Completed banner */}
+      {isDone && (
+        <div className="flex items-center gap-1.5 mb-1.5 pb-1.5 border-b border-emerald-500/20">
+          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/25">
+            <span className="text-emerald-400 text-[9px] font-bold">✓</span>
+          </div>
+          <span className="text-[9px] font-semibold uppercase tracking-wider text-emerald-500/70">
+            Completed
+          </span>
+        </div>
+      )}
       <div className="flex items-start gap-1.5">
         <div className="flex-1 min-w-0">
           {/* Step type indicator */}
           <span className="text-[9px] text-muted-foreground/40 leading-none">
             {typeConfig.icon}
           </span>
-          <p className="text-xs font-semibold leading-tight text-foreground">{item.title}</p>
+          <p className={cn(
+            'text-xs font-semibold leading-tight',
+            isDone ? 'text-emerald-300/90' : 'text-foreground'
+          )}>
+            {item.title}
+          </p>
           {item.subtitle && (
-            <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">
+            <p className={cn(
+              'text-[10px] mt-0.5 leading-snug truncate',
+              isDone ? 'text-emerald-400/40' : 'text-muted-foreground'
+            )}>
               {item.subtitle}
             </p>
           )}
         </div>
-        {isDone && (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 shrink-0" style={{ boxShadow: '0 0 8px rgba(16,185,129,0.3)' }}>
-            <span className="text-emerald-400 text-[11px] font-bold">✓</span>
-          </div>
-        )}
       </div>
     </button>
   );

@@ -33,6 +33,10 @@ export interface EducationContext {
   stage: EducationStage;
   currentSubjects: string[];
   ageBand?: string;
+  schoolName?: string;
+  yearLevel?: string;
+  studyProgram?: string;
+  expectedCompletion?: string;
   updatedAt: string;
 }
 

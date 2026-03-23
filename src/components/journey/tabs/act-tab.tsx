@@ -300,23 +300,26 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       )}
 
       {/* School & Education — goal-contextual guidance */}
-      <div className="shine-border mt-8 rounded-xl border border-border/40 bg-card/30 p-4">
-        <div className="flex items-center gap-2 mb-1">
-          <GraduationCap className="h-4 w-4 text-teal-500/70" />
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40">
-            School & Education
-          </p>
-        </div>
-        {goalTitle && (
-          <p className="text-[11px] text-muted-foreground/50 mb-3">
-            How your education connects to becoming a {goalTitle}
-          </p>
-        )}
-        <div className="space-y-3">
-          <div className="rounded-lg border border-border/30 bg-card/50 p-3">
-            <SchoolAlignmentTab goalTitle={goalTitle} />
+      <div className="shine-border mt-8 rounded-xl border border-teal-500/15 bg-gradient-to-b from-teal-500/[0.04] to-card/30 p-5">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <div className="p-1.5 rounded-lg bg-teal-500/10">
+            <GraduationCap className="h-4.5 w-4.5 text-teal-500" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">
+              School & Learning Alignment
+            </h3>
+            {goalTitle && (
+              <p className="text-[11px] text-muted-foreground/50">
+                How your education connects to becoming a {goalTitle}
+              </p>
+            )}
           </div>
         </div>
+        <p className="text-xs text-muted-foreground/40 leading-relaxed mb-4">
+          Add your school details, subjects, and study program below. We'll show you how your current education aligns with your career goal and what to focus on next.
+        </p>
+        <SchoolAlignmentTab goalTitle={goalTitle} />
       </div>
     </div>
   );

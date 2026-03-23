@@ -235,30 +235,24 @@ const LENS_LABELS = [
 // ── Insights Ticker ─────────────────────────────────────────────────
 function InsightsTicker() {
   const TICKER_ITEMS = [
-    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400' },
-    { emoji: '🎬', text: 'Grit: The Power of Passion and Perseverance — TED', color: 'text-red-400' },
-    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400' },
-    { emoji: '🎬', text: 'The Power of Believing You Can Improve — TED', color: 'text-red-400' },
-    { emoji: '💡', text: 'Healthcare is one of the fastest growing sectors in Norway', color: 'text-amber-400' },
-    { emoji: '🎬', text: '10 Ways to Have a Better Conversation — TED', color: 'text-red-400' },
-    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400' },
-    { emoji: '🎙', text: 'Career Clarity: Why Starting Early Matters — Podcast', color: 'text-purple-400' },
+    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '🎬', text: 'Grit: The Power of Passion and Perseverance — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=H14bBuluwB8' },
+    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '🎬', text: 'The Power of Believing You Can Improve — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
+    { emoji: '💡', text: 'Healthcare is one of the fastest growing sectors in Norway', color: 'text-amber-400', href: '/insights#dig-deeper' },
+    { emoji: '🎬', text: '10 Ways to Have a Better Conversation — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=R1vskiVDwl4' },
+    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '🎙', text: 'It\'s okay not knowing what\'s after graduation — TEDx', color: 'text-purple-400', href: 'https://www.youtube.com/watch?v=uRHWR_aYb4w' },
   ];
 
-  // Duplicate for seamless loop
   const allItems = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <Link
-      href="/insights"
-      className="block mt-6 rounded-xl border border-teal-500/15 bg-gradient-to-r from-teal-500/5 via-transparent to-teal-500/5 hover:from-teal-500/10 hover:to-teal-500/10 transition-all overflow-hidden"
-    >
+    <div className="mt-6 rounded-xl border border-teal-500/15 bg-gradient-to-r from-teal-500/5 via-transparent to-teal-500/5 overflow-hidden">
       <div className="py-2.5 overflow-hidden relative">
-        {/* Fade edges */}
         <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
         <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
 
-        {/* Scrolling content */}
         <div
           className="flex items-center gap-8 whitespace-nowrap"
           style={{
@@ -267,15 +261,22 @@ function InsightsTicker() {
           }}
         >
           {allItems.map((item, i) => (
-            <span key={i} className="inline-flex items-center gap-2">
+            <a
+              key={i}
+              href={item.href}
+              target={item.href.startsWith('http') ? '_blank' : undefined}
+              rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
+            >
               <span className="text-sm">{item.emoji}</span>
               <span className={cn("text-[11px] font-medium", item.color)}>{item.text}</span>
               <span className="text-muted-foreground/20">·</span>
-            </span>
+            </a>
           ))}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

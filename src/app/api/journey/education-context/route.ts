@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { stage, currentSubjects, ageBand } = body;
+  const { stage, currentSubjects, ageBand, schoolName, yearLevel, studyProgram, expectedCompletion } = body;
 
   if (!stage || !Array.isArray(currentSubjects)) {
     return NextResponse.json({ error: 'stage and currentSubjects are required' }, { status: 400 });
@@ -55,10 +55,16 @@ export async function POST(req: NextRequest) {
     .map((s: string) => s.trim().slice(0, 60))
     .slice(0, 15);
 
+  const str = (v: unknown, max: number) => typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : undefined;
+
   const educationContext: EducationContext = {
     stage,
     currentSubjects: cleanSubjects,
-    ageBand: typeof ageBand === 'string' ? ageBand.slice(0, 20) : undefined,
+    ageBand: str(ageBand, 20),
+    schoolName: str(schoolName, 100),
+    yearLevel: str(yearLevel, 30),
+    studyProgram: str(studyProgram, 80),
+    expectedCompletion: str(expectedCompletion, 10),
     updatedAt: new Date().toISOString(),
   };
 
