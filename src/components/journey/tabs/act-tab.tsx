@@ -78,8 +78,20 @@ const ACT_STEPS = [
 
 // ── Main Component ──────────────────────────────────────────────────
 
+const ACTION_TYPE_LABELS: Record<string, string> = {
+  SMALL_JOB: 'Small Job',
+  PERSONAL_PROJECT: 'Personal Project',
+  COURSE_OR_CERTIFICATION: 'Course / Certification',
+  VOLUNTEER_WORK: 'Volunteer Work',
+  INDUSTRY_EVENT: 'Industry Event',
+  MENTORSHIP_SESSION: 'Mentorship',
+};
+
 export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
+
+  const alignedActions = journey.summary?.alignedActions || [];
+  const reflections = journey.summary?.alignedActionReflections || [];
 
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
     const step = journey.steps.find((s) => s.id === stepId);
@@ -152,6 +164,39 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
                 </button>
               )}
             </div>
+
+            {/* Output — saved actions for COMPLETE_ALIGNED_ACTION */}
+            {isComplete && config.id === 'COMPLETE_ALIGNED_ACTION' && alignedActions.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-border/30 grid gap-2 sm:grid-cols-2">
+                {alignedActions.map((action, i) => (
+                  <div key={action.id || i} className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-1">
+                      {ACTION_TYPE_LABELS[action.type] || action.type}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{action.title}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Output — saved reflections for SUBMIT_ACTION_REFLECTION */}
+            {isComplete && config.id === 'SUBMIT_ACTION_REFLECTION' && reflections.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-border/30">
+                <div className="rounded-lg bg-sky-500/5 border border-sky-500/15 p-3">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-sky-400/60 mb-2">
+                    Your Reflections
+                  </p>
+                  <ul className="space-y-1.5">
+                    {reflections.map((r, i) => (
+                      <li key={r.id || i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
+                        {r.response}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         );
       })}
