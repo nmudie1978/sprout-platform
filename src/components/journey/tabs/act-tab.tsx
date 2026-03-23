@@ -305,25 +305,31 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       )}
 
       {/* Supporting sections — clearly separated container */}
-      <div className="shine-border mt-8 rounded-xl border border-border/40 bg-card/30 p-5">
-        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-4">
+      <div className="shine-border mt-8 rounded-xl border border-border/40 bg-card/30 p-4">
+        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-3">
           Supporting Tools
         </p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
-            <h4 className="text-xs font-semibold text-foreground/70 flex items-center gap-1.5 mb-3">
+        <div className="space-y-3">
+          <details className="group rounded-lg border border-border/30 bg-card/50">
+            <summary className="flex items-center gap-1.5 p-3 cursor-pointer text-xs font-semibold text-foreground/70 select-none">
               <GraduationCap className="h-3.5 w-3.5" />
               Learning Goals
-            </h4>
-            <LearningGoalsTab />
-          </div>
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
-            <h4 className="text-xs font-semibold text-foreground/70 flex items-center gap-1.5 mb-3">
+              <span className="ml-auto text-[10px] text-muted-foreground/40 group-open:hidden">Click to expand</span>
+            </summary>
+            <div className="px-3 pb-3">
+              <LearningGoalsTab />
+            </div>
+          </details>
+          <details className="group rounded-lg border border-border/30 bg-card/50">
+            <summary className="flex items-center gap-1.5 p-3 cursor-pointer text-xs font-semibold text-foreground/70 select-none">
               <MessageSquare className="h-3.5 w-3.5" />
               Reflect & Update
-            </h4>
-            <NotesTab />
-          </div>
+              <span className="ml-auto text-[10px] text-muted-foreground/40 group-open:hidden">Click to expand</span>
+            </summary>
+            <div className="px-3 pb-3">
+              <NotesTab />
+            </div>
+          </details>
         </div>
       </div>
     </div>
