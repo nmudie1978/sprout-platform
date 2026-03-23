@@ -264,7 +264,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             Fullscreen
           </button>
         </div>
-        <div className="min-h-[400px] rounded-xl border border-border/30 p-4 overflow-hidden">
+        <div className="min-h-[400px] rounded-xl border-2 border-amber-500/20 p-4 overflow-hidden">
           <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
         </div>
       </div>
@@ -291,7 +291,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       )}
 
       {/* Supporting sections — clearly separated container */}
-      <div className="mt-8 rounded-xl border-2 border-border/50 bg-card/30 p-5">
+      <div className="shine-border mt-8 rounded-xl border border-border/40 bg-card/30 p-5">
         <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-4">
           Supporting Tools
         </p>
