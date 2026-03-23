@@ -1,12 +1,14 @@
 "use client";
 
 /**
- * DASHBOARD PAGE — Action-First Layout
+ * DASHBOARD PAGE — Information-Rich Overview
  *
- * Hierarchy:
- * 1. Primary Action Card (dominant CTA based on user state)
- * 2. Journey Snapshot (compact progress)
- * 3. Quick Actions (Explore Careers, Small Jobs, AI Advisor)
+ * Layout:
+ * 1. Greeting header with date
+ * 2. My Journey card (circular progress, stage, progress bar)
+ * 3. Goal cards (primary + secondary)
+ * 4. Careers Explored + My Library
+ * 5. Small Jobs stats + Activity
  */
 
 import { useSession } from "next-auth/react";
@@ -15,12 +17,14 @@ import {
   ArrowRight,
   Compass,
   Briefcase,
-  Sparkles,
-  Target,
+  TrendingUp,
+  BookmarkCheck,
   Search,
   CheckCircle2,
   Rocket,
-  Map,
+  FileText,
+  Clock,
+  Ban,
 } from "lucide-react";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
@@ -28,127 +32,74 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
-import { RecommendedCareers } from "@/components/discover/recommended-careers";
-import { WelcomeHero } from "@/components/welcome-hero";
 import { useState, useEffect } from "react";
 
 // ── Glass Card ───────────────────────────────────────────────────────
-function GlassCard({ children, className = "" }: {
-  children: React.ReactNode; className?: string;
+function GlassCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <div className={`bg-card/80 backdrop-blur-sm border border-border/40 rounded-2xl ${className}`}>
+    <div
+      className={`bg-card/80 backdrop-blur-sm border border-border/40 rounded-2xl ${className}`}
+    >
       {children}
     </div>
   );
 }
 
-// ── Determine primary CTA based on user state ────────────────────────
-type UserState =
-  | "no_journey"         // Never started
-  | "discover_active"    // In Discover
-  | "discover_done"      // Discover complete, no goal set
-  | "understand_active"  // In Understand
-  | "act_active"         // In Act
-  | "journey_complete";  // All mandatory done
+// ── Circular Progress Ring ───────────────────────────────────────────
+function ProgressRing({
+  current,
+  total,
+  size = 80,
+  strokeWidth = 6,
+}: {
+  current: number;
+  total: number;
+  size?: number;
+  strokeWidth?: number;
+}) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = total > 0 ? current / total : 0;
+  const offset = circumference - progress * circumference;
 
-interface PrimaryCTA {
-  headline: string;
-  description: string;
-  buttonText: string;
-  href: string;
-  icon: React.ReactNode;
-  accentClass: string;
-  glowClass: string;
-}
-
-function getUserState(
-  journey: JourneyUIState | null,
-  hasGoal: boolean,
-): UserState {
-  if (!journey || journey.completedSteps.length === 0) return "no_journey";
-
-  const { lenses } = journey.summary;
-
-  if (lenses.act.isComplete) return "journey_complete";
-  if (lenses.understand.isComplete) return "act_active";
-  if (lenses.discover.isComplete) {
-    return hasGoal ? "understand_active" : "discover_done";
-  }
-  return "discover_active";
-}
-
-function getPrimaryCTA(state: UserState, goalTitle: string | null, nextStepTitle: string | null): PrimaryCTA {
-  switch (state) {
-    case "no_journey":
-      return {
-        headline: "Start with what you know about yourself",
-        description: "You don't need a plan yet. Begin by exploring your strengths and what interests you — everything else builds from there.",
-        buttonText: "Begin Exploring",
-        href: "/my-journey",
-        icon: <Sparkles className="h-6 w-6" />,
-        accentClass: "text-teal-500",
-        glowClass: "shadow-[0_0_40px_rgba(20,184,166,0.12)]",
-      };
-    case "discover_active":
-      return {
-        headline: "You're building a clearer picture",
-        description: nextStepTitle
-          ? `Next up: ${nextStepTitle}. Every small reflection helps shape your direction.`
-          : "Keep going at your own pace — the next step is ready when you are.",
-        buttonText: "Continue Discover",
-        href: "/my-journey",
-        icon: <Search className="h-6 w-6" />,
-        accentClass: "text-teal-500",
-        glowClass: "shadow-[0_0_40px_rgba(20,184,166,0.12)]",
-      };
-    case "discover_done":
-      return {
-        headline: "You know yourself better now",
-        description: "When you're ready, set a direction. It doesn't have to be permanent — you can always change course later.",
-        buttonText: "Choose a Direction",
-        href: "/my-journey",
-        icon: <Target className="h-6 w-6" />,
-        accentClass: "text-amber-500",
-        glowClass: "shadow-[0_0_40px_rgba(245,158,11,0.12)]",
-      };
-    case "understand_active":
-      return {
-        headline: goalTitle ? `Learning about ${goalTitle}` : "Exploring your path",
-        description: nextStepTitle
-          ? `Next up: ${nextStepTitle}. Understanding the reality of a career helps you make decisions you'll feel good about.`
-          : "Take your time learning about this path. The more you know, the more confident you'll feel.",
-        buttonText: "Continue Understand",
-        href: "/my-journey",
-        icon: <Map className="h-6 w-6" />,
-        accentClass: "text-blue-500",
-        glowClass: "shadow-[0_0_40px_rgba(59,130,246,0.12)]",
-      };
-    case "act_active":
-      return {
-        headline: "Ready to take a real step",
-        description: nextStepTitle
-          ? `Next up: ${nextStepTitle}. Even a small action can create real momentum.`
-          : "You've done the thinking. Now try something in the real world — start small, learn as you go.",
-        buttonText: "Continue Journey",
-        href: "/my-journey",
-        icon: <Rocket className="h-6 w-6" />,
-        accentClass: "text-amber-500",
-        glowClass: "shadow-[0_0_40px_rgba(245,158,11,0.12)]",
-      };
-    case "journey_complete":
-      return {
-        headline: "You've come a long way",
-        description: goalTitle
-          ? `You've done real work toward ${goalTitle}. Use your roadmap to keep tracking progress, or explore a new direction whenever you're ready.`
-          : "You've built real clarity. Keep growing — your roadmap and new directions are always here.",
-        buttonText: "View My Journey",
-        href: "/my-journey",
-        icon: <CheckCircle2 className="h-6 w-6" />,
-        accentClass: "text-emerald-500",
-        glowClass: "shadow-[0_0_40px_rgba(16,185,129,0.12)]",
-      };
-  }
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          className="text-muted/40"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="text-teal-500 transition-all duration-700"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-foreground">
+          {current}/{total}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 // ── Lens label mapping ───────────────────────────────────────────────
@@ -162,7 +113,9 @@ const LENS_LABELS = [
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
+    null
+  );
 
   const { data: onboardingStatus } = useQuery({
     queryKey: ["onboarding-status"],
@@ -198,7 +151,10 @@ export default function DashboardPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: journeyData } = useQuery<{ success: boolean; journey: JourneyUIState }>({
+  const { data: journeyData } = useQuery<{
+    success: boolean;
+    journey: JourneyUIState;
+  }>({
     queryKey: ["journey-state"],
     queryFn: async () => {
       const response = await fetch("/api/journey");
@@ -209,24 +165,89 @@ export default function DashboardPage() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const displayName = session?.user?.youthProfile?.displayName || "";
+  const { data: applicationsData } = useQuery<{
+    applied: number;
+    waiting: number;
+    accepted: number;
+    done: number;
+  }>({
+    queryKey: ["application-stats"],
+    queryFn: async () => {
+      const response = await fetch("/api/applications");
+      if (!response.ok)
+        return { applied: 0, waiting: 0, accepted: 0, done: 0 };
+      const apps = await response.json();
+      if (!Array.isArray(apps))
+        return { applied: 0, waiting: 0, accepted: 0, done: 0 };
+      return {
+        applied: apps.length,
+        waiting: apps.filter(
+          (a: { status: string }) => a.status === "PENDING"
+        ).length,
+        accepted: apps.filter(
+          (a: { status: string }) => a.status === "ACCEPTED"
+        ).length,
+        done: apps.filter(
+          (a: { status: string }) =>
+            a.status === "COMPLETED" || a.status === "WITHDRAWN"
+        ).length,
+      };
+    },
+    enabled: session?.user.role === "YOUTH",
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const displayName =
+    session?.user?.youthProfile?.displayName ||
+    session?.user?.name ||
+    "";
   const journey = journeyData?.journey ?? null;
   const primaryGoal = goalsData?.primaryGoal ?? null;
-  const goalTitle = primaryGoal?.title ?? journey?.summary?.primaryGoal?.title ?? null;
-  const hasGoal = !!goalTitle;
-
-  // Determine user state and CTA
-  const userState = getUserState(journey, hasGoal);
-
-  // Find next step title
-  const nextStep = journey?.steps.find(s => s.status === "next");
-  const nextStepTitle = nextStep?.title ?? null;
-
-  const cta = getPrimaryCTA(userState, goalTitle, nextStepTitle);
+  const secondaryGoal = goalsData?.secondaryGoal ?? null;
+  const goalTitle =
+    primaryGoal?.title ?? journey?.summary?.primaryGoal?.title ?? null;
 
   // Journey progress
   const lenses = journey?.summary?.lenses;
-  const overallProgress = journey?.summary?.overallProgress ?? 0;
+
+  // Current stage
+  const currentLens = journey?.currentLens ?? "DISCOVER";
+  const currentStageLabel =
+    currentLens === "DISCOVER"
+      ? "Discover"
+      : currentLens === "UNDERSTAND"
+        ? "Understand"
+        : "Grow";
+
+  // Completed lens count
+  const completedLensCount = lenses
+    ? [lenses.discover, lenses.understand, lenses.act].filter(
+        (l) => l.isComplete
+      ).length
+    : 0;
+
+  // Explored careers & saved content from journey summary
+  const exploredRoles = journey?.summary?.exploredRoles ?? [];
+  const savedSummary = journey?.summary?.savedSummary ?? {
+    total: 0,
+    byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 },
+  };
+
+  // Application stats
+  const appStats = applicationsData ?? {
+    applied: 0,
+    waiting: 0,
+    accepted: 0,
+    done: 0,
+  };
+
+  // Date
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
@@ -238,190 +259,322 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[100vh] bg-background text-foreground">
-      <OnboardingWizard open={showOnboarding} onComplete={() => { setShowOnboarding(false); setOnboardingComplete(true); }} />
+      <OnboardingWizard
+        open={showOnboarding}
+        onComplete={() => {
+          setShowOnboarding(false);
+          setOnboardingComplete(true);
+        }}
+      />
 
-      <div className="max-w-2xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* ── Header ─────────────────────────────────────────── */}
-        <div className="mb-6 sm:mb-8">
-          <p className="text-sm text-muted-foreground/70 mb-1">
-            {userState === "no_journey" ? "Welcome" : "Welcome back"}
-          </p>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-1">
-            {displayName}
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            Hey, {displayName}
           </h1>
-          <p className="text-sm text-muted-foreground/60">
-            {userState === "no_journey" && "Start by exploring what feels interesting to you."}
-            {userState === "discover_active" && "You're starting to build a clearer picture."}
-            {userState === "discover_done" && "You've done great reflection work so far."}
-            {userState === "understand_active" && "You're learning what this path really looks like."}
-            {userState === "act_active" && "You've already made progress — keep building from here."}
-            {userState === "journey_complete" && "Your journey is always here when you need it."}
-          </p>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
+            <Clock className="h-4 w-4" />
+            {dateStr}
+          </div>
         </div>
-
-        {/* ── First-time Welcome ──────────────────────────────── */}
-        {onboardingComplete && <WelcomeHero />}
 
         <div className="mb-5">
           <VerificationStatus compact />
         </div>
 
-        {/* ── 1. Primary Action Card ─────────────────────────── */}
-        <Link href={cta.href} className="block mb-6 group">
-          <div className={cn(
-            "relative overflow-hidden rounded-2xl border-2 p-6 sm:p-8 transition-all",
-            "border-border/50 hover:border-border/80",
-            cta.glowClass,
-          )}>
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-card/90 to-muted/30 pointer-events-none" />
-
-            <div className="relative">
-              <div className={cn("inline-flex items-center justify-center p-2.5 rounded-xl mb-4", "bg-muted/60")}>
-                <div className={cta.accentClass}>{cta.icon}</div>
+        {/* ── 1. My Journey Card ─────────────────────────────── */}
+        <Link href="/my-journey" className="block mb-6 group">
+          <GlassCard className="p-5 sm:p-6 hover:border-border/60 transition-all">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1.5 rounded-lg bg-teal-500/10">
+                <TrendingUp className="h-4 w-4 text-teal-500" />
               </div>
-
-              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
-                {cta.headline}
-              </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-lg">
-                {cta.description}
-              </p>
-
-              <div className={cn(
-                "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all",
-                "bg-foreground text-background",
-                "group-hover:gap-3",
-              )}>
-                {cta.buttonText}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              <div>
+                <h2 className="text-base font-semibold text-foreground">
+                  My Journey
+                </h2>
+                <p className="text-xs text-muted-foreground/60">
+                  Track your growth
+                </p>
               </div>
             </div>
-          </div>
+
+            <div className="flex items-center gap-6">
+              {/* Progress ring */}
+              <ProgressRing current={completedLensCount} total={3} />
+
+              {/* Stage & progress bar */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-muted-foreground mb-1">
+                  Current stage:{" "}
+                  <span className="font-semibold text-teal-500">
+                    {currentStageLabel}
+                  </span>
+                </p>
+
+                {/* Three-stage progress bar */}
+                <div className="flex gap-1 mb-3">
+                  {LENS_LABELS.map(({ key, label }) => {
+                    const lens = lenses?.[key as keyof typeof lenses];
+                    const isActive =
+                      currentLens === key.toUpperCase();
+                    return (
+                      <div key={key} className="flex-1">
+                        <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
+                          <div
+                            className={cn(
+                              "h-full rounded-full transition-all duration-500",
+                              lens?.isComplete
+                                ? "bg-teal-500"
+                                : isActive
+                                  ? "bg-teal-500"
+                                  : "bg-transparent"
+                            )}
+                            style={{
+                              width: `${lens?.progress ?? 0}%`,
+                            }}
+                          />
+                        </div>
+                        <p
+                          className={cn(
+                            "text-[10px] mt-1 text-center",
+                            isActive
+                              ? "text-foreground font-medium"
+                              : "text-muted-foreground/40"
+                          )}
+                        >
+                          {label}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Jobs stats */}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground/50">
+                  <span>{appStats.applied} jobs</span>
+                  <span>{appStats.applied} applied</span>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
         </Link>
 
-        {/* ── 2. Journey Snapshot ─────────────────────────────── */}
-        {journey && lenses && (
-          <GlassCard className="p-4 sm:p-5 mb-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-foreground">Your Progress</h3>
-                {goalTitle && (
-                  <span className="text-[11px] text-muted-foreground/60 truncate max-w-[180px]">
-                    — {goalTitle}
+        {/* ── 2. Goal Cards ──────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {/* Primary Goal */}
+          <Link href="/my-journey" className="block group">
+            <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                  Primary Goal
+                </p>
+                {primaryGoal && (
+                  <span
+                    className={cn(
+                      "text-[10px] font-medium px-2 py-0.5 rounded-full",
+                      primaryGoal.status === "committed"
+                        ? "bg-emerald-500/15 text-emerald-500"
+                        : "bg-blue-500/15 text-blue-500"
+                    )}
+                  >
+                    {primaryGoal.status === "committed"
+                      ? "Committed"
+                      : "Exploring"}
                   </span>
                 )}
               </div>
-              <Link href="/my-journey" className="text-[11px] text-teal-500 hover:text-teal-400 flex items-center gap-1">
-                Full journey <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-
-            {/* Stage progress bars */}
-            <div className="grid grid-cols-3 gap-3">
-              {LENS_LABELS.map(({ key, label }) => {
-                const lens = lenses[key as keyof typeof lenses];
-                const isActive = journey.currentLens === key.toUpperCase();
-                return (
-                  <div key={key}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className={cn(
-                        "text-[11px] font-medium",
-                        lens.isComplete ? "text-emerald-500" :
-                        isActive ? "text-foreground" : "text-muted-foreground/50"
-                      )}>
-                        {label}
-                      </span>
-                      {lens.isComplete && <CheckCircle2 className="h-3 w-3 text-emerald-500" />}
-                    </div>
-                    <div className="h-1.5 bg-muted/50 rounded-full overflow-hidden">
-                      <div
-                        className={cn(
-                          "h-full rounded-full transition-all",
-                          lens.isComplete ? "bg-emerald-500" :
-                          isActive ? "bg-teal-400" : "bg-muted-foreground/20"
-                        )}
-                        style={{ width: `${lens.progress}%` }}
-                      />
-                    </div>
-                    <p className="text-[10px] text-muted-foreground/50 mt-1">
-                      {lens.completedMandatory.length}/{lens.totalMandatory} steps
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
-        )}
-
-        {/* ── 3. Quick Actions ────────────────────────────────── */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          {[
-            {
-              href: "/careers",
-              icon: Compass,
-              label: "Explore Careers",
-              color: "text-teal-500",
-              bg: "bg-teal-500/10",
-            },
-            {
-              href: "/jobs",
-              icon: Briefcase,
-              label: "Small Jobs",
-              color: "text-blue-500",
-              bg: "bg-blue-500/10",
-            },
-            {
-              href: "/advisor",
-              icon: Sparkles,
-              label: "AI Advisor",
-              color: "text-amber-500",
-              bg: "bg-amber-500/10",
-            },
-          ].map((action) => (
-            <Link key={action.href} href={action.href} className="block group">
-              <GlassCard className="p-4 text-center hover:border-border/60 transition-all h-full flex flex-col items-center justify-center gap-2.5">
-                <div className={cn("p-2.5 rounded-xl", action.bg)}>
-                  <action.icon className={cn("h-5 w-5", action.color)} />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                  {action.label}
-                </span>
-              </GlassCard>
-            </Link>
-          ))}
-        </div>
-
-        {/* ── 4. Goal (if set) — compact ──────────────────────── */}
-        {primaryGoal && (
-          <Link href="/my-journey" className="block group">
-            <GlassCard className="p-4 hover:border-border/60 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-teal-500/10 shrink-0">
-                  <Target className="h-4 w-4 text-teal-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-0.5">
-                    Primary Goal
-                  </p>
-                  <p className="text-sm font-semibold text-foreground truncate">
-                    {primaryGoal.title}
-                  </p>
-                </div>
-                <span className={cn(
-                  "text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0",
-                  primaryGoal.status === "committed"
-                    ? "bg-emerald-500/15 text-emerald-500"
-                    : "bg-blue-500/15 text-blue-500"
-                )}>
-                  {primaryGoal.status === "committed" ? "Committed" : "Exploring"}
-                </span>
-              </div>
+              <p className="text-sm font-semibold text-foreground truncate">
+                {primaryGoal?.title ?? (
+                  <span className="text-muted-foreground/40">
+                    Not set yet
+                  </span>
+                )}
+              </p>
             </GlassCard>
           </Link>
-        )}
-        {/* ── 5. Personalised Recommendations ──────────────── */}
-        <RecommendedCareers className="mt-2" limit={4} />
+
+          {/* Secondary Goal — disabled / coming soon */}
+          <div className="opacity-40 pointer-events-none select-none">
+            <GlassCard className="p-4 h-full">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                  Secondary Goal
+                </p>
+                {secondaryGoal && (
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted/30 text-muted-foreground/50">
+                    {secondaryGoal.status === "committed"
+                      ? "Committed"
+                      : "Exploring"}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground/50 truncate">
+                {secondaryGoal?.title ?? "Not set yet"}
+              </p>
+              <p className="text-[10px] text-muted-foreground/40 mt-1">
+                Coming soon
+              </p>
+            </GlassCard>
+          </div>
+        </div>
+
+        {/* ── 3. Careers Explored + My Library ────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {/* Careers You Explored */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Compass className="h-4 w-4 text-teal-500" />
+                <h3 className="text-sm font-semibold">
+                  Careers You Explored
+                </h3>
+              </div>
+              <Link
+                href="/careers"
+                className="text-[11px] text-teal-500 hover:text-teal-400 flex items-center gap-1"
+              >
+                Explore <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {exploredRoles.length > 0 ? (
+              <div className="space-y-2">
+                {exploredRoles.slice(0, 3).map((role, i) => (
+                  <div
+                    key={i}
+                    className="text-xs text-muted-foreground flex items-center gap-2"
+                  >
+                    <div className="h-1.5 w-1.5 rounded-full bg-teal-500/50" />
+                    {role.title}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <div className="h-10 w-10 rounded-full bg-muted/30 flex items-center justify-center mb-2">
+                  <Ban className="h-5 w-5 text-muted-foreground/30" />
+                </div>
+                <p className="text-xs text-muted-foreground/50 mb-1">
+                  No careers explored yet
+                </p>
+                <Link
+                  href="/careers"
+                  className="text-xs text-teal-500 hover:text-teal-400"
+                >
+                  Start exploring
+                </Link>
+              </div>
+            )}
+          </GlassCard>
+
+          {/* My Library */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <BookmarkCheck className="h-4 w-4 text-blue-500" />
+                <h3 className="text-sm font-semibold">My Library</h3>
+              </div>
+              <Link
+                href="/insights"
+                className="text-[11px] text-blue-500 hover:text-blue-400 flex items-center gap-1"
+              >
+                View All <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {savedSummary.total > 0 ? (
+              <div className="grid grid-cols-2 gap-2">
+                {savedSummary.byType.articles > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    {savedSummary.byType.articles} articles
+                  </div>
+                )}
+                {savedSummary.byType.videos > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    {savedSummary.byType.videos} videos
+                  </div>
+                )}
+                {savedSummary.byType.podcasts > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    {savedSummary.byType.podcasts} podcasts
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <div className="h-10 w-10 rounded-full bg-muted/30 flex items-center justify-center mb-2">
+                  <BookmarkCheck className="h-5 w-5 text-muted-foreground/30" />
+                </div>
+                <p className="text-xs text-muted-foreground/50 mb-1">
+                  No saved content yet
+                </p>
+                <Link
+                  href="/insights"
+                  className="text-xs text-blue-500 hover:text-blue-400"
+                >
+                  Save articles & videos as you explore
+                </Link>
+              </div>
+            )}
+          </GlassCard>
+        </div>
+
+        {/* ── 4. Small Jobs + Activity ────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Small Jobs */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4 text-emerald-500" />
+                <h3 className="text-sm font-semibold">Small Jobs</h3>
+              </div>
+              <Link
+                href="/jobs"
+                className="text-[11px] text-emerald-500 hover:text-emerald-400 flex items-center gap-1"
+              >
+                Browse <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { label: "Applied", value: appStats.applied },
+                { label: "Waiting", value: appStats.waiting },
+                { label: "Accepted", value: appStats.accepted },
+                { label: "Done", value: appStats.done },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <p className="text-lg font-bold text-foreground">
+                    {stat.value}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/50">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+
+          {/* Activity */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-amber-500" />
+                <h3 className="text-sm font-semibold">Activity</h3>
+              </div>
+              <Link
+                href="/my-journey"
+                className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground flex items-center gap-1"
+              >
+                View all <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <div className="flex items-center justify-center py-4">
+              <p className="text-xs text-muted-foreground/40">
+                No recent activity
+              </p>
+            </div>
+          </GlassCard>
+        </div>
       </div>
     </div>
   );

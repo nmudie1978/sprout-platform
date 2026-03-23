@@ -313,190 +313,141 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
   // Get raw career category values for building explore links
   const careerCategories = summary?.careerInterests || [];
 
+  // Separate completed, current, and locked steps
+  const completedSteps = DISCOVER_STEPS.filter((s) => getStepStatus(s.id) === 'completed');
+  const currentStep = DISCOVER_STEPS.find((s) => getStepStatus(s.id) === 'next');
+  const lockedSteps = DISCOVER_STEPS.filter((s) => getStepStatus(s.id) === 'locked');
+  const allComplete = completedSteps.length === DISCOVER_STEPS.length;
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Know Yourself — shows summary when complete, prompt when not */}
       <DiscoverProfileSection />
 
-      {/* Sequential steps — each one unlocks the next */}
-      {DISCOVER_STEPS.map((config) => {
-        const status = getStepStatus(config.id);
-        const output = getStepOutput(config.id);
-        const isLocked = status === 'locked';
-        const isComplete = status === 'completed';
-        const isCurrent = status === 'next';
-        const Icon = config.icon;
+      {/* Completed steps — compact grid */}
+      {completedSteps.length > 0 && (
+        <div className="grid gap-2 sm:grid-cols-3">
+          {completedSteps.map((config) => {
+            const output = getStepOutput(config.id);
+            return (
+              <div key={config.id} className="rounded-lg border border-border/40 bg-card/40 p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                    <span className="text-[11px] font-semibold truncate">{config.title}</span>
+                  </div>
+                  {onStartStep && (
+                    <button
+                      onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
+                      className="text-[10px] text-muted-foreground/40 hover:text-muted-foreground transition-colors"
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
+                {output && (
+                  <div className="flex flex-wrap gap-1">
+                    {output.slice(0, 3).map((item) => (
+                      <span key={item} className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500">
+                        {item}
+                      </span>
+                    ))}
+                    {output.length > 3 && (
+                      <span className="text-[10px] text-muted-foreground/40">+{output.length - 3}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-        // For EXPLORE_CAREERS: check if categories are saved but step isn't completed yet
-        const hasUnsavedExploration = config.id === 'EXPLORE_CAREERS' && isCurrent && careerCategories.length > 0;
+      {/* Current active step — full width with glow */}
+      {currentStep && (() => {
+        const config = currentStep;
+        const output = getStepOutput(config.id);
+        const hasUnsavedExploration = config.id === 'EXPLORE_CAREERS' && careerCategories.length > 0;
+        const Icon = config.icon;
 
         return (
           <div
-            key={config.id}
-            className={cn(
-              'rounded-xl border p-4 transition-all',
-              isCurrent && 'border-teal-500/40 bg-teal-500/5 ring-1 ring-teal-500/20',
-              isComplete && 'border-border/60 bg-card/60',
-              isLocked && 'border-border/30 opacity-40',
-            )}
-            style={isCurrent ? {
-              boxShadow: '0 0 15px rgba(20, 184, 166, 0.15), 0 0 30px rgba(20, 184, 166, 0.05)',
-            } : undefined}
+            className="rounded-xl border border-teal-500/40 bg-teal-500/5 ring-1 ring-teal-500/20 p-4"
+            style={{ boxShadow: '0 0 15px rgba(20, 184, 166, 0.15)' }}
           >
-            {/* Step header */}
             <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
-                  isComplete && 'bg-emerald-500/20 text-emerald-500',
-                  isCurrent && 'bg-teal-500/20 text-teal-500',
-                  isLocked && 'bg-muted text-muted-foreground/50',
-                )}
-              >
-                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : config.stepNumber}
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-500/20 text-teal-500 text-xs font-bold shrink-0">
+                {config.stepNumber}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={cn(
-                  'text-sm font-semibold',
-                  isComplete && 'text-foreground',
-                  isLocked && 'text-muted-foreground/50',
-                )}>
-                  {config.title}
-                </p>
-                {(isCurrent || isLocked) && !hasUnsavedExploration && (
+                <p className="text-sm font-semibold">{config.title}</p>
+                {!hasUnsavedExploration && (
                   <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
                 )}
               </div>
-              {isCurrent && !hasUnsavedExploration && onStartStep && (
+              {!hasUnsavedExploration && onStartStep && (
                 <Button
                   size="sm"
-                  className="h-8 text-xs px-4 bg-teal-600 hover:bg-teal-700 shrink-0"
+                  className="h-7 text-xs px-3 bg-teal-600 hover:bg-teal-700 shrink-0"
                   onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
                 >
                   Start <ArrowRight className="h-3 w-3 ml-1" />
                 </Button>
               )}
-              {(isComplete || hasUnsavedExploration) && onStartStep && (
-                <button
-                  onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
-                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-                >
-                  <Pencil className="h-3 w-3" />
-                  Update
-                </button>
-              )}
             </div>
 
             {/* Explore Careers: categories saved, pending confirmation */}
             {hasUnsavedExploration && (
-              <div className="mt-3 pt-3 border-t border-border/30 space-y-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className={cn('p-1 rounded-md', config.bgClass)}>
-                    <Icon className={cn('h-3 w-3', config.colorClass)} />
-                  </div>
-                  <span className="text-xs font-medium text-muted-foreground">{config.outputTitle}</span>
-                </div>
+              <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
                 <div className="flex flex-wrap gap-1.5">
                   {output?.map((item) => (
-                    <span
-                      key={item}
-                      className={cn('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', config.bgClass, config.colorClass)}
-                    >
-                      {item}
-                    </span>
+                    <span key={item} className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-teal-500/10 text-teal-500">{item}</span>
                   ))}
                 </div>
-                <Link
-                  href={`/careers?category=${careerCategories[0]}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-500 hover:text-teal-400 transition-colors"
-                >
-                  Explore these careers
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
-                {onConfirmExploration && (
-                  <button
-                    onClick={onConfirmExploration}
-                    className="flex items-center gap-2 w-full rounded-lg border border-teal-500/30 bg-teal-500/5 hover:bg-teal-500/10 p-2.5 transition-colors group"
-                  >
-                    <div className="flex h-5 w-5 items-center justify-center rounded border-2 border-teal-500/40 group-hover:border-teal-500 transition-colors">
-                      <CheckCircle2 className="h-3 w-3 text-teal-500 opacity-0 group-hover:opacity-50 transition-opacity" />
-                    </div>
-                    <span className="text-xs font-medium text-teal-400">
-                      I&apos;ve explored these careers
-                    </span>
-                  </button>
-                )}
+                <div className="flex items-center gap-3">
+                  <Link href={`/careers?category=${careerCategories[0]}`} target="_blank" className="text-[11px] text-teal-500/70 hover:text-teal-400">
+                    Explore →
+                  </Link>
+                  {onConfirmExploration && (
+                    <button onClick={onConfirmExploration} className="text-[11px] font-medium text-teal-400 hover:text-teal-300 underline underline-offset-2">
+                      Done exploring — continue
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Output — shown when completed */}
-            {isComplete && (
+            {/* Set Your Direction */}
+            {config.id === 'ROLE_DEEP_DIVE' && !hasGoal && (
               <div className="mt-3 pt-3 border-t border-border/30">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className={cn('p-1 rounded-md', config.bgClass)}>
-                    <Icon className={cn('h-3 w-3', config.colorClass)} />
-                  </div>
-                  <span className="text-xs font-medium text-muted-foreground">{config.outputTitle}</span>
-                </div>
-                {output ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {output.map((item) => (
-                      <span
-                        key={item}
-                        className={cn('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', config.bgClass, config.colorClass)}
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-muted-foreground/50">{config.emptyOutput}</p>
-                )}
-              </div>
-            )}
-
-            {/* Set Your Direction — indented sub-section of Deep Dive step */}
-            {config.id === 'ROLE_DEEP_DIVE' && !isLocked && !hasGoal && (
-              <div className="mt-3 pt-3 border-t border-border/30 ml-11">
-                <div className="flex items-center gap-3 rounded-lg bg-teal-500/5 border border-teal-500/15 p-3">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/15 text-teal-500 shrink-0">
-                    <Target className="h-3 w-3" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">Set Your Direction</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                      Pick a direction to focus on next. You can change this anytime — nothing is locked in.
-                    </p>
-                  </div>
-                  <Button size="sm" variant="outline" className="text-[11px] h-7 shrink-0 border-teal-500/30 text-teal-500 hover:bg-teal-500/10" onClick={onSetGoal}>
-                    Choose a goal
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Current Goal — shown when goal is already set */}
-            {config.id === 'ROLE_DEEP_DIVE' && !isLocked && hasGoal && (
-              <div className="mt-3 pt-3 border-t border-border/30 ml-11">
-                <div className="flex items-center gap-3 rounded-lg bg-teal-500/5 border border-teal-500/15 p-3">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/15 text-teal-500 shrink-0">
-                    <Target className="h-3 w-3" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold truncate">{goalTitle}</p>
-                    <p className="text-[10px] text-muted-foreground/50 mt-0.5">
-                      Your progress is saved — you can switch back anytime.
-                    </p>
-                  </div>
-                  <Button size="sm" variant="outline" className="text-[11px] h-7 shrink-0 border-teal-500/30 text-teal-500 hover:bg-teal-500/10" onClick={onSetGoal}>
-                    Change goal
-                  </Button>
-                </div>
+                <button onClick={onSetGoal} className="flex items-center gap-2 w-full rounded-lg bg-teal-500/5 border border-teal-500/15 hover:bg-teal-500/10 p-2.5 transition-colors text-left">
+                  <Target className="h-3.5 w-3.5 text-teal-500 shrink-0" />
+                  <span className="text-xs font-medium text-teal-400">Choose a career goal to continue</span>
+                </button>
               </div>
             )}
           </div>
         );
-      })}
+      })()}
+
+      {/* Locked steps — dimmed */}
+      {lockedSteps.length > 0 && (
+        <div className="space-y-2">
+          {lockedSteps.map((config) => (
+            <div key={config.id} className="rounded-lg border border-border/20 bg-card/20 p-3 opacity-40">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-muted-foreground/50 text-[10px] font-bold shrink-0">
+                  {config.stepNumber}
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground/50">{config.title}</p>
+                  <p className="text-[10px] text-muted-foreground/30 mt-0.5">{config.description}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Continue to Understand — shown when Discover is 100% complete */}
       {journey.summary?.lenses?.discover?.isComplete && onContinueToUnderstand && (
