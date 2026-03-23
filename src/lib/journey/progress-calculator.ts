@@ -273,10 +273,10 @@ export function calculateAllLensProgress(summary: JourneySummary): AllLensProgre
 
   // ACT lens
   const actProgress = calculateActProgress({
-    alignedActionCompleted: (summary.alignedActionsCount ?? 0) >= 1,
-    actionReflectionSubmitted: (summary.alignedActionReflections?.length ?? 0) >= 1,
+    alignedActionCompleted: (summary.alignedActionsCount ?? 0) >= 1 || (summary.alignedActions?.length ?? 0) >= 1,
+    actionReflectionSubmitted: (summary.alignedActionReflections?.length ?? 0) >= 1 || (summary.reflectionSummary?.total ?? 0) >= 1,
     planUpdated: summary.planUpdatedAt !== null && summary.planUpdatedAt !== undefined,
-    externalFeedbackReceived: false, // Would need to track this
+    externalFeedbackReceived: (summary.externalFeedback as unknown as unknown[] | undefined)?.length ? true : false,
   });
 
   // Overall progress = average of lens percentages
