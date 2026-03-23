@@ -26,6 +26,8 @@ import Link from 'next/link';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { getAllCareers } from '@/lib/career-pathways';
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
+import { GuidanceStack } from '@/components/guidance/guidance-stack';
+import { buildGuidanceContext } from '@/lib/guidance/rules';
 
 interface UnderstandTabProps {
   journey: JourneyUIState;
@@ -125,8 +127,24 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
     return 'locked';
   };
 
+  const guidanceCtx = buildGuidanceContext({
+    journey: {
+      currentLens: journey.currentLens,
+      completedSteps: journey.completedSteps,
+      summary: journey.summary,
+    },
+    isFirstLogin: false,
+    onboardingComplete: true,
+    educationContext: null,
+    learningGoalCount: 0,
+    jobsApplied: 0,
+  });
+
   return (
     <div className="space-y-3">
+      {/* Contextual guidance */}
+      <GuidanceStack placement="understand" context={guidanceCtx} />
+
       {/* Your Career Focus — inline pill that opens the career detail sheet */}
       {goalCareer && (
         <>

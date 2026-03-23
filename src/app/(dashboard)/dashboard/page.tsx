@@ -34,6 +34,8 @@ import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
+import { GuidanceStack } from "@/components/guidance/guidance-stack";
+import { buildGuidanceContext } from "@/lib/guidance/rules";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 
 // ── Glass Card ───────────────────────────────────────────────────────
@@ -467,6 +469,23 @@ export default function DashboardPage() {
         <div className="mb-5">
           <VerificationStatus compact />
         </div>
+
+        {/* ── Contextual Guidance ────────────────────────────── */}
+        {(() => {
+          const guidanceCtx = buildGuidanceContext({
+            journey: journey ? {
+              currentLens: journey.currentLens,
+              completedSteps: journey.completedSteps,
+              summary: journey.summary,
+            } : null,
+            isFirstLogin,
+            onboardingComplete: onboardingComplete ?? false,
+            educationContext: null,
+            learningGoalCount: 0,
+            jobsApplied: appStats.applied,
+          });
+          return <GuidanceStack placement="dashboard" context={guidanceCtx} className="mb-5" />;
+        })()}
 
         {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
         {isFirstLogin ? (

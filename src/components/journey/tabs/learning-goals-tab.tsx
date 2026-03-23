@@ -29,6 +29,8 @@ import {
   type LearningGoalCategory,
   type LearningGoalStatus,
 } from '@/lib/learning/types';
+import { GuidanceStack } from '@/components/guidance/guidance-stack';
+import type { GuidanceContext } from '@/lib/guidance/types';
 
 // ============================================
 // ADD / EDIT GOAL DIALOG
@@ -311,7 +313,7 @@ type FilterStatus = LearningGoalStatus | 'all';
 // MAIN TAB
 // ============================================
 
-export function LearningGoalsTab() {
+export function LearningGoalsTab({ guidanceContext }: { guidanceContext?: GuidanceContext }) {
   const { goals, addGoal, updateGoal, deleteGoal, updateProgress } = useLearningGoals();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<LearningGoal | null>(null);
@@ -352,8 +354,16 @@ export function LearningGoalsTab() {
   const completed = goals.filter((g) => g.status === 'completed').length;
   const inProgress = goals.filter((g) => g.status === 'in-progress').length;
 
+  // Build a guidance context for learning goals if not provided
+  const lgGuidanceCtx: GuidanceContext | undefined = guidanceContext
+    ? { ...guidanceContext, learningGoalCount: total }
+    : undefined;
+
   return (
     <div className="space-y-4">
+      {/* Contextual guidance */}
+      {lgGuidanceCtx && <GuidanceStack placement="learning-goals" context={lgGuidanceCtx} />}
+
       {/* Summary bar */}
       {total > 0 && (
         <div className="flex items-center gap-4 text-xs text-muted-foreground">

@@ -35,6 +35,8 @@ import {
   getCareerSubjectMapping,
 } from '@/lib/education/alignment';
 import { LearningGoalsTab } from './learning-goals-tab';
+import { GuidanceStack } from '@/components/guidance/guidance-stack';
+import { buildGuidanceContext } from '@/lib/guidance/rules';
 
 interface SchoolAlignmentTabProps {
   goalTitle: string | null;
@@ -366,8 +368,26 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
   const [customDecisions, setCustomDecisions] = useState<string[] | null>(null);
   const decisions = customDecisions ?? mapping?.nextDecisions ?? [];
 
+  // Build guidance context for school alignment
+  const schoolGuidanceCtx = buildGuidanceContext({
+    journey: null,
+    isFirstLogin: false,
+    onboardingComplete: true,
+    educationContext: eduContext,
+    learningGoalCount: 0,
+    jobsApplied: 0,
+  });
+  // Override hasGoal based on goalTitle prop
+  if (goalTitle) {
+    schoolGuidanceCtx.hasGoal = true;
+    schoolGuidanceCtx.goalTitle = goalTitle;
+  }
+
   return (
     <div className="space-y-4">
+      {/* Contextual guidance */}
+      <GuidanceStack placement="school-alignment" context={schoolGuidanceCtx} />
+
       {/* ── Row 1: Education + Career Alignment (side by side) ── */}
       {editing ? (
         <EducationEditor
@@ -520,7 +540,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
 
       {/* ── Row 3: Learning Goals ──────────────────────────────── */}
       <div className="border-t border-border/20 pt-3">
-        <LearningGoalsTab />
+        <LearningGoalsTab guidanceContext={schoolGuidanceCtx} />
       </div>
     </div>
   );

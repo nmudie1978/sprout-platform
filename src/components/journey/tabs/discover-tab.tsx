@@ -23,6 +23,8 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { useDiscoverRecommendations } from '@/hooks/use-discover-recommendations';
+import { GuidanceStack } from '@/components/guidance/guidance-stack';
+import { buildGuidanceContext } from '@/lib/guidance/rules';
 
 // Map career category values to human-readable labels
 const CATEGORY_LABELS: Record<string, string> = {
@@ -319,8 +321,24 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
   const lockedSteps = DISCOVER_STEPS.filter((s) => getStepStatus(s.id) === 'locked');
   const allComplete = completedSteps.length === DISCOVER_STEPS.length;
 
+  const guidanceCtx = buildGuidanceContext({
+    journey: {
+      currentLens: journey.currentLens,
+      completedSteps: journey.completedSteps,
+      summary: journey.summary,
+    },
+    isFirstLogin: false,
+    onboardingComplete: true,
+    educationContext: null,
+    learningGoalCount: 0,
+    jobsApplied: 0,
+  });
+
   return (
     <div className="space-y-4">
+      {/* Contextual guidance */}
+      <GuidanceStack placement="discover" context={guidanceCtx} />
+
       {/* Know Yourself — shows summary when complete, prompt when not */}
       <DiscoverProfileSection />
 

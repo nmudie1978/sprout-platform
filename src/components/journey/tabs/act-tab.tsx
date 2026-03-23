@@ -22,6 +22,8 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import type { JourneyUIState } from '@/lib/journey/types';
+import { GuidanceStack } from '@/components/guidance/guidance-stack';
+import { buildGuidanceContext } from '@/lib/guidance/rules';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -222,8 +224,24 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
     );
   };
 
+  const guidanceCtx = buildGuidanceContext({
+    journey: {
+      currentLens: journey.currentLens,
+      completedSteps: journey.completedSteps,
+      summary: journey.summary,
+    },
+    isFirstLogin: false,
+    onboardingComplete: true,
+    educationContext: null,
+    learningGoalCount: 0,
+    jobsApplied: 0,
+  });
+
   return (
     <div className="space-y-3">
+      {/* Contextual guidance */}
+      <GuidanceStack placement="act" context={guidanceCtx} />
+
       {/* All steps — side by side in pairs */}
       <div className="grid gap-3 sm:grid-cols-2">
         {renderStep(ACT_STEPS[0])}
