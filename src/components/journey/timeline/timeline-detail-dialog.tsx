@@ -18,6 +18,7 @@ interface TimelineDetailDialogProps {
   item: JourneyItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaved?: () => void;
 }
 
 interface CardData {
@@ -64,6 +65,7 @@ export function TimelineDetailDialog({
   item,
   open,
   onOpenChange,
+  onSaved,
 }: TimelineDetailDialogProps) {
   const [status, setStatus] = useState('not_started');
   const [notes, setNotes] = useState('');
@@ -93,10 +95,10 @@ export function TimelineDetailDialog({
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
-      // Auto-close after saving
+      onSaved?.();
       setTimeout(() => onOpenChange(false), 600);
     }, 300);
-  }, [item, status, notes, resourceLink, confidence, onOpenChange]);
+  }, [item, status, notes, resourceLink, confidence, onOpenChange, onSaved]);
 
   if (!item) return null;
 

@@ -16,6 +16,7 @@ interface PersonalCareerTimelineProps {
 
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
+  const [saveVersion, setSaveVersion] = useState(0);
 
   const {
     data,
@@ -92,6 +93,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
 
       {/* Roadmap — zigzag only, no controls */}
       <ZigzagRenderer
+        key={saveVersion}
         journey={journey}
         onItemClick={(item) => setSelectedItem(item)}
         overlayData={{}}
@@ -103,6 +105,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
       <TimelineDetailDialog
         item={selectedItem}
         open={!!selectedItem}
+        onSaved={() => setSaveVersion((v) => v + 1)}
         onOpenChange={(open) => {
           if (!open) setSelectedItem(null);
         }}

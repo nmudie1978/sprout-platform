@@ -28,13 +28,11 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   const items = journey.items;
 
   // Find the first item that isn't marked "done" in localStorage
-  const currentItemIndex = useMemo(() => {
-    if (userAge == null || items.length === 0) return -1;
-    for (let i = 0; i < items.length; i++) {
-      if (getCardStatus(items[i].id) !== 'done') return i;
-    }
-    return items.length - 1; // all done — stay on last
-  }, [items, userAge]);
+  let currentItemIndex = -1;
+  if (userAge != null && items.length > 0) {
+    currentItemIndex = items.findIndex((item) => getCardStatus(item.id) !== 'done');
+    if (currentItemIndex === -1) currentItemIndex = items.length - 1;
+  }
 
   const positions = useMemo(
     () =>
