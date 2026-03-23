@@ -27,8 +27,8 @@ const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
-const LearningGoalsTab = dynamic(
-  () => import('./learning-goals-tab').then((m) => m.LearningGoalsTab),
+const SchoolAlignmentTab = dynamic(
+  () => import('./school-alignment-tab').then((m) => m.SchoolAlignmentTab),
   { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
 );
 
@@ -308,11 +308,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
           <details className="group rounded-lg border border-border/30 bg-card/50">
             <summary className="flex items-center gap-1.5 p-3 cursor-pointer text-xs font-semibold text-foreground/70 select-none">
               <GraduationCap className="h-3.5 w-3.5" />
-              Learning Goals
+              School & Learning Alignment
               <span className="ml-auto text-[10px] text-muted-foreground/40 group-open:hidden">Click to expand</span>
             </summary>
             <div className="px-3 pb-3">
-              <LearningGoalsTab />
+              <SchoolAlignmentTab goalTitle={goalTitle} />
             </div>
           </details>
         </div>

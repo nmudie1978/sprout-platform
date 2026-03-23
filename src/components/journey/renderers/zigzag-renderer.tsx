@@ -1,12 +1,16 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-types';
+import { classifyStepType } from '@/lib/education/alignment';
+import { STEP_TYPE_CONFIG } from '@/lib/education/types';
+import type { EducationContext } from '@/lib/education/types';
+import { EDUCATION_STAGE_CONFIG } from '@/lib/education/types';
 import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode } from './shared-node';
-import { OverlayBadges } from '../overlays/overlay-badges';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const NODE_SIZE = 40;
@@ -15,6 +19,7 @@ const HIGH_Y = 90;
 const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
+const SCHOOL_NODE_WIDTH = 140;
 
 function getCardStatus(itemId: string): string {
   try {
@@ -28,45 +33,81 @@ function getCardStatus(itemId: string): string {
 export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
   const items = journey.items;
 
-  // Find the first item that isn't marked "done" in localStorage
+  // Fetch education context for the school node
+  const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
+    queryKey: ['education-context'],
+    queryFn: async () => {
+      const res = await fetch('/api/journey/education-context');
+      if (!res.ok) return { educationContext: null };
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const eduContext = eduData?.educationContext;
+
+  // Find current item (first non-done) — used for active highlighting, NOT "you are here"
   let currentItemIndex = -1;
   if (userAge != null && items.length > 0) {
     currentItemIndex = items.findIndex((item) => getCardStatus(item.id) !== 'done');
     if (currentItemIndex === -1) currentItemIndex = items.length - 1;
   }
 
+  // Progression stats
+  const doneCount = items.filter((item) => getCardStatus(item.id) === 'done').length;
+
+  // School node offset — adds space before the first real item
+  const schoolNodeOffset = SCHOOL_NODE_WIDTH + 40;
+
   const positions = useMemo(
     () =>
       items.map((_, i) => ({
-        x: i * H_SPACING + NODE_SIZE,
+        x: schoolNodeOffset + i * H_SPACING + NODE_SIZE,
         y: i % 2 === 0 ? HIGH_Y : LOW_Y,
       })),
-    [items]
+    [items, schoolNodeOffset]
   );
 
-  const totalWidth = items.length * H_SPACING + NODE_SIZE * 2;
+  const totalWidth = schoolNodeOffset + items.length * H_SPACING + NODE_SIZE * 2;
   const totalHeight = LOW_Y + NODE_SIZE + 120;
 
+  // Polyline includes the school node connection point
+  const schoolConnectionPoint = `${schoolNodeOffset - 20},${HIGH_Y + NODE_SIZE / 2}`;
   const polylinePoints = useMemo(
     () =>
-      positions
-        .map((p) => `${p.x + NODE_SIZE / 2},${p.y + NODE_SIZE / 2}`)
-        .join(' '),
-    [positions]
+      [schoolConnectionPoint, ...positions.map((p) => `${p.x + NODE_SIZE / 2},${p.y + NODE_SIZE / 2}`)].join(' '),
+    [positions, schoolConnectionPoint]
   );
 
   // Build gradient stops from each item's stage colour
   const gradientStops = useMemo(
-    () =>
-      items.map((item, i) => ({
-        offset: items.length <= 1 ? '0%' : `${(i / (items.length - 1)) * 100}%`,
-        color: STAGE_CONFIG[item.stage].color,
-      })),
+    () => {
+      const allStops = [
+        { offset: '0%', color: '#6b8f7b' }, // muted green for school node
+        ...items.map((item, i) => ({
+          offset: `${((i + 1) / items.length) * 100}%`,
+          color: STAGE_CONFIG[item.stage].color,
+        })),
+      ];
+      return allStops;
+    },
     [items]
   );
 
   return (
     <div className="overflow-x-auto pb-4 -mx-2 px-2">
+      {/* Progression bar — subtle, at top */}
+      <div className="flex items-center justify-between mb-3 px-1">
+        <p className="text-[10px] text-muted-foreground/50">
+          {doneCount} of {items.length} steps completed
+        </p>
+        <div className="flex-1 mx-3 h-1 rounded-full bg-muted/30 overflow-hidden max-w-[200px]">
+          <div
+            className="h-full rounded-full bg-teal-500/60 transition-all duration-500"
+            style={{ width: `${items.length > 0 ? (doneCount / items.length) * 100 : 0}%` }}
+          />
+        </div>
+      </div>
+
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
         {/* SVG polyline connector */}
         <svg
@@ -101,6 +142,41 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
           />
         </svg>
 
+        {/* ── School Foundation Node ──────────────────────── */}
+        <div
+          className="absolute"
+          style={{ left: 12, top: HIGH_Y - 16 }}
+        >
+          <div className="w-[130px] rounded-xl border border-dashed border-teal-500/25 bg-teal-500/[0.04] p-3 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <span className="text-sm">🎓</span>
+              <span className="text-[10px] font-medium text-teal-500/70 uppercase tracking-wider">
+                Your foundation
+              </span>
+            </div>
+            {eduContext ? (
+              <>
+                <p className="text-xs font-medium text-foreground/80">
+                  {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+                  {eduContext.ageBand && (
+                    <span className="text-muted-foreground/50 font-normal"> ({eduContext.ageBand})</span>
+                  )}
+                </p>
+                {eduContext.currentSubjects.length > 0 && (
+                  <p className="text-[10px] text-muted-foreground/50 mt-1 leading-snug">
+                    {eduContext.currentSubjects.slice(0, 4).join(' · ')}
+                    {eduContext.currentSubjects.length > 4 && ` +${eduContext.currentSubjects.length - 4}`}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-[10px] text-muted-foreground/40 leading-snug">
+                Where you are today
+              </p>
+            )}
+          </div>
+        </div>
+
         {/* Positioned nodes + cards + age markers */}
         {items.map((item, i) => {
           const pos = positions[i];
@@ -121,36 +197,11 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               }}
             >
               <div className="flex flex-col items-center" style={{ width: CARD_WIDTH }}>
-                {/* "YOU ARE HERE" marker for current item */}
-                {isCurrent && isHigh && (
-                  <div
-                    className="flex flex-col items-center mb-1 animate-bounce-slow"
-                    style={{ marginTop: -AGE_MARKER_HEIGHT - 36 }}
-                  >
-                    <span
-                      className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-white"
-                      style={{
-                        backgroundColor: stageColor,
-                        boxShadow: `0 0 15px ${stageColor}, 0 0 30px ${stageColor}90, 0 0 60px ${stageColor}50, 0 0 100px ${stageColor}30`,
-                        animation: 'glow-pulse 2s ease-in-out infinite',
-                      }}
-                    >
-                      <span className="absolute -inset-1 rounded-full opacity-30 animate-ping" style={{ backgroundColor: stageColor }} />
-                      <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse relative" />
-                      You are here
-                    </span>
-                    {/* Downward arrow */}
-                    <div
-                      className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-transparent mt-[-1px]"
-                      style={{ borderTopColor: stageColor, filter: `drop-shadow(0 4px 8px ${stageColor}80)` }}
-                    />
-                  </div>
-                )}
                 {/* Age marker above node for high positions */}
                 {isHigh && (
                   <div
                     className="flex justify-center mb-1"
-                    style={{ marginTop: isCurrent ? 2 : -AGE_MARKER_HEIGHT - 4 }}
+                    style={{ marginTop: -AGE_MARKER_HEIGHT - 4 }}
                   >
                     <span
                       className={cn(
@@ -200,7 +251,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 )}
                 {/* Age marker below card for low positions */}
                 {!isHigh && (
-                  <div className="flex flex-col items-center mt-1">
+                  <div className="flex justify-center mt-1">
                     <span
                       className={cn(
                         'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
@@ -220,28 +271,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     >
                       {ageLabel}
                     </span>
-                    {/* "YOU ARE HERE" marker for current low-position item */}
-                    {isCurrent && (
-                      <div className="flex flex-col items-center">
-                        {/* Upward arrow */}
-                        <div
-                          className="w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-transparent mb-[-1px]"
-                          style={{ borderBottomColor: stageColor, filter: `drop-shadow(0 -4px 8px ${stageColor}80)` }}
-                        />
-                        <span
-                          className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-white"
-                          style={{
-                            backgroundColor: stageColor,
-                            boxShadow: `0 0 15px ${stageColor}, 0 0 30px ${stageColor}90, 0 0 60px ${stageColor}50, 0 0 100px ${stageColor}30`,
-                            animation: 'glow-pulse 2s ease-in-out infinite',
-                          }}
-                        >
-                          <span className="absolute -inset-1 rounded-full opacity-30 animate-ping" style={{ backgroundColor: stageColor }} />
-                          <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse relative" />
-                          You are here
-                        </span>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
@@ -269,6 +298,8 @@ function ZigzagCard({
   const stage = STAGE_CONFIG[item.stage];
   const cardData = getCardStatus(item.id);
   const isDone = cardData === 'done';
+  const stepType = classifyStepType(item);
+  const typeConfig = STEP_TYPE_CONFIG[stepType];
 
   // Build tooltip text from saved data
   const savedData = (() => {
@@ -308,6 +339,10 @@ function ZigzagCard({
     >
       <div className="flex items-start gap-1.5">
         <div className="flex-1 min-w-0">
+          {/* Step type indicator */}
+          <span className="text-[9px] text-muted-foreground/40 leading-none">
+            {typeConfig.icon}
+          </span>
           <p className="text-xs font-semibold leading-tight text-foreground">{item.title}</p>
           {item.subtitle && (
             <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">

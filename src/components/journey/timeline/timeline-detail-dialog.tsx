@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-types';
+import { classifyStepType, getWhyItMatters } from '@/lib/education/alignment';
+import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import { cn } from '@/lib/utils';
 import { ChevronDown, ChevronRight, Check, Loader2 } from 'lucide-react';
 
@@ -129,6 +131,15 @@ export function TimelineDetailDialog({
           {item.subtitle && (
             <p className="text-xs text-muted-foreground/70">{item.subtitle}</p>
           )}
+          {/* Step type + Why it matters */}
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium bg-muted/30 text-muted-foreground/60">
+              {STEP_TYPE_CONFIG[classifyStepType(item)].icon} {STEP_TYPE_CONFIG[classifyStepType(item)].label}
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground/50 italic mt-1">
+            {getWhyItMatters(item)}
+          </p>
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
@@ -137,20 +148,18 @@ export function TimelineDetailDialog({
             <div className="flex items-center justify-between mb-2">
               <p className="text-xs font-medium text-foreground/70">Status</p>
               {allItems && allItems.length > 0 && (() => {
-                // Find the current "YOU ARE HERE" position (first non-done)
-                const youAreHereIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
-                const effectiveIdx = youAreHereIdx === -1 ? allItems.length - 1 : youAreHereIdx;
+                // Find the current active position (first non-done)
+                const activeIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
+                const effectiveIdx = activeIdx === -1 ? allItems.length - 1 : activeIdx;
                 const canGoBack = effectiveIdx > 0;
-                // Only allow forward if status is "done" AND user has added notes or a resource
-                const hasContent = notes.trim().length > 0 || resourceLink.trim().length > 0;
-                const canGoForward = status === 'done' && hasContent && effectiveIdx < allItems.length - 1;
+                const hasContentForForward = notes.trim().length > 0 || resourceLink.trim().length > 0;
+                const canGoForward = status === 'done' && hasContentForForward && effectiveIdx < allItems.length - 1;
 
                 return (
                   <div className="flex items-center gap-3">
                     {canGoBack && (
                       <button
                         onClick={() => {
-                          // Reset the last completed card (one before YOU ARE HERE)
                           const prevItem = allItems[effectiveIdx - 1];
                           const prevData = loadCardData(prevItem.id);
                           saveCardData(prevItem.id, { ...prevData, status: 'not_started' });
@@ -165,7 +174,6 @@ export function TimelineDetailDialog({
                     {canGoForward && (
                       <button
                         onClick={() => {
-                          // Mark the current YOU ARE HERE card as done
                           const currentItem = allItems[effectiveIdx];
                           const currentData = loadCardData(currentItem.id);
                           saveCardData(currentItem.id, { ...currentData, status: 'done' });

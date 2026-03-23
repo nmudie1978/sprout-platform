@@ -165,36 +165,21 @@ export default function DashboardPage() {
     staleTime: 2 * 60 * 1000,
   });
 
-  const { data: applicationsData } = useQuery<{
-    applied: number;
-    waiting: number;
-    accepted: number;
-    done: number;
+  // Unified dashboard stats — real-time from DB
+  const { data: dashboardStats } = useQuery<{
+    appStats: { applied: number; waiting: number; accepted: number; done: number };
+    savedSummary: { total: number; byType: { articles: number; videos: number; podcasts: number; shorts: number } };
+    exploredCareers: string[];
+    recentActivity: { type: string; title: string; time: string }[];
   }>({
-    queryKey: ["application-stats"],
+    queryKey: ["dashboard-stats"],
     queryFn: async () => {
-      const response = await fetch("/api/applications");
-      if (!response.ok)
-        return { applied: 0, waiting: 0, accepted: 0, done: 0 };
-      const apps = await response.json();
-      if (!Array.isArray(apps))
-        return { applied: 0, waiting: 0, accepted: 0, done: 0 };
-      return {
-        applied: apps.length,
-        waiting: apps.filter(
-          (a: { status: string }) => a.status === "PENDING"
-        ).length,
-        accepted: apps.filter(
-          (a: { status: string }) => a.status === "ACCEPTED"
-        ).length,
-        done: apps.filter(
-          (a: { status: string }) =>
-            a.status === "COMPLETED" || a.status === "WITHDRAWN"
-        ).length,
-      };
+      const response = await fetch("/api/dashboard/stats");
+      if (!response.ok) throw new Error("Failed to fetch");
+      return response.json();
     },
     enabled: session?.user.role === "YOUTH",
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000, // 1 minute — more real-time
   });
 
   const displayName =
@@ -226,15 +211,16 @@ export default function DashboardPage() {
       ).length
     : 0;
 
-  // Explored careers & saved content from journey summary
-  const exploredRoles = journey?.summary?.exploredRoles ?? [];
-  const savedSummary = journey?.summary?.savedSummary ?? {
+  // Real-time stats from DB
+  const exploredCareers = dashboardStats?.exploredCareers ?? [];
+  const savedSummary = dashboardStats?.savedSummary ?? {
     total: 0,
     byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 },
   };
+  const recentActivity = dashboardStats?.recentActivity ?? [];
 
   // Application stats
-  const appStats = applicationsData ?? {
+  const appStats = dashboardStats?.appStats ?? {
     applied: 0,
     waiting: 0,
     accepted: 0,
@@ -438,15 +424,15 @@ export default function DashboardPage() {
                 Explore <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            {exploredRoles.length > 0 ? (
+            {exploredCareers.length > 0 ? (
               <div className="space-y-2">
-                {exploredRoles.slice(0, 3).map((role, i) => (
+                {exploredCareers.slice(0, 4).map((career, i) => (
                   <div
                     key={i}
                     className="text-xs text-muted-foreground flex items-center gap-2"
                   >
                     <div className="h-1.5 w-1.5 rounded-full bg-teal-500/50" />
-                    {role.title}
+                    {career.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                   </div>
                 ))}
               </div>
@@ -568,11 +554,36 @@ export default function DashboardPage() {
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            <div className="flex items-center justify-center py-4">
-              <p className="text-xs text-muted-foreground/40">
-                No recent activity
-              </p>
-            </div>
+            {recentActivity.length > 0 ? (
+              <div className="space-y-2">
+                {recentActivity.slice(0, 4).map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs">
+                    <div className={cn(
+                      "h-1.5 w-1.5 rounded-full shrink-0",
+                      item.type === 'application' ? 'bg-emerald-500/50' :
+                      item.type === 'saved' ? 'bg-blue-500/50' :
+                      'bg-amber-500/50'
+                    )} />
+                    <span className="text-muted-foreground truncate flex-1">{item.title}</span>
+                    <span className="text-[10px] text-muted-foreground/40 shrink-0">
+                      {(() => {
+                        const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
+                        if (s < 60) return 'just now';
+                        if (s < 3600) return `${Math.floor(s / 60)}m`;
+                        if (s < 86400) return `${Math.floor(s / 3600)}h`;
+                        return `${Math.floor(s / 86400)}d`;
+                      })()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center py-4">
+                <p className="text-xs text-muted-foreground/40">
+                  No recent activity
+                </p>
+              </div>
+            )}
           </GlassCard>
         </div>
       </div>
