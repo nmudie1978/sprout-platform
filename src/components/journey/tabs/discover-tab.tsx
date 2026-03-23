@@ -246,7 +246,7 @@ function DiscoverProfileSection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-teal-500" />
-          <h3 className="text-xs font-semibold text-teal-400">Your Discover Profile</h3>
+          <h3 className="text-xs font-semibold text-teal-400">About You</h3>
         </div>
         <Link
           href="/my-journey/discover"
@@ -460,7 +460,7 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-emerald-400">Discover complete</p>
+            <p className="text-sm font-semibold text-emerald-400">You know yourself</p>
             <p className="text-xs text-muted-foreground/70 mt-0.5">
               You've built a strong foundation. When you're ready, explore what your path actually looks like.
             </p>
