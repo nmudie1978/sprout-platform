@@ -137,7 +137,8 @@ export function TimelineDetailDialog({
                 const youAreHereIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
                 const effectiveIdx = youAreHereIdx === -1 ? allItems.length - 1 : youAreHereIdx;
                 const canGoBack = effectiveIdx > 0;
-                const canGoForward = effectiveIdx < allItems.length && loadCardData(allItems[effectiveIdx]?.id).status !== 'done';
+                // Only allow forward if user has set THIS card to "done" in the current session
+                const canGoForward = status === 'done' && effectiveIdx < allItems.length - 1;
 
                 return (
                   <div className="flex items-center gap-3">
