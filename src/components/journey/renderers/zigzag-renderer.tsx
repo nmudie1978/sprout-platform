@@ -268,33 +268,11 @@ function ZigzagCard({
       )}
       style={isCurrent ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` } : undefined}
     >
-      <div className="flex items-center gap-1 mb-0.5">
-        <span
-          className={cn(
-            'inline-block rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider',
-            stage.bgClass,
-            stage.textClass
-          )}
-        >
-          {stage.label}
-        </span>
-      </div>
       <p className="text-xs font-semibold leading-tight text-foreground">{item.title}</p>
       {item.subtitle && (
         <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug truncate">
           {item.subtitle}
         </p>
-      )}
-      {item.isMilestone && (
-        <div className="mt-1 flex items-center gap-1">
-          <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ backgroundColor: stage.color }}
-          />
-          <span className="text-[9px] font-medium" style={{ color: stage.color }}>
-            Milestone
-          </span>
-        </div>
       )}
       {activeLayers && (
         <OverlayBadges nodeData={overlayNodeData} activeLayers={activeLayers} />

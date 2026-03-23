@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,34 @@ interface TimelineDetailDialogProps {
   item: JourneyItem | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface CardData {
+  status: string;
+  notes: string;
+  resourceLink: string;
+  confidence: string;
+}
+
+const STORAGE_KEY = 'roadmap-card-data';
+
+function loadCardData(itemId: string): CardData {
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return all[itemId] || { status: 'not_started', notes: '', resourceLink: '', confidence: '' };
+  } catch {
+    return { status: 'not_started', notes: '', resourceLink: '', confidence: '' };
+  }
+}
+
+function saveCardData(itemId: string, data: CardData) {
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    all[itemId] = data;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  } catch {
+    // silent fail
+  }
 }
 
 const STATUS_OPTIONS = [
@@ -45,21 +73,36 @@ export function TimelineDetailDialog({
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Load saved data when item changes
+  useEffect(() => {
+    if (item && open) {
+      const data = loadCardData(item.id);
+      setStatus(data.status);
+      setNotes(data.notes);
+      setResourceLink(data.resourceLink);
+      setConfidence(data.confidence);
+      setSaved(false);
+      setGuidanceOpen(false);
+    }
+  }, [item?.id, open]);
+
+  const handleSave = useCallback(() => {
+    if (!item) return;
+    setIsSaving(true);
+    saveCardData(item.id, { status, notes, resourceLink, confidence });
+    setTimeout(() => {
+      setIsSaving(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }, 300);
+  }, [item, status, notes, resourceLink, confidence]);
+
   if (!item) return null;
 
   const stage = STAGE_CONFIG[item.stage];
   const ageLabel = item.endAge
     ? `Age ${item.startAge}–${item.endAge}`
     : `Age ${item.startAge}`;
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    // TODO: persist to backend when roadmap data model is ready
-    await new Promise((r) => setTimeout(r, 500));
-    setIsSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
 
   const hasGuidance = item.description || (item.microActions && item.microActions.length > 0);
 
