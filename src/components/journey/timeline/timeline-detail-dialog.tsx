@@ -93,9 +93,10 @@ export function TimelineDetailDialog({
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      // Auto-close after saving
+      setTimeout(() => onOpenChange(false), 600);
     }, 300);
-  }, [item, status, notes, resourceLink, confidence]);
+  }, [item, status, notes, resourceLink, confidence, onOpenChange]);
 
   if (!item) return null;
 
@@ -219,25 +220,26 @@ export function TimelineDetailDialog({
             </div>
           )}
 
-          {/* Save */}
-          <div className="flex justify-end pt-2">
-            <Button
-              onClick={handleSave}
-              disabled={isSaving}
-              size="sm"
-              className={cn(
-                'text-xs',
-                saved ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'
-              )}
-            >
-              {isSaving ? (
-                <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
-              ) : saved ? (
-                <Check className="mr-1.5 h-3 w-3" />
-              ) : null}
-              {saved ? 'Saved' : 'Save'}
-            </Button>
-          </div>
+        </div>
+
+        {/* Save — sticky footer */}
+        <div className="sticky bottom-0 flex justify-end pt-3 mt-2 border-t border-border/30 bg-card">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            size="sm"
+            className={cn(
+              'text-xs',
+              saved ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-600 hover:bg-amber-700'
+            )}
+          >
+            {isSaving ? (
+              <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+            ) : saved ? (
+              <Check className="mr-1.5 h-3 w-3" />
+            ) : null}
+            {saved ? 'Saved' : 'Save'}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
