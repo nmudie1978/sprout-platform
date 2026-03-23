@@ -137,33 +137,31 @@ export async function POST(req: NextRequest) {
       journeySummary: profile.journeySummary,
     });
 
-    // Allow completing the current step or re-completing a previously completed step
-    // The orchestrator handles state advancement via reconciliation
+    // Gate: step must be current state or already completed (for updates)
+    const currentState = orchestrator.getCurrentState();
+    const completedSteps = orchestrator.getCompletedSteps();
+    if (stepId !== currentState && !completedSteps.includes(stepId)) {
+      return NextResponse.json(
+        { error: `Complete step "${currentState}" first before "${stepId}"` },
+        { status: 400 }
+      );
+    }
 
     // Update summary with completion data
     const updatedSummary = orchestrator.updateSummary(data);
 
     // Mark step as completed and try to advance
-    const currentState = orchestrator.getCurrentState();
-    if (!orchestrator.getCompletedSteps().includes(stepId)) {
+    if (!completedSteps.includes(stepId)) {
       if (stepId === currentState) {
         const nextStep = orchestrator.getNextAllowedStep();
         if (nextStep) {
-          // Advance to next step (this adds current to completedSteps)
           orchestrator.transitionTo(nextStep);
         } else {
-          // Last step — no next step, so manually mark as completed
           orchestrator.markStepCompleted(stepId);
         }
-      } else {
-        orchestrator.transitionTo(stepId);
       }
     } else {
-      // Step already completed — just try to advance if possible
-      const nextStep = orchestrator.getNextAllowedStep();
-      if (nextStep) {
-        orchestrator.transitionTo(nextStep);
-      }
+      // Re-completing an already completed step — just update summary, don't advance
     }
 
     // Persist to database - convert summary to JSON-compatible format
