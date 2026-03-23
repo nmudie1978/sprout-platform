@@ -74,6 +74,18 @@ export default async function DashboardLayout({
         userProfilePic={userProfilePic}
       />
 
+      {/* Glowing divider between sidebar and main content */}
+      <div className="hidden lg:block relative w-px">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/20 to-transparent" />
+        <div
+          className="absolute inset-0 w-px"
+          style={{
+            background: 'linear-gradient(180deg, transparent 0%, rgba(20,184,166,0.3) 30%, rgba(20,184,166,0.1) 70%, transparent 100%)',
+            boxShadow: '0 0 8px rgba(20,184,166,0.15), 0 0 20px rgba(20,184,166,0.05)',
+          }}
+        />
+      </div>
+
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Main content with bottom padding for mobile nav */}
