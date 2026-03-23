@@ -147,7 +147,7 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
     lens: 'UNDERSTAND',
     phase: 'REALITY',
     title: 'Path, Skills & Requirements',
-    description: 'Find out what qualifications, skills, and experience are needed. Watch a video or talk to someone in the field.',
+    description: 'Find out what qualifications, skills, and experience are needed to get started in this career.',
     order: 4,
     mandatory: true,
     stepNumber: 2,

@@ -77,7 +77,7 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   CAREER_SHADOW: {
     id: 'CAREER_SHADOW',
     title: 'Path, Skills & Requirements',
-    description: 'Find out what qualifications, skills, and experience are needed. Watch a video or talk to someone in the field',
+    description: 'Find out what qualifications, skills, and experience are needed to get started in this career',
     order: 4,
     allowedTransitions: ['CREATE_ACTION_PLAN'],
     artifactsProduced: ['shadow_request', 'real_world_exposure'],

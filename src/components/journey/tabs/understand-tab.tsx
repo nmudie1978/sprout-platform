@@ -7,32 +7,28 @@
  * Steps are full bordered cards with headers, descriptions, output areas, and glows.
  */
 
+import { useMemo, useState } from 'react';
 import {
   Globe,
   TrendingUp,
-  BookOpen,
-  Users,
   ArrowRight,
   CheckCircle2,
   BarChart3,
   Briefcase,
   Pencil,
+  Info,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import type { JourneyUIState } from '@/lib/journey/types';
-import dynamic from 'next/dynamic';
-
-const LibraryTab = dynamic(
-  () => import('./library-tab').then((m) => m.LibraryTab),
-  { ssr: false, loading: () => <div className="h-32 animate-pulse rounded-lg bg-muted/50" /> }
-);
+import { getAllCareers } from '@/lib/career-pathways';
+import { CareerDetailSheet } from '@/components/career-detail-sheet';
 
 interface UnderstandTabProps {
   journey: JourneyUIState;
+  goalTitle?: string | null;
   onStartStep?: (stepId: string) => void;
   onContinueToGrow?: () => void;
 }
@@ -57,7 +53,7 @@ const UNDERSTAND_STEPS: StepConfig[] = [
     id: 'CAREER_SHADOW',
     stepNumber: 2,
     title: 'Path, Skills & Requirements',
-    description: 'Find out what qualifications, skills, and experience are needed. Watch a video or talk to someone in the field.',
+    description: 'Find out what qualifications, skills, and experience are needed to get started in this career.',
   },
   {
     id: 'CREATE_ACTION_PLAN',
@@ -98,10 +94,17 @@ function QuickLink({
 
 // ── Main Component ──────────────────────────────────────────────────
 
-export function UnderstandTab({ journey, onStartStep, onContinueToGrow }: UnderstandTabProps) {
-  const shadowSummary = journey.summary?.shadowSummary;
-  const savedSummary = journey.summary?.savedSummary;
+export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow }: UnderstandTabProps) {
   const understandComplete = journey.summary?.lenses?.understand?.isComplete;
+
+  // Look up career data from the primary goal title
+  const goalCareer = useMemo(() => {
+    if (!goalTitle) return null;
+    const all = getAllCareers();
+    return all.find((c) => c.title === goalTitle) || null;
+  }, [goalTitle]);
+
+  const [showCareerDetail, setShowCareerDetail] = useState(false);
 
   // Get step status from journey data
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
@@ -114,6 +117,37 @@ export function UnderstandTab({ journey, onStartStep, onContinueToGrow }: Unders
 
   return (
     <div className="space-y-3">
+      {/* Your Career Focus — inline pill that opens the career detail sheet */}
+      {goalCareer && (
+        <>
+          <div className="flex items-center justify-end">
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setShowCareerDetail(true)}
+                    className="inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/60 hover:bg-card px-3 py-1.5 transition-all group"
+                  >
+                    <span className="text-sm">{goalCareer.emoji}</span>
+                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-[200px]">
+                      {goalCareer.title}
+                    </span>
+                    <Info className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors shrink-0" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  Click to review your career card
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <CareerDetailSheet
+            career={showCareerDetail ? goalCareer : null}
+            onClose={() => setShowCareerDetail(false)}
+          />
+        </>
+      )}
+
       {/* Sequential steps — matching Discover tab style */}
       {UNDERSTAND_STEPS.map((config) => {
         const status = getStepStatus(config.id);
@@ -202,37 +236,8 @@ export function UnderstandTab({ journey, onStartStep, onContinueToGrow }: Unders
             description="Browse career paths, salaries, and requirements"
             href="/careers"
           />
-          <QuickLink
-            icon={Users}
-            title="Career Shadows"
-            description={shadowSummary?.completed ? `${shadowSummary.completed} completed` : 'See what a role is really like'}
-            href="/shadows"
-          />
         </div>
 
-        {/* Saved Content */}
-        <div className="pt-2 border-t border-border/20">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-xs font-medium text-muted-foreground/50 flex items-center gap-1.5">
-              <BookOpen className="h-3.5 w-3.5" />
-              Saved Content
-              {savedSummary && savedSummary.total > 0 && (
-                <Badge variant="secondary" className="text-[9px] h-4">{savedSummary.total}</Badge>
-              )}
-            </p>
-          </div>
-          {savedSummary && savedSummary.total > 0 ? (
-            <LibraryTab />
-          ) : (
-            <p className="text-xs text-muted-foreground/40">
-              Save articles, videos, and podcasts from{' '}
-              <Link href="/insights" className="text-emerald-500/70 hover:text-emerald-400 underline underline-offset-2">
-                Industry Insights
-              </Link>
-              {' '}and they&apos;ll appear here.
-            </p>
-          )}
-        </div>
       </div>
 
       {/* Continue to Grow — shown when Understand is 100% complete */}

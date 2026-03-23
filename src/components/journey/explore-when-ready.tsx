@@ -26,13 +26,6 @@ const exploreLinks: ExploreLink[] = [
     color: "text-blue-500",
   },
   {
-    href: "/shadows",
-    label: "Career shadows",
-    description: "Experience workplaces firsthand",
-    icon: Eye,
-    color: "text-teal-500",
-  },
-  {
     href: "/jobs",
     label: "Small jobs",
     description: "Find opportunities near you",

@@ -507,6 +507,7 @@ export default function MyJourneyPage() {
           {activeTab === 'understand' && (
             <UnderstandTab
               journey={journey}
+              goalTitle={goalTitle}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
               onContinueToGrow={() => setActiveTab('act')}
             />
