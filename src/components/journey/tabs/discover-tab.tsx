@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import type { JourneyUIState } from '@/lib/journey/types';
+import { useDiscoverRecommendations } from '@/hooks/use-discover-recommendations';
 
 // Map career category values to human-readable labels
 const CATEGORY_LABELS: Record<string, string> = {
@@ -212,6 +213,72 @@ const DISCOVER_STEPS: StepConfig[] = [
   },
 ];
 
+// ── Discover Profile Section ─────────────────────────────────────────
+
+function DiscoverProfileSection() {
+  const { data } = useDiscoverRecommendations();
+
+  // Not loaded yet
+  if (!data) return null;
+
+  // Not completed — show prompt
+  if (!data.hasProfile) {
+    return (
+      <Link
+        href="/my-journey/discover"
+        className="flex items-center gap-3 rounded-xl border border-teal-500/20 bg-teal-500/5 hover:bg-teal-500/10 p-3 transition-all group"
+      >
+        <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
+          <Sparkles className="h-4 w-4 text-teal-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-teal-400 group-hover:text-teal-300 transition-colors">Know Yourself</p>
+          <p className="text-[11px] text-muted-foreground/60">Quick self-discovery to personalise your experience</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-teal-500/40 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all shrink-0" />
+      </Link>
+    );
+  }
+
+  // Completed — show summary + top recommendations
+  return (
+    <div className="rounded-xl border border-teal-500/15 bg-teal-500/5 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-teal-500" />
+          <h3 className="text-xs font-semibold text-teal-400">Your Discover Profile</h3>
+        </div>
+        <Link
+          href="/my-journey/discover"
+          className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2"
+        >
+          Update
+        </Link>
+      </div>
+
+      {/* Summary text */}
+      <p className="text-xs text-muted-foreground/80 leading-relaxed">{data.summary}</p>
+
+      {/* Top recommended careers */}
+      {data.recommendations.length > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-wider text-teal-500/50 mb-2">Careers worth exploring</p>
+          <div className="flex flex-wrap gap-1.5">
+            {data.recommendations.slice(0, 5).map((rec) => (
+              <span
+                key={rec.careerId}
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium bg-teal-500/10 text-teal-400 border border-teal-500/20"
+              >
+                {rec.emoji} {rec.title}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main Component ──────────────────────────────────────────────────
 
 export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConfirmExploration, onContinueToUnderstand }: DiscoverTabProps) {
@@ -248,20 +315,8 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
 
   return (
     <div className="space-y-3">
-      {/* Know Yourself — Discover profile entry point */}
-      <Link
-        href="/my-journey/discover"
-        className="flex items-center gap-3 rounded-xl border border-teal-500/20 bg-teal-500/5 hover:bg-teal-500/10 p-3 transition-all group"
-      >
-        <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
-          <Sparkles className="h-4 w-4 text-teal-500" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-teal-400 group-hover:text-teal-300 transition-colors">Know Yourself</p>
-          <p className="text-[11px] text-muted-foreground/60">Quick self-discovery to personalise your experience</p>
-        </div>
-        <ArrowRight className="h-4 w-4 text-teal-500/40 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all shrink-0" />
-      </Link>
+      {/* Know Yourself — shows summary when complete, prompt when not */}
+      <DiscoverProfileSection />
 
       {/* Sequential steps — each one unlocks the next */}
       {DISCOVER_STEPS.map((config) => {
