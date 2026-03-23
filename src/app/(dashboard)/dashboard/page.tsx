@@ -188,7 +188,7 @@ export default function DashboardPage() {
     "";
   const journey = journeyData?.journey ?? null;
   const primaryGoal = goalsData?.primaryGoal ?? null;
-  const secondaryGoal = goalsData?.secondaryGoal ?? null;
+  const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
   const goalTitle =
     primaryGoal?.title ?? journey?.summary?.primaryGoal?.title ?? null;
 
@@ -210,6 +210,9 @@ export default function DashboardPage() {
         (l) => l.isComplete
       ).length
     : 0;
+
+  // Strengths from journey
+  const strengths: string[] = (journey?.summary?.strengths as string[]) ?? [];
 
   // Real-time stats from DB
   const exploredCareers = dashboardStats?.exploredCareers ?? [];
@@ -351,12 +354,12 @@ export default function DashboardPage() {
 
         {/* ── 2. Goal Cards ──────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          {/* Primary Goal */}
-          <Link href="/my-journey" className="block group">
+          {/* Primary Career Goal */}
+          <Link href={primaryGoal?.title ? `/careers?search=${encodeURIComponent(primaryGoal.title)}` : '/my-journey'} className="block group">
             <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  Primary Goal
+                  Primary Career Goal
                 </p>
                 {primaryGoal && (
                   <span
@@ -380,32 +383,40 @@ export default function DashboardPage() {
                   </span>
                 )}
               </p>
+              {primaryGoal?.title && (
+                <p className="text-[10px] text-muted-foreground/40 mt-1 group-hover:text-teal-500/50 transition-colors">
+                  View career details →
+                </p>
+              )}
             </GlassCard>
           </Link>
 
-          {/* Secondary Goal — disabled / coming soon */}
-          <div className="opacity-40 pointer-events-none select-none">
-            <GlassCard className="p-4 h-full">
+          {/* My Strengths */}
+          <Link href="/my-journey" className="block group">
+            <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  Secondary Goal
+                  My Strengths
                 </p>
-                {secondaryGoal && (
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted/30 text-muted-foreground/50">
-                    {secondaryGoal.status === "committed"
-                      ? "Committed"
-                      : "Exploring"}
-                  </span>
-                )}
               </div>
-              <p className="text-sm font-semibold text-muted-foreground/50 truncate">
-                {secondaryGoal?.title ?? "Not set yet"}
-              </p>
-              <p className="text-[10px] text-muted-foreground/40 mt-1">
-                Coming soon
-              </p>
+              {strengths.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {strengths.map((s) => (
+                    <span
+                      key={s}
+                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground/40">
+                  Complete Discover to see your strengths
+                </p>
+              )}
             </GlassCard>
-          </div>
+          </Link>
         </div>
 
         {/* ── 3. Careers Explored + My Library ────────────────── */}
