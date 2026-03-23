@@ -315,44 +315,24 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
         );
       })}
 
-      {/* Career Direction — appears after all 3 Discover steps are complete */}
-      {(() => {
-        const allDiscoverComplete = DISCOVER_STEPS.every((s) => getStepStatus(s.id) === 'completed');
-        if (!allDiscoverComplete && !hasGoal) return null;
-
+      {/* Set Your Direction — only when no goal AND step 3 (Deep Dive) is reached or completed */}
+      {!hasGoal && (() => {
+        const step3Status = getStepStatus('ROLE_DEEP_DIVE');
+        if (step3Status === 'locked') return null;
         return (
-          <div className={cn(
-            'rounded-xl border p-4 mt-1 transition-all',
-            hasGoal ? 'border-border/40 bg-card/60' : 'border-primary/30 bg-primary/5 ring-1 ring-primary/20',
-          )}>
+          <div className="rounded-xl border border-primary/30 bg-primary/5 ring-1 ring-primary/20 p-4 mt-1">
             <div className="flex items-center gap-3">
-              <div className={cn(
-                'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
-                hasGoal ? 'bg-emerald-500/20 text-emerald-500' : 'bg-primary/20 text-primary',
-              )}>
-                {hasGoal ? <CheckCircle2 className="h-4 w-4" /> : <Target className="h-4 w-4" />}
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-xs font-bold shrink-0">
+                <Target className="h-4 w-4" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold">
-                  {hasGoal ? 'Career Direction' : 'Set Your Direction'}
+              <div className="flex-1">
+                <p className="text-sm font-semibold">Set Your Direction</p>
+                <p className="text-xs text-muted-foreground/60 mt-0.5">
+                  Choose a primary career goal to guide your Understand and Grow phases.
                 </p>
-                {hasGoal ? (
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {goalTitle || summary?.primaryGoal?.title}
-                  </p>
-                ) : (
-                  <p className="text-xs text-muted-foreground/60 mt-0.5">
-                    You've completed Discover — now choose a career goal to guide the next phases.
-                  </p>
-                )}
               </div>
-              <Button
-                size="sm"
-                variant={hasGoal ? 'outline' : 'default'}
-                className="text-xs h-8 shrink-0"
-                onClick={onSetGoal}
-              >
-                {hasGoal ? 'Change' : 'Choose a goal'}
+              <Button size="sm" className="text-xs h-8 shrink-0" onClick={onSetGoal}>
+                Choose a goal
               </Button>
             </div>
           </div>
