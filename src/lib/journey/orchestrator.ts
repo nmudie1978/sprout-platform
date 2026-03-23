@@ -363,10 +363,19 @@ export class JourneyOrchestrator {
 
         this.summary.industryInsightsSummary.lastReviewedAt = new Date().toISOString();
 
-        // Also update the outlook notes
+        // Save outlook notes (legacy)
         this.summary.futureOutlookNotes = [
           ...new Set([...this.summary.futureOutlookNotes, ...data.outlookNotes]),
         ];
+
+        // Save split notes
+        if (data.roleRealityNotes) {
+          this.summary.roleRealityNotes = data.roleRealityNotes;
+        }
+        if (data.industryInsightNotes) {
+          this.summary.industryInsightNotes = data.industryInsightNotes;
+        }
+
         // Sync context
         this.context.industryOutlookReviewed = true;
         break;

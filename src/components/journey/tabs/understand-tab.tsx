@@ -96,6 +96,8 @@ function QuickLink({
 
 export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow }: UnderstandTabProps) {
   const understandComplete = journey.summary?.lenses?.understand?.isComplete;
+  const roleRealityNotes = journey.summary?.roleRealityNotes || [];
+  const industryInsightNotes = journey.summary?.industryInsightNotes || [];
 
   // Look up career data from the primary goal title
   const goalCareer = useMemo(() => {
@@ -207,6 +209,42 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
                 </button>
               )}
             </div>
+
+            {/* Output — saved data for completed REVIEW_INDUSTRY_OUTLOOK */}
+            {isComplete && config.id === 'REVIEW_INDUSTRY_OUTLOOK' && (roleRealityNotes.length > 0 || industryInsightNotes.length > 0) && (
+              <div className="mt-3 pt-3 border-t border-border/30 grid gap-3 sm:grid-cols-2">
+                {roleRealityNotes.length > 0 && (
+                  <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-500/60 mb-2">
+                      Role Reality
+                    </p>
+                    <ul className="space-y-1.5">
+                      {roleRealityNotes.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-emerald-500/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {industryInsightNotes.length > 0 && (
+                  <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-emerald-500/60 mb-2">
+                      Industry Insights
+                    </p>
+                    <ul className="space-y-1.5">
+                      {industryInsightNotes.map((note, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="h-1 w-1 rounded-full bg-emerald-500/50 mt-1.5 shrink-0" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         );
       })}

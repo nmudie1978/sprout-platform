@@ -660,20 +660,28 @@ function IndustryInsightsContent({
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
 }) {
-  const [notes, setNotes] = useState('');
+  const [roleReality, setRoleReality] = useState('');
+  const [industryInsights, setIndustryInsights] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const canSubmit = roleReality.trim() || industryInsights.trim();
+
   const handleSubmit = async () => {
-    if (!notes.trim()) return;
+    if (!canSubmit) return;
+
+    const roleNotes = roleReality.split('\n').filter((l) => l.trim());
+    const insightNotes = industryInsights.split('\n').filter((l) => l.trim());
 
     setIsSubmitting(true);
     setError(null);
     try {
       await onComplete({
         type: 'REVIEW_INDUSTRY_OUTLOOK',
-        trendsReviewed: ['industry_growth', 'skills_demand', 'technology_impact'],
-        outlookNotes: notes.split('\n').filter((line) => line.trim()),
+        trendsReviewed: ['role_reality', 'industry_trends', 'skills_demand'],
+        outlookNotes: [...roleNotes, ...insightNotes],
+        roleRealityNotes: roleNotes,
+        industryInsightNotes: insightNotes,
       });
       onClose();
     } catch (err) {
@@ -685,54 +693,47 @@ function IndustryInsightsContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-teal-50 border border-teal-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-teal-800">
-            Review industry trends and note any insights that are relevant to your career plans.
-            Understanding the landscape helps you make informed decisions.
-          </p>
+      {/* Section 1: Role Reality */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">Role Reality</h3>
         </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          What does this job actually involve day to day? What surprised you?
+        </p>
+        <Textarea
+          value={roleReality}
+          onChange={(e) => setRoleReality(e.target.value)}
+          placeholder="e.g., The role involves more patient interaction than I expected&#10;Physical therapists need to keep up with new treatment methods&#10;Most work in hospitals, clinics, or private practices"
+          rows={4}
+          className="text-sm"
+        />
       </div>
 
-      <div className="space-y-4">
-        <div className="rounded-xl bg-muted/50 p-4">
-          <h4 className="font-medium text-foreground mb-3">Things to consider:</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <Check className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-              Is this industry growing or shrinking?
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-              What new skills are becoming important?
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-              How might technology affect this field?
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
-              What opportunities exist in Norway and globally?
-            </li>
-          </ul>
-        </div>
+      <div className="border-t border-border/30" />
 
-        <div>
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Your Industry Outlook Notes <span className="text-red-500">*</span>
-          </label>
-          <Textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Write your key takeaways about the industry outlook...&#10;&#10;You can write multiple points, one per line."
-            rows={5}
-          />
-          <p className="mt-1 text-xs text-muted-foreground">
-            One insight per line. At least one note is required.
-          </p>
+      {/* Section 2: Industry Insights */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <h3 className="text-sm font-semibold">Industry Insights</h3>
         </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Is this industry growing? What trends or changes matter? What are the opportunities?
+        </p>
+        <Textarea
+          value={industryInsights}
+          onChange={(e) => setIndustryInsights(e.target.value)}
+          placeholder="e.g., Healthcare sector is growing due to ageing population&#10;Demand for physiotherapists is high in Norway&#10;Technology like telehealth is changing how care is delivered"
+          rows={4}
+          className="text-sm"
+        />
       </div>
+
+      <p className="text-[11px] text-muted-foreground/40">
+        Write one point per line. Fill in at least one section to save.
+      </p>
 
       {error && (
         <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
@@ -746,15 +747,15 @@ function IndustryInsightsContent({
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={!notes.trim() || isSubmitting}
-          className="bg-teal-600 hover:bg-teal-700"
+          disabled={!canSubmit || isSubmitting}
+          className="bg-emerald-600 hover:bg-emerald-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Check className="mr-2 h-4 w-4" />
           )}
-          Save Insights
+          Save
         </Button>
       </div>
     </div>
@@ -1129,8 +1130,8 @@ export function StepContent({
     },
     // UNDERSTAND lens
     REVIEW_INDUSTRY_OUTLOOK: {
-      title: 'Industry Outlook',
-      description: 'Search for trends in your chosen career and write down 3 key insights',
+      title: 'Role Reality & Industry Insights',
+      description: 'Capture what you\'ve learned about this career and its industry',
     },
     CAREER_SHADOW: {
       title: 'Career Shadow',

@@ -110,6 +110,8 @@ const DEMO_JOURNEY: JourneyUIState = {
     certificationsRequired: [],
     companiesOfInterest: [],
     futureOutlookNotes: [],
+    roleRealityNotes: [],
+    industryInsightNotes: [],
     nextActions: [],
     alignedActions: [],
     alignedActionsCount: 0,

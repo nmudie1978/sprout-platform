@@ -339,6 +339,8 @@ export interface JourneySummary {
   certificationsRequired: string[];
   companiesOfInterest: string[];
   futureOutlookNotes: string[];
+  roleRealityNotes: string[];
+  industryInsightNotes: string[];
   nextActions: NextAction[];
 
   // Aligned actions (replaces job-centric tracking)
@@ -669,6 +671,8 @@ export interface ReviewIndustryOutlookData {
   type: 'REVIEW_INDUSTRY_OUTLOOK';
   trendsReviewed: string[];
   outlookNotes: string[];
+  roleRealityNotes?: string[];
+  industryInsightNotes?: string[];
 }
 
 export interface ReviewRequirementsData {
@@ -758,6 +762,8 @@ export const DEFAULT_JOURNEY_SUMMARY: JourneySummary = {
   certificationsRequired: [],
   companiesOfInterest: [],
   futureOutlookNotes: [],
+  roleRealityNotes: [],
+  industryInsightNotes: [],
   nextActions: [],
   // Aligned actions
   alignedActions: [],
