@@ -213,10 +213,12 @@ export default function DashboardPage() {
 
   // Real-time stats from DB
   const exploredCareers = dashboardStats?.exploredCareers ?? [];
+  const careerInterests = (dashboardStats as Record<string, unknown>)?.careerInterests as string[] ?? [];
   const savedSummary = dashboardStats?.savedSummary ?? {
     total: 0,
     byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 },
   };
+  const savedItemsList = ((dashboardStats as Record<string, unknown>)?.savedItemsList as { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[]) ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
 
   // Application stats
@@ -410,97 +412,72 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {/* Careers You Explored */}
           <GlassCard className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Compass className="h-4 w-4 text-teal-500" />
-                <h3 className="text-sm font-semibold">
-                  Careers You Explored
-                </h3>
-              </div>
-              <Link
-                href="/careers"
-                className="text-[11px] text-teal-500 hover:text-teal-400 flex items-center gap-1"
-              >
-                Explore <ArrowRight className="h-3 w-3" />
-              </Link>
+            <div className="flex items-center gap-2 mb-3">
+              <Compass className="h-4 w-4 text-teal-500" />
+              <h3 className="text-sm font-semibold">Career Interests</h3>
             </div>
-            {exploredCareers.length > 0 ? (
+            {careerInterests.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {careerInterests.map((interest, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium bg-teal-500/10 text-teal-400/80"
+                  >
+                    {interest.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                  </span>
+                ))}
+              </div>
+            ) : exploredCareers.length > 0 ? (
               <div className="space-y-2">
                 {exploredCareers.slice(0, 4).map((career, i) => (
-                  <div
-                    key={i}
-                    className="text-xs text-muted-foreground flex items-center gap-2"
-                  >
+                  <div key={i} className="text-xs text-muted-foreground flex items-center gap-2">
                     <div className="h-1.5 w-1.5 rounded-full bg-teal-500/50" />
-                    {career.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {career.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center">
-                <div className="h-10 w-10 rounded-full bg-muted/30 flex items-center justify-center mb-2">
-                  <Ban className="h-5 w-5 text-muted-foreground/30" />
-                </div>
-                <p className="text-xs text-muted-foreground/50 mb-1">
-                  No careers explored yet
-                </p>
-                <Link
-                  href="/careers"
-                  className="text-xs text-teal-500 hover:text-teal-400"
-                >
-                  Start exploring
-                </Link>
-              </div>
+              <p className="text-xs text-muted-foreground/40 py-4 text-center">
+                Set career interests in My Journey
+              </p>
             )}
           </GlassCard>
 
           {/* My Library */}
           <GlassCard className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <BookmarkCheck className="h-4 w-4 text-blue-500" />
-                <h3 className="text-sm font-semibold">My Library</h3>
-              </div>
-              <Link
-                href="/insights"
-                className="text-[11px] text-blue-500 hover:text-blue-400 flex items-center gap-1"
-              >
-                View All <ArrowRight className="h-3 w-3" />
-              </Link>
+            <div className="flex items-center gap-2 mb-3">
+              <BookmarkCheck className="h-4 w-4 text-blue-500" />
+              <h3 className="text-sm font-semibold">My Library</h3>
+              {savedSummary.total > 0 && (
+                <span className="text-[10px] text-muted-foreground/40">{savedSummary.total} saved</span>
+              )}
             </div>
-            {savedSummary.total > 0 ? (
-              <div className="grid grid-cols-2 gap-2">
-                {savedSummary.byType.articles > 0 && (
-                  <div className="text-xs text-muted-foreground">
-                    {savedSummary.byType.articles} articles
-                  </div>
-                )}
-                {savedSummary.byType.videos > 0 && (
-                  <div className="text-xs text-muted-foreground">
-                    {savedSummary.byType.videos} videos
-                  </div>
-                )}
-                {savedSummary.byType.podcasts > 0 && (
-                  <div className="text-xs text-muted-foreground">
-                    {savedSummary.byType.podcasts} podcasts
-                  </div>
-                )}
+            {savedItemsList.length > 0 ? (
+              <div className="space-y-2">
+                {savedItemsList.slice(0, 4).map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+                  >
+                    <span className={cn(
+                      "text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0",
+                      item.type === 'VIDEO' ? 'bg-red-500/10 text-red-400' :
+                      item.type === 'ARTICLE' ? 'bg-blue-500/10 text-blue-400' :
+                      'bg-purple-500/10 text-purple-400'
+                    )}>
+                      {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
+                    </span>
+                    <span className="truncate group-hover:text-foreground">{item.title}</span>
+                  </a>
+                ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center">
-                <div className="h-10 w-10 rounded-full bg-muted/30 flex items-center justify-center mb-2">
-                  <BookmarkCheck className="h-5 w-5 text-muted-foreground/30" />
-                </div>
-                <p className="text-xs text-muted-foreground/50 mb-1">
-                  No saved content yet
-                </p>
-                <Link
-                  href="/insights"
-                  className="text-xs text-blue-500 hover:text-blue-400"
-                >
-                  Save articles & videos as you explore
-                </Link>
-              </div>
+              <p className="text-xs text-muted-foreground/40 py-4 text-center">
+                Save articles & videos from Insights
+              </p>
             )}
           </GlassCard>
         </div>
@@ -509,17 +486,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Small Jobs */}
           <GlassCard className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Briefcase className="h-4 w-4 text-emerald-500" />
-                <h3 className="text-sm font-semibold">Small Jobs</h3>
-              </div>
-              <Link
-                href="/jobs"
-                className="text-[11px] text-emerald-500 hover:text-emerald-400 flex items-center gap-1"
-              >
-                Browse <ArrowRight className="h-3 w-3" />
-              </Link>
+            <div className="flex items-center gap-2 mb-4">
+              <Briefcase className="h-4 w-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold">Small Jobs</h3>
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[
@@ -542,17 +511,9 @@ export default function DashboardPage() {
 
           {/* Activity */}
           <GlassCard className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-amber-500" />
-                <h3 className="text-sm font-semibold">Activity</h3>
-              </div>
-              <Link
-                href="/my-journey"
-                className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground flex items-center gap-1"
-              >
-                View all <ArrowRight className="h-3 w-3" />
-              </Link>
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-4 w-4 text-amber-500" />
+              <h3 className="text-sm font-semibold">Activity</h3>
             </div>
             {recentActivity.length > 0 ? (
               <div className="space-y-2">

@@ -61,6 +61,18 @@ export async function GET() {
       };
     }
 
+    // Actual saved items (for display)
+    let savedItemsList: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[] = [];
+    if (profileId) {
+      const items = await prisma.savedItem.findMany({
+        where: { profileId, deletedAt: null },
+        select: { title: true, type: true, url: true, thumbnail: true, source: true },
+        orderBy: { savedAt: 'desc' },
+        take: 6,
+      });
+      savedItemsList = items;
+    }
+
     // Explored careers (from SavedIndustry table)
     const savedIndustries = await prisma.savedIndustry.findMany({
       where: { userId },
@@ -116,10 +128,20 @@ export async function GET() {
     // Sort by time, most recent first
     recentActivity.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
+    // Get career interests from journey summary
+    const fullProfile = await prisma.youthProfile.findUnique({
+      where: { userId },
+      select: { journeySummary: true },
+    });
+    const journeySummary = fullProfile?.journeySummary as Record<string, unknown> | null;
+    const careerInterests = (journeySummary?.careerInterests as string[]) || [];
+
     return NextResponse.json({
       appStats,
       savedSummary,
+      savedItemsList,
       exploredCareers: savedIndustries.map((i) => i.industryId),
+      careerInterests,
       recentActivity: recentActivity.slice(0, 5),
     });
   } catch (error) {
