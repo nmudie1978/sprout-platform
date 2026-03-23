@@ -677,30 +677,23 @@ export function NotesTab() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      {/* Header — compact */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <StickyNote className="h-5 w-5 text-amber-500" />
-            Notes
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Capture thoughts, ideas, and reminders along your journey
-          </p>
-        </div>
         <div className="flex items-center gap-2">
-          <ViewModeToggle
-            viewMode={effectiveViewMode}
-            onViewModeChange={setViewMode}
-            showCompact={false}
-          />
-          {!isCreating && (
-            <Button size="sm" onClick={() => setIsCreating(true)}>
-              <Plus className="h-4 w-4 mr-1" />
-              Add Note
-            </Button>
+          {filteredNotes.length > 0 && (
+            <ViewModeToggle
+              viewMode={effectiveViewMode}
+              onViewModeChange={setViewMode}
+              showCompact={false}
+            />
           )}
         </div>
+        {!isCreating && filteredNotes.length > 0 && (
+          <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => setIsCreating(true)}>
+            <Plus className="h-3 w-3 mr-1" />
+            Add
+          </Button>
+        )}
       </div>
 
       {/* Group filter pills */}
@@ -814,27 +807,18 @@ export function NotesTab() {
         )
       ) : (
         !isCreating && (
-          <div className="text-center py-12 border rounded-lg bg-muted/20">
-            <StickyNote className="h-10 w-10 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-sm text-muted-foreground mb-1">No notes yet</p>
-            <p className="text-xs text-muted-foreground/70">
-              Start capturing your thoughts and ideas
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-4"
-              onClick={() => setIsCreating(true)}
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Create your first note
-            </Button>
-          </div>
+          <button
+            onClick={() => setIsCreating(true)}
+            className="w-full text-left rounded-lg border border-dashed border-border/40 hover:border-border/60 bg-muted/10 hover:bg-muted/20 px-3 py-2.5 transition-all flex items-center gap-2 text-xs text-muted-foreground/50 hover:text-muted-foreground/70"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add a note...
+          </button>
         )
       )}
 
-      {/* Recently Deleted */}
-      <RecentlyDeleted type="journeyNote" />
+      {/* Recently Deleted — only show when there are notes */}
+      {filteredNotes.length > 0 && <RecentlyDeleted type="journeyNote" />}
     </div>
   );
 }
