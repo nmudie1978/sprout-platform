@@ -24,6 +24,7 @@ import {
   MessageSquare,
   RefreshCw,
   Pencil,
+  TrendingUp,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -208,6 +209,33 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
           <p className="text-[10px] text-muted-foreground">This Month</p>
         </div>
       </div>
+
+      {/* Skills You're Building */}
+      {journey.summary?.demonstratedSkills && journey.summary.demonstratedSkills.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-amber-500" />
+            Skills You&apos;re Building
+          </h3>
+          <Card className="border-border/50 bg-card/50">
+            <CardContent className="p-4">
+              <p className="text-xs text-muted-foreground mb-3">
+                Skills you&apos;ve demonstrated through jobs, projects, and experiences.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {journey.summary.demonstratedSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Your Roadmap */}
       <div>

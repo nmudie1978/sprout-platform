@@ -289,7 +289,7 @@ export function WhyThisMatters() {
           <strong className="text-green-400">
             That&apos;s why My Journey exists
           </strong>{" "}
-          — Discover, Understand, Act bridges the gap between school and career
+          — Discover, Understand, Grow bridges the gap between school and career
           clarity.
         </p>
       </div>

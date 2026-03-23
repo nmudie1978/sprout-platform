@@ -236,7 +236,7 @@ function SavedItemIcon({ type }: { type: string }) {
   }
 }
 
-const journeyStages = ["Discover", "Understand", "Act", "Reflect"];
+const journeyStages = ["Discover", "Understand", "Grow"];
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();

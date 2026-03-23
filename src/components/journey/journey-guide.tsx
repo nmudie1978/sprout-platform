@@ -4,7 +4,7 @@
  * JOURNEY GUIDE — "How Your Journey Works"
  *
  * Collapsible guide shown at the top of My Journey page.
- * Explains the 3 lenses (Discover, Understand, Act), shows current position,
+ * Explains the 3 lenses (Discover, Understand, Grow), shows current position,
  * and what the user needs to do next. Remembers collapsed state in localStorage.
  */
 

@@ -96,7 +96,7 @@ export default function AboutPage() {
         {/* The Framework */}
         <div className="mt-16 pt-10 border-t border-border">
           <h2 className="text-xl font-semibold text-foreground mb-4">
-            The framework: Discover, Understand, Act
+            The framework: Discover, Understand, Grow
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
             Everything in Endeavrly is built around three lenses. They&apos;re sequential on purpose —

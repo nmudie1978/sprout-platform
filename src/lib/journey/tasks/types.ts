@@ -73,7 +73,7 @@ export const TASK_MODES: TaskMode[] = ['discover', 'understand', 'act'];
 export const MODE_LABELS: Record<TaskMode, string> = {
   discover: 'Discover',
   understand: 'Understand',
-  act: 'Act',
+  act: 'Grow',
 };
 
 export const MODE_COLORS: Record<TaskMode, {

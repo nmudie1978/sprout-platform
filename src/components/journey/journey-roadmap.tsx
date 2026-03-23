@@ -343,7 +343,7 @@ function LensLabel({ lens, position, isMobile }: LensLabelProps) {
   const labels: Record<JourneyLens, string> = {
     DISCOVER: 'Discover',
     UNDERSTAND: 'Understand',
-    ACT: 'Act',
+    ACT: 'Grow',
   };
 
   return (

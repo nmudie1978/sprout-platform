@@ -19,7 +19,6 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Sparkles,
-  TrendingUp,
   Heart,
   Compass,
   Target,
@@ -247,15 +246,6 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
         />
 
         <ReflectionSection
-          icon={TrendingUp}
-          title="Skills You're Building"
-          description="Skills you've demonstrated through jobs, projects, and experiences."
-          items={summary?.demonstratedSkills || []}
-          emptyMessage="Skills appear here as you complete actions and receive feedback."
-          accentColor="blue"
-        />
-
-        <ReflectionSection
           icon={Heart}
           title="What Interests You"
           description="Career areas that caught your attention during exploration."
@@ -302,7 +292,7 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
             <div className="flex-1">
               <h3 className="text-sm font-semibold mb-1">Your Career Direction</h3>
               <p className="text-xs text-muted-foreground mb-3">
-                Where Discover leads — the goal that shapes your Understand and Act phases.
+                Where Discover leads — the goal that shapes your Understand and Grow phases.
               </p>
               {summary?.primaryGoal?.title ? (
                 <div className="space-y-2">

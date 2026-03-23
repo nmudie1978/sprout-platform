@@ -8,7 +8,7 @@
  * - Two soft-toned cards side by side (desktop) / stacked (mobile)
  * - Subtle source attribution
  * - Link to full Research & Evidence page
- * - Ties back to Discover · Understand · Act
+ * - Ties back to Discover · Understand · Grow
  */
 
 import Link from "next/link";

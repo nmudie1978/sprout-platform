@@ -3,12 +3,12 @@
  *
  * Defines the complete type system for the guided journey workflow.
  *
- * NEW PHILOSOPHY: DISCOVER · UNDERSTAND · ACT
+ * NEW PHILOSOPHY: DISCOVER · UNDERSTAND · GROW
  *
  * This represents the user's guided path to career clarity:
  * - DISCOVER: Know yourself - reflect on strengths, explore careers, deep dive into a role
  * - UNDERSTAND: Know the world - research industry, career shadow, build a plan
- * - ACT: Take aligned action - complete meaningful actions, reflect on outcomes
+ * - GROW: Take action and grow - complete meaningful actions, reflect on outcomes
  *
  * Small jobs are NOT foundational. They are ONE option among many aligned actions.
  */
@@ -230,8 +230,8 @@ export const LENS_DESCRIPTIONS: Record<JourneyLens, { title: string; subtitle: s
     fullDescription: 'Research the real requirements, industry trends, and pathways for your chosen goal. Build a concrete plan.',
   },
   ACT: {
-    title: 'Act',
-    subtitle: 'Take aligned action',
+    title: 'Grow',
+    subtitle: 'Take action and grow',
     fullDescription: 'Put your plan into motion. Complete meaningful actions—jobs, shadows, projects, or courses—and reflect on your growth.',
   },
 };
