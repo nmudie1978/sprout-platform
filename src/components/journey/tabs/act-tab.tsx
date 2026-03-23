@@ -272,7 +272,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       )}
 
       {/* Supporting sections — clearly separated container */}
-      <div className="mt-8 rounded-xl border border-border/40 bg-muted/5 p-5">
+      <div className="mt-8 rounded-xl border-2 border-border/50 bg-card/30 p-5">
         <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-4">
           Supporting Tools
         </p>
