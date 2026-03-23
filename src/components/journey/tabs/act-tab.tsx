@@ -256,7 +256,9 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
           </h2>
           <p className="text-sm text-muted-foreground/70 max-w-md mx-auto">
             You&apos;ve done the hard work of discovering yourself, understanding your path, and taking action.
-            Now use the roadmap below to keep tracking your long-term progress.
+          </p>
+          <p className="text-sm text-muted-foreground/50 mt-2 max-w-md mx-auto">
+            Now use the Career Roadmap below to track your long-term progress.
           </p>
         </div>
       )}
