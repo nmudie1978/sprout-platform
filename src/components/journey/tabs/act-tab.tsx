@@ -1,32 +1,20 @@
 'use client';
 
 /**
- * ACT TAB — Take Aligned Action
+ * ACT/GROW TAB — Take Aligned Action
  *
- * Converts direction into movement. The roadmap lives here as one element,
- * alongside learning goals, real-world actions, and reflection loops.
- *
- * Sections:
- * 1. Grow Steps — journey progression
- * 2. Your Next Best Step — prominent next action
- * 3. Your Roadmap — career timeline (zigzag/rail/stepping)
- * 4. Learning Goals — skill building
- * 5. Reflect & Update — reflection loop
+ * Matches the Discover/Understand tab's compact card-based layout.
+ * Steps first, then roadmap, then supporting sections.
  */
 
 import {
-  Zap,
   ArrowRight,
   CheckCircle2,
-  Lightbulb,
+  Pencil,
   Route,
   GraduationCap,
   MessageSquare,
-  RefreshCw,
-  Pencil,
-  TrendingUp,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -52,196 +40,140 @@ interface ActTabProps {
   onStartStep?: (stepId: string) => void;
 }
 
-// ── Step Progress Card ──────────────────────────────────────────────
+// ── Step Config ─────────────────────────────────────────────────────
 
-function StepProgressCard({
-  stepNumber,
-  title,
-  description,
-  status,
-  onStart,
-  optional,
-}: {
-  stepNumber: number;
-  title: string;
-  description: string;
-  status: 'completed' | 'next' | 'locked';
-  onStart?: () => void;
-  optional?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        'flex items-center gap-3 rounded-lg border p-3 transition-all',
-        status === 'completed' && 'border-emerald-500/30 bg-emerald-500/5',
-        status === 'next' && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
-        status === 'locked' && 'border-border/30 opacity-50'
-      )}
-      style={status === 'next' ? {
-        boxShadow: '0 0 12px rgba(245, 158, 11, 0.12)',
-      } : undefined}
-    >
-      <div
-        className={cn(
-          'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
-          status === 'completed' && 'bg-emerald-500/20 text-emerald-500',
-          status === 'next' && 'bg-amber-500/20 text-amber-500',
-          status === 'locked' && 'bg-muted text-muted-foreground'
-        )}
-      >
-        {status === 'completed' ? <CheckCircle2 className="h-4 w-4" /> : stepNumber}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className={cn('text-sm font-medium', status === 'locked' && 'text-muted-foreground')}>
-            {title}
-          </p>
-          {optional && <Badge variant="secondary" className="text-[9px]">Optional</Badge>}
-        </div>
-        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{description}</p>
-      </div>
-      {status === 'next' && onStart && (
-        <Button size="sm" className="text-xs h-8 shrink-0 bg-amber-600 hover:bg-amber-700" onClick={onStart}>
-          Start
-          <ArrowRight className="h-3 w-3 ml-1" />
-        </Button>
-      )}
-      {status === 'completed' && (
-        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-      )}
-    </div>
-  );
-}
+const ACT_STEPS = [
+  {
+    id: 'COMPLETE_ALIGNED_ACTION',
+    stepNumber: 1,
+    title: 'Complete Aligned Action',
+    description: 'Pick a small action to get started. Apply for an internship, start a course, or build a portfolio.',
+    optional: false,
+  },
+  {
+    id: 'SUBMIT_ACTION_REFLECTION',
+    stepNumber: 2,
+    title: 'Reflect on Action',
+    description: 'Reflect on what you\'ve learned. How did the task help you progress toward your career goal?',
+    optional: false,
+  },
+  {
+    id: 'UPDATE_PLAN',
+    stepNumber: 3,
+    title: 'Update Plan',
+    description: 'Update your plan with new insights. What can you improve for the next step?',
+    optional: true,
+  },
+  {
+    id: 'EXTERNAL_FEEDBACK',
+    stepNumber: 4,
+    title: 'External Feedback',
+    description: 'Ask for feedback from someone you trust about your progress.',
+    optional: true,
+  },
+];
 
 // ── Main Component ──────────────────────────────────────────────────
 
 export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
-  const actSteps = journey.steps.filter((s) =>
-    ['COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION', 'UPDATE_PLAN', 'EXTERNAL_FEEDBACK'].includes(s.id)
-  );
-  const actProgress = journey.summary?.lenses?.act;
-  const nextStep = journey.steps.find((s) => s.status === 'next');
   const alignedActions = journey.summary?.alignedActionsCount || 0;
   const reflections = journey.summary?.reflectionSummary;
 
-  return (
-    <div className="space-y-6">
-      {/* Progress overview */}
-      {actProgress && (
-        <div className="flex items-center gap-3 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-1">
-              Grow Progress
-            </p>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 rounded-full bg-amber-500/10">
-                <div
-                  className="h-full rounded-full bg-amber-500 transition-all"
-                  style={{ width: `${actProgress.progress}%` }}
-                />
-              </div>
-              <span className="text-xs font-semibold text-amber-400">
-                {actProgress.progress}%
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+  const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
+    const step = journey.steps.find((s) => s.id === stepId);
+    if (!step) return 'locked';
+    if (step.status === 'completed') return 'completed';
+    if (step.status === 'next') return 'next';
+    return 'locked';
+  };
 
-      {/* Your Next Best Step — prominent */}
-      {nextStep && ['COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION', 'UPDATE_PLAN', 'EXTERNAL_FEEDBACK'].includes(nextStep.id) && (
-        <Card className="border-amber-500/30 bg-amber-500/5">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/10 shrink-0">
-                <Zap className="h-5 w-5 text-amber-500" />
+  return (
+    <div className="space-y-3">
+      {/* Step cards — matching Discover/Understand style */}
+      {ACT_STEPS.map((config) => {
+        const status = getStepStatus(config.id);
+        const isLocked = status === 'locked';
+        const isComplete = status === 'completed';
+        const isCurrent = status === 'next';
+
+        return (
+          <div
+            key={config.id}
+            className={cn(
+              'rounded-xl border p-4 transition-all',
+              isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
+              isComplete && 'border-border/60 bg-card/60',
+              isLocked && 'border-border/30 opacity-40',
+            )}
+            style={isCurrent ? {
+              boxShadow: '0 0 15px rgba(245, 158, 11, 0.15), 0 0 30px rgba(245, 158, 11, 0.05)',
+            } : undefined}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
+                  isComplete && 'bg-emerald-500/20 text-emerald-500',
+                  isCurrent && 'bg-amber-500/20 text-amber-500',
+                  isLocked && 'bg-muted text-muted-foreground/50',
+                )}
+              >
+                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : config.stepNumber}
               </div>
-              <div className="flex-1">
-                <p className="text-xs font-medium text-amber-400 uppercase tracking-wider mb-1">
-                  Your Next Best Step
-                </p>
-                <h3 className="text-base font-semibold mb-1">{nextStep.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {journey.nextStepReason || nextStep.description}
-                </p>
-                {onStartStep && (
-                  <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => onStartStep(nextStep.id)}>
-                    Get started
-                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                  </Button>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className={cn(
+                    'text-sm font-semibold',
+                    isComplete && 'text-foreground',
+                    isLocked && 'text-muted-foreground/50',
+                  )}>
+                    {config.title}
+                  </p>
+                  {config.optional && <Badge variant="secondary" className="text-[9px] h-4">Optional</Badge>}
+                </div>
+                {(isCurrent || isLocked) && (
+                  <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
                 )}
               </div>
+              {isCurrent && onStartStep && (
+                <Button size="sm" className="h-8 text-xs px-4 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
+                  Start <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+              )}
+              {isComplete && onStartStep && (
+                <button
+                  onClick={() => onStartStep(config.id)}
+                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-amber-500 hover:opacity-80"
+                >
+                  <Pencil className="h-3 w-3" />
+                  Update
+                </button>
+              )}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        );
+      })}
 
-      {/* Grow Steps */}
-      <div>
-        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-          <Lightbulb className="h-4 w-4 text-amber-500" />
-          Your Grow Steps
-        </h3>
-        <div className="space-y-2">
-          {actSteps.map((step, i) => (
-            <StepProgressCard
-              key={step.id}
-              stepNumber={i + 1}
-              title={step.title}
-              description={step.description || ''}
-              status={step.status === 'completed' ? 'completed' : step.status === 'next' ? 'next' : 'locked'}
-              onStart={step.status === 'next' && onStartStep ? () => onStartStep(step.id) : undefined}
-              optional={step.optional}
-            />
-          ))}
+      {/* Quick Stats — compact inline row */}
+      <div className="flex items-center gap-4 rounded-lg border border-border/30 bg-muted/10 px-4 py-2.5">
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-amber-500">{alignedActions}</span>
+          <span className="text-[10px] text-muted-foreground/50">actions</span>
+        </div>
+        <div className="h-3 w-px bg-border/30" />
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-amber-500">{reflections?.total || 0}</span>
+          <span className="text-[10px] text-muted-foreground/50">reflections</span>
+        </div>
+        <div className="h-3 w-px bg-border/30" />
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-amber-500">{reflections?.thisMonth || 0}</span>
+          <span className="text-[10px] text-muted-foreground/50">this month</span>
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-lg border border-border/50 bg-card/50 p-3 text-center">
-          <p className="text-lg font-bold">{alignedActions}</p>
-          <p className="text-[10px] text-muted-foreground">Actions Done</p>
-        </div>
-        <div className="rounded-lg border border-border/50 bg-card/50 p-3 text-center">
-          <p className="text-lg font-bold">{reflections?.total || 0}</p>
-          <p className="text-[10px] text-muted-foreground">Reflections</p>
-        </div>
-        <div className="rounded-lg border border-border/50 bg-card/50 p-3 text-center">
-          <p className="text-lg font-bold">{reflections?.thisMonth || 0}</p>
-          <p className="text-[10px] text-muted-foreground">This Month</p>
-        </div>
-      </div>
-
-      {/* Skills You're Building */}
-      {journey.summary?.demonstratedSkills && journey.summary.demonstratedSkills.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-amber-500" />
-            Skills You&apos;re Building
-          </h3>
-          <Card className="border-border/50 bg-card/50">
-            <CardContent className="p-4">
-              <p className="text-xs text-muted-foreground mb-3">
-                Skills you&apos;ve demonstrated through jobs, projects, and experiences.
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {journey.summary.demonstratedSkills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Your Roadmap */}
-      <div>
+      {/* Your Roadmap — elevated position */}
+      <div className="pt-2">
         <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
           <Route className="h-4 w-4 text-amber-500" />
           Your Career Roadmap
@@ -249,25 +181,27 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
       </div>
 
-      {/* Learning Goals */}
-      <div>
-        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-          <GraduationCap className="h-4 w-4 text-amber-500" />
-          Learning Goals
+      {/* Supporting sections — muted container */}
+      <div className="mt-2 rounded-xl border border-border/30 bg-muted/10 p-4 space-y-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">
+          Supporting Tools
         </h3>
-        <LearningGoalsTab />
-      </div>
 
-      {/* Reflect & Update */}
-      <div>
-        <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-          <MessageSquare className="h-4 w-4 text-amber-500" />
-          Reflect & Update
-        </h3>
-        <p className="text-xs text-muted-foreground mb-3">
-          Capture thoughts about what you're learning. These reflections help you refine your direction.
-        </p>
-        <NotesTab />
+        <div>
+          <p className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1.5 mb-2">
+            <GraduationCap className="h-3.5 w-3.5" />
+            Learning Goals
+          </p>
+          <LearningGoalsTab />
+        </div>
+
+        <div className="pt-2 border-t border-border/20">
+          <p className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1.5 mb-2">
+            <MessageSquare className="h-3.5 w-3.5" />
+            Reflect & Update
+          </p>
+          <NotesTab />
+        </div>
       </div>
     </div>
   );
