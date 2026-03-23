@@ -20,13 +20,29 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import type { JourneyUIState } from '@/lib/journey/types';
+
+// Map career category values to human-readable labels
+const CATEGORY_LABELS: Record<string, string> = {
+  HEALTHCARE_LIFE_SCIENCES: 'Healthcare & Life Sciences',
+  EDUCATION_TRAINING: 'Education & Training',
+  TECHNOLOGY_IT: 'Technology & IT',
+  BUSINESS_MANAGEMENT: 'Business & Management',
+  FINANCE_BANKING: 'Finance & Banking',
+  SALES_MARKETING: 'Sales & Marketing',
+  MANUFACTURING_ENGINEERING: 'Engineering & Manufacturing',
+  LOGISTICS_TRANSPORT: 'Logistics & Transport',
+  HOSPITALITY_TOURISM: 'Hospitality & Tourism',
+};
 
 interface DiscoverTabProps {
   journey: JourneyUIState;
   goalTitle?: string | null;
   onSetGoal: () => void;
   onStartStep?: (stepId: string) => void;
+  onConfirmExploration?: () => void;
+  onContinueToUnderstand?: () => void;
 }
 
 // ── Compact Step ────────────────────────────────────────────────────
@@ -178,8 +194,8 @@ const DISCOVER_STEPS: StepConfig[] = [
     title: 'Explore Careers',
     description: 'Browse career paths that interest you. Save the ones that catch your attention.',
     icon: Heart,
-    colorClass: 'text-pink-500',
-    bgClass: 'bg-pink-500/10',
+    colorClass: 'text-teal-500',
+    bgClass: 'bg-teal-500/10',
     outputTitle: 'Your Interests',
     emptyOutput: 'Complete this step to discover your interests.',
   },
@@ -198,7 +214,7 @@ const DISCOVER_STEPS: StepConfig[] = [
 
 // ── Main Component ──────────────────────────────────────────────────
 
-export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: DiscoverTabProps) {
+export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConfirmExploration, onContinueToUnderstand }: DiscoverTabProps) {
   const summary = journey.summary;
   const hasGoal = !!(goalTitle || summary?.primaryGoal?.title);
 
@@ -217,13 +233,18 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
       case 'REFLECT_ON_STRENGTHS':
         return summary?.strengths?.length ? summary.strengths : null;
       case 'EXPLORE_CAREERS':
-        return summary?.careerInterests?.length ? summary.careerInterests : null;
+        return summary?.careerInterests?.length
+          ? summary.careerInterests.map((c) => CATEGORY_LABELS[c] || c)
+          : null;
       case 'ROLE_DEEP_DIVE':
         return summary?.exploredRoles?.length ? summary.exploredRoles.map((r) => r.title) : null;
       default:
         return null;
     }
   };
+
+  // Get raw career category values for building explore links
+  const careerCategories = summary?.careerInterests || [];
 
   return (
     <div className="space-y-3">
@@ -236,15 +257,21 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
         const isCurrent = status === 'next';
         const Icon = config.icon;
 
+        // For EXPLORE_CAREERS: check if categories are saved but step isn't completed yet
+        const hasUnsavedExploration = config.id === 'EXPLORE_CAREERS' && isCurrent && careerCategories.length > 0;
+
         return (
           <div
             key={config.id}
             className={cn(
               'rounded-xl border p-4 transition-all',
               isCurrent && 'border-teal-500/40 bg-teal-500/5 ring-1 ring-teal-500/20',
-              isComplete && 'border-border/40 bg-card/60',
-              isLocked && 'border-border/20 opacity-40',
+              isComplete && 'border-border/60 bg-card/60',
+              isLocked && 'border-border/30 opacity-40',
             )}
+            style={isCurrent ? {
+              boxShadow: '0 0 15px rgba(20, 184, 166, 0.15), 0 0 30px rgba(20, 184, 166, 0.05)',
+            } : undefined}
           >
             {/* Step header */}
             <div className="flex items-center gap-3">
@@ -266,18 +293,22 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
                 )}>
                   {config.title}
                 </p>
-                {(isCurrent || isLocked) && (
+                {(isCurrent || isLocked) && !hasUnsavedExploration && (
                   <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
                 )}
               </div>
-              {isCurrent && onStartStep && (
-                <Button size="sm" className="h-8 text-xs px-4 bg-teal-600 hover:bg-teal-700 shrink-0" onClick={() => onStartStep(config.id)}>
+              {isCurrent && !hasUnsavedExploration && onStartStep && (
+                <Button
+                  size="sm"
+                  className="h-8 text-xs px-4 bg-teal-600 hover:bg-teal-700 shrink-0"
+                  onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
+                >
                   Start <ArrowRight className="h-3 w-3 ml-1" />
                 </Button>
               )}
-              {isComplete && onStartStep && (
+              {(isComplete || hasUnsavedExploration) && onStartStep && (
                 <button
-                  onClick={() => onStartStep(config.id)}
+                  onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
                   className={cn('inline-flex items-center gap-1 text-xs font-medium shrink-0', config.colorClass, 'hover:opacity-80')}
                 >
                   <Pencil className="h-3 w-3" />
@@ -286,7 +317,49 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
               )}
             </div>
 
-            {/* Output — shown when completed or has data */}
+            {/* Explore Careers: categories saved, pending confirmation */}
+            {hasUnsavedExploration && (
+              <div className="mt-3 pt-3 border-t border-border/30 space-y-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className={cn('p-1 rounded-md', config.bgClass)}>
+                    <Icon className={cn('h-3 w-3', config.colorClass)} />
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground">{config.outputTitle}</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {output?.map((item) => (
+                    <span
+                      key={item}
+                      className={cn('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', config.bgClass, config.colorClass)}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <Link
+                  href={`/careers?category=${careerCategories[0]}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-teal-500 hover:text-teal-400 transition-colors"
+                >
+                  Explore these careers
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+                {onConfirmExploration && (
+                  <button
+                    onClick={onConfirmExploration}
+                    className="flex items-center gap-2 w-full rounded-lg border border-teal-500/30 bg-teal-500/5 hover:bg-teal-500/10 p-2.5 transition-colors group"
+                  >
+                    <div className="flex h-5 w-5 items-center justify-center rounded border-2 border-teal-500/40 group-hover:border-teal-500 transition-colors">
+                      <CheckCircle2 className="h-3 w-3 text-teal-500 opacity-0 group-hover:opacity-50 transition-opacity" />
+                    </div>
+                    <span className="text-xs font-medium text-teal-400">
+                      I&apos;ve explored these careers
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Output — shown when completed */}
             {isComplete && (
               <div className="mt-3 pt-3 border-t border-border/30">
                 <div className="flex items-center gap-2 mb-2">
@@ -311,33 +384,52 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: Disc
                 )}
               </div>
             )}
+
+            {/* Set Your Direction — indented sub-section of Deep Dive step */}
+            {config.id === 'ROLE_DEEP_DIVE' && !isLocked && !hasGoal && (
+              <div className="mt-3 pt-3 border-t border-border/30 ml-11">
+                <div className="flex items-center gap-3 rounded-lg bg-teal-500/5 border border-teal-500/15 p-3">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/15 text-teal-500 shrink-0">
+                    <Target className="h-3 w-3" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">Set Your Direction</p>
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                      Choose a primary career goal to guide your Understand and Grow phases.
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" className="text-[11px] h-7 shrink-0 border-teal-500/30 text-teal-500 hover:bg-teal-500/10" onClick={onSetGoal}>
+                    Choose a goal
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         );
       })}
 
-      {/* Set Your Direction — only when no goal AND step 3 (Deep Dive) is reached or completed */}
-      {!hasGoal && (() => {
-        const step3Status = getStepStatus('ROLE_DEEP_DIVE');
-        if (step3Status === 'locked') return null;
-        return (
-          <div className="rounded-xl border border-primary/30 bg-primary/5 ring-1 ring-primary/20 p-4 mt-1">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-xs font-bold shrink-0">
-                <Target className="h-4 w-4" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold">Set Your Direction</p>
-                <p className="text-xs text-muted-foreground/60 mt-0.5">
-                  Choose a primary career goal to guide your Understand and Grow phases.
-                </p>
-              </div>
-              <Button size="sm" className="text-xs h-8 shrink-0" onClick={onSetGoal}>
-                Choose a goal
-              </Button>
-            </div>
+      {/* Continue to Understand — shown when Discover is 100% complete */}
+      {journey.summary?.lenses?.discover?.isComplete && onContinueToUnderstand && (
+        <button
+          onClick={onContinueToUnderstand}
+          className="w-full rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 flex items-center gap-4 transition-all hover:bg-emerald-500/15 hover:border-emerald-500/60 group"
+          style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.15)' }}
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 shrink-0">
+            <CheckCircle2 className="h-5 w-5" />
           </div>
-        );
-      })()}
+          <div className="flex-1 text-left">
+            <p className="text-sm font-semibold text-emerald-400">Discover complete!</p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">
+              You know yourself. Now explore the world of work.
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400 group-hover:translate-x-0.5 transition-transform">
+            Continue to Understand
+            <ArrowRight className="h-4 w-4" />
+          </div>
+        </button>
+      )}
     </div>
   );
 }

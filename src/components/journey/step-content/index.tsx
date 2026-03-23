@@ -148,7 +148,7 @@ function CapabilityReflectionContent({
     try {
       await onComplete({
         type: 'REFLECT_ON_STRENGTHS',
-        topStrengths: selectedStrengths.slice(0, 3),
+        topStrengths: selectedStrengths,
         demonstratedSkills: selectedStrengths,
       });
       onClose();
@@ -262,18 +262,15 @@ function CapabilityReflectionContent({
 // ============================================
 
 const CAREER_OPTIONS = [
-  'Technology & Software',
-  'Healthcare & Medicine',
-  'Business & Finance',
-  'Creative & Design',
-  'Engineering',
-  'Education & Teaching',
-  'Science & Research',
-  'Trades & Construction',
-  'Hospitality & Tourism',
-  'Media & Entertainment',
-  'Law & Government',
-  'Agriculture & Environment',
+  { value: 'HEALTHCARE_LIFE_SCIENCES', label: 'Healthcare & Life Sciences' },
+  { value: 'EDUCATION_TRAINING', label: 'Education & Training' },
+  { value: 'TECHNOLOGY_IT', label: 'Technology & IT' },
+  { value: 'BUSINESS_MANAGEMENT', label: 'Business & Management' },
+  { value: 'FINANCE_BANKING', label: 'Finance & Banking' },
+  { value: 'SALES_MARKETING', label: 'Sales & Marketing' },
+  { value: 'MANUFACTURING_ENGINEERING', label: 'Engineering & Manufacturing' },
+  { value: 'LOGISTICS_TRANSPORT', label: 'Logistics & Transport' },
+  { value: 'HOSPITALITY_TOURISM', label: 'Hospitality & Tourism' },
 ];
 
 function CareerDiscoveryContent({
@@ -290,11 +287,11 @@ function CareerDiscoveryContent({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const toggleCareer = (career: string) => {
-    if (selectedCareers.includes(career)) {
-      setSelectedCareers(selectedCareers.filter((c) => c !== career));
+  const toggleCareer = (value: string) => {
+    if (selectedCareers.includes(value)) {
+      setSelectedCareers(selectedCareers.filter((c) => c !== value));
     } else if (selectedCareers.length < 3) {
-      setSelectedCareers([...selectedCareers, career]);
+      setSelectedCareers([...selectedCareers, value]);
     }
   };
 
@@ -315,10 +312,10 @@ function CareerDiscoveryContent({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl bg-primary/10 border border-primary/20 p-4">
+      <div className="rounded-xl bg-teal-500/10 border border-teal-500/20 p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-primary">
+          <Info className="h-5 w-5 text-teal-500 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-teal-400">
             Select up to 3 career areas you'd like to explore. Don't worry - you can always change
             these later!
           </p>
@@ -329,19 +326,19 @@ function CareerDiscoveryContent({
         <div className="grid grid-cols-2 gap-2">
           {CAREER_OPTIONS.map((career) => (
             <button
-              key={career}
-              onClick={() => toggleCareer(career)}
+              key={career.value}
+              onClick={() => toggleCareer(career.value)}
               className={cn(
                 'p-3 rounded-xl text-sm font-medium text-left transition-all',
-                selectedCareers.includes(career)
-                  ? 'bg-blue-100 text-primary border-2 border-blue-300 shadow-sm'
+                selectedCareers.includes(career.value)
+                  ? 'bg-teal-500/15 text-teal-400 border-2 border-teal-500/40 shadow-sm'
                   : 'bg-muted/50 text-muted-foreground hover:bg-muted border-2 border-transparent'
               )}
             >
-              {selectedCareers.includes(career) && (
+              {selectedCareers.includes(career.value) && (
                 <Check className="inline-block mr-1 h-4 w-4" />
               )}
-              {career}
+              {career.label}
             </button>
           ))}
         </div>
@@ -354,7 +351,7 @@ function CareerDiscoveryContent({
         <Button
           onClick={handleSubmit}
           disabled={selectedCareers.length < 1 || isSubmitting}
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-teal-600 hover:bg-teal-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -89,11 +89,17 @@ export async function POST(req: NextRequest) {
       },
       // DISCOVER lens data
       confirmedStrengths: existingSummary?.strengths || [],
-      savedCareers: savedCareers.map((c) => ({
-        id: c.id,
-        title: c.industryId,
-        savedAt: c.createdAt.toISOString(),
-      })),
+      savedCareers: savedCareers.length > 0
+        ? savedCareers.map((c) => ({
+            id: c.id,
+            title: c.industryId,
+            savedAt: c.createdAt.toISOString(),
+          }))
+        : (existingSummary?.careerInterests || []).map((title: string) => ({
+            id: title,
+            title,
+            savedAt: new Date().toISOString(),
+          })),
       exploredRolesCount: existingSummary?.exploredRoles?.length || 0,
       primaryGoalSelected: Boolean(existingSummary?.primaryGoal?.title),
       // UNDERSTAND lens data

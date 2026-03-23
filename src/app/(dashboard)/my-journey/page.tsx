@@ -9,7 +9,7 @@
  * Stages: Discover → Understand → Grow (sequential, gated)
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -226,9 +226,16 @@ function StageTabBar({
             className={cn(
               'relative rounded-xl border p-3 sm:p-4 text-left transition-all',
               isActive && `${tab.activeBg} border-${tab.color}-500/40 ring-1 ${tab.activeRing}`,
-              !isActive && !locked && 'border-border/40 hover:border-border/80 hover:bg-muted/30',
+              !isActive && !locked && 'border-border/50 hover:border-border/80 hover:bg-muted/30',
               locked && 'border-border/20 opacity-40 cursor-not-allowed',
             )}
+            style={isActive ? {
+              boxShadow: tab.id === 'discover'
+                ? '0 0 20px rgba(20, 184, 166, 0.25), 0 0 40px rgba(20, 184, 166, 0.1)'
+                : tab.id === 'understand'
+                  ? '0 0 15px rgba(16, 185, 129, 0.2)'
+                  : '0 0 15px rgba(245, 158, 11, 0.2)',
+            } : undefined}
           >
             {/* Header row */}
             <div className="flex items-center justify-between mb-1.5 sm:mb-2">
@@ -344,13 +351,56 @@ export default function MyJourneyPage() {
     },
   });
 
+  // Save career interests without completing the step
+  const saveInterestsMutation = useMutation({
+    mutationFn: async (careerInterests: string[]) => {
+      const response = await fetch('/api/journey/save-interests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ careerInterests }),
+      });
+      if (!response.ok) throw new Error('Failed to save interests');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
+      setActiveStepId(null);
+    },
+  });
+
   const handleCompleteStep = useCallback(
     async (data: StepCompletionData) => {
       if (!activeStepId) return;
+      // For EXPLORE_CAREERS, just save interests — don't complete the step yet
+      if (activeStepId === 'EXPLORE_CAREERS' && data.type === 'EXPLORE_CAREERS') {
+        await saveInterestsMutation.mutateAsync(data.selectedCareers);
+        return;
+      }
       await completeStepMutation.mutateAsync({ stepId: activeStepId, data });
     },
-    [activeStepId, completeStepMutation]
+    [activeStepId, completeStepMutation, saveInterestsMutation]
   );
+
+  // Confirm exploration and complete the EXPLORE_CAREERS step
+  const handleConfirmExploration = useCallback(async () => {
+    const interests = journeyData?.journey?.summary?.careerInterests;
+    if (!interests?.length) return;
+    await completeStepMutation.mutateAsync({
+      stepId: 'EXPLORE_CAREERS',
+      data: { type: 'EXPLORE_CAREERS', selectedCareers: interests },
+    });
+  }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
+
+  // Auto-switch to the appropriate tab based on progress
+  const discoverComplete = journeyData?.journey?.summary?.lenses?.discover?.isComplete ?? false;
+  const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
+  useEffect(() => {
+    if (understandComplete) {
+      setActiveTab('act');
+    } else if (discoverComplete) {
+      setActiveTab('understand');
+    }
+  }, [discoverComplete, understandComplete]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
@@ -450,12 +500,15 @@ export default function MyJourneyPage() {
               goalTitle={goalTitle}
               onSetGoal={() => setGoalSheetOpen(true)}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
+              onConfirmExploration={handleConfirmExploration}
+              onContinueToUnderstand={() => setActiveTab('understand')}
             />
           )}
           {activeTab === 'understand' && (
             <UnderstandTab
               journey={journey}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
+              onContinueToGrow={() => setActiveTab('act')}
             />
           )}
           {activeTab === 'act' && (
@@ -489,7 +542,32 @@ export default function MyJourneyPage() {
         onClose={() => setGoalSheetOpen(false)}
         primaryGoal={primaryGoal}
         secondaryGoal={secondaryGoal}
-        onSuccess={() => setGoalSheetOpen(false)}
+        onSuccess={async () => {
+          setGoalSheetOpen(false);
+          // Auto-complete ROLE_DEEP_DIVE when a goal is set
+          const currentStep = journey.steps.find((s) => s.id === 'ROLE_DEEP_DIVE');
+          if (currentStep && currentStep.status !== 'completed') {
+            try {
+              await completeStepMutation.mutateAsync({
+                stepId: 'ROLE_DEEP_DIVE',
+                data: {
+                  type: 'ROLE_DEEP_DIVE',
+                  role: {
+                    title: 'Goal set via direction selection',
+                    exploredAt: new Date().toISOString(),
+                    educationPaths: [],
+                    certifications: [],
+                    companies: [],
+                    humanSkills: [],
+                    entryExpectations: '',
+                  },
+                },
+              });
+            } catch {
+              // Step completion failed — non-blocking, journey state will reconcile
+            }
+          }
+        }}
       />
     </div>
   );

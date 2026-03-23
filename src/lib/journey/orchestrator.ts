@@ -312,12 +312,20 @@ export class JourneyOrchestrator {
         this.summary.demonstratedSkills = [
           ...new Set([...this.summary.demonstratedSkills, ...data.demonstratedSkills]),
         ];
+        // Sync context so state machine sees updated strengths
+        this.context.confirmedStrengths = data.topStrengths;
         break;
 
       case 'EXPLORE_CAREERS':
         this.summary.careerInterests = [
           ...new Set([...this.summary.careerInterests, ...data.selectedCareers]),
         ];
+        // Sync context so state machine sees saved careers
+        this.context.savedCareers = data.selectedCareers.map((title: string) => ({
+          id: title,
+          title,
+          savedAt: new Date().toISOString(),
+        }));
         break;
 
       case 'ROLE_DEEP_DIVE':
@@ -331,6 +339,8 @@ export class JourneyOrchestrator {
         } else {
           this.summary.exploredRoles.push(data.role);
         }
+        // Sync context so state machine sees explored roles count
+        this.context.exploredRolesCount = this.summary.exploredRoles.length;
 
         // Update certifications and companies
         this.summary.certificationsRequired = [
@@ -357,6 +367,8 @@ export class JourneyOrchestrator {
         this.summary.futureOutlookNotes = [
           ...new Set([...this.summary.futureOutlookNotes, ...data.outlookNotes]),
         ];
+        // Sync context
+        this.context.industryOutlookReviewed = true;
         break;
 
       case 'CREATE_ACTION_PLAN':
@@ -373,6 +385,8 @@ export class JourneyOrchestrator {
 
         this.summary.planCreated = true;
         this.summary.planUpdatedAt = new Date().toISOString();
+        // Sync context
+        this.context.planCreated = true;
 
         // Update next actions based on plan
         this.summary.nextActions = [
@@ -394,17 +408,20 @@ export class JourneyOrchestrator {
           // User skipped this step
           this.summary.shadowSummary.skipped = true;
           this.summary.shadowSummary.skipReason = data.skipReason || null;
+          this.context.shadowsSkipped = true;
         } else if (data.shadowRequestId) {
           // User created a shadow request
           this.summary.shadowSummary.total += 1;
           this.summary.shadowSummary.pending += 1;
           this.summary.shadowSummary.lastUpdatedAt = new Date().toISOString();
+          this.context.shadowsCompleted += 1;
         }
         break;
 
       // ACT lens steps
       case 'COMPLETE_ALIGNED_ACTION':
         this.summary.alignedActionsCount += 1;
+        this.context.alignedActionsCompleted = this.summary.alignedActionsCount;
         this.summary.alignedActions.push({
           id: data.actionId,
           type: data.actionType,
@@ -425,6 +442,7 @@ export class JourneyOrchestrator {
         });
         this.summary.reflectionSummary.total += 1;
         this.summary.reflectionSummary.lastReflectionAt = new Date().toISOString();
+        this.context.actionReflectionsSubmitted = this.summary.alignedActionReflections.length;
         break;
 
       case 'UPDATE_PLAN':
@@ -437,6 +455,7 @@ export class JourneyOrchestrator {
           };
         }
         this.summary.planUpdatedAt = new Date().toISOString();
+        this.context.planUpdatedAfterAction = true;
         break;
 
       case 'EXTERNAL_FEEDBACK':
@@ -571,7 +590,35 @@ export function createOrchestrator(
   // Ensure context has skipped steps
   context.skippedSteps = skippedSteps;
 
-  return new JourneyOrchestrator(context, currentState, completedSteps, skippedSteps, summary);
+  // Reconcile: if the current state is already completed according to the context
+  // but wasn't recorded in completedSteps, auto-advance to the correct state.
+  // This recovers users who completed a step but the state machine didn't advance.
+  let reconciledState = currentState;
+  const reconciledCompleted = [...completedSteps];
+
+  for (let i = 0; i < JOURNEY_STATES.length; i++) {
+    const stateId = JOURNEY_STATES[i] as JourneyStateId;
+    if (stateId !== reconciledState) continue;
+
+    // If the current state is completed but not in completedSteps, fix it
+    if (hasCompletedOrSkippedState(stateId, context)) {
+      if (!reconciledCompleted.includes(stateId)) {
+        reconciledCompleted.push(stateId);
+      }
+      // Advance to next state if available
+      const nextIdx = i + 1;
+      if (nextIdx < JOURNEY_STATES.length) {
+        reconciledState = JOURNEY_STATES[nextIdx] as JourneyStateId;
+        // Continue the loop to check if the next state is also already complete
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  return new JourneyOrchestrator(context, reconciledState, reconciledCompleted, skippedSteps, summary);
 }
 
 // ============================================

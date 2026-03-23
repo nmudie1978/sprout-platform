@@ -67,8 +67,8 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   // UNDERSTAND → REALITY
   REVIEW_INDUSTRY_OUTLOOK: {
     id: 'REVIEW_INDUSTRY_OUTLOOK',
-    title: 'Review Industry Outlook',
-    description: 'Search for trends in your chosen career. What is the job market like? Write down 3 key insights',
+    title: 'Role Reality & Industry Insights',
+    description: 'Research your chosen career — what does the job involve day to day? What are the trends and job market like? Note 3 key insights',
     order: 3,
     allowedTransitions: ['CAREER_SHADOW'],
     artifactsProduced: ['industry_awareness', 'future_outlook'],
@@ -76,8 +76,8 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   },
   CAREER_SHADOW: {
     id: 'CAREER_SHADOW',
-    title: 'Career Shadow',
-    description: 'Find a person who works in your chosen field and ask about a typical day. Or watch a video online to learn about the job',
+    title: 'Path, Skills & Requirements',
+    description: 'Find out what qualifications, skills, and experience are needed. Watch a video or talk to someone in the field',
     order: 4,
     allowedTransitions: ['CREATE_ACTION_PLAN'],
     artifactsProduced: ['shadow_request', 'real_world_exposure'],
@@ -86,8 +86,8 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   // UNDERSTAND → STRATEGY
   CREATE_ACTION_PLAN: {
     id: 'CREATE_ACTION_PLAN',
-    title: 'Create Action Plan',
-    description: 'Write down 3 actions you can take in the next month to move forward in your career journey',
+    title: 'Validate Your Understanding',
+    description: 'Confirm what you\'ve learned by writing down 3 actions you can take to move forward based on your research',
     order: 5,
     allowedTransitions: ['COMPLETE_ALIGNED_ACTION'],
     artifactsProduced: ['action_plan', 'milestones'],

@@ -74,9 +74,12 @@ function StepProgressCard({
       className={cn(
         'flex items-center gap-3 rounded-lg border p-3 transition-all',
         status === 'completed' && 'border-emerald-500/30 bg-emerald-500/5',
-        status === 'next' && 'border-amber-500/30 bg-amber-500/5',
+        status === 'next' && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
         status === 'locked' && 'border-border/30 opacity-50'
       )}
+      style={status === 'next' ? {
+        boxShadow: '0 0 12px rgba(245, 158, 11, 0.12)',
+      } : undefined}
     >
       <div
         className={cn(

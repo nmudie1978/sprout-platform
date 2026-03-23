@@ -71,11 +71,17 @@ export async function GET() {
         : null,
       // DISCOVER lens data
       confirmedStrengths: journeySummary?.strengths || [],
-      savedCareers: savedCareers.map((c) => ({
-        id: c.id,
-        title: c.industryId,
-        savedAt: c.createdAt.toISOString(),
-      })),
+      savedCareers: savedCareers.length > 0
+        ? savedCareers.map((c) => ({
+            id: c.id,
+            title: c.industryId,
+            savedAt: c.createdAt.toISOString(),
+          }))
+        : (journeySummary?.careerInterests || []).map((title: string) => ({
+            id: title,
+            title,
+            savedAt: new Date().toISOString(),
+          })),
       exploredRolesCount: journeySummary?.exploredRoles?.length || 0,
       primaryGoalSelected: Boolean(journeySummary?.primaryGoal?.title),
       // UNDERSTAND lens data
@@ -190,11 +196,17 @@ export async function PATCH(req: NextRequest) {
       },
       // DISCOVER lens data
       confirmedStrengths: patchSummary?.strengths || [],
-      savedCareers: savedCareers.map((c) => ({
-        id: c.id,
-        title: c.industryId,
-        savedAt: c.createdAt.toISOString(),
-      })),
+      savedCareers: savedCareers.length > 0
+        ? savedCareers.map((c) => ({
+            id: c.id,
+            title: c.industryId,
+            savedAt: c.createdAt.toISOString(),
+          }))
+        : (patchSummary?.careerInterests || []).map((title: string) => ({
+            id: title,
+            title,
+            savedAt: new Date().toISOString(),
+          })),
       exploredRolesCount: patchSummary?.exploredRoles?.length || 0,
       primaryGoalSelected: Boolean(patchSummary?.primaryGoal?.title),
       // UNDERSTAND lens data
