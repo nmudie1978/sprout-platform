@@ -32,7 +32,9 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
-import { useState, useEffect } from "react";
+import { CareerDetailSheet } from "@/components/career-detail-sheet";
+import { getAllCareers } from "@/lib/career-pathways";
+import { useState, useEffect, useMemo } from "react";
 
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
@@ -48,6 +50,129 @@ function GlassCard({
     >
       {children}
     </div>
+  );
+}
+
+// ── Library Card with View Toggle ────────────────────────────────────
+function LibraryCard({
+  items,
+  total,
+}: {
+  items: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
+  total: number;
+}) {
+  const [view, setView] = useState<'list' | 'grid'>('list');
+
+  return (
+    <GlassCard className="p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <BookmarkCheck className="h-4 w-4 text-blue-500" />
+          <h3 className="text-sm font-semibold">My Library</h3>
+          {total > 0 && (
+            <span className="text-[10px] text-muted-foreground/40">{total}</span>
+          )}
+        </div>
+        {items.length > 0 && (
+          <div className="flex items-center gap-0.5 rounded-md bg-muted/30 p-0.5">
+            <button
+              onClick={() => setView('list')}
+              className={cn(
+                'p-1 rounded transition-colors',
+                view === 'list' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
+              )}
+              title="List view"
+            >
+              <FileText className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => setView('grid')}
+              className={cn(
+                'p-1 rounded transition-colors',
+                view === 'grid' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
+              )}
+              title="Grid view"
+            >
+              <Compass className="h-3 w-3" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {items.length > 0 ? (
+        view === 'list' ? (
+          <div className="space-y-2">
+            {items.slice(0, 5).map((item, i) => (
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className={cn(
+                  "text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0",
+                  item.type === 'VIDEO' ? 'bg-red-500/10 text-red-400' :
+                  item.type === 'ARTICLE' ? 'bg-blue-500/10 text-blue-400' :
+                  'bg-purple-500/10 text-purple-400'
+                )}>
+                  {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
+                </span>
+                <span className="truncate group-hover:text-foreground">{item.title}</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          /* Grid view — shows thumbnails for videos */
+          <div className="grid grid-cols-2 gap-2">
+            {items.slice(0, 6).map((item, i) => (
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-lg border border-border/30 overflow-hidden hover:border-border/60 transition-all"
+              >
+                {item.thumbnail ? (
+                  <div className="aspect-video bg-muted/30 relative overflow-hidden">
+                    <img
+                      src={item.thumbnail}
+                      alt=""
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {item.type === 'VIDEO' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+                        <div className="h-6 w-6 rounded-full bg-white/90 flex items-center justify-center">
+                          <span className="text-[10px] ml-0.5">▶</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="aspect-video bg-muted/20 flex items-center justify-center">
+                    <span className="text-lg opacity-30">
+                      {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
+                    </span>
+                  </div>
+                )}
+                <div className="p-2">
+                  <p className="text-[10px] font-medium text-foreground/80 line-clamp-2 leading-snug">
+                    {item.title}
+                  </p>
+                  {item.source && (
+                    <p className="text-[9px] text-muted-foreground/40 mt-0.5">{item.source}</p>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        )
+      ) : (
+        <p className="text-xs text-muted-foreground/40 py-4 text-center">
+          Save articles & videos from Insights
+        </p>
+      )}
+    </GlassCard>
   );
 }
 
@@ -211,6 +336,14 @@ export default function DashboardPage() {
       ).length
     : 0;
 
+  // Career detail sheet
+  const [showGoalDetail, setShowGoalDetail] = useState(false);
+  const goalCareer = useMemo(() => {
+    if (!goalTitle) return null;
+    const all = getAllCareers();
+    return all.find((c) => c.title === goalTitle) || null;
+  }, [goalTitle]);
+
   // Strengths from journey
   const strengths: string[] = (journey?.summary?.strengths as string[]) ?? [];
 
@@ -355,41 +488,50 @@ export default function DashboardPage() {
         {/* ── 2. Goal Cards ──────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {/* Primary Career Goal */}
-          <Link href={primaryGoal?.title ? `/careers?search=${encodeURIComponent(primaryGoal.title)}` : '/my-journey'} className="block group">
-            <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  Primary Career Goal
+          {goalCareer ? (
+            <button onClick={() => setShowGoalDetail(true)} className="block group text-left w-full">
+              <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                    Primary Career Goal
+                  </p>
+                  {primaryGoal && (
+                    <span
+                      className={cn(
+                        "text-[10px] font-medium px-2 py-0.5 rounded-full",
+                        primaryGoal.status === "committed"
+                          ? "bg-emerald-500/15 text-emerald-500"
+                          : "bg-blue-500/15 text-blue-500"
+                      )}
+                    >
+                      {primaryGoal.status === "committed"
+                        ? "Committed"
+                        : "Exploring"}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm font-semibold text-foreground truncate">
+                  {primaryGoal?.title}
                 </p>
-                {primaryGoal && (
-                  <span
-                    className={cn(
-                      "text-[10px] font-medium px-2 py-0.5 rounded-full",
-                      primaryGoal.status === "committed"
-                        ? "bg-emerald-500/15 text-emerald-500"
-                        : "bg-blue-500/15 text-blue-500"
-                    )}
-                  >
-                    {primaryGoal.status === "committed"
-                      ? "Committed"
-                      : "Exploring"}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm font-semibold text-foreground truncate">
-                {primaryGoal?.title ?? (
-                  <span className="text-muted-foreground/40">
-                    Not set yet
-                  </span>
-                )}
-              </p>
-              {primaryGoal?.title && (
                 <p className="text-[10px] text-muted-foreground/40 mt-1 group-hover:text-teal-500/50 transition-colors">
                   View career details →
                 </p>
-              )}
-            </GlassCard>
-          </Link>
+              </GlassCard>
+            </button>
+          ) : (
+            <Link href="/my-journey" className="block group">
+              <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
+                <div className="mb-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                    Primary Career Goal
+                  </p>
+                </div>
+                <p className="text-sm text-muted-foreground/40">
+                  Not set yet
+                </p>
+              </GlassCard>
+            </Link>
+          )}
 
           {/* My Strengths */}
           <Link href="/my-journey" className="block group">
@@ -455,42 +597,7 @@ export default function DashboardPage() {
           </GlassCard>
 
           {/* My Library */}
-          <GlassCard className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <BookmarkCheck className="h-4 w-4 text-blue-500" />
-              <h3 className="text-sm font-semibold">My Library</h3>
-              {savedSummary.total > 0 && (
-                <span className="text-[10px] text-muted-foreground/40">{savedSummary.total} saved</span>
-              )}
-            </div>
-            {savedItemsList.length > 0 ? (
-              <div className="space-y-2">
-                {savedItemsList.slice(0, 4).map((item, i) => (
-                  <a
-                    key={i}
-                    href={item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
-                  >
-                    <span className={cn(
-                      "text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0",
-                      item.type === 'VIDEO' ? 'bg-red-500/10 text-red-400' :
-                      item.type === 'ARTICLE' ? 'bg-blue-500/10 text-blue-400' :
-                      'bg-purple-500/10 text-purple-400'
-                    )}>
-                      {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
-                    </span>
-                    <span className="truncate group-hover:text-foreground">{item.title}</span>
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground/40 py-4 text-center">
-                Save articles & videos from Insights
-              </p>
-            )}
-          </GlassCard>
+          <LibraryCard items={savedItemsList} total={savedSummary.total} />
         </div>
 
         {/* ── 4. Small Jobs + Activity ────────────────────────── */}
@@ -559,6 +666,12 @@ export default function DashboardPage() {
           </GlassCard>
         </div>
       </div>
+
+      {/* Career Detail Sheet */}
+      <CareerDetailSheet
+        career={showGoalDetail ? goalCareer : null}
+        onClose={() => setShowGoalDetail(false)}
+      />
     </div>
   );
 }
