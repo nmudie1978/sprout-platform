@@ -350,7 +350,11 @@ function ZigzagCard({
             </p>
           )}
         </div>
-        {isDone && <span className="text-emerald-500 text-[10px] shrink-0">✓</span>}
+        {isDone && (
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 shrink-0" style={{ boxShadow: '0 0 8px rgba(16,185,129,0.3)' }}>
+            <span className="text-emerald-400 text-[11px] font-bold">✓</span>
+          </div>
+        )}
       </div>
     </button>
   );

@@ -37,7 +37,7 @@ const CAREER_SUBJECT_MAP: CareerSubjectMapping[] = [
     keySubjects: ['Biology', 'Physical Education', 'Chemistry'],
     supportingSubjects: ['Mathematics', 'Psychology', 'Physics'],
     focusAreas: ['Human biology', 'Anatomy and movement', 'Scientific reasoning'],
-    nextDecisions: ['Keep biology and PE as core subjects', 'Research physiotherapy degree requirements', 'Shadow a physiotherapist if possible'],
+    nextDecisions: ['Keep biology and PE as core subjects', 'Research physiotherapy degree requirements', 'Look into volunteer work in health settings'],
     whySubjectsMatter: 'Physiotherapy combines biology with physical understanding — PE and biology are your strongest foundations.',
   },
   {
