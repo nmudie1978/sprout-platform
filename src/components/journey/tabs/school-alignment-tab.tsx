@@ -34,7 +34,6 @@ import {
   calculateSubjectAlignment,
   getCareerSubjectMapping,
 } from '@/lib/education/alignment';
-import { LearningGoalsTab } from './learning-goals-tab';
 import { GuidanceStack } from '@/components/guidance/guidance-stack';
 import { buildGuidanceContext } from '@/lib/guidance/rules';
 
@@ -566,10 +565,6 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
         </div>
       )}
 
-      {/* ── Row 3: Learning Goals ──────────────────────────────── */}
-      <div className="border-t border-border/20 pt-3">
-        <LearningGoalsTab guidanceContext={schoolGuidanceCtx} />
-      </div>
     </div>
   );
 }
