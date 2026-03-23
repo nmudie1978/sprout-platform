@@ -948,43 +948,115 @@ function CareerShadowContent({
 // ============================================
 
 function AlignedActionContent({
+  onComplete,
   onClose,
-  context,
 }: {
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
   context?: StepContentProps['context'];
 }) {
-  const actionsCompleted = context?.completedJobs || 0;
+  const ACTION_OPTIONS: { value: string; label: string }[] = [
+    { value: 'PERSONAL_PROJECT', label: 'Personal Project' },
+    { value: 'COURSE_OR_CERTIFICATION', label: 'Course or Certification' },
+    { value: 'VOLUNTEER_WORK', label: 'Volunteer Work' },
+    { value: 'INDUSTRY_EVENT', label: 'Industry Event' },
+    { value: 'SMALL_JOB', label: 'Small Job' },
+    { value: 'MENTORSHIP_SESSION', label: 'Mentorship' },
+  ];
+
+  const [actionType, setActionType] = useState('');
+  const [actionTitle, setActionTitle] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = actionType && actionTitle.trim();
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await onComplete({
+        type: 'COMPLETE_ALIGNED_ACTION',
+        actionType: actionType as import('@/lib/journey/types').AlignedActionType,
+        actionId: `action-${Date.now()}`,
+        actionTitle: actionTitle.trim(),
+        linkedToGoal: true,
+      });
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-emerald-800">
-            Pick a small action to get started. Apply for an internship, start a course, or build a portfolio.
-          </p>
+      {/* Action Type Selection */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">What did you do?</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {ACTION_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setActionType(opt.value)}
+              className={cn(
+                'p-2.5 rounded-lg text-xs font-medium text-left transition-all border-2',
+                actionType === opt.value
+                  ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                  : 'bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50'
+              )}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="text-center py-8">
-        <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-teal-500/15 mb-4">
-          <span className="text-3xl font-bold text-emerald-600">
-            {actionsCompleted}
-          </span>
+      <div className="border-t border-border/30" />
+
+      {/* Action Title */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">Describe your action</h3>
         </div>
-        <h3 className="text-lg font-semibold text-foreground">
-          Actions Completed
-        </h3>
-        <p className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto">
-          Complete jobs, shadows, projects, or courses that align with your goals.
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          What specifically did you do? Be concrete.
         </p>
+        <Input
+          value={actionTitle}
+          onChange={(e) => setActionTitle(e.target.value)}
+          placeholder="e.g., Completed a first aid certification course"
+          className="text-sm"
+        />
       </div>
 
-      <div className="flex justify-center pt-4 border-t border-border">
-        <Button onClick={onClose}>
-          Got it
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-border">
+        <Button variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          disabled={!canSubmit || isSubmitting}
+          className="bg-amber-600 hover:bg-amber-700"
+        >
+          {isSubmitting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Check className="mr-2 h-4 w-4" />
+          )}
+          Log Action
         </Button>
       </div>
     </div>
@@ -1002,20 +1074,27 @@ function ActionReflectionContent({
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
 }) {
-  const [reflection, setReflection] = useState('');
+  const [whatLearned, setWhatLearned] = useState('');
+  const [whatNext, setWhatNext] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = whatLearned.trim();
 
   const handleSubmit = async () => {
-    if (!reflection.trim()) return;
-
+    if (!canSubmit) return;
     setIsSubmitting(true);
+    setError(null);
     try {
+      const response = [whatLearned.trim(), whatNext.trim()].filter(Boolean).join('\n\n');
       await onComplete({
         type: 'SUBMIT_ACTION_REFLECTION',
         actionId: 'current',
-        reflectionResponse: reflection.trim(),
+        reflectionResponse: response,
       });
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -1023,42 +1102,53 @@ function ActionReflectionContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-primary/10 border border-primary/20 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-primary">
-            Reflecting on your experiences helps you grow and make better decisions.
-          </p>
-        </div>
-      </div>
-
       <div>
-        <label className="block text-sm font-medium text-foreground/80 mb-2">
-          What did you learn from this experience? <span className="text-red-500">*</span>
-        </label>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">What did you learn?</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          How did this action help you progress toward your career goal?
+        </p>
         <Textarea
-          value={reflection}
-          onChange={(e) => setReflection(e.target.value)}
-          placeholder="Share your thoughts, insights, and takeaways..."
-          rows={5}
+          value={whatLearned}
+          onChange={(e) => setWhatLearned(e.target.value)}
+          placeholder="e.g., I learned that this field requires more hands-on skills than I expected..."
+          rows={4}
+          className="text-sm"
         />
       </div>
 
+      <div className="border-t border-border/30" />
+
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">What will you do next?</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Based on what you learned, what's your next step?
+        </p>
+        <Textarea
+          value={whatNext}
+          onChange={(e) => setWhatNext(e.target.value)}
+          placeholder="e.g., I'll focus on building practical experience through volunteering..."
+          rows={3}
+          className="text-sm"
+        />
+      </div>
+
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
-        <Button variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={!reflection.trim() || isSubmitting}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          {isSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Check className="mr-2 h-4 w-4" />
-          )}
-          Submit Reflection
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={!canSubmit || isSubmitting} className="bg-amber-600 hover:bg-amber-700">
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+          Save Reflection
         </Button>
       </div>
     </div>
@@ -1076,27 +1166,33 @@ function UpdatePlanContent({
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
 }) {
-  const [changeReason, setChangeReason] = useState('');
+  const [whatChanged, setWhatChanged] = useState('');
+  const [newActions, setNewActions] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = whatChanged.trim();
 
   const handleSubmit = async () => {
-    if (!changeReason.trim()) return;
-
+    if (!canSubmit) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       await onComplete({
         type: 'UPDATE_PLAN',
         updatedPlan: {
           roleTitle: '',
-          shortTermActions: [],
+          shortTermActions: newActions.split('\n').filter((l) => l.trim()),
           midTermMilestone: '',
           skillToBuild: '',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
-        changeReason: changeReason.trim(),
+        changeReason: whatChanged.trim(),
       });
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -1104,41 +1200,52 @@ function UpdatePlanContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-amber-50 border border-amber-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800">
-            Based on what you've learned, update your action plan.
-          </p>
-        </div>
-      </div>
-
       <div>
-        <label className="block text-sm font-medium text-foreground/80 mb-2">
-          What changes are you making and why?
-        </label>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">What has changed?</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Based on your experience, what would you change about your plan?
+        </p>
         <Textarea
-          value={changeReason}
-          onChange={(e) => setChangeReason(e.target.value)}
-          placeholder="Describe the updates to your plan..."
-          rows={4}
+          value={whatChanged}
+          onChange={(e) => setWhatChanged(e.target.value)}
+          placeholder="e.g., I realised I need more practical experience before applying..."
+          rows={3}
+          className="text-sm"
         />
       </div>
 
+      <div className="border-t border-border/30" />
+
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">New actions</h3>
+        </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Any new steps you want to add to your plan?
+        </p>
+        <Textarea
+          value={newActions}
+          onChange={(e) => setNewActions(e.target.value)}
+          placeholder="e.g., Sign up for a weekend workshop&#10;Start a portfolio website"
+          rows={3}
+          className="text-sm"
+        />
+      </div>
+
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
-        <Button variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={!changeReason.trim() || isSubmitting}
-          className="bg-amber-600 hover:bg-amber-700"
-        >
-          {isSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Check className="mr-2 h-4 w-4" />
-          )}
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={!canSubmit || isSubmitting} className="bg-amber-600 hover:bg-amber-700">
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
           Update Plan
         </Button>
       </div>
@@ -1157,22 +1264,34 @@ function ExternalFeedbackContent({
   onComplete: (data: StepCompletionData) => Promise<void>;
   onClose: () => void;
 }) {
-  const [feedbackSource, setFeedbackSource] = useState<'employer' | 'mentor' | 'reviewer'>('employer');
+  const SOURCES = [
+    { value: 'employer', label: 'Employer' },
+    { value: 'mentor', label: 'Mentor' },
+    { value: 'teacher', label: 'Teacher' },
+    { value: 'reviewer', label: 'Other' },
+  ] as const;
+
+  const [feedbackSource, setFeedbackSource] = useState('');
   const [feedbackSummary, setFeedbackSummary] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = feedbackSource && feedbackSummary.trim();
 
   const handleSubmit = async () => {
-    if (!feedbackSummary.trim()) return;
-
+    if (!canSubmit) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       await onComplete({
         type: 'EXTERNAL_FEEDBACK',
-        feedbackSource,
+        feedbackSource: feedbackSource as 'employer' | 'mentor' | 'reviewer',
         feedbackSummary: feedbackSummary.trim(),
         receivedAt: new Date().toISOString(),
       });
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -1180,61 +1299,60 @@ function ExternalFeedbackContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-green-50 border border-green-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-green-800">
-            External feedback helps you understand how others see your work and growth.
-          </p>
+      {/* Source Selection */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">Who gave you feedback?</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {SOURCES.map((src) => (
+            <button
+              key={src.value}
+              onClick={() => setFeedbackSource(src.value)}
+              className={cn(
+                'p-2.5 rounded-lg text-xs font-medium text-left transition-all border-2',
+                feedbackSource === src.value
+                  ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                  : 'bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50'
+              )}
+            >
+              {src.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Feedback Source
-          </label>
-          <div className="flex gap-2">
-            {(['employer', 'mentor', 'reviewer'] as const).map((source) => (
-              <Button
-                key={source}
-                variant={feedbackSource === source ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFeedbackSource(source)}
-              >
-                {source.charAt(0).toUpperCase() + source.slice(1)}
-              </Button>
-            ))}
-          </div>
-        </div>
+      <div className="border-t border-border/30" />
 
-        <div>
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Summary of Feedback <span className="text-red-500">*</span>
-          </label>
-          <Textarea
-            value={feedbackSummary}
-            onChange={(e) => setFeedbackSummary(e.target.value)}
-            placeholder="What feedback did you receive?"
-            rows={4}
-          />
+      {/* Feedback Content */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+          <h3 className="text-sm font-semibold">What feedback did you receive?</h3>
         </div>
+        <p className="text-xs text-muted-foreground/60 mb-3">
+          Summarise the key points — what went well and what to improve.
+        </p>
+        <Textarea
+          value={feedbackSummary}
+          onChange={(e) => setFeedbackSummary(e.target.value)}
+          placeholder="e.g., My mentor said I should focus more on practical skills&#10;They recommended I look into certification programmes"
+          rows={4}
+          className="text-sm"
+        />
       </div>
+
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
 
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
-        <Button variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={!feedbackSummary.trim() || isSubmitting}
-          className="bg-green-600 hover:bg-green-700"
-        >
-          {isSubmitting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Check className="mr-2 h-4 w-4" />
-          )}
+        <Button variant="outline" onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={!canSubmit || isSubmitting} className="bg-amber-600 hover:bg-amber-700">
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
           Save Feedback
         </Button>
       </div>
@@ -1283,20 +1401,20 @@ export function StepContent({
     },
     // ACT lens
     COMPLETE_ALIGNED_ACTION: {
-      title: 'Complete an Aligned Action',
-      description: 'Pick a small action to get started',
+      title: 'Log an Action',
+      description: 'Record a real step you\'ve taken toward your career goal',
     },
     SUBMIT_ACTION_REFLECTION: {
       title: 'Reflect on Your Action',
-      description: 'Reflect on what you\'ve learned and how it helped you progress',
+      description: 'What did you learn and what will you do next?',
     },
     UPDATE_PLAN: {
       title: 'Update Your Plan',
-      description: 'Update your plan with new insights',
+      description: 'Adjust your plan based on what you\'ve learned',
     },
     EXTERNAL_FEEDBACK: {
-      title: 'External Feedback',
-      description: 'Ask for feedback from someone you trust',
+      title: 'Log Feedback',
+      description: 'Record feedback you\'ve received from others',
     },
   };
 
