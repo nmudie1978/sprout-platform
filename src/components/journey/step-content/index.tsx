@@ -662,11 +662,13 @@ function IndustryInsightsContent({
 }) {
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!notes.trim()) return;
 
     setIsSubmitting(true);
+    setError(null);
     try {
       await onComplete({
         type: 'REVIEW_INDUSTRY_OUTLOOK',
@@ -674,6 +676,8 @@ function IndustryInsightsContent({
         outlookNotes: notes.split('\n').filter((line) => line.trim()),
       });
       onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -729,6 +733,12 @@ function IndustryInsightsContent({
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
 
       <div className="flex justify-end gap-3 pt-4 border-t border-border">
         <Button variant="outline" onClick={onClose}>

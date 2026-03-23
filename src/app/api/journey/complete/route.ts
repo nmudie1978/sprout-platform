@@ -131,29 +131,32 @@ export async function POST(req: NextRequest) {
       journeySummary: profile.journeySummary,
     });
 
-    // Check if this step can be completed (must be current or completed step)
-    const currentState = orchestrator.getCurrentState();
-    const completedSteps = orchestrator.getCompletedSteps();
-
-    if (stepId !== currentState && !completedSteps.includes(stepId)) {
-      return NextResponse.json(
-        { error: 'Cannot complete a step that is not current or already completed' },
-        { status: 400 }
-      );
-    }
+    // Allow completing the current step or re-completing a previously completed step
+    // The orchestrator handles state advancement via reconciliation
 
     // Update summary with completion data
     const updatedSummary = orchestrator.updateSummary(data);
 
     // Mark step as completed and try to advance
-    if (!completedSteps.includes(stepId)) {
-      orchestrator.transitionTo(stepId);
-    }
-
-    // Try to advance to next step if criteria are met
-    const nextStep = orchestrator.getNextAllowedStep();
-    if (nextStep) {
-      orchestrator.transitionTo(nextStep);
+    const currentState = orchestrator.getCurrentState();
+    if (!orchestrator.getCompletedSteps().includes(stepId)) {
+      // If stepId is the current state, transition is same-state (no-op for completedSteps)
+      // So we need to explicitly add it and advance
+      if (stepId === currentState) {
+        // The step is current — try to advance past it
+        const nextStep = orchestrator.getNextAllowedStep();
+        if (nextStep) {
+          orchestrator.transitionTo(nextStep);
+        }
+      } else {
+        orchestrator.transitionTo(stepId);
+      }
+    } else {
+      // Step already completed — just try to advance if possible
+      const nextStep = orchestrator.getNextAllowedStep();
+      if (nextStep) {
+        orchestrator.transitionTo(nextStep);
+      }
     }
 
     // Persist to database - convert summary to JSON-compatible format

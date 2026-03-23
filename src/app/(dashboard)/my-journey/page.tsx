@@ -349,6 +349,9 @@ export default function MyJourneyPage() {
       queryClient.invalidateQueries({ queryKey: ['journey-state'] });
       setActiveStepId(null);
     },
+    onError: (error: Error) => {
+      console.error('Step completion failed:', error.message);
+    },
   });
 
   // Save career interests without completing the step
