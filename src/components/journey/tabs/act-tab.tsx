@@ -101,6 +101,9 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
     return 'locked';
   };
 
+  // Find the first "next" step — only this one should show Start
+  const firstNextStepId = ACT_STEPS.find((s) => getStepStatus(s.id) === 'next')?.id || null;
+
   return (
     <div className="space-y-3">
       {/* Step cards — matching Discover/Understand style */}
@@ -108,7 +111,10 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         const status = getStepStatus(config.id);
         const isLocked = status === 'locked';
         const isComplete = status === 'completed';
-        const isCurrent = status === 'next';
+        // Only the first next step is truly current
+        const isCurrent = status === 'next' && config.id === firstNextStepId;
+        // If it's "next" but not the first, treat as locked
+        const isEffectivelyLocked = isLocked || (status === 'next' && config.id !== firstNextStepId);
 
         return (
           <div
@@ -117,7 +123,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
               'rounded-xl border p-4 transition-all',
               isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
               isComplete && 'border-border/60 bg-card/60',
-              isLocked && 'border-border/30 opacity-40',
+              isEffectivelyLocked && 'border-border/30 opacity-40',
             )}
             style={isCurrent ? {
               boxShadow: '0 0 15px rgba(245, 158, 11, 0.15), 0 0 30px rgba(245, 158, 11, 0.05)',
@@ -129,7 +135,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
                   'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold shrink-0',
                   isComplete && 'bg-emerald-500/20 text-emerald-500',
                   isCurrent && 'bg-amber-500/20 text-amber-500',
-                  isLocked && 'bg-muted text-muted-foreground/50',
+                  isEffectivelyLocked && 'bg-muted text-muted-foreground/50',
                 )}
               >
                 {isComplete ? <CheckCircle2 className="h-4 w-4" /> : config.stepNumber}
@@ -139,13 +145,13 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
                   <p className={cn(
                     'text-sm font-semibold',
                     isComplete && 'text-foreground',
-                    isLocked && 'text-muted-foreground/50',
+                    isEffectivelyLocked && 'text-muted-foreground/50',
                   )}>
                     {config.title}
                   </p>
                   {config.optional && <Badge variant="secondary" className="text-[9px] h-4">Optional</Badge>}
                 </div>
-                {(isCurrent || isLocked) && (
+                {(isCurrent || isEffectivelyLocked) && (
                   <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
                 )}
               </div>

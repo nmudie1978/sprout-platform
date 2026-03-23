@@ -159,11 +159,13 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
       )}
 
       {/* Sequential steps — matching Discover tab style */}
-      {UNDERSTAND_STEPS.map((config) => {
+      {(() => {
+        const firstNextId = UNDERSTAND_STEPS.find((s) => getStepStatus(s.id) === 'next')?.id || null;
+        return UNDERSTAND_STEPS.map((config) => {
         const status = getStepStatus(config.id);
-        const isLocked = status === 'locked';
+        const isLocked = status === 'locked' || (status === 'next' && config.id !== firstNextId);
         const isComplete = status === 'completed';
-        const isCurrent = status === 'next';
+        const isCurrent = status === 'next' && config.id === firstNextId;
 
         return (
           <div
@@ -364,7 +366,8 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
             )}
           </div>
         );
-      })}
+      });
+      })()}
 
       {/* Supporting Content — secondary resources */}
       <div className="mt-4 rounded-xl border border-border/30 bg-muted/10 p-4 space-y-4">
