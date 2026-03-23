@@ -190,10 +190,11 @@ export default function IndustryInsightsPage() {
       {/* SECTION 1: GLOBAL INDUSTRY & CAREER LANDSCAPE */}
       {/* ============================================ */}
       <motion.section
+        id="global-lens"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
-        className="mb-2"
+        className="mb-2 scroll-mt-20"
       >
         <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/10 p-3 sm:p-6">
           <div className="relative">
@@ -264,10 +265,11 @@ export default function IndustryInsightsPage() {
       {/* SECTION 2: YOUTH LENS (15-23) */}
       {/* ============================================ */}
       <motion.section
+        id="youth-lens"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.35 }}
-        className="mb-3"
+        className="mb-3 scroll-mt-20"
       >
         <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-gradient-to-br from-background via-background to-amber-50/30 dark:to-amber-950/10 p-3 sm:p-4">
           <SectionHeader
@@ -303,10 +305,11 @@ export default function IndustryInsightsPage() {
       {/* SECTION 3: DIG DEEPER */}
       {/* ============================================ */}
       <motion.section
+        id="dig-deeper"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="mb-3"
+        className="mb-3 scroll-mt-20"
       >
         <div className="rounded-2xl border-2 border-teal-200/50 dark:border-teal-800/30 bg-gradient-to-br from-background via-background to-teal-50/30 dark:to-teal-950/10 p-3 sm:p-4">
           <SectionHeader
@@ -340,10 +343,11 @@ export default function IndustryInsightsPage() {
       {/* SECTION 4: GO FURTHER */}
       {/* ============================================ */}
       <motion.section
+        id="go-further"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.65 }}
-        className="mb-4"
+        className="mb-4 scroll-mt-20"
       >
         <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-3 sm:p-4">
           <SectionHeader

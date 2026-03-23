@@ -319,7 +319,12 @@ function ZigzagCard({
     if (savedData.confidence) tooltipLines.push(`Confidence: ${savedData.confidence === 'high' ? '😊 High' : savedData.confidence === 'medium' ? '😐 Medium' : '😟 Low'}`);
   }
 
-  const hasTooltip = isDone && tooltipLines.length > 0;
+  // Always show a tooltip — step type + subtitle for all, extra detail for completed
+  if (!isDone) {
+    tooltipLines.unshift(`${typeConfig.icon} ${typeConfig.label}`);
+    if (item.subtitle) tooltipLines.push(item.subtitle);
+  }
+  const hasTooltip = tooltipLines.length > 0;
 
   const card = (
     <button

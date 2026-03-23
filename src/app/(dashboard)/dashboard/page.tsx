@@ -235,13 +235,13 @@ const LENS_LABELS = [
 // ── Insights Ticker ─────────────────────────────────────────────────
 function InsightsTicker() {
   const TICKER_ITEMS = [
-    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400', href: '/about/research#oecd-career-uncertainty' },
     { emoji: '🎬', text: 'Grit: The Power of Passion and Perseverance — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=H14bBuluwB8' },
-    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400', href: '/about/research#gallup-path-uncertainty' },
     { emoji: '🎬', text: 'The Power of Believing You Can Improve — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
     { emoji: '💡', text: 'Healthcare is one of the fastest growing sectors in Norway', color: 'text-amber-400', href: '/insights#dig-deeper' },
     { emoji: '🎬', text: '10 Ways to Have a Better Conversation — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=R1vskiVDwl4' },
-    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400', href: '/about/research' },
+    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400', href: '/about/research#gallup-preparedness' },
     { emoji: '🎙', text: 'It\'s okay not knowing what\'s after graduation — TEDx', color: 'text-purple-400', href: 'https://www.youtube.com/watch?v=uRHWR_aYb4w' },
   ];
 

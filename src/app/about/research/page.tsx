@@ -26,7 +26,7 @@ const TAG_COLORS: Record<string, string> = {
 
 function StatCard({ stat }: { stat: ResearchStatWithYear }) {
   return (
-    <div className="rounded-lg border bg-card p-3.5 hover:shadow-sm transition-shadow">
+    <div id={stat.id} className="rounded-lg border bg-card p-3.5 hover:shadow-sm transition-shadow scroll-mt-24">
       {/* Headline */}
       <h3 className="text-sm font-semibold text-foreground leading-snug mb-1.5">
         {stat.headline}
