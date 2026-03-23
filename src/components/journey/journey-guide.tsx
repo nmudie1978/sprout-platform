@@ -28,9 +28,9 @@ const LENSES = [
     description: 'Reflect on your strengths and growth areas. Explore what interests you. Shortlist career paths and set your direction.',
     icon: Search,
     color: '#7c3aed',
-    bgClass: 'bg-violet-500/10',
-    textClass: 'text-violet-400',
-    borderClass: 'border-violet-500/30',
+    bgClass: 'bg-teal-500/10',
+    textClass: 'text-teal-400',
+    borderClass: 'border-teal-500/30',
     steps: ['Reflect on Strengths', 'Explore Careers', 'Deep Dive into a Role'],
   },
   {

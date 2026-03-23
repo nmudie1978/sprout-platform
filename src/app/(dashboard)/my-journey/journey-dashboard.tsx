@@ -174,7 +174,7 @@ function JourneyStageIndicator({ stages }: { stages: JourneyStage[] }) {
                 ${stage.isCompleted
                   ? "bg-emerald-500 text-white"
                   : stage.isActive
-                  ? "bg-gradient-to-br from-purple-500 to-indigo-500 text-white ring-4 ring-purple-500/20"
+                  ? "bg-gradient-to-br from-teal-500 to-teal-500 text-white ring-4 ring-teal-500/20"
                   : "bg-muted text-muted-foreground"
                 }
               `}
@@ -255,11 +255,11 @@ function NextBestActionCard({
   const Icon = currentAction.icon;
 
   return (
-    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-500/5">
+    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-teal-500/5">
       <CardContent className="p-5">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20">
-            <Icon className="h-6 w-6 text-purple-600" />
+          <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20">
+            <Icon className="h-6 w-6 text-teal-600" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">

@@ -55,13 +55,13 @@ const eventColors: Record<TimelineEventTypeId, string> = {
   PROFILE_CREATED: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
   STRENGTHS_CONFIRMED: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400',
   CAREER_EXPLORED: 'bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400',
-  ROLE_DEEP_DIVE_COMPLETED: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+  ROLE_DEEP_DIVE_COMPLETED: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
   PRIMARY_GOAL_SET: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
   INDUSTRY_OUTLOOK_REVIEWED: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400',
-  REQUIREMENTS_REVIEWED: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+  REQUIREMENTS_REVIEWED: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
   PLAN_CREATED: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
   PLAN_UPDATED: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
-  SHADOW_REQUESTED: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400',
+  SHADOW_REQUESTED: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
   SHADOW_APPROVED: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
   SHADOW_DECLINED: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
   SHADOW_COMPLETED: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
@@ -69,7 +69,7 @@ const eventColors: Record<TimelineEventTypeId, string> = {
   ALIGNED_ACTION_COMPLETED: 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400',
   ACTION_REFLECTION_SUBMITTED: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
   EXTERNAL_FEEDBACK_RECEIVED: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
-  ITEM_SAVED: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400',
+  ITEM_SAVED: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
   REFLECTION_RECORDED: 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400',
 };
 
@@ -145,7 +145,7 @@ export function TimelineTab() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-purple-500" />
+            <Calendar className="h-5 w-5 text-teal-500" />
             Your Timeline
           </h2>
           {counts && (

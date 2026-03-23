@@ -13,7 +13,7 @@ export function TimelineAgeMarker({ age, isCurrent }: TimelineAgeMarkerProps) {
       className={cn(
         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors',
         isCurrent
-          ? 'bg-purple-100 text-purple-700 ring-2 ring-purple-300/50 shadow-sm'
+          ? 'bg-teal-100 text-teal-700 ring-2 ring-teal-300/50 shadow-sm'
           : 'bg-muted text-muted-foreground'
       )}
     >

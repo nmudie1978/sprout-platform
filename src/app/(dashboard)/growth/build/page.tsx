@@ -364,8 +364,8 @@ export default function BuildStagePage() {
           />
           <QuickActionCard
             icon={BookOpen}
-            iconBg="bg-purple-100 dark:bg-purple-900/30"
-            iconColor="text-purple-600"
+            iconBg="bg-teal-100 dark:bg-teal-900/30"
+            iconColor="text-teal-600"
             title="Learning Path"
             description="Courses and resources for your career"
             href={
@@ -391,11 +391,11 @@ export default function BuildStagePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.3 }}
       >
-        <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+        <Card className="border-2 border-teal-200 bg-gradient-to-r from-teal-50 to-pink-50 dark:from-teal-950/20 dark:to-pink-950/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30">
-                <Bot className="h-6 w-6 text-purple-600" />
+              <div className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/30">
+                <Bot className="h-6 w-6 text-teal-600" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold">Need guidance?</h3>
@@ -410,7 +410,7 @@ export default function BuildStagePage() {
                     : "/career-advisor?prompt=What skills should I build?"
                 }
               >
-                <Button variant="outline" className="border-purple-300">
+                <Button variant="outline" className="border-teal-300">
                   <Bot className="w-4 h-4 mr-2" />
                   Ask AI
                 </Button>

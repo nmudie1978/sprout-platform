@@ -41,8 +41,8 @@ const TYPE_CONFIG: Record<
   stat_report: {
     icon: BarChart3,
     label: "Report",
-    color: "text-purple-600 dark:text-purple-400",
-    bg: "bg-purple-100 dark:bg-purple-900/30",
+    color: "text-teal-600 dark:text-teal-400",
+    bg: "bg-teal-100 dark:bg-teal-900/30",
   },
   pdf: {
     icon: FileDown,

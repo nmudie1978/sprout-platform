@@ -131,7 +131,7 @@ export function JobStatusManager({ jobId, currentStatus }: JobStatusManagerProps
           {/* ASSIGNED (IN_PROGRESS) - can mark as done, reopen, or pause */}
           {(currentStatus === "IN_PROGRESS" || currentStatus === "ASSIGNED") && (
             <>
-              <DropdownMenuItem onClick={() => handleAction("COMPLETED")} className="text-purple-600 focus:text-purple-600">
+              <DropdownMenuItem onClick={() => handleAction("COMPLETED")} className="text-teal-600 focus:text-teal-600">
                 <CheckCircle className="mr-2 h-4 w-4" />
                 Mark as Done
               </DropdownMenuItem>

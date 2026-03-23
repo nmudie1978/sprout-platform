@@ -172,7 +172,7 @@ export const CareerCard = memo(function CareerCard({
   /* ---------- COMPACT MODE ---------- */
   if (compact) {
     return (
-      <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors">
+      <Card className="overflow-hidden border-2 hover:border-teal-500/30 transition-colors">
         <CardContent className="p-0">
           <motion.div
             whileHover={{ scale: 1.01 }}
@@ -220,7 +220,7 @@ export const CareerCard = memo(function CareerCard({
                         strokeWidth="3"
                         fill="none"
                         strokeDasharray={`${matchScore} 100`}
-                        className="text-purple-500"
+                        className="text-teal-500"
                         strokeLinecap="round"
                       />
                     </svg>
@@ -250,7 +250,7 @@ export const CareerCard = memo(function CareerCard({
                       {/* Key Skills */}
                       <div>
                         <div className="flex items-center gap-2 mb-1.5">
-                          <Sparkles className="h-3 w-3 text-purple-500" />
+                          <Sparkles className="h-3 w-3 text-teal-500" />
                           <span className="text-xs font-medium">Key Skills</span>
                         </div>
                         <div className="flex flex-wrap gap-1">
@@ -258,7 +258,7 @@ export const CareerCard = memo(function CareerCard({
                             <Badge
                               key={skill}
                               variant="outline"
-                              className="text-[10px] capitalize bg-purple-500/5 border-purple-500/20"
+                              className="text-[10px] capitalize bg-teal-500/5 border-teal-500/20"
                             >
                               {skill.replace("-", " ")}
                             </Badge>
@@ -323,10 +323,10 @@ export const CareerCard = memo(function CareerCard({
   const searchQuery = encodeURIComponent(career.title);
 
   return (
-    <Card className="overflow-hidden border hover:border-purple-500/30 transition-colors">
+    <Card className="overflow-hidden border hover:border-teal-500/30 transition-colors">
       <CardContent className="p-0">
         {/* Header */}
-        <div className="p-4 bg-purple-50/30 dark:bg-purple-950/10">
+        <div className="p-4 bg-teal-50/30 dark:bg-teal-950/10">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3">
               <span className="text-3xl">{career.emoji}</span>
@@ -365,7 +365,7 @@ export const CareerCard = memo(function CareerCard({
                       strokeWidth="4"
                       fill="none"
                       strokeDasharray={`${(matchScore / 100) * 150.8} 150.8`}
-                      className="text-purple-500"
+                      className="text-teal-500"
                       strokeLinecap="round"
                     />
                   </svg>
@@ -406,14 +406,14 @@ export const CareerCard = memo(function CareerCard({
         <AccordionSection
           icon={<Sparkles className="h-4 w-4" />}
           title="Skills You'll Use"
-          iconColor="text-purple-500"
+          iconColor="text-teal-500"
         >
           <div className="flex flex-wrap gap-1.5">
             {career.keySkills.map((skill) => (
               <Badge
                 key={skill}
                 variant="outline"
-                className="text-xs capitalize bg-purple-500/5 border-purple-500/20"
+                className="text-xs capitalize bg-teal-500/5 border-teal-500/20"
               >
                 {skill.replace("-", " ")}
               </Badge>
@@ -429,7 +429,7 @@ export const CareerCard = memo(function CareerCard({
           <ul className="text-sm text-muted-foreground space-y-1">
             {career.dailyTasks.map((task, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span className="text-purple-500 mt-1">•</span>
+                <span className="text-teal-500 mt-1">•</span>
                 {task}
               </li>
             ))}

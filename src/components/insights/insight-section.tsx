@@ -51,7 +51,7 @@ const SECTION_CONFIG: Record<InsightSectionKey, SectionConfig> = {
     title: "The Big Picture",
     subtitle: "Major shifts shaping the future of work",
     icon: Globe,
-    gradient: "from-blue-500/20 to-indigo-500/20",
+    gradient: "from-blue-500/20 to-teal-500/20",
   },
   "jobs-on-the-rise": {
     title: "Jobs & Roles on the Rise",
@@ -69,7 +69,7 @@ const SECTION_CONFIG: Record<InsightSectionKey, SectionConfig> = {
     title: "Industry Spotlights",
     subtitle: "Deep dives into specific sectors",
     icon: Lightbulb,
-    gradient: "from-violet-500/20 to-purple-500/20",
+    gradient: "from-teal-500/20 to-teal-500/20",
   },
   "reality-checks": {
     title: "Reality Checks",

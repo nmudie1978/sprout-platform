@@ -150,7 +150,7 @@ export default function IndustryInsightsPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
       <PageHeader
         title={t("pageTitle")}
@@ -308,16 +308,16 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-3"
       >
-        <div className="rounded-2xl border-2 border-violet-200/50 dark:border-violet-800/30 bg-gradient-to-br from-background via-background to-violet-50/30 dark:to-violet-950/10 p-3 sm:p-4">
+        <div className="rounded-2xl border-2 border-teal-200/50 dark:border-teal-800/30 bg-gradient-to-br from-background via-background to-teal-50/30 dark:to-teal-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Layers}
             label="Explore"
             title="Dig Deeper"
             subtitle="Curated videos, podcasts, and articles on growing careers and the skills behind them"
-            gradient="from-violet-400 via-purple-400 to-violet-400"
-            iconBg="bg-violet-100 dark:bg-violet-900/30"
-            iconColor="text-violet-600 dark:text-violet-400"
-            labelColor="text-violet-500/80"
+            gradient="from-teal-400 via-teal-400 to-teal-400"
+            iconBg="bg-teal-100 dark:bg-teal-900/30"
+            iconColor="text-teal-600 dark:text-teal-400"
+            labelColor="text-teal-500/80"
           />
 
           <motion.div

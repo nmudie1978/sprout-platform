@@ -127,13 +127,13 @@ export function RealityCheckPanel({ className }: RealityCheckPanelProps) {
       onFocus={() => setIsPaused(true)}
       onBlur={() => setIsPaused(false)}
     >
-      <div className="h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400" />
+      <div className="h-1 bg-gradient-to-r from-teal-400 via-pink-400 to-teal-400" />
 
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="p-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-              <Scale className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="p-1.5 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+              <Scale className="h-4 w-4 text-teal-600 dark:text-teal-400" />
             </div>
             Reality Check
           </CardTitle>
@@ -238,7 +238,7 @@ export function RealityCheckPanel({ className }: RealityCheckPanelProps) {
                 h-1.5 rounded-full transition-all duration-200
                 ${
                   currentIndex === idx
-                    ? "w-4 bg-purple-500"
+                    ? "w-4 bg-teal-500"
                     : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
                 }
               `}

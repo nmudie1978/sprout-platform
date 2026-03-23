@@ -134,24 +134,239 @@ Never store:
 
 <journey_logic>
 
-The Journey system is central.
+# MY JOURNEY FRAMEWORK (CORE PRODUCT CONTRACT)
 
-States:
-- DISCOVER
-- UNDERSTAND
-- ACT
-- REFLECT
+## PURPOSE
+The “My Journey” experience is the core of the Endeavrly product.
 
-Rules:
-- A user cannot skip state transitions arbitrarily.
-- Journey progression stored as state machine.
-- Journey summary aggregates:
-  - Jobs attempted
-  - Skills developed
-  - Reflections written
+It is NOT a roadmap viewer.
+It is a guided system that helps users:
+1. understand themselves
+2. understand the world
+3. take meaningful action
 
-Dashboard must highlight Journey first, not job count.
+All features, components, and UI decisions in this area MUST align with this framework.
 
+---
+
+## CORE STRUCTURE
+
+My Journey is built around three stages:
+
+1. DISCOVER (Know Yourself)
+2. UNDERSTAND (Know the World)
+3. ACT (Take Action)
+
+These are NOT labels — they define product behavior, data flow, and UX.
+
+---
+
+## STAGE DEFINITIONS
+
+### 1. DISCOVER (Know Yourself)
+
+**Purpose**
+Help the user build self-awareness and direction.
+
+**This stage is:**
+- introspective
+- user-input driven
+- reflective
+
+**Must include:**
+- reflection on strengths
+- reflection on weaknesses / growth areas
+- ambitions / motivations
+- interests
+- career exploration (shortlisting)
+- primary and secondary goals
+
+**IMPORTANT RULES**
+- DO NOT implement a generic “Notes” feature here
+- DO implement structured reflection inputs
+- All capture must be contextual (e.g. tied to prompts)
+- Output of this stage = “user signals”
+
+**USER SIGNALS**
+This stage produces structured signals such as:
+- strengths
+- interests
+- preferences
+- saved career paths
+- motivations
+
+These signals must be reusable across the system (especially ACT).
+
+---
+
+### 2. UNDERSTAND (Know the World)
+
+**Purpose**
+Help the user understand careers, industries, and reality.
+
+**This stage is:**
+- external
+- insight-driven
+- exploration-focused
+
+**Must include:**
+- role understanding (what the job actually involves)
+- industry insights and trends
+- skills required
+- schooling / qualification requirements
+- real-world expectations
+- curated content (videos, podcasts, articles)
+- saved content
+
+**CONTENT RULES**
+- Saved content belongs here (not in Discover)
+- This is the home of “My Content”
+- Content should support decision-making, not distract
+
+---
+
+### 3. ACT (Take Action)
+
+**Purpose**
+Convert clarity into real-world progress.
+
+**This stage is:**
+- execution-focused
+- practical
+- forward-moving
+
+**Must include:**
+
+1. ROADMAP
+   - the career path (e.g. Doctor journey)
+   - age-based progression
+   - milestones
+   - MUST include schooling / academic dimension
+
+2. LEARNING GOALS
+   - short-term and long-term goals
+   - skill-based progression
+
+3. REAL-WORLD ACTIONS
+   - internships
+   - volunteering
+   - clubs
+   - projects
+   - shadowing
+
+4. NEXT BEST STEP
+   - system-generated guidance
+   - must be visible and actionable
+
+5. REFLECTION LOOP
+   - reflect on what was learned
+   - update direction
+   - feed back into journey
+
+---
+
+## ROADMAP POSITIONING (CRITICAL)
+
+The roadmap:
+- MUST live inside ACT
+- MUST NOT represent the entire journey
+- MUST NOT replace DISCOVER or UNDERSTAND
+
+It is one component of execution, not the product itself.
+
+---
+
+## DATA FLOW (MANDATORY LOGIC)
+
+DISCOVER → produces signals  
+UNDERSTAND → enriches context  
+ACT → executes based on both  
+
+Additionally:
+ACT → reflection → feeds back into DISCOVER/ACT
+
+This loop must be preserved.
+
+---
+
+## NOTES / CONTENT RULES
+
+- Discover = structured reflection (no generic notes tab)
+- Understand = saved content (videos, articles, podcasts)
+- Act = action-related reflection only
+
+Avoid:
+- dump buckets
+- duplicated content areas
+- detached “My Content” tabs outside context
+
+---
+
+## UX PRINCIPLES
+
+- Separate thinking (Discover) from doing (Act)
+- Keep exploration (Understand) distinct from introspection
+- Avoid mixing stages visually or conceptually
+- Ensure user always knows:
+  - where they are
+  - what they should do next
+  - why it matters
+
+---
+
+## HOW YOUR JOURNEY WORKS (SYSTEM MESSAGE)
+
+The system must clearly communicate:
+
+DISCOVER
+→ understand yourself  
+→ define direction  
+
+UNDERSTAND
+→ understand the path and reality  
+→ validate your direction  
+
+ACT
+→ take real steps forward  
+→ learn, adapt, progress  
+
+This explanation must match the actual UI and behavior.
+
+---
+
+## IMPLEMENTATION RULES FOR CLAUDE
+
+When modifying or adding features:
+
+1. ALWAYS map the feature to one of:
+   - Discover
+   - Understand
+   - Act
+
+2. NEVER:
+   - place roadmap logic outside ACT
+   - add generic notes systems in Discover
+   - mix content and reflection in the same layer
+   - create new top-level tabs that break this structure
+
+3. ALWAYS:
+   - maintain separation of concerns
+   - ensure data flows between stages
+   - keep UI aligned with framework meaning
+
+---
+
+## SUCCESS CRITERIA
+
+The system should feel like:
+- a guided decision engine
+- a structured personal journey
+
+NOT:
+- a static roadmap viewer
+- a content dashboard
+- a collection of disconnected features
+ 
 </journey_logic>
 
 

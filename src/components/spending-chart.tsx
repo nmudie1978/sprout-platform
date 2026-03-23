@@ -67,7 +67,7 @@ const categoryConfig: Record<string, { emoji: string; label: string; color: stri
   SNOW_CLEARING: { emoji: "❄️", label: "Snow Clearing", color: "bg-cyan-500" },
   CLEANING: { emoji: "🧹", label: "Cleaning", color: "bg-emerald-500" },
   DIY_HELP: { emoji: "🔧", label: "DIY Help", color: "bg-orange-500" },
-  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-violet-500" },
+  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-teal-500" },
   ERRANDS: { emoji: "🏃", label: "Errands", color: "bg-blue-500" },
   OTHER: { emoji: "✨", label: "Other", color: "bg-gray-500" },
 };
@@ -114,7 +114,7 @@ export function SpendingChart() {
           animate={{ opacity: 1, y: 0 }}
           className="relative mb-6 rounded-2xl overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-600 to-rose-600 opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-pink-600 to-rose-600 opacity-90" />
           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
           <div className="relative px-6 py-8 text-white">
             <div className="flex items-center gap-3 mb-4">
@@ -139,7 +139,7 @@ export function SpendingChart() {
                   }}
                   className={`rounded-full ${
                     years === y
-                      ? "bg-white text-purple-700 hover:bg-white/90"
+                      ? "bg-white text-teal-700 hover:bg-white/90"
                       : "bg-white/20 text-white hover:bg-white/30"
                   }`}
                 >
@@ -152,7 +152,7 @@ export function SpendingChart() {
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-purple-500 mb-3" />
+            <Loader2 className="h-8 w-8 animate-spin text-teal-500 mb-3" />
             <p className="text-sm text-muted-foreground">Loading spending data...</p>
           </div>
         ) : (
@@ -327,7 +327,7 @@ export function SpendingChart() {
                                         className="absolute bottom-full mb-2 z-10 px-3 py-2 bg-popover border rounded-lg shadow-lg text-sm whitespace-nowrap"
                                       >
                                         <div className="font-semibold">{point.monthLabel}</div>
-                                        <div className="text-purple-600">
+                                        <div className="text-teal-600">
                                           Total: {formatCurrency(point.total)}
                                         </div>
                                         <div className="text-muted-foreground text-xs">
@@ -338,7 +338,7 @@ export function SpendingChart() {
                                   </AnimatePresence>
 
                                   <div
-                                    className="w-full rounded-t-md transition-all duration-200 cursor-pointer relative overflow-hidden bg-gradient-to-t from-purple-600 to-pink-500"
+                                    className="w-full rounded-t-md transition-all duration-200 cursor-pointer relative overflow-hidden bg-gradient-to-t from-teal-600 to-pink-500"
                                     style={{
                                       height: `${height}%`,
                                       minHeight: point.total > 0 ? "4px" : "0",
@@ -388,7 +388,7 @@ export function SpendingChart() {
                 <Card className="border-2">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <Users className="h-5 w-5 text-purple-500" />
+                      <Users className="h-5 w-5 text-teal-500" />
                       Top Workers Hired
                     </CardTitle>
                     <CardDescription>Workers you've hired most frequently</CardDescription>
@@ -424,7 +424,7 @@ export function SpendingChart() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-semibold text-purple-600">
+                            <div className="font-semibold text-teal-600">
                               {formatCurrency(worker.totalPaid)}
                             </div>
                             <div className="text-xs text-muted-foreground">total paid</div>

@@ -493,7 +493,7 @@ export default function AdminDashboardPage() {
           <Card className="bg-slate-800/50 border-slate-700">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
-                <Tag className="h-5 w-5 text-purple-400" />
+                <Tag className="h-5 w-5 text-teal-400" />
                 Top Job Categories
               </CardTitle>
             </CardHeader>

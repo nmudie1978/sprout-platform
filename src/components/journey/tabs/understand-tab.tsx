@@ -202,7 +202,7 @@ export function UnderstandTab({ journey, onStartStep }: UnderstandTabProps) {
             title="Jobs & Roles on the Rise"
             description="Which careers are growing and in demand"
             href="/insights#dig-deeper"
-            accentColor="violet"
+            accentColor="teal"
           />
           <QuickLink
             icon={Briefcase}

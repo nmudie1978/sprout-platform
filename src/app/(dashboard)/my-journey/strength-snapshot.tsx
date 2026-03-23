@@ -41,7 +41,7 @@ const STRENGTHS: StrengthConfig[] = [
     key: "communication",
     label: "Communication",
     icon: MessageCircle,
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
     description: "Clear, responsive, professional",
   },
   {

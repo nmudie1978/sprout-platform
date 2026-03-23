@@ -130,8 +130,8 @@ const STATUS_CONFIG: Record<
   COMPLETED: {
     label: "Completed",
     icon: CheckCircle2,
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
     description: "You've completed this shadow experience!",
   },
   CANCELLED: {
@@ -295,7 +295,7 @@ export default function ShadowDetailPage({
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
         {/* Background gradient */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none" />
 
         {/* Back Button */}
         <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -333,8 +333,8 @@ export default function ShadowDetailPage({
           className="mb-6"
         >
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 shrink-0">
-              <Eye className="h-6 w-6 text-purple-600" />
+            <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20 shrink-0">
+              <Eye className="h-6 w-6 text-teal-600" />
             </div>
             <div className="flex-1">
               <h1 className="text-2xl font-bold">{shadow.roleTitle}</h1>
@@ -631,10 +631,10 @@ export default function ShadowDetailPage({
             animate={{ opacity: 1, y: 0 }}
             className="mt-6"
           >
-            <Card className="border-purple-500/50 bg-purple-500/5">
+            <Card className="border-teal-500/50 bg-teal-500/5">
               <CardContent className="py-4">
                 <div className="flex items-center gap-3">
-                  <MessageSquare className="h-5 w-5 text-purple-600" />
+                  <MessageSquare className="h-5 w-5 text-teal-600" />
                   <div className="flex-1">
                     <p className="font-medium">Ready to reflect?</p>
                     <p className="text-sm text-muted-foreground">

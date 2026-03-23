@@ -68,7 +68,7 @@ const defaultPrompts = [
     icon: Briefcase,
     label: "Find small jobs",
     prompt: "How can I find my first job as a teenager in Norway?",
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
   },
   {
     icon: Lightbulb,
@@ -85,7 +85,7 @@ function getGoalSpecificPrompts(goal: string) {
       icon: Target,
       label: "Career path",
       prompt: `What's the typical path to becoming a ${goal}?`,
-      color: "from-purple-500 to-pink-500",
+      color: "from-teal-500 to-pink-500",
     },
     {
       icon: GraduationCap,
@@ -293,7 +293,7 @@ export default function CareerAdvisorPage() {
     return (
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
         {/* Background gradient - matches Industry Insights */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
@@ -315,7 +315,7 @@ export default function CareerAdvisorPage() {
     return (
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
         {/* Background gradient - matches Industry Insights */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
         <PageHeader
           title="AI Career"
           gradientText="Advisor"
@@ -324,7 +324,7 @@ export default function CareerAdvisorPage() {
         />
         <Card className="border-2 mt-8">
           <CardContent className="py-16 text-center">
-            <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 w-fit mx-auto mb-6">
+            <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 w-fit mx-auto mb-6">
               <LogIn className="h-10 w-10 text-primary" />
             </div>
             <h3 className="text-xl font-bold mb-2">Sign in to use the AI Advisor</h3>
@@ -334,7 +334,7 @@ export default function CareerAdvisorPage() {
             </p>
             <div className="flex gap-3 justify-center">
               <Link href="/auth/signin">
-                <Button className="bg-gradient-to-r from-primary to-purple-600">
+                <Button className="bg-gradient-to-r from-primary to-teal-600">
                   <LogIn className="h-4 w-4 mr-2" />
                   Sign In
                 </Button>
@@ -349,7 +349,7 @@ export default function CareerAdvisorPage() {
         </Card>
 
         {/* Still show tips for non-authenticated users */}
-        <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-teal-500/5">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-lg bg-primary/10">
@@ -374,7 +374,7 @@ export default function CareerAdvisorPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
       {/* Background gradient - matches Industry Insights */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
       <PageHeader
         title="AI Career"
@@ -388,9 +388,9 @@ export default function CareerAdvisorPage() {
       {/* Chat Container */}
       <Card className="border-2 mt-8 overflow-hidden">
         {/* Chat Header */}
-        <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border-b px-4 py-3 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-primary/10 to-teal-500/10 border-b px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+            <div className="p-2 rounded-full bg-gradient-to-br from-primary to-teal-600">
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -433,7 +433,7 @@ export default function CareerAdvisorPage() {
               animate={{ opacity: 1, y: 0 }}
               className="h-full flex flex-col items-center justify-center text-center px-4"
             >
-              <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 mb-4">
+              <div className="p-4 rounded-full bg-gradient-to-br from-primary/20 to-teal-500/20 mb-4">
                 <Sparkles className="h-8 w-8 text-primary" />
               </div>
               {goalParam ? (
@@ -504,7 +504,7 @@ export default function CareerAdvisorPage() {
                 >
                   {message.role === "assistant" && (
                     <div className="flex-shrink-0">
-                      <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+                      <div className="p-2 rounded-full bg-gradient-to-br from-primary to-teal-600">
                         <Bot className="h-4 w-4 text-white" />
                       </div>
                     </div>
@@ -560,7 +560,7 @@ export default function CareerAdvisorPage() {
                   className="flex gap-3"
                 >
                   <div className="flex-shrink-0">
-                    <div className="p-2 rounded-full bg-gradient-to-br from-primary to-purple-600">
+                    <div className="p-2 rounded-full bg-gradient-to-br from-primary to-teal-600">
                       <Bot className="h-4 w-4 text-white" />
                     </div>
                   </div>
@@ -605,7 +605,7 @@ export default function CareerAdvisorPage() {
             <Button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 px-4"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary/90 hover:to-teal-600/90 px-4"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -645,7 +645,7 @@ export default function CareerAdvisorPage() {
       )}
 
       {/* Tips Section */}
-      <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-purple-500/5">
+      <Card className="mt-6 border-2 bg-gradient-to-r from-primary/5 to-teal-500/5">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-primary/10">

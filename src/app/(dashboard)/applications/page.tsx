@@ -56,7 +56,7 @@ function getStatusBadge(app: any) {
   const isJobInProgress = isAccepted && jobStatus === "IN_PROGRESS";
 
   if (isJobDone) return <Badge className="h-5 text-[10px] bg-green-600 text-white px-1.5"><CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />Done</Badge>;
-  if (isJobInProgress) return <Badge className="h-5 text-[10px] bg-purple-500 text-white px-1.5">Active</Badge>;
+  if (isJobInProgress) return <Badge className="h-5 text-[10px] bg-teal-500 text-white px-1.5">Active</Badge>;
   if (isAccepted) return <Badge className="h-5 text-[10px] bg-emerald-500 text-white px-1.5"><CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />Accepted</Badge>;
   if (app.status === "REJECTED") return <Badge variant="destructive" className="h-5 text-[10px] px-1.5"><XCircle className="h-2.5 w-2.5 mr-0.5" />Declined</Badge>;
   return <Badge variant="secondary" className="h-5 text-[10px] px-1.5"><Clock className="h-2.5 w-2.5 mr-0.5" />Pending</Badge>;
@@ -282,7 +282,7 @@ export default function ApplicationsPage() {
     { key: "all", label: "All", color: "bg-slate-500" },
     { key: "pending", label: "Pending", color: "bg-blue-500" },
     { key: "accepted", label: "Accepted", color: "bg-emerald-500" },
-    { key: "in_progress", label: "Active", color: "bg-purple-500" },
+    { key: "in_progress", label: "Active", color: "bg-teal-500" },
     { key: "completed", label: "Done", color: "bg-green-600" },
     { key: "rejected", label: "Declined", color: "bg-red-500" },
   ];

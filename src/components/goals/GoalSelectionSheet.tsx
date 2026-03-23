@@ -228,7 +228,7 @@ export function GoalSelectionSheet({
                   className={cn(
                     "flex-1 p-2 rounded-lg border-2 text-center text-sm font-medium transition-colors",
                     slotChoice === "primary"
-                      ? "border-purple-500 bg-purple-500/10 text-purple-700 dark:text-purple-400"
+                      ? "border-teal-500 bg-teal-500/10 text-teal-700 dark:text-teal-400"
                       : "border-transparent hover:bg-muted",
                     primaryGoal && "opacity-50 cursor-not-allowed"
                   )}
@@ -320,7 +320,7 @@ export function GoalSelectionSheet({
               className={cn(
                 "flex-1 h-11",
                 slotChoice === "primary"
-                  ? "bg-purple-600 hover:bg-purple-700"
+                  ? "bg-teal-600 hover:bg-teal-700"
                   : ""
               )}
             >
@@ -357,7 +357,7 @@ export function GoalSelectionSheet({
           {
             label: "Replace Primary",
             sublabel: primaryGoal?.title,
-            icon: <Star className="h-4 w-4 text-purple-500 fill-purple-500" />,
+            icon: <Star className="h-4 w-4 text-teal-500 fill-teal-500" />,
             value: "primary",
             variant: "primary",
           },
@@ -386,7 +386,7 @@ export function GoalSelectionSheet({
         cancelText="Cancel"
         onConfirm={handlePrimaryChangeConfirmed}
         isPending={setGoalMutation.isPending}
-        icon={<Star className="h-5 w-5 text-purple-500" />}
+        icon={<Star className="h-5 w-5 text-teal-500" />}
       />
     </>
   );

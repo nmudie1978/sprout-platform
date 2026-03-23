@@ -51,14 +51,14 @@ const TAG_COLORS: Record<
     border: "border-blue-500/10",
   },
   "work-exposure": {
-    iconBg: "bg-purple-500/10",
-    iconColor: "text-purple-500",
-    border: "border-purple-500/10",
+    iconBg: "bg-teal-500/10",
+    iconColor: "text-teal-500",
+    border: "border-teal-500/10",
   },
   guidance: {
-    iconBg: "bg-purple-500/10",
-    iconColor: "text-purple-500",
-    border: "border-purple-500/10",
+    iconBg: "bg-teal-500/10",
+    iconColor: "text-teal-500",
+    border: "border-teal-500/10",
   },
   preparedness: {
     iconBg: "bg-amber-500/10",

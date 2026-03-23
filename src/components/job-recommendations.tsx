@@ -59,7 +59,7 @@ interface JobRecommendationsProps {
 const statusConfig = {
   PENDING: { label: "New", color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
   VIEWED: { label: "Viewed", color: "bg-gray-500/10 text-gray-600 border-gray-500/20" },
-  CONTACTED: { label: "Contacted", color: "bg-purple-500/10 text-purple-600 border-purple-500/20" },
+  CONTACTED: { label: "Contacted", color: "bg-teal-500/10 text-teal-600 border-teal-500/20" },
   HIRED: { label: "Hired", color: "bg-green-500/10 text-green-600 border-green-500/20" },
   DISMISSED: { label: "Dismissed", color: "bg-red-500/10 text-red-600 border-red-500/20" },
 };
@@ -112,7 +112,7 @@ export function JobRecommendations({ jobId, isEmployer }: JobRecommendationsProp
       <Card className="border-2">
         <CardContent className="py-6">
           <div className="flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-purple-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-teal-500" />
           </div>
         </CardContent>
       </Card>
@@ -125,14 +125,14 @@ export function JobRecommendations({ jobId, isEmployer }: JobRecommendationsProp
 
   return (
     <Card className="border-2 overflow-hidden relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-pink-500/5 pointer-events-none" />
       <CardHeader className="relative pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <UserPlus className="h-5 w-5 text-purple-500" />
+            <UserPlus className="h-5 w-5 text-teal-500" />
             Recommendations
             {activeRecommendations.length > 0 && (
-              <Badge variant="secondary" className="bg-purple-500/10 text-purple-600 ml-1">
+              <Badge variant="secondary" className="bg-teal-500/10 text-teal-600 ml-1">
                 {activeRecommendations.length}
               </Badge>
             )}
@@ -271,7 +271,7 @@ export function JobRecommendations({ jobId, isEmployer }: JobRecommendationsProp
                                 updateStatus.mutate({ id: rec.id, status: "CONTACTED" });
                               }}
                               disabled={updateStatus.isPending}
-                              className="bg-purple-600 hover:bg-purple-700"
+                              className="bg-teal-600 hover:bg-teal-700"
                             >
                               <MessageSquare className="mr-1 h-3.5 w-3.5" />
                               Contacted

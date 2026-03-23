@@ -119,7 +119,7 @@ const industryInfo = {
   creative: {
     name: "Creative Services",
     icon: Palette,
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
     description: "Express yourself through design, content, and visual storytelling.",
   },
 };
@@ -247,9 +247,9 @@ export function CareerQuiz({ careerGoals = [], industryTypes = [] }: CareerQuizP
   if (!isStarted) {
     return (
       <Card className="border-2 overflow-hidden">
-        <div className="h-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+        <div className="h-1.5 bg-gradient-to-r from-teal-500 via-pink-500 to-cyan-500" />
         <CardHeader className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-teal-500 to-pink-500 flex items-center justify-center">
             <Brain className="h-8 w-8 text-white" />
           </div>
           <CardTitle>Career Industry Quiz</CardTitle>
@@ -274,7 +274,7 @@ export function CareerQuiz({ careerGoals = [], industryTypes = [] }: CareerQuizP
           </div>
           <Button
             onClick={() => setIsStarted(true)}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            className="bg-gradient-to-r from-teal-600 to-pink-600 hover:from-teal-700 hover:to-pink-700"
           >
             Start Quiz
             <ChevronRight className="ml-2 h-4 w-4" />
@@ -371,7 +371,7 @@ export function CareerQuiz({ careerGoals = [], industryTypes = [] }: CareerQuizP
 
   return (
     <Card className="border-2 overflow-hidden">
-      <div className="h-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+      <div className="h-1.5 bg-gradient-to-r from-teal-500 via-pink-500 to-cyan-500" />
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
           <Badge variant="secondary">

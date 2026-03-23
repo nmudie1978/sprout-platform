@@ -129,7 +129,7 @@ export function RailRenderer({ journey, onItemClick, overlayData, activeLayers }
               Career Path
             </div>
             <div
-              className="absolute flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-purple-400/60"
+              className="absolute flex items-center gap-1 text-[9px] font-semibold uppercase tracking-widest text-teal-400/60"
               style={{ left: 0, top: schoolLineY - 18 }}
             >
               <BookOpen className="h-3 w-3" />
@@ -260,13 +260,13 @@ function SchoolCard({ item }: { item: SchoolTrackItem }) {
   return (
     <div
       className={cn(
-        'rounded-lg border border-purple-500/20 bg-purple-500/5 backdrop-blur-sm p-2 shadow-sm',
+        'rounded-lg border border-teal-500/20 bg-teal-500/5 backdrop-blur-sm p-2 shadow-sm',
       )}
       style={{ width: CARD_WIDTH }}
     >
       <div className="flex items-center gap-1 mb-1">
-        <BookOpen className="h-3 w-3 text-purple-400" />
-        <span className="text-[9px] font-semibold uppercase tracking-wider text-purple-400">
+        <BookOpen className="h-3 w-3 text-teal-400" />
+        <span className="text-[9px] font-semibold uppercase tracking-wider text-teal-400">
           Subjects
         </span>
       </div>
@@ -275,7 +275,7 @@ function SchoolCard({ item }: { item: SchoolTrackItem }) {
         {item.subjects.map((subject) => (
           <span
             key={subject}
-            className="inline-block rounded-full bg-purple-500/10 px-1.5 py-0.5 text-[9px] font-medium text-purple-300"
+            className="inline-block rounded-full bg-teal-500/10 px-1.5 py-0.5 text-[9px] font-medium text-teal-300"
           >
             {subject}
           </span>

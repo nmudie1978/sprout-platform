@@ -83,10 +83,10 @@ export const MODE_COLORS: Record<TaskMode, {
   progress: string;
 }> = {
   discover: {
-    text: 'text-purple-600 dark:text-purple-400',
-    bg: 'bg-purple-50 dark:bg-purple-950/30',
-    border: 'border-purple-200 dark:border-purple-800',
-    progress: 'bg-purple-400',
+    text: 'text-teal-600 dark:text-teal-400',
+    bg: 'bg-teal-50 dark:bg-teal-950/30',
+    border: 'border-teal-200 dark:border-teal-800',
+    progress: 'bg-teal-400',
   },
   understand: {
     text: 'text-blue-600 dark:text-blue-400',

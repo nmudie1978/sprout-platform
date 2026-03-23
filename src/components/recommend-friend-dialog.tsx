@@ -129,7 +129,7 @@ export function RecommendFriendDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <UserPlus className="h-5 w-5 text-purple-500" />
+            <UserPlus className="h-5 w-5 text-teal-500" />
             Recommend a Friend
           </DialogTitle>
           <DialogDescription>
@@ -165,7 +165,7 @@ export function RecommendFriendDialog({
               <div className="max-h-64 overflow-y-auto space-y-2">
                 {isSearching && (
                   <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-purple-500" />
+                    <Loader2 className="h-6 w-6 animate-spin text-teal-500" />
                   </div>
                 )}
 
@@ -178,7 +178,7 @@ export function RecommendFriendDialog({
 
                 {!isSearching && debouncedSearch.length < 2 && (
                   <div className="text-center py-8 text-muted-foreground">
-                    <Sparkles className="h-8 w-8 mx-auto mb-2 text-purple-400" />
+                    <Sparkles className="h-8 w-8 mx-auto mb-2 text-teal-400" />
                     <p>Type at least 2 characters to search</p>
                   </div>
                 )}
@@ -222,7 +222,7 @@ export function RecommendFriendDialog({
               className="space-y-4"
             >
               {/* Selected youth card */}
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-teal-500/10 to-pink-500/10 border border-teal-500/20">
                 <Avatar name={selectedYouth.displayName} size="lg" />
                 <div className="flex-1">
                   <div className="font-semibold text-lg">{selectedYouth.displayName}</div>
@@ -277,7 +277,7 @@ export function RecommendFriendDialog({
                 <Button
                   onClick={() => createRecommendation.mutate()}
                   disabled={createRecommendation.isPending}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  className="flex-1 bg-gradient-to-r from-teal-600 to-pink-600 hover:from-teal-700 hover:to-pink-700"
                 >
                   {createRecommendation.isPending ? (
                     <Loader2 className="mr-1 h-4 w-4 animate-spin" />

@@ -104,9 +104,9 @@ export default function AboutPage() {
           </p>
 
           <div className="space-y-4 mb-6">
-            <div className="p-4 rounded-lg bg-violet-50/50 dark:bg-violet-950/20 border border-violet-200/50 dark:border-violet-800/30">
+            <div className="p-4 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30">
               <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold">1</span>
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold">1</span>
                 <h3 className="font-semibold text-foreground">Discover — Know yourself</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
@@ -213,7 +213,7 @@ export default function AboutPage() {
 
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <Route className="h-5 w-5 text-purple-500" />
+              <Route className="h-5 w-5 text-teal-500" />
               <h2 className="text-xl font-semibold text-foreground">
                 A journey, not a decision
               </h2>

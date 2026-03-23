@@ -338,8 +338,8 @@ export function ShadowRequestBuilder({
                             className="w-12 h-12 rounded-lg object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center">
-                            <Building2 className="h-6 w-6 text-purple-600" />
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500/20 to-teal-500/20 flex items-center justify-center">
+                            <Building2 className="h-6 w-6 text-teal-600" />
                           </div>
                         )}
                       </div>
@@ -472,13 +472,13 @@ export function ShadowRequestBuilder({
       case 4:
         return (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-              <Eye className="h-6 w-6 text-purple-600 shrink-0" />
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+              <Eye className="h-6 w-6 text-teal-600 shrink-0" />
               <div>
-                <h4 className="font-medium text-purple-800 dark:text-purple-200">
+                <h4 className="font-medium text-teal-800 dark:text-teal-200">
                   Observation Only
                 </h4>
-                <p className="text-sm text-purple-700 dark:text-purple-300 mt-1">
+                <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
                   Career shadowing is about watching and learning, not working. You will not be expected to perform any tasks.
                 </p>
               </div>
@@ -739,7 +739,7 @@ export function ShadowRequestBuilder({
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+            className="h-full bg-gradient-to-r from-teal-500 to-teal-500 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
             transition={{ duration: 0.3 }}
@@ -751,8 +751,8 @@ export function ShadowRequestBuilder({
       <Card className="mb-6">
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-500/20">
-              <StepIcon className="h-5 w-5 text-purple-600" />
+            <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500/20 to-teal-500/20">
+              <StepIcon className="h-5 w-5 text-teal-600" />
             </div>
             <div>
               <h2 className="font-semibold">{currentStepInfo.title}</h2>
@@ -802,7 +802,7 @@ export function ShadowRequestBuilder({
           <Button
             onClick={handleSubmit}
             disabled={!canProceed() || isSubmitting}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            className="bg-gradient-to-r from-teal-600 to-teal-600 hover:from-teal-700 hover:to-teal-700"
           >
             {isSubmitting ? (
               <>

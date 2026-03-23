@@ -94,7 +94,7 @@ export function TimelineStyleSelector({ value, onChange }: TimelineStyleSelector
           className={cn(
             'flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs transition-colors',
             value === opt.id
-              ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300'
+              ? 'bg-teal-500/15 text-teal-700 dark:text-teal-300'
               : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
           )}
         >

@@ -119,10 +119,10 @@ export function CareerDetailModal({
           </Card>
 
           {/* Required Certifications - Prominent Section */}
-          <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-purple-500/5 to-blue-500/5 shadow-lg">
+          <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-teal-500/5 to-blue-500/5 shadow-lg">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-purple-600 shadow-md">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-teal-600 shadow-md">
                   <GraduationCap className="h-5 w-5 text-white" />
                 </div>
                 Required Qualifications & Certifications

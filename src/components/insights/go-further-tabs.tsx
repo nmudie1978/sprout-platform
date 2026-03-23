@@ -24,14 +24,14 @@ export function GoFurtherTabs() {
           <TabsList className="rounded-full bg-muted/60 p-1 h-auto w-auto inline-flex">
             <TabsTrigger
               value="beyond-borders"
-              className="rounded-full px-4 py-1.5 text-sm gap-1.5 data-[state=active]:bg-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+              className="rounded-full px-4 py-1.5 text-sm gap-1.5 data-[state=active]:bg-teal-500 data-[state=active]:text-white data-[state=active]:shadow-none"
             >
               <Compass className="h-3.5 w-3.5" />
               Beyond Borders
             </TabsTrigger>
             <TabsTrigger
               value="career-events"
-              className="rounded-full px-4 py-1.5 text-sm gap-1.5 data-[state=active]:bg-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-none"
+              className="rounded-full px-4 py-1.5 text-sm gap-1.5 data-[state=active]:bg-teal-500 data-[state=active]:text-white data-[state=active]:shadow-none"
             >
               <Calendar className="h-3.5 w-3.5" />
               Career Events

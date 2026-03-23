@@ -49,7 +49,7 @@ export function GoalPodcasts({
     <div
       className={`mt-4 pt-4 border-t ${
         isPrimary
-          ? "border-purple-200/50 dark:border-purple-800/50"
+          ? "border-teal-200/50 dark:border-teal-800/50"
           : "border-slate-200 dark:border-slate-800"
       }`}
     >
@@ -57,7 +57,7 @@ export function GoalPodcasts({
       <div className="flex items-center gap-2 mb-2">
         <Headphones
           className={`h-4 w-4 ${
-            isPrimary ? "text-purple-500" : "text-slate-500"
+            isPrimary ? "text-teal-500" : "text-slate-500"
           }`}
         />
         <h4 className="text-sm font-medium">Voices from the field</h4>
@@ -90,7 +90,7 @@ function PodcastItem({
     <div
       className={`p-2.5 rounded-lg border transition-colors ${
         isPrimary
-          ? "border-purple-100 dark:border-purple-900/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/30"
+          ? "border-teal-100 dark:border-teal-900/50 hover:bg-teal-50/50 dark:hover:bg-teal-950/30"
           : "border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900/50"
       }`}
     >

@@ -96,7 +96,7 @@ function getFoundationalStage(data: FoundationalProgressData): {
   return {
     label: "Building",
     description: "Growing your work experience",
-    color: "text-purple-600",
+    color: "text-teal-600",
   };
 }
 
@@ -125,8 +125,8 @@ function FoundationalProgress({
       value: data.communicationScore,
       icon: MessageSquare,
       description: "Responsive, clear messages",
-      color: "text-purple-600",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      color: "text-teal-600",
+      bgColor: "bg-teal-100 dark:bg-teal-900/30",
     },
     {
       label: "Trust",
@@ -377,8 +377,8 @@ function RunwayReadiness({
       value: data.savedLearningPaths > 0 ? `${data.savedLearningPaths} saved` : "None yet",
       description: "Learning paths you're tracking",
       icon: Bookmark,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      color: "text-teal-600",
+      bgColor: "bg-teal-100 dark:bg-teal-900/30",
       hasValue: data.savedLearningPaths > 0,
     },
   ];

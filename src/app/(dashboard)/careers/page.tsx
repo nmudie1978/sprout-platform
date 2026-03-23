@@ -227,7 +227,7 @@ function CareersPageContent() {
   return (
     <div className="container mx-auto px-4 py-6 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
       <PageHeader
         title="Explore"
@@ -326,7 +326,7 @@ function CareersPageContent() {
           {isYouth && recommendationMap.size > 0 && (
             <Badge
               variant="secondary"
-              className="text-[9px] bg-purple-500/10 text-purple-600"
+              className="text-[9px] bg-teal-500/10 text-teal-600"
             >
               <Sparkles className="h-2.5 w-2.5 mr-0.5" />
               Personalised
@@ -403,7 +403,7 @@ function CareersPageContent() {
           transition={{ delay: 0.2 }}
           className="mt-6"
         >
-          <Card className="border bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+          <Card className="border bg-gradient-to-r from-teal-500/10 to-pink-500/10">
             <CardContent className="py-4 text-center">
               <p className="text-sm font-medium mb-1">
                 Get Personalised Recommendations
@@ -414,7 +414,7 @@ function CareersPageContent() {
               <Button
                 asChild
                 size="sm"
-                className="bg-gradient-to-r from-purple-600 to-pink-600"
+                className="bg-gradient-to-r from-teal-600 to-pink-600"
               >
                 <Link href="/sign-up">Get Started</Link>
               </Button>

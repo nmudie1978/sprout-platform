@@ -45,7 +45,7 @@ const exportOptions: ExportOption[] = [
     title: "Worker History",
     description: "Export list of workers you've hired with job counts and totals",
     icon: <Users className="h-6 w-6" />,
-    color: "from-purple-500/20 to-purple-600/20",
+    color: "from-teal-500/20 to-teal-600/20",
   },
 ];
 

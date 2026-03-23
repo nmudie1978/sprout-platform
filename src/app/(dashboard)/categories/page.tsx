@@ -30,14 +30,14 @@ const categoryGradients: Record<string, string> = {
   "child-family-support": "from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 hover:border-pink-300",
   "pet-animal-care": "from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 hover:border-amber-300",
   "cleaning-organizing": "from-cyan-50 to-sky-50 dark:from-cyan-950/30 dark:to-sky-950/30 hover:border-cyan-300",
-  "tech-digital-help": "from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 hover:border-violet-300",
-  "errands-local-tasks": "from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 hover:border-blue-300",
+  "tech-digital-help": "from-teal-50 to-teal-50 dark:from-teal-950/30 dark:to-teal-950/30 hover:border-teal-300",
+  "errands-local-tasks": "from-blue-50 to-teal-50 dark:from-blue-950/30 dark:to-teal-950/30 hover:border-blue-300",
   "events-community-help": "from-fuchsia-50 to-pink-50 dark:from-fuchsia-950/30 dark:to-pink-950/30 hover:border-fuchsia-300",
   "creative-media-gigs": "from-rose-50 to-red-50 dark:from-rose-950/30 dark:to-red-950/30 hover:border-rose-300",
   "education-learning-support": "from-teal-50 to-emerald-50 dark:from-teal-950/30 dark:to-emerald-950/30 hover:border-teal-300",
   "retail-microbusiness-help": "from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 hover:border-orange-300",
   "fitness-activity-help": "from-lime-50 to-green-50 dark:from-lime-950/30 dark:to-green-950/30 hover:border-lime-300",
-  "online-ai-age-jobs": "from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30 hover:border-indigo-300",
+  "online-ai-age-jobs": "from-teal-50 to-blue-50 dark:from-teal-950/30 dark:to-blue-950/30 hover:border-teal-300",
 };
 
 interface StandardCategory {
@@ -116,7 +116,7 @@ export default function CategoriesPage() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="h-8 w-8 border-3 border-purple-500 border-t-transparent rounded-full mb-3"
+            className="h-8 w-8 border-3 border-teal-500 border-t-transparent rounded-full mb-3"
           />
           <p className="text-sm text-muted-foreground">Loading categories...</p>
         </div>

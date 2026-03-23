@@ -70,9 +70,9 @@ const journeySteps = [
     subtitle: "Find Your Passion",
     description: "Use your experience to discover career paths that match your skills and interests",
     icon: Target,
-    color: "from-purple-400 to-pink-500",
-    borderColor: "border-purple-400",
-    bgLight: "bg-purple-50",
+    color: "from-teal-400 to-pink-500",
+    borderColor: "border-teal-400",
+    bgLight: "bg-teal-50",
     benefits: ["Career matching", "Industry insights", "Ask professionals"],
     emoji: "🎯",
   },
@@ -143,7 +143,7 @@ export function CareerJourney({ className, variant = "horizontal", showDetails =
       {/* Journey Steps - Horizontal Timeline */}
       <div className="relative mb-16">
         {/* Connecting Line */}
-        <div className="absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-blue-400 via-yellow-400 via-purple-400 to-orange-400 hidden lg:block" />
+        <div className="absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-blue-400 via-yellow-400 via-teal-400 to-orange-400 hidden lg:block" />
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {journeySteps.map((step, index) => {
@@ -257,10 +257,10 @@ export function CareerJourney({ className, variant = "horizontal", showDetails =
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 dark:border-purple-800 p-6"
+          className="rounded-2xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-pink-50 dark:from-teal-950/30 dark:to-pink-950/30 dark:border-teal-800 p-6"
         >
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-pink-500 flex items-center justify-center shadow-lg">
               <Rocket className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -276,7 +276,7 @@ export function CareerJourney({ className, variant = "horizontal", showDetails =
                   key={benefit.label}
                   className="flex items-start gap-3 p-3 rounded-xl bg-white/60 dark:bg-black/20"
                 >
-                  <Icon className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                  <Icon className="h-5 w-5 text-teal-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-sm">{benefit.label}</p>
                     <p className="text-xs text-muted-foreground">{benefit.description}</p>
@@ -308,7 +308,7 @@ export function CareerJourney({ className, variant = "horizontal", showDetails =
 // Compact version for dashboard
 export function CareerJourneyCompact({ className }: { className?: string }) {
   return (
-    <div className={cn("rounded-2xl border-2 p-6 bg-gradient-to-br from-primary/5 to-purple-500/5", className)}>
+    <div className={cn("rounded-2xl border-2 p-6 bg-gradient-to-br from-primary/5 to-teal-500/5", className)}>
       <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
         <Sparkles className="h-5 w-5 text-primary" />
         Your Growth Path
@@ -316,7 +316,7 @@ export function CareerJourneyCompact({ className }: { className?: string }) {
 
       <div className="flex items-center justify-between relative">
         {/* Connecting line */}
-        <div className="absolute top-5 left-4 right-4 h-0.5 bg-gradient-to-r from-green-400 via-blue-400 via-yellow-400 via-purple-400 to-orange-400" />
+        <div className="absolute top-5 left-4 right-4 h-0.5 bg-gradient-to-r from-green-400 via-blue-400 via-yellow-400 via-teal-400 to-orange-400" />
 
         {journeySteps.map((step, index) => {
           const Icon = step.icon;

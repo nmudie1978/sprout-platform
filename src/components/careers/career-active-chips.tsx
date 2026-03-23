@@ -13,10 +13,10 @@ interface CareerActiveChipsProps {
 
 const chipTypeColors: Record<ActiveFilterChip["type"], string> = {
   category: "bg-blue-500/10 text-blue-600 border-blue-200",
-  search: "bg-purple-500/10 text-purple-600 border-purple-200",
+  search: "bg-teal-500/10 text-teal-600 border-teal-200",
   growth: "bg-green-500/10 text-green-600 border-green-200",
   salary: "bg-amber-500/10 text-amber-600 border-amber-200",
-  education: "bg-indigo-500/10 text-indigo-600 border-indigo-200",
+  education: "bg-teal-500/10 text-teal-600 border-teal-200",
   skill: "bg-pink-500/10 text-pink-600 border-pink-200",
   nature: "bg-teal-500/10 text-teal-600 border-teal-200",
 };

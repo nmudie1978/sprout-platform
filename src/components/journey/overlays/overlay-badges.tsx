@@ -31,7 +31,7 @@ export function OverlayBadges({ nodeData, activeLayers }: OverlayBadgesProps) {
     );
   }
 
-  // Reflections badge — purple icon
+  // Reflections badge — teal icon
   if (activeLayers.reflections && nodeData.reflection) {
     badges.push(
       <span key="reflections" title="Has reflection">

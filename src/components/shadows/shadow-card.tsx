@@ -86,8 +86,8 @@ const STATUS_CONFIG: Record<
   COMPLETED: {
     label: "Completed",
     icon: CheckCircle2,
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
   },
   CANCELLED: {
     label: "Cancelled",
@@ -142,8 +142,8 @@ export function ShadowCard({
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             {/* Icon */}
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 shrink-0">
-              <Eye className="h-5 w-5 text-purple-600" />
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20 shrink-0">
+              <Eye className="h-5 w-5 text-teal-600" />
             </div>
 
             {/* Content */}

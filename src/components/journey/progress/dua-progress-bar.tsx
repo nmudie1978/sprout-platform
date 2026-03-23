@@ -29,7 +29,7 @@ export function DUAProgressBar({ progress, className }: DUAProgressBarProps) {
       {/* Overall bar */}
       <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
         <div
-          className="h-full rounded-full bg-purple-500 transition-all duration-500"
+          className="h-full rounded-full bg-teal-500 transition-all duration-500"
           style={{ width: `${overall.percent}%` }}
         />
       </div>

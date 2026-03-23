@@ -153,10 +153,10 @@ export default function CareerPathPage() {
   // No target career found for the goal
   if (!journey?.targetCareer) {
     return (
-      <Card className="border-2 border-dashed border-purple-300 dark:border-purple-700">
+      <Card className="border-2 border-dashed border-teal-300 dark:border-teal-700">
         <CardContent className="py-12 text-center">
-          <div className="mx-auto w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
-            <Target className="h-8 w-8 text-purple-600" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-4">
+            <Target className="h-8 w-8 text-teal-600" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Career path not found</h2>
           <p className="text-muted-foreground mb-6 max-w-md mx-auto">
@@ -188,14 +188,14 @@ export default function CareerPathPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="border-2 border-purple-200 dark:border-purple-800/50 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+        <Card className="border-2 border-teal-200 dark:border-teal-800/50 bg-gradient-to-br from-teal-50 to-pink-50 dark:from-teal-950/20 dark:to-pink-950/20">
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <div className="text-5xl">{targetCareer.emoji}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <h2 className="text-2xl font-bold">{targetCareer.title}</h2>
-                  <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
+                  <Badge variant="secondary" className="bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300">
                     Your goal
                   </Badge>
                 </div>
@@ -248,7 +248,7 @@ export default function CareerPathPage() {
 
               <div className="relative">
                 {/* Timeline line */}
-                <div className="absolute left-4 top-8 bottom-8 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-500" />
+                <div className="absolute left-4 top-8 bottom-8 w-0.5 bg-gradient-to-b from-emerald-500 via-blue-500 to-teal-500" />
 
                 {/* Now */}
                 <div className="relative flex gap-4 pb-6">
@@ -280,11 +280,11 @@ export default function CareerPathPage() {
 
                 {/* Later */}
                 <div className="relative flex gap-4">
-                  <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center z-10">
-                    <Circle className="h-4 w-4 text-purple-600" />
+                  <div className="h-8 w-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center z-10">
+                    <Circle className="h-4 w-4 text-teal-600" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 mb-2">Later</Badge>
+                    <Badge className="bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 mb-2">Later</Badge>
                     <p className="text-sm">Complete required education/training and begin your career as a {targetCareer.title}.</p>
                   </div>
                 </div>
@@ -306,10 +306,10 @@ export default function CareerPathPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Target className="h-5 w-5 text-purple-600" />
+                <Target className="h-5 w-5 text-teal-600" />
                 Skills Progress
               </CardTitle>
-              <span className="text-2xl font-bold text-purple-600">{skillMatchPercent}%</span>
+              <span className="text-2xl font-bold text-teal-600">{skillMatchPercent}%</span>
             </div>
           </CardHeader>
           <CardContent>

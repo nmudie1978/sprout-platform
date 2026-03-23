@@ -168,7 +168,7 @@ function GoalCard({ goal, slot, accentClass }: { goal: CareerGoal | null; slot: 
               <span className="text-[10px] text-muted-foreground/70">{completedSteps}/{totalSteps} steps</span>
             </div>
             <div className="w-full h-1 bg-muted/50 rounded-full">
-              <div className={`h-full rounded-full transition-all ${slot === "primary" ? "bg-teal-400" : "bg-purple-400"}`} style={{ width: `${(completedSteps / totalSteps) * 100}%` }} />
+              <div className={`h-full rounded-full transition-all ${slot === "primary" ? "bg-teal-400" : "bg-teal-400"}`} style={{ width: `${(completedSteps / totalSteps) * 100}%` }} />
             </div>
           </div>
         )}
@@ -182,7 +182,7 @@ function InsightTicker({ videos }: { videos: InsightVideo[] }) {
   const pillarColors: Record<string, string> = {
     explore: "bg-teal-500/20 text-teal-300",
     learn: "bg-blue-500/20 text-blue-300",
-    grow: "bg-purple-500/20 text-purple-300",
+    grow: "bg-teal-500/20 text-teal-300",
   };
 
   // Double the items so the loop is seamless
@@ -230,7 +230,7 @@ function InsightTicker({ videos }: { videos: InsightVideo[] }) {
 function SavedItemIcon({ type }: { type: string }) {
   switch (type) {
     case "VIDEO": return <Video className="h-3.5 w-3.5 text-blue-400" />;
-    case "PODCAST": return <Headphones className="h-3.5 w-3.5 text-purple-400" />;
+    case "PODCAST": return <Headphones className="h-3.5 w-3.5 text-teal-400" />;
     case "ARTICLE": return <FileText className="h-3.5 w-3.5 text-teal-400" />;
     default: return <BookMarked className="h-3.5 w-3.5 text-muted-foreground" />;
   }
@@ -463,7 +463,7 @@ export default function DashboardPage() {
         ) : (
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <GoalCard goal={goalsData.primaryGoal} slot="primary" accentClass="text-teal-400" />
-            <GoalCard goal={goalsData?.secondaryGoal ?? null} slot="secondary" accentClass="text-purple-400" />
+            <GoalCard goal={goalsData?.secondaryGoal ?? null} slot="secondary" accentClass="text-teal-400" />
           </div>
         )}
 

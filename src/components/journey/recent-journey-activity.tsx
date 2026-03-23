@@ -35,8 +35,8 @@ const activityIcons = {
 
 const activityColors = {
   job_completed: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  reflection_added: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-  shadow_completed: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+  reflection_added: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
+  shadow_completed: "bg-teal-500/10 text-teal-600 dark:text-teal-400",
   skill_updated: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   career_explored: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
 };

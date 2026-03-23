@@ -232,8 +232,8 @@ export default function JobsPage() {
         </Card>
         {userCity ? (
           <Card
-            className={`border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 col-span-1 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] ${
-              locationFilter.toLowerCase() === userCity.toLowerCase() ? 'ring-2 ring-purple-500 ring-offset-2' : ''
+            className={`border-2 bg-gradient-to-br from-teal-50 to-pink-50 dark:from-teal-950/30 dark:to-pink-950/30 col-span-1 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] ${
+              locationFilter.toLowerCase() === userCity.toLowerCase() ? 'ring-2 ring-teal-500 ring-offset-2' : ''
             }`}
             onClick={() => {
               if (locationFilter.toLowerCase() === userCity.toLowerCase()) {
@@ -244,7 +244,7 @@ export default function JobsPage() {
             }}
           >
             <CardContent className="pt-6 text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+              <div className="text-2xl sm:text-3xl font-bold text-teal-600 dark:text-teal-400 mb-1">
                 {jobsNearYou}
               </div>
               <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
@@ -252,15 +252,15 @@ export default function JobsPage() {
                 Jobs in {userCity}
               </p>
               {locationFilter.toLowerCase() === userCity.toLowerCase() && (
-                <Badge className="mt-2 bg-purple-500 text-white text-xs">Filter Active</Badge>
+                <Badge className="mt-2 bg-teal-500 text-white text-xs">Filter Active</Badge>
               )}
             </CardContent>
           </Card>
         ) : (
           <Link href="/profile" className="col-span-1">
-            <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] h-full">
+            <Card className="border-2 bg-gradient-to-br from-teal-50 to-pink-50 dark:from-teal-950/30 dark:to-pink-950/30 cursor-pointer transition-all sm:hover:scale-[1.02] sm:hover:shadow-md active:scale-[0.98] h-full">
               <CardContent className="pt-6 text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">
+                <div className="text-2xl sm:text-3xl font-bold text-teal-600 dark:text-teal-400 mb-1">
                   —
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
@@ -310,7 +310,7 @@ export default function JobsPage() {
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               Filters
               {(categoryFilter !== "ALL" || standardCategoryFilter || locationFilter || startDateFilter) && (
-                <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-purple-500 text-white">
+                <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-teal-500 text-white">
                   {(categoryFilter !== "ALL" ? 1 : 0) + (standardCategoryFilter ? 1 : 0) + (locationFilter ? 1 : 0) + (startDateFilter ? 1 : 0)}
                 </Badge>
               )}
@@ -454,7 +454,7 @@ export default function JobsPage() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="h-8 w-8 border-3 border-purple-500 border-t-transparent rounded-full mb-3"
+            className="h-8 w-8 border-3 border-teal-500 border-t-transparent rounded-full mb-3"
           />
           <p className="text-sm text-muted-foreground">Finding jobs for you...</p>
         </div>

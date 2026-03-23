@@ -91,8 +91,8 @@ const FEATURES = [
     description:
       "Verified adults, structured messaging, no payments, no public profiles.",
     icon: ShieldCheck,
-    accentBg: "bg-violet-500/15",
-    accentText: "text-violet-400",
+    accentBg: "bg-teal-500/15",
+    accentText: "text-teal-400",
   },
 ];
 

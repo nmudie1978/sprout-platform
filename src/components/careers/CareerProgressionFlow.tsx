@@ -98,8 +98,8 @@ export function CareerProgressionFlow({
       label: "Next roles",
       sublabel: "Advanced",
       roles: progression.next,
-      colorClass: "text-purple-600 dark:text-purple-400",
-      bgClass: "bg-purple-50 dark:bg-purple-950/40",
+      colorClass: "text-teal-600 dark:text-teal-400",
+      bgClass: "bg-teal-50 dark:bg-teal-950/40",
     },
   ];
 

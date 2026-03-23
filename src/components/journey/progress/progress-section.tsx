@@ -55,7 +55,7 @@ export function ProgressSection({ goalId }: ProgressSectionProps) {
       {/* Section header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ListChecks className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
+          <ListChecks className="h-4.5 w-4.5 text-teal-600 dark:text-teal-400" />
           <h2 className="text-base font-semibold">Your Progress</h2>
         </div>
         <RestoreDefaultsButton onRestore={restore} />

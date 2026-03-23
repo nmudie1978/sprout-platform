@@ -51,7 +51,7 @@ const categoryConfig: Record<string, { emoji: string; label: string; color: stri
   SNOW_CLEARING: { emoji: "❄️", label: "Snow Clearing", color: "bg-cyan-500" },
   CLEANING: { emoji: "🧹", label: "Cleaning", color: "bg-emerald-500" },
   DIY_HELP: { emoji: "🔧", label: "DIY Help", color: "bg-orange-500" },
-  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-violet-500" },
+  TECH_HELP: { emoji: "💻", label: "Tech Help", color: "bg-teal-500" },
   ERRANDS: { emoji: "🏃", label: "Errands", color: "bg-blue-500" },
   OTHER: { emoji: "✨", label: "Other", color: "bg-gray-500" },
 };

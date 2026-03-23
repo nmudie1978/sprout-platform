@@ -237,8 +237,8 @@ export default function AdminAnalyticsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20">
-                  <BarChart3 className="h-6 w-6 text-violet-600" />
+                <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20">
+                  <BarChart3 className="h-6 w-6 text-teal-600" />
                 </div>
                 Platform Analytics
               </h1>
@@ -304,7 +304,7 @@ export default function AdminAnalyticsPage() {
             value={data?.overview?.totalApplications || 0}
             icon={FileText}
             subtitle={`${data?.applications?.thisWeek || 0} this week`}
-            color="purple"
+            color="teal"
           />
           <StatCard
             title="Messages"
@@ -352,7 +352,7 @@ export default function AdminAnalyticsPage() {
                         <div className={`w-3 h-3 rounded-full ${
                           role === "YOUTH" ? "bg-blue-500" :
                           role === "EMPLOYER" ? "bg-emerald-500" :
-                          role === "ADMIN" ? "bg-violet-500" : "bg-amber-500"
+                          role === "ADMIN" ? "bg-teal-500" : "bg-amber-500"
                         }`} />
                         <span className="text-sm capitalize">{role.toLowerCase().replace("_", " ")}</span>
                       </div>
@@ -456,9 +456,9 @@ export default function AdminAnalyticsPage() {
                 <div key={item.postedById} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                   <div className="flex items-center gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      index === 0 ? "bg-violet-500 text-white" :
-                      index === 1 ? "bg-violet-400 text-white" :
-                      index === 2 ? "bg-violet-300 text-white" : "bg-muted text-foreground"
+                      index === 0 ? "bg-teal-500 text-white" :
+                      index === 1 ? "bg-teal-400 text-white" :
+                      index === 2 ? "bg-teal-300 text-white" : "bg-muted text-foreground"
                     }`}>
                       {index + 1}
                     </div>
@@ -467,7 +467,7 @@ export default function AdminAnalyticsPage() {
                       <p className="text-xs text-muted-foreground">{item._count.id} jobs</p>
                     </div>
                   </div>
-                  <p className="font-bold text-violet-600">{formatCurrency(item._sum.payAmount || 0)}</p>
+                  <p className="font-bold text-teal-600">{formatCurrency(item._sum.payAmount || 0)}</p>
                 </div>
               )}
             />
@@ -647,7 +647,7 @@ export default function AdminAnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <FileText className="h-5 w-5 text-purple-600" />
+                  <FileText className="h-5 w-5 text-teal-600" />
                   Applications by Status
                 </CardTitle>
               </CardHeader>
@@ -711,11 +711,11 @@ export default function AdminAnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.75 }}
         >
-          <Card className="bg-gradient-to-r from-violet-500/5 to-purple-500/5 border-violet-500/20">
+          <Card className="bg-gradient-to-r from-teal-500/5 to-teal-500/5 border-teal-500/20">
             <CardContent className="p-6">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-3">
-                  <Zap className="h-5 w-5 text-violet-600" />
+                  <Zap className="h-5 w-5 text-teal-600" />
                   <span className="font-medium">Platform Health</span>
                 </div>
                 <div className="flex flex-wrap gap-4 text-sm">

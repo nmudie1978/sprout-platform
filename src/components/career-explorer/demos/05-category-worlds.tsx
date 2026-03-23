@@ -48,7 +48,7 @@ interface World {
 
 const WORLDS: World[] = [
   { key: "HEALTHCARE_LIFE_SCIENCES", name: "Healthcare", emoji: "🏥", description: "Help people stay healthy and well", accent: "border-rose-200", accentBg: "bg-rose-50", accentText: "text-rose-700" },
-  { key: "EDUCATION_TRAINING", name: "Education", emoji: "📚", description: "Shape how people learn and grow", accent: "border-purple-200", accentBg: "bg-purple-50", accentText: "text-purple-700" },
+  { key: "EDUCATION_TRAINING", name: "Education", emoji: "📚", description: "Shape how people learn and grow", accent: "border-teal-200", accentBg: "bg-teal-50", accentText: "text-teal-700" },
   { key: "TECHNOLOGY_IT", name: "Tech & IT", emoji: "💻", description: "Build the digital world", accent: "border-cyan-200", accentBg: "bg-cyan-50", accentText: "text-cyan-700" },
   { key: "BUSINESS_MANAGEMENT", name: "Business", emoji: "📊", description: "Lead teams and solve problems", accent: "border-blue-200", accentBg: "bg-blue-50", accentText: "text-blue-700" },
   { key: "FINANCE_BANKING", name: "Finance", emoji: "💰", description: "Work with money and markets", accent: "border-emerald-200", accentBg: "bg-emerald-50", accentText: "text-emerald-700" },
@@ -56,7 +56,7 @@ const WORLDS: World[] = [
   { key: "MANUFACTURING_ENGINEERING", name: "Engineering", emoji: "⚙️", description: "Design and build things", accent: "border-slate-300", accentBg: "bg-slate-50", accentText: "text-slate-700" },
   { key: "LOGISTICS_TRANSPORT", name: "Logistics", emoji: "🚛", description: "Keep the world moving", accent: "border-amber-200", accentBg: "bg-amber-50", accentText: "text-amber-700" },
   { key: "HOSPITALITY_TOURISM", name: "Hospitality", emoji: "🏨", description: "Create great experiences", accent: "border-pink-200", accentBg: "bg-pink-50", accentText: "text-pink-700" },
-  { key: "TELECOMMUNICATIONS", name: "Telecom", emoji: "📡", description: "Connect people everywhere", accent: "border-indigo-200", accentBg: "bg-indigo-50", accentText: "text-indigo-700" },
+  { key: "TELECOMMUNICATIONS", name: "Telecom", emoji: "📡", description: "Connect people everywhere", accent: "border-teal-200", accentBg: "bg-teal-50", accentText: "text-teal-700" },
 ];
 
 export default function CategoryWorlds({ careers }: DemoProps) {

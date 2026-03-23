@@ -65,7 +65,7 @@ const industries: IndustryInfo[] = [
     name: "Creative Services",
     shortName: "Creative",
     icon: Palette,
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
     timeline: "6-12 months to build portfolio",
     firstStep: "Build a portfolio with your work",
     resources: [
@@ -141,7 +141,7 @@ export function HowToStart({ industryTypes = [] }: HowToStartProps) {
 
           {/* Resources */}
           <div className="flex items-start gap-2 p-2 rounded-md bg-muted/50">
-            <BookOpen className="h-3.5 w-3.5 text-purple-600 mt-0.5 flex-shrink-0" />
+            <BookOpen className="h-3.5 w-3.5 text-teal-600 mt-0.5 flex-shrink-0" />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] text-muted-foreground mb-1">Free Resources</p>
               <div className="flex flex-wrap gap-1">

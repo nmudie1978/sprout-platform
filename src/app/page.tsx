@@ -77,8 +77,8 @@ const FEATURES = [
     description:
       "Verified adults, structured messaging, no payments, no public profiles.",
     icon: ShieldCheck,
-    accentBg: "bg-violet-500/15",
-    accentText: "text-violet-400",
+    accentBg: "bg-teal-500/15",
+    accentText: "text-teal-400",
   },
 ];
 
@@ -233,8 +233,8 @@ export default function LandingPage() {
                 title: "Discover",
                 subtitle: "Know yourself",
                 description: "Reflect on your strengths. Explore careers that interest you. Research what roles actually involve day to day.",
-                subtitleClass: "text-violet-400",
-                accent: "from-violet-500 to-purple-600",
+                subtitleClass: "text-teal-400",
+                accent: "from-teal-500 to-teal-600",
               },
               {
                 step: "2",

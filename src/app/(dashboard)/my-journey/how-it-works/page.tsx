@@ -15,10 +15,10 @@ const STAGES = [
     icon: Search,
     label: 'Discover',
     subtitle: 'Know Yourself',
-    color: 'violet',
-    iconBg: 'bg-violet-500/10',
-    iconColor: 'text-violet-500',
-    borderColor: 'border-violet-500/20',
+    color: 'teal',
+    iconBg: 'bg-teal-500/10',
+    iconColor: 'text-teal-500',
+    borderColor: 'border-teal-500/20',
     description:
       'Before you can make good decisions, it helps to know what you\'re good at and what interests you. This stage guides you to reflect on your strengths, explore different careers, and set a clear direction.',
     items: [

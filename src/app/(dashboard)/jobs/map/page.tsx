@@ -23,13 +23,13 @@ import { JobsMap } from "@/components/jobs-map";
 import { useToast } from "@/hooks/use-toast";
 
 const categoryConfig: Record<string, { label: string; emoji: string; color: string }> = {
-  ALL: { label: "All Small Jobs", emoji: "🌟", color: "from-purple-500 to-pink-500" },
+  ALL: { label: "All Small Jobs", emoji: "🌟", color: "from-teal-500 to-pink-500" },
   BABYSITTING: { label: "Babysitting", emoji: "👶", color: "from-pink-500 to-rose-500" },
   DOG_WALKING: { label: "Dog Walking", emoji: "🐕", color: "from-amber-500 to-orange-500" },
   SNOW_CLEARING: { label: "Snow Clearing", emoji: "❄️", color: "from-cyan-500 to-blue-500" },
   CLEANING: { label: "Cleaning", emoji: "🧹", color: "from-emerald-500 to-green-500" },
   DIY_HELP: { label: "DIY & Repairs", emoji: "🔧", color: "from-orange-500 to-red-500" },
-  TECH_HELP: { label: "Tech Help", emoji: "💻", color: "from-violet-500 to-purple-500" },
+  TECH_HELP: { label: "Tech Help", emoji: "💻", color: "from-teal-500 to-teal-500" },
   ERRANDS: { label: "Errands", emoji: "🏃", color: "from-blue-500 to-cyan-500" },
   OTHER: { label: "Other", emoji: "✨", color: "from-slate-500 to-gray-500" },
 };
@@ -151,7 +151,7 @@ export default function JobsMapPage() {
               </Link>
               <div>
                 <h1 className="text-xl font-bold flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-purple-600" />
+                  <MapPin className="h-5 w-5 text-teal-600" />
                   Jobs Map
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -196,7 +196,7 @@ export default function JobsMapPage() {
               <SlidersHorizontal className="h-4 w-4 mr-2" />
               Filters
               {(categoryFilter !== "ALL" || locationFilter) && (
-                <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-purple-500 text-white">
+                <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-teal-500 text-white">
                   {(categoryFilter !== "ALL" ? 1 : 0) + (locationFilter ? 1 : 0)}
                 </Badge>
               )}
@@ -273,7 +273,7 @@ export default function JobsMapPage() {
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="h-8 w-8 border-3 border-purple-500 border-t-transparent rounded-full mb-3 mx-auto"
+                  className="h-8 w-8 border-3 border-teal-500 border-t-transparent rounded-full mb-3 mx-auto"
                 />
                 <p className="text-sm text-muted-foreground">Loading map...</p>
               </CardContent>

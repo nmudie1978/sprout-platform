@@ -123,7 +123,7 @@ export default function NewShadowPage() {
       <div className="min-h-full">
         <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
           {/* Background gradient */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none" />
 
           {/* Back Button */}
           <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -143,7 +143,7 @@ export default function NewShadowPage() {
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
         {/* Background gradient */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none" />
 
         {/* Header */}
         <motion.div
@@ -161,16 +161,16 @@ export default function NewShadowPage() {
 
           <div className="flex items-center gap-3">
             <motion.div
-              className="h-12 w-12 rounded-xl bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-emerald-500/20 flex items-center justify-center"
+              className="h-12 w-12 rounded-xl bg-gradient-to-br from-teal-500/20 via-teal-500/20 to-emerald-500/20 flex items-center justify-center"
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <Eye className="h-6 w-6 text-purple-600" />
+              <Eye className="h-6 w-6 text-teal-600" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight">
                 Request a{" "}
-                <span className="bg-gradient-to-r from-purple-600 to-indigo-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-teal-600 to-teal-500 bg-clip-text text-transparent">
                   Career Shadow
                 </span>
               </h1>

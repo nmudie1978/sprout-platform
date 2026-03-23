@@ -28,8 +28,8 @@ export function SecondaryGoalReminder({
         <CardContent className="p-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="h-8 w-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center flex-shrink-0">
-                <Target className="h-4 w-4 text-purple-400 dark:text-purple-500" />
+              <div className="h-8 w-8 rounded-lg bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center flex-shrink-0">
+                <Target className="h-4 w-4 text-teal-400 dark:text-teal-500" />
               </div>
               <div className="min-w-0">
                 <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/70">
@@ -46,15 +46,15 @@ export function SecondaryGoalReminder({
               </div>
             </div>
             <button
-              className="flex-shrink-0 p-1.5 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+              className="flex-shrink-0 p-1.5 rounded-md hover:bg-teal-100 dark:hover:bg-teal-900/30 transition-colors"
               onClick={() => setShowConfirm(true)}
               disabled={isPromoting}
               title="Make Primary"
             >
               {isPromoting ? (
-                <Loader2 className="h-4 w-4 animate-spin text-purple-400" />
+                <Loader2 className="h-4 w-4 animate-spin text-teal-400" />
               ) : (
-                <ArrowUpCircle className="h-4 w-4 text-purple-400" />
+                <ArrowUpCircle className="h-4 w-4 text-teal-400" />
               )}
             </button>
           </div>
@@ -73,7 +73,7 @@ export function SecondaryGoalReminder({
           onPromote();
         }}
         isPending={isPromoting}
-        icon={<ArrowUpCircle className="h-5 w-5 text-purple-500" />}
+        icon={<ArrowUpCircle className="h-5 w-5 text-teal-500" />}
       />
     </>
   );

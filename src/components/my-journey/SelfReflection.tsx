@@ -26,13 +26,13 @@ import { LENS_DESCRIPTIONS, type JourneyLens } from '@/lib/journey/types';
 // ────────────────────────────────────────────
 
 const PHASE_BADGE_STYLES: Record<JourneyLens, string> = {
-  DISCOVER: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+  DISCOVER: 'bg-teal-500/10 text-teal-600 dark:text-teal-400',
   UNDERSTAND: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
   ACT: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
 };
 
 const PHASE_DOT_COLORS: Record<JourneyLens, string> = {
-  DISCOVER: 'bg-violet-500',
+  DISCOVER: 'bg-teal-500',
   UNDERSTAND: 'bg-emerald-500',
   ACT: 'bg-amber-500',
 };

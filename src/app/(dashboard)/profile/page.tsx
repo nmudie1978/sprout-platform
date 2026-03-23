@@ -77,6 +77,59 @@ function getDaysInMonth(month: string, year: string): number {
   return new Date(parseInt(year), parseInt(month), 0).getDate();
 }
 
+const AVAILABILITY_OPTIONS = [
+  { key: "weekday-mornings", label: "Weekday mornings" },
+  { key: "weekday-afternoons", label: "Weekday afternoons" },
+  { key: "weekday-evenings", label: "Weekday evenings" },
+  { key: "saturdays", label: "Saturdays" },
+  { key: "sundays", label: "Sundays" },
+  { key: "school-holidays", label: "School holidays" },
+] as const;
+
+function AvailabilityPicker({ value, onChange }: { value: string; onChange: (val: string) => void }) {
+  // Parse stored value (comma-separated keys) into Set
+  const selected = new Set(value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []);
+
+  const toggle = (key: string) => {
+    const next = new Set(selected);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    // Store as comma-separated labels for backward compatibility with existing display
+    const labels = AVAILABILITY_OPTIONS
+      .filter((o) => next.has(o.key))
+      .map((o) => o.label);
+    onChange(labels.join(", "));
+  };
+
+  // Check if a label (from old format) or key matches
+  const isSelected = (opt: typeof AVAILABILITY_OPTIONS[number]) =>
+    selected.has(opt.key) || selected.has(opt.label);
+
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {AVAILABILITY_OPTIONS.map((opt) => (
+        <button
+          key={opt.key}
+          type="button"
+          onClick={() => toggle(isSelected(opt) ? opt.label : opt.key)}
+          className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-colors text-left ${
+            isSelected(opt)
+              ? "border-primary bg-primary/10 text-primary font-medium"
+              : "border-border hover:bg-muted/50 text-muted-foreground"
+          }`}
+        >
+          <span className={`h-3 w-3 rounded-sm border flex items-center justify-center shrink-0 ${
+            isSelected(opt) ? "bg-primary border-primary" : "border-muted-foreground/30"
+          }`}>
+            {isSelected(opt) && <CheckCircle2 className="h-2.5 w-2.5 text-primary-foreground" />}
+          </span>
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { data: session } = useSession();
   const { toast } = useToast();
@@ -638,6 +691,7 @@ export default function ProfilePage() {
         if (!profile.bio) missingRecommended.push("About Me (bio)");
         if (!profile.availability) missingRecommended.push("Availability");
         if (!profile.interests || profile.interests.length === 0) missingRecommended.push("Interests");
+        if (!goalsData?.primaryGoal) missingRecommended.push("Career Goal");
 
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
         const hasRequiredMissing = missingRequired.length > 0;
@@ -939,21 +993,16 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <Label htmlFor="availability" className="text-sm font-medium">
+                <Label className="text-sm font-medium">
                   Availability
                 </Label>
-                <Input
-                  id="availability"
-                  placeholder="e.g., Weekends, After 4pm on weekdays"
-                  value={formData.availability}
-                  onChange={(e) =>
-                    setFormData({ ...formData, availability: e.target.value })
-                  }
-                  className="h-10 mt-1.5"
-                />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  Job posters can see when you're available
+                <p className="text-xs text-muted-foreground mt-0.5 mb-2">
+                  Select when you're available for small jobs
                 </p>
+                <AvailabilityPicker
+                  value={formData.availability}
+                  onChange={(val) => setFormData({ ...formData, availability: val })}
+                />
               </div>
 
               <div>
@@ -1172,7 +1221,7 @@ export default function ProfilePage() {
           {profile && (
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
               <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
-                <div className="text-xl font-bold text-purple-600 dark:text-purple-400">
+                <div className="text-xl font-bold text-teal-600 dark:text-teal-400">
                   {profile.completedJobsCount || 0}
                 </div>
                 <div className="text-[10px] text-muted-foreground">Jobs</div>

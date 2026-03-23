@@ -72,7 +72,7 @@ export function WhyThisMattersLanding() {
             That&apos;s why Endeavrly guides you through{" "}
             <span className="font-semibold text-blue-600">Discover</span>
             {" · "}
-            <span className="font-semibold text-purple-600">Understand</span>
+            <span className="font-semibold text-teal-600">Understand</span>
             {" · "}
             <span className="font-semibold text-green-600">Act</span>.
           </p>

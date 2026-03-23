@@ -151,7 +151,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
       {/* Section header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Target className="h-5 w-5 text-purple-600" />
+          <Target className="h-5 w-5 text-teal-600" />
           <h2 className="text-lg font-semibold">
             Your Path to {journey.career}
           </h2>

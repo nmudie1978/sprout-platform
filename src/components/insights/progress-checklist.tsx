@@ -78,7 +78,7 @@ const industryChecklists: IndustryChecklist[] = [
     id: "creative",
     name: "Kreative Tjenester",
     icon: Palette,
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
     steps: [
       { id: "c-req-1", type: "requirement", label: "Bygg en portefølje med arbeid" },
       { id: "c-res-1", type: "resource", label: "Ta kurs på Skillshare", url: "https://www.skillshare.com" },
@@ -91,7 +91,7 @@ const industryChecklists: IndustryChecklist[] = [
 const typeConfig = {
   requirement: { label: "Krav", icon: CheckCircle2, color: "text-green-600" },
   resource: { label: "Ressurs", icon: BookOpen, color: "text-blue-600" },
-  certification: { label: "Sertifisering", icon: GraduationCap, color: "text-purple-600" },
+  certification: { label: "Sertifisering", icon: GraduationCap, color: "text-teal-600" },
 };
 
 export function ProgressChecklist() {
@@ -169,7 +169,7 @@ export function ProgressChecklist() {
 
   return (
     <Card className="border-2 overflow-hidden h-full">
-      <div className={`h-1 bg-gradient-to-r ${currentChecklist?.color || "from-primary to-purple-500"}`} />
+      <div className={`h-1 bg-gradient-to-r ${currentChecklist?.color || "from-primary to-teal-500"}`} />
       <CardHeader className="pb-2 pt-4">
         <CardTitle className="flex items-center gap-2 text-base">
           <CheckCircle2 className="h-4 w-4 text-primary" />

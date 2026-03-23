@@ -52,8 +52,8 @@ export function ShadowGuide({ onDismiss, compact = false }: ShadowGuideProps) {
       <Card className="border-dashed border-muted-foreground/30">
         <CardContent className="py-4">
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-purple-500/10 shrink-0">
-              <Eye className="h-5 w-5 text-purple-600" />
+            <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
+              <Eye className="h-5 w-5 text-teal-600" />
             </div>
             <div className="flex-1">
               <h3 className="font-medium text-sm mb-1">How Career Shadowing Works</h3>
@@ -81,10 +81,10 @@ export function ShadowGuide({ onDismiss, compact = false }: ShadowGuideProps) {
     >
       <Card className="overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-500/10 via-indigo-500/10 to-emerald-500/10 p-6">
+        <div className="bg-gradient-to-br from-teal-500/10 via-teal-500/10 to-emerald-500/10 p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 rounded-xl bg-white/80 dark:bg-gray-900/80 shadow-sm">
-              <Eye className="h-6 w-6 text-purple-600" />
+              <Eye className="h-6 w-6 text-teal-600" />
             </div>
             <div>
               <h2 className="text-xl font-semibold">How Career Shadowing Works</h2>
@@ -122,7 +122,7 @@ export function ShadowGuide({ onDismiss, compact = false }: ShadowGuideProps) {
                 transition={{ delay: index * 0.1 }}
                 className="flex items-start gap-4"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-500/20 text-purple-600 text-sm font-semibold shrink-0">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-teal-500/20 to-teal-500/20 text-teal-600 text-sm font-semibold shrink-0">
                   {index + 1}
                 </div>
                 <div className="flex-1 pt-0.5">

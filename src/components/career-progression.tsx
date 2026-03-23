@@ -8,15 +8,15 @@ interface CareerProgressionProps {
 }
 
 const levelColors: Record<CareerLevel["level"], string> = {
-  entry: "bg-purple-500",
-  mid: "bg-purple-400",
+  entry: "bg-teal-500",
+  mid: "bg-teal-400",
   senior: "bg-emerald-400",
   lead: "bg-emerald-500",
 };
 
 const levelBorderColors: Record<CareerLevel["level"], string> = {
-  entry: "border-purple-500",
-  mid: "border-purple-400",
+  entry: "border-teal-500",
+  mid: "border-teal-400",
   senior: "border-emerald-400",
   lead: "border-emerald-500",
 };
@@ -37,7 +37,7 @@ export function CareerProgression({ careerId }: CareerProgressionProps) {
 
       <div className="relative">
         {/* Gradient connecting line */}
-        <div className="absolute top-4 left-4 right-4 h-0.5 bg-gradient-to-r from-purple-500 via-purple-300 to-emerald-500 z-0" />
+        <div className="absolute top-4 left-4 right-4 h-0.5 bg-gradient-to-r from-teal-500 via-teal-300 to-emerald-500 z-0" />
 
         {/* Timeline nodes */}
         <div className="relative z-10 flex justify-between">
@@ -94,7 +94,7 @@ export function CareerProgressionCompact({ careerId }: CareerProgressionCompactP
 
       <div className="relative">
         {/* Gradient connecting line */}
-        <div className="absolute top-3 left-3 right-3 h-0.5 bg-gradient-to-r from-purple-500 via-purple-300 to-emerald-500 z-0" />
+        <div className="absolute top-3 left-3 right-3 h-0.5 bg-gradient-to-r from-teal-500 via-teal-300 to-emerald-500 z-0" />
 
         {/* Timeline nodes */}
         <div className="relative z-10 flex justify-between">

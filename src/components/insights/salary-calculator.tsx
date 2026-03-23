@@ -58,7 +58,7 @@ const industryConfig = {
   tech: { name: "Technology & AI", color: "from-blue-500 to-cyan-500" },
   green: { name: "Grønn Energi", color: "from-green-500 to-teal-500" },
   health: { name: "Helse & Omsorg", color: "from-red-500 to-pink-500" },
-  creative: { name: "Kreative Tjenester", color: "from-purple-500 to-pink-500" },
+  creative: { name: "Kreative Tjenester", color: "from-teal-500 to-pink-500" },
 };
 
 export function SalaryCalculator() {
@@ -93,7 +93,7 @@ export function SalaryCalculator() {
 
   return (
     <Card className="border-2 overflow-hidden">
-      <div className={`h-1.5 bg-gradient-to-r ${industryConfig[industry as keyof typeof industryConfig]?.color || "from-primary to-purple-500"}`} />
+      <div className={`h-1.5 bg-gradient-to-r ${industryConfig[industry as keyof typeof industryConfig]?.color || "from-primary to-teal-500"}`} />
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Calculator className="h-5 w-5 text-primary" />
@@ -197,7 +197,7 @@ export function SalaryCalculator() {
         </div>
 
         {/* Results */}
-        <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-purple-500/10 border">
+        <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-teal-500/10 border">
           <div className="text-center mb-4">
             <p className="text-sm text-muted-foreground mb-1">Estimated Annual Salary</p>
             <div className="text-4xl font-bold text-primary">

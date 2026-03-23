@@ -86,7 +86,7 @@ const typeConfig: Record<
   },
   WEBINAR: {
     label: "Webinar",
-    color: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400",
+    color: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400",
     icon: Video,
   },
   MEETUP: {
@@ -101,7 +101,7 @@ const typeConfig: Record<
   },
   CONFERENCE: {
     label: "Conference",
-    color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400",
+    color: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400",
     icon: Globe,
   },
 };
@@ -455,7 +455,7 @@ export function EventsCalendar({ industryTypes = [] }: EventsCalendarProps) {
 
       {/* Section 2: Online & Europe-wide Events */}
       <Card className="border-2 overflow-hidden">
-        <div className="h-1.5 bg-gradient-to-r from-purple-500 to-blue-500" />
+        <div className="h-1.5 bg-gradient-to-r from-teal-500 to-blue-500" />
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Globe className="h-5 w-5 text-primary" />

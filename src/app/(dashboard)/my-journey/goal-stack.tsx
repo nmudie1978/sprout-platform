@@ -55,7 +55,7 @@ const TYPE_ICONS = {
 };
 
 const TYPE_COLORS = {
-  skill: "text-purple-600 bg-purple-500/10",
+  skill: "text-teal-600 bg-teal-500/10",
   experience: "text-blue-600 bg-blue-500/10",
   learning: "text-amber-600 bg-amber-500/10",
   job: "text-emerald-600 bg-emerald-500/10",
@@ -127,8 +127,8 @@ function GoalCard({ goal, isExpanded, onToggle }: { goal: Goal; isExpanded: bool
         onClick={onToggle}
         className="w-full text-left p-4 flex items-start gap-3 hover:bg-muted/30 transition-colors"
       >
-        <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 shrink-0">
-          <Target className="h-5 w-5 text-purple-600" />
+        <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-teal-500/20 shrink-0">
+          <Target className="h-5 w-5 text-teal-600" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-sm">{goal.title}</h3>
@@ -141,7 +141,7 @@ function GoalCard({ goal, isExpanded, onToggle }: { goal: Goal; isExpanded: bool
           <div className="mt-2 flex items-center gap-2">
             <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-purple-500 to-emerald-500 rounded-full"
+                className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${goal.progress}%` }}
                 transition={{ duration: 0.5 }}

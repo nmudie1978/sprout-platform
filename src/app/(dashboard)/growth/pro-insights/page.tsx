@@ -184,7 +184,7 @@ export default function ProInsightsPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-2 mb-2">
-          <Users className="h-5 w-5 text-indigo-600" />
+          <Users className="h-5 w-5 text-teal-600" />
           <h2 className="text-lg font-semibold">Professional Insights</h2>
           <Badge variant="outline" className="text-xs ml-2">
             <Clock className="h-3 w-3 mr-1" />
@@ -203,14 +203,14 @@ export default function ProInsightsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="border border-indigo-200 dark:border-indigo-800/50 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20">
+        <Card className="border border-teal-200 dark:border-teal-800/50 bg-gradient-to-r from-teal-50/50 to-teal-50/50 dark:from-teal-950/20 dark:to-teal-950/20">
           <CardContent className="py-4">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-                <Sparkles className="h-4 w-4 text-indigo-600" />
+              <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+                <Sparkles className="h-4 w-4 text-teal-600" />
               </div>
               <div>
-                <p className="text-sm font-medium text-indigo-900 dark:text-indigo-100">
+                <p className="text-sm font-medium text-teal-900 dark:text-teal-100">
                   Real people. Real careers. Launching soon.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -245,19 +245,19 @@ export default function ProInsightsPage() {
             <h4 className="font-medium text-sm mb-3">What to expect in Phase 2</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
-                <span className="text-indigo-500 mt-0.5">•</span>
+                <span className="text-teal-500 mt-0.5">•</span>
                 <span>Short video insights from real professionals in various careers</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-indigo-500 mt-0.5">•</span>
+                <span className="text-teal-500 mt-0.5">•</span>
                 <span>Honest takes on what the job is really like day-to-day</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-indigo-500 mt-0.5">•</span>
+                <span className="text-teal-500 mt-0.5">•</span>
                 <span>Advice they wish they had when starting out</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-indigo-500 mt-0.5">•</span>
+                <span className="text-teal-500 mt-0.5">•</span>
                 <span>Insights personalised to your career goals</span>
               </li>
             </ul>

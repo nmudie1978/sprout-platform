@@ -20,7 +20,7 @@ const BADGE_DEFINITIONS: Record<BadgeType, { emoji: string; label: string; descr
     emoji: "🎉",
     label: "First Small Job",
     description: "Completed your first small job",
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
   },
   FIVE_JOBS: {
     emoji: "🌟",
@@ -68,13 +68,13 @@ const BADGE_DEFINITIONS: Record<BadgeType, { emoji: string; label: string; descr
     emoji: "🛡️",
     label: "Reliable",
     description: "Achieved 90%+ reliability score",
-    color: "from-blue-500 to-indigo-500",
+    color: "from-blue-500 to-teal-500",
   },
   SUPER_RELIABLE: {
     emoji: "💯",
     label: "Super Reliable",
     description: "Perfect 100% reliability score",
-    color: "from-indigo-500 to-purple-500",
+    color: "from-teal-500 to-teal-500",
   },
   EARLY_BIRD: {
     emoji: "🐦",
@@ -104,7 +104,7 @@ const BADGE_DEFINITIONS: Record<BadgeType, { emoji: string; label: string; descr
     emoji: "🌈",
     label: "Highly Rated",
     description: "Average rating above 4.5 stars",
-    color: "from-violet-500 to-purple-500",
+    color: "from-teal-500 to-teal-500",
   },
 };
 

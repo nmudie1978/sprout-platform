@@ -118,13 +118,13 @@ export default function TalentBrowsePage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative min-h-screen">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-pink-500/5 pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-4xl font-bold mb-2">
-            Browse <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Talent</span>
+            Browse <span className="bg-gradient-to-r from-teal-600 to-pink-600 bg-clip-text text-transparent">Talent</span>
           </h1>
           <p className="text-lg text-muted-foreground">
             Find skilled youth workers for your jobs
@@ -141,7 +141,7 @@ export default function TalentBrowsePage() {
             <Filter className="h-4 w-4 mr-2" />
             Filters
             {hasActiveFilters && (
-              <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-purple-500">
+              <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center bg-teal-500">
                 {(availabilityFilter ? 1 : 0) + (locationFilter ? 1 : 0) + (ageBracketFilter ? 1 : 0) + (interestsFilter.length > 0 ? 1 : 0)}
               </Badge>
             )}
@@ -238,7 +238,7 @@ export default function TalentBrowsePage() {
                       variant={interestsFilter.includes(interest) ? "default" : "outline"}
                       size="sm"
                       onClick={() => toggleInterest(interest)}
-                      className={interestsFilter.includes(interest) ? "bg-gradient-to-r from-purple-600 to-pink-600" : ""}
+                      className={interestsFilter.includes(interest) ? "bg-gradient-to-r from-teal-600 to-pink-600" : ""}
                     >
                       {interest}
                     </Button>
@@ -264,7 +264,7 @@ export default function TalentBrowsePage() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="h-8 w-8 border-3 border-purple-500 border-t-transparent rounded-full"
+            className="h-8 w-8 border-3 border-teal-500 border-t-transparent rounded-full"
           />
         </div>
       )}
@@ -284,9 +284,9 @@ export default function TalentBrowsePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <Card className="h-full hover:shadow-xl hover:shadow-purple-500/10 border-2 transition-all group overflow-hidden relative">
+                <Card className="h-full hover:shadow-xl hover:shadow-teal-500/10 border-2 transition-all group overflow-hidden relative">
                   {/* Hover gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                   {/* Availability indicator bar */}
                   <div className={`h-1 ${availability.color}`} />
@@ -307,7 +307,7 @@ export default function TalentBrowsePage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <CardTitle className="text-lg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate">
+                            <CardTitle className="text-lg group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors truncate">
                               {profile.displayName}
                             </CardTitle>
                             {profile.user.location && (
@@ -387,7 +387,7 @@ export default function TalentBrowsePage() {
                             <Badge
                               key={interest}
                               variant="outline"
-                              className={`text-xs ${interestsFilter.includes(interest) ? "border-purple-500 bg-purple-500/10" : ""}`}
+                              className={`text-xs ${interestsFilter.includes(interest) ? "border-teal-500 bg-teal-500/10" : ""}`}
                             >
                               {interest}
                             </Badge>
@@ -410,8 +410,8 @@ export default function TalentBrowsePage() {
       ) : !isLoading ? (
         <Card className="border-2 shadow-lg">
           <CardContent className="py-16 text-center">
-            <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-              <User className="h-8 w-8 text-purple-500" />
+            <div className="mx-auto mb-4 h-16 w-16 rounded-full bg-gradient-to-br from-teal-500/20 to-pink-500/20 flex items-center justify-center">
+              <User className="h-8 w-8 text-teal-500" />
             </div>
             <h3 className="text-xl font-bold mb-2">No talent found</h3>
             <p className="text-muted-foreground mb-4">

@@ -42,8 +42,8 @@ export function AmbientBackground({
         className={`absolute inset-0 overflow-hidden pointer-events-none -z-10 ${className}`}
         aria-hidden="true"
       >
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-blue-100/30 to-purple-100/20 blur-[80px]" />
-        <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] rounded-full bg-gradient-to-br from-purple-100/25 to-emerald-100/15 blur-[80px]" />
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-br from-blue-100/30 to-teal-100/20 blur-[80px]" />
+        <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] rounded-full bg-gradient-to-br from-teal-100/25 to-emerald-100/15 blur-[80px]" />
       </div>
     );
   }
@@ -53,9 +53,9 @@ export function AmbientBackground({
       className={`absolute inset-0 overflow-hidden pointer-events-none -z-10 ${className}`}
       aria-hidden="true"
     >
-      {/* Primary orb - blue/purple blend (Discover + Understand) */}
+      {/* Primary orb - blue/teal blend (Discover + Understand) */}
       <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-blue-100/30 to-purple-100/20 blur-[80px]"
+        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-blue-100/30 to-teal-100/20 blur-[80px]"
         initial={{ x: '25%', y: '-10%' }}
         animate={{
           x: ['25%', '30%', '20%', '25%'],
@@ -68,9 +68,9 @@ export function AmbientBackground({
         }}
       />
 
-      {/* Secondary orb - purple/emerald blend (Understand + Act) */}
+      {/* Secondary orb - teal/emerald blend (Understand + Act) */}
       <motion.div
-        className="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-br from-purple-100/25 to-emerald-100/15 blur-[80px]"
+        className="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-br from-teal-100/25 to-emerald-100/15 blur-[80px]"
         initial={{ x: '60%', y: '60%' }}
         animate={{
           x: ['60%', '55%', '65%', '60%'],
@@ -127,10 +127,10 @@ export function FloatingNodes({
 
   const nodes = [
     { x: 15, y: 30, color: 'text-blue-300/40', delay: 0 },
-    { x: 35, y: 15, color: 'text-purple-300/40', delay: 0.5 },
+    { x: 35, y: 15, color: 'text-teal-300/40', delay: 0.5 },
     { x: 55, y: 45, color: 'text-emerald-300/40', delay: 1 },
     { x: 75, y: 25, color: 'text-blue-300/30', delay: 1.5 },
-    { x: 85, y: 60, color: 'text-purple-300/30', delay: 2 },
+    { x: 85, y: 60, color: 'text-teal-300/30', delay: 2 },
   ];
 
   return (

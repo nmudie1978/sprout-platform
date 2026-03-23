@@ -31,7 +31,7 @@ import Link from "next/link";
 const trustSignalConfig: Record<string, { icon: typeof Star; color: string; bg: string }> = {
   ON_TIME: { icon: Clock, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30" },
   GOOD_COMMS: { icon: MessageSquare, color: "text-green-600", bg: "bg-green-100 dark:bg-green-900/30" },
-  REPEAT_HIRE: { icon: Users, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30" },
+  REPEAT_HIRE: { icon: Users, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30" },
   HELPED_OTHER: { icon: Sparkles, color: "text-pink-600", bg: "bg-pink-100 dark:bg-pink-900/30" },
   COMMUNITY_REPORT_RESOLVED: { icon: Shield, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30" },
   POSITIVE_TREND: { icon: TrendingUp, color: "text-emerald-600", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
@@ -43,7 +43,7 @@ const skillCategoryColors: Record<string, string> = {
   CARE: "bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300",
   HOME: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
   OUTDOOR: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  TECH: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+  TECH: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300",
   SERVICE: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   CREATIVE: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
   OTHER: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
@@ -302,9 +302,9 @@ export default function ShortTermGrowthPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30">
+        <Card className="border-2 bg-gradient-to-br from-teal-50 to-pink-50 dark:from-teal-950/30 dark:to-pink-950/30">
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{growth.totalWouldRehire}</div>
+            <div className="text-3xl font-bold text-teal-600 dark:text-teal-400">{growth.totalWouldRehire}</div>
             <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
               <Star className="h-3 w-3" />
               Would Rehire

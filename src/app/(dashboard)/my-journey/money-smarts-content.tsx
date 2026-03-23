@@ -168,8 +168,8 @@ const MONEY_TOPICS: MoneyTopic[] = [
     title: "Long-Term Saving",
     subtitle: "Planning far ahead",
     icon: Clock,
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
     steps: [
       {
         title: "What is long-term saving?",

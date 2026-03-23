@@ -156,10 +156,10 @@ export function ConfirmDialogChoice({
               disabled={isPending}
               className={cn(
                 "w-full p-3 rounded-lg border-2 transition-colors text-left group",
-                "hover:border-purple-400 dark:hover:border-purple-600",
+                "hover:border-teal-400 dark:hover:border-teal-600",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 choice.variant === "primary"
-                  ? "border-purple-200 dark:border-purple-800"
+                  ? "border-teal-200 dark:border-teal-800"
                   : "border-slate-200 dark:border-slate-700"
               )}
             >
@@ -170,7 +170,7 @@ export function ConfirmDialogChoice({
                 </span>
               </div>
               {choice.sublabel && (
-                <p className="font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                <p className="font-medium group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                   {choice.sublabel}
                 </p>
               )}

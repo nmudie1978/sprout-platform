@@ -36,8 +36,8 @@ export function ProfileStrengthCompact() {
         <CardContent className="p-2.5">
           <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-1.5">
-              <div className="p-1 rounded-md bg-purple-500/10">
-                <User className="h-3.5 w-3.5 text-purple-600" />
+              <div className="p-1 rounded-md bg-teal-500/10">
+                <User className="h-3.5 w-3.5 text-teal-600" />
               </div>
               <span className="text-xs font-medium">Profile</span>
             </div>
@@ -55,19 +55,19 @@ export function ProfileStrengthCompact() {
   if (!profile) {
     return (
       <Link href="/profile" className="block">
-        <Card className="border hover:shadow-md hover:border-purple-300 transition-all cursor-pointer relative z-10">
+        <Card className="border hover:shadow-md hover:border-teal-300 transition-all cursor-pointer relative z-10">
           <CardContent className="p-2.5">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
-                <div className="p-1 rounded-md bg-purple-500/10">
-                  <User className="h-3.5 w-3.5 text-purple-600" />
+                <div className="p-1 rounded-md bg-teal-500/10">
+                  <User className="h-3.5 w-3.5 text-teal-600" />
                 </div>
                 <span className="text-xs font-medium">Profile</span>
               </div>
-              <span className="text-xs font-bold text-purple-600">0%</span>
+              <span className="text-xs font-bold text-teal-600">0%</span>
             </div>
             <div className="h-1 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 w-0" />
+              <div className="h-full bg-gradient-to-r from-teal-500 to-pink-500 transition-all duration-500 w-0" />
             </div>
           </CardContent>
         </Card>
@@ -120,20 +120,20 @@ export function ProfileStrengthCompact() {
 
   return (
     <Link href="/profile" className="block">
-      <Card className="border hover:shadow-md hover:border-purple-300 transition-all cursor-pointer relative z-10">
+      <Card className="border hover:shadow-md hover:border-teal-300 transition-all cursor-pointer relative z-10">
         <CardContent className="p-2.5">
           <div className="flex items-center justify-between mb-1.5">
             <div className="flex items-center gap-1.5">
-              <div className="p-1 rounded-md bg-purple-500/10">
-                <User className="h-3.5 w-3.5 text-purple-600" />
+              <div className="p-1 rounded-md bg-teal-500/10">
+                <User className="h-3.5 w-3.5 text-teal-600" />
               </div>
               <span className="text-xs font-medium">Profile</span>
             </div>
-            <span className="text-xs font-bold text-purple-600">{completionPercentage}%</span>
+            <span className="text-xs font-bold text-teal-600">{completionPercentage}%</span>
           </div>
           <div className="h-1 bg-muted rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-500 to-pink-500 transition-all duration-500"
               style={{ width: `${completionPercentage}%` }}
             />
           </div>

@@ -200,7 +200,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
         <div className="absolute top-1/2 -right-10 w-32 h-32 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-medium_15s_ease-in-out_infinite]" />
-        <div className="absolute -bottom-10 left-1/2 w-36 h-36 rounded-full bg-purple-500/[0.02] blur-3xl animate-[float-fast_12s_ease-in-out_infinite]" />
+        <div className="absolute -bottom-10 left-1/2 w-36 h-36 rounded-full bg-teal-500/[0.02] blur-3xl animate-[float-fast_12s_ease-in-out_infinite]" />
       </div>
 
       {/* Brand */}

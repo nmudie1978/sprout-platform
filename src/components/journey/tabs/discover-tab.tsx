@@ -46,7 +46,7 @@ function StepRow({
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all',
         status === 'completed' && 'bg-emerald-500/5',
-        status === 'next' && 'bg-violet-500/8 ring-1 ring-violet-500/20',
+        status === 'next' && 'bg-teal-500/8 ring-1 ring-teal-500/20',
         status === 'locked' && 'opacity-40',
       )}
     >
@@ -54,7 +54,7 @@ function StepRow({
         className={cn(
           'flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold shrink-0',
           status === 'completed' && 'bg-emerald-500/20 text-emerald-500',
-          status === 'next' && 'bg-violet-500/20 text-violet-500',
+          status === 'next' && 'bg-teal-500/20 text-teal-500',
           status === 'locked' && 'bg-muted text-muted-foreground/50',
         )}
       >
@@ -68,7 +68,7 @@ function StepRow({
         {title}
       </span>
       {status === 'next' && onStart && (
-        <Button size="sm" className="h-7 text-xs px-3 bg-violet-600 hover:bg-violet-700" onClick={onStart}>
+        <Button size="sm" className="h-7 text-xs px-3 bg-teal-600 hover:bg-teal-700" onClick={onStart}>
           Start <ArrowRight className="h-3 w-3 ml-1" />
         </Button>
       )}
@@ -159,7 +159,7 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Steps */}
         <div className="rounded-xl border border-border/40 bg-card/60 p-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-violet-500 mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-500 mb-3">
             Steps to Complete
           </h3>
           <div className="space-y-1">
@@ -177,7 +177,7 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
 
         {/* Career Direction */}
         <div className="rounded-xl border border-border/40 bg-card/60 p-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-violet-500 mb-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-teal-500 mb-3">
             Career Direction
           </h3>
           {summary?.primaryGoal?.title ? (
@@ -216,8 +216,8 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
           title="Strengths"
           items={summary?.strengths || []}
           emptyMessage="Reflect on strengths to see them here."
-          colorClass="text-violet-500"
-          bgClass="bg-violet-500/10"
+          colorClass="text-teal-500"
+          bgClass="bg-teal-500/10"
           actionLabel={summary?.strengths?.length ? 'Update' : 'Reflect'}
           onAction={onStartStep ? () => onStartStep('REFLECT_ON_STRENGTHS') : undefined}
         />

@@ -62,9 +62,9 @@ const PRIORITY_OPTIONS = [
     label: "Explore careers",
     description: "Discover what you might enjoy",
     icon: Search,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50 dark:bg-purple-950/30",
-    borderColor: "border-purple-200 dark:border-purple-800",
+    color: "text-teal-600",
+    bgColor: "bg-teal-50 dark:bg-teal-950/30",
+    borderColor: "border-teal-200 dark:border-teal-800",
   },
   {
     id: "prepare",
@@ -196,7 +196,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
     <Dialog open={open} onOpenChange={() => {}}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-hidden p-0">
         {/* Header */}
-        <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-primary/5 to-teal-500/5">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-2 rounded-full bg-primary/10">
               <Sparkles className="h-5 w-5 text-primary" />

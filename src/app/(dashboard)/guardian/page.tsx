@@ -200,7 +200,7 @@ export default function GuardianDashboard() {
           </p>
         </div>
         {overview?.isAdmin && (
-          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+          <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
             Admin Access
           </Badge>
         )}

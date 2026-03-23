@@ -179,7 +179,7 @@ export function ShadowReflection({
           <div className="space-y-6">
             <div>
               <label className="flex items-center gap-2 font-medium text-sm mb-2">
-                <Sparkles className="h-4 w-4 text-purple-500" />
+                <Sparkles className="h-4 w-4 text-teal-500" />
                 Skills you noticed being used
               </label>
               <p className="text-xs text-muted-foreground mb-3">
@@ -193,7 +193,7 @@ export function ShadowReflection({
                     className={cn(
                       "px-3 py-1.5 rounded-full text-sm transition-all",
                       data.skillsNoticed.includes(skill)
-                        ? "bg-purple-500 text-white"
+                        ? "bg-teal-500 text-white"
                         : "bg-muted hover:bg-muted/80"
                     )}
                   >
@@ -457,8 +457,8 @@ export function ShadowReflection({
       <Card className="mb-6">
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-emerald-500/20">
-              <Lightbulb className="h-5 w-5 text-purple-600" />
+            <div className="p-2 rounded-lg bg-gradient-to-br from-teal-500/20 to-emerald-500/20">
+              <Lightbulb className="h-5 w-5 text-teal-600" />
             </div>
             <div>
               <h2 className="font-semibold">Shadow Reflection</h2>
@@ -479,7 +479,7 @@ export function ShadowReflection({
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-gradient-to-r from-purple-500 to-emerald-500 rounded-full"
+            className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${(step / totalSteps) * 100}%` }}
             transition={{ duration: 0.3 }}
@@ -520,7 +520,7 @@ export function ShadowReflection({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-gradient-to-r from-purple-600 to-emerald-600 hover:from-purple-700 hover:to-emerald-700"
+            className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
           >
             {isSubmitting ? (
               <>

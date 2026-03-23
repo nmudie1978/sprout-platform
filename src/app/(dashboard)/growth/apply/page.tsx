@@ -393,8 +393,8 @@ export default function ApplyStagePage() {
           />
           <QuickActionCard
             icon={Star}
-            iconBg="bg-purple-100 dark:bg-purple-900/30"
-            iconColor="text-purple-600"
+            iconBg="bg-teal-100 dark:bg-teal-900/30"
+            iconColor="text-teal-600"
             title="Traineeships & Internships"
             description="Entry-level opportunities to get started"
             href="https://www.finn.no/job/fulltime/search.html?occupation=0.71"
@@ -439,11 +439,11 @@ export default function ApplyStagePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.3 }}
       >
-        <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+        <Card className="border-2 border-teal-200 bg-gradient-to-r from-teal-50 to-pink-50 dark:from-teal-950/20 dark:to-pink-950/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30">
-                <Bot className="h-6 w-6 text-purple-600" />
+              <div className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/30">
+                <Bot className="h-6 w-6 text-teal-600" />
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold">Need help with applications?</h3>
@@ -458,7 +458,7 @@ export default function ApplyStagePage() {
                     : "/career-advisor?prompt=How do I write a good job application?"
                 }
               >
-                <Button variant="outline" className="border-purple-300">
+                <Button variant="outline" className="border-teal-300">
                   <Bot className="w-4 h-4 mr-2" />
                   Get Help
                 </Button>

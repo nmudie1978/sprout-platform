@@ -140,10 +140,10 @@ export function CareerClipsModule({
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
               <motion.div
-                className="p-2.5 rounded-lg bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-pink-500/20"
+                className="p-2.5 rounded-lg bg-gradient-to-br from-teal-500/20 via-teal-500/20 to-pink-500/20"
                 whileHover={{ scale: 1.05 }}
               >
-                <Film className="h-5 w-5 text-purple-600" />
+                <Film className="h-5 w-5 text-teal-600" />
               </motion.div>
               <div>
                 <h3 className="font-semibold text-sm">Career Clips</h3>
@@ -199,10 +199,10 @@ export function CareerClipsModule({
           {/* Header */}
           <div className="flex items-center gap-3 mb-4">
             <motion.div
-              className="p-2.5 rounded-lg bg-gradient-to-br from-purple-500/20 via-indigo-500/20 to-pink-500/20"
+              className="p-2.5 rounded-lg bg-gradient-to-br from-teal-500/20 via-teal-500/20 to-pink-500/20"
               whileHover={{ scale: 1.05 }}
             >
-              <Film className="h-5 w-5 text-purple-600" />
+              <Film className="h-5 w-5 text-teal-600" />
             </motion.div>
             <div>
               <h3 className="font-semibold text-sm">Career Clips</h3>

@@ -52,11 +52,11 @@ const NOTE_COLORS = {
     accent: "text-pink-600 dark:text-pink-400",
     dot: "bg-pink-400",
   },
-  purple: {
-    bg: "bg-purple-50 dark:bg-purple-950/30",
-    border: "border-purple-200 dark:border-purple-800",
-    accent: "text-purple-600 dark:text-purple-400",
-    dot: "bg-purple-400",
+  teal: {
+    bg: "bg-teal-50 dark:bg-teal-950/30",
+    border: "border-teal-200 dark:border-teal-800",
+    accent: "text-teal-600 dark:text-teal-400",
+    dot: "bg-teal-400",
   },
   gray: {
     bg: "bg-neutral-50 dark:bg-neutral-800/50",

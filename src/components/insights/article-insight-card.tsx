@@ -32,9 +32,9 @@ interface ArticleInsightCardProps {
 
 const topicGradients: Record<string, string> = {
   "future of work": "from-blue-500/20 to-cyan-500/20",
-  skills: "from-purple-500/20 to-pink-500/20",
+  skills: "from-teal-500/20 to-pink-500/20",
   "youth employment": "from-emerald-500/20 to-teal-500/20",
-  AI: "from-violet-500/20 to-indigo-500/20",
+  AI: "from-teal-500/20 to-teal-500/20",
   automation: "from-slate-500/20 to-zinc-500/20",
   "green jobs": "from-green-500/20 to-emerald-500/20",
   sustainability: "from-teal-500/20 to-cyan-500/20",

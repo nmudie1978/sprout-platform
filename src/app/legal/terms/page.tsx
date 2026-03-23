@@ -14,8 +14,8 @@ export default function TermsOfServicePage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
-            <FileText className="h-6 w-6 text-purple-600" />
+          <div className="p-3 rounded-2xl bg-gradient-to-br from-teal-500/20 to-pink-500/20 border border-teal-500/20">
+            <FileText className="h-6 w-6 text-teal-600" />
           </div>
           <div>
             <h1 className="text-3xl font-bold">Terms of Service</h1>

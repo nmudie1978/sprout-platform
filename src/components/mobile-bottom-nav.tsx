@@ -92,14 +92,14 @@ export function MobileBottomNav() {
               className={cn(
                 "flex flex-col items-center justify-center flex-1 min-h-[44px] min-w-[44px] transition-colors rounded-lg",
                 active
-                  ? "text-indigo-400"
+                  ? "text-teal-400"
                   : "text-slate-500 active:text-slate-300"
               )}
             >
-              <Icon className={cn("h-5 w-5 shrink-0", active && "text-indigo-400")} />
+              <Icon className={cn("h-5 w-5 shrink-0", active && "text-teal-400")} />
               <span className={cn(
                 "text-[11px] mt-0.5 font-medium leading-none",
-                active ? "text-indigo-400" : "text-slate-500"
+                active ? "text-teal-400" : "text-slate-500"
               )}>
                 {item.label}
               </span>

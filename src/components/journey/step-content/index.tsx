@@ -684,10 +684,10 @@ function IndustryInsightsContent({
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-purple-50 border border-purple-100 p-4">
+      <div className="rounded-xl bg-teal-50 border border-teal-100 p-4">
         <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-purple-800">
+          <Info className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-teal-800">
             Review industry trends and note any insights that are relevant to your career plans.
             Understanding the landscape helps you make informed decisions.
           </p>
@@ -740,7 +740,7 @@ function IndustryInsightsContent({
         <Button
           onClick={handleSubmit}
           disabled={!notes.trim() || isSubmitting}
-          className="bg-purple-600 hover:bg-purple-700"
+          className="bg-teal-600 hover:bg-teal-700"
         >
           {isSubmitting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

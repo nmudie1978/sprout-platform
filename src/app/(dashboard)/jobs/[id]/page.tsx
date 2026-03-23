@@ -101,8 +101,8 @@ const categoryColors: Record<string, { from: string; to: string; accent: string 
   SNOW_CLEARING: { from: "from-cyan-500", to: "to-blue-500", accent: "cyan" },
   CLEANING: { from: "from-emerald-500", to: "to-green-500", accent: "emerald" },
   DIY_HELP: { from: "from-orange-500", to: "to-red-500", accent: "orange" },
-  TECH_HELP: { from: "from-violet-500", to: "to-purple-500", accent: "violet" },
-  ERRANDS: { from: "from-blue-500", to: "to-indigo-500", accent: "blue" },
+  TECH_HELP: { from: "from-teal-500", to: "to-teal-500", accent: "teal" },
+  ERRANDS: { from: "from-blue-500", to: "to-teal-500", accent: "blue" },
   OTHER: { from: "from-slate-500", to: "to-gray-500", accent: "slate" },
 };
 
@@ -393,7 +393,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       case "ASSIGNED":
         return { bg: "from-blue-500 to-cyan-500", label: "In Progress", color: "blue" };
       case "COMPLETED":
-        return { bg: "from-violet-500 to-purple-500", label: "Completed", color: "violet" };
+        return { bg: "from-teal-500 to-teal-500", label: "Completed", color: "teal" };
       case "CANCELLED":
         return { bg: "from-red-500 to-rose-500", label: "Cancelled", color: "red" };
       default:
@@ -616,8 +616,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
             <Card className="border-2 shadow-lg">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-3 text-lg">
-                  <div className="p-2 rounded-xl bg-violet-500/10">
-                    <Building2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                  <div className="p-2 rounded-xl bg-teal-500/10">
+                    <Building2 className="h-4 w-4 text-teal-600 dark:text-teal-400" />
                   </div>
                   Posted By
                 </CardTitle>
@@ -631,9 +631,9 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   return (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <Avatar className="h-14 w-14 border-2 border-violet-500/30">
+                        <Avatar className="h-14 w-14 border-2 border-teal-500/30">
                           <AvatarImage src={employer?.companyLogo || undefined} />
-                          <AvatarFallback className="bg-gradient-to-br from-violet-500 to-purple-500 text-white text-lg">
+                          <AvatarFallback className="bg-gradient-to-br from-teal-500 to-teal-500 text-white text-lg">
                             {(employer?.companyName || "E")[0]}
                           </AvatarFallback>
                         </Avatar>

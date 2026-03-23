@@ -80,7 +80,7 @@ export function CompanySpotlights({ industryTypes = [], userCountry = "Norway" }
 
   return (
     <Card className="border-2 overflow-hidden">
-      <div className="h-1 bg-gradient-to-r from-primary to-purple-500" />
+      <div className="h-1 bg-gradient-to-r from-primary to-teal-500" />
       <CardHeader className="pb-2 pt-4">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">

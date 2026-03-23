@@ -128,7 +128,7 @@ function StatusTabs({
     { status: "POSTED", label: "Open", color: "bg-blue-500", icon: <Zap className="h-4 w-4" /> },
     { status: "ON_HOLD", label: "Paused", color: "bg-yellow-500", icon: <AlertCircle className="h-4 w-4" /> },
     { status: "IN_PROGRESS", label: "Assigned", color: "bg-emerald-500", icon: <Clock className="h-4 w-4" /> },
-    { status: "COMPLETED", label: "Done", color: "bg-purple-500", icon: <CheckCircle className="h-4 w-4" /> },
+    { status: "COMPLETED", label: "Done", color: "bg-teal-500", icon: <CheckCircle className="h-4 w-4" /> },
     { status: "CANCELLED", label: "Cancelled", color: "bg-red-500", icon: <XCircle className="h-4 w-4" /> },
   ];
 
@@ -142,7 +142,7 @@ function StatusTabs({
           onClick={() => onStatusChange(tab.status)}
           className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
             activeStatus === tab.status
-              ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+              ? "bg-gradient-to-r from-teal-600 to-pink-600 text-white shadow-lg"
               : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -198,7 +198,7 @@ function JobCard({
       case "ASSIGNED":
         return { bg: "bg-emerald-500/10 border-emerald-500/30", text: "text-emerald-600 dark:text-emerald-400", label: "Assigned", dot: "bg-emerald-500" };
       case "COMPLETED":
-        return { bg: "bg-purple-500/10 border-purple-500/30", text: "text-purple-600 dark:text-purple-400", label: "Done", dot: "bg-purple-500" };
+        return { bg: "bg-teal-500/10 border-teal-500/30", text: "text-teal-600 dark:text-teal-400", label: "Done", dot: "bg-teal-500" };
       case "CANCELLED":
         return { bg: "bg-red-500/10 border-red-500/30", text: "text-red-600 dark:text-red-400", label: "Cancelled", dot: "bg-red-500" };
       default:
@@ -227,7 +227,7 @@ function JobCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
       onDoubleClick={onDoubleClick}
-      className={`group relative rounded-2xl border-2 bg-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/10 ${statusConfig.bg}`}
+      className={`group relative rounded-2xl border-2 bg-card p-4 cursor-pointer transition-all duration-200 hover:shadow-lg hover:shadow-teal-500/10 ${statusConfig.bg}`}
     >
       {/* Status indicator bar */}
       <div className={`absolute top-0 left-4 right-4 h-1 rounded-b-full ${statusConfig.dot}`} />
@@ -242,7 +242,7 @@ function JobCard({
               {statusConfig.label}
             </span>
           </div>
-          <h3 className="font-semibold text-base truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+          <h3 className="font-semibold text-base truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
             {job.title}
           </h3>
         </div>
@@ -372,13 +372,13 @@ function JobCard({
 
       {/* Completed job with payment confirmation */}
       {isCompleted && acceptedWorker && (
-        <div className="mt-3 pt-3 border-t border-purple-500/20">
+        <div className="mt-3 pt-3 border-t border-teal-500/20">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center">
+              <div className="h-6 w-6 rounded-full bg-teal-500 flex items-center justify-center">
                 <CheckCircle className="h-3.5 w-3.5 text-white" />
               </div>
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-400 truncate">
+              <span className="text-sm font-medium text-teal-700 dark:text-teal-400 truncate">
                 {acceptedWorker.youth.youthProfile?.displayName || "Youth Worker"}
               </span>
             </div>
@@ -515,7 +515,7 @@ function JobRow({
       case "ASSIGNED":
         return { text: "text-emerald-600", dot: "bg-emerald-500", label: "Assigned" };
       case "COMPLETED":
-        return { text: "text-purple-600", dot: "bg-purple-500", label: "Done" };
+        return { text: "text-teal-600", dot: "bg-teal-500", label: "Done" };
       case "CANCELLED":
         return { text: "text-red-600", dot: "bg-red-500", label: "Cancelled" };
       default:
@@ -540,7 +540,7 @@ function JobRow({
 
       {/* Title & Location */}
       <div className="col-span-3 min-w-0">
-        <h4 className="font-medium text-sm truncate group-hover:text-purple-600 transition-colors">
+        <h4 className="font-medium text-sm truncate group-hover:text-teal-600 transition-colors">
           {job.title}
         </h4>
         <p className="text-xs text-muted-foreground flex items-center gap-1 truncate">
@@ -774,7 +774,7 @@ export default function EmployerDashboardPage() {
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         {/* Gradient Orbs */}
         <motion.div
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-purple-500/20 via-pink-500/15 to-transparent blur-3xl"
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-gradient-to-br from-teal-500/20 via-pink-500/15 to-transparent blur-3xl"
           animate={{
             x: [0, 40, 0],
             y: [0, -30, 0],
@@ -801,7 +801,7 @@ export default function EmployerDashboardPage() {
           }}
         />
         <motion.div
-          className="absolute bottom-10 right-1/3 w-80 h-80 rounded-full bg-gradient-to-tl from-violet-400/10 via-purple-500/10 to-transparent blur-3xl"
+          className="absolute bottom-10 right-1/3 w-80 h-80 rounded-full bg-gradient-to-tl from-teal-400/10 via-teal-500/10 to-transparent blur-3xl"
           animate={{
             x: [0, -35, 0],
             y: [0, 25, 0],
@@ -823,7 +823,7 @@ export default function EmployerDashboardPage() {
 
         {/* Floating Shapes */}
         <motion.div
-          className="absolute top-1/5 right-1/4 w-4 h-4 rounded-full border-2 border-purple-400/30"
+          className="absolute top-1/5 right-1/4 w-4 h-4 rounded-full border-2 border-teal-400/30"
           animate={{ y: [0, -25, 0], rotate: [0, 180, 360], opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -833,7 +833,7 @@ export default function EmployerDashboardPage() {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/6 w-2 h-2 rounded-full bg-violet-400/40"
+          className="absolute bottom-1/4 right-1/6 w-2 h-2 rounded-full bg-teal-400/40"
           animate={{ y: [0, -15, 0], opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
         />
@@ -844,14 +844,14 @@ export default function EmployerDashboardPage() {
         />
 
         {/* Gradient Line Accents */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[1px] bg-gradient-to-r from-transparent via-teal-500/30 to-transparent" />
         <motion.div
           className="absolute top-1/4 left-0 w-[200px] h-[1px] bg-gradient-to-r from-pink-500/20 to-transparent"
           animate={{ opacity: [0.2, 0.5, 0.2], x: [0, 20, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-1/3 right-0 w-[150px] h-[1px] bg-gradient-to-l from-purple-500/20 to-transparent"
+          className="absolute bottom-1/3 right-0 w-[150px] h-[1px] bg-gradient-to-l from-teal-500/20 to-transparent"
           animate={{ opacity: [0.2, 0.5, 0.2], x: [0, -20, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
@@ -861,7 +861,7 @@ export default function EmployerDashboardPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 to-pink-600 bg-clip-text text-transparent">
               Employer Dashboard
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -872,7 +872,7 @@ export default function EmployerDashboardPage() {
             <Button variant="outline" size="icon" onClick={() => refetchJobs()} title="Refresh">
               <RefreshCw className="h-4 w-4" />
             </Button>
-            <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+            <Button asChild className="bg-gradient-to-r from-teal-600 to-pink-600 hover:from-teal-700 hover:to-pink-700">
               <Link href="/employer/post-job">
                 <Plus className="mr-2 h-4 w-4" />
                 Post New Job
@@ -883,13 +883,13 @@ export default function EmployerDashboardPage() {
 
         {/* Profile Card - Compact */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-          <Card className="border-2 border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-pink-500/5">
+          <Card className="border-2 border-teal-500/20 bg-gradient-to-r from-teal-500/5 to-pink-500/5">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-14 w-14 border-2 border-purple-500/30">
+                  <Avatar className="h-14 w-14 border-2 border-teal-500/30">
                     <AvatarImage src={profile?.companyLogo || undefined} />
-                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-lg">
+                    <AvatarFallback className="bg-gradient-to-br from-teal-500 to-pink-500 text-white text-lg">
                       {(profile?.companyName || "C")[0]}
                     </AvatarFallback>
                   </Avatar>
@@ -930,7 +930,7 @@ export default function EmployerDashboardPage() {
             { label: "Open", value: statusCounts.POSTED, icon: Zap, color: "text-blue-500" },
             { label: "Paused", value: statusCounts.ON_HOLD, icon: AlertCircle, color: "text-yellow-500" },
             { label: "Assigned", value: statusCounts.IN_PROGRESS, icon: Clock, color: "text-emerald-500" },
-            { label: "Done", value: statusCounts.COMPLETED, icon: CheckCircle, color: "text-purple-500" },
+            { label: "Done", value: statusCounts.COMPLETED, icon: CheckCircle, color: "text-teal-500" },
             { label: "Applications", value: totalApplications, icon: Users, color: "text-pink-500" },
           ].map((stat) => (
             <Card key={stat.label} className="border bg-card/50">
@@ -963,10 +963,10 @@ export default function EmployerDashboardPage() {
                   { href: "/employer/favorites", label: "Favorites", icon: Heart, color: "text-rose-500" },
                   { href: "/employer/rehire", label: "Re-hire", icon: RefreshCw, color: "text-green-500" },
                   { href: "/employer/templates", label: "Templates", icon: FileText, color: "text-amber-500" },
-                  { href: "/employer/calendar", label: "Calendar", icon: Calendar, color: "text-purple-500" },
+                  { href: "/employer/calendar", label: "Calendar", icon: Calendar, color: "text-teal-500" },
                   { href: "/employer/spending", label: "Spending", icon: DollarSign, color: "text-emerald-500" },
                   { href: "/employer/export", label: "Export", icon: Download, color: "text-cyan-500" },
-                  { href: "/employer/talent", label: "Talent", icon: Users, color: "text-indigo-500" },
+                  { href: "/employer/talent", label: "Talent", icon: Users, color: "text-teal-500" },
                 ].map((action) => (
                   <Link
                     key={action.href}
@@ -995,7 +995,7 @@ export default function EmployerDashboardPage() {
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    <Briefcase className="h-5 w-5 text-purple-500" />
+                    <Briefcase className="h-5 w-5 text-teal-500" />
                     Your Job Postings
                   </CardTitle>
                   <CardDescription>
@@ -1101,8 +1101,8 @@ export default function EmployerDashboardPage() {
                 )
               ) : (
                 <div className="py-16 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 mb-4">
-                    <Briefcase className="h-8 w-8 text-purple-500" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-teal-500/20 to-pink-500/20 mb-4">
+                    <Briefcase className="h-8 w-8 text-teal-500" />
                   </div>
                   <h3 className="text-lg font-semibold mb-1">
                     {searchQuery ? "No jobs match your search" : "No jobs posted yet"}
@@ -1111,7 +1111,7 @@ export default function EmployerDashboardPage() {
                     {searchQuery ? "Try a different search term" : "Start by posting your first micro-job"}
                   </p>
                   {!searchQuery && (
-                    <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600">
+                    <Button asChild className="bg-gradient-to-r from-teal-600 to-pink-600">
                       <Link href="/employer/post-job">
                         <Sparkles className="mr-2 h-4 w-4" />
                         Post Your First Job

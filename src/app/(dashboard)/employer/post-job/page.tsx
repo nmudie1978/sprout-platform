@@ -80,7 +80,7 @@ function FloatingShapes() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Animated gradient orbs */}
       <motion.div
-        className="absolute -top-20 -left-20 w-72 h-72 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-3xl"
+        className="absolute -top-20 -left-20 w-72 h-72 bg-gradient-to-br from-teal-500/30 to-pink-500/30 rounded-full blur-3xl"
         animate={{
           x: [0, 50, 0],
           y: [0, 30, 0],
@@ -111,7 +111,7 @@ function FloatingShapes() {
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-60"
+          className="absolute w-2 h-2 bg-gradient-to-r from-teal-400 to-pink-400 rounded-full opacity-60"
           style={{
             left: `${15 + i * 15}%`,
             top: `${20 + (i % 3) * 25}%`,
@@ -138,13 +138,13 @@ function ProgressIndicator({ progress, missingItems }: { progress: number; missi
     <div className="relative">
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-muted-foreground">Form Progress</span>
-        <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <span className="text-sm font-bold bg-gradient-to-r from-teal-600 to-pink-600 bg-clip-text text-transparent">
           {Math.round(progress)}%
         </span>
       </div>
       <div className="h-2 bg-muted rounded-full overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full"
+          className="h-full bg-gradient-to-r from-teal-500 via-pink-500 to-cyan-500 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
@@ -188,9 +188,9 @@ function ProgressIndicator({ progress, missingItems }: { progress: number; missi
 // Section header component
 function SectionHeader({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
-    <div className="flex items-start gap-3 mb-4 pb-3 border-b border-gradient-to-r from-purple-500/20 to-transparent">
-      <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
-        <Icon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+    <div className="flex items-start gap-3 mb-4 pb-3 border-b border-gradient-to-r from-teal-500/20 to-transparent">
+      <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-pink-500/20 border border-teal-500/20">
+        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
       </div>
       <div>
         <h3 className="font-semibold text-foreground">{title}</h3>
@@ -520,12 +520,12 @@ export default function PostJobPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-4">
-            <Rocket className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Create Your Opportunity</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-teal-500/10 to-pink-500/10 border border-teal-500/20 mb-4">
+            <Rocket className="w-4 h-4 text-teal-600" />
+            <span className="text-sm font-medium text-teal-600 dark:text-teal-400">Create Your Opportunity</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-3">
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-teal-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent">
               Post a Micro-Job
             </span>
           </h1>
@@ -541,7 +541,7 @@ export default function PostJobPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <div className="p-4 rounded-2xl bg-background/60 backdrop-blur-xl border border-purple-500/20 shadow-lg shadow-purple-500/5">
+          <div className="p-4 rounded-2xl bg-background/60 backdrop-blur-xl border border-teal-500/20 shadow-lg shadow-teal-500/5">
             <ProgressIndicator progress={progress} missingItems={missingRequirements} />
           </div>
         </motion.div>
@@ -608,12 +608,12 @@ export default function PostJobPage() {
             className="relative group"
           >
             {/* Neon glow effect */}
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 rounded-3xl opacity-30 group-hover:opacity-50 blur-sm transition-opacity duration-500" />
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 rounded-3xl opacity-20 animate-pulse" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-600 via-pink-600 to-cyan-600 rounded-3xl opacity-30 group-hover:opacity-50 blur-sm transition-opacity duration-500" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-teal-600 via-pink-600 to-cyan-600 rounded-3xl opacity-20 animate-pulse" />
 
             <Card className="relative rounded-3xl border-0 bg-background/80 backdrop-blur-xl shadow-2xl overflow-hidden">
               {/* Decorative top bar */}
-              <div className="h-1.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-teal-500 via-pink-500 to-cyan-500" />
 
               <CardContent className="p-6 md:p-8 space-y-8">
                 {/* Job Basics Section */}
@@ -633,7 +633,7 @@ export default function PostJobPage() {
                           value={selectedStandardCategoryId}
                           onValueChange={handleCategorySelect}
                         >
-                          <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-purple-500/50">
+                          <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-teal-500/50">
                             <SelectValue placeholder="Select a category..." />
                           </SelectTrigger>
                           <SelectContent>
@@ -656,7 +656,7 @@ export default function PostJobPage() {
                             value={selectedStandardTemplateId}
                             onValueChange={handleTemplateSelect}
                           >
-                            <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-purple-500/50">
+                            <SelectTrigger className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-teal-500/50">
                               <SelectValue placeholder="Quick-fill from template..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -698,7 +698,7 @@ export default function PostJobPage() {
                             ? "border-red-500 focus-visible:ring-red-500"
                             : formData.title.length >= 5
                             ? "border-green-500/50 focus-visible:ring-green-500"
-                            : "border-muted hover:border-purple-500/50 focus-visible:ring-purple-500"
+                            : "border-muted hover:border-teal-500/50 focus-visible:ring-teal-500"
                         }`}
                       />
                       <div className="flex items-center justify-between mt-1.5">
@@ -724,8 +724,8 @@ export default function PostJobPage() {
                             onClick={() => setFormData({ ...formData, category: value as JobCategory })}
                             className={`p-3 rounded-xl border-2 transition-all duration-200 text-left ${
                               formData.category === value
-                                ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
-                                : "border-muted hover:border-purple-500/50"
+                                ? "border-teal-500 bg-teal-500/10 shadow-lg shadow-teal-500/20"
+                                : "border-muted hover:border-teal-500/50"
                             }`}
                           >
                             <span className="text-xl mb-1 block">{categoryEmojis[value as JobCategory]}</span>
@@ -748,7 +748,7 @@ export default function PostJobPage() {
                             ? "border-red-500 focus-visible:ring-red-500"
                             : formData.description.length >= 20
                             ? "border-green-500/50 focus-visible:ring-green-500"
-                            : "border-muted hover:border-purple-500/50 focus-visible:ring-purple-500"
+                            : "border-muted hover:border-teal-500/50 focus-visible:ring-teal-500"
                         }`}
                       />
                       <div className="flex items-center justify-between mt-1.5">
@@ -796,7 +796,7 @@ export default function PostJobPage() {
                           ? "border-red-500 focus-visible:ring-red-500"
                           : formData.location.length > 0
                           ? "border-green-500/50"
-                          : "border-muted hover:border-purple-500/50"
+                          : "border-muted hover:border-teal-500/50"
                       }`}
                     />
                   </div>
@@ -825,8 +825,8 @@ export default function PostJobPage() {
                             onClick={() => setFormData({ ...formData, payType: option.value as PayType })}
                             className={`p-3 rounded-xl border-2 transition-all duration-200 ${
                               formData.payType === option.value
-                                ? "border-purple-500 bg-purple-500/10"
-                                : "border-muted hover:border-purple-500/50"
+                                ? "border-teal-500 bg-teal-500/10"
+                                : "border-muted hover:border-teal-500/50"
                             }`}
                           >
                             <span className="text-lg">{option.icon}</span>
@@ -855,7 +855,7 @@ export default function PostJobPage() {
                               ? "border-red-500 focus-visible:ring-red-500"
                               : formData.payAmount
                               ? "border-green-500/50"
-                              : "border-muted hover:border-purple-500/50"
+                              : "border-muted hover:border-teal-500/50"
                           }`}
                         />
                       </div>
@@ -883,7 +883,7 @@ export default function PostJobPage() {
                             ? "border-red-500 focus-visible:ring-red-500"
                             : formData.startDate
                             ? "border-green-500/50"
-                            : "border-muted hover:border-purple-500/50"
+                            : "border-muted hover:border-teal-500/50"
                         }`}
                       />
                     </div>
@@ -900,7 +900,7 @@ export default function PostJobPage() {
                             ? "border-red-500 focus-visible:ring-red-500"
                             : formData.endDate
                             ? "border-green-500/50"
-                            : "border-muted hover:border-purple-500/50"
+                            : "border-muted hover:border-teal-500/50"
                         }`}
                       />
                     </div>
@@ -919,7 +919,7 @@ export default function PostJobPage() {
                         placeholder="30"
                         value={formData.duration}
                         onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                        className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-purple-500/50 transition-all duration-200"
+                        className="mt-1.5 h-12 rounded-xl border-2 border-muted hover:border-teal-500/50 transition-all duration-200"
                       />
                     </div>
 
@@ -935,7 +935,7 @@ export default function PostJobPage() {
                             ? "border-red-500 focus-visible:ring-red-500"
                             : formData.applicationDeadline
                             ? "border-green-500/50"
-                            : "border-muted hover:border-purple-500/50"
+                            : "border-muted hover:border-teal-500/50"
                         }`}
                       />
                     </div>
@@ -959,8 +959,8 @@ export default function PostJobPage() {
                         onClick={() => toggleTrait(trait.label)}
                         className={`px-4 py-2 rounded-full border-2 transition-all duration-200 flex items-center gap-2 ${
                           formData.requiredTraits.includes(trait.label)
-                            ? "border-purple-500 bg-purple-500/10 text-purple-700 dark:text-purple-300"
-                            : "border-muted hover:border-purple-500/50"
+                            ? "border-teal-500 bg-teal-500/10 text-teal-700 dark:text-teal-300"
+                            : "border-muted hover:border-teal-500/50"
                         }`}
                       >
                         <span>{trait.emoji}</span>
@@ -1019,7 +1019,7 @@ export default function PostJobPage() {
               type="submit"
               size="lg"
               disabled={postJobMutation.isPending}
-              className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-700 hover:via-pink-700 hover:to-cyan-700 text-white font-semibold text-lg shadow-lg shadow-purple-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/30"
+              className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-teal-600 via-pink-600 to-cyan-600 hover:from-teal-700 hover:via-pink-700 hover:to-cyan-700 text-white font-semibold text-lg shadow-lg shadow-teal-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/30"
             >
               {postJobMutation.isPending ? (
                 <span className="flex items-center gap-2">

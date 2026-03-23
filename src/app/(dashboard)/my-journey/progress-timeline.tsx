@@ -67,8 +67,8 @@ const ENTRY_CONFIG: Record<
   },
   feedback_received: {
     icon: MessageSquare,
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
     label: "Feedback",
   },
   skill_demonstrated: {
@@ -91,8 +91,8 @@ const ENTRY_CONFIG: Record<
   },
   certificate_earned: {
     icon: Award,
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
     label: "Certificate",
   },
   goal_set: {
@@ -109,8 +109,8 @@ const ENTRY_CONFIG: Record<
   },
   shadow_completed: {
     icon: Eye,
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10",
+    color: "text-teal-600",
+    bgColor: "bg-teal-500/10",
     label: "Shadow",
   },
 };

@@ -61,7 +61,7 @@ const projections: Projection[] = [
     year5: 135,
     trend: "up",
     drivers: ["Digital innhold", "Merkevarebygging", "Sosiale medier"],
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
   },
   {
     industry: "Finans & Banking",
@@ -96,7 +96,7 @@ export function FiveYearProjections() {
 
   return (
     <Card className="border-2 overflow-hidden">
-      <div className="h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" />
+      <div className="h-1.5 bg-gradient-to-r from-teal-500 to-teal-500" />
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

@@ -172,7 +172,7 @@ function SwapGoalModal({
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ArrowLeftRight className="h-5 w-5 text-purple-500" />
+            <ArrowLeftRight className="h-5 w-5 text-teal-500" />
             Replace a Goal
           </DialogTitle>
           <DialogDescription>
@@ -185,15 +185,15 @@ function SwapGoalModal({
             <button
               onClick={() => onSwap("primary")}
               disabled={isPending}
-              className="w-full p-3 rounded-lg border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-colors text-left group"
+              className="w-full p-3 rounded-lg border-2 border-teal-200 dark:border-teal-800 hover:border-teal-400 dark:hover:border-teal-600 transition-colors text-left group"
             >
               <div className="flex items-center gap-2 mb-1">
-                <Star className="h-4 w-4 text-purple-500 fill-purple-500" />
+                <Star className="h-4 w-4 text-teal-500 fill-teal-500" />
                 <span className="text-xs font-medium text-muted-foreground">
                   Replace Primary Goal
                 </span>
               </div>
-              <p className="font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+              <p className="font-medium group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                 {primaryGoal.title}
               </p>
             </button>
@@ -411,18 +411,18 @@ export function CareerDetailSheet({
 
                 {/* Match Score */}
                 {matchScore !== undefined && (
-                  <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-purple-500/10">
+                  <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-teal-500/10">
                     <div className="relative w-10 h-10 flex-shrink-0">
                       <svg className="w-10 h-10 transform -rotate-90">
                         <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
-                        <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${(matchScore / 100) * 100.5} 100.5`} className="text-purple-500" strokeLinecap="round" />
+                        <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${(matchScore / 100) * 100.5} 100.5`} className="text-teal-500" strokeLinecap="round" />
                       </svg>
                       <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
                         {matchScore}%
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-purple-700 dark:text-purple-400">
+                      <p className="text-sm font-medium text-teal-700 dark:text-teal-400">
                         Match Score
                       </p>
                       <p className="text-[10px] text-muted-foreground">
@@ -592,7 +592,7 @@ export function CareerDetailSheet({
 
                     {/* Skills You'll Use Most */}
                     <AccordionSection
-                      icon={<Sparkles className="h-4 w-4 text-purple-500" />}
+                      icon={<Sparkles className="h-4 w-4 text-teal-500" />}
                       title="Skills You'll Use Most"
                     >
                       <div className="flex flex-wrap gap-1.5">
@@ -600,7 +600,7 @@ export function CareerDetailSheet({
                           <Badge
                             key={skill}
                             variant="outline"
-                            className="text-[10px] capitalize bg-purple-500/5 border-purple-500/20"
+                            className="text-[10px] capitalize bg-teal-500/5 border-teal-500/20"
                           >
                             {skill}
                           </Badge>
@@ -641,7 +641,7 @@ export function CareerDetailSheet({
                     {/* Career Progression */}
                     {progression && (
                       <AccordionSection
-                        icon={<TrendingUp className="h-4 w-4 text-indigo-500" />}
+                        icon={<TrendingUp className="h-4 w-4 text-teal-500" />}
                         title="Career Progression"
                       >
                         <p className="text-[10px] text-muted-foreground mb-3">
@@ -653,7 +653,7 @@ export function CareerDetailSheet({
 
                     {/* Education Path */}
                     <AccordionSection
-                      icon={<GraduationCap className="h-4 w-4 text-indigo-500" />}
+                      icon={<GraduationCap className="h-4 w-4 text-teal-500" />}
                       title="Education Overview"
                     >
                       <p className="text-xs text-muted-foreground">{career.educationPath}</p>
@@ -709,7 +709,7 @@ export function CareerDetailSheet({
                       {/* Set as Primary Goal button */}
                       {showPrimaryButton && (
                         <Button
-                          className="w-full bg-purple-600 hover:bg-purple-700"
+                          className="w-full bg-teal-600 hover:bg-teal-700"
                           size="sm"
                           onClick={handleSetAsPrimary}
                           disabled={setGoalMutation.isPending}

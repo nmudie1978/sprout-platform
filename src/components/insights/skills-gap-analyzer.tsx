@@ -47,7 +47,7 @@ const industries: Industry[] = [
     id: "creative",
     name: "Kreative Tjenester",
     requiredSkills: ["creativity", "design tools", "communication", "self-promotion", "time management", "english"],
-    color: "from-purple-500 to-pink-500",
+    color: "from-teal-500 to-pink-500",
   },
 ];
 
@@ -105,7 +105,7 @@ export function SkillsGapAnalyzer() {
 
   return (
     <Card className="border-2 overflow-hidden">
-      <div className={`h-1.5 bg-gradient-to-r ${currentIndustry?.color || "from-primary to-purple-500"}`} />
+      <div className={`h-1.5 bg-gradient-to-r ${currentIndustry?.color || "from-primary to-teal-500"}`} />
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Target className="h-5 w-5 text-primary" />

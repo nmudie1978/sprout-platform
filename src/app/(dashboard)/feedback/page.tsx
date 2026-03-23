@@ -157,7 +157,7 @@ export default function FeedbackPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500 to-teal-500">
             <MessageSquare className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold">Give Feedback</h1>

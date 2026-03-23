@@ -30,10 +30,10 @@ import Link from "next/link";
 const typeConfig: Record<string, { icon: typeof Briefcase; color: string; bg: string; label: string }> = {
   job: { icon: Briefcase, color: "text-green-600", bg: "bg-green-100 dark:bg-green-900/30", label: "Job" },
   saved_opportunity: { icon: Heart, color: "text-pink-600", bg: "bg-pink-100 dark:bg-pink-900/30", label: "Saved Job" },
-  saved_career: { icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30", label: "Saved Career" },
+  saved_career: { icon: GraduationCap, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30", label: "Saved Career" },
   saved_learning: { icon: BookOpen, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30", label: "Learning" },
   feedback: { icon: MessageSquare, color: "text-blue-600", bg: "bg-blue-100 dark:bg-blue-900/30", label: "Feedback" },
-  certificate: { icon: Award, color: "text-purple-600", bg: "bg-purple-100 dark:bg-purple-900/30", label: "Certificate" },
+  certificate: { icon: Award, color: "text-teal-600", bg: "bg-teal-100 dark:bg-teal-900/30", label: "Certificate" },
   photo: { icon: Image, color: "text-orange-600", bg: "bg-orange-100 dark:bg-orange-900/30", label: "Photo" },
   note: { icon: FileText, color: "text-slate-600", bg: "bg-slate-100 dark:bg-slate-900/30", label: "Note" },
   milestone: { icon: Star, color: "text-amber-600", bg: "bg-amber-100 dark:bg-amber-900/30", label: "Milestone" },

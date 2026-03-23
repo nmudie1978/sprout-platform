@@ -145,7 +145,7 @@ function GoalCard({
       <Card
         className={`border-2 border-dashed ${
           isPrimary
-            ? "border-purple-300 dark:border-purple-700"
+            ? "border-teal-300 dark:border-teal-700"
             : "border-slate-300 dark:border-slate-700"
         }`}
       >
@@ -153,13 +153,13 @@ function GoalCard({
           <div
             className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center ${
               isPrimary
-                ? "bg-purple-100 dark:bg-purple-900/50"
+                ? "bg-teal-100 dark:bg-teal-900/50"
                 : "bg-slate-100 dark:bg-slate-800"
             }`}
           >
             <Target
               className={`h-6 w-6 ${
-                isPrimary ? "text-purple-500" : "text-slate-500"
+                isPrimary ? "text-teal-500" : "text-slate-500"
               }`}
             />
           </div>
@@ -175,7 +175,7 @@ function GoalCard({
             {isMobile && onOpenGoalSheet && (
               <Button
                 variant={isPrimary ? "default" : "outline"}
-                className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+                className={isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
                 onClick={onOpenGoalSheet}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -185,7 +185,7 @@ function GoalCard({
             <Link href="/careers">
               <Button
                 variant={isMobile && onOpenGoalSheet ? "outline" : (isPrimary ? "default" : "outline")}
-                className={!isMobile && isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+                className={!isMobile && isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
               >
                 <Compass className="h-4 w-4 mr-2" />
                 Explore Careers
@@ -203,14 +203,14 @@ function GoalCard({
       <Card
         className={`border-2 ${
           isPrimary
-            ? "border-purple-500 dark:border-purple-600"
+            ? "border-teal-500 dark:border-teal-600"
             : "border-slate-400 dark:border-slate-600"
         }`}
       >
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isPrimary && <Star className="h-5 w-5 text-purple-500" />}
+              {isPrimary && <Star className="h-5 w-5 text-teal-500" />}
               <span className="text-sm font-medium text-muted-foreground">
                 {isPrimary ? "Primary Goal" : "Secondary Goal"}
               </span>
@@ -222,7 +222,7 @@ function GoalCard({
               <Button
                 size="sm"
                 onClick={onSave}
-                className={isPrimary ? "bg-purple-600 hover:bg-purple-700" : ""}
+                className={isPrimary ? "bg-teal-600 hover:bg-teal-700" : ""}
               >
                 Save
               </Button>
@@ -381,14 +381,14 @@ function GoalCard({
     <Card
       className={`${
         isPrimary
-          ? "border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50/50 to-white dark:from-purple-950/30 dark:to-background"
+          ? "border-2 border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50/50 to-white dark:from-teal-950/30 dark:to-background"
           : "border border-slate-200 dark:border-slate-800"
       }`}
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            {isPrimary && <Star className="h-5 w-5 text-purple-500 fill-purple-500" />}
+            {isPrimary && <Star className="h-5 w-5 text-teal-500 fill-teal-500" />}
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {isPrimary ? "Primary Goal" : "Secondary Goal"}
             </span>
@@ -407,7 +407,7 @@ function GoalCard({
             </Button>
           </div>
         </div>
-        <CardTitle className={`text-xl ${isPrimary ? "text-purple-900 dark:text-purple-100" : ""}`}>
+        <CardTitle className={`text-xl ${isPrimary ? "text-teal-900 dark:text-teal-100" : ""}`}>
           {goal!.title}
         </CardTitle>
       </CardHeader>

@@ -168,14 +168,14 @@ export function CareerRealityCheck({ roleSlug }: CareerRealityCheckProps) {
           <Section
             icon={<GraduationCap className="h-4 w-4" />}
             title="Typical Career Path"
-            color="text-purple-600"
+            color="text-teal-600"
           >
             <div className="flex flex-wrap gap-2">
               {check.typicalPath.map((step: string, i: number) => (
                 <div key={i} className="flex items-center gap-2">
                   <Badge
                     variant="outline"
-                    className="bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800"
+                    className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800"
                   >
                     {step}
                   </Badge>

@@ -109,8 +109,8 @@ const INDUSTRY_DATA: Record<string, {
   creative: {
     name: "Creative & Media",
     emoji: "🎨",
-    color: "purple",
-    gradientFrom: "from-purple-500",
+    color: "teal",
+    gradientFrom: "from-teal-500",
     gradientTo: "to-pink-500",
     growth: 14,
     growthLabel: "+14% job growth",
@@ -290,7 +290,7 @@ export function IndustrySnapshot() {
     blue: { text: "text-blue-600", bg: "bg-blue-500", border: "border-blue-200 dark:border-blue-800", ring: "ring-blue-500" },
     red: { text: "text-red-600", bg: "bg-red-500", border: "border-red-200 dark:border-red-800", ring: "ring-red-500" },
     green: { text: "text-green-600", bg: "bg-green-500", border: "border-green-200 dark:border-green-800", ring: "ring-green-500" },
-    purple: { text: "text-purple-600", bg: "bg-purple-500", border: "border-purple-200 dark:border-purple-800", ring: "ring-purple-500" },
+    teal: { text: "text-teal-600", bg: "bg-teal-500", border: "border-teal-200 dark:border-teal-800", ring: "ring-teal-500" },
     amber: { text: "text-amber-600", bg: "bg-amber-500", border: "border-amber-200 dark:border-amber-800", ring: "ring-amber-500" },
     slate: { text: "text-slate-600", bg: "bg-slate-500", border: "border-slate-200 dark:border-slate-800", ring: "ring-slate-500" },
   };
@@ -357,10 +357,10 @@ export function IndustrySnapshot() {
 
           <div className="p-3 rounded-lg bg-muted/50 border">
             <div className="flex items-center gap-1.5 mb-1">
-              <Users className="h-3.5 w-3.5 text-indigo-600" />
+              <Users className="h-3.5 w-3.5 text-teal-600" />
               <span className="text-[10px] font-medium text-muted-foreground">Open Positions</span>
             </div>
-            <p className="text-lg font-bold text-indigo-600">{industry.openPositions}</p>
+            <p className="text-lg font-bold text-teal-600">{industry.openPositions}</p>
             <p className="text-[10px] text-muted-foreground">in Norway</p>
           </div>
 
@@ -450,15 +450,15 @@ export function IndustrySnapshot() {
 
         {/* Set Goal CTA if no goal */}
         {!primaryGoal && isYouth && (
-          <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+          <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800">
             <div className="flex items-center gap-3">
-              <Target className="h-5 w-5 text-purple-500" />
+              <Target className="h-5 w-5 text-teal-500" />
               <div className="flex-1">
                 <p className="text-sm font-medium">Set a career goal</p>
                 <p className="text-xs text-muted-foreground">Get personalised industry insights</p>
               </div>
               <Link href="/goals">
-                <Button size="sm" variant="outline" className="border-purple-300 dark:border-purple-700">
+                <Button size="sm" variant="outline" className="border-teal-300 dark:border-teal-700">
                   Set Goal
                 </Button>
               </Link>

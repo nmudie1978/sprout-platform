@@ -39,7 +39,7 @@ const typeIcons: Record<SavedItemType, React.ComponentType<{ className?: string 
 const typeColors: Record<SavedItemType, string> = {
   ARTICLE: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
   VIDEO: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
-  PODCAST: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+  PODCAST: 'bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400',
   SHORT: 'bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400',
 };
 

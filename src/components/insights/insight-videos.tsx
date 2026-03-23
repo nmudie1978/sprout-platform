@@ -45,7 +45,7 @@ const pillarIcons: Record<VideoPillar, React.ElementType> = {
 
 const pillarColors: Record<VideoPillar, string> = {
   explore: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  learn: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  learn: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
   grow: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
 };
 

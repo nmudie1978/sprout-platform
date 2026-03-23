@@ -63,7 +63,7 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
       {matchScore !== undefined && (
         <Badge
           variant="secondary"
-          className="text-[10px] px-1.5 py-0 bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400 flex-shrink-0"
+          className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
         >
           {matchScore}%
         </Badge>
@@ -101,7 +101,7 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
       onClick={onLearnMore}
       className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
     >
-      <Card className="overflow-hidden border hover:border-purple-500/30 transition-all hover:shadow-sm h-full">
+      <Card className="overflow-hidden border hover:border-teal-500/30 transition-all hover:shadow-sm h-full">
         <div className="p-3">
           <div className="flex items-start gap-2 mb-2">
             <span className="text-xl flex-shrink-0">{career.emoji}</span>
@@ -116,7 +116,7 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
                 <div className="relative w-8 h-8">
                   <svg className="w-8 h-8 transform -rotate-90">
                     <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none" className="text-muted/30" />
-                    <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray={`${(matchScore / 100) * 75.4} 75.4`} className="text-purple-500" strokeLinecap="round" />
+                    <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray={`${(matchScore / 100) * 75.4} 75.4`} className="text-teal-500" strokeLinecap="round" />
                   </svg>
                   <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">
                     {matchScore}%
@@ -178,7 +178,7 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
       onClick={onLearnMore}
       className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
     >
-      <Card className="overflow-hidden border hover:border-purple-500/30 transition-all hover:shadow-md h-full">
+      <Card className="overflow-hidden border hover:border-teal-500/30 transition-all hover:shadow-md h-full">
         <div className="p-4">
           <div className="flex items-start gap-3 mb-3">
             <span className="text-2xl flex-shrink-0">{career.emoji}</span>
@@ -193,7 +193,7 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
                 <div className="relative w-11 h-11">
                   <svg className="w-11 h-11 transform -rotate-90">
                     <circle cx="22" cy="22" r="18" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
-                    <circle cx="22" cy="22" r="18" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${(matchScore / 100) * 113} 113`} className="text-purple-500" strokeLinecap="round" />
+                    <circle cx="22" cy="22" r="18" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${(matchScore / 100) * 113} 113`} className="text-teal-500" strokeLinecap="round" />
                   </svg>
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
                     {matchScore}%
@@ -220,7 +220,7 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
               <Badge
                 key={skill}
                 variant="outline"
-                className="text-[9px] px-1.5 py-0 capitalize bg-purple-500/5 border-purple-500/20"
+                className="text-[9px] px-1.5 py-0 capitalize bg-teal-500/5 border-teal-500/20"
               >
                 {skill.replace("-", " ")}
               </Badge>

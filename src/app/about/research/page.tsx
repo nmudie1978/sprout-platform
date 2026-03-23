@@ -16,7 +16,7 @@ export const metadata = {
 // Tag colors for visual distinction
 const TAG_COLORS: Record<string, string> = {
   "career-uncertainty": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  "work-exposure": "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+  "work-exposure": "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300",
   guidance: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
   preparedness: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300",
   expectations: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
@@ -139,7 +139,7 @@ export default function ResearchPage() {
               </div>
             </li>
             <li className="flex items-start gap-2 text-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-1.5 flex-shrink-0" />
               <div>
                 <strong className="text-foreground">Real experiences matter</strong>
                 <span className="text-muted-foreground">
@@ -178,9 +178,9 @@ export default function ResearchPage() {
 
         <div className="grid gap-3 sm:grid-cols-3">
           {/* Discover */}
-          <div className="rounded-lg border bg-gradient-to-br from-purple-50/50 to-background dark:from-purple-950/20 p-3.5">
+          <div className="rounded-lg border bg-gradient-to-br from-teal-50/50 to-background dark:from-teal-950/20 p-3.5">
             <div className="flex items-center gap-1.5 mb-2">
-              <Compass className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+              <Compass className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
               <h3 className="text-sm font-semibold text-foreground">Discover</h3>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">

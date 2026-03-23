@@ -21,7 +21,7 @@ interface AnimatedCardProps {
 const AnimatedCard = ({
   children,
   className,
-  horizontalColor = 'via-purple-500/50',
+  horizontalColor = 'via-teal-500/50',
   verticalColor = 'via-blue-500/50',
   speed = 0.5,
   showDots = false,

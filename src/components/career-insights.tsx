@@ -120,7 +120,7 @@ function RecommendedCareersSection({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="overflow-hidden border-2 hover:border-purple-500/30 transition-colors cursor-pointer group">
+                  <Card className="overflow-hidden border-2 hover:border-teal-500/30 transition-colors cursor-pointer group">
                     <CardContent className="p-0">
                       <div className="p-3">
                         <div className="flex items-start gap-3">
@@ -145,7 +145,7 @@ function RecommendedCareersSection({
                             <div className="relative w-10 h-10">
                               <svg className="w-10 h-10 transform -rotate-90">
                                 <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
-                                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${matchScore} 100`} className="text-purple-500" strokeLinecap="round" />
+                                <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${matchScore} 100`} className="text-teal-500" strokeLinecap="round" />
                               </svg>
                               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
                                 {matchScore}%
@@ -188,7 +188,7 @@ function RecommendedCareersSection({
                     <span className={growth.color}>{rec.career.growthOutlook}</span>
                   </Badge>
                   {matchScore > 0 && (
-                    <span className="text-xs font-semibold text-purple-500 shrink-0 w-10 text-right">{matchScore}%</span>
+                    <span className="text-xs font-semibold text-teal-500 shrink-0 w-10 text-right">{matchScore}%</span>
                   )}
                   <span className="text-xs text-muted-foreground shrink-0">{rec.career.avgSalary.split(" ")[0]}</span>
                 </button>
@@ -218,7 +218,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
       <Card className="border-2">
         <CardContent className="py-8">
           <div className="flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+            <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
           </div>
         </CardContent>
       </Card>
@@ -236,12 +236,12 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
         animate={{ opacity: 1, y: 0 }}
       >
         <Card className="border-2 overflow-hidden h-full relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
           <CardHeader className="relative pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20">
-                  <Compass className="h-5 w-5 text-purple-600" />
+                <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-pink-500/20">
+                  <Compass className="h-5 w-5 text-teal-600" />
                 </div>
                 <div>
                   <CardTitle className="text-lg">Career Paths</CardTitle>
@@ -267,8 +267,8 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
             ) : (
               <>
                 {/* Insight message */}
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-                  <Sparkles className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                <div className="flex items-start gap-2 p-3 rounded-xl bg-gradient-to-r from-teal-500/10 to-pink-500/10 border border-teal-500/20">
+                  <Sparkles className="h-4 w-4 text-teal-500 mt-0.5 shrink-0" />
                   <p className="text-sm">{insightsMessage}</p>
                 </div>
 
@@ -296,7 +296,7 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
                       </div>
                       <Badge
                         variant="secondary"
-                        className="bg-purple-500/10 text-purple-600 border-purple-500/20"
+                        className="bg-teal-500/10 text-teal-600 border-teal-500/20"
                       >
                         {Math.min(Math.round(rec.matchScore), 100)}%
                       </Badge>
@@ -329,11 +329,11 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
     >
       {/* Header Card */}
       <Card className="border-2 overflow-hidden relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-pink-500/5 to-cyan-500/5 pointer-events-none" />
         <CardHeader className="relative">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20">
-              <Compass className="h-6 w-6 text-purple-600" />
+            <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500/20 to-pink-500/20">
+              <Compass className="h-6 w-6 text-teal-600" />
             </div>
             <div>
               <CardTitle className="text-xl">Your Career Insights</CardTitle>
@@ -343,12 +343,12 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
         <CardContent className="relative">
           {/* Experience Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-teal-500/10 to-pink-500/10 border border-teal-500/20">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Briefcase className="h-4 w-4" />
                 Careers Available
               </div>
-              <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">
+              <div className="text-2xl font-bold text-teal-700 dark:text-teal-400">
                 {getAllCareers().length}
               </div>
             </div>

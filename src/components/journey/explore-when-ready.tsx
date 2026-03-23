@@ -30,7 +30,7 @@ const exploreLinks: ExploreLink[] = [
     label: "Career shadows",
     description: "Experience workplaces firsthand",
     icon: Eye,
-    color: "text-indigo-500",
+    color: "text-teal-500",
   },
   {
     href: "/jobs",

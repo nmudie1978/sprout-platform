@@ -20,7 +20,7 @@ export function StageBanner({ stageId, className }: StageBannerProps) {
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         "rounded-xl p-4 md:p-6",
-        stageId === "explore" && "bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100",
+        stageId === "explore" && "bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-100",
         stageId === "build" && "bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100",
         stageId === "apply" && "bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100",
         className

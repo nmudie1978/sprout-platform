@@ -78,7 +78,7 @@ export function NextStepPanel() {
       className="mb-6"
     >
       {/* Outer neon frame */}
-      <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 p-3 shadow-[0_0_15px_rgba(124,58,237,0.15)]">
+      <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/5 via-teal-500/5 to-blue-500/5 p-3 shadow-[0_0_15px_rgba(124,58,237,0.15)]">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -175,8 +175,8 @@ export function NextStepPanel() {
 
           {/* 3. My Journey */}
           <Link href="/my-journey" className="block group">
-            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-purple-300 transition-colors">
-              <div className="flex items-center gap-1.5 text-purple-500 mb-1.5">
+            <div className="rounded-lg bg-white dark:bg-slate-900 border p-2.5 h-full hover:border-teal-300 transition-colors">
+              <div className="flex items-center gap-1.5 text-teal-500 mb-1.5">
                 <TrendingUp className="h-3.5 w-3.5" />
                 <span className="text-[10px] font-medium uppercase tracking-wide">My Journey</span>
                 <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />

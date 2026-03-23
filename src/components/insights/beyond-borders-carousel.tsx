@@ -6,7 +6,7 @@
  * Visual redesign:
  * - Side-by-side article cards (horizontal scroll on mobile, grid on desktop)
  * - Each card has a gradient header with travel-themed icon
- * - Warm indigo/violet/sky color palette instead of teal
+ * - Warm teal/teal/sky color palette instead of teal
  * - "Read more" expands within the card
  * - Small Steps as visual cards with icons, not dashed chips
  * - Plane icon in the section header
@@ -59,9 +59,9 @@ const STEP_ICONS: Record<SmallStep["icon"], typeof Plane> = {
 
 // Card gradient & icon per article (cycling)
 const CARD_THEMES = [
-  { gradient: "from-indigo-500 via-violet-500 to-purple-600", icon: Plane, iconBg: "bg-white/20" },
-  { gradient: "from-sky-500 via-blue-500 to-indigo-600", icon: Globe, iconBg: "bg-white/20" },
-  { gradient: "from-violet-500 via-purple-500 to-fuchsia-600", icon: MapPin, iconBg: "bg-white/20" },
+  { gradient: "from-teal-500 via-teal-500 to-teal-600", icon: Plane, iconBg: "bg-white/20" },
+  { gradient: "from-sky-500 via-blue-500 to-teal-600", icon: Globe, iconBg: "bg-white/20" },
+  { gradient: "from-teal-500 via-teal-500 to-fuchsia-600", icon: MapPin, iconBg: "bg-white/20" },
 ];
 
 // ── Main Component ───────────────────────────────────────────────────
@@ -165,8 +165,8 @@ export function BeyondBordersCarousel() {
       {/* ── Section Header ────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/40 dark:to-violet-900/40">
-            <Plane className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+          <div className="p-2 rounded-xl bg-gradient-to-br from-teal-100 to-teal-100 dark:from-teal-900/40 dark:to-teal-900/40">
+            <Plane className="h-5 w-5 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
             <h3 className="text-lg font-bold leading-tight tracking-tight">Working Beyond Borders</h3>
@@ -260,7 +260,7 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={`flex-shrink-0 w-[340px] sm:w-[360px] snap-start rounded-2xl border bg-card overflow-hidden transition-all duration-300 ${
         expanded
-          ? "border-indigo-400/50 dark:border-indigo-500/30 shadow-lg shadow-indigo-500/10 dark:shadow-indigo-500/5"
+          ? "border-teal-400/50 dark:border-teal-500/30 shadow-lg shadow-teal-500/10 dark:shadow-teal-500/5"
           : "border-border shadow-sm hover:shadow-md"
       }`}
     >
@@ -287,9 +287,9 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
       {/* Card body */}
       <div className="px-5 py-4 space-y-3">
         {/* Key takeaway */}
-        <div className="flex items-start gap-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 px-3.5 py-2.5">
-          <Lightbulb className="h-4 w-4 text-indigo-500 dark:text-indigo-400 mt-0.5 shrink-0" />
-          <p className="text-sm text-indigo-800 dark:text-indigo-300 leading-relaxed">
+        <div className="flex items-start gap-2.5 rounded-xl bg-teal-50 dark:bg-teal-950/30 px-3.5 py-2.5">
+          <Lightbulb className="h-4 w-4 text-teal-500 dark:text-teal-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-teal-800 dark:text-teal-300 leading-relaxed">
             {getText(`bb-takeaway-${article.id}`, article.takeaway)}
           </p>
         </div>
@@ -320,7 +320,7 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
         <div className="flex items-center justify-between pt-1">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
           >
             {expanded ? "Show less" : "Read more"}
             {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -335,8 +335,8 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
           >
             {isSaved ? (
               <>
-                <BookmarkCheck className="h-3.5 w-3.5 text-indigo-600" />
-                <span className="text-indigo-600">Saved</span>
+                <BookmarkCheck className="h-3.5 w-3.5 text-teal-600" />
+                <span className="text-teal-600">Saved</span>
               </>
             ) : (
               <>
@@ -363,7 +363,7 @@ function SmallStepsSection({ getText }: SmallStepsSectionProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <Compass className="h-4 w-4 text-indigo-500" />
+        <Compass className="h-4 w-4 text-teal-500" />
         <p className="text-sm font-semibold text-foreground">
           Small steps if you&apos;re curious
         </p>
@@ -381,23 +381,23 @@ function SmallStepsSection({ getText }: SmallStepsSectionProps) {
               aria-expanded={isActive}
               className={`text-left rounded-xl border p-3.5 transition-all ${
                 isActive
-                  ? "border-indigo-300 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/20 shadow-sm"
-                  : "border-border hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-sm"
+                  ? "border-teal-300 dark:border-teal-700 bg-teal-50/50 dark:bg-teal-950/20 shadow-sm"
+                  : "border-border hover:border-teal-200 dark:hover:border-teal-800 hover:shadow-sm"
               }`}
             >
               <div className="flex items-start gap-3">
                 <div className={`p-2 rounded-lg shrink-0 ${
                   isActive
-                    ? "bg-indigo-100 dark:bg-indigo-900/40"
+                    ? "bg-teal-100 dark:bg-teal-900/40"
                     : "bg-muted/60"
                 }`}>
                   <Icon className={`h-4 w-4 ${
-                    isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
+                    isActive ? "text-teal-600 dark:text-teal-400" : "text-muted-foreground"
                   }`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-medium leading-tight ${
-                    isActive ? "text-indigo-700 dark:text-indigo-300" : "text-foreground/90"
+                    isActive ? "text-teal-700 dark:text-teal-300" : "text-foreground/90"
                   }`}>
                     {getText(`bb-step-title-${step.id}`, step.title)}
                   </p>
@@ -444,20 +444,20 @@ function CalloutBox({
       className={`rounded-xl border p-3.5 ${
         isRealityCheck
           ? "border-amber-200 bg-amber-50/50 dark:border-amber-800/40 dark:bg-amber-950/20"
-          : "border-indigo-200 bg-indigo-50/50 dark:border-indigo-800/40 dark:bg-indigo-950/20"
+          : "border-teal-200 bg-teal-50/50 dark:border-teal-800/40 dark:bg-teal-950/20"
       }`}
     >
       <div className="mb-2 flex items-center gap-1.5">
         {isRealityCheck ? (
           <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
         ) : (
-          <Lightbulb className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+          <Lightbulb className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
         )}
         <span
           className={`text-xs font-semibold ${
             isRealityCheck
               ? "text-amber-800 dark:text-amber-300"
-              : "text-indigo-800 dark:text-indigo-300"
+              : "text-teal-800 dark:text-teal-300"
           }`}
         >
           {callout.title}
@@ -468,7 +468,7 @@ function CalloutBox({
           <li key={i} className="flex items-start gap-2 text-xs text-foreground/75">
             <span
               className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${
-                isRealityCheck ? "bg-amber-400" : "bg-indigo-400"
+                isRealityCheck ? "bg-amber-400" : "bg-teal-400"
               }`}
             />
             {item}

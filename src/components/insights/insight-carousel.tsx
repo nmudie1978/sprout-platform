@@ -189,7 +189,7 @@ function NewDropBadge() {
 function WatchedBadge() {
   return (
     <span
-      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-purple-500/90 text-white rounded"
+      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-teal-500/90 text-white rounded"
       aria-label="Watched"
     >
       <Check className="h-2.5 w-2.5" />

@@ -133,7 +133,7 @@ export default function CategoryPage() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="h-8 w-8 border-3 border-purple-500 border-t-transparent rounded-full mb-3"
+            className="h-8 w-8 border-3 border-teal-500 border-t-transparent rounded-full mb-3"
           />
           <p className="text-sm text-muted-foreground">Loading category...</p>
         </div>

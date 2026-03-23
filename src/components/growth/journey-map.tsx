@@ -31,7 +31,7 @@ const STAGE_COLORS: Record<
     bg: "bg-blue-50",
     ring: "ring-blue-200",
     text: "text-blue-600",
-    gradient: "from-blue-500 to-indigo-500",
+    gradient: "from-blue-500 to-teal-500",
   },
   build: {
     primary: "bg-amber-500",

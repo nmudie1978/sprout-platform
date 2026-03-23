@@ -172,13 +172,13 @@ export function ShadowPrep({
       </Card>
 
       {/* Observation Only Reminder */}
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-        <AlertCircle className="h-5 w-5 text-purple-600 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+        <AlertCircle className="h-5 w-5 text-teal-600 shrink-0 mt-0.5" />
         <div>
-          <p className="font-medium text-purple-800 dark:text-purple-200 text-sm">
+          <p className="font-medium text-teal-800 dark:text-teal-200 text-sm">
             Remember: Observation Only
           </p>
-          <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
+          <p className="text-xs text-teal-700 dark:text-teal-300 mt-1">
             You are there to watch and learn, not to work. There are no performance expectations.
           </p>
         </div>

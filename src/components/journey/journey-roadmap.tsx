@@ -50,11 +50,11 @@ const LENS_COLORS: Record<JourneyLens, {
   bg: string;
 }> = {
   DISCOVER: {
-    primary: '#7c3aed',      // Refined violet
+    primary: '#7c3aed',      // Refined teal
     primaryMuted: '#a78bfa',
     glow: 'rgba(124, 58, 237, 0.3)',
-    text: 'text-violet-600 dark:text-violet-400',
-    bg: 'bg-violet-50 dark:bg-violet-950/30',
+    text: 'text-teal-600 dark:text-teal-400',
+    bg: 'bg-teal-50 dark:bg-teal-950/30',
   },
   UNDERSTAND: {
     primary: '#059669',      // Emerald/teal
@@ -194,7 +194,7 @@ function RoadmapNodeComponent({
           x={position.x}
           y={position.y - 6}
           textAnchor="middle"
-          className="text-[2px] fill-violet-600 dark:fill-violet-400 font-medium"
+          className="text-[2px] fill-teal-600 dark:fill-teal-400 font-medium"
         >
           You are here
         </text>
@@ -590,7 +590,7 @@ export function JourneyRoadmap({ steps, currentState, onStepClick }: JourneyRoad
           <span>Complete</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full border-2 border-violet-500 bg-white" />
+          <div className="w-3 h-3 rounded-full border-2 border-teal-500 bg-white" />
           <span>Current</span>
         </div>
         <div className="flex items-center gap-1.5">
