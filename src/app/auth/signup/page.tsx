@@ -235,7 +235,7 @@ function SignUpForm() {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
-                <option value="YOUTH">Youth Worker (looking for jobs)</option>
+                <option value="YOUTH">Youth (16-23)</option>
                 <option value="EMPLOYER">Job Poster (posting tasks)</option>
               </select>
             </div>

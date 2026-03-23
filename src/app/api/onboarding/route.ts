@@ -40,6 +40,7 @@ export async function GET() {
       careerAspiration: youthProfile.careerAspiration,
       currentPriorities: youthProfile.currentPriorities,
       availabilityLevel: youthProfile.availabilityLevel,
+      onboardingStarted: youthProfile.currentPriorities.length > 0 || !!youthProfile.careerAspiration,
     });
   } catch (error) {
     console.error("Failed to check onboarding status:", error);
@@ -96,6 +97,39 @@ export async function POST(request: Request) {
       { error: "Failed to save onboarding data" },
       { status: 500 }
     );
+  }
+}
+
+/**
+ * PATCH /api/onboarding - Dismiss onboarding (mark as seen, first session ended)
+ */
+export async function PATCH() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "YOUTH") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const profile = await prisma.youthProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { onboardingCompletedAt: true },
+    });
+
+    // Only dismiss if not already completed (avoid overwriting real completion)
+    if (profile && !profile.onboardingCompletedAt) {
+      await prisma.youthProfile.update({
+        where: { userId: session.user.id },
+        data: {
+          onboardingCompletedAt: new Date(),
+          currentPriorities: ["explore"], // default
+        },
+      });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Failed to dismiss onboarding:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 

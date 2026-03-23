@@ -34,7 +34,7 @@ import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
@@ -282,12 +282,11 @@ function InsightsTicker() {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
-    null
-  );
+  // Onboarding: inline card on first login only
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const dismissedRef = useRef(false);
 
-  const { data: onboardingStatus } = useQuery({
+  const { data: onboardingStatus, refetch: refetchOnboarding } = useQuery({
     queryKey: ["onboarding-status"],
     queryFn: async () => {
       const response = await fetch("/api/onboarding");
@@ -299,16 +298,31 @@ export default function DashboardPage() {
     gcTime: 10 * 60 * 1000,
   });
 
+  const isFirstLogin = onboardingStatus?.needsOnboarding === true;
+  const onboardingComplete = onboardingStatus?.needsOnboarding === false;
+
+  // Auto-dismiss onboarding when user leaves the page (end of first session)
+  const dismissOnboarding = useCallback(async () => {
+    if (dismissedRef.current || !isFirstLogin) return;
+    dismissedRef.current = true;
+    try {
+      await fetch("/api/onboarding", { method: "PATCH" });
+    } catch { /* silent */ }
+  }, [isFirstLogin]);
+
   useEffect(() => {
-    if (onboardingStatus) {
-      if (onboardingStatus.needsOnboarding) {
-        setShowOnboarding(true);
-        setOnboardingComplete(false);
-      } else {
-        setOnboardingComplete(true);
-      }
-    }
-  }, [onboardingStatus]);
+    if (!isFirstLogin) return;
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") dismissOnboarding();
+    };
+    const handleBeforeUnload = () => dismissOnboarding();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isFirstLogin, dismissOnboarding]);
 
   const { data: goalsData } = useQuery<GoalsResponse>({
     queryKey: ["my-goals"],
@@ -428,11 +442,13 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[100vh] bg-background text-foreground">
+      {/* Onboarding wizard — only opened from inline card */}
       <OnboardingWizard
-        open={showOnboarding}
+        open={showOnboardingWizard}
         onComplete={() => {
-          setShowOnboarding(false);
-          setOnboardingComplete(true);
+          dismissedRef.current = true;
+          setShowOnboardingWizard(false);
+          refetchOnboarding();
         }}
       />
 
@@ -440,7 +456,7 @@ export default function DashboardPage() {
         {/* ── Header ─────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-            Hey, {displayName}
+            {isFirstLogin ? `Welcome, ${displayName}` : `Hey, ${displayName}`}
           </h1>
           <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
             <Clock className="h-4 w-4" />
@@ -451,6 +467,64 @@ export default function DashboardPage() {
         <div className="mb-5">
           <VerificationStatus compact />
         </div>
+
+        {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
+        {isFirstLogin ? (
+          <div className="mb-6">
+            <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80">
+              <div className="p-5 sm:p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
+                    <Rocket className="h-5 w-5 text-teal-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
+                      Step 1 of 3
+                    </p>
+                    <h2 className="text-lg font-semibold text-foreground mb-1.5">
+                      Start your journey
+                    </h2>
+                    <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
+                      Take a minute to tell us about your interests and direction.
+                      We'll use it to shape your personal roadmap — no pressure, you can change it anytime.
+                    </p>
+                    <button
+                      onClick={() => {
+                        dismissedRef.current = true;
+                        setShowOnboardingWizard(true);
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                    >
+                      Get started
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* Subtle decorative gradient */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
+            </GlassCard>
+          </div>
+        ) : goalTitle ? (
+          <Link href="/my-journey" className="block mb-6 group">
+            <GlassCard className="p-4 sm:p-5 hover:border-border/60 transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
+                  <Rocket className="h-4 w-4 text-teal-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-0.5">
+                    Continue your journey
+                  </p>
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {currentStageLabel}: {goalTitle}
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-teal-500 transition-colors shrink-0" />
+              </div>
+            </GlassCard>
+          </Link>
+        ) : null}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         <Link href="/my-journey" className="block mb-6 group">
