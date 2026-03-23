@@ -90,8 +90,12 @@ export function TimelineDetailDialog({
     }
   }, [item?.id, open]);
 
+  const hasContent = notes.trim().length > 0 || resourceLink.trim().length > 0;
+  const doneWithoutContent = status === 'done' && !hasContent;
+
   const handleSave = useCallback(() => {
     if (!item) return;
+    if (status === 'done' && !notes.trim() && !resourceLink.trim()) return; // block empty "done"
     setIsSaving(true);
     saveCardData(item.id, { status, notes, resourceLink, confidence });
     setTimeout(() => {
@@ -137,8 +141,9 @@ export function TimelineDetailDialog({
                 const youAreHereIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
                 const effectiveIdx = youAreHereIdx === -1 ? allItems.length - 1 : youAreHereIdx;
                 const canGoBack = effectiveIdx > 0;
-                // Only allow forward if user has set THIS card to "done" in the current session
-                const canGoForward = status === 'done' && effectiveIdx < allItems.length - 1;
+                // Only allow forward if status is "done" AND user has added notes or a resource
+                const hasContent = notes.trim().length > 0 || resourceLink.trim().length > 0;
+                const canGoForward = status === 'done' && hasContent && effectiveIdx < allItems.length - 1;
 
                 return (
                   <div className="flex items-center gap-3">
@@ -272,10 +277,16 @@ export function TimelineDetailDialog({
         </div>
 
         {/* Save — sticky footer */}
-        <div className="sticky bottom-0 flex justify-end pt-3 mt-2 border-t border-border/30 bg-card">
+        <div className="sticky bottom-0 pt-3 mt-2 border-t border-border/30 bg-card space-y-2">
+          {doneWithoutContent && (
+            <p className="text-[11px] text-amber-400/80">
+              Add some notes or a resource link before marking as done.
+            </p>
+          )}
+          <div className="flex justify-end">
           <Button
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={isSaving || doneWithoutContent}
             size="sm"
             className={cn(
               'text-xs',
@@ -289,6 +300,7 @@ export function TimelineDetailDialog({
             ) : null}
             {saved ? 'Saved' : 'Save'}
           </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
