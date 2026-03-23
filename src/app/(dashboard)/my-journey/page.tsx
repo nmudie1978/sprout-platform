@@ -9,8 +9,9 @@
  * Stages: Discover → Understand → Grow (sequential, gated)
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Lock,
@@ -400,14 +401,30 @@ export default function MyJourneyPage() {
     });
   }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
 
-  // Auto-switch to the appropriate tab based on progress
+  // Auto-switch to the appropriate tab based on progress + inspirational messages
   const discoverComplete = journeyData?.journey?.summary?.lenses?.discover?.isComplete ?? false;
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
+  const celebratedRef = useRef<Set<string>>(new Set());
+
   useEffect(() => {
-    if (understandComplete) {
+    if (understandComplete && !celebratedRef.current.has('act')) {
+      celebratedRef.current.add('act');
       setActiveTab('act');
-    } else if (discoverComplete) {
+      setTimeout(() => {
+        toast('You understand the world. Now make your mark.', {
+          description: 'Time to take real steps toward your future.',
+          duration: 6000,
+        });
+      }, 500);
+    } else if (discoverComplete && !understandComplete && !celebratedRef.current.has('understand')) {
+      celebratedRef.current.add('understand');
       setActiveTab('understand');
+      setTimeout(() => {
+        toast('You know who you are. Now explore what\'s out there.', {
+          description: 'Research your career, understand the path ahead.',
+          duration: 6000,
+        });
+      }, 500);
     }
   }, [discoverComplete, understandComplete]);
 

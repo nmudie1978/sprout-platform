@@ -110,21 +110,25 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 {/* "YOU ARE HERE" marker for current item */}
                 {isCurrent && isHigh && (
                   <div
-                    className="flex flex-col items-center mb-1"
+                    className="flex flex-col items-center mb-1 animate-bounce-slow"
                     style={{ marginTop: -AGE_MARKER_HEIGHT - 36 }}
                   >
                     <span
-                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg"
-                      style={{ backgroundColor: stageColor, boxShadow: `0 0 20px ${stageColor}90, 0 0 40px ${stageColor}40` }}
+                      className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-white"
+                      style={{
+                        backgroundColor: stageColor,
+                        boxShadow: `0 0 15px ${stageColor}, 0 0 30px ${stageColor}90, 0 0 60px ${stageColor}50, 0 0 100px ${stageColor}30`,
+                        animation: 'glow-pulse 2s ease-in-out infinite',
+                      }}
                     >
-                      <span className="h-2 w-2 rounded-full bg-white animate-ping absolute" />
-                      <span className="h-2 w-2 rounded-full bg-white relative" />
+                      <span className="absolute -inset-1 rounded-full opacity-30 animate-ping" style={{ backgroundColor: stageColor }} />
+                      <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse relative" />
                       You are here
                     </span>
                     {/* Downward arrow */}
                     <div
-                      className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent mt-[-1px]"
-                      style={{ borderTopColor: stageColor }}
+                      className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-transparent mt-[-1px]"
+                      style={{ borderTopColor: stageColor, filter: `drop-shadow(0 4px 8px ${stageColor}80)` }}
                     />
                   </div>
                 )}
@@ -204,21 +208,25 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     </span>
                     {/* "YOU ARE HERE" marker for current low-position item */}
                     {isCurrent && (
-                      <>
+                      <div className="flex flex-col items-center">
                         {/* Upward arrow */}
                         <div
-                          className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-transparent mb-[-1px]"
-                          style={{ borderBottomColor: stageColor }}
+                          className="w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-transparent mb-[-1px]"
+                          style={{ borderBottomColor: stageColor, filter: `drop-shadow(0 -4px 8px ${stageColor}80)` }}
                         />
                         <span
-                          className="relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-lg"
-                          style={{ backgroundColor: stageColor, boxShadow: `0 0 20px ${stageColor}90, 0 0 40px ${stageColor}40` }}
+                          className="relative inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-white"
+                          style={{
+                            backgroundColor: stageColor,
+                            boxShadow: `0 0 15px ${stageColor}, 0 0 30px ${stageColor}90, 0 0 60px ${stageColor}50, 0 0 100px ${stageColor}30`,
+                            animation: 'glow-pulse 2s ease-in-out infinite',
+                          }}
                         >
-                          <span className="h-2 w-2 rounded-full bg-white animate-ping absolute left-3" />
-                          <span className="h-2 w-2 rounded-full bg-white relative" />
+                          <span className="absolute -inset-1 rounded-full opacity-30 animate-ping" style={{ backgroundColor: stageColor }} />
+                          <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse relative" />
                           You are here
                         </span>
-                      </>
+                      </div>
                     )}
                   </div>
                 )}
