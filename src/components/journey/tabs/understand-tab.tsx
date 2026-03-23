@@ -212,7 +212,7 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
               {isComplete && onStartStep && (
                 <button
                   onClick={() => onStartStep(config.id)}
-                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-emerald-500 hover:opacity-80"
+                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                 >
                   <Pencil className="h-3 w-3" />
                   Update

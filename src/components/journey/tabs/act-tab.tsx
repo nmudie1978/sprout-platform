@@ -171,7 +171,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
           {isComplete && onStartStep && (
             <button
               onClick={() => onStartStep(config.id)}
-              className="inline-flex items-center gap-1 text-[11px] font-medium shrink-0 text-amber-500 hover:opacity-80"
+              className="inline-flex items-center gap-1 text-[11px] font-medium shrink-0 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
             >
               <Pencil className="h-3 w-3" />
               Update

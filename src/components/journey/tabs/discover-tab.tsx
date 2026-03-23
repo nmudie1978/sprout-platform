@@ -152,7 +152,7 @@ function ReflectionCard({
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className={cn('inline-flex items-center gap-1 text-xs font-medium transition-colors', colorClass, 'hover:opacity-80')}
+          className="inline-flex items-center gap-1 text-xs font-medium transition-colors text-muted-foreground/50 hover:text-muted-foreground"
         >
           {hasItems ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
           {actionLabel}
@@ -309,7 +309,7 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
               {(isComplete || hasUnsavedExploration) && onStartStep && (
                 <button
                   onClick={() => config.id === 'ROLE_DEEP_DIVE' ? onSetGoal() : onStartStep(config.id)}
-                  className={cn('inline-flex items-center gap-1 text-xs font-medium shrink-0', config.colorClass, 'hover:opacity-80')}
+                  className="inline-flex items-center gap-1 text-xs font-medium shrink-0 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                 >
                   <Pencil className="h-3 w-3" />
                   Update
