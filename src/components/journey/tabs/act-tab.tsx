@@ -234,18 +234,19 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       {getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
        getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed' && (
         <div
-          className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 flex items-center gap-4"
-          style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.1)' }}
+          className="shine-border rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/10 to-transparent py-10 px-6 text-center"
+          style={{ boxShadow: '0 0 40px rgba(16, 185, 129, 0.15), 0 0 80px rgba(16, 185, 129, 0.08)' }}
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 shrink-0">
-            <CheckCircle2 className="h-5 w-5" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 mx-auto mb-4" style={{ boxShadow: '0 0 30px rgba(16, 185, 129, 0.3)' }}>
+            <CheckCircle2 className="h-8 w-8" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-emerald-400">Your guided journey is complete!</p>
-            <p className="text-xs text-muted-foreground/70 mt-0.5">
-              Keep using the roadmap below to track your long-term progress. Click any step to add notes, resources, and mark your advancement.
-            </p>
-          </div>
+          <h2 className="text-xl font-bold text-emerald-400 mb-2">
+            Your guided journey is complete!
+          </h2>
+          <p className="text-sm text-muted-foreground/70 max-w-md mx-auto">
+            You&apos;ve done the hard work of discovering yourself, understanding your path, and taking action.
+            Now use the roadmap below to keep tracking your long-term progress.
+          </p>
         </div>
       )}
 
