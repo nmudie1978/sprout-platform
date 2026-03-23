@@ -235,41 +235,45 @@ const LENS_LABELS = [
 // ── Insights Ticker ─────────────────────────────────────────────────
 function InsightsTicker() {
   const TICKER_ITEMS = [
-    { type: '📊', text: '39% of teenagers cannot name a career they expect to pursue', label: 'OECD' },
-    { type: '🎬', text: 'Watch: It\'s okay not knowing what\'s after graduation', label: 'TEDx' },
-    { type: '📊', text: '41% of young people are unsure how to choose their path', label: 'Gallup' },
-    { type: '🎬', text: 'Watch: Grit — The Power of Passion and Perseverance', label: 'TED' },
-    { type: '📰', text: 'Healthcare sector is one of the fastest growing in Norway', label: 'Insight' },
-    { type: '🎬', text: 'Watch: The Power of Believing You Can Improve', label: 'TED' },
-    { type: '📊', text: '43% of students don\'t feel prepared for their future', label: 'Gallup' },
-    { type: '🎬', text: 'Watch: 10 Ways to Have a Better Conversation', label: 'TED' },
+    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400' },
+    { emoji: '🎬', text: 'Grit: The Power of Passion and Perseverance — TED', color: 'text-red-400' },
+    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400' },
+    { emoji: '🎬', text: 'The Power of Believing You Can Improve — TED', color: 'text-red-400' },
+    { emoji: '💡', text: 'Healthcare is one of the fastest growing sectors in Norway', color: 'text-amber-400' },
+    { emoji: '🎬', text: '10 Ways to Have a Better Conversation — TED', color: 'text-red-400' },
+    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400' },
+    { emoji: '🎙', text: 'Career Clarity: Why Starting Early Matters — Podcast', color: 'text-purple-400' },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % TICKER_ITEMS.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const item = TICKER_ITEMS[currentIndex];
+  // Duplicate for seamless loop
+  const allItems = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
     <Link
       href="/insights"
-      className="block mt-6 rounded-xl border border-border/30 bg-card/40 hover:bg-card/60 hover:border-border/50 transition-all overflow-hidden"
+      className="block mt-6 rounded-xl border border-teal-500/15 bg-gradient-to-r from-teal-500/5 via-transparent to-teal-500/5 hover:from-teal-500/10 hover:to-teal-500/10 transition-all overflow-hidden"
     >
-      <div className="flex items-center gap-3 px-4 py-2.5">
-        <span className="text-xs shrink-0">{item.type}</span>
-        <p className="text-[11px] text-muted-foreground/70 flex-1 truncate">
-          {item.text}
-        </p>
-        <span className="text-[9px] text-muted-foreground/30 shrink-0 uppercase tracking-wider">
-          {item.label}
-        </span>
-        <ArrowRight className="h-3 w-3 text-muted-foreground/30 shrink-0" />
+      <div className="py-2.5 overflow-hidden relative">
+        {/* Fade edges */}
+        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
+
+        {/* Scrolling content */}
+        <div
+          className="flex items-center gap-8 whitespace-nowrap"
+          style={{
+            animation: 'ticker-scroll 60s linear infinite',
+            width: 'max-content',
+          }}
+        >
+          {allItems.map((item, i) => (
+            <span key={i} className="inline-flex items-center gap-2">
+              <span className="text-sm">{item.emoji}</span>
+              <span className={cn("text-[11px] font-medium", item.color)}>{item.text}</span>
+              <span className="text-muted-foreground/20">·</span>
+            </span>
+          ))}
+        </div>
       </div>
     </Link>
   );
