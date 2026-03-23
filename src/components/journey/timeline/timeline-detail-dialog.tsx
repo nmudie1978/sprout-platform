@@ -16,6 +16,7 @@ import { ChevronDown, ChevronRight, Check, Loader2 } from 'lucide-react';
 
 interface TimelineDetailDialogProps {
   item: JourneyItem | null;
+  allItems?: JourneyItem[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void;
@@ -63,6 +64,7 @@ const CONFIDENCE_OPTIONS = [
 
 export function TimelineDetailDialog({
   item,
+  allItems,
   open,
   onOpenChange,
   onSaved,
@@ -130,21 +132,25 @@ export function TimelineDetailDialog({
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-xs font-medium text-foreground/70">Status</p>
-              {status === 'done' && (
-                <button
-                  onClick={() => {
-                    setStatus('not_started');
-                    // Auto-save the reset
-                    if (item) {
-                      saveCardData(item.id, { status: 'not_started', notes, resourceLink, confidence });
+              {status === 'done' && allItems && item && (() => {
+                const currentIdx = allItems.findIndex((i) => i.id === item.id);
+                if (currentIdx <= 0) return null;
+                const prevItem = allItems[currentIdx - 1];
+                return (
+                  <button
+                    onClick={() => {
+                      // Reset previous item to not_started
+                      const prevData = loadCardData(prevItem.id);
+                      saveCardData(prevItem.id, { ...prevData, status: 'not_started' });
                       onSaved?.();
-                    }
-                  }}
-                  className="text-[10px] text-muted-foreground/50 hover:text-red-400 transition-colors underline underline-offset-2"
-                >
-                  Go back to this step
-                </button>
-              )}
+                      onOpenChange(false);
+                    }}
+                    className="text-[10px] text-muted-foreground/50 hover:text-red-400 transition-colors underline underline-offset-2"
+                  >
+                    Go back to previous step
+                  </button>
+                );
+              })()}
             </div>
             <div className="grid grid-cols-3 gap-2">
               {STATUS_OPTIONS.map((opt) => (

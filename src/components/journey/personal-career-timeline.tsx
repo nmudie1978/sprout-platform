@@ -104,6 +104,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
       {/* Card detail popup */}
       <TimelineDetailDialog
         item={selectedItem}
+        allItems={journey.items}
         open={!!selectedItem}
         onSaved={() => setSaveVersion((v) => v + 1)}
         onOpenChange={(open) => {
