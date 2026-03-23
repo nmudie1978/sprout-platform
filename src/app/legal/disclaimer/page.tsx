@@ -4,8 +4,8 @@ import { AlertCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Health & Safety Disclaimer | Endeavrly",
-  description: "Health and safety disclaimer for using the Endeavrly platform",
+  title: "Platform Disclaimer | Endeavrly",
+  description: "Disclaimer and safety information for the Endeavrly platform",
 };
 
 export default function DisclaimerPage() {
@@ -18,8 +18,8 @@ export default function DisclaimerPage() {
             <AlertCircle className="h-6 w-6 text-orange-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">Health & Safety Disclaimer</h1>
-            <p className="text-muted-foreground">Last updated: [DATE]</p>
+            <h1 className="text-3xl font-bold">Platform Disclaimer</h1>
+            <p className="text-muted-foreground">Last updated: March 2026</p>
           </div>
         </div>
         <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-500/10">
@@ -32,75 +32,103 @@ export default function DisclaimerPage() {
       <Card className="border-2">
         <CardContent className="p-6 md:p-8 prose prose-slate dark:prose-invert max-w-none">
           <section className="mb-8">
-            <h2>Platform Role</h2>
+            <h2>What Endeavrly Is</h2>
             <p>
-              Endeavrly is a platform that connects young people with job opportunities.
-              We facilitate introductions between job seekers and job posters, but we
-              do not supervise, manage, or control the work itself.
+              Endeavrly is a <strong>career exploration and development platform</strong> for
+              young people aged 15–23. Our primary purpose is to help users discover their
+              strengths, understand career paths, and take meaningful steps toward their future.
             </p>
             <p>
+              The platform provides:
+            </p>
+            <ul>
+              <li>A guided journey framework (Discover, Understand, Grow)</li>
+              <li>Career research tools and industry insights</li>
+              <li>Personalised career roadmaps</li>
+              <li>Goal tracking and reflection tools</li>
+              <li>A small jobs marketplace connecting youth with local opportunities</li>
+            </ul>
+            <p>
               Endeavrly is <strong>not an employer</strong>. We do not hire, employ, or
-              contract workers. Any work arrangement is directly between the youth
-              worker and the job poster.
+              contract workers. Any work arrangement made through the jobs marketplace is
+              directly between the youth and the job poster.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2>Career Guidance Disclaimer</h2>
+            <p>
+              The career information, roadmaps, and insights provided on Endeavrly are for
+              <strong> informational and exploratory purposes only</strong>. They do not
+              constitute professional career advice, educational guidance, or employment
+              recommendations.
+            </p>
+            <p>
+              Career roadmaps are AI-generated based on general industry data and should
+              be used as a starting point for exploration, not as a definitive plan. Users
+              should consult with school counsellors, career advisors, or other qualified
+              professionals for personalised guidance.
             </p>
           </section>
 
           <section className="mb-8">
             <h2>User Responsibility</h2>
-            <p>
-              All users are responsible for:
-            </p>
+            <p>All users are responsible for:</p>
             <ul>
-              <li>Assessing the safety and suitability of work arrangements</li>
-              <li>Ensuring work complies with applicable laws and regulations</li>
-              <li>Taking reasonable precautions for personal safety</li>
+              <li>Verifying career information independently before making decisions</li>
+              <li>Consulting with trusted adults, guardians, or professional advisors</li>
+              <li>Assessing the safety and suitability of any job opportunities</li>
+              <li>Ensuring any work complies with applicable laws and regulations</li>
               <li>Communicating clearly about expectations and requirements</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2>For Youth Workers</h2>
-            <p>
-              Before accepting any job, consider:
-            </p>
+            <h2>For Youth Users</h2>
+            <p>When using the platform, remember:</p>
             <ul>
-              <li>Whether the task is within your abilities and comfort level</li>
-              <li>Whether the work environment appears safe</li>
-              <li>Whether the job description matches what is being asked</li>
-              <li>Whether you have informed a parent, guardian, or trusted adult</li>
+              <li>Career exploration is a journey — there are no wrong answers</li>
+              <li>The information here supplements, but does not replace, professional guidance</li>
+              <li>Before accepting any job, inform a parent, guardian, or trusted adult</li>
+              <li>You have the right to decline any opportunity that makes you uncomfortable</li>
+              <li>Your data and journey progress are private and belong to you</li>
             </ul>
-            <p>
-              You have the right to decline any work that makes you uncomfortable or
-              that you believe is unsafe.
-            </p>
           </section>
 
           <section className="mb-8">
             <h2>For Job Posters</h2>
-            <p>
-              Job posters are responsible for:
-            </p>
+            <p>Job posters using the small jobs marketplace are responsible for:</p>
             <ul>
               <li>Providing safe working conditions</li>
               <li>Complying with Norwegian labour laws for young workers</li>
               <li>Accurately describing job requirements and conditions</li>
-              <li>Ensuring tasks are appropriate for the worker's age</li>
+              <li>Ensuring tasks are appropriate for the worker&apos;s age</li>
               <li>Having appropriate insurance where required by law</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2>Limitation of Liability</h2>
+            <h2>Data & Privacy</h2>
             <p>
-              Endeavrly does not supervise jobs or work performed through connections
-              made on the platform. We are not liable for:
+              Endeavrly is built with a <strong>privacy-first approach</strong>. We collect
+              minimal data, do not use tracking ads, and do not engage in behavioural profiling.
+              Journey data and career research are stored securely and belong to the user.
             </p>
+            <p>
+              See our <Link href="/legal/privacy" className="text-primary hover:underline">Privacy Policy</Link> for
+              full details on data handling.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2>Limitation of Liability</h2>
+            <p>Endeavrly is not liable for:</p>
             <ul>
-              <li>Injuries, accidents, or harm occurring during work</li>
-              <li>Quality of work performed or received</li>
-              <li>Payment disputes between users</li>
+              <li>Career decisions made based on information provided on the platform</li>
+              <li>Accuracy of AI-generated roadmaps or career insights</li>
+              <li>Injuries, accidents, or harm occurring during work arranged through the jobs marketplace</li>
+              <li>Payment disputes between users of the jobs marketplace</li>
               <li>Actions of users on or off the platform</li>
-              <li>Loss of earnings, property, or other damages</li>
             </ul>
             <p>
               [PLACEHOLDER: Specific limitation of liability language to be drafted
@@ -109,42 +137,14 @@ export default function DisclaimerPage() {
           </section>
 
           <section className="mb-8">
-            <h2>Payments</h2>
-            <p>
-              Endeavrly does not handle payments between users. All payments are arranged
-              and completed outside our platform. We are not responsible for:
-            </p>
-            <ul>
-              <li>Non-payment or late payment</li>
-              <li>Payment disputes</li>
-              <li>Tax obligations arising from earnings</li>
-            </ul>
-            <p>
-              Users should keep their own records of work completed and payments received.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2>Insurance</h2>
-            <p>
-              Endeavrly does not provide insurance coverage for users. We recommend:
-            </p>
-            <ul>
-              <li>Youth workers check if their family's insurance provides any coverage</li>
-              <li>Job posters ensure they have appropriate liability insurance</li>
-              <li>Both parties clarify insurance arrangements before work begins</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
             <h2>Reporting Issues</h2>
             <p>
-              While we cannot supervise work arrangements, we take safety seriously.
-              Please report:
+              We take safety seriously. Please report:
             </p>
             <ul>
+              <li>Inappropriate content or behaviour via our reporting feature</li>
+              <li>Inaccurate career information that could mislead users</li>
               <li>Unsafe job postings via our reporting feature</li>
-              <li>Inappropriate behaviour via our Safety Guidelines</li>
               <li>Serious safety concerns to local authorities</li>
             </ul>
             <p>
@@ -155,12 +155,13 @@ export default function DisclaimerPage() {
           <hr className="my-8" />
 
           <div className="bg-muted/50 p-4 rounded-lg text-sm">
-            <p className="font-medium mb-2">Important Notes for Implementation:</p>
+            <p className="font-medium mb-2">Notes for Legal Review:</p>
             <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-              <li>Have this disclaimer reviewed by legal counsel</li>
+              <li>Review disclaimer in context of career guidance regulations</li>
               <li>Ensure compliance with Norwegian consumer protection law</li>
-              <li>Consider whether additional liability waivers are needed</li>
-              <li>Review insurance requirements and recommendations</li>
+              <li>Review AI-generated content disclaimer requirements</li>
+              <li>Consider GDPR implications for youth data handling</li>
+              <li>Review liability for jobs marketplace separately from career tools</li>
             </ul>
           </div>
         </CardContent>
