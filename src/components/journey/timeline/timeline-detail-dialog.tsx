@@ -128,7 +128,24 @@ export function TimelineDetailDialog({
         <div className="space-y-4 mt-2">
           {/* Status */}
           <div>
-            <p className="text-xs font-medium text-foreground/70 mb-2">Status</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-medium text-foreground/70">Status</p>
+              {status === 'done' && (
+                <button
+                  onClick={() => {
+                    setStatus('not_started');
+                    // Auto-save the reset
+                    if (item) {
+                      saveCardData(item.id, { status: 'not_started', notes, resourceLink, confidence });
+                      onSaved?.();
+                    }
+                  }}
+                  className="text-[10px] text-muted-foreground/50 hover:text-red-400 transition-colors underline underline-offset-2"
+                >
+                  Go back to this step
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-3 gap-2">
               {STATUS_OPTIONS.map((opt) => (
                 <button
