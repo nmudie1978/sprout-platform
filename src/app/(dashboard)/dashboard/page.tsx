@@ -332,7 +332,7 @@ export default function DashboardPage() {
     .filter((app: any) => app.job?.startDate && new Date(app.job.startDate) > new Date())
     .sort((a: any, b: any) => new Date(a.job.startDate).getTime() - new Date(b.job.startDate).getTime())[0];
 
-  const journeyStageIndex = completedJobs >= 3 ? 3 : completedJobs >= 1 ? 2 : applications.length >= 1 ? 1 : 0;
+  const journeyStageIndex = completedJobs >= 1 ? 2 : applications.length >= 1 ? 1 : 0;
   const journeyPct = ((journeyStageIndex + 1) / journeyStages.length) * 100;
 
   const recentActivity = [...applications]
@@ -414,7 +414,7 @@ export default function DashboardPage() {
                       className="text-teal-400" />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-base sm:text-xl font-bold text-foreground">{journeyStageIndex + 1}/4</span>
+                    <span className="text-base sm:text-xl font-bold text-foreground">{journeyStageIndex + 1}/{journeyStages.length}</span>
                   </div>
                 </div>
               </div>
