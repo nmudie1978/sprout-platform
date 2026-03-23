@@ -181,11 +181,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch user's profile to get career aspiration for personalization (optional)
-    let userProfile: { careerAspiration: string | null } | null = null;
+    let userProfile: { careerAspiration: string | null; journeySummary: unknown } | null = null;
     try {
       userProfile = await prisma.youthProfile.findUnique({
         where: { userId: session.user.id },
-        select: { careerAspiration: true },
+        select: { careerAspiration: true, journeySummary: true },
       });
     } catch (profileError) {
       console.error("Profile fetch error (continuing without personalization):", profileError);
@@ -230,10 +230,29 @@ export async function POST(req: NextRequest) {
 
     // Build messages for OpenAI with personalization based on career aspiration
     const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration);
+
+    // Inject Discover profile context if available
+    let discoverContext = "";
+    const journeySummary = userProfile?.journeySummary as Record<string, unknown> | null;
+    const discoverProfile = journeySummary?.discoverProfile as Record<string, unknown> | null;
+    if (discoverProfile && discoverProfile.completedAt) {
+      const interests = (discoverProfile.interests as string[]) || [];
+      const strengths = (discoverProfile.strengths as string[]) || [];
+      const motivations = (discoverProfile.motivations as string[]) || [];
+      if (interests.length > 0 || strengths.length > 0) {
+        discoverContext = `\n\nDISCOVER PROFILE (self-reported by user):
+- Interests: ${interests.join(', ') || 'not specified'}
+- Strengths: ${strengths.join(', ') || 'not specified'}
+- Motivations: ${motivations.join(', ') || 'not specified'}
+Use this context to make your advice more personal. For example: "Based on your interest in..." or "Since you mentioned you enjoy..."
+Keep it natural — don't list their profile back to them.`;
+      }
+    }
+
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: systemPrompt + (context ? `\n\n${context}` : "") + historyContext,
+        content: systemPrompt + (context ? `\n\n${context}` : "") + discoverContext + historyContext,
       },
     ];
 

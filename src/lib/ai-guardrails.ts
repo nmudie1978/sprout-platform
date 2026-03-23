@@ -232,13 +232,17 @@ WRITING STYLE:
 - Include Norwegian terms when helpful (e.g., "fagbrev", "lærling", "sommerjobb") but always explain them in English
 - Be encouraging but realistic about job prospects`;
 
-  // Add personalization if user has a career aspiration
-  const personalizationPrompt = careerAspiration
-    ? `\n\nUSER CONTEXT:
+  // Add personalization if user has a career aspiration or discover profile
+  let personalizationPrompt = "";
+  if (careerAspiration) {
+    personalizationPrompt += `\n\nUSER CONTEXT:
 - Career Goal: ${careerAspiration}
 
-When relevant, connect your advice to how it helps them achieve their goal of becoming ${careerAspiration}. Reference their career goal naturally in your responses to make the advice feel personalised.`
-    : "";
+When relevant, connect your advice to how it helps them achieve their goal of becoming ${careerAspiration}. Reference their career goal naturally in your responses to make the advice feel personalised.`;
+  }
+
+  // Discover profile context (injected by chat route if available)
+  // This gets appended by the chat API route when discover data exists
 
   switch (intent) {
     case "unsafe":

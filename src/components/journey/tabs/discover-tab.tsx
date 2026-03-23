@@ -181,34 +181,34 @@ const DISCOVER_STEPS: StepConfig[] = [
     id: 'REFLECT_ON_STRENGTHS',
     stepNumber: 1,
     title: 'Reflect on Strengths',
-    description: 'Identify what you\'re naturally good at. These shape the roles that\'ll suit you.',
+    description: 'Think about what you\'re naturally good at — there are no wrong answers. You can always update this later.',
     icon: Sparkles,
     colorClass: 'text-teal-500',
     bgClass: 'bg-teal-500/10',
     outputTitle: 'Your Strengths',
-    emptyOutput: 'Complete this step to see your strengths here.',
+    emptyOutput: 'When you\'re ready, reflect on what comes naturally to you.',
   },
   {
     id: 'EXPLORE_CAREERS',
     stepNumber: 2,
     title: 'Explore Careers',
-    description: 'Browse career paths that interest you. Save the ones that catch your attention.',
+    description: 'Browse different paths and save anything that catches your interest. You don\'t need to commit to anything yet.',
     icon: Heart,
     colorClass: 'text-teal-500',
     bgClass: 'bg-teal-500/10',
     outputTitle: 'Your Interests',
-    emptyOutput: 'Complete this step to discover your interests.',
+    emptyOutput: 'Explore broadly — save anything that feels interesting.',
   },
   {
     id: 'ROLE_DEEP_DIVE',
     stepNumber: 3,
     title: 'Set Your Career Direction',
-    description: 'Pick a career and research what the job actually involves day to day.',
+    description: 'Choose a direction to explore further. This isn\'t a final decision — you can change it whenever you want.',
     icon: Compass,
     colorClass: 'text-emerald-500',
     bgClass: 'bg-emerald-500/10',
     outputTitle: 'Roles Explored',
-    emptyOutput: 'Complete this step to see your explored roles.',
+    emptyOutput: 'Pick a direction when you feel ready — there\'s no rush.',
   },
 ];
 
@@ -248,6 +248,21 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
 
   return (
     <div className="space-y-3">
+      {/* Know Yourself — Discover profile entry point */}
+      <Link
+        href="/my-journey/discover"
+        className="flex items-center gap-3 rounded-xl border border-teal-500/20 bg-teal-500/5 hover:bg-teal-500/10 p-3 transition-all group"
+      >
+        <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
+          <Sparkles className="h-4 w-4 text-teal-500" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-teal-400 group-hover:text-teal-300 transition-colors">Know Yourself</p>
+          <p className="text-[11px] text-muted-foreground/60">Quick self-discovery to personalise your experience</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-teal-500/40 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all shrink-0" />
+      </Link>
+
       {/* Sequential steps — each one unlocks the next */}
       {DISCOVER_STEPS.map((config) => {
         const status = getStepStatus(config.id);
@@ -395,7 +410,7 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold">Set Your Direction</p>
                     <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                      Choose a primary career goal to guide your Understand and Grow phases.
+                      Pick a direction to focus on next. You can change this anytime — nothing is locked in.
                     </p>
                   </div>
                   <Button size="sm" variant="outline" className="text-[11px] h-7 shrink-0 border-teal-500/30 text-teal-500 hover:bg-teal-500/10" onClick={onSetGoal}>
@@ -439,9 +454,9 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-emerald-400">Discover complete!</p>
+            <p className="text-sm font-semibold text-emerald-400">Discover complete</p>
             <p className="text-xs text-muted-foreground/70 mt-0.5">
-              You know yourself. Now explore the world of work.
+              You've built a strong foundation. When you're ready, explore what your path actually looks like.
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400 group-hover:translate-x-0.5 transition-transform">
