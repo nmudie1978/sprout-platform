@@ -123,15 +123,15 @@ function LibraryCard({
             ))}
           </div>
         ) : (
-          /* Grid view — shows thumbnails for videos */
-          <div className="grid grid-cols-2 gap-2">
+          /* Grid view — compact thumbnails */
+          <div className="grid grid-cols-3 gap-1.5">
             {items.slice(0, 6).map((item, i) => (
               <a
                 key={i}
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-lg border border-border/30 overflow-hidden hover:border-border/60 transition-all"
+                className="group rounded-md border border-border/20 overflow-hidden hover:border-border/50 transition-all"
               >
                 {item.thumbnail ? (
                   <div className="aspect-video bg-muted/30 relative overflow-hidden">
@@ -141,27 +141,24 @@ function LibraryCard({
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {item.type === 'VIDEO' && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
-                        <div className="h-6 w-6 rounded-full bg-white/90 flex items-center justify-center">
-                          <span className="text-[10px] ml-0.5">▶</span>
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/10 transition-colors">
+                        <div className="h-4 w-4 rounded-full bg-white/80 flex items-center justify-center">
+                          <span className="text-[7px] ml-px">▶</span>
                         </div>
                       </div>
                     )}
                   </div>
                 ) : (
                   <div className="aspect-video bg-muted/20 flex items-center justify-center">
-                    <span className="text-lg opacity-30">
+                    <span className="text-xs opacity-30">
                       {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
                     </span>
                   </div>
                 )}
-                <div className="p-2">
-                  <p className="text-[10px] font-medium text-foreground/80 line-clamp-2 leading-snug">
+                <div className="px-1.5 py-1">
+                  <p className="text-[9px] font-medium text-foreground/70 line-clamp-1 leading-snug">
                     {item.title}
                   </p>
-                  {item.source && (
-                    <p className="text-[9px] text-muted-foreground/40 mt-0.5">{item.source}</p>
-                  )}
                 </div>
               </a>
             ))}
@@ -235,6 +232,49 @@ const LENS_LABELS = [
 ] as const;
 
 // ── Main Page ────────────────────────────────────────────────────────
+// ── Insights Ticker ─────────────────────────────────────────────────
+function InsightsTicker() {
+  const TICKER_ITEMS = [
+    { type: '📊', text: '39% of teenagers cannot name a career they expect to pursue', label: 'OECD' },
+    { type: '🎬', text: 'Watch: It\'s okay not knowing what\'s after graduation', label: 'TEDx' },
+    { type: '📊', text: '41% of young people are unsure how to choose their path', label: 'Gallup' },
+    { type: '🎬', text: 'Watch: Grit — The Power of Passion and Perseverance', label: 'TED' },
+    { type: '📰', text: 'Healthcare sector is one of the fastest growing in Norway', label: 'Insight' },
+    { type: '🎬', text: 'Watch: The Power of Believing You Can Improve', label: 'TED' },
+    { type: '📊', text: '43% of students don\'t feel prepared for their future', label: 'Gallup' },
+    { type: '🎬', text: 'Watch: 10 Ways to Have a Better Conversation', label: 'TED' },
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % TICKER_ITEMS.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const item = TICKER_ITEMS[currentIndex];
+
+  return (
+    <Link
+      href="/insights"
+      className="block mt-6 rounded-xl border border-border/30 bg-card/40 hover:bg-card/60 hover:border-border/50 transition-all overflow-hidden"
+    >
+      <div className="flex items-center gap-3 px-4 py-2.5">
+        <span className="text-xs shrink-0">{item.type}</span>
+        <p className="text-[11px] text-muted-foreground/70 flex-1 truncate">
+          {item.text}
+        </p>
+        <span className="text-[9px] text-muted-foreground/30 shrink-0 uppercase tracking-wider">
+          {item.label}
+        </span>
+        <ArrowRight className="h-3 w-3 text-muted-foreground/30 shrink-0" />
+      </div>
+    </Link>
+  );
+}
+
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -666,6 +706,9 @@ export default function DashboardPage() {
           </GlassCard>
         </div>
       </div>
+
+      {/* ── 5. Industry Insights Ticker ─────────────────────── */}
+      <InsightsTicker />
 
       {/* Career Detail Sheet */}
       <CareerDetailSheet
