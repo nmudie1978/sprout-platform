@@ -170,23 +170,9 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
         )}
       </div>
 
-      {/* Stage legend + style selector + layers control */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        {STAGE_ORDER.map((stage) => {
-          const config = STAGE_CONFIG[stage];
-          return (
-            <div key={stage} className="flex items-center gap-1.5">
-              <div
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: config.color }}
-              />
-              <span className={cn('text-xs font-medium', config.textClass)}>
-                {config.label}
-              </span>
-            </div>
-          );
-        })}
-        <div className="ml-auto flex items-center gap-2">
+      {/* Controls + legend */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mr-auto">
           <TimelineStyleSelector value={style} onChange={setStyle} />
           <LayersControl activeLayers={activeLayers} onToggle={toggleLayer} />
           <SaveSnapshotButton goalId={goalId} disabled={!journey} />
@@ -199,6 +185,23 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
             <History className="h-3.5 w-3.5" />
             Snapshots
           </Button>
+        </div>
+        {/* Muted inline legend */}
+        <div className="flex items-center gap-3">
+          {STAGE_ORDER.map((stage) => {
+            const config = STAGE_CONFIG[stage];
+            return (
+              <div key={stage} className="flex items-center gap-1">
+                <div
+                  className="h-1.5 w-1.5 rounded-full opacity-60"
+                  style={{ backgroundColor: config.color }}
+                />
+                <span className="text-[10px] text-muted-foreground/50">
+                  {config.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
