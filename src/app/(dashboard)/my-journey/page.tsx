@@ -448,6 +448,7 @@ export default function MyJourneyPage() {
           {activeTab === 'discover' && (
             <DiscoverTab
               journey={journey}
+              goalTitle={goalTitle}
               onSetGoal={() => setGoalSheetOpen(true)}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
             />

@@ -24,6 +24,7 @@ import type { JourneyUIState } from '@/lib/journey/types';
 
 interface DiscoverTabProps {
   journey: JourneyUIState;
+  goalTitle?: string | null;
   onSetGoal: () => void;
   onStartStep?: (stepId: string) => void;
 }
@@ -197,8 +198,9 @@ const DISCOVER_STEPS: StepConfig[] = [
 
 // ── Main Component ──────────────────────────────────────────────────
 
-export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProps) {
+export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep }: DiscoverTabProps) {
   const summary = journey.summary;
+  const hasGoal = !!(goalTitle || summary?.primaryGoal?.title);
 
   // Get step status from journey data
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
@@ -313,40 +315,26 @@ export function DiscoverTab({ journey, onSetGoal, onStartStep }: DiscoverTabProp
         );
       })}
 
-      {/* Career Direction — unlocks after all 3 steps or anytime user wants */}
-      <div className="rounded-xl border border-border/40 bg-card/60 p-4 mt-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-xs font-bold shrink-0">
-            <Target className="h-4 w-4" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold">Set Your Direction</p>
-            <p className="text-xs text-muted-foreground/60 mt-0.5">
-              Choose a primary career goal to guide your Understand and Grow phases.
-            </p>
+      {/* Career Direction — only shown when no goal is set */}
+      {!hasGoal && (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 mt-2">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-primary text-xs font-bold shrink-0">
+              <Target className="h-4 w-4" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Set Your Direction</p>
+              <p className="text-xs text-muted-foreground/60 mt-0.5">
+                Choose a primary career goal to guide your Understand and Grow phases.
+              </p>
+            </div>
+            <Button size="sm" className="text-xs h-8 shrink-0" onClick={onSetGoal}>
+              <Target className="h-3 w-3 mr-1.5" />
+              Choose a goal
+            </Button>
           </div>
         </div>
-        {summary?.primaryGoal?.title ? (
-          <div className="flex items-center justify-between gap-2 rounded-lg bg-primary/5 border border-primary/10 p-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <Target className="h-4 w-4 text-primary shrink-0" />
-              <p className="text-sm font-semibold truncate">{summary.primaryGoal.title}</p>
-            </div>
-            <button
-              onClick={onSetGoal}
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:opacity-80 transition-colors shrink-0"
-            >
-              <Pencil className="h-3 w-3" />
-              Change
-            </button>
-          </div>
-        ) : (
-          <Button size="sm" className="text-xs h-8" onClick={onSetGoal}>
-            <Target className="h-3 w-3 mr-1.5" />
-            Choose a goal
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 }
