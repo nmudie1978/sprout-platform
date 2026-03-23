@@ -36,8 +36,19 @@ interface Stats {
   total: number;
   youth: number;
   employers: number;
+  today: number;
   last7Days: number;
   last30Days: number;
+}
+
+interface RecentSignup {
+  id: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  fullName: string | null;
+  youthProfile: { displayName: string } | null;
+  employerProfile: { companyName: string } | null;
 }
 
 function formatDate(date: string): string {
@@ -62,6 +73,7 @@ function timeSince(date: string): string {
 export default function AdminUsersPage() {
   const router = useRouter();
   const [users, setUsers] = useState<UserData[]>([]);
+  const [recentSignups, setRecentSignups] = useState<RecentSignup[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -76,6 +88,7 @@ export default function AdminUsersPage() {
       }
       const data = await res.json();
       setUsers(data.users || []);
+      setRecentSignups(data.recentSignups || []);
       setStats(data.stats || null);
     } catch {
       // Silent fail
@@ -135,7 +148,7 @@ export default function AdminUsersPage() {
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
             <div className="rounded-lg bg-slate-800 border border-slate-700/50 p-4 text-center">
               <p className="text-2xl font-bold text-teal-400">{stats.total}</p>
               <p className="text-xs text-slate-400">Total Users</p>
@@ -148,6 +161,10 @@ export default function AdminUsersPage() {
               <p className="text-2xl font-bold text-blue-400">{stats.employers}</p>
               <p className="text-xs text-slate-400">Employers</p>
             </div>
+            <div className="rounded-lg bg-slate-800 border border-emerald-500/30 p-4 text-center">
+              <p className="text-2xl font-bold text-emerald-300">{stats.today}</p>
+              <p className="text-xs text-slate-400">Today</p>
+            </div>
             <div className="rounded-lg bg-slate-800 border border-slate-700/50 p-4 text-center">
               <p className="text-2xl font-bold text-amber-400">{stats.last7Days}</p>
               <p className="text-xs text-slate-400">Last 7 days</p>
@@ -155,6 +172,38 @@ export default function AdminUsersPage() {
             <div className="rounded-lg bg-slate-800 border border-slate-700/50 p-4 text-center">
               <p className="text-2xl font-bold text-purple-400">{stats.last30Days}</p>
               <p className="text-xs text-slate-400">Last 30 days</p>
+            </div>
+          </div>
+        )}
+
+        {/* Recent Signups — last 7 days with emails */}
+        {recentSignups.length > 0 && (
+          <div className="rounded-lg border border-emerald-500/20 bg-slate-800/50 p-4">
+            <h2 className="text-sm font-semibold text-emerald-400 mb-3">
+              Recent Signups — Last 7 Days ({recentSignups.length})
+            </h2>
+            <div className="space-y-2">
+              {recentSignups.map((user) => (
+                <div key={user.id} className="flex items-center justify-between rounded-md bg-slate-800 px-3 py-2 border border-slate-700/30">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Badge
+                      variant="secondary"
+                      className={user.role === "YOUTH" ? "bg-emerald-500/10 text-emerald-400 text-[9px]" : "bg-blue-500/10 text-blue-400 text-[9px]"}
+                    >
+                      {user.role}
+                    </Badge>
+                    <div className="min-w-0">
+                      <p className="text-sm text-slate-200 truncate">
+                        {user.youthProfile?.displayName || user.employerProfile?.companyName || user.fullName || "—"}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <span className="text-[11px] text-slate-500 shrink-0 ml-3">
+                    {timeSince(user.createdAt)}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
