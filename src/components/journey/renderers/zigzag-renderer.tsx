@@ -94,6 +94,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   );
 
   return (
+    <TooltipProvider delayDuration={300}>
     <div className="overflow-x-auto pb-4 -mx-2 px-2">
       {/* Progression bar — subtle, at top */}
       <div className="flex items-center justify-between mb-3 px-1">
@@ -279,6 +280,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
         })}
       </div>
     </div>
+    </TooltipProvider>
   );
 }
 
@@ -387,15 +389,13 @@ function ZigzagCard({
   if (!hasTooltip) return card;
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <Tooltip>
-        <TooltipTrigger asChild>{card}</TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[250px] text-xs space-y-1 p-3">
-          {tooltipLines.map((line, i) => (
-            <p key={i} className="text-[11px]">{line}</p>
-          ))}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>{card}</TooltipTrigger>
+      <TooltipContent side="top" className="max-w-[250px] text-xs space-y-1 p-3">
+        {tooltipLines.map((line, i) => (
+          <p key={i} className="text-[11px]">{line}</p>
+        ))}
+      </TooltipContent>
+    </Tooltip>
   );
 }

@@ -56,6 +56,7 @@ export const STEP_TYPE_CONFIG: Record<RoadmapStepType, { label: string; icon: st
 
 export interface CareerSubjectMapping {
   career: string;
+  aliases?: string[];
   keySubjects: string[];
   supportingSubjects: string[];
   focusAreas: string[];

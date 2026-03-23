@@ -88,6 +88,79 @@ const CAREER_SUBJECT_MAP: CareerSubjectMapping[] = [
     nextDecisions: ['Strengthen essay writing and analysis skills', 'Research law degree requirements', 'Look into debating or mock trial activities'],
     whySubjectsMatter: 'Law requires strong analytical and communication skills — English and humanities build these foundations.',
   },
+  {
+    career: 'cybersecurity',
+    keySubjects: ['Computer Science', 'Mathematics', 'Physics'],
+    supportingSubjects: ['English', 'Business Studies', 'Design & Technology'],
+    focusAreas: ['Networking fundamentals', 'Programming and scripting', 'Analytical problem-solving'],
+    nextDecisions: ['Start learning networking basics and Linux', 'Choose maths and computing subjects', 'Try beginner CTF (Capture the Flag) challenges'],
+    whySubjectsMatter: 'Cybersecurity builds on computer science and maths — understanding systems deeply is key to securing them.',
+    aliases: ['security', 'infosec', 'application security', 'network security', 'penetration tester', 'security analyst', 'security engineer'],
+  },
+  {
+    career: 'data scientist',
+    keySubjects: ['Mathematics', 'Computer Science', 'Statistics'],
+    supportingSubjects: ['Physics', 'Economics', 'Biology'],
+    focusAreas: ['Statistical reasoning', 'Programming (Python/R)', 'Data analysis and visualisation'],
+    nextDecisions: ['Strengthen maths and statistics skills', 'Learn Python or R basics', 'Explore open datasets and build small analysis projects'],
+    whySubjectsMatter: 'Data science requires strong maths and coding skills to turn raw data into meaningful insights.',
+  },
+  {
+    career: 'architect',
+    keySubjects: ['Mathematics', 'Art & Design', 'Physics'],
+    supportingSubjects: ['Design & Technology', 'Computer Science', 'Geography'],
+    focusAreas: ['Spatial reasoning', 'Design and creativity', 'Technical drawing and modelling'],
+    nextDecisions: ['Keep maths and art/design as core subjects', 'Research architecture degree portfolios', 'Start sketching and learning CAD software'],
+    whySubjectsMatter: 'Architecture blends creativity with technical precision — maths, physics, and design are your foundations.',
+  },
+  {
+    career: 'psychologist',
+    keySubjects: ['Psychology', 'Biology', 'Mathematics'],
+    supportingSubjects: ['English', 'Sociology', 'Chemistry'],
+    focusAreas: ['Research methods', 'Understanding human behaviour', 'Scientific writing'],
+    nextDecisions: ['Choose psychology and biology subjects', 'Research psychology degree requirements', 'Read about different psychology specialisations'],
+    whySubjectsMatter: 'Psychology is a science — biology and maths support the research methods you will need.',
+  },
+  {
+    career: 'journalist',
+    keySubjects: ['English', 'Media Studies', 'History'],
+    supportingSubjects: ['Politics', 'Sociology', 'Psychology'],
+    focusAreas: ['Writing and storytelling', 'Critical analysis', 'Research and interviewing'],
+    nextDecisions: ['Write for school paper or start a blog', 'Strengthen essay and creative writing', 'Research journalism or media degrees'],
+    whySubjectsMatter: 'Journalism needs strong writing, critical thinking, and an understanding of the world around you.',
+  },
+  {
+    career: 'accountant',
+    keySubjects: ['Mathematics', 'Business Studies', 'Economics'],
+    supportingSubjects: ['English', 'Computer Science', 'Law'],
+    focusAreas: ['Numeracy and accuracy', 'Financial understanding', 'Attention to detail'],
+    nextDecisions: ['Choose maths and business subjects', 'Research accounting qualifications (ACCA, ACA)', 'Look into finance-related work experience'],
+    whySubjectsMatter: 'Accounting is built on numbers and business knowledge — strong maths and economics are essential.',
+  },
+  {
+    career: 'veterinarian',
+    keySubjects: ['Biology', 'Chemistry', 'Mathematics'],
+    supportingSubjects: ['Physics', 'English', 'Agriculture'],
+    focusAreas: ['Animal biology', 'Scientific reasoning', 'Practical care experience'],
+    nextDecisions: ['Choose biology and chemistry at higher levels', 'Research vet school requirements', 'Get animal care experience (farms, shelters)'],
+    whySubjectsMatter: 'Veterinary science requires the same strong science foundations as medicine — biology and chemistry are essential.',
+  },
+  {
+    career: 'electrician',
+    keySubjects: ['Mathematics', 'Physics', 'Design & Technology'],
+    supportingSubjects: ['Computer Science', 'English', 'Business Studies'],
+    focusAreas: ['Electrical principles', 'Practical problem-solving', 'Safety regulations'],
+    nextDecisions: ['Keep maths and physics as core subjects', 'Research electrical apprenticeship programmes', 'Learn about circuits and wiring basics'],
+    whySubjectsMatter: 'Electrical work relies on physics and maths — understanding how circuits work keeps people safe.',
+  },
+  {
+    career: 'marketing',
+    keySubjects: ['Business Studies', 'English', 'Media Studies'],
+    supportingSubjects: ['Psychology', 'Art & Design', 'Mathematics'],
+    focusAreas: ['Communication and persuasion', 'Digital tools', 'Understanding audiences'],
+    nextDecisions: ['Build a social media or content project', 'Choose business and media subjects', 'Research marketing degrees or apprenticeships'],
+    whySubjectsMatter: 'Marketing combines creativity with business strategy — communication and understanding people are key.',
+  },
 ];
 
 // ── Fuzzy career matching ────────────────────────────────────────────
@@ -101,6 +174,11 @@ export function getCareerSubjectMapping(careerTitle: string): CareerSubjectMappi
   // Direct match
   const direct = CAREER_SUBJECT_MAP.find((m) => normalise(m.career) === norm);
   if (direct) return direct;
+  // Alias match — any alias is contained in the career title
+  const aliasMatch = CAREER_SUBJECT_MAP.find((m) =>
+    m.aliases?.some((a) => norm.includes(normalise(a)))
+  );
+  if (aliasMatch) return aliasMatch;
   // Partial match — career title contains the keyword
   const partial = CAREER_SUBJECT_MAP.find((m) => norm.includes(normalise(m.career)));
   if (partial) return partial;
