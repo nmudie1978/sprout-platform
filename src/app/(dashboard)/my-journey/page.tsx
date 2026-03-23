@@ -429,8 +429,8 @@ export default function MyJourneyPage() {
       celebratedRef.current.add('act');
       setActiveTab('act');
       setTimeout(() => {
-        toast('You understand the world. Now make your mark.', {
-          description: 'Time to take real steps toward your future.',
+        toast('You\'ve done the research. Time to try something real.', {
+          description: 'Even a small step can create real momentum.',
           duration: 6000,
         });
       }, 500);
@@ -438,8 +438,8 @@ export default function MyJourneyPage() {
       celebratedRef.current.add('understand');
       setActiveTab('understand');
       setTimeout(() => {
-        toast('You know who you are. Now explore what\'s out there.', {
-          description: 'Research your career, understand the path ahead.',
+        toast('Nice work — you know yourself better now.', {
+          description: 'Next, explore what your chosen path really looks like.',
           duration: 6000,
         });
       }, 500);
@@ -522,7 +522,7 @@ export default function MyJourneyPage() {
                   </div>
                 ) : (
                   <h1 className="text-base sm:text-lg font-semibold tracking-tight text-muted-foreground">
-                    Begin your journey
+                    Start exploring at your own pace
                   </h1>
                 )}
               </div>

@@ -82,8 +82,9 @@ export default function HowItWorksPage() {
           How Your Journey Works
         </h1>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xl">
-          Endeavrly guides you through three stages — each one builds on the last.
-          You can&apos;t skip ahead, because each stage gives you what you need for the next.
+          Your journey moves through three stages, each one building on what came before.
+          There&apos;s no deadline and no pressure — go at your own pace. You can always revisit and
+          update things as your thinking evolves.
         </p>
       </div>
 

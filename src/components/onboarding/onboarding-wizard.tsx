@@ -204,7 +204,9 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
             <DialogTitle className="text-xl">Welcome to Endeavrly</DialogTitle>
           </div>
           <DialogDescription>
-            Let&apos;s personalise your experience in {4 - step === 0 ? "one" : 4 - step + 1} quick step{4 - step !== 1 ? "s" : ""}
+            {step === 1
+              ? "A few quick questions to help us personalise things for you. No pressure — you can skip or change anything later."
+              : `Step ${step} of 4 — nearly there`}
           </DialogDescription>
 
           {/* Progress dots */}
@@ -235,7 +237,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Compass className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold">Where do you want to head?</h3>
+                  <h3 className="font-semibold">Any idea where you want to head?</h3>
                 </div>
 
                 <div className="relative">
@@ -300,7 +302,7 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
                 )}
 
                 <p className="text-xs text-muted-foreground text-center pt-2">
-                  Not sure yet? That&apos;s okay - you can skip this or update it later
+                  Not sure yet? That&apos;s completely normal — you can skip this and explore later.
                 </p>
               </motion.div>
             )}
@@ -356,11 +358,11 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Target className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold">What do you want right now?</h3>
+                  <h3 className="font-semibold">What matters most to you right now?</h3>
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  Pick up to 2 priorities - we&apos;ll tailor your experience
+                  Pick up to 2 — this helps us show you the most relevant things first.
                 </p>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -406,11 +408,11 @@ export function OnboardingWizard({ open, onComplete }: OnboardingWizardProps) {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Clock className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold">How busy are you?</h3>
+                  <h3 className="font-semibold">How much time do you have?</h3>
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  This helps us find jobs that fit your schedule
+                  No judgment — we&apos;ll match things to your pace.
                 </p>
 
                 <div className="space-y-3">

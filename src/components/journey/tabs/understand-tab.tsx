@@ -49,19 +49,19 @@ const UNDERSTAND_STEPS: StepConfig[] = [
     id: 'REVIEW_INDUSTRY_OUTLOOK',
     stepNumber: 1,
     title: 'Role Reality & Industry Insights',
-    description: 'Research your chosen career — what does the job involve day to day? What are the trends and job market like? Note 3 key insights.',
+    description: 'Learn what this career actually looks like day to day. Note a few things that stand out — there\'s no perfect answer.',
   },
   {
     id: 'CAREER_SHADOW',
     stepNumber: 2,
     title: 'Path, Skills & Requirements',
-    description: 'Find out what qualifications, skills, and experience are needed to get started in this career.',
+    description: 'Explore what qualifications and skills matter. This helps you see the full picture, not just the job title.',
   },
   {
     id: 'CREATE_ACTION_PLAN',
     stepNumber: 3,
     title: 'Validate Your Understanding',
-    description: 'Confirm what you\'ve learned by writing down 3 actions you can take to move forward based on your research.',
+    description: 'Write down a few actions you could take based on what you\'ve learned. Keep it realistic — small steps count.',
   },
 ];
 
@@ -409,9 +409,9 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-amber-400">Understand complete!</p>
+            <p className="text-sm font-semibold text-amber-400">Understand complete</p>
             <p className="text-xs text-muted-foreground/70 mt-0.5">
-              You understand the world. Now take action and grow.
+              You've done the research. When you're ready, try something in the real world — start as small as you like.
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-400 group-hover:translate-x-0.5 transition-transform">

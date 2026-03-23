@@ -144,8 +144,8 @@ export function JourneyGuide({ journey }: JourneyGuideProps) {
             <div className="px-4 pb-4 space-y-4">
               {/* Intro text */}
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Endeavrly guides you through three lenses — each one builds on the last.
-                You can't skip ahead, because each step gives you what you need for the next.
+                Your journey has three stages, and each one builds on the last.
+                There's no rush — take the time you need. You can always come back and update things as you learn more.
               </p>
 
               {/* Three lenses */}

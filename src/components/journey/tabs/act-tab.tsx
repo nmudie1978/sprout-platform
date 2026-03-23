@@ -45,28 +45,28 @@ const ACT_STEPS = [
     id: 'COMPLETE_ALIGNED_ACTION',
     stepNumber: 1,
     title: 'Complete Aligned Action',
-    description: 'Pick a small action to get started. Apply for an internship, start a course, or build a portfolio.',
+    description: 'Start with something manageable — a course, a small project, or an application. The size doesn\'t matter, the step does.',
     optional: false,
   },
   {
     id: 'SUBMIT_ACTION_REFLECTION',
     stepNumber: 2,
     title: 'Reflect on Action',
-    description: 'Reflect on what you\'ve learned. How did the task help you progress toward your career goal?',
+    description: 'Think about what you learned. Did it confirm your direction, or open up new questions? Both are valuable.',
     optional: false,
   },
   {
     id: 'UPDATE_PLAN',
     stepNumber: 3,
     title: 'Update Plan',
-    description: 'Update your plan with new insights. What can you improve for the next step?',
+    description: 'Adjust your plan based on what you\'ve learned. Your path can evolve as you do.',
     optional: true,
   },
   {
     id: 'EXTERNAL_FEEDBACK',
     stepNumber: 4,
     title: 'External Feedback',
-    description: 'Ask for feedback from someone you trust about your progress.',
+    description: 'Ask someone you trust for their perspective. A fresh viewpoint can help you see things differently.',
     optional: true,
   },
 ];
@@ -247,13 +247,13 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             <CheckCircle2 className="h-8 w-8" />
           </div>
           <h2 className="text-xl font-bold text-emerald-400 mb-2">
-            Your guided journey is complete!
+            You&apos;ve come a long way.
           </h2>
           <p className="text-sm text-muted-foreground/70 max-w-md mx-auto">
-            You&apos;ve done the hard work of discovering yourself, understanding your path, and taking action.
+            You&apos;ve reflected, researched, and taken real action. That takes courage and effort — and it&apos;s just the beginning.
           </p>
           <p className="text-sm text-muted-foreground/50 mt-2 max-w-md mx-auto">
-            Now use the Career Roadmap below to track your long-term progress.
+            Use your Career Roadmap below to keep building momentum, or explore a new direction whenever you&apos;re ready.
           </p>
         </div>
       )}
