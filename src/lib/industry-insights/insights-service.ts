@@ -12,12 +12,6 @@
  * - Up to 30 videos per section
  */
 
-import {
-  validateYouTubeVideo,
-  validateExternalUrl,
-  validateInsightItems,
-  clearValidationCache,
-} from "./validate-insight-url";
 
 // ============================================
 // SECTION DEFINITIONS
@@ -388,14 +382,9 @@ export async function fetchVideosBySection(
 
   // If no YouTube API key, return curated fallback videos
   if (!YOUTUBE_API_KEY) {
-    const candidates = sortByRecency(
+    const fallbackVideos = sortByRecency(
       CURATED_VIDEOS.filter((v) => v.section === sectionKey)
     ).slice(0, maxResults);
-    const fallbackVideos = await validateInsightItems(
-      candidates,
-      (v) => v.videoId,
-      validateYouTubeVideo
-    );
     setCache(cacheKey, fallbackVideos);
     return fallbackVideos;
   }
@@ -486,14 +475,9 @@ export async function fetchVideosBySection(
     }
   }
 
-  // Deduplicate, sort by recency, validate, cap at max
+  // Deduplicate, sort by recency, cap at max
   const deduped = sortByRecency(deduplicateVideos(allVideos));
-  const validated = await validateInsightItems(
-    deduped,
-    (v) => v.videoId,
-    validateYouTubeVideo
-  );
-  const result = validated.slice(0, maxResults);
+  const result = deduped.slice(0, maxResults);
 
   setCache(cacheKey, result);
   return result;
@@ -533,14 +517,9 @@ export async function fetchArticlesBySection(
   const section = INSIGHT_SECTIONS.find((s) => s.key === sectionKey);
   if (!section) return [];
 
-  const candidates = CURATED_ARTICLES.filter(
+  const articles = CURATED_ARTICLES.filter(
     (a) => a.section === sectionKey
   ).slice(0, maxResults);
-  const articles = await validateInsightItems(
-    candidates,
-    (a) => a.url,
-    validateExternalUrl
-  );
 
   setCache(cacheKey, articles);
   return articles;
@@ -2028,13 +2007,8 @@ export async function fetchPodcastsBySection(
   const cached = getFromCache<InsightPodcast[]>(cacheKey);
   if (cached) return cached;
 
-  const candidates = sortByRecency(
+  const podcasts = sortByRecency(
     CURATED_PODCASTS.filter((p) => p.section === sectionKey)
-  );
-  const podcasts = await validateInsightItems(
-    candidates,
-    (p) => p.externalUrl,
-    validateExternalUrl
   );
 
   setCache(cacheKey, podcasts);
@@ -2845,5 +2819,4 @@ export function getAllSections(): InsightSection[] {
 
 export function clearInsightsCache(): void {
   cache.clear();
-  clearValidationCache();
 }
