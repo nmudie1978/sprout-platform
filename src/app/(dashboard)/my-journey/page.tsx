@@ -479,6 +479,14 @@ export default function MyJourneyPage() {
   }, [goalTitle]);
 
   const discoverComplete = (() => {
+    // If the state machine has already advanced past Discover, it's complete.
+    // Editing reflections after advancing should NOT re-lock later stages.
+    const understandOrActStates = [
+      'REVIEW_INDUSTRY_OUTLOOK', 'CAREER_SHADOW', 'CREATE_ACTION_PLAN',
+      'COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION', 'UPDATE_PLAN', 'EXTERNAL_FEEDBACK',
+    ];
+    if (understandOrActStates.includes(journey.currentState)) return true;
+
     const r = reflectionsData?.discoverReflections;
     const reflectionsDone = r
       ? (r.motivations?.length ?? 0) > 0 &&
