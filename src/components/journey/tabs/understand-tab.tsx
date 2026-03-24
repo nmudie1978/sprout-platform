@@ -416,26 +416,14 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
 
       </div>
 
-      {/* Continue to Grow — shown when Understand is 100% complete */}
+      {/* Subtle next-stage nudge */}
       {understandComplete && onContinueToGrow && (
         <button
           onClick={onContinueToGrow}
-          className="w-full rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 flex items-center gap-4 transition-all hover:bg-amber-500/15 hover:border-amber-500/60 group"
-          style={{ boxShadow: '0 0 20px rgba(245, 158, 11, 0.15)' }}
+          className="flex items-center gap-1.5 text-xs text-amber-500/60 hover:text-amber-400 transition-colors group mt-2"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/20 text-amber-500 shrink-0">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-amber-400">Understand complete</p>
-            <p className="text-xs text-muted-foreground/70 mt-0.5">
-              You've done the research. When you're ready, try something in the real world — start as small as you like.
-            </p>
-          </div>
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-400 group-hover:translate-x-0.5 transition-transform">
-            Continue to Grow
-            <ArrowRight className="h-4 w-4" />
-          </div>
+          Continue to Grow
+          <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
         </button>
       )}
     </div>

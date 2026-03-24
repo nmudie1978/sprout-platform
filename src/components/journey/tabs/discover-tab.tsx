@@ -467,26 +467,14 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
         </div>
       )}
 
-      {/* Continue to Understand — shown when Discover is 100% complete */}
+      {/* Subtle next-stage nudge */}
       {journey.summary?.lenses?.discover?.isComplete && onContinueToUnderstand && (
         <button
           onClick={onContinueToUnderstand}
-          className="w-full rounded-xl border border-teal-500/30 bg-teal-500/5 p-4 flex items-center gap-4 transition-all hover:bg-teal-500/10 hover:border-teal-500/50 group"
-          style={{ boxShadow: '0 0 15px rgba(20, 184, 166, 0.1)' }}
+          className="flex items-center gap-1.5 text-xs text-teal-500/60 hover:text-teal-400 transition-colors group mt-2"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-500/15 text-teal-500 shrink-0">
-            <CheckCircle2 className="h-4 w-4" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-foreground/80">Discover complete</p>
-            <p className="text-xs text-muted-foreground/60 mt-0.5">
-              When you&apos;re ready, explore what your path actually looks like.
-            </p>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs font-medium text-teal-500/70 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all">
-            Continue to Understand
-            <ArrowRight className="h-3.5 w-3.5" />
-          </div>
+          Continue to Understand
+          <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
         </button>
       )}
     </div>
