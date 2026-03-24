@@ -417,38 +417,38 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
                 {/* Stage + details grid */}
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   <div>
-                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Stage</p>
+                    <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">Stage</p>
                     <p className="text-sm font-medium text-foreground/80">
                       {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
                     </p>
                   </div>
                   {eduContext.ageBand && (
                     <div>
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Age</p>
+                      <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">Age</p>
                       <p className="text-sm text-foreground/70">{eduContext.ageBand}</p>
                     </div>
                   )}
                   {eduContext.schoolName && (
                     <div>
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">School</p>
+                      <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">School</p>
                       <p className="text-sm text-foreground/70">{eduContext.schoolName}</p>
                     </div>
                   )}
                   {eduContext.studyProgram && (
                     <div>
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Program</p>
+                      <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">Program</p>
                       <p className="text-sm text-foreground/70">{eduContext.studyProgram}</p>
                     </div>
                   )}
                   {eduContext.yearLevel && (
                     <div>
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Year</p>
+                      <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">Year</p>
                       <p className="text-sm text-foreground/70">{eduContext.yearLevel}</p>
                     </div>
                   )}
                   {eduContext.expectedCompletion && (
                     <div>
-                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-0.5">Finishing</p>
+                      <p className="text-[11px] font-medium text-muted-foreground/60 mb-0.5">Finishing</p>
                       <p className="text-sm text-foreground/70">{eduContext.expectedCompletion}</p>
                     </div>
                   )}
@@ -457,7 +457,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
                 {/* Subjects */}
                 {eduContext.currentSubjects.length > 0 && (
                   <div>
-                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/40 mb-1.5">Subjects</p>
+                    <p className="text-[11px] font-medium text-muted-foreground/60 mb-1.5">Subjects</p>
                     <div className="flex flex-wrap gap-1">
                       {eduContext.currentSubjects.map((s) => (
                         <span key={s} className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500">
