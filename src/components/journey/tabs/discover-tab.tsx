@@ -199,7 +199,7 @@ const DISCOVER_STEPS: StepConfig[] = [
   {
     id: 'EXPLORE_CAREERS',
     stepNumber: 2,
-    title: 'Explore Careers',
+    title: 'Explore Career Categories',
     description: 'Browse different paths and save anything that catches your interest. You don\'t need to commit to anything yet.',
     icon: Heart,
     colorClass: 'text-teal-500',
