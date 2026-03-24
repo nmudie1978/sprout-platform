@@ -434,6 +434,7 @@ export default function MyJourneyPage() {
   }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
 
   // Auto-switch to the appropriate tab based on progress + inspirational messages
+  const discoverLensComplete = journeyData?.journey?.summary?.lenses?.discover?.isComplete ?? false;
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
   const celebratedRef = useRef<Set<string>>(new Set());
 
@@ -447,7 +448,7 @@ export default function MyJourneyPage() {
           duration: 6000,
         });
       }, 500);
-    } else if (discoverComplete && !understandComplete && !celebratedRef.current.has('understand')) {
+    } else if (discoverLensComplete && !understandComplete && !celebratedRef.current.has('understand')) {
       celebratedRef.current.add('understand');
       setActiveTab('understand');
       setTimeout(() => {
@@ -457,7 +458,7 @@ export default function MyJourneyPage() {
         });
       }, 500);
     }
-  }, [discoverComplete, understandComplete]);
+  }, [discoverLensComplete, understandComplete]);
 
   // Gate goal sheet — warn if changing an existing goal
   const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
