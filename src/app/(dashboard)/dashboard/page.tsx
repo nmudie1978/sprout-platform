@@ -256,9 +256,9 @@ function InsightsTicker() {
         <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
 
         <div
-          className="flex items-center gap-8 whitespace-nowrap"
+          className="flex items-center gap-8 whitespace-nowrap hover:[animation-play-state:paused]"
           style={{
-            animation: 'ticker-scroll 60s linear infinite',
+            animation: 'ticker-scroll 120s linear infinite',
             width: 'max-content',
           }}
         >
