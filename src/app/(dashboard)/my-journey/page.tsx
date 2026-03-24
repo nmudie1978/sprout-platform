@@ -31,6 +31,7 @@ import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
 import { HelpCircle, Info, X } from 'lucide-react';
+import { StageLayoutVariants } from '@/components/journey/stage-layout-variants';
 
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
@@ -556,9 +557,9 @@ export default function MyJourneyPage() {
           </div>
         )}
 
-        {/* Stage Tab Bar */}
+        {/* Stage Tab Bar — layout preview mode */}
         <div className="mb-6 sm:mb-8">
-          <StageTabBar
+          <StageLayoutVariants
             activeTab={activeTab}
             onTabChange={setActiveTab}
             lenses={journey.summary.lenses}
