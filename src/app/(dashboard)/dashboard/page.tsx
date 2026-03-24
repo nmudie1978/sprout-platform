@@ -26,6 +26,8 @@ import {
   Clock,
   Ban,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
@@ -443,7 +445,7 @@ export default function DashboardPage() {
 
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
-  const [showAllJourneys, setShowAllJourneys] = useState(false);
+  const [journeyPage, setJourneyPage] = useState(0);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
@@ -726,15 +728,40 @@ export default function DashboardPage() {
                 <LibraryCard items={savedItemsList} total={savedSummary.total} />
               );
             }
+            const PAGE_SIZE = 5;
+            const totalPages = Math.ceil(exploredGoals.length / PAGE_SIZE);
+            const page = Math.min(journeyPage, totalPages - 1);
+            const pageGoals = exploredGoals.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
             return (
-              <GlassCard className="p-3 h-full">
-                <div className="flex items-center gap-2 mb-2">
+              <GlassCard className="p-3 h-full flex flex-col">
+                <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold">My Explored Journeys</h3>
-                  <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
+                  <h3 className="text-xs font-semibold flex-1">My Explored Journeys</h3>
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
+                        disabled={page === 0}
+                        className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      >
+                        <ChevronLeft className="h-3 w-3" />
+                      </button>
+                      <span className="text-[9px] text-muted-foreground/30 tabular-nums">
+                        {page + 1}/{totalPages}
+                      </span>
+                      <button
+                        onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
+                        disabled={page >= totalPages - 1}
+                        className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                      >
+                        <ChevronRight className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <div className="divide-y divide-border/30">
-                  {(showAllJourneys ? exploredGoals : exploredGoals.slice(0, 5)).map((goal) => {
+                <div className="divide-y divide-border/20 flex-1">
+                  {pageGoals.map((goal) => {
                     const career = allCareers.find((c) => c.title === goal.goalTitle);
                     const stepsCompleted = (goal.journeyCompletedSteps || []).length;
                     const totalSteps = 8;
@@ -743,18 +770,16 @@ export default function DashboardPage() {
                       <button
                         key={goal.goalId}
                         onClick={() => {
-                          if (!isCurrentGoal) {
-                            switchGoalMutation.mutate(goal.goalTitle);
-                          }
+                          if (!isCurrentGoal) switchGoalMutation.mutate(goal.goalTitle);
                         }}
                         disabled={isCurrentGoal || switchGoalMutation.isPending}
                         className={cn(
-                          "w-full flex items-center gap-2.5 py-1.5 px-1 text-left transition-colors",
+                          "w-full flex items-center gap-2 py-1.5 text-left transition-colors",
                           !isCurrentGoal && "hover:bg-muted/40",
                         )}
                       >
                         <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
-                        <span className={cn("text-xs truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
+                        <span className={cn("text-[11px] truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
                           {goal.goalTitle}
                         </span>
                         {isCurrentGoal && (
@@ -762,15 +787,9 @@ export default function DashboardPage() {
                             Active
                           </span>
                         )}
-                        <span className="text-[10px] text-muted-foreground/30 shrink-0 w-14 text-right tabular-nums">
+                        <span className="text-[10px] text-muted-foreground/25 shrink-0 tabular-nums">
                           {stepsCompleted}/{totalSteps}
                         </span>
-                        <div className="w-10 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
-                          <div
-                            className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/25")}
-                            style={{ width: `${Math.min((stepsCompleted / totalSteps) * 100, 100)}%` }}
-                          />
-                        </div>
                         {!isCurrentGoal && (
                           <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
                         )}
@@ -778,14 +797,6 @@ export default function DashboardPage() {
                     );
                   })}
                 </div>
-                {exploredGoals.length > 5 && (
-                  <button
-                    onClick={() => setShowAllJourneys((v) => !v)}
-                    className="w-full text-center text-[10px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors pt-1.5"
-                  >
-                    {showAllJourneys ? 'Show less' : `Show all ${exploredGoals.length}`}
-                  </button>
-                )}
               </GlassCard>
             );
           })()}
