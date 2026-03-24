@@ -148,7 +148,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
           className="absolute"
           style={{ left: 12, top: HIGH_Y - 16 }}
         >
-          <div className="w-[130px] rounded-xl border border-dashed border-teal-500/25 bg-teal-500/[0.04] p-3 backdrop-blur-sm">
+          <div className="w-[160px] rounded-xl border border-dashed border-teal-500/25 bg-teal-500/[0.04] p-3 backdrop-blur-sm">
             <div className="flex items-center gap-1.5 mb-1.5">
               <span className="text-sm">🎓</span>
               <span className="text-[10px] font-medium text-teal-500/70 uppercase tracking-wider">
@@ -163,11 +163,23 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     <span className="text-muted-foreground/50 font-normal"> ({eduContext.ageBand})</span>
                   )}
                 </p>
+                {eduContext.schoolName && (
+                  <p className="text-[10px] text-muted-foreground/50 mt-0.5">{eduContext.schoolName}</p>
+                )}
+                {eduContext.studyProgram && (
+                  <p className="text-[10px] text-muted-foreground/40">{eduContext.studyProgram}</p>
+                )}
                 {eduContext.currentSubjects.length > 0 && (
-                  <p className="text-[10px] text-muted-foreground/50 mt-1 leading-snug">
-                    {eduContext.currentSubjects.slice(0, 4).join(' · ')}
-                    {eduContext.currentSubjects.length > 4 && ` +${eduContext.currentSubjects.length - 4}`}
-                  </p>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {eduContext.currentSubjects.map((s) => (
+                      <span key={s} className="inline-flex rounded-full px-1.5 py-0.5 text-[8px] font-medium bg-teal-500/10 text-teal-500/80">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {eduContext.expectedCompletion && (
+                  <p className="text-[9px] text-muted-foreground/30 mt-1.5">Finishing {eduContext.expectedCompletion}</p>
                 )}
               </>
             ) : (
