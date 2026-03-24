@@ -317,7 +317,7 @@ function CareerDiscoveryContent({
         <div className="flex items-start gap-3">
           <Info className="h-5 w-5 text-teal-500 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-teal-400">
-            Select up to 3 career areas you'd like to explore. Don't worry - you can always change
+            Select up to 3 career categories you'd like to explore. Don't worry — you can always change
             these later!
           </p>
         </div>
