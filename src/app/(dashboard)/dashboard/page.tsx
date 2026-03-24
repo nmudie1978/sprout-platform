@@ -28,6 +28,7 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  User,
 } from "lucide-react";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
@@ -466,6 +467,23 @@ export default function DashboardPage() {
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
 
+  // Profile completion — lightweight check
+  const { data: profileData } = useQuery<{
+    displayName: string | null; bio: string | null; phoneNumber: string | null;
+    city: string | null; availability: string | null; interests: string[];
+    user: { dateOfBirth: string | null } | null;
+  }>({
+    queryKey: ["profile-completion"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile");
+      if (!res.ok) return null;
+      const d = await res.json();
+      return d.profile || null;
+    },
+    enabled: session?.user.role === "YOUTH",
+    staleTime: 5 * 60 * 1000,
+  });
+
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
@@ -900,7 +918,35 @@ export default function DashboardPage() {
         </GlassCard>
       </div>
 
-      {/* ── 5. Industry Insights Ticker ─────────────────────── */}
+      {/* ── 5. Profile Completion ───────────────────────────── */}
+      {profileData && (() => {
+        const total = 8;
+        let done = 0;
+        if (profileData.displayName) done++;
+        if (profileData.user?.dateOfBirth) done++;
+        if (profileData.phoneNumber) done++;
+        if (profileData.city) done++;
+        if (profileData.bio) done++;
+        if (profileData.availability) done++;
+        if (profileData.interests?.length > 0) done++;
+        if (goalTitle) done++;
+        const pct = Math.round((done / total) * 100);
+        if (pct === 100) return null;
+        return (
+          <Link href="/profile" className="block group">
+            <div className="flex items-center gap-3 rounded-xl border border-border/30 bg-card/50 hover:bg-card/70 px-3 py-2 transition-all mb-4">
+              <User className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
+              <span className="text-[11px] text-muted-foreground/50 flex-1">Profile</span>
+              <span className="text-[10px] text-muted-foreground/40 tabular-nums">{pct}%</span>
+              <div className="w-16 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
+                <div className="h-full rounded-full bg-teal-500 transition-all" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          </Link>
+        );
+      })()}
+
+      {/* ── 6. Industry Insights Ticker ─────────────────────── */}
       <DidYouKnowCard />
 
       {/* Career Detail Sheet */}

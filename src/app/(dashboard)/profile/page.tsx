@@ -696,10 +696,11 @@ export default function ProfilePage() {
         if (!profile.interests || profile.interests.length === 0) missingRecommended.push("Interests");
         if (!goalsData?.primaryGoal) missingRecommended.push("Career Goal");
 
+        const totalFields = 8; // 4 required + 4 recommended
+        const completedFields = totalFields - missingRequired.length - missingRecommended.length;
+        const percent = Math.round((completedFields / totalFields) * 100);
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
         const hasRequiredMissing = missingRequired.length > 0;
-
-        if (isComplete) return null; // Don't show anything when complete
 
         const allMissing = [
           ...missingRequired.map((f) => ({ field: f, required: true })),
@@ -711,12 +712,26 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2 mb-3">
               <div className={cn(
                 "h-1.5 w-1.5 rounded-full shrink-0",
-                hasRequiredMissing ? "bg-amber-500" : "bg-teal-500"
+                isComplete ? "bg-emerald-500" : hasRequiredMissing ? "bg-amber-500" : "bg-teal-500"
               )} />
-              <p className="text-xs font-medium text-foreground/70">
-                {hasRequiredMissing ? 'A few fields to complete' : 'Almost there'}
+              <p className="text-xs font-medium text-foreground/70 flex-1">
+                {isComplete ? 'Profile complete' : hasRequiredMissing ? 'A few fields to complete' : 'Almost there'}
               </p>
+              <span className={cn(
+                "text-[11px] font-semibold tabular-nums",
+                isComplete ? "text-emerald-500" : "text-muted-foreground/50"
+              )}>
+                {percent}%
+              </span>
             </div>
+            {/* Progress bar */}
+            <div className="h-1 bg-muted/40 rounded-full overflow-hidden mb-3">
+              <div
+                className={cn("h-full rounded-full transition-all duration-500", isComplete ? "bg-emerald-500" : "bg-teal-500")}
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+            {!isComplete && (
             <div className="flex flex-wrap gap-1.5">
               {allMissing.map(({ field, required }) => (
                 <span
@@ -732,6 +747,7 @@ export default function ProfilePage() {
                 </span>
               ))}
             </div>
+            )}
           </div>
         );
       })()}
