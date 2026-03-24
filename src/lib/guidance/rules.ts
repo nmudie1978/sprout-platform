@@ -134,15 +134,12 @@ export const GUIDANCE_RULES: GuidanceRule[] = [
   {
     id: 'discover-almost-done',
     placement: 'discover',
-    condition: (ctx) =>
-      ctx.currentLens === 'DISCOVER' &&
-      ctx.discoverProgress >= 66 &&
-      ctx.discoverProgress < 100,
+    condition: () => false, // Disabled — client-side completion check handles progression
     item: {
       category: 'reinforcement',
       variant: 'nudge',
-      message: 'You\'re nearly through Discover.',
-      submessage: 'One more step and you\'ll unlock the next stage.',
+      message: '',
+      submessage: '',
       dismissible: true,
       priority: 3,
     },
