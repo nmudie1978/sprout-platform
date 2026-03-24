@@ -166,7 +166,7 @@ export default function LandingPage() {
               {/* Headline */}
               <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-10 sm:mb-12">
                 <WordRevealLine
-                  text="You're not supposed to just know what you want to do."
+                  text="Your future is yours to explore."
                   startDelay={300}
                 />
               </h1>
@@ -175,9 +175,9 @@ export default function LandingPage() {
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    But somehow, everyone expects you to. Choose your subjects. Pick a
-                    university. Have a plan. Meanwhile, the world of work is almost
-                    invisible — hidden behind job titles you don&apos;t understand,
+                    Everyone expects you to have a plan. Choose your subjects. Pick a
+                    university. Know what you want to be. But the world of work is
+                    almost invisible — hidden behind job titles you don&apos;t understand,
                     qualifications you can&apos;t picture, and career talks that all
                     sound the same.
                   </p>
@@ -191,10 +191,10 @@ export default function LandingPage() {
                 </FadeReveal>
                 <FadeReveal delay={2200}>
                   <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
-                    Endeavrly changes that. It&apos;s a private space to explore real careers
-                    with honest information, reflect on your strengths and interests,
-                    and try small real-world experiences — so that when you do make a
-                    decision, it&apos;s yours, and it&apos;s informed. No quizzes. No pressure.
+                    Endeavrly changes that. A private space to explore real careers
+                    with honest information, reflect on who you are, and try small
+                    real-world experiences — so that when you do make a decision,
+                    it&apos;s yours, and it&apos;s informed. No quizzes. No pressure.
                     Just clarity.
                   </p>
                 </FadeReveal>
