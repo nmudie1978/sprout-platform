@@ -36,7 +36,9 @@ import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
 import { GuidanceStack } from "@/components/guidance/guidance-stack";
 import { buildGuidanceContext } from "@/lib/guidance/rules";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { Target } from "lucide-react";
 
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
@@ -369,6 +371,42 @@ export default function DashboardPage() {
     },
     enabled: session?.user.role === "YOUTH",
     staleTime: 60 * 1000, // 1 minute — more real-time
+  });
+
+  // Explored journeys — all goals the user has saved progress for
+  const { data: exploredGoalsData } = useQuery<{
+    goals: { goalId: string; goalTitle: string; isActive: boolean; journeyCompletedSteps: string[]; updatedAt: string }[];
+  }>({
+    queryKey: ["explored-goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/journey/goal-data/list");
+      if (!response.ok) return { goals: [] };
+      return response.json();
+    },
+    enabled: session?.user.role === "YOUTH",
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const queryClient = useQueryClient();
+
+  const switchGoalMutation = useMutation({
+    mutationFn: async (goalTitle: string) => {
+      const response = await fetch("/api/goals", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slot: "primary",
+          goal: { title: goalTitle, status: "exploring", confidence: "medium", timeframe: "1-2-years", why: "", nextSteps: [], skills: [] },
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to switch goal");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-goals"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
+    },
   });
 
   const displayName =
@@ -726,7 +764,76 @@ export default function DashboardPage() {
           <LibraryCard items={savedItemsList} total={savedSummary.total} />
         </div>
 
-        {/* ── 4. Small Jobs + Activity ────────────────────────── */}
+        {/* ── 4. My Explored Journeys ──────────────────────── */}
+        {(() => {
+          const exploredGoals = exploredGoalsData?.goals ?? [];
+          const allCareers = getAllCareers();
+          // Only show if there are multiple goals explored (current + at least one other)
+          if (exploredGoals.length < 2) return null;
+          return (
+            <GlassCard className="p-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Target className="h-4 w-4 text-violet-500" />
+                <h3 className="text-sm font-semibold">My Explored Journeys</h3>
+                <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
+              </div>
+              <div className="space-y-1.5">
+                {exploredGoals.map((goal) => {
+                  const career = allCareers.find((c) => c.title === goal.goalTitle);
+                  const stepsCompleted = (goal.journeyCompletedSteps || []).length;
+                  const totalSteps = 8; // approximate total mandatory steps
+                  const isCurrentGoal = goal.goalTitle === goalTitle;
+                  return (
+                    <button
+                      key={goal.goalId}
+                      onClick={() => {
+                        if (!isCurrentGoal) {
+                          switchGoalMutation.mutate(goal.goalTitle);
+                        }
+                      }}
+                      disabled={isCurrentGoal || switchGoalMutation.isPending}
+                      className={cn(
+                        "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all",
+                        isCurrentGoal
+                          ? "bg-teal-500/8 border border-teal-500/20"
+                          : "hover:bg-muted/50 border border-transparent",
+                      )}
+                    >
+                      <span className="text-base shrink-0">{career?.emoji ?? "🎯"}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className={cn("text-xs font-medium truncate", isCurrentGoal && "text-teal-400")}>
+                            {goal.goalTitle}
+                          </p>
+                          {isCurrentGoal && (
+                            <span className="text-[9px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground/40">
+                          {stepsCompleted} of {totalSteps} steps
+                        </p>
+                      </div>
+                      {/* Progress indicator */}
+                      <div className="w-12 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
+                        <div
+                          className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/30")}
+                          style={{ width: `${Math.min((stepsCompleted / totalSteps) * 100, 100)}%` }}
+                        />
+                      </div>
+                      {!isCurrentGoal && (
+                        <ArrowRight className="h-3 w-3 text-muted-foreground/30 shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </GlassCard>
+          );
+        })()}
+
+        {/* ── 5. Small Jobs + Activity ────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* My Jobs */}
           <Link href="/applications" className="block group">
