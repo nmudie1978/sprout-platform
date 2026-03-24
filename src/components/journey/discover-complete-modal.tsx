@@ -37,7 +37,21 @@ export function DiscoverCompleteModal({
 }: DiscoverCompleteModalProps) {
   if (!open) return null;
 
-  // Build a personal summary line
+  // Build a grammatically correct personal summary
+  // Maps raw values to natural phrases
+  const workPhrases: Record<string, string> = {
+    'with people': 'with people',
+    'on my own': 'independently',
+    'indoors': 'in indoor environments',
+    'outdoors': 'in outdoor environments',
+    'fast-paced': 'in fast-paced environments',
+    'steady & calm': 'in calm, steady environments',
+    'creative': 'in creative roles',
+    'technical': 'in technical roles',
+    'practical': 'with hands-on, practical work',
+    'desk-based': 'in desk-based roles',
+  };
+
   const motivationText = (() => {
     if (motivations.length === 0) return null;
     const top = motivations.slice(0, 2).map((m) => m.toLowerCase());
@@ -48,9 +62,9 @@ export function DiscoverCompleteModal({
 
   const workText = (() => {
     if (workStyle.length === 0) return null;
-    const top = workStyle.slice(0, 2).map((w) => w.toLowerCase());
+    const top = workStyle.slice(0, 2).map((w) => workPhrases[w.toLowerCase()] || w.toLowerCase());
     return top.length === 2
-      ? `You work best ${top[0]} and in ${top[1]} settings.`
+      ? `You work best ${top[0]} and ${top[1]}.`
       : `You work best ${top[0]}.`;
   })();
 
