@@ -4,11 +4,11 @@
  * HOW YOUR JOURNEY WORKS — Sub-page
  *
  * Full explanation of the Discover → Understand → Grow framework.
- * Moved from the collapsible guide on the My Journey page.
+ * Must match the actual content and steps in the My Journey tabs.
  */
 
 import Link from 'next/link';
-import { ArrowLeft, Search, Globe, Rocket, Sprout, Lightbulb, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Search, Globe, Rocket, Lightbulb, Route, GraduationCap } from 'lucide-react';
 
 const STAGES = [
   {
@@ -20,12 +20,14 @@ const STAGES = [
     iconColor: 'text-teal-500',
     borderColor: 'border-teal-500/20',
     description:
-      'Before you can make good decisions, it helps to know what you\'re good at and what interests you. This stage guides you to reflect on your strengths, explore different careers, and set a clear direction.',
-    items: [
-      'Strengths — what you\'re naturally good at',
-      'Interests — what draws your attention',
-      'Ambitions & motivations — what drives you',
-      'Primary direction — your career goal',
+      'Before you can make good decisions, it helps to know what you\'re good at and what interests you. This stage helps you reflect, explore, and choose a direction.',
+    steps: [
+      { name: 'Reflect on Strengths', detail: 'Identify what you\'re naturally good at' },
+      { name: 'Explore Careers', detail: 'Browse career paths and save what interests you' },
+      { name: 'Set Your Career Direction', detail: 'Choose a career goal to focus your journey' },
+    ],
+    extras: [
+      { name: 'Know Yourself Better', detail: '5 self-discovery reflections — motivations, work style, growth areas, role models, and experiences' },
     ],
   },
   {
@@ -37,13 +39,13 @@ const STAGES = [
     iconColor: 'text-emerald-500',
     borderColor: 'border-emerald-500/20',
     description:
-      'Once you have a direction, you need to understand the reality of that path. What does the role actually involve? What qualifications do you need? What skills matter? What\'s the industry outlook?',
-    items: [
-      'Role reality — what the job is actually like',
-      'Path & requirements — schooling and qualifications',
-      'Skills that matter — what employers value',
-      'Industry insights — trends and outlook',
+      'Once you have a direction, explore what that path actually looks like. What does the role involve day to day? What qualifications and skills do you need? What\'s the industry outlook?',
+    steps: [
+      { name: 'Role Reality & Industry Insights', detail: 'Research what the career involves and what trends look like' },
+      { name: 'Path, Skills & Requirements', detail: 'Explore qualifications, key skills, and what\'s needed to get started' },
+      { name: 'Validate Your Understanding', detail: 'Write down realistic actions you can take based on your research' },
     ],
+    extras: [],
   },
   {
     icon: Rocket,
@@ -54,13 +56,12 @@ const STAGES = [
     iconColor: 'text-amber-500',
     borderColor: 'border-amber-500/20',
     description:
-      'Now you\'re ready to do something real. Follow your roadmap, set learning goals, complete real-world actions, then reflect on what you\'ve learned and update your next move.',
-    items: [
-      'Growth path — your career roadmap',
-      'Learning goals — skills to build',
-      'Real-world actions — jobs, courses, projects',
-      'Next step — what to do next',
+      'Time to do something real. Complete a meaningful action — a course, a project, an application — then reflect on what you learned. Completing these two steps unlocks your personalised career roadmap and school alignment.',
+    steps: [
+      { name: 'Complete Aligned Action', detail: 'Take a real step — a course, project, job application, or volunteering' },
+      { name: 'Reflect on Action', detail: 'Think about what you learned and how it connects to your direction' },
     ],
+    extras: [],
   },
 ];
 
@@ -129,23 +130,75 @@ export default function HowItWorksPage() {
                 {stage.description}
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-2">
-                {stage.items.map((item) => (
-                  <div key={item} className="flex items-start gap-2.5 text-sm">
-                    <div className={`flex h-5 w-5 items-center justify-center rounded-md shrink-0 mt-0.5 bg-${stage.color}-500/10`}>
-                      <div className={`h-1.5 w-1.5 rounded-full bg-${stage.color}-500`} />
+              {/* Steps */}
+              <div className="space-y-2 mb-2">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
+                  Steps
+                </p>
+                {stage.steps.map((step, si) => (
+                  <div key={step.name} className="flex items-start gap-2.5">
+                    <div className={`flex h-5 w-5 items-center justify-center rounded-full shrink-0 mt-0.5 text-[9px] font-bold bg-${stage.color}-500/15 ${stage.iconColor}`}>
+                      {si + 1}
                     </div>
-                    <span className="text-foreground/80">{item}</span>
+                    <div>
+                      <p className="text-sm font-medium text-foreground/80">{step.name}</p>
+                      <p className="text-xs text-muted-foreground/60">{step.detail}</p>
+                    </div>
                   </div>
                 ))}
               </div>
+
+              {/* Extras */}
+              {stage.extras.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
+                    Also in this stage
+                  </p>
+                  {stage.extras.map((extra) => (
+                    <div key={extra.name} className="flex items-start gap-2.5">
+                      <div className={`flex h-5 w-5 items-center justify-center rounded-md shrink-0 mt-0.5 bg-${stage.color}-500/10`}>
+                        <div className={`h-1.5 w-1.5 rounded-full bg-${stage.color}-500`} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground/80">{extra.name}</p>
+                        <p className="text-xs text-muted-foreground/60">{extra.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
+      {/* What you unlock */}
+      <div className="mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.03] p-5">
+        <div className="flex items-start gap-3">
+          <Route className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-sm font-semibold mb-1">What you unlock</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+              When you complete all three stages, your personalised career roadmap and school
+              alignment section unlock. These show you the path ahead — age-based milestones,
+              how your current subjects connect to your goal, and what to focus on next.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground/60">
+              <span className="flex items-center gap-1.5">
+                <Route className="h-3.5 w-3.5 text-amber-500" />
+                Career Roadmap
+              </span>
+              <span className="flex items-center gap-1.5">
+                <GraduationCap className="h-3.5 w-3.5 text-teal-500" />
+                School & Learning Alignment
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Key principle */}
-      <div className="mt-8 rounded-xl border border-border/40 bg-muted/30 p-5">
+      <div className="mt-4 rounded-xl border border-border/40 bg-muted/30 p-5">
         <div className="flex items-start gap-3">
           <Lightbulb className="h-5 w-5 text-teal-400 shrink-0 mt-0.5" />
           <div>
@@ -153,7 +206,8 @@ export default function HowItWorksPage() {
             <p className="text-sm text-muted-foreground leading-relaxed">
               Understanding yourself before understanding the world, and understanding the world
               before taking action, leads to decisions that are aligned with who you actually are.
-              Each stage produces signals that feed into the next.
+              Each stage produces signals that feed into the next — and you can always go back
+              and update earlier stages as you learn more.
             </p>
           </div>
         </div>
