@@ -242,33 +242,42 @@ function DidYouKnowCard() {
     { text: '43% of students don\'t feel prepared for their future.', source: 'Gallup', href: '/about/research#gallup-preparedness' },
     { text: 'Only 45% of students have any real-world career exposure before leaving school.', source: 'OECD', href: '/about/research#oecd-job-shadowing' },
     { text: 'Career exploration leads to better employment outcomes later in life.', source: 'OECD', href: '/about/research#oecd-career-outcomes' },
-    { text: 'Healthcare is one of the fastest growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
+    { text: 'Healthcare is one of the fastest-growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
     { text: 'Over half of students plan to work in just 10 occupations.', source: 'OECD', href: '/about/research#oecd-top-ten-jobs' },
     { text: 'Only 35% of students have undertaken an internship before finishing education.', source: 'OECD', href: '/about/research#oecd-internships' },
   ];
 
-  // Pick a fact based on the day so it changes daily but stays consistent during the session
-  const dayIndex = Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % FACTS.length;
-  const fact = FACTS[dayIndex];
+  const [index, setIndex] = useState(() => Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % FACTS.length);
+  const fact = FACTS[index];
+
+  const refresh = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIndex((prev) => (prev + 1) % FACTS.length);
+  };
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <a
-        href={fact.href}
-        className="block rounded-xl border border-border/30 bg-card/50 px-5 py-4 hover:border-border/50 transition-all group"
-      >
+      <div className="rounded-xl border border-border/30 bg-card/50 px-5 py-4">
         <div className="flex items-start gap-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/30 mt-0.5 shrink-0">
             Did you know?
           </span>
-          <div className="flex-1 min-w-0">
+          <a href={fact.href} className="flex-1 min-w-0 group">
             <p className="text-xs text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">
               {fact.text}
             </p>
-          </div>
+          </a>
           <span className="text-[9px] text-muted-foreground/25 shrink-0 mt-0.5">{fact.source}</span>
+          <button
+            onClick={refresh}
+            className="p-1 rounded-md text-muted-foreground/25 hover:text-muted-foreground/60 transition-colors shrink-0"
+            title="Show another fact"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+          </button>
         </div>
-      </a>
+      </div>
     </div>
   );
 }
@@ -538,7 +547,7 @@ export default function DashboardPage() {
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         <Link href="/my-journey" className="block mb-6 group">
-          <GlassCard className="p-5 sm:p-6 border-teal-500/20 hover:border-teal-500/40 transition-all duration-300" style={{ boxShadow: '0 0 15px rgba(20, 184, 166, 0.08), 0 0 30px rgba(20, 184, 166, 0.05), 0 0 60px rgba(20, 184, 166, 0.03), inset 0 0 30px rgba(20, 184, 166, 0.02)' }}>
+          <GlassCard className="p-5 sm:p-6 border-teal-500/25 hover:border-teal-500/45 transition-all duration-300" style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.15), 0 0 40px rgba(20, 184, 166, 0.10), 0 0 80px rgba(20, 184, 166, 0.05), inset 0 0 40px rgba(20, 184, 166, 0.03)' }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-teal-500/10">
                 <TrendingUp className="h-4 w-4 text-teal-500" />

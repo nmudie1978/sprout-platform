@@ -49,7 +49,7 @@ export function PageHeader({
         </h1>
       </div>
       {description && (
-        <p className="text-sm sm:text-base text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground/70">
           {description}
         </p>
       )}
