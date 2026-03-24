@@ -698,59 +698,40 @@ export default function ProfilePage() {
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
         const hasRequiredMissing = missingRequired.length > 0;
 
+        if (isComplete) return null; // Don't show anything when complete
+
+        const allMissing = [
+          ...missingRequired.map((f) => ({ field: f, required: true })),
+          ...missingRecommended.map((f) => ({ field: f, required: false })),
+        ];
+
         return (
-          <Card className={`mb-6 border-2 ${hasRequiredMissing ? 'border-red-500/50 bg-red-50/50 dark:bg-red-950/20' : isComplete ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : 'border-amber-500/50 bg-amber-50/50 dark:bg-amber-950/20'}`}>
-            <CardContent className="py-4">
-              <div className="flex items-start gap-3">
-                {hasRequiredMissing ? (
-                  <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                ) : isComplete ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                ) : (
-                  <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
-                )}
-                <div className="flex-1">
-                  <h3 className={`font-semibold ${hasRequiredMissing ? 'text-red-700 dark:text-red-400' : isComplete ? 'text-green-700 dark:text-green-400' : 'text-amber-700 dark:text-amber-400'}`}>
-                    {hasRequiredMissing ? 'Profile Incomplete - Required Fields Missing' : isComplete ? 'Profile Complete!' : 'Profile Almost Complete'}
-                  </h3>
-
-                  {missingRequired.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm font-medium text-red-600 dark:text-red-400 mb-1">Required fields missing:</p>
-                      <ul className="text-sm text-red-600/80 dark:text-red-400/80 space-y-0.5">
-                        {missingRequired.map((field) => (
-                          <li key={field} className="flex items-center gap-1">
-                            <XCircle className="h-3 w-3" />
-                            {field}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+          <div className="mb-6 rounded-xl border border-border/50 bg-card/60 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className={cn(
+                "h-1.5 w-1.5 rounded-full shrink-0",
+                hasRequiredMissing ? "bg-amber-500" : "bg-teal-500"
+              )} />
+              <p className="text-xs font-medium text-foreground/70">
+                {hasRequiredMissing ? 'A few fields to complete' : 'Almost there'}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {allMissing.map(({ field, required }) => (
+                <span
+                  key={field}
+                  className={cn(
+                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-medium",
+                    required
+                      ? "bg-amber-500/10 text-amber-400/80"
+                      : "bg-muted/50 text-muted-foreground/50"
                   )}
-
-                  {missingRecommended.length > 0 && (
-                    <div className="mt-2">
-                      <p className="text-sm font-medium text-amber-600 dark:text-amber-400 mb-1">Recommended to complete:</p>
-                      <ul className="text-sm text-amber-600/80 dark:text-amber-400/80 space-y-0.5">
-                        {missingRecommended.map((field) => (
-                          <li key={field} className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {field}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {isComplete && (
-                    <p className="text-sm text-green-600/80 dark:text-green-400/80 mt-1">
-                      Great job! Your profile has all the information job posters need.
-                    </p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                >
+                  {field}
+                </span>
+              ))}
+            </div>
+          </div>
         );
       })()}
 
