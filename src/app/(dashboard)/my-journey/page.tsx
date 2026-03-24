@@ -161,7 +161,7 @@ const TABS: TabDef[] = [
     id: 'discover',
     label: 'Discover',
     subtitle: 'Know Yourself',
-    items: ['Reflect on your strengths', 'Explore career interests'],
+    items: ['Reflect on your strengths', 'Explore career interests', 'Know yourself better'],
     icon: Search,
     lensKey: 'discover',
     color: 'teal',
