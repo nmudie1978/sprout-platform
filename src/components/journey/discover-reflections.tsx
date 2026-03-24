@@ -237,11 +237,11 @@ export function DiscoverReflectionsSection() {
   const isCardDirty = (cardId: string): boolean => dirty.has(cardId);
 
   return (
-    <div className="space-y-2">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 mb-1">
+    <div>
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 mb-2">
         Know yourself better
       </p>
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
       {CARDS.map((card) => {
         const Icon = card.icon;
         const filled = isFilled(card);
@@ -342,6 +342,7 @@ export function DiscoverReflectionsSection() {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

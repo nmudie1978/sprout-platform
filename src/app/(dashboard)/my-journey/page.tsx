@@ -206,14 +206,16 @@ function StageTabBar({
   activeTab,
   onTabChange,
   lenses,
+  discoverComplete,
 }: {
   activeTab: JourneyTab;
   onTabChange: (tab: JourneyTab) => void;
   lenses: { discover: LensProgress; understand: LensProgress; act: LensProgress };
+  discoverComplete: boolean;
 }) {
   const isLocked = (tab: TabDef): boolean => {
     if (tab.id === 'discover') return false;
-    if (tab.id === 'understand') return !lenses.discover.isComplete;
+    if (tab.id === 'understand') return !discoverComplete;
     if (tab.id === 'act') return !lenses.understand.isComplete;
     return false;
   };
@@ -346,6 +348,18 @@ export default function MyJourneyPage() {
       return response.json();
     },
     enabled: isYouth,
+  });
+
+  // Fetch reflections directly for Discover completion check
+  const { data: reflectionsData } = useQuery<{ discoverReflections: { motivations?: string[]; workStyle?: string[]; growthAreas?: string[]; roleModels?: string; experiences?: string } | null }>({
+    queryKey: ['discover-reflections'],
+    queryFn: async () => {
+      const res = await fetch('/api/discover/reflections');
+      if (!res.ok) return { discoverReflections: null };
+      return res.json();
+    },
+    enabled: isYouth,
+    staleTime: 2 * 60 * 1000,
   });
 
   // Auto-migrate existing data to goal-scoped model on first load
@@ -493,6 +507,28 @@ export default function MyJourneyPage() {
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
 
+  // Compute Discover completion client-side (bypasses orchestrator chain)
+  const discoverComplete = (() => {
+    const r = reflectionsData?.discoverReflections;
+    const reflectionsDone = r
+      ? (r.motivations?.length ?? 0) > 0 &&
+        (r.workStyle?.length ?? 0) > 0 &&
+        (r.growthAreas?.length ?? 0) > 0 &&
+        (r.roleModels?.trim().length ?? 0) > 0 &&
+        (r.experiences?.trim().length ?? 0) > 0
+      : false;
+
+    // Check mandatory steps are complete
+    const steps = journey.steps || [];
+    const strengthsDone = steps.find((s) => s.id === 'REFLECT_ON_STRENGTHS')?.status === 'completed';
+    const careersDone = steps.find((s) => s.id === 'EXPLORE_CAREERS')?.status === 'completed';
+    const directionDone = goalTitle
+      ? true // ROLE_DEEP_DIVE not required when goal is set
+      : steps.find((s) => s.id === 'ROLE_DEEP_DIVE')?.status === 'completed';
+
+    return reflectionsDone && strengthsDone && careersDone && directionDone;
+  })();
+
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
@@ -562,6 +598,7 @@ export default function MyJourneyPage() {
             activeTab={activeTab}
             onTabChange={setActiveTab}
             lenses={journey.summary.lenses}
+            discoverComplete={discoverComplete}
           />
         </div>
 
