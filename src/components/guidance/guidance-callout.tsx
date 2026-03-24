@@ -32,28 +32,28 @@ const CATEGORY_ICONS = {
 
 const CATEGORY_STYLES = {
   reassurance: {
-    icon: 'text-teal-500/70',
-    iconBg: 'bg-teal-500/8',
-    border: 'border-teal-500/15',
-    bg: 'bg-teal-500/[0.03]',
+    icon: 'text-violet-400/70',
+    iconBg: 'bg-violet-500/8',
+    border: 'border-violet-500/15',
+    bg: 'bg-violet-500/[0.03]',
   },
   direction: {
-    icon: 'text-sky-500/70',
-    iconBg: 'bg-sky-500/8',
-    border: 'border-sky-500/15',
-    bg: 'bg-sky-500/[0.03]',
+    icon: 'text-violet-400/70',
+    iconBg: 'bg-violet-500/8',
+    border: 'border-violet-500/15',
+    bg: 'bg-violet-500/[0.03]',
   },
   reinforcement: {
-    icon: 'text-emerald-500/70',
-    iconBg: 'bg-emerald-500/8',
-    border: 'border-emerald-500/15',
-    bg: 'bg-emerald-500/[0.03]',
+    icon: 'text-violet-400/70',
+    iconBg: 'bg-violet-500/8',
+    border: 'border-violet-500/15',
+    bg: 'bg-violet-500/[0.03]',
   },
   context: {
-    icon: 'text-amber-500/60',
-    iconBg: 'bg-amber-500/8',
-    border: 'border-amber-500/15',
-    bg: 'bg-amber-500/[0.03]',
+    icon: 'text-violet-400/60',
+    iconBg: 'bg-violet-500/8',
+    border: 'border-violet-500/15',
+    bg: 'bg-violet-500/[0.03]',
   },
 } as const;
 

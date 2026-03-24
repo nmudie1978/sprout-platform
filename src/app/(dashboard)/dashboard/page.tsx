@@ -547,7 +547,7 @@ export default function DashboardPage() {
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         <Link href="/my-journey" className="block mb-6 group">
-          <GlassCard className="p-5 sm:p-6 hover:border-border/60 transition-all">
+          <GlassCard className="p-5 sm:p-6 hover:border-teal-500/30 border-teal-500/15 transition-all" style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.06), 0 0 40px rgba(20, 184, 166, 0.03)' }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-teal-500/10">
                 <TrendingUp className="h-4 w-4 text-teal-500" />
