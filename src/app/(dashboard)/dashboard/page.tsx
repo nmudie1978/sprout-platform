@@ -25,6 +25,7 @@ import {
   FileText,
   Clock,
   Ban,
+  Sparkles,
 } from "lucide-react";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
@@ -34,6 +35,7 @@ import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
+import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
@@ -436,6 +438,9 @@ export default function DashboardPage() {
       ).length
     : 0;
 
+  // Discover profile — "Who Am I" summary (generic across all goals)
+  const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
+
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showAllJourneys, setShowAllJourneys] = useState(false);
@@ -627,7 +632,40 @@ export default function DashboardPage() {
           </GlassCard>
         </Link>
 
-        {/* ── 2. Career Snapshot + Explored Journeys ──────────── */}
+        {/* ── 2. Who Am I ────────────────────────────────────── */}
+        {discoverData?.hasProfile && discoverData.summary && (
+          <Link href="/my-journey" className="block mb-6 group">
+            <GlassCard className="p-4 hover:border-border/60 transition-all">
+              <div className="flex items-start gap-3">
+                <div className="p-1.5 rounded-lg bg-violet-500/10 shrink-0 mt-0.5">
+                  <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1">
+                    Who Am I
+                  </p>
+                  <p className="text-xs text-muted-foreground/70 leading-relaxed">
+                    {discoverData.summary}
+                  </p>
+                  {discoverData.signals?.topTags && discoverData.signals.topTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {discoverData.signals.topTags.slice(0, 6).map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-violet-500/8 text-violet-400/70"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+        )}
+
+        {/* ── 3. Career Snapshot + Explored Journeys ──────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           {/* Career Snapshot */}
           {goalCareer ? (
