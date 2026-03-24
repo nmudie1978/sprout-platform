@@ -489,33 +489,31 @@ export default function MyJourneyPage() {
     return reflectionsDone && strengthsDone && careersDone && directionDone;
   })();
 
-  // Auto-advance state machine when Discover is complete but state is stuck
-  const autoAdvanceDone = useRef(false);
+  // When Discover is complete: show celebration (once), then advance on continue.
+  // Auto-advance without celebration if user has already seen it for this goal.
+  const discoverAdvanceDone = useRef(false);
   useEffect(() => {
-    if (!autoAdvanceDone.current && discoverComplete && journey) {
-      const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
-      if (discoverStates.includes(journey.currentState)) {
-        autoAdvanceDone.current = true;
-        // Direct DB update — bypass orchestrator which may reject the transition
-        fetch('/api/journey/advance-to-understand', { method: 'POST' })
-          .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
-          .catch(() => {});
-      }
-    }
-  }, [discoverComplete, journey, queryClient]);
+    if (discoverAdvanceDone.current || !discoverComplete) return;
+    const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
+    const stateIsStuck = journey && discoverStates.includes(journey.currentState);
 
-  // Show celebration modal when Discover is first completed
-  const discoverCelebratedRef = useRef(false);
-  useEffect(() => {
-    if (!discoverCelebratedRef.current && discoverComplete && !understandComplete) {
-      discoverCelebratedRef.current = true;
-      const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
-      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
-        localStorage.setItem(seenKey, 'true');
-        setShowDiscoverCelebration(true);
-      }
+    const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
+    const alreadySeen = typeof window !== 'undefined' && localStorage.getItem(seenKey);
+
+    if (!alreadySeen) {
+      // First time completing Discover for this goal — show the celebration modal.
+      // Do NOT advance the state machine yet; that happens when they click "Continue".
+      discoverAdvanceDone.current = true;
+      localStorage.setItem(seenKey, 'true');
+      setShowDiscoverCelebration(true);
+    } else if (stateIsStuck) {
+      // Already celebrated — silently advance the state machine
+      discoverAdvanceDone.current = true;
+      fetch('/api/journey/advance-to-understand', { method: 'POST' })
+        .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
+        .catch(() => {});
     }
-  }, [discoverComplete, understandComplete, goalTitle]);
+  }, [discoverComplete, journey, goalTitle, queryClient]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
@@ -704,8 +702,13 @@ export default function MyJourneyPage() {
       {/* Discover Completion Celebration */}
       <DiscoverCompleteModal
         open={showDiscoverCelebration}
-        onContinue={() => {
+        onContinue={async () => {
           setShowDiscoverCelebration(false);
+          // Ensure state machine is advanced before switching tab
+          try {
+            await fetch('/api/journey/advance-to-understand', { method: 'POST' });
+            await queryClient.invalidateQueries({ queryKey: ['journey-state'] });
+          } catch {}
           setActiveTab('understand');
         }}
         strengths={journey.summary?.strengths ?? []}

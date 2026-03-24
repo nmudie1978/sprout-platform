@@ -7,6 +7,7 @@
  * Steps are compact inline items. Reflection cards use the full width smartly.
  */
 
+import { useState } from 'react';
 import {
   Sparkles,
   Heart,
@@ -16,11 +17,14 @@ import {
   ArrowRight,
   Pencil,
   Plus,
+  User,
+  X,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { useDiscoverRecommendations } from '@/hooks/use-discover-recommendations';
 import { GuidanceStack } from '@/components/guidance/guidance-stack';
@@ -287,6 +291,20 @@ function DiscoverProfileSection() {
 export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConfirmExploration, onContinueToUnderstand }: DiscoverTabProps) {
   const summary = journey.summary;
   const hasGoal = !!(goalTitle || summary?.primaryGoal?.title);
+  const [showWhoAmI, setShowWhoAmI] = useState(false);
+
+  // Load reflections for the "Who Am I" summary
+  const { data: reflectionsData } = useQuery<{ discoverReflections: { motivations?: string[]; workStyle?: string[]; growthAreas?: string[]; roleModels?: string; experiences?: string } | null }>({
+    queryKey: ['discover-reflections'],
+    queryFn: async () => {
+      const res = await fetch('/api/discover/reflections');
+      if (!res.ok) return { discoverReflections: null };
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const reflections = reflectionsData?.discoverReflections;
+  const hasAnyData = (summary?.strengths?.length ?? 0) > 0 || (reflections?.motivations?.length ?? 0) > 0;
 
   // Get step status from journey data
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
@@ -345,6 +363,108 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
       {/* Contextual guidance */}
       <GuidanceStack placement="discover" context={guidanceCtx} />
 
+      {/* Who Am I button */}
+      {hasAnyData && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowWhoAmI(true)}
+            className="inline-flex items-center gap-1.5 text-[11px] text-teal-500/60 hover:text-teal-400 transition-colors"
+          >
+            <User className="h-3.5 w-3.5" />
+            Who am I?
+          </button>
+        </div>
+      )}
+
+      {/* Who Am I modal */}
+      {showWhoAmI && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowWhoAmI(false)} />
+          <div className="relative w-full max-w-md rounded-2xl border border-teal-500/20 bg-card shadow-2xl overflow-hidden">
+            <div className="h-1 bg-gradient-to-r from-teal-500/50 via-emerald-500/50 to-teal-500/50" />
+            <div className="p-6">
+              <button onClick={() => setShowWhoAmI(false)} className="absolute top-3 right-3 p-1.5 rounded-lg text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+              <div className="flex items-center gap-2 mb-4">
+                <User className="h-5 w-5 text-teal-500" />
+                <h2 className="text-base font-semibold">This is you</h2>
+              </div>
+
+              <div className="space-y-3">
+                {(summary?.strengths?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">Your strengths</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {summary!.strengths.map((s) => (
+                        <span key={s} className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-teal-500/10 text-teal-400">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(reflections?.motivations?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">What drives you</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {reflections!.motivations!.map((m) => (
+                        <span key={m} className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-emerald-500/10 text-emerald-400">{m}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(reflections?.workStyle?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">How you work best</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {reflections!.workStyle!.map((w) => (
+                        <span key={w} className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/10 text-blue-400">{w}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {(reflections?.growthAreas?.length ?? 0) > 0 && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">Where you want to grow</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {reflections!.growthAreas!.map((g) => (
+                        <span key={g} className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-violet-500/10 text-violet-400">{g}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {goalTitle && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">Your direction</p>
+                    <p className="text-sm font-medium text-foreground/80">{goalTitle}</p>
+                  </div>
+                )}
+
+                {reflections?.roleModels && reflections.roleModels.trim() && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">Who inspires you</p>
+                    <p className="text-xs text-muted-foreground/70 leading-relaxed">{reflections.roleModels}</p>
+                  </div>
+                )}
+
+                {reflections?.experiences && reflections.experiences.trim() && (
+                  <div>
+                    <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">What you&apos;ve tried</p>
+                    <p className="text-xs text-muted-foreground/70 leading-relaxed">{reflections.experiences}</p>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-[10px] text-muted-foreground/30 mt-5 text-center">
+                This is based on what you shared. You can update it anytime.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Completed steps — compact grid */}
       {completedSteps.length > 0 && (
