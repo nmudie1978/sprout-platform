@@ -83,7 +83,7 @@ export class JourneyOrchestrator {
 
       // DISCOVER: also require "Know yourself better" reflections
       if (lens === 'DISCOVER') {
-        const reflections = (this.context.journeySummary as Record<string, unknown> | undefined)?.discoverReflections as {
+        const reflections = (this.context.journeySummary as unknown as Record<string, unknown> | undefined)?.discoverReflections as {
           motivations?: string[];
           workStyle?: string[];
           growthAreas?: string[];
