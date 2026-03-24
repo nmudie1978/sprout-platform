@@ -59,6 +59,7 @@ interface NavItemProps {
   label: string;
   active?: boolean;
   badge?: number;
+  statusDot?: boolean;
   collapsed?: boolean;
 }
 
@@ -70,7 +71,7 @@ interface NavSectionProps {
 
 // ── Nav Item ─────────────────────────────────────────────────────────
 
-function NavItem({ href, icon: Icon, label, active, badge, collapsed }: NavItemProps) {
+function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed }: NavItemProps) {
   const router = useRouter();
   const handleMouseEnter = useCallback(() => {
     router.prefetch(href);
@@ -100,6 +101,9 @@ function NavItem({ href, icon: Icon, label, active, badge, collapsed }: NavItemP
           active ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]" : "group-hover:scale-110 group-hover:text-slate-200"
         )} />
         {!collapsed && <span className="flex-1 truncate">{label}</span>}
+        {!collapsed && statusDot && (
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 shrink-0 shadow-[0_0_4px_rgba(45,212,191,0.6)]" />
+        )}
         {!collapsed && badge !== undefined && badge > 0 && (
           <span className="bg-teal-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none animate-pulse">
             {badge}
@@ -168,6 +172,19 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   const applications = Array.isArray(applicationsData) ? applicationsData : (applicationsData?.applications || []);
   const pendingCount = applications.filter((a: any) => a.status === "PENDING").length;
 
+  // Check if there's an active journey (goal set)
+  const { data: goalsData } = useQuery<{ primaryGoal: { title: string } | null }>({
+    queryKey: ["my-goals"],
+    queryFn: async () => {
+      const response = await fetch("/api/goals");
+      if (!response.ok) return { primaryGoal: null };
+      return response.json();
+    },
+    enabled: userRole === "YOUTH",
+    staleTime: 5 * 60 * 1000,
+  });
+  const hasActiveJourney = !!goalsData?.primaryGoal?.title;
+
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   const displayName = userName || "User";
@@ -222,7 +239,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             <NavSection title="Explore" collapsed={collapsed}>
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
-              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} collapsed={collapsed} />
+              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} />
               <NavItem href="/careers" icon={Compass} label="Explore Careers" active={isActive("/careers")} collapsed={collapsed} />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} />
