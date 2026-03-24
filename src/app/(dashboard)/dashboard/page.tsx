@@ -42,13 +42,16 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 function GlassCard({
   children,
   className = "",
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   return (
     <div
       className={`bg-card/80 backdrop-blur-sm border border-border/40 rounded-2xl ${className}`}
+      style={style}
     >
       {children}
     </div>
