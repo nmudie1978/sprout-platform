@@ -24,6 +24,8 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 export function extractSignals(profile: DiscoverProfile): DiscoverSignals {
   const tags = new Set<string>();
 
+  if (!profile?.interests) return { topTags: [], summaryText: '' };
+
   // Interest tags
   for (const id of profile.interests) {
     const opt = INTEREST_OPTIONS.find((o) => o.id === id);
@@ -73,10 +75,11 @@ export function extractSignals(profile: DiscoverProfile): DiscoverSignals {
  * Avoids psychometric labels — uses plain language.
  */
 export function generateSummary(profile: DiscoverProfile): string {
+  if (!profile?.interests || !profile?.workPreferences) return '';
   const parts: string[] = [];
 
   // Interests summary
-  const interestLabels = profile.interests
+  const interestLabels = (profile.interests || [])
     .map((id) => INTEREST_OPTIONS.find((o) => o.id === id)?.label.toLowerCase())
     .filter(Boolean);
 
@@ -289,6 +292,7 @@ export function getJobRelevanceLabel(
 // ============================================
 
 export function isDiscoverComplete(profile: DiscoverProfile): boolean {
+  if (!profile?.interests || !profile?.strengths || !profile?.motivations) return false;
   return (
     profile.interests.length >= 2 &&
     profile.strengths.length >= 2 &&

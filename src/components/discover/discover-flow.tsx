@@ -98,8 +98,17 @@ function RadioOption({
 // ── Main Flow ───────────────────────────────
 
 export function DiscoverFlow({ initialProfile, onComplete, onSaveProgress, onClose }: DiscoverFlowProps) {
-  const [profile, setProfile] = useState<DiscoverProfile>(initialProfile || DEFAULT_DISCOVER_PROFILE);
-  const [step, setStep] = useState(initialProfile?.currentStep || 0);
+  // Deep-merge with defaults to guard against missing nested fields
+  const safeInitial: DiscoverProfile = {
+    ...DEFAULT_DISCOVER_PROFILE,
+    ...(initialProfile || {}),
+    workPreferences: {
+      ...DEFAULT_DISCOVER_PROFILE.workPreferences,
+      ...(initialProfile?.workPreferences || {}),
+    },
+  };
+  const [profile, setProfile] = useState<DiscoverProfile>(safeInitial);
+  const [step, setStep] = useState(safeInitial.currentStep || 0);
   const [isSaving, setIsSaving] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
 
