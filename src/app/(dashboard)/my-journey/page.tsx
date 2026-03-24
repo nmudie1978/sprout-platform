@@ -191,7 +191,7 @@ const TABS: TabDef[] = [
     id: 'act',
     label: 'Grow',
     subtitle: 'Take Action & Grow',
-    items: ['Log real-world actions', 'Reflect on what you learned', 'Career roadmap'],
+    items: ['Complete real-world actions', 'Reflect on what you\'ve learned', 'Career roadmap'],
     icon: Rocket,
     lensKey: 'act',
     color: 'amber',

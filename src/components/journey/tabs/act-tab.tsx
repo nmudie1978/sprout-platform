@@ -47,13 +47,13 @@ const ACT_STEPS = [
   {
     id: 'COMPLETE_ALIGNED_ACTION',
     stepNumber: 1,
-    title: 'Complete Aligned Action',
+    title: 'Complete Real-World Actions',
     description: 'Start with something manageable — a course, a small project, or an application. The size doesn\'t matter, the step does.',
   },
   {
     id: 'SUBMIT_ACTION_REFLECTION',
     stepNumber: 2,
-    title: 'Reflect on Action',
+    title: 'Reflect on What You\'ve Learned',
     description: 'Think about what you learned. Did it confirm your direction, or open up new questions? Both are valuable.',
   },
 ];
@@ -202,36 +202,12 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       {/* ── Journey Complete: Roadmap & School unlocked ──────────── */}
       {growComplete && (
         <>
-          {/* ── Journey Complete Celebration ─────────────────── */}
-          <div
-            className="rounded-2xl border border-emerald-500/25 bg-gradient-to-b from-emerald-500/[0.08] via-emerald-500/[0.03] to-transparent p-6 sm:p-8 text-center"
-            style={{ boxShadow: '0 0 40px rgba(16, 185, 129, 0.1), 0 0 80px rgba(16, 185, 129, 0.05)' }}
-          >
-            <div
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-500 mx-auto mb-4"
-              style={{ boxShadow: '0 0 25px rgba(16, 185, 129, 0.25)' }}
-            >
-              <Sparkles className="h-7 w-7" />
-            </div>
-            <h2 className="text-lg font-bold text-emerald-400 mb-1.5">
-              You&apos;ve completed the journey.
-            </h2>
-            <p className="text-sm text-muted-foreground/70 max-w-md mx-auto leading-relaxed mb-2">
-              You reflected, researched, took action, and learned from it. That takes real commitment.
+          {/* Journey complete — compact note */}
+          <div className="flex items-center gap-3 rounded-xl border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+            <p className="text-xs text-muted-foreground/60">
+              Journey complete. Your career roadmap and school alignment are below.
             </p>
-            <p className="text-xs text-muted-foreground/50 max-w-sm mx-auto">
-              Your personalised career roadmap and school alignment are now unlocked below — use them to keep building momentum.
-            </p>
-            <div className="flex items-center justify-center gap-5 mt-4 text-[11px] text-muted-foreground/40">
-              <span className="flex items-center gap-1.5">
-                <Route className="h-3.5 w-3.5 text-amber-500/60" />
-                Career Roadmap
-              </span>
-              <span className="flex items-center gap-1.5">
-                <GraduationCap className="h-3.5 w-3.5 text-teal-500/60" />
-                School Alignment
-              </span>
-            </div>
           </div>
 
           {/* Your Roadmap */}
