@@ -54,14 +54,47 @@ export async function POST() {
     completed.add("EXPLORE_CAREERS");
     completed.add("ROLE_DEEP_DIVE");
 
+    const completedArray = Array.from(completed);
+
     await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
         journeyState: "REVIEW_INDUSTRY_OUTLOOK",
-        journeyCompletedSteps: Array.from(completed),
+        journeyCompletedSteps: completedArray,
         journeyLastUpdated: new Date(),
       },
     });
+
+    // Auto-save a goal snapshot so it appears in "My Explored Journeys"
+    const fullProfile = await prisma.youthProfile.findUnique({
+      where: { userId: session.user.id },
+      select: { primaryGoal: true, journeySummary: true },
+    });
+    const goalTitle = (fullProfile?.primaryGoal as { title?: string } | null)?.title;
+    if (goalTitle) {
+      const goalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      try {
+        await prisma.journeyGoalData.upsert({
+          where: { userId_goalId: { userId: session.user.id, goalId } },
+          create: {
+            userId: session.user.id,
+            goalId,
+            goalTitle,
+            journeyState: "REVIEW_INDUSTRY_OUTLOOK",
+            journeyCompletedSteps: completedArray,
+            journeySummary: fullProfile?.journeySummary || undefined,
+          },
+          update: {
+            goalTitle,
+            journeyState: "REVIEW_INDUSTRY_OUTLOOK",
+            journeyCompletedSteps: completedArray,
+            journeySummary: fullProfile?.journeySummary || undefined,
+          },
+        });
+      } catch {
+        // Non-blocking
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
