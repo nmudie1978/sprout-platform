@@ -161,6 +161,69 @@ const CAREER_SUBJECT_MAP: CareerSubjectMapping[] = [
     nextDecisions: ['Build a social media or content project', 'Choose business and media subjects', 'Research marketing degrees or apprenticeships'],
     whySubjectsMatter: 'Marketing combines creativity with business strategy — communication and understanding people are key.',
   },
+  {
+    career: 'lab technician',
+    keySubjects: ['Biology', 'Chemistry', 'Mathematics'],
+    supportingSubjects: ['Physics', 'Computer Science', 'English'],
+    focusAreas: ['Laboratory techniques', 'Scientific accuracy', 'Data recording and analysis'],
+    nextDecisions: ['Focus on biology and chemistry', 'Research biomedical science programmes', 'Look for lab volunteering or work experience'],
+    whySubjectsMatter: 'Lab work requires precision in biology and chemistry — these subjects are essential for understanding what you test and measure.',
+    aliases: ['bioingeniør', 'biomedical', 'laboratory', 'lab scientist', 'medical technologist'],
+  },
+  {
+    career: 'social worker',
+    keySubjects: ['Psychology', 'Sociology', 'English'],
+    supportingSubjects: ['Health Science', 'Law', 'Biology'],
+    focusAreas: ['Understanding human behaviour', 'Communication skills', 'Empathy and resilience'],
+    nextDecisions: ['Choose psychology and sociology subjects', 'Research social work degrees', 'Volunteer with community organisations'],
+    whySubjectsMatter: 'Social work requires deep understanding of people and society — psychology and sociology build those foundations.',
+    aliases: ['care worker', 'youth worker', 'community worker', 'counsellor', 'therapist'],
+  },
+  {
+    career: 'chef',
+    keySubjects: ['Food Technology', 'Business Studies', 'Chemistry'],
+    supportingSubjects: ['Art & Design', 'Mathematics', 'Biology'],
+    focusAreas: ['Cooking techniques and food safety', 'Creativity and presentation', 'Kitchen management'],
+    nextDecisions: ['Take food technology or hospitality courses', 'Practice cooking at home regularly', 'Look for kitchen apprenticeships or part-time work'],
+    whySubjectsMatter: 'Professional cooking combines science (food chemistry) with creativity and business awareness.',
+    aliases: ['cook', 'baker', 'pastry', 'culinary', 'hospitality'],
+  },
+  {
+    career: 'mechanic',
+    keySubjects: ['Design & Technology', 'Physics', 'Mathematics'],
+    supportingSubjects: ['Computer Science', 'Business Studies', 'English'],
+    focusAreas: ['Mechanical understanding', 'Problem diagnosis', 'Practical skills'],
+    nextDecisions: ['Choose physics and design technology', 'Research automotive apprenticeships', 'Learn about engines and electrical systems'],
+    whySubjectsMatter: 'Mechanics relies on physics and practical engineering knowledge — understanding how things work is the foundation.',
+    aliases: ['automotive', 'car', 'vehicle', 'motor'],
+  },
+  {
+    career: 'pharmacist',
+    keySubjects: ['Chemistry', 'Biology', 'Mathematics'],
+    supportingSubjects: ['Physics', 'English', 'Psychology'],
+    focusAreas: ['Pharmaceutical science', 'Patient communication', 'Attention to detail'],
+    nextDecisions: ['Focus on chemistry and biology at higher levels', 'Research pharmacy degree requirements', 'Get experience in a pharmacy setting'],
+    whySubjectsMatter: 'Pharmacy is built on chemistry and biology — understanding how drugs interact with the body is essential.',
+    aliases: ['pharmacy', 'pharmaceutical', 'dispensing'],
+  },
+  {
+    career: 'pilot',
+    keySubjects: ['Mathematics', 'Physics', 'English'],
+    supportingSubjects: ['Geography', 'Computer Science', 'Design & Technology'],
+    focusAreas: ['Navigation and spatial awareness', 'Technical understanding', 'Communication under pressure'],
+    nextDecisions: ['Strengthen maths and physics', 'Research pilot training programmes', 'Look into flight simulation or air cadet programmes'],
+    whySubjectsMatter: 'Flying requires strong maths and physics for navigation, aerodynamics, and decision-making.',
+    aliases: ['aviation', 'flight', 'airline', 'aircraft'],
+  },
+  {
+    career: 'musician',
+    keySubjects: ['Music', 'English', 'Mathematics'],
+    supportingSubjects: ['Drama', 'Media Studies', 'Business Studies'],
+    focusAreas: ['Musical skill and theory', 'Performance confidence', 'Self-promotion and networking'],
+    nextDecisions: ['Keep practising your instrument or voice', 'Study music theory', 'Perform wherever you can — open mics, school events'],
+    whySubjectsMatter: 'Music requires dedicated practice and theoretical understanding — but business skills help you build a career from your talent.',
+    aliases: ['singer', 'composer', 'producer', 'DJ', 'performer'],
+  },
 ];
 
 // ── Fuzzy career matching ────────────────────────────────────────────
@@ -185,7 +248,92 @@ export function getCareerSubjectMapping(careerTitle: string): CareerSubjectMappi
   // Keyword match in reverse
   const reverse = CAREER_SUBJECT_MAP.find((m) => normalise(m.career).includes(norm));
   if (reverse) return reverse;
-  return null;
+
+  // Generic fallback — generate a reasonable mapping from keywords
+  return generateGenericMapping(careerTitle);
+}
+
+function generateGenericMapping(careerTitle: string): CareerSubjectMapping {
+  const lower = careerTitle.toLowerCase();
+
+  // Detect domain from keywords
+  const isScience = /bio|chem|lab|medical|health|pharm|science|research/i.test(lower);
+  const isTech = /tech|software|data|digital|cyber|comput|IT|web|dev/i.test(lower);
+  const isCreative = /design|art|creative|media|film|photo|music|writ/i.test(lower);
+  const isBusiness = /business|manage|finance|account|market|sales|consult/i.test(lower);
+  const isTrades = /electric|plumb|mechanic|construct|weld|carpent|build/i.test(lower);
+  const isPeople = /social|care|teach|counsel|nurs|psych|communit/i.test(lower);
+
+  if (isScience) {
+    return {
+      career: careerTitle,
+      keySubjects: ['Biology', 'Chemistry', 'Mathematics'],
+      supportingSubjects: ['Physics', 'English', 'Computer Science'],
+      focusAreas: ['Scientific thinking', 'Laboratory skills', 'Research methods'],
+      nextDecisions: ['Focus on science subjects', 'Research relevant degree programmes', 'Look for science-related work experience'],
+      whySubjectsMatter: 'Science careers require strong foundations in biology, chemistry, and maths to understand and apply scientific principles.',
+    };
+  }
+  if (isTech) {
+    return {
+      career: careerTitle,
+      keySubjects: ['Mathematics', 'Computer Science', 'Physics'],
+      supportingSubjects: ['English', 'Design & Technology', 'Business Studies'],
+      focusAreas: ['Logical thinking', 'Problem-solving', 'Technical skills'],
+      nextDecisions: ['Strengthen maths and computing', 'Start building projects', 'Research tech pathways'],
+      whySubjectsMatter: 'Technology careers build on logical and mathematical thinking — coding and problem-solving are core skills.',
+    };
+  }
+  if (isCreative) {
+    return {
+      career: careerTitle,
+      keySubjects: ['Art & Design', 'English', 'Media Studies'],
+      supportingSubjects: ['Design & Technology', 'Computer Science', 'Business Studies'],
+      focusAreas: ['Creative expression', 'Technical craft skills', 'Portfolio building'],
+      nextDecisions: ['Build a portfolio of work', 'Learn relevant software tools', 'Research creative programmes'],
+      whySubjectsMatter: 'Creative careers combine artistic talent with technical skill — practice and a strong portfolio open doors.',
+    };
+  }
+  if (isBusiness) {
+    return {
+      career: careerTitle,
+      keySubjects: ['Business Studies', 'Mathematics', 'English'],
+      supportingSubjects: ['Economics', 'Computer Science', 'Psychology'],
+      focusAreas: ['Financial literacy', 'Communication', 'Strategic thinking'],
+      nextDecisions: ['Choose business and maths subjects', 'Research relevant degrees or apprenticeships', 'Start a small project or venture'],
+      whySubjectsMatter: 'Business careers need numeracy, communication, and understanding of how organisations work.',
+    };
+  }
+  if (isTrades) {
+    return {
+      career: careerTitle,
+      keySubjects: ['Mathematics', 'Physics', 'Design & Technology'],
+      supportingSubjects: ['Computer Science', 'English', 'Business Studies'],
+      focusAreas: ['Practical problem-solving', 'Technical knowledge', 'Safety awareness'],
+      nextDecisions: ['Keep maths and physics', 'Research apprenticeship programmes', 'Get hands-on experience where possible'],
+      whySubjectsMatter: 'Trades rely on practical skills backed by maths and physics — understanding how things work keeps people safe.',
+    };
+  }
+  if (isPeople) {
+    return {
+      career: careerTitle,
+      keySubjects: ['English', 'Psychology', 'Sociology'],
+      supportingSubjects: ['Biology', 'Health Science', 'Drama'],
+      focusAreas: ['Communication skills', 'Understanding people', 'Empathy and patience'],
+      nextDecisions: ['Choose subjects that help you understand people', 'Research relevant programmes', 'Volunteer with community organisations'],
+      whySubjectsMatter: 'Working with people requires strong communication, empathy, and an understanding of human behaviour.',
+    };
+  }
+
+  // Truly generic fallback
+  return {
+    career: careerTitle,
+    keySubjects: ['English', 'Mathematics'],
+    supportingSubjects: ['Computer Science', 'Business Studies'],
+    focusAreas: ['Communication', 'Problem-solving', 'Self-management'],
+    nextDecisions: ['Research what this career involves day to day', 'Identify which subjects are most relevant', 'Look for related work experience'],
+    whySubjectsMatter: 'Strong foundations in English and maths support almost every career path.',
+  };
 }
 
 // ── Subject Alignment Calculation ────────────────────────────────────
