@@ -504,24 +504,13 @@ export default function MyJourneyPage() {
       const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
       if (discoverStates.includes(journey.currentState)) {
         autoAdvanceDone.current = true;
-        completeStepMutation.mutateAsync({
-          stepId: 'ROLE_DEEP_DIVE',
-          data: {
-            type: 'ROLE_DEEP_DIVE',
-            role: {
-              title: goalTitle || 'Career direction set',
-              exploredAt: new Date().toISOString(),
-              educationPaths: [],
-              certifications: [],
-              companies: [],
-              humanSkills: [],
-              entryExpectations: '',
-            },
-          },
-        }).catch(() => {});
+        // Direct DB update — bypass orchestrator which may reject the transition
+        fetch('/api/journey/advance-to-understand', { method: 'POST' })
+          .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
+          .catch(() => {});
       }
     }
-  }, [discoverComplete, journey, goalTitle, completeStepMutation]);
+  }, [discoverComplete, journey, queryClient]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
