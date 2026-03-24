@@ -527,25 +527,6 @@ export default function DashboardPage() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
             </GlassCard>
           </div>
-        ) : goalTitle ? (
-          <Link href="/my-journey" className="block mb-6 group">
-            <GlassCard className="p-4 sm:p-5 hover:border-border/60 transition-all">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-teal-500/10 shrink-0">
-                  <Rocket className="h-4 w-4 text-teal-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-0.5">
-                    Continue your journey
-                  </p>
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {currentStageLabel}: {goalTitle}
-                  </p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-teal-500 transition-colors shrink-0" />
-              </div>
-            </GlassCard>
-          </Link>
         ) : null}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
