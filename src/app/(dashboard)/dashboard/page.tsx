@@ -737,7 +737,9 @@ export default function DashboardPage() {
               <GlassCard className="p-3 h-full flex flex-col">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold flex-1">My Explored Journeys</h3>
+                  <h3 className="text-xs font-semibold">My Explored Journeys</h3>
+                  <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
+                  <span className="flex-1" />
                   {totalPages > 1 && (
                     <div className="flex items-center gap-1">
                       <button
