@@ -1475,6 +1475,8 @@ export default function ProfilePage() {
             secondaryGoal={goalsData?.secondaryGoal || null}
             onSuccess={() => {
               queryClient.invalidateQueries({ queryKey: ["goals"] });
+              queryClient.invalidateQueries({ queryKey: ["my-goals"] });
+              queryClient.invalidateQueries({ queryKey: ["journey-state"] });
             }}
           />
 
