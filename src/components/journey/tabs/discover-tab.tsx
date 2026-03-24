@@ -234,8 +234,8 @@ function DiscoverProfileSection() {
           <Sparkles className="h-4 w-4 text-teal-500" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-teal-400 group-hover:text-teal-300 transition-colors">Know Yourself</p>
-          <p className="text-[11px] text-muted-foreground/60">Quick self-discovery to personalise your experience</p>
+          <p className="text-xs font-semibold text-teal-400 group-hover:text-teal-300 transition-colors">Personalise Your Experience</p>
+          <p className="text-[11px] text-muted-foreground/60">Quick self-discovery to shape your journey</p>
         </div>
         <ArrowRight className="h-4 w-4 text-teal-500/40 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all shrink-0" />
       </Link>
@@ -478,7 +478,7 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
             <CheckCircle2 className="h-4 w-4" />
           </div>
           <div className="flex-1 text-left">
-            <p className="text-sm font-semibold text-foreground/80">You know yourself</p>
+            <p className="text-sm font-semibold text-foreground/80">Discover complete</p>
             <p className="text-xs text-muted-foreground/60 mt-0.5">
               When you&apos;re ready, explore what your path actually looks like.
             </p>
