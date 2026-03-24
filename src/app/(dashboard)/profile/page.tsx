@@ -939,247 +939,164 @@ export default function ProfilePage() {
           )}
 
           {/* Edit Profile Form */}
-          <Card className="border-2 shadow-lg hover-lift relative z-10">
-            <CardHeader>
-              <CardTitle className="text-xl">Edit Your Profile</CardTitle>
-              <CardDescription>
-                This information will be shown to job posters when you share your profile
+          <Card className="border shadow-sm relative z-10">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Edit Your Profile</CardTitle>
+              <CardDescription className="text-xs">
+                Shown to job posters when you share your profile
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-5 relative z-10">
-              {/* Avatar Preview — generated from display name */}
-              <div className="pb-5 border-b">
-                <Label className="text-sm font-medium mb-3 block">
-                  Your Avatar
-                </Label>
-                <div className="flex flex-col items-center gap-2">
-                  <Avatar name={formData.displayName || profile?.displayName} size="xl" />
-                  <p className="text-xs text-muted-foreground">
-                    Generated from your display name
+            <CardContent className="space-y-4 relative z-10">
+              {/* Avatar + Name row */}
+              <div className="flex items-center gap-4 pb-3 border-b border-border/30">
+                <Avatar name={formData.displayName || profile?.displayName} size="xl" />
+                <div className="flex-1 min-w-0">
+                  {session?.user?.name && (
+                    <p className="text-xs text-muted-foreground/50 mb-0.5">{session.user.name}</p>
+                  )}
+                  <Input
+                    id="displayName"
+                    placeholder="Display name"
+                    value={formData.displayName}
+                    onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                    className="h-8 text-sm"
+                  />
+                  <p className="mt-1 text-[10px] text-muted-foreground/40">
+                    Display name <span className="text-amber-500">*</span>
                   </p>
                 </div>
               </div>
 
+              {/* About Me — compact textarea */}
               <div>
-                <Label htmlFor="displayName" className="text-sm font-medium flex items-center gap-1">
-                  Display Name
-                  <span className="text-[10px] text-red-600">*</span>
-                </Label>
-                <Input
-                  id="displayName"
-                  placeholder="Your name or nickname"
-                  value={formData.displayName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, displayName: e.target.value })
-                  }
-                  className="h-10 mt-1.5"
-                />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  This is how job posters will address you
-                </p>
-              </div>
-
-              <div>
-                <Label htmlFor="bio" className="text-sm font-medium">
-                  About Me
-                </Label>
+                <Label htmlFor="bio" className="text-xs font-medium text-muted-foreground/70">About Me</Label>
                 <Textarea
                   id="bio"
                   placeholder="Tell job posters a bit about yourself..."
                   value={formData.bio}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bio: e.target.value })
-                  }
-                  rows={4}
-                  className="mt-1.5"
+                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                  rows={2}
+                  className="mt-1 text-sm"
                 />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  {formData.bio.length}/500 characters
-                </p>
+                <p className="mt-0.5 text-[10px] text-muted-foreground/30">{formData.bio.length}/500</p>
               </div>
 
-              <div>
-                <Label className="text-sm font-medium">
-                  Availability
-                </Label>
-                <p className="text-xs text-muted-foreground mt-0.5 mb-2">
-                  Select when you're available for small jobs
-                </p>
-                <AvailabilityPicker
-                  value={formData.availability}
-                  onChange={(val) => setFormData({ ...formData, availability: val })}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="phoneNumber" className="text-sm font-medium flex items-center gap-1">
-                  Phone Number
-                  <span className="text-[10px] text-red-600">*</span>
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="+47 123 45 678"
-                  value={formData.phoneNumber}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phoneNumber: e.target.value })
-                  }
-                  className="h-10 mt-1.5"
-                />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  Only shown to job posters when you're assigned to their job
-                </p>
+              {/* Phone + City side by side */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="phoneNumber" className="text-xs font-medium text-muted-foreground/70">
+                    Phone <span className="text-amber-500">*</span>
+                  </Label>
+                  <Input
+                    id="phoneNumber"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="+47 123 45 678"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                    className="h-8 mt-1 text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="city" className="text-xs font-medium text-muted-foreground/70">
+                    City <span className="text-amber-500">*</span>
+                  </Label>
+                  <Input
+                    id="city"
+                    placeholder="e.g., Oslo"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="h-8 mt-1 text-sm"
+                  />
+                </div>
               </div>
 
               {/* Date of Birth */}
               <div>
-                <Label className="text-sm font-medium flex items-center gap-1 mb-1.5">
-                  Date of Birth
-                  <span className="text-[10px] text-red-600">*</span>
+                <Label className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1">
+                  Date of Birth <span className="text-amber-500">*</span>
                   {profile?.user?.authProvider === "VIPPS" && (
-                    <Badge className="ml-2 bg-[#ff5b24]/10 text-[#ff5b24] border-[#ff5b24]/20 text-[10px] px-1.5 py-0">
-                      <CheckCircle2 className="h-2.5 w-2.5 mr-1" />
-                      Verified by Vipps
+                    <Badge className="ml-1 bg-[#ff5b24]/10 text-[#ff5b24] border-[#ff5b24]/20 text-[8px] px-1 py-0">
+                      Vipps verified
                     </Badge>
                   )}
+                  {profile?.user?.dateOfBirth && (
+                    <span className="text-[10px] text-muted-foreground/40 ml-auto font-normal">
+                      {(() => {
+                        const dob = new Date(profile.user.dateOfBirth);
+                        const today = new Date();
+                        let age = today.getFullYear() - dob.getFullYear();
+                        const monthDiff = today.getMonth() - dob.getMonth();
+                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age--;
+                        return `${age} yrs`;
+                      })()}
+                    </span>
+                  )}
                 </Label>
-                <div className="flex flex-col gap-3">
-                  {/* Day / Month / Year dropdowns */}
-                  <div className="grid grid-cols-3 gap-2">
-                    {/* Day */}
-                    <Select
-                      value={dobDay}
-                      onValueChange={setDobDay}
-                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
-                    >
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[200px]">
-                        {Array.from({ length: getDaysInMonth(dobMonth, dobYear) }, (_, i) => i + 1).map((d) => (
-                          <SelectItem key={d} value={d.toString()}>
-                            {d}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    {/* Month */}
-                    <Select
-                      value={dobMonth}
-                      onValueChange={setDobMonth}
-                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
-                    >
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[200px]">
-                        {DOB_MONTHS.map((m) => (
-                          <SelectItem key={m.value} value={m.value}>
-                            {m.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    {/* Year */}
-                    <Select
-                      value={dobYear}
-                      onValueChange={setDobYear}
-                      disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}
-                    >
-                      <SelectTrigger className="h-10">
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-[200px]">
-                        {DOB_YEARS.map((y) => (
-                          <SelectItem key={y} value={y.toString()}>
-                            {y}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Save button and age display */}
-                  <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                    {/* Only show save button for non-Vipps users */}
-                    {dobDay && dobMonth && dobYear && profile?.user?.authProvider !== "VIPPS" && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          const dateString = `${dobYear}-${dobMonth}-${dobDay.padStart(2, "0")}`;
-                          updateDateOfBirthMutation.mutate(dateString);
-                        }}
-                        disabled={updateDateOfBirthMutation.isPending}
-                        className="h-9"
-                      >
-                        {updateDateOfBirthMutation.isPending ? "Saving..." : "Save Date of Birth"}
-                      </Button>
-                    )}
-                    {profile?.user?.dateOfBirth && (
-                      <Badge variant="secondary" className="text-xs font-normal px-2.5 py-1">
-                        {(() => {
-                          const dob = new Date(profile.user.dateOfBirth);
-                          const today = new Date();
-                          let age = today.getFullYear() - dob.getFullYear();
-                          const monthDiff = today.getMonth() - dob.getMonth();
-                          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-                            age--;
-                          }
-                          return `${age} years old`;
-                        })()}
-                      </Badge>
-                    )}
-                  </div>
+                <div className="grid grid-cols-3 gap-2 mt-1">
+                  <Select value={dobDay} onValueChange={setDobDay} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
+                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Day" /></SelectTrigger>
+                    <SelectContent className="max-h-[200px]">
+                      {Array.from({ length: getDaysInMonth(dobMonth, dobYear) }, (_, i) => i + 1).map((d) => (
+                        <SelectItem key={d} value={d.toString()}>{d}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={dobMonth} onValueChange={setDobMonth} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
+                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Month" /></SelectTrigger>
+                    <SelectContent className="max-h-[200px]">
+                      {DOB_MONTHS.map((m) => (
+                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={dobYear} onValueChange={setDobYear} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
+                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Year" /></SelectTrigger>
+                    <SelectContent className="max-h-[200px]">
+                      {DOB_YEARS.map((y) => (
+                        <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {profile?.user?.authProvider === "VIPPS"
-                    ? "Your date of birth is verified through Vipps and cannot be changed"
-                    : "Used for age verification and job matching"}
-                </p>
+                {dobDay && dobMonth && dobYear && profile?.user?.authProvider !== "VIPPS" && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const dateString = `${dobYear}-${dobMonth}-${dobDay.padStart(2, "0")}`;
+                      updateDateOfBirthMutation.mutate(dateString);
+                    }}
+                    disabled={updateDateOfBirthMutation.isPending}
+                    className="h-7 text-xs mt-2"
+                  >
+                    {updateDateOfBirthMutation.isPending ? "Saving..." : "Save Date of Birth"}
+                  </Button>
+                )}
               </div>
 
+              {/* Availability — compact chips */}
               <div>
-                <Label htmlFor="city" className="text-sm font-medium flex items-center gap-1">
-                  City
-                  <span className="text-[10px] text-red-600">*</span>
-                </Label>
-                <Input
-                  id="city"
-                  placeholder="e.g., Oslo, Fjellhamar, Bergen"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  className="h-10 mt-1.5"
-                />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  Used to show you jobs in your area
-                </p>
+                <Label className="text-xs font-medium text-muted-foreground/70">Availability</Label>
+                <div className="mt-1">
+                  <AvailabilityPicker
+                    value={formData.availability}
+                    onChange={(val) => setFormData({ ...formData, availability: val })}
+                  />
+                </div>
               </div>
 
+              {/* Interests — chip selector */}
               <div>
-                <Label className="text-sm font-medium">
-                  Interests
-                </Label>
-                <p className="mb-2 text-xs text-muted-foreground">
-                  Select topics you're interested in
-                </p>
-                <div className="flex flex-wrap gap-2">
+                <Label className="text-xs font-medium text-muted-foreground/70">Interests</Label>
+                <div className="flex flex-wrap gap-1.5 mt-1">
                   {INTEREST_OPTIONS.map((interest) => (
                     <Badge
                       key={interest}
-                      variant={
-                        formData.interests.includes(interest)
-                          ? "default"
-                          : "outline"
-                      }
-                      className="cursor-pointer"
+                      variant={formData.interests.includes(interest) ? "default" : "outline"}
+                      className="cursor-pointer text-[10px] px-2 py-0.5"
                       onClick={() => toggleInterest(interest)}
                     >
                       {interest}
@@ -1188,11 +1105,10 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {/* Guardian Email — only for 16-17 */}
               {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
                 <div>
-                  <Label htmlFor="guardianEmail" className="text-sm font-medium">
-                    Guardian Email
-                  </Label>
+                  <Label htmlFor="guardianEmail" className="text-xs font-medium text-muted-foreground/70">Guardian Email</Label>
                   <Input
                     id="guardianEmail"
                     type="email"
@@ -1200,23 +1116,16 @@ export default function ProfilePage() {
                     autoComplete="email"
                     placeholder="parent@example.com"
                     value={formData.guardianEmail}
-                    onChange={(e) =>
-                      setFormData({ ...formData, guardianEmail: e.target.value })
-                    }
-                    className="h-10 mt-1.5"
+                    onChange={(e) => setFormData({ ...formData, guardianEmail: e.target.value })}
+                    className="h-8 mt-1 text-sm"
                   />
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    We'll keep them informed about your activity
-                  </p>
                 </div>
               )}
 
               <Button
                 onClick={() => saveProfileMutation.mutate()}
-                disabled={
-                  !formData.displayName || !formData.city || saveProfileMutation.isPending
-                }
-                className="w-full h-10 mt-2"
+                disabled={!formData.displayName || !formData.city || saveProfileMutation.isPending}
+                className="w-full h-9 text-sm mt-1"
               >
                 {saveProfileMutation.isPending ? "Saving..." : "Save Profile"}
               </Button>
