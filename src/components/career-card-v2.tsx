@@ -60,6 +60,10 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
       <span className="flex-1 text-sm font-medium truncate min-w-0">
         {career.title}
       </span>
+      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 flex-shrink-0">
+        Learn more
+        <ChevronRight className="h-3 w-3" />
+      </span>
       {matchScore !== undefined && (
         <Badge
           variant="secondary"
@@ -77,10 +81,6 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
       >
         <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
       </Badge>
-      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 flex-shrink-0">
-        Learn more
-        <ChevronRight className="h-3 w-3" />
-      </span>
     </button>
   );
 }
