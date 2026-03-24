@@ -838,26 +838,26 @@ export default function DashboardPage() {
         </div>
 
         {/* ── 4. Activity ────────────────────────────────────── */}
-        <GlassCard className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <FileText className="h-4 w-4 text-amber-500" />
-            <h3 className="text-sm font-semibold">Activity</h3>
+        <GlassCard className="p-3">
+          <div className="flex items-center gap-2 mb-1.5">
+            <FileText className="h-3.5 w-3.5 text-amber-500" />
+            <h3 className="text-xs font-semibold">Activity</h3>
           </div>
           {recentActivity.length > 0 ? (
-            <div className="space-y-2">
-              {recentActivity.slice(0, 4).map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs">
+            <div className="space-y-1">
+              {recentActivity.slice(0, 3).map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-[11px]">
                   <div className={cn(
-                    "h-1.5 w-1.5 rounded-full shrink-0",
+                    "h-1 w-1 rounded-full shrink-0",
                     item.type === 'application' ? 'bg-emerald-500/50' :
                     item.type === 'saved' ? 'bg-blue-500/50' :
                     'bg-amber-500/50'
                   )} />
-                  <span className="text-muted-foreground truncate flex-1">{item.title}</span>
-                  <span className="text-[10px] text-muted-foreground/40 shrink-0">
+                  <span className="text-muted-foreground/60 truncate flex-1">{item.title}</span>
+                  <span className="text-[9px] text-muted-foreground/30 shrink-0">
                     {(() => {
                       const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
-                      if (s < 60) return 'just now';
+                      if (s < 60) return 'now';
                       if (s < 3600) return `${Math.floor(s / 60)}m`;
                       if (s < 86400) return `${Math.floor(s / 3600)}h`;
                       return `${Math.floor(s / 86400)}d`;
@@ -867,11 +867,9 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center py-4">
-              <p className="text-xs text-muted-foreground/40">
-                No recent activity
-              </p>
-            </div>
+            <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
+              No recent activity
+            </p>
           )}
         </GlassCard>
       </div>
