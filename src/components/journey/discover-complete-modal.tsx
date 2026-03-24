@@ -38,23 +38,24 @@ export function DiscoverCompleteModal({
   if (!open) return null;
 
   // Build a personal summary line
-  const summaryParts: string[] = [];
-  if (motivations.length > 0) {
+  const motivationText = (() => {
+    if (motivations.length === 0) return null;
     const top = motivations.slice(0, 2).map((m) => m.toLowerCase());
-    summaryParts.push(
-      top.length === 2
-        ? `motivated by ${top[0]} and ${top[1]}`
-        : `motivated by ${top[0]}`,
-    );
-  }
-  if (workStyle.length > 0) {
-    summaryParts.push(
-      `thrive ${workStyle[0].toLowerCase()}`,
-    );
-  }
+    return top.length === 2
+      ? `You're driven by ${top[0]} and ${top[1]}.`
+      : `You're driven by ${top[0]}.`;
+  })();
 
-  const personalSummary = summaryParts.length > 0
-    ? `You're someone who is ${summaryParts.join(', and you ')}. That's a strong foundation.`
+  const workText = (() => {
+    if (workStyle.length === 0) return null;
+    const top = workStyle.slice(0, 2).map((w) => w.toLowerCase());
+    return top.length === 2
+      ? `You work best ${top[0]} and in ${top[1]} settings.`
+      : `You work best ${top[0]}.`;
+  })();
+
+  const personalSummary = [motivationText, workText].filter(Boolean).length > 0
+    ? `${[motivationText, workText].filter(Boolean).join(' ')} That's a strong foundation.`
     : null;
 
   return (
