@@ -24,7 +24,7 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 export function extractSignals(profile: DiscoverProfile): DiscoverSignals {
   const tags = new Set<string>();
 
-  if (!profile?.interests) return { topTags: [], summaryText: '' };
+  if (!profile?.interests) return { topTags: [], summaryText: '', careerFitTags: [], jobFitTags: [] };
 
   // Interest tags
   for (const id of profile.interests) {
