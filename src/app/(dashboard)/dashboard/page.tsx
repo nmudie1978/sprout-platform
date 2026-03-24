@@ -771,17 +771,17 @@ export default function DashboardPage() {
           // Only show if there are multiple goals explored (current + at least one other)
           if (exploredGoals.length < 2) return null;
           return (
-            <GlassCard className="p-4 mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Target className="h-4 w-4 text-violet-500" />
-                <h3 className="text-sm font-semibold">My Explored Journeys</h3>
+            <GlassCard className="p-3 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Target className="h-3.5 w-3.5 text-violet-500" />
+                <h3 className="text-xs font-semibold">My Explored Journeys</h3>
                 <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
               </div>
-              <div className="space-y-1.5">
+              <div className="divide-y divide-border/30">
                 {exploredGoals.map((goal) => {
                   const career = allCareers.find((c) => c.title === goal.goalTitle);
                   const stepsCompleted = (goal.journeyCompletedSteps || []).length;
-                  const totalSteps = 8; // approximate total mandatory steps
+                  const totalSteps = 8;
                   const isCurrentGoal = goal.goalTitle === goalTitle;
                   return (
                     <button
@@ -793,37 +793,30 @@ export default function DashboardPage() {
                       }}
                       disabled={isCurrentGoal || switchGoalMutation.isPending}
                       className={cn(
-                        "w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all",
-                        isCurrentGoal
-                          ? "bg-teal-500/8 border border-teal-500/20"
-                          : "hover:bg-muted/50 border border-transparent",
+                        "w-full flex items-center gap-2.5 py-1.5 px-1 text-left transition-colors",
+                        !isCurrentGoal && "hover:bg-muted/40",
                       )}
                     >
-                      <span className="text-base shrink-0">{career?.emoji ?? "🎯"}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className={cn("text-xs font-medium truncate", isCurrentGoal && "text-teal-400")}>
-                            {goal.goalTitle}
-                          </p>
-                          {isCurrentGoal && (
-                            <span className="text-[9px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
-                              Active
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[10px] text-muted-foreground/40">
-                          {stepsCompleted} of {totalSteps} steps
-                        </p>
-                      </div>
-                      {/* Progress indicator */}
-                      <div className="w-12 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
+                      <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
+                      <span className={cn("text-xs truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
+                        {goal.goalTitle}
+                      </span>
+                      {isCurrentGoal && (
+                        <span className="text-[8px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                          Active
+                        </span>
+                      )}
+                      <span className="text-[10px] text-muted-foreground/30 shrink-0 w-14 text-right tabular-nums">
+                        {stepsCompleted}/{totalSteps}
+                      </span>
+                      <div className="w-10 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
                         <div
-                          className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/30")}
+                          className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/25")}
                           style={{ width: `${Math.min((stepsCompleted / totalSteps) * 100, 100)}%` }}
                         />
                       </div>
                       {!isCurrentGoal && (
-                        <ArrowRight className="h-3 w-3 text-muted-foreground/30 shrink-0" />
+                        <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
                       )}
                     </button>
                   );
