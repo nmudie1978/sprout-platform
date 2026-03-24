@@ -230,7 +230,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Small Jobs" collapsed={collapsed}>
               <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} />
-              <NavItem href="/applications" icon={FileText} label="My Applications" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} />
+              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} />
               <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} />
             </NavSection>
 

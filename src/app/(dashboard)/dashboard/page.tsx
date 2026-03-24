@@ -728,11 +728,12 @@ export default function DashboardPage() {
 
         {/* ── 4. Small Jobs + Activity ────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Small Jobs */}
-          <GlassCard className="p-4">
+          {/* My Jobs */}
+          <Link href="/applications" className="block group">
+          <GlassCard className="p-4 hover:border-border/60 transition-all">
             <div className="flex items-center gap-2 mb-4">
               <Briefcase className="h-4 w-4 text-emerald-500" />
-              <h3 className="text-sm font-semibold">Small Jobs</h3>
+              <h3 className="text-sm font-semibold">My Jobs</h3>
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[
@@ -752,6 +753,7 @@ export default function DashboardPage() {
               ))}
             </div>
           </GlassCard>
+          </Link>
 
           {/* Activity */}
           <GlassCard className="p-4">
