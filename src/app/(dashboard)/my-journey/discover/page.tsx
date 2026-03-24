@@ -17,12 +17,24 @@ export default function DiscoverPage() {
   const [profile, setProfile] = useState<DiscoverProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load existing profile
+  // Load existing profile — deep-merge with defaults to prevent missing fields
   useEffect(() => {
     fetch('/api/discover/profile')
       .then((res) => res.json())
       .then((data) => {
-        setProfile(data.discoverProfile || DEFAULT_DISCOVER_PROFILE);
+        const saved = data.discoverProfile;
+        if (saved) {
+          setProfile({
+            ...DEFAULT_DISCOVER_PROFILE,
+            ...saved,
+            workPreferences: {
+              ...DEFAULT_DISCOVER_PROFILE.workPreferences,
+              ...(saved.workPreferences || {}),
+            },
+          });
+        } else {
+          setProfile(DEFAULT_DISCOVER_PROFILE);
+        }
       })
       .catch(() => {
         setProfile(DEFAULT_DISCOVER_PROFILE);
