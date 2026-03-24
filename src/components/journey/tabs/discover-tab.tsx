@@ -25,6 +25,7 @@ import type { JourneyUIState } from '@/lib/journey/types';
 import { useDiscoverRecommendations } from '@/hooks/use-discover-recommendations';
 import { GuidanceStack } from '@/components/guidance/guidance-stack';
 import { buildGuidanceContext } from '@/lib/guidance/rules';
+import { DiscoverReflectionsSection } from '@/components/journey/discover-reflections';
 
 // Map career category values to human-readable labels
 const CATEGORY_LABELS: Record<string, string> = {
@@ -469,6 +470,9 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
           ))}
         </div>
       )}
+
+      {/* Self-discovery reflections — 5 cards */}
+      <DiscoverReflectionsSection />
 
       {/* Subtle next-stage nudge */}
       {journey.summary?.lenses?.discover?.isComplete && onContinueToUnderstand && (
