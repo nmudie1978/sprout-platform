@@ -544,17 +544,21 @@ export default function MyJourneyPage() {
     const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
     const stateIsStuck = journey && discoverStates.includes(journey.currentState);
 
+    // Only show celebration or advance if the state machine is actually stuck in Discover.
+    // If user is already in Understand/Grow, do nothing — they've already moved past this.
+    if (!stateIsStuck) {
+      discoverAdvanceDone.current = true;
+      return;
+    }
+
     const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
     const alreadySeen = typeof window !== 'undefined' && localStorage.getItem(seenKey);
 
     if (!alreadySeen) {
-      // First time completing Discover for this goal — show the celebration modal.
-      // Do NOT advance the state machine yet; that happens when they click "Continue".
       discoverAdvanceDone.current = true;
       localStorage.setItem(seenKey, 'true');
       setShowDiscoverCelebration(true);
-    } else if (stateIsStuck) {
-      // Already celebrated — silently advance the state machine
+    } else {
       discoverAdvanceDone.current = true;
       fetch('/api/journey/advance-to-understand', { method: 'POST' })
         .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
