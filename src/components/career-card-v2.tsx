@@ -54,33 +54,40 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
     <button
       type="button"
       onClick={onLearnMore}
-      className="w-full flex items-center gap-3 px-3 py-2 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
+      className="w-full grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
     >
-      <span className="text-lg flex-shrink-0">{career.emoji}</span>
-      <span className="flex-1 text-sm font-medium truncate min-w-0">
-        {career.title}
+      {/* Left: emoji + title */}
+      <span className="flex items-center gap-3 min-w-0">
+        <span className="text-lg flex-shrink-0">{career.emoji}</span>
+        <span className="text-sm font-medium truncate">{career.title}</span>
       </span>
-      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 flex-shrink-0">
+
+      {/* Center: learn more */}
+      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 px-4">
         Learn more
         <ChevronRight className="h-3 w-3" />
       </span>
-      {matchScore !== undefined && (
+
+      {/* Right: stats */}
+      <span className="flex items-center justify-end gap-3">
+        {matchScore !== undefined && (
+          <Badge
+            variant="secondary"
+            className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
+          >
+            {matchScore}%
+          </Badge>
+        )}
+        <span className="text-xs text-muted-foreground w-16 text-right flex-shrink-0">
+          {salaryShort}
+        </span>
         <Badge
-          variant="secondary"
-          className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
+          variant="outline"
+          className={`text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-12 justify-center`}
         >
-          {matchScore}%
+          <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
         </Badge>
-      )}
-      <span className="text-xs text-muted-foreground w-16 text-right flex-shrink-0">
-        {salaryShort}
       </span>
-      <Badge
-        variant="outline"
-        className={`text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-12 justify-center`}
-      >
-        <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
-      </Badge>
     </button>
   );
 }
