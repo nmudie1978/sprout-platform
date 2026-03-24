@@ -9,7 +9,7 @@
  * Stages: Discover → Understand → Grow (sequential, gated)
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -31,6 +31,8 @@ import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
 import { DiscoverCompleteModal } from '@/components/journey/discover-complete-modal';
+import { CareerDetailSheet } from '@/components/career-detail-sheet';
+import { getAllCareers } from '@/lib/career-pathways';
 import { HelpCircle, Info, X } from 'lucide-react';
 
 const StepContent = dynamic(
@@ -329,6 +331,7 @@ export default function MyJourneyPage() {
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
   const [showDiscoverCelebration, setShowDiscoverCelebration] = useState(false);
+  const [showCareerDetail, setShowCareerDetail] = useState(false);
   const [goalBannerDismissed, setGoalBannerDismissed] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('journey-goal-banner-dismissed') === 'true';
@@ -469,6 +472,12 @@ export default function MyJourneyPage() {
   const journey = journeyData?.journey ?? DEMO_JOURNEY;
   const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
 
+  // Look up career data for the goal title (for the detail sheet)
+  const goalCareer = useMemo(() => {
+    if (!goalTitle) return null;
+    return getAllCareers().find((c) => c.title === goalTitle) || null;
+  }, [goalTitle]);
+
   const discoverComplete = (() => {
     const r = reflectionsData?.discoverReflections;
     const reflectionsDone = r
@@ -565,9 +574,15 @@ export default function MyJourneyPage() {
                 </p>
                 {goalTitle ? (
                   <div className="flex items-center gap-2">
-                    <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
-                      {goalTitle}
-                    </h1>
+                    <button
+                      onClick={() => goalCareer && setShowCareerDetail(true)}
+                      className={goalCareer ? 'text-left hover:text-teal-400 transition-colors' : 'text-left'}
+                      title={goalCareer ? 'View career details' : undefined}
+                    >
+                      <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
+                        {goalTitle}
+                      </h1>
+                    </button>
                     <button
                       onClick={handleOpenGoalSheet}
                       className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
@@ -699,6 +714,12 @@ export default function MyJourneyPage() {
           </div>
         </div>
       )}
+
+      {/* Career Detail Sheet — opened by clicking goal title */}
+      <CareerDetailSheet
+        career={showCareerDetail ? goalCareer : null}
+        onClose={() => setShowCareerDetail(false)}
+      />
 
       {/* Discover Completion Celebration */}
       <DiscoverCompleteModal
