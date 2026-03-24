@@ -472,6 +472,57 @@ export default function MyJourneyPage() {
     }
   }, [currentGoalTitle]);
 
+  // Compute Discover completion client-side (bypasses orchestrator chain)
+  // NOTE: Must be above early returns to keep hooks in stable order.
+  const journey = journeyData?.journey ?? DEMO_JOURNEY;
+  const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
+
+  const discoverComplete = (() => {
+    const r = reflectionsData?.discoverReflections;
+    const reflectionsDone = r
+      ? (r.motivations?.length ?? 0) > 0 &&
+        (r.workStyle?.length ?? 0) > 0 &&
+        (r.growthAreas?.length ?? 0) > 0 &&
+        (r.roleModels?.trim().length ?? 0) > 0 &&
+        (r.experiences?.trim().length ?? 0) > 0
+      : false;
+
+    const steps = journey.steps || [];
+    const strengthsDone = steps.find((s) => s.id === 'REFLECT_ON_STRENGTHS')?.status === 'completed';
+    const careersDone = steps.find((s) => s.id === 'EXPLORE_CAREERS')?.status === 'completed';
+    const directionDone = goalTitle
+      ? true
+      : steps.find((s) => s.id === 'ROLE_DEEP_DIVE')?.status === 'completed';
+
+    return reflectionsDone && strengthsDone && careersDone && directionDone;
+  })();
+
+  // Auto-advance state machine when Discover is complete but state is stuck
+  const autoAdvanceDone = useRef(false);
+  useEffect(() => {
+    if (!autoAdvanceDone.current && discoverComplete && journey) {
+      const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
+      if (discoverStates.includes(journey.currentState)) {
+        autoAdvanceDone.current = true;
+        completeStepMutation.mutateAsync({
+          stepId: 'ROLE_DEEP_DIVE',
+          data: {
+            type: 'ROLE_DEEP_DIVE',
+            role: {
+              title: goalTitle || 'Career direction set',
+              exploredAt: new Date().toISOString(),
+              educationPaths: [],
+              certifications: [],
+              companies: [],
+              humanSkills: [],
+              entryExpectations: '',
+            },
+          },
+        }).catch(() => {});
+      }
+    }
+  }, [discoverComplete, journey, goalTitle, completeStepMutation]);
+
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
   if (isLoading) {
@@ -505,57 +556,6 @@ export default function MyJourneyPage() {
       </div>
     );
   }
-
-  const journey = journeyData?.journey ?? DEMO_JOURNEY;
-  const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
-
-  // Compute Discover completion client-side (bypasses orchestrator chain)
-  const discoverComplete = (() => {
-    const r = reflectionsData?.discoverReflections;
-    const reflectionsDone = r
-      ? (r.motivations?.length ?? 0) > 0 &&
-        (r.workStyle?.length ?? 0) > 0 &&
-        (r.growthAreas?.length ?? 0) > 0 &&
-        (r.roleModels?.trim().length ?? 0) > 0 &&
-        (r.experiences?.trim().length ?? 0) > 0
-      : false;
-
-    // Check mandatory steps are complete
-    const steps = journey.steps || [];
-    const strengthsDone = steps.find((s) => s.id === 'REFLECT_ON_STRENGTHS')?.status === 'completed';
-    const careersDone = steps.find((s) => s.id === 'EXPLORE_CAREERS')?.status === 'completed';
-    const directionDone = goalTitle
-      ? true // ROLE_DEEP_DIVE not required when goal is set
-      : steps.find((s) => s.id === 'ROLE_DEEP_DIVE')?.status === 'completed';
-
-    return reflectionsDone && strengthsDone && careersDone && directionDone;
-  })();
-
-  // Auto-advance state machine when Discover is complete but state is stuck
-  const autoAdvanceDone = useRef(false);
-  useEffect(() => {
-    if (!autoAdvanceDone.current && discoverComplete && journey) {
-      const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
-      if (discoverStates.includes(journey.currentState)) {
-        autoAdvanceDone.current = true;
-        completeStepMutation.mutateAsync({
-          stepId: 'ROLE_DEEP_DIVE',
-          data: {
-            type: 'ROLE_DEEP_DIVE',
-            role: {
-              title: goalTitle || 'Career direction set',
-              exploredAt: new Date().toISOString(),
-              educationPaths: [],
-              certifications: [],
-              companies: [],
-              humanSkills: [],
-              entryExpectations: '',
-            },
-          },
-        }).catch(() => {});
-      }
-    }
-  }, [discoverComplete, journey, goalTitle, completeStepMutation]);
 
   return (
     <div className="min-h-full">
