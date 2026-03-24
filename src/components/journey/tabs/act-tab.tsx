@@ -162,15 +162,13 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         )}
 
         {isComplete && config.id === 'SUBMIT_ACTION_REFLECTION' && reflections.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-border/30">
-            <ul className="space-y-1">
-              {reflections.map((r, i) => (
-                <li key={r.id || i} className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
-                  <span className="h-1 w-1 rounded-full bg-sky-400/50 mt-1.5 shrink-0" />
-                  {r.response}
-                </li>
-              ))}
-            </ul>
+          <div className="mt-2 pt-2 border-t border-border/30 grid gap-1.5 sm:grid-cols-2">
+            {reflections.map((r, i) => (
+              <div key={r.id || i} className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
+                <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60">Reflection</p>
+                <p className="text-[11px] text-muted-foreground">{r.response}</p>
+              </div>
+            ))}
           </div>
         )}
       </div>
