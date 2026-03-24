@@ -438,6 +438,7 @@ export default function DashboardPage() {
 
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
+  const [showAllJourneys, setShowAllJourneys] = useState(false);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
@@ -695,7 +696,7 @@ export default function DashboardPage() {
                   <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                 </div>
                 <div className="divide-y divide-border/30">
-                  {exploredGoals.map((goal) => {
+                  {(showAllJourneys ? exploredGoals : exploredGoals.slice(0, 5)).map((goal) => {
                     const career = allCareers.find((c) => c.title === goal.goalTitle);
                     const stepsCompleted = (goal.journeyCompletedSteps || []).length;
                     const totalSteps = 8;
@@ -739,6 +740,14 @@ export default function DashboardPage() {
                     );
                   })}
                 </div>
+                {exploredGoals.length > 5 && (
+                  <button
+                    onClick={() => setShowAllJourneys((v) => !v)}
+                    className="w-full text-center text-[10px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors pt-1.5"
+                  >
+                    {showAllJourneys ? 'Show less' : `Show all ${exploredGoals.length}`}
+                  </button>
+                )}
               </GlassCard>
             );
           })()}
