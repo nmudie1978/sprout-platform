@@ -208,7 +208,7 @@ export function DiscoverReflectionsSection() {
     },
     onSuccess: () => {
       setDirty(new Set());
-      // Only refetch reflections — don't invalidate journey-state to avoid page flash
+      setExpandedCard(null); // Collapse the card to indicate save completed
       queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
     },
   });
