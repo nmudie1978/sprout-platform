@@ -78,13 +78,43 @@ export class JourneyOrchestrator {
       const progress = calculateLensProgress(lens, this.context);
       const key = lens.toLowerCase() as 'discover' | 'understand' | 'act';
 
+      let finalProgress = progress.progress;
+      let isComplete = progress.progress >= 100;
+
+      // DISCOVER: also require "Know yourself better" reflections
+      if (lens === 'DISCOVER') {
+        const reflections = (this.context.journeySummary as Record<string, unknown> | undefined)?.discoverReflections as {
+          motivations?: string[];
+          workStyle?: string[];
+          growthAreas?: string[];
+          roleModels?: string;
+          experiences?: string;
+        } | undefined;
+
+        const reflectionsFilled = reflections
+          ? [
+              (reflections.motivations?.length ?? 0) > 0,
+              (reflections.workStyle?.length ?? 0) > 0,
+              (reflections.growthAreas?.length ?? 0) > 0,
+              (reflections.roleModels?.trim().length ?? 0) > 0,
+              (reflections.experiences?.trim().length ?? 0) > 0,
+            ].filter(Boolean).length
+          : 0;
+
+        // Total items: mandatory steps + 5 reflection cards
+        const totalSteps = this.getLensMandatoryStates(lens) + 5;
+        const completedTotal = progress.completedStates.length + reflectionsFilled;
+        finalProgress = Math.round((completedTotal / totalSteps) * 100);
+        isComplete = completedTotal >= totalSteps;
+      }
+
       this.summary.lenses[key] = {
-        progress: progress.progress,
+        progress: finalProgress,
         completedMandatory: progress.completedStates || [],
         completedOptional: [],
         totalMandatory: this.getLensMandatoryStates(lens),
         totalOptional: this.getLensOptionalStates(lens),
-        isComplete: progress.progress >= 100,
+        isComplete,
       };
     }
   }
