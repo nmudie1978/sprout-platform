@@ -30,6 +30,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
+import { DiscoverCompleteModal } from '@/components/journey/discover-complete-modal';
 import { HelpCircle, Info, X } from 'lucide-react';
 
 const StepContent = dynamic(
@@ -327,6 +328,7 @@ export default function MyJourneyPage() {
   const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
+  const [showDiscoverCelebration, setShowDiscoverCelebration] = useState(false);
   const [goalBannerDismissed, setGoalBannerDismissed] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('journey-goal-banner-dismissed') === 'true';
@@ -452,13 +454,14 @@ export default function MyJourneyPage() {
       }, 500);
     } else if (discoverLensComplete && !understandComplete && !celebratedRef.current.has('understand')) {
       celebratedRef.current.add('understand');
-      setActiveTab('understand');
-      setTimeout(() => {
-        toast('Nice work — you know yourself better now.', {
-          description: 'Next, explore what your chosen path really looks like.',
-          duration: 6000,
-        });
-      }, 500);
+      // Only show the celebration modal if not previously seen for this goal
+      const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
+      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
+        localStorage.setItem(seenKey, 'true');
+        setShowDiscoverCelebration(true);
+      } else {
+        setActiveTab('understand');
+      }
     }
   }, [discoverLensComplete, understandComplete]);
 
@@ -695,6 +698,21 @@ export default function MyJourneyPage() {
           </div>
         </div>
       )}
+
+      {/* Discover Completion Celebration */}
+      <DiscoverCompleteModal
+        open={showDiscoverCelebration}
+        onContinue={() => {
+          setShowDiscoverCelebration(false);
+          setActiveTab('understand');
+        }}
+        strengths={journey.summary?.strengths ?? []}
+        motivations={reflectionsData?.discoverReflections?.motivations ?? []}
+        workStyle={reflectionsData?.discoverReflections?.workStyle ?? []}
+        growthAreas={reflectionsData?.discoverReflections?.growthAreas ?? []}
+        goalTitle={goalTitle}
+        careerInterests={journey.summary?.careerInterests ?? []}
+      />
 
       {/* Goal Selection Sheet */}
       <GoalSelectionSheet
