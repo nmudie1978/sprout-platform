@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw } from 'lucide-react';
-import { STAGE_CONFIG, STAGE_ORDER, type JourneyItem } from '@/lib/journey/career-journey-types';
-import type { Journey } from '@/lib/journey/career-journey-types';
-import { ZigzagRenderer } from './renderers';
+import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
+import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
+import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog } from './timeline';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
+import { useTimelineStyle } from '@/hooks/use-timeline-style';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -19,11 +19,18 @@ interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
 }
 
+const RENDERERS = {
+  zigzag: ZigzagRenderer,
+  rail: RailRenderer,
+  stepping: SteppingRenderer,
+} as const;
+
 export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
+  const { style, setStyle } = useTimelineStyle();
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
-  useRoadmapCardData(goalId); // Syncs localStorage ↔ DB
+  useRoadmapCardData(goalId);
 
   const {
     data,
@@ -51,7 +58,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     retry: 1,
   });
 
-  // Empty state
   if (!primaryGoalTitle) {
     return (
       <div className="rounded-xl border border-dashed border-border/40 p-8 text-center">
@@ -63,7 +69,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     );
   }
 
-  // Loading
   if (isLoading) {
     return (
       <div>
@@ -76,7 +81,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     );
   }
 
-  // Error
   if (isError) {
     return (
       <div className="rounded-xl border border-red-500/20 p-6 text-center">
@@ -91,16 +95,21 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
   const journey = data?.journey;
   if (!journey) return null;
 
+  const Renderer = RENDERERS[style] || ZigzagRenderer;
+
   return (
     <div>
-      {/* Title */}
-      <p className="text-xs text-muted-foreground/50 mb-4">
-        Your Path to {journey.career}
-      </p>
+      {/* Header row: title + style selector */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-xs text-muted-foreground/50">
+          Your Path to {journey.career}
+        </p>
+        <TimelineStyleSelector value={style} onChange={setStyle} />
+      </div>
 
-      {/* Roadmap — zigzag only, no controls */}
-      <ZigzagRenderer
-        key={saveVersion}
+      {/* Roadmap */}
+      <Renderer
+        key={`${style}-${saveVersion}`}
         journey={journey}
         onItemClick={(item) => setSelectedItem(item)}
         overlayData={{}}
