@@ -649,58 +649,21 @@ export default function MyJourneyPage() {
         primaryGoal={primaryGoal}
         secondaryGoal={secondaryGoal}
         onSuccess={async () => {
-          // Save current goal data before switching
-          if (goalTitle) {
-            const currentGoalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            try {
-              await fetch('/api/journey/goal-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  goalId: currentGoalId,
-                  goalTitle,
-                  journeyState: journey.currentState,
-                  journeyCompletedSteps: journey.completedSteps,
-                  journeySummary: journey.summary,
-                }),
-              });
-            } catch {
-              // Non-blocking
-            }
-          }
-
           setGoalSheetOpen(false);
 
-          // Trigger migration for new goal data
+          // Reset journey progress — start fresh with the new goal
           try {
-            await fetch('/api/journey/goal-data/migrate', { method: 'POST' });
+            await fetch('/api/journey/reset', { method: 'POST' });
           } catch {
             // Non-blocking
           }
 
-          // Auto-complete ROLE_DEEP_DIVE when a goal is set
-          const currentStep = journey.steps.find((s) => s.id === 'ROLE_DEEP_DIVE');
-          if (currentStep && currentStep.status !== 'completed') {
-            try {
-              await completeStepMutation.mutateAsync({
-                stepId: 'ROLE_DEEP_DIVE',
-                data: {
-                  type: 'ROLE_DEEP_DIVE',
-                  role: {
-                    title: 'Goal set via direction selection',
-                    exploredAt: new Date().toISOString(),
-                    educationPaths: [],
-                    certifications: [],
-                    companies: [],
-                    humanSkills: [],
-                    entryExpectations: '',
-                  },
-                },
-              });
-            } catch {
-              // Step completion failed — non-blocking
-            }
-          }
+          // Reset tab to Discover
+          setActiveTab('discover');
+
+          // Refresh journey state
+          queryClient.invalidateQueries({ queryKey: ['journey-state'] });
+          queryClient.invalidateQueries({ queryKey: ['my-goals'] });
         }}
       />
     </div>
