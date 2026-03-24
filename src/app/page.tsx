@@ -202,7 +202,21 @@ export default function LandingPage() {
               </FadeReveal>
             </div>
 
-            {/* Right — video (coming soon) */}
+            {/* Right — hero illustration */}
+            <FadeReveal delay={800} className="hidden lg:flex justify-center">
+              <div className="relative">
+                <img
+                  src="/images/hero-signpost.png"
+                  alt="Young person facing a signpost with career direction signs"
+                  className="w-full max-w-md rounded-3xl border border-slate-950 bg-slate-950"
+                  style={{ borderColor: '#020617' }}
+                />
+                {/* Blend edges into background */}
+                <div className="absolute inset-0 rounded-3xl ring-1 ring-slate-950 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60 rounded-3xl pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950/40 via-transparent to-slate-950/40 rounded-3xl pointer-events-none" />
+              </div>
+            </FadeReveal>
           </div>
         </div>
       </section>
