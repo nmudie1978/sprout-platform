@@ -234,50 +234,41 @@ const LENS_LABELS = [
 ] as const;
 
 // ── Main Page ────────────────────────────────────────────────────────
-// ── Insights Ticker ─────────────────────────────────────────────────
-function InsightsTicker() {
-  const TICKER_ITEMS = [
-    { emoji: '📊', text: '39% of teenagers cannot name a career they expect to pursue', color: 'text-teal-400', href: '/about/research#oecd-career-uncertainty' },
-    { emoji: '🎬', text: 'Grit: The Power of Passion and Perseverance — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=H14bBuluwB8' },
-    { emoji: '📊', text: '41% of young people are unsure how to choose their path', color: 'text-teal-400', href: '/about/research#gallup-path-uncertainty' },
-    { emoji: '🎬', text: 'The Power of Believing You Can Improve — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=_X0mgOOSpLU' },
-    { emoji: '💡', text: 'Healthcare is one of the fastest growing sectors in Norway', color: 'text-amber-400', href: '/insights#dig-deeper' },
-    { emoji: '🎬', text: '10 Ways to Have a Better Conversation — TED', color: 'text-red-400', href: 'https://www.youtube.com/watch?v=R1vskiVDwl4' },
-    { emoji: '📊', text: '43% of students don\'t feel prepared for their future', color: 'text-teal-400', href: '/about/research#gallup-preparedness' },
-    { emoji: '🎙', text: 'It\'s okay not knowing what\'s after graduation — TEDx', color: 'text-purple-400', href: 'https://www.youtube.com/watch?v=uRHWR_aYb4w' },
+// ── Did You Know Card ───────────────────────────────────────────────
+function DidYouKnowCard() {
+  const FACTS = [
+    { text: '39% of teenagers cannot name a career they expect to pursue.', source: 'OECD', href: '/about/research#oecd-career-uncertainty' },
+    { text: '41% of young people are unsure how to choose their career path.', source: 'Gallup', href: '/about/research#gallup-path-uncertainty' },
+    { text: '43% of students don\'t feel prepared for their future.', source: 'Gallup', href: '/about/research#gallup-preparedness' },
+    { text: 'Only 45% of students have any real-world career exposure before leaving school.', source: 'OECD', href: '/about/research#oecd-job-shadowing' },
+    { text: 'Career exploration leads to better employment outcomes later in life.', source: 'OECD', href: '/about/research#oecd-career-outcomes' },
+    { text: 'Healthcare is one of the fastest growing sectors in Norway.', source: 'SSB', href: '/insights#dig-deeper' },
+    { text: 'Over half of students plan to work in just 10 occupations.', source: 'OECD', href: '/about/research#oecd-top-ten-jobs' },
+    { text: 'Only 35% of students have undertaken an internship before finishing education.', source: 'OECD', href: '/about/research#oecd-internships' },
   ];
 
-  const allItems = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  // Pick a fact based on the day so it changes daily but stays consistent during the session
+  const dayIndex = Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % FACTS.length;
+  const fact = FACTS[dayIndex];
 
   return (
-    <div className="mt-6 rounded-xl border border-teal-500/15 bg-gradient-to-r from-teal-500/5 via-transparent to-teal-500/5 overflow-hidden">
-      <div className="py-2.5 overflow-hidden relative">
-        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
-        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
-
-        <div
-          className="flex items-center gap-8 whitespace-nowrap hover:[animation-play-state:paused]"
-          style={{
-            animation: 'ticker-scroll 120s linear infinite',
-            width: 'max-content',
-          }}
-        >
-          {allItems.map((item, i) => (
-            <a
-              key={i}
-              href={item.href}
-              target={item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span className="text-sm">{item.emoji}</span>
-              <span className={cn("text-[11px] font-medium", item.color)}>{item.text}</span>
-              <span className="text-muted-foreground/20">·</span>
-            </a>
-          ))}
+    <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
+      <a
+        href={fact.href}
+        className="block rounded-xl border border-border/30 bg-card/50 px-5 py-4 hover:border-border/50 transition-all group"
+      >
+        <div className="flex items-start gap-3">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/30 mt-0.5 shrink-0">
+            Did you know?
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">
+              {fact.text}
+            </p>
+          </div>
+          <span className="text-[9px] text-muted-foreground/25 shrink-0 mt-0.5">{fact.source}</span>
         </div>
-      </div>
+      </a>
     </div>
   );
 }
@@ -547,7 +538,7 @@ export default function DashboardPage() {
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         <Link href="/my-journey" className="block mb-6 group">
-          <GlassCard className="p-5 sm:p-6 hover:border-teal-500/30 border-teal-500/15 transition-all" style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.06), 0 0 40px rgba(20, 184, 166, 0.03)' }}>
+          <GlassCard className="p-5 sm:p-6 border-teal-500/20 hover:border-teal-500/40 transition-all duration-300" style={{ boxShadow: '0 0 15px rgba(20, 184, 166, 0.08), 0 0 30px rgba(20, 184, 166, 0.05), 0 0 60px rgba(20, 184, 166, 0.03), inset 0 0 30px rgba(20, 184, 166, 0.02)' }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-teal-500/10">
                 <TrendingUp className="h-4 w-4 text-teal-500" />
@@ -806,7 +797,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── 5. Industry Insights Ticker ─────────────────────── */}
-      <InsightsTicker />
+      <DidYouKnowCard />
 
       {/* Career Detail Sheet */}
       <CareerDetailSheet
