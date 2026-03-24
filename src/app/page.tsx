@@ -166,7 +166,7 @@ export default function LandingPage() {
               {/* Headline */}
               <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-10 sm:mb-12">
                 <WordRevealLine
-                  text="Your future is yours to explore."
+                  text="You're not supposed to just know what you want to do."
                   startDelay={300}
                 />
               </h1>
@@ -175,17 +175,27 @@ export default function LandingPage() {
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    Endeavrly is a space for young people to explore careers honestly,
-                    try small real-world experiences, and reflect on what fits —
-                    without anyone telling them what to think or who to become.
+                    But somehow, everyone expects you to. Choose your subjects. Pick a
+                    university. Have a plan. Meanwhile, the world of work is almost
+                    invisible — hidden behind job titles you don&apos;t understand,
+                    qualifications you can&apos;t picture, and career talks that all
+                    sound the same.
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={1800}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    There are no quizzes that assign you a career. No algorithms
-                    deciding what you should see. No rankings, no scores, no
-                    pressure to perform. Just tools to help you understand yourself
-                    a little better — one experience at a time.
+                    Nobody shows you what these jobs actually feel like day to day,
+                    what they require, or whether they&apos;d suit the person you&apos;re
+                    becoming. That&apos;s not your fault — the tools simply didn&apos;t exist.
+                  </p>
+                </FadeReveal>
+                <FadeReveal delay={2200}>
+                  <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
+                    Endeavrly changes that. It&apos;s a private space to explore real careers
+                    with honest information, reflect on your strengths and interests,
+                    and try small real-world experiences — so that when you do make a
+                    decision, it&apos;s yours, and it&apos;s informed. No quizzes. No pressure.
+                    Just clarity.
                   </p>
                 </FadeReveal>
               </div>
