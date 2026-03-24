@@ -108,9 +108,10 @@ export function DiscoverFlow({ initialProfile, onComplete, onSaveProgress, onClo
     },
   };
   const [profile, setProfile] = useState<DiscoverProfile>(safeInitial);
-  const [step, setStep] = useState(safeInitial.currentStep || 0);
+  const initialStep = Math.min(safeInitial.currentStep || 0, STEPS.length - 1);
+  const [step, setStep] = useState(initialStep);
   const [isSaving, setIsSaving] = useState(false);
-  const [showSummary, setShowSummary] = useState(false);
+  const [showSummary, setShowSummary] = useState(initialStep >= STEPS.length - 1 && !!safeInitial.completedAt);
 
   const toggleInterest = (id: string) => {
     setProfile((p) => ({
