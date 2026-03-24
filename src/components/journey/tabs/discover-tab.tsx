@@ -315,11 +315,16 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
   // Get raw career category values for building explore links
   const careerCategories = summary?.careerInterests || [];
 
+  // Filter out ROLE_DEEP_DIVE when goal is already set
+  const visibleSteps = hasGoal
+    ? DISCOVER_STEPS.filter((s) => s.id !== 'ROLE_DEEP_DIVE')
+    : DISCOVER_STEPS;
+
   // Separate completed, current, and locked steps
-  const completedSteps = DISCOVER_STEPS.filter((s) => getStepStatus(s.id) === 'completed');
-  const currentStep = DISCOVER_STEPS.find((s) => getStepStatus(s.id) === 'next');
-  const lockedSteps = DISCOVER_STEPS.filter((s) => getStepStatus(s.id) === 'locked');
-  const allComplete = completedSteps.length === DISCOVER_STEPS.length;
+  const completedSteps = visibleSteps.filter((s) => getStepStatus(s.id) === 'completed');
+  const currentStep = visibleSteps.find((s) => getStepStatus(s.id) === 'next');
+  const lockedSteps = visibleSteps.filter((s) => getStepStatus(s.id) === 'locked');
+  const allComplete = completedSteps.length === visibleSteps.length;
 
   const guidanceCtx = buildGuidanceContext({
     journey: {
@@ -339,8 +344,6 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
       {/* Contextual guidance */}
       <GuidanceStack placement="discover" context={guidanceCtx} />
 
-      {/* Know Yourself — shows summary when complete, prompt when not */}
-      <DiscoverProfileSection />
 
       {/* Completed steps — compact grid */}
       {completedSteps.length > 0 && (
