@@ -469,6 +469,7 @@ export default function DashboardPage() {
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
+  const [switchConfirm, setSwitchConfirm] = useState<{ goalTitle: string; emoji: string } | null>(null);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
@@ -795,7 +796,7 @@ export default function DashboardPage() {
                       <button
                         key={goal.goalId}
                         onClick={() => {
-                          if (!isCurrentGoal) switchGoalMutation.mutate(goal.goalTitle);
+                          if (!isCurrentGoal) setSwitchConfirm({ goalTitle: goal.goalTitle, emoji: career?.emoji ?? "🎯" });
                         }}
                         disabled={isCurrentGoal || switchGoalMutation.isPending}
                         className={cn(
@@ -907,6 +908,48 @@ export default function DashboardPage() {
         career={showGoalDetail ? goalCareer : null}
         onClose={() => setShowGoalDetail(false)}
       />
+
+      {/* Switch Journey Confirmation */}
+      {switchConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSwitchConfirm(null)}>
+          <div className="bg-card border border-border rounded-2xl p-5 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-2xl">{switchConfirm.emoji}</span>
+              <div>
+                <h3 className="text-sm font-semibold">Switch to {switchConfirm.goalTitle}?</h3>
+                <p className="text-[11px] text-muted-foreground/60">
+                  Your current progress will be saved.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/40 border border-border/40 p-3 mb-4 space-y-1">
+              <p className="text-[10px] font-medium text-muted-foreground/70">What happens:</p>
+              <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Progress for {goalTitle || 'your current goal'} is saved</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> You can switch back anytime</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Strengths and interests carry over</li>
+              </ul>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setSwitchConfirm(null)}
+                className="px-3 py-1.5 text-xs rounded-lg border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  switchGoalMutation.mutate(switchConfirm.goalTitle);
+                  setSwitchConfirm(null);
+                }}
+                className="px-3 py-1.5 text-xs rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium transition-colors"
+              >
+                Switch journey
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
