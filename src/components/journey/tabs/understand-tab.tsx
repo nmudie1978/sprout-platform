@@ -145,35 +145,12 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
       {/* Contextual guidance */}
       <GuidanceStack placement="understand" context={guidanceCtx} />
 
-      {/* Your Career Focus — inline pill that opens the career detail sheet */}
+      {/* Career detail sheet — available but no pill shown */}
       {goalCareer && (
-        <>
-          <div className="flex items-center justify-end">
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setShowCareerDetail(true)}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/40 bg-card/60 hover:bg-card px-3 py-1.5 transition-all group"
-                  >
-                    <span className="text-sm">{goalCareer.emoji}</span>
-                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors truncate max-w-[200px]">
-                      {goalCareer.title}
-                    </span>
-                    <Info className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-emerald-500 transition-colors shrink-0" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  Click to review your career card
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <CareerDetailSheet
-            career={showCareerDetail ? goalCareer : null}
-            onClose={() => setShowCareerDetail(false)}
-          />
-        </>
+        <CareerDetailSheet
+          career={showCareerDetail ? goalCareer : null}
+          onClose={() => setShowCareerDetail(false)}
+        />
       )}
 
       {/* Sequential steps — matching Discover tab style */}
