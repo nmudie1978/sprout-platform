@@ -18,10 +18,12 @@ import {
   Maximize2,
   Sparkles,
   Save,
+  Download,
   Loader2,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import type { JourneyUIState } from '@/lib/journey/types';
@@ -276,8 +278,8 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             <SchoolAlignmentTab goalTitle={goalTitle} />
           </div>
 
-          {/* Save + Download */}
-          <div className="grid gap-3 sm:grid-cols-2">
+          {/* Save + Download — compact icon row */}
+          <div className="flex items-center justify-end gap-2 mt-4">
             <SaveSnapshotButton goalTitle={goalTitle} journey={journey} />
             <DownloadReportButton />
           </div>
@@ -291,7 +293,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
 function SaveSnapshotButton({ goalTitle, journey }: { goalTitle?: string | null; journey: JourneyUIState }) {
   const [saving, setSaving] = useState(false);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   const handleSave = useCallback(async () => {
     if (!goalTitle) return;
@@ -309,52 +311,36 @@ function SaveSnapshotButton({ goalTitle, journey }: { goalTitle?: string | null;
           journeySummary: journey.summary,
         }),
       });
-      setSavedAt(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
-    } catch {
-      // Silent fail
-    } finally {
-      setSaving(false);
-    }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {}
+    finally { setSaving(false); }
   }, [goalTitle, journey]);
 
   return (
-    <div className="mt-4 rounded-xl border border-border/30 bg-card/40 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-semibold text-foreground/70">Save your progress</p>
-          <p className="text-[10px] text-muted-foreground/40 mt-0.5">
-            {savedAt
-              ? `Saved at ${savedAt} today`
-              : `Save a snapshot of your ${goalTitle || 'journey'} progress`}
-          </p>
-        </div>
-        <button
-          onClick={handleSave}
-          disabled={saving || !goalTitle}
-          className={cn(
-            'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-            saving
-              ? 'bg-muted/30 text-muted-foreground/30'
-              : savedAt
-                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                : 'bg-teal-600 hover:bg-teal-700 text-white',
-          )}
-        >
-          {saving ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
-          ) : savedAt ? (
-            <CheckCircle2 className="h-3 w-3" />
-          ) : (
-            <Save className="h-3 w-3" />
-          )}
-          {saving ? 'Saving...' : savedAt ? 'Saved' : 'Save snapshot'}
-        </button>
-      </div>
-    </div>
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleSave}
+            disabled={saving || !goalTitle}
+            className={cn(
+              'p-2 rounded-lg border transition-all',
+              saved
+                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+                : 'border-border/40 bg-card/60 text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/50',
+            )}
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs">
+          {saved ? 'Saved' : 'Save progress snapshot'}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
-
-// ── Download Report Button ──────────────────────────────────────────
 
 function DownloadReportButton() {
   const [downloading, setDownloading] = useState(false);
@@ -363,7 +349,7 @@ function DownloadReportButton() {
     setDownloading(true);
     try {
       const res = await fetch('/api/reports/my-journey', { method: 'POST' });
-      if (!res.ok) throw new Error('Failed to generate report');
+      if (!res.ok) throw new Error('Failed');
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -373,35 +359,26 @@ function DownloadReportButton() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch {
-      // Could show toast here
-    } finally {
-      setDownloading(false);
-    }
+    } catch {}
+    finally { setDownloading(false); }
   }, []);
 
   return (
-    <div className="rounded-xl border border-border/30 bg-card/40 p-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-semibold text-foreground/70">Download report</p>
-          <p className="text-[10px] text-muted-foreground/40 mt-0.5">
-            PDF summary of your full journey
-          </p>
-        </div>
-        <button
-          onClick={handleDownload}
-          disabled={downloading}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
-        >
-          {downloading ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
-          ) : (
-            <ArrowRight className="h-3 w-3" />
-          )}
-          {downloading ? 'Generating...' : 'Download PDF'}
-        </button>
-      </div>
-    </div>
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="p-2 rounded-lg border border-border/40 bg-card/60 text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/50 transition-all disabled:opacity-50"
+          >
+            {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs">
+          Download PDF report
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
