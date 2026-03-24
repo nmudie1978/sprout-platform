@@ -321,13 +321,8 @@ export function DiscoverReflectionsSection() {
                 <div className="flex justify-end mt-2">
                   <button
                     onClick={handleSave}
-                    disabled={saveMutation.isPending || dirty.size === 0}
-                    className={cn(
-                      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                      dirty.size > 0
-                        ? 'bg-teal-600 hover:bg-teal-700 text-white'
-                        : 'bg-muted/30 text-muted-foreground/30 cursor-not-allowed',
-                    )}
+                    disabled={saveMutation.isPending}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-50"
                   >
                     {saveMutation.isPending ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
