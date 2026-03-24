@@ -645,9 +645,9 @@ export default function DashboardPage() {
           </GlassCard>
         </Link>
 
-        {/* ── 2. Goal Cards ──────────────────────────────────── */}
+        {/* ── 2. Career Snapshot + Explored Journeys ──────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          {/* Career Snapshot — day in the life + details link */}
+          {/* Career Snapshot */}
           {goalCareer ? (
             <GlassCard className="p-4 h-full">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
@@ -697,202 +697,144 @@ export default function DashboardPage() {
             </Link>
           )}
 
-          {/* My Strengths */}
-          <Link href="/my-journey" className="block group">
-            <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  My Strengths
-                </p>
-              </div>
-              {strengths.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {strengths.map((s) => (
-                    <span
-                      key={s}
-                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/10 text-teal-500"
-                    >
-                      {s}
-                    </span>
-                  ))}
+          {/* My Explored Journeys */}
+          {(() => {
+            const exploredGoals = exploredGoalsData?.goals ?? [];
+            const allCareers = getAllCareers();
+            if (exploredGoals.length < 2) {
+              return (
+                <LibraryCard items={savedItemsList} total={savedSummary.total} />
+              );
+            }
+            return (
+              <GlassCard className="p-3 h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target className="h-3.5 w-3.5 text-violet-500" />
+                  <h3 className="text-xs font-semibold">My Explored Journeys</h3>
+                  <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground/40">
-                  Complete Discover to see your strengths
-                </p>
-              )}
+                <div className="divide-y divide-border/30">
+                  {exploredGoals.map((goal) => {
+                    const career = allCareers.find((c) => c.title === goal.goalTitle);
+                    const stepsCompleted = (goal.journeyCompletedSteps || []).length;
+                    const totalSteps = 8;
+                    const isCurrentGoal = goal.goalTitle === goalTitle;
+                    return (
+                      <button
+                        key={goal.goalId}
+                        onClick={() => {
+                          if (!isCurrentGoal) {
+                            switchGoalMutation.mutate(goal.goalTitle);
+                          }
+                        }}
+                        disabled={isCurrentGoal || switchGoalMutation.isPending}
+                        className={cn(
+                          "w-full flex items-center gap-2.5 py-1.5 px-1 text-left transition-colors",
+                          !isCurrentGoal && "hover:bg-muted/40",
+                        )}
+                      >
+                        <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
+                        <span className={cn("text-xs truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
+                          {goal.goalTitle}
+                        </span>
+                        {isCurrentGoal && (
+                          <span className="text-[8px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
+                            Active
+                          </span>
+                        )}
+                        <span className="text-[10px] text-muted-foreground/30 shrink-0 w-14 text-right tabular-nums">
+                          {stepsCompleted}/{totalSteps}
+                        </span>
+                        <div className="w-10 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
+                          <div
+                            className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/25")}
+                            style={{ width: `${Math.min((stepsCompleted / totalSteps) * 100, 100)}%` }}
+                          />
+                        </div>
+                        {!isCurrentGoal && (
+                          <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+            );
+          })()}
+        </div>
+
+        {/* ── 3. Library + Jobs ──────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          {/* My Library — only show here if explored journeys took its spot above */}
+          {(exploredGoalsData?.goals ?? []).length >= 2 && (
+            <LibraryCard items={savedItemsList} total={savedSummary.total} />
+          )}
+
+          {/* My Jobs */}
+          <Link href="/applications" className="block group">
+            <GlassCard className="p-4 hover:border-border/60 transition-all">
+              <div className="flex items-center gap-2 mb-4">
+                <Briefcase className="h-4 w-4 text-emerald-500" />
+                <h3 className="text-sm font-semibold">My Jobs</h3>
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { label: "Applied", value: appStats.applied },
+                  { label: "Waiting", value: appStats.waiting },
+                  { label: "Accepted", value: appStats.accepted },
+                  { label: "Done", value: appStats.done },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <p className="text-lg font-bold text-foreground">
+                      {stat.value}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/50">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </GlassCard>
           </Link>
         </div>
 
-        {/* ── 3. Careers Explored + My Library ────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          {/* Careers You Explored */}
-          <GlassCard className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Compass className="h-4 w-4 text-teal-500" />
-              <h3 className="text-sm font-semibold">Career Interests</h3>
-            </div>
-            {careerInterests.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {careerInterests.map((interest, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium bg-teal-500/10 text-teal-400/80"
-                  >
-                    {interest.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
+        {/* ── 4. Activity ────────────────────────────────────── */}
+        <GlassCard className="p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText className="h-4 w-4 text-amber-500" />
+            <h3 className="text-sm font-semibold">Activity</h3>
+          </div>
+          {recentActivity.length > 0 ? (
+            <div className="space-y-2">
+              {recentActivity.slice(0, 4).map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <div className={cn(
+                    "h-1.5 w-1.5 rounded-full shrink-0",
+                    item.type === 'application' ? 'bg-emerald-500/50' :
+                    item.type === 'saved' ? 'bg-blue-500/50' :
+                    'bg-amber-500/50'
+                  )} />
+                  <span className="text-muted-foreground truncate flex-1">{item.title}</span>
+                  <span className="text-[10px] text-muted-foreground/40 shrink-0">
+                    {(() => {
+                      const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
+                      if (s < 60) return 'just now';
+                      if (s < 3600) return `${Math.floor(s / 60)}m`;
+                      if (s < 86400) return `${Math.floor(s / 3600)}h`;
+                      return `${Math.floor(s / 86400)}d`;
+                    })()}
                   </span>
-                ))}
-              </div>
-            ) : exploredCareers.length > 0 ? (
-              <div className="space-y-2">
-                {exploredCareers.slice(0, 4).map((career, i) => (
-                  <div key={i} className="text-xs text-muted-foreground flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-teal-500/50" />
-                    {career.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground/40 py-4 text-center">
-                Set career interests in My Journey
-              </p>
-            )}
-          </GlassCard>
-
-          {/* My Library */}
-          <LibraryCard items={savedItemsList} total={savedSummary.total} />
-        </div>
-
-        {/* ── 4. My Explored Journeys ──────────────────────── */}
-        {(() => {
-          const exploredGoals = exploredGoalsData?.goals ?? [];
-          const allCareers = getAllCareers();
-          // Only show if there are multiple goals explored (current + at least one other)
-          if (exploredGoals.length < 2) return null;
-          return (
-            <GlassCard className="p-3 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Target className="h-3.5 w-3.5 text-violet-500" />
-                <h3 className="text-xs font-semibold">My Explored Journeys</h3>
-                <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
-              </div>
-              <div className="divide-y divide-border/30">
-                {exploredGoals.map((goal) => {
-                  const career = allCareers.find((c) => c.title === goal.goalTitle);
-                  const stepsCompleted = (goal.journeyCompletedSteps || []).length;
-                  const totalSteps = 8;
-                  const isCurrentGoal = goal.goalTitle === goalTitle;
-                  return (
-                    <button
-                      key={goal.goalId}
-                      onClick={() => {
-                        if (!isCurrentGoal) {
-                          switchGoalMutation.mutate(goal.goalTitle);
-                        }
-                      }}
-                      disabled={isCurrentGoal || switchGoalMutation.isPending}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 py-1.5 px-1 text-left transition-colors",
-                        !isCurrentGoal && "hover:bg-muted/40",
-                      )}
-                    >
-                      <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
-                      <span className={cn("text-xs truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
-                        {goal.goalTitle}
-                      </span>
-                      {isCurrentGoal && (
-                        <span className="text-[8px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
-                          Active
-                        </span>
-                      )}
-                      <span className="text-[10px] text-muted-foreground/30 shrink-0 w-14 text-right tabular-nums">
-                        {stepsCompleted}/{totalSteps}
-                      </span>
-                      <div className="w-10 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
-                        <div
-                          className={cn("h-full rounded-full", isCurrentGoal ? "bg-teal-500" : "bg-muted-foreground/25")}
-                          style={{ width: `${Math.min((stepsCompleted / totalSteps) * 100, 100)}%` }}
-                        />
-                      </div>
-                      {!isCurrentGoal && (
-                        <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </GlassCard>
-          );
-        })()}
-
-        {/* ── 5. Small Jobs + Activity ────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* My Jobs */}
-          <Link href="/applications" className="block group">
-          <GlassCard className="p-4 hover:border-border/60 transition-all">
-            <div className="flex items-center gap-2 mb-4">
-              <Briefcase className="h-4 w-4 text-emerald-500" />
-              <h3 className="text-sm font-semibold">My Jobs</h3>
-            </div>
-            <div className="grid grid-cols-4 gap-2">
-              {[
-                { label: "Applied", value: appStats.applied },
-                { label: "Waiting", value: appStats.waiting },
-                { label: "Accepted", value: appStats.accepted },
-                { label: "Done", value: appStats.done },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <p className="text-lg font-bold text-foreground">
-                    {stat.value}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground/50">
-                    {stat.label}
-                  </p>
                 </div>
               ))}
             </div>
-          </GlassCard>
-          </Link>
-
-          {/* Activity */}
-          <GlassCard className="p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <FileText className="h-4 w-4 text-amber-500" />
-              <h3 className="text-sm font-semibold">Activity</h3>
+          ) : (
+            <div className="flex items-center justify-center py-4">
+              <p className="text-xs text-muted-foreground/40">
+                No recent activity
+              </p>
             </div>
-            {recentActivity.length > 0 ? (
-              <div className="space-y-2">
-                {recentActivity.slice(0, 4).map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs">
-                    <div className={cn(
-                      "h-1.5 w-1.5 rounded-full shrink-0",
-                      item.type === 'application' ? 'bg-emerald-500/50' :
-                      item.type === 'saved' ? 'bg-blue-500/50' :
-                      'bg-amber-500/50'
-                    )} />
-                    <span className="text-muted-foreground truncate flex-1">{item.title}</span>
-                    <span className="text-[10px] text-muted-foreground/40 shrink-0">
-                      {(() => {
-                        const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
-                        if (s < 60) return 'just now';
-                        if (s < 3600) return `${Math.floor(s / 60)}m`;
-                        if (s < 86400) return `${Math.floor(s / 3600)}h`;
-                        return `${Math.floor(s / 86400)}d`;
-                      })()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center py-4">
-                <p className="text-xs text-muted-foreground/40">
-                  No recent activity
-                </p>
-              </div>
-            )}
-          </GlassCard>
-        </div>
+          )}
+        </GlassCard>
       </div>
 
       {/* ── 5. Industry Insights Ticker ─────────────────────── */}
