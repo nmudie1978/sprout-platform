@@ -175,27 +175,19 @@ export default function LandingPage() {
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    Everyone expects you to have a plan. Choose your subjects. Pick a
-                    university. Know what you want to be. But the world of work is
-                    almost invisible — hidden behind job titles you don&apos;t understand,
-                    qualifications you can&apos;t picture, and career talks that all
-                    sound the same.
+                    But right now, the world of work is almost invisible. Job titles
+                    you don&apos;t understand. Qualifications you can&apos;t picture.
+                    Career advice that all sounds the same. Nobody shows you what
+                    these paths actually feel like — or whether they&apos;d suit the
+                    person you&apos;re becoming.
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={1800}>
-                  <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    Nobody shows you what these jobs actually feel like day to day,
-                    what they require, or whether they&apos;d suit the person you&apos;re
-                    becoming. That&apos;s not your fault — the tools simply didn&apos;t exist.
-                  </p>
-                </FadeReveal>
-                <FadeReveal delay={2200}>
                   <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
-                    Endeavrly changes that. A private space to explore real careers
-                    with honest information, reflect on who you are, and try small
-                    real-world experiences — so that when you do make a decision,
-                    it&apos;s yours, and it&apos;s informed. No quizzes. No pressure.
-                    Just clarity.
+                    Endeavrly gives you what&apos;s been missing. Real careers. Honest
+                    information. A space to reflect on who you are and try things
+                    for yourself — so when you do choose a direction, it&apos;s yours.
+                    No quizzes. No pressure. Just clarity.
                   </p>
                 </FadeReveal>
               </div>
