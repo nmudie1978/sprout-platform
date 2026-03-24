@@ -34,8 +34,6 @@ import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
-import { GuidanceStack } from "@/components/guidance/guidance-stack";
-import { buildGuidanceContext } from "@/lib/guidance/rules";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
@@ -511,23 +509,6 @@ export default function DashboardPage() {
           <VerificationStatus compact />
         </div>
 
-        {/* ── Contextual Guidance ────────────────────────────── */}
-        {(() => {
-          const guidanceCtx = buildGuidanceContext({
-            journey: journey ? {
-              currentLens: journey.currentLens,
-              completedSteps: journey.completedSteps,
-              summary: journey.summary,
-            } : null,
-            isFirstLogin,
-            onboardingComplete: onboardingComplete ?? false,
-            educationContext: null,
-            learningGoalCount: 0,
-            jobsApplied: appStats.applied,
-          });
-          return <GuidanceStack placement="dashboard" context={guidanceCtx} className="mb-5" />;
-        })()}
-
         {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
         {isFirstLogin ? (
           <div className="mb-6">
@@ -579,7 +560,7 @@ export default function DashboardPage() {
                   My Journey
                 </h2>
                 <p className="text-xs text-muted-foreground/60">
-                  Track your growth
+                  {goalTitle ? goalTitle : 'Track your growth'}
                 </p>
               </div>
             </div>
