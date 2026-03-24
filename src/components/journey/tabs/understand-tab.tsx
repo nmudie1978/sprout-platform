@@ -364,35 +364,6 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
       });
       })()}
 
-      {/* Supporting Content — secondary resources */}
-      <div className="mt-4 rounded-xl border border-border/30 bg-muted/10 p-4 space-y-4">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground/50">
-          Supporting Content
-        </h3>
-
-        <div className="grid gap-2 sm:grid-cols-2">
-          <QuickLink
-            icon={BarChart3}
-            title="Industry Insights"
-            description="Global trends and what they mean for your age group"
-            href="/insights"
-          />
-          <QuickLink
-            icon={TrendingUp}
-            title="Jobs & Roles on the Rise"
-            description="Which careers are growing and in demand"
-            href="/insights#dig-deeper"
-          />
-          <QuickLink
-            icon={Briefcase}
-            title="Explore Careers"
-            description="Browse career paths, salaries, and requirements"
-            href="/careers"
-          />
-        </div>
-
-      </div>
-
       {/* Subtle next-stage nudge */}
       {understandComplete && onContinueToGrow && (
         <button

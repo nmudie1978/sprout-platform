@@ -227,7 +227,9 @@ function StageTabBar({
         const isActive = activeTab === tab.id;
         const locked = isLocked(tab);
         const progress = lenses[tab.lensKey];
-        const isComplete = progress.isComplete;
+        // Override Discover completion/progress with client-side check
+        const isComplete = tab.id === 'discover' ? discoverComplete : progress.isComplete;
+        const displayProgress = tab.id === 'discover' && discoverComplete ? 100 : progress.progress;
 
         return (
           <button
@@ -266,9 +268,9 @@ function StageTabBar({
                   {tab.label}
                 </span>
               </div>
-              {!locked && progress.progress > 0 && (
+              {!locked && displayProgress > 0 && (
                 <span className={cn('text-[10px] sm:text-xs font-semibold', `text-${tab.color}-500`)}>
-                  {progress.progress}%
+                  {displayProgress}%
                 </span>
               )}
             </div>
@@ -300,7 +302,7 @@ function StageTabBar({
                 <div className={cn('h-1 rounded-full', tab.progressBg)}>
                   <div
                     className={cn('h-full rounded-full transition-all duration-500', tab.progressFill)}
-                    style={{ width: `${progress.progress}%` }}
+                    style={{ width: `${displayProgress}%` }}
                   />
                 </div>
               ) : (
