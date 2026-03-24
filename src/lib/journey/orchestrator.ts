@@ -101,9 +101,18 @@ export class JourneyOrchestrator {
             ].filter(Boolean).length
           : 0;
 
+        // When goal is set, ROLE_DEEP_DIVE is hidden — exclude from count
+        const hasGoal = this.context.primaryGoalSelected;
+        const mandatoryStepCount = hasGoal
+          ? this.getLensMandatoryStates(lens) - 1  // exclude ROLE_DEEP_DIVE
+          : this.getLensMandatoryStates(lens);
+        const completedStepCount = hasGoal
+          ? progress.completedStates.filter((s) => s !== 'ROLE_DEEP_DIVE').length
+          : progress.completedStates.length;
+
         // Total items: mandatory steps + 5 reflection cards
-        const totalSteps = this.getLensMandatoryStates(lens) + 5;
-        const completedTotal = progress.completedStates.length + reflectionsFilled;
+        const totalSteps = mandatoryStepCount + 5;
+        const completedTotal = completedStepCount + reflectionsFilled;
         finalProgress = Math.round((completedTotal / totalSteps) * 100);
         isComplete = completedTotal >= totalSteps;
       }
