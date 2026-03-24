@@ -208,8 +208,8 @@ export function DiscoverReflectionsSection() {
     },
     onSuccess: () => {
       setDirty(new Set());
+      // Only refetch reflections — don't invalidate journey-state to avoid page flash
       queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
-      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
     },
   });
 
