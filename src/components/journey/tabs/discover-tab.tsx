@@ -561,7 +561,17 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
 
             {/* Set Your Direction */}
             {config.id === 'ROLE_DEEP_DIVE' && !hasGoal && (
-              <div className="mt-3 pt-3 border-t border-border/30">
+              <div className="mt-3 pt-3 border-t border-border/30 space-y-2">
+                <Link
+                  href="/careers"
+                  className="flex items-center gap-2 w-full rounded-lg bg-violet-500/[0.04] border border-violet-500/10 hover:bg-violet-500/8 p-2.5 transition-colors text-left group"
+                >
+                  <Compass className="h-3.5 w-3.5 text-violet-400/60 shrink-0" />
+                  <span className="text-[11px] text-muted-foreground/50 group-hover:text-muted-foreground/70 transition-colors">
+                    Not sure yet? Browse careers first to see what&apos;s out there
+                  </span>
+                  <ArrowRight className="h-3 w-3 text-violet-400/30 ml-auto shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
                 <button onClick={onSetGoal} className="flex items-center gap-2 w-full rounded-lg bg-teal-500/5 border border-teal-500/15 hover:bg-teal-500/10 p-2.5 transition-colors text-left">
                   <Target className="h-3.5 w-3.5 text-teal-500 shrink-0" />
                   <span className="text-xs font-medium text-teal-400">Choose a career goal to continue</span>
