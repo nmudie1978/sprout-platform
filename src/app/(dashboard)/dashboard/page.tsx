@@ -696,9 +696,10 @@ export default function DashboardPage() {
           {/* Career Snapshot */}
           {goalCareer ? (
             <GlassCard className="p-4 h-full">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
-                Career Snapshot
-              </p>
+              <div className="flex items-center gap-2 mb-3">
+                <Search className="h-3.5 w-3.5 text-teal-500" />
+                <h3 className="text-xs font-semibold">Career Snapshot</h3>
+              </div>
               <div className="space-y-2.5">
                 <a
                   href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(goalCareer.title)}`}
@@ -731,10 +732,9 @@ export default function DashboardPage() {
           ) : (
             <Link href="/my-journey" className="block group">
               <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
-                <div className="mb-2">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                    Career Snapshot
-                  </p>
+                <div className="flex items-center gap-2 mb-2">
+                  <Search className="h-3.5 w-3.5 text-teal-500" />
+                  <h3 className="text-xs font-semibold">Career Snapshot</h3>
                 </div>
                 <p className="text-sm text-muted-foreground/40">
                   Set a goal to see career info
