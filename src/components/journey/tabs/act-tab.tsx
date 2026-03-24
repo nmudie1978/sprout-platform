@@ -276,8 +276,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             <SchoolAlignmentTab goalTitle={goalTitle} />
           </div>
 
-          {/* Save Snapshot */}
-          <SaveSnapshotButton goalTitle={goalTitle} journey={journey} />
+          {/* Save + Download */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SaveSnapshotButton goalTitle={goalTitle} journey={journey} />
+            <DownloadReportButton />
+          </div>
         </>
       )}
     </div>
@@ -345,6 +348,58 @@ function SaveSnapshotButton({ goalTitle, journey }: { goalTitle?: string | null;
             <Save className="h-3 w-3" />
           )}
           {saving ? 'Saving...' : savedAt ? 'Saved' : 'Save snapshot'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Download Report Button ──────────────────────────────────────────
+
+function DownloadReportButton() {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = useCallback(async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch('/api/reports/my-journey', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to generate report');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `my-journey-report-${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      // Could show toast here
+    } finally {
+      setDownloading(false);
+    }
+  }, []);
+
+  return (
+    <div className="rounded-xl border border-border/30 bg-card/40 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold text-foreground/70">Download report</p>
+          <p className="text-[10px] text-muted-foreground/40 mt-0.5">
+            PDF summary of your full journey
+          </p>
+        </div>
+        <button
+          onClick={handleDownload}
+          disabled={downloading}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
+        >
+          {downloading ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <ArrowRight className="h-3 w-3" />
+          )}
+          {downloading ? 'Generating...' : 'Download PDF'}
         </button>
       </div>
     </div>
