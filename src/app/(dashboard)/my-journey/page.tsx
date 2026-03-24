@@ -434,7 +434,6 @@ export default function MyJourneyPage() {
   }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
 
   // Auto-switch to the appropriate tab based on progress + inspirational messages
-  const discoverComplete = journeyData?.journey?.summary?.lenses?.discover?.isComplete ?? false;
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
   const celebratedRef = useRef<Set<string>>(new Set());
 
