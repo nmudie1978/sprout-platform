@@ -397,7 +397,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {/* Your Education */}
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
+          <div className="rounded-lg border border-border/60 bg-card/50 p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-4 w-4 text-teal-500" />
@@ -476,7 +476,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
           </div>
 
           {/* Career Alignment */}
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
+          <div className="rounded-lg border border-border/60 bg-card/50 p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-amber-500" />
@@ -536,7 +536,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       {mapping && (
         <div className="grid gap-3 sm:grid-cols-2">
           {/* What to strengthen */}
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
+          <div className="rounded-lg border border-border/60 bg-card/50 p-4">
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="h-4 w-4 text-blue-400" />
               <h4 className="text-xs font-semibold">What to strengthen</h4>
@@ -552,7 +552,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
           </div>
 
           {/* Next decisions — editable */}
-          <div className="rounded-lg border border-border/30 bg-card/50 p-4">
+          <div className="rounded-lg border border-border/60 bg-card/50 p-4">
             <div className="flex items-center gap-2 mb-3">
               <BookOpen className="h-4 w-4 text-purple-400" />
               <h4 className="text-xs font-semibold">Next decisions</h4>
