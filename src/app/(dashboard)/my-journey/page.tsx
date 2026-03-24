@@ -460,25 +460,16 @@ export default function MyJourneyPage() {
   // Auto-switch to the appropriate tab based on progress + inspirational messages
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
   const celebratedRef = useRef<Set<string>>(new Set());
+  // Reset celebration refs when goal changes so celebrations fire for new goals
+  const prevGoalRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (understandComplete && !celebratedRef.current.has('act')) {
-      celebratedRef.current.add('act');
-      const seenKey = `understand-celebrated-${goalTitle || 'default'}`;
-      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
-        localStorage.setItem(seenKey, 'true');
-        setShowUnderstandCelebration(true);
-      } else {
-        setActiveTab('act');
-      }
-      setTimeout(() => {
-        toast('You\'ve done the research. Time to try something real.', {
-          description: 'Even a small step can create real momentum.',
-          duration: 6000,
-        });
-      }, 500);
+    const currentGoal = primaryGoal?.title ?? null;
+    if (prevGoalRef.current !== null && prevGoalRef.current !== currentGoal) {
+      celebratedRef.current = new Set();
     }
-  }, [understandComplete]);
+    prevGoalRef.current = currentGoal;
+  }, [primaryGoal?.title]);
 
   // Gate goal sheet — warn if changing an existing goal
   const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
@@ -501,9 +492,7 @@ export default function MyJourneyPage() {
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
-  const discoverComplete = (() => {
-    // If the state machine has already advanced past Discover, it's complete.
-    // Editing reflections after advancing should NOT re-lock later stages.
+  const discoverComplete = useMemo(() => {
     const understandOrActStates = [
       'REVIEW_INDUSTRY_OUTLOOK', 'CAREER_SHADOW', 'CREATE_ACTION_PLAN',
       'COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION', 'UPDATE_PLAN', 'EXTERNAL_FEEDBACK',
@@ -526,12 +515,30 @@ export default function MyJourneyPage() {
       ? true
       : steps.find((s) => s.id === 'ROLE_DEEP_DIVE')?.status === 'completed';
 
-    return reflectionsDone && strengthsDone && careersDone && directionDone;
-  })();
+    return !!(reflectionsDone && strengthsDone && careersDone && directionDone);
+  }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
+
+  // Understand celebration — fires when Understand is complete
+  useEffect(() => {
+    if (understandComplete && goalTitle && !celebratedRef.current.has('understand')) {
+      celebratedRef.current.add('understand');
+      const seenKey = `understand-celebrated-${goalTitle}`;
+      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
+        localStorage.setItem(seenKey, 'true');
+        setShowUnderstandCelebration(true);
+      } else {
+        setActiveTab('act');
+      }
+    }
+  }, [understandComplete, goalTitle]);
 
   // When Discover is complete: show celebration (once), then advance on continue.
-  // Auto-advance without celebration if user has already seen it for this goal.
   const discoverAdvanceDone = useRef(false);
+
+  // Reset discover advance ref when goal changes
+  useEffect(() => {
+    discoverAdvanceDone.current = false;
+  }, [primaryGoal?.title]);
   useEffect(() => {
     if (discoverAdvanceDone.current || !discoverComplete) return;
     const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];

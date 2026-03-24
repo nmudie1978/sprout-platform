@@ -227,9 +227,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
                 Fullscreen
               </button>
             </div>
-            <div className="min-h-[400px] rounded-xl border-2 border-amber-500/20 p-4 overflow-hidden">
-              <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-            </div>
+            {!roadmapFullscreen && (
+              <div className="min-h-[400px] rounded-xl border-2 border-amber-500/20 p-4 overflow-hidden">
+                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+              </div>
+            )}
           </div>
 
           {/* Fullscreen roadmap modal */}
