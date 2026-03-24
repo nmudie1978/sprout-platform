@@ -371,6 +371,21 @@ export default function MyJourneyPage() {
     staleTime: 2 * 60 * 1000,
   });
 
+  // Fetch goal-scoped data for "last used" timestamp
+  const earlyGoalTitle = primaryGoal?.title ?? null;
+  const goalSlug = earlyGoalTitle?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || null;
+  const { data: goalDataResponse } = useQuery<{ goalData: { updatedAt: string; createdAt: string } | null }>({
+    queryKey: ['goal-data', goalSlug],
+    queryFn: async () => {
+      const res = await fetch(`/api/journey/goal-data?goalId=${goalSlug}`);
+      if (!res.ok) return { goalData: null };
+      return res.json();
+    },
+    enabled: isYouth && !!goalSlug,
+    staleTime: 5 * 60 * 1000,
+  });
+  const goalLastUsed = goalDataResponse?.goalData?.updatedAt || null;
+
   // Auto-migrate existing data to goal-scoped model on first load
   const migrationDone = useRef(false);
   useEffect(() => {
@@ -589,23 +604,30 @@ export default function MyJourneyPage() {
                   My Journey
                 </p>
                 {goalTitle ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => goalCareer && setShowCareerDetail(true)}
-                      className={goalCareer ? 'text-left hover:text-teal-400 transition-colors' : 'text-left'}
-                      title={goalCareer ? 'View career details' : undefined}
-                    >
-                      <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
-                        {goalTitle}
-                      </h1>
-                    </button>
-                    <button
-                      onClick={handleOpenGoalSheet}
-                      className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
-                      title="Change career goal"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                    </button>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => goalCareer && setShowCareerDetail(true)}
+                        className={goalCareer ? 'text-left hover:text-teal-400 transition-colors' : 'text-left'}
+                        title={goalCareer ? 'View career details' : undefined}
+                      >
+                        <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
+                          {goalTitle}
+                        </h1>
+                      </button>
+                      <button
+                        onClick={handleOpenGoalSheet}
+                        className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
+                        title="Change career goal"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                      </button>
+                    </div>
+                    {goalLastUsed && (
+                      <p className="text-[10px] text-muted-foreground/35 mt-0.5">
+                        Last saved {new Date(goalLastUsed).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })} at {new Date(goalLastUsed).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <h1 className="text-base sm:text-lg font-semibold tracking-tight text-muted-foreground">
