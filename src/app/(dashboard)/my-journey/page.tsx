@@ -31,6 +31,7 @@ import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
 import { DiscoverCompleteModal } from '@/components/journey/discover-complete-modal';
+import { UnderstandCompleteModal } from '@/components/journey/understand-complete-modal';
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
 import { getAllCareers } from '@/lib/career-pathways';
 import { HelpCircle, Info, X } from 'lucide-react';
@@ -331,6 +332,7 @@ export default function MyJourneyPage() {
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
   const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
   const [showDiscoverCelebration, setShowDiscoverCelebration] = useState(false);
+  const [showUnderstandCelebration, setShowUnderstandCelebration] = useState(false);
   const [showCareerDetail, setShowCareerDetail] = useState(false);
   const [goalBannerDismissed, setGoalBannerDismissed] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -447,7 +449,13 @@ export default function MyJourneyPage() {
   useEffect(() => {
     if (understandComplete && !celebratedRef.current.has('act')) {
       celebratedRef.current.add('act');
-      setActiveTab('act');
+      const seenKey = `understand-celebrated-${goalTitle || 'default'}`;
+      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
+        localStorage.setItem(seenKey, 'true');
+        setShowUnderstandCelebration(true);
+      } else {
+        setActiveTab('act');
+      }
       setTimeout(() => {
         toast('You\'ve done the research. Time to try something real.', {
           description: 'Even a small step can create real momentum.',
@@ -747,6 +755,20 @@ export default function MyJourneyPage() {
         growthAreas={reflectionsData?.discoverReflections?.growthAreas ?? []}
         goalTitle={goalTitle}
         careerInterests={journey.summary?.careerInterests ?? []}
+      />
+
+      {/* Understand Completion Celebration */}
+      <UnderstandCompleteModal
+        open={showUnderstandCelebration}
+        onContinue={() => {
+          setShowUnderstandCelebration(false);
+          setActiveTab('act');
+        }}
+        goalTitle={goalTitle}
+        roleRealityNotes={journey.summary?.roleRealityNotes ?? []}
+        industryInsightNotes={journey.summary?.industryInsightNotes ?? []}
+        pathSkills={journey.summary?.pathSkills ?? []}
+        actionPlan={journey.summary?.rolePlans?.[0] ?? null}
       />
 
       {/* Goal Selection Sheet */}
