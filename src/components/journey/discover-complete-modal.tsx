@@ -101,11 +101,11 @@ export function DiscoverCompleteModal({
 
           {/* Headline */}
           <h2 className="text-lg font-semibold text-foreground mb-2">
-            You know yourself better now.
+            Fantastic — you know yourself better now!
           </h2>
 
           <p className="text-sm text-muted-foreground/70 leading-relaxed mb-5">
-            That takes honesty and courage. Here's what you've discovered:
+            That takes real honesty and courage. Here&apos;s a snapshot of what you&apos;ve discovered about yourself:
           </p>
 
           {/* Personal summary */}
