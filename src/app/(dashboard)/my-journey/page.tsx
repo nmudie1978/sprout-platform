@@ -649,13 +649,40 @@ export default function MyJourneyPage() {
         primaryGoal={primaryGoal}
         secondaryGoal={secondaryGoal}
         onSuccess={async () => {
+          // Save current goal's progress before switching
+          if (goalTitle) {
+            const currentGoalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            try {
+              await fetch('/api/journey/goal-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  goalId: currentGoalId,
+                  goalTitle,
+                  journeyState: journey.currentState,
+                  journeyCompletedSteps: journey.completedSteps,
+                  journeySummary: journey.summary,
+                }),
+              });
+            } catch {
+              // Non-blocking
+            }
+          }
+
           setGoalSheetOpen(false);
 
-          // Reset journey progress — start fresh with the new goal
+          // Reset journey so the new goal starts clean
           try {
             await fetch('/api/journey/reset', { method: 'POST' });
           } catch {
             // Non-blocking
+          }
+
+          // Try to restore saved progress for the new goal
+          try {
+            await fetch('/api/journey/goal-data/migrate', { method: 'POST' });
+          } catch {
+            // Non-blocking — new goal just starts fresh
           }
 
           // Reset tab to Discover
