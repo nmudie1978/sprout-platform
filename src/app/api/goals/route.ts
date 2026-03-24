@@ -118,10 +118,10 @@ export async function PUT(request: Request) {
       if (currentGoal?.title && currentGoal.title !== goal.title) {
         const goalId = currentGoal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         try {
-          await prisma.goalScopedData.upsert({
-            where: { profileId_goalId: { profileId: currentProfile!.userId, goalId } },
+          await prisma.journeyGoalData.upsert({
+            where: { userId_goalId: { userId: session.user.id, goalId } },
             create: {
-              profileId: currentProfile!.userId,
+              userId: session.user.id,
               goalId,
               goalTitle: currentGoal.title,
               journeyState: currentProfile!.journeyState,
@@ -145,8 +145,8 @@ export async function PUT(request: Request) {
         const newGoalId = goal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         let restored = false;
         try {
-          const savedData = await prisma.goalScopedData.findUnique({
-            where: { profileId_goalId: { profileId: session.user.id, goalId: newGoalId } },
+          const savedData = await prisma.journeyGoalData.findUnique({
+            where: { userId_goalId: { userId: session.user.id, goalId: newGoalId } },
           });
           if (savedData) {
             // Restore saved progress for this goal
