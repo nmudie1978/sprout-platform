@@ -157,30 +157,29 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
             </div>
             {eduContext ? (
               <div className="space-y-1.5">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-xs font-semibold text-foreground/80">
-                    {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
-                  </span>
-                  {eduContext.ageBand && (
-                    <span className="text-[9px] text-muted-foreground/40">Age {eduContext.ageBand}</span>
-                  )}
-                </div>
-                {(eduContext.schoolName || eduContext.studyProgram) && (
-                  <p className="text-[9px] text-muted-foreground/40 leading-snug">
-                    {[eduContext.schoolName, eduContext.studyProgram].filter(Boolean).join(' · ')}
-                  </p>
+                <p className="text-xs font-semibold text-foreground/80">
+                  {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+                </p>
+                {eduContext.ageBand && (
+                  <p className="text-[9px] text-muted-foreground/40">Age {eduContext.ageBand}</p>
+                )}
+                {eduContext.schoolName && (
+                  <p className="text-[9px] text-muted-foreground/40">{eduContext.schoolName}</p>
+                )}
+                {eduContext.studyProgram && (
+                  <p className="text-[9px] text-muted-foreground/40">{eduContext.studyProgram}</p>
+                )}
+                {eduContext.expectedCompletion && (
+                  <p className="text-[9px] text-muted-foreground/40">Finishing {eduContext.expectedCompletion}</p>
                 )}
                 {eduContext.currentSubjects.length > 0 && (
-                  <div className="flex flex-wrap gap-0.5">
+                  <div className="flex flex-wrap gap-0.5 mt-0.5">
                     {eduContext.currentSubjects.map((s) => (
                       <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-teal-500/8 text-teal-500/70">
                         {s}
                       </span>
                     ))}
                   </div>
-                )}
-                {eduContext.expectedCompletion && (
-                  <p className="text-[8px] text-muted-foreground/25">Finishing {eduContext.expectedCompletion}</p>
                 )}
               </div>
             ) : (
