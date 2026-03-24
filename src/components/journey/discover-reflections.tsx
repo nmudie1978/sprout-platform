@@ -19,6 +19,7 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -175,6 +176,7 @@ export function DiscoverReflectionsSection() {
   const queryClient = useQueryClient();
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const [localData, setLocalData] = useState<DiscoverReflections>(EMPTY_REFLECTIONS);
+  const [dirty, setDirty] = useState<Set<string>>(new Set());
 
   // Load from API
   const { data } = useQuery<{ discoverReflections: DiscoverReflections | null }>({
@@ -205,21 +207,37 @@ export function DiscoverReflectionsSection() {
       return res.json();
     },
     onSuccess: () => {
+      setDirty(new Set());
       queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
       queryClient.invalidateQueries({ queryKey: ['journey-state'] });
     },
   });
 
-  const updateField = useCallback((field: keyof DiscoverReflections, value: string[] | string) => {
+  // Save all current data
+  const handleSave = useCallback(() => {
+    saveMutation.mutate(localData);
+  }, [localData, saveMutation]);
+
+  // Chip fields: update locally + auto-save
+  const updateChips = useCallback((field: keyof DiscoverReflections, value: string[]) => {
     setLocalData((prev) => {
       const updated = { ...prev, [field]: value };
-      // Auto-save after a short delay
       saveMutation.mutate(updated);
       return updated;
     });
   }, [saveMutation]);
 
+  // Text fields: update locally only, mark dirty
+  const updateText = useCallback((field: keyof DiscoverReflections, value: string) => {
+    setLocalData((prev) => ({ ...prev, [field]: value }));
+    setDirty((prev) => new Set(prev).add(field));
+  }, []);
+
   const toggleCard = (id: string) => {
+    // If collapsing a dirty text card, auto-save
+    if (expandedCard === id && dirty.has(id)) {
+      handleSave();
+    }
     setExpandedCard((prev) => (prev === id ? null : id));
   };
 
@@ -228,6 +246,8 @@ export function DiscoverReflectionsSection() {
     if (Array.isArray(val)) return val.length > 0;
     return typeof val === 'string' && val.trim().length > 0;
   };
+
+  const isCardDirty = (cardId: string): boolean => dirty.has(cardId);
 
   return (
     <div className="space-y-2">
@@ -275,7 +295,7 @@ export function DiscoverReflectionsSection() {
                 )}
                 {!expanded && filled && card.type === 'text' && (
                   <p className="text-[10px] text-teal-500/60 truncate mt-0.5">
-                    {(localData[card.id] as string).slice(0, 60)}...
+                    {(localData[card.id] as string).slice(0, 60)}{(localData[card.id] as string).length > 60 ? '...' : ''}
                   </p>
                 )}
                 {!expanded && !filled && (
@@ -297,18 +317,39 @@ export function DiscoverReflectionsSection() {
                   <ChipSelector
                     options={card.options}
                     selected={localData[card.id] as string[]}
-                    onChange={(val) => updateField(card.id, val)}
+                    onChange={(val) => updateChips(card.id, val)}
                   />
                 )}
                 {card.type === 'text' && (
-                  <textarea
-                    value={localData[card.id] as string}
-                    onChange={(e) => updateField(card.id, e.target.value)}
-                    placeholder={card.placeholder}
-                    className="w-full rounded-lg border border-border/30 bg-background/50 px-3 py-2.5 text-xs text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-teal-500/30 resize-none"
-                    rows={3}
-                    maxLength={500}
-                  />
+                  <>
+                    <textarea
+                      value={localData[card.id] as string}
+                      onChange={(e) => updateText(card.id, e.target.value)}
+                      placeholder={card.placeholder}
+                      className="w-full rounded-lg border border-border/30 bg-background/50 px-3 py-2.5 text-xs text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-teal-500/30 resize-none"
+                      rows={3}
+                      maxLength={500}
+                    />
+                    <div className="flex justify-end mt-2">
+                      <button
+                        onClick={handleSave}
+                        disabled={saveMutation.isPending || !isCardDirty(card.id)}
+                        className={cn(
+                          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                          isCardDirty(card.id)
+                            ? 'bg-teal-600 hover:bg-teal-700 text-white'
+                            : 'bg-muted/30 text-muted-foreground/30 cursor-not-allowed',
+                        )}
+                      >
+                        {saveMutation.isPending ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Check className="h-3 w-3" />
+                        )}
+                        Save
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             )}

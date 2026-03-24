@@ -83,7 +83,7 @@ export async function GET() {
             savedAt: new Date().toISOString(),
           })),
       exploredRolesCount: journeySummary?.exploredRoles?.length || 0,
-      primaryGoalSelected: Boolean(journeySummary?.primaryGoal?.title),
+      primaryGoalSelected: Boolean(journeySummary?.primaryGoal?.title || (profile?.primaryGoal as Record<string, unknown>)?.title),
       // UNDERSTAND lens data
       industryOutlookReviewed: Boolean(journeySummary?.industryInsightsSummary?.lastReviewedAt),
       requirementsReviewed: Boolean(journeySummary?.requirementsReviewed),
@@ -214,7 +214,7 @@ export async function PATCH(req: NextRequest) {
             savedAt: new Date().toISOString(),
           })),
       exploredRolesCount: patchSummary?.exploredRoles?.length || 0,
-      primaryGoalSelected: Boolean(patchSummary?.primaryGoal?.title),
+      primaryGoalSelected: Boolean(patchSummary?.primaryGoal?.title || (profile?.primaryGoal as Record<string, unknown>)?.title),
       // UNDERSTAND lens data
       industryOutlookReviewed: Boolean(patchSummary?.industryInsightsSummary?.lastReviewedAt),
       requirementsReviewed: Boolean(patchSummary?.requirementsReviewed),
