@@ -130,7 +130,7 @@ export function VerificationStatus({ compact = false }: VerificationStatusProps)
                 placeholder="Guardian's email address"
                 value={guardianEmail}
                 onChange={(e) => setGuardianEmail(e.target.value)}
-                className="flex-1 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 text-sm border border-border/40 bg-background rounded-lg text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-teal-500/30"
               />
               <Button
                 size="sm"
@@ -172,14 +172,8 @@ export function VerificationStatus({ compact = false }: VerificationStatusProps)
           </div>
         );
       } else {
-        actionButton = (
-          <Alert className="bg-green-50 border-green-200">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-700">
-              Request sent to {guardianEmail}! Ask your guardian to check their email.
-            </AlertDescription>
-          </Alert>
-        );
+        // Consent request sent — hide the entire section
+        return null;
       }
     } else if (status === "ONBOARDING") {
       // Don't show anything for ONBOARDING youth - ProfileStrengthCompact handles this
