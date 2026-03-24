@@ -35,6 +35,7 @@ interface UnderstandTabProps {
   onStartStep?: (stepId: string) => void;
   onContinueToGrow?: () => void;
   onDeleteItem?: (stepId: string, field: string, index: number) => void;
+  forceActive?: boolean;
 }
 
 // ── Step Config ─────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ function QuickLink({
 
 // ── Main Component ──────────────────────────────────────────────────
 
-export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow, onDeleteItem }: UnderstandTabProps) {
+export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGrow, onDeleteItem, forceActive }: UnderstandTabProps) {
   const understandComplete = journey.summary?.lenses?.understand?.isComplete;
   const roleRealityNotes = journey.summary?.roleRealityNotes || [];
   const industryInsightNotes = journey.summary?.industryInsightNotes || [];
@@ -121,9 +122,15 @@ export function UnderstandTab({ journey, goalTitle, onStartStep, onContinueToGro
   // Get step status from journey data
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
     const step = journey.steps.find((s) => s.id === stepId);
-    if (!step) return 'locked';
+    if (!step) {
+      // When forceActive, treat the first Understand step as "next"
+      if (forceActive && stepId === 'REVIEW_INDUSTRY_OUTLOOK') return 'next';
+      return 'locked';
+    }
     if (step.status === 'completed') return 'completed';
     if (step.status === 'next') return 'next';
+    // When forceActive and all steps show as locked, unlock the first one
+    if (forceActive && stepId === 'REVIEW_INDUSTRY_OUTLOOK') return 'next';
     return 'locked';
   };
 

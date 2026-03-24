@@ -640,6 +640,7 @@ export default function MyJourneyPage() {
               goalTitle={goalTitle}
               onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
               onContinueToGrow={() => setActiveTab('act')}
+              forceActive={discoverComplete}
             />
           )}
           {activeTab === 'act' && (
