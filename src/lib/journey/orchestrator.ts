@@ -58,7 +58,9 @@ export class JourneyOrchestrator {
     this.currentState = currentState;
     this.completedSteps = completedSteps;
     this.skippedSteps = skippedSteps;
-    this.summary = summary || { ...DEFAULT_JOURNEY_SUMMARY };
+    this.summary = summary
+      ? { ...DEFAULT_JOURNEY_SUMMARY, ...summary, lenses: summary.lenses || { ...DEFAULT_JOURNEY_SUMMARY.lenses } }
+      : { ...DEFAULT_JOURNEY_SUMMARY };
 
     // Always recalculate lens progress
     this.updateLensProgress();
