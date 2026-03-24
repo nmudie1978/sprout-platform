@@ -51,14 +51,18 @@ export default function DiscoverPage() {
   };
 
   const handleComplete = async (completed: DiscoverProfile) => {
-    await fetch('/api/discover/profile', {
+    const res = await fetch('/api/discover/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ discoverProfile: completed }),
     });
-    // Invalidate queries so dashboard/recommendations refresh
-    queryClient.invalidateQueries({ queryKey: ['discover-recommendations'] });
-    queryClient.invalidateQueries({ queryKey: ['journey-state'] });
+    if (!res.ok) {
+      console.error('Failed to save discover profile:', await res.text());
+      return;
+    }
+    // Force refetch before navigating so the data is fresh
+    await queryClient.invalidateQueries({ queryKey: ['discover-recommendations'] });
+    await queryClient.invalidateQueries({ queryKey: ['journey-state'] });
     router.push('/my-journey');
   };
 
