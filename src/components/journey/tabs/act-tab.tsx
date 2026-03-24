@@ -3,8 +3,9 @@
 /**
  * ACT/GROW TAB — Take Aligned Action
  *
- * Matches the Discover/Understand tab's compact card-based layout.
- * Steps first, then roadmap, then supporting sections.
+ * Two mandatory steps: Complete Aligned Action + Reflect on Action.
+ * Roadmap and school alignment only appear after both are complete —
+ * they are the reward of finishing the full journey.
  */
 
 import { useState } from 'react';
@@ -18,7 +19,6 @@ import {
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 import type { JourneyUIState } from '@/lib/journey/types';
@@ -48,28 +48,12 @@ const ACT_STEPS = [
     stepNumber: 1,
     title: 'Complete Aligned Action',
     description: 'Start with something manageable — a course, a small project, or an application. The size doesn\'t matter, the step does.',
-    optional: false,
   },
   {
     id: 'SUBMIT_ACTION_REFLECTION',
     stepNumber: 2,
     title: 'Reflect on Action',
     description: 'Think about what you learned. Did it confirm your direction, or open up new questions? Both are valuable.',
-    optional: false,
-  },
-  {
-    id: 'UPDATE_PLAN',
-    stepNumber: 3,
-    title: 'Update Plan',
-    description: 'Adjust your plan based on what you\'ve learned. Your path can evolve as you do.',
-    optional: true,
-  },
-  {
-    id: 'EXTERNAL_FEEDBACK',
-    stepNumber: 4,
-    title: 'External Feedback',
-    description: 'Ask someone you trust for their perspective. A fresh viewpoint can help you see things differently.',
-    optional: true,
   },
 ];
 
@@ -89,8 +73,6 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
   const alignedActions = journey.summary?.alignedActions || [];
   const reflections = journey.summary?.alignedActionReflections || [];
-  const planChangeReason = journey.summary?.planChangeReason || null;
-  const externalFeedback = (journey.summary as unknown as Record<string, unknown>)?.externalFeedback as Array<{ source: string; summary: string }> || [];
 
   const getStepStatus = (stepId: string): 'completed' | 'next' | 'locked' => {
     const step = journey.steps.find((s) => s.id === stepId);
@@ -100,10 +82,12 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
     return 'locked';
   };
 
-  // Find the first "next" step — only this one should show Start
   const firstNextStepId = ACT_STEPS.find((s) => getStepStatus(s.id) === 'next')?.id || null;
 
-  // Helper to render a step card
+  const growComplete =
+    getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
+    getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed';
+
   const renderStep = (config: typeof ACT_STEPS[number]) => {
     const status = getStepStatus(config.id);
     const isComplete = status === 'completed';
@@ -115,12 +99,11 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         key={config.id}
         className={cn(
           'rounded-xl border p-3 transition-all',
-          isCurrent && !config.optional && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
-          isCurrent && config.optional && 'border-border/50 bg-card/60',
+          isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
           isComplete && 'border-sky-500/20 bg-card/60',
           isEffectivelyLocked && 'border-border/30 opacity-40',
         )}
-        style={isCurrent && !config.optional ? {
+        style={isCurrent ? {
           boxShadow: '0 0 15px rgba(245, 158, 11, 0.15)',
         } : undefined}
       >
@@ -136,34 +119,21 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             {isComplete ? <CheckCircle2 className="h-3.5 w-3.5" /> : config.stepNumber}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className={cn(
-                'text-xs font-semibold',
-                isComplete && 'text-foreground',
-                isEffectivelyLocked && 'text-muted-foreground/50',
-              )}>
-                {config.title}
-              </p>
-              {config.optional && <Badge variant="secondary" className="text-[8px] h-3.5 px-1">Optional</Badge>}
-            </div>
+            <p className={cn(
+              'text-xs font-semibold',
+              isComplete && 'text-foreground',
+              isEffectivelyLocked && 'text-muted-foreground/50',
+            )}>
+              {config.title}
+            </p>
             {(isCurrent || isEffectivelyLocked) && (
               <p className="text-[11px] text-muted-foreground/60 mt-0.5 line-clamp-1">{config.description}</p>
             )}
           </div>
           {isCurrent && onStartStep && (
-            config.optional ? (
-              <button
-                onClick={() => onStartStep(config.id)}
-                className="inline-flex items-center gap-1 text-[11px] font-medium shrink-0 text-muted-foreground/60 hover:text-amber-500 transition-colors"
-              >
-                <Pencil className="h-3 w-3" />
-                Add
-              </button>
-            ) : (
-              <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
-                Start <ArrowRight className="h-3 w-3 ml-1" />
-              </Button>
-            )
+            <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
+              Start <ArrowRight className="h-3 w-3 ml-1" />
+            </Button>
           )}
           {isComplete && onStartStep && (
             <button
@@ -200,26 +170,6 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             </ul>
           </div>
         )}
-
-        {isComplete && config.id === 'UPDATE_PLAN' && planChangeReason && (
-          <div className="mt-2 pt-2 border-t border-border/30">
-            <div className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
-              <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60 mb-0.5">What Changed</p>
-              <p className="text-[11px] text-muted-foreground">{planChangeReason}</p>
-            </div>
-          </div>
-        )}
-
-        {isComplete && config.id === 'EXTERNAL_FEEDBACK' && externalFeedback.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-border/30 grid gap-1.5 sm:grid-cols-2">
-            {externalFeedback.map((fb, i) => (
-              <div key={i} className="rounded-md bg-sky-500/5 border border-sky-500/15 px-2.5 py-1.5">
-                <p className="text-[9px] font-medium uppercase tracking-wider text-sky-400/60">{fb.source}</p>
-                <p className="text-[11px] text-muted-foreground">{fb.summary}</p>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     );
   };
@@ -242,92 +192,90 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
       {/* Contextual guidance */}
       <GuidanceStack placement="act" context={guidanceCtx} />
 
-      {/* All steps — side by side in pairs */}
+      {/* Two mandatory steps — side by side */}
       <div className="grid gap-3 sm:grid-cols-2">
         {renderStep(ACT_STEPS[0])}
         {renderStep(ACT_STEPS[1])}
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {renderStep(ACT_STEPS[2])}
-        {renderStep(ACT_STEPS[3])}
-      </div>
 
-      <div className="my-2 border-t border-amber-500/20" />
+      {/* ── Journey Complete: Roadmap & School unlocked ──────────── */}
+      {growComplete && (
+        <>
+          <div className="my-2 border-t border-emerald-500/20" />
 
-      {/* Journey Complete — subtle inline note */}
-      {getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
-       getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed' && (
-        <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
-          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-          <p className="text-xs text-muted-foreground/60">
-            Journey complete — use your roadmap below to keep building momentum.
-          </p>
-        </div>
+          {/* Completion note */}
+          <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+            <p className="text-xs text-muted-foreground/60">
+              You&apos;ve completed the journey. Your career roadmap and school alignment are below.
+            </p>
+          </div>
+
+          {/* Your Roadmap */}
+          <div className="pt-2 pb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold flex items-center gap-2">
+                <Route className="h-4 w-4 text-amber-500" />
+                Your Career Roadmap
+              </h3>
+              <button
+                onClick={() => setRoadmapFullscreen(true)}
+                className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+              >
+                <Maximize2 className="h-3.5 w-3.5" />
+                Fullscreen
+              </button>
+            </div>
+            <div className="min-h-[400px] rounded-xl border-2 border-amber-500/20 p-4 overflow-hidden">
+              <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+            </div>
+          </div>
+
+          {/* Fullscreen roadmap modal */}
+          {roadmapFullscreen && (
+            <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
+                <h2 className="text-base font-semibold flex items-center gap-2">
+                  <Route className="h-5 w-5 text-amber-500" />
+                  Your Career Roadmap
+                </h2>
+                <button
+                  onClick={() => setRoadmapFullscreen(false)}
+                  className="p-2 rounded-lg hover:bg-muted transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-4">
+                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+              </div>
+            </div>
+          )}
+
+          {/* School & Education */}
+          <div className="shine-border mt-8 rounded-xl border border-teal-500/15 bg-gradient-to-b from-teal-500/[0.04] to-card/30 p-5">
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <div className="p-1.5 rounded-lg bg-teal-500/10">
+                <GraduationCap className="h-4.5 w-4.5 text-teal-500" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">
+                  School & Learning Alignment
+                </h3>
+                {goalTitle && (
+                  <p className="text-[11px] text-muted-foreground/50">
+                    How your education connects to becoming a {goalTitle}
+                  </p>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground/40 leading-relaxed mb-4">
+              Add your school details, subjects, and study program below. We&apos;ll show you how your current education aligns with your career goal and what to focus on next.
+            </p>
+            <SchoolAlignmentTab goalTitle={goalTitle} />
+          </div>
+        </>
       )}
-
-      {/* Your Roadmap — with extra bottom padding to prevent clipping */}
-      <div className="pt-2 pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold flex items-center gap-2">
-            <Route className="h-4 w-4 text-amber-500" />
-            Your Career Roadmap
-          </h3>
-          <button
-            onClick={() => setRoadmapFullscreen(true)}
-            className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-          >
-            <Maximize2 className="h-3.5 w-3.5" />
-            Fullscreen
-          </button>
-        </div>
-        <div className="min-h-[400px] rounded-xl border-2 border-amber-500/20 p-4 overflow-hidden">
-          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-        </div>
-      </div>
-
-      {/* Fullscreen roadmap modal */}
-      {roadmapFullscreen && (
-        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
-            <h2 className="text-base font-semibold flex items-center gap-2">
-              <Route className="h-5 w-5 text-amber-500" />
-              Your Career Roadmap
-            </h2>
-            <button
-              onClick={() => setRoadmapFullscreen(false)}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-auto p-4">
-            <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-          </div>
-        </div>
-      )}
-
-      {/* School & Education — goal-contextual guidance */}
-      <div className="shine-border mt-8 rounded-xl border border-teal-500/15 bg-gradient-to-b from-teal-500/[0.04] to-card/30 p-5">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <div className="p-1.5 rounded-lg bg-teal-500/10">
-            <GraduationCap className="h-4.5 w-4.5 text-teal-500" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-foreground">
-              School & Learning Alignment
-            </h3>
-            {goalTitle && (
-              <p className="text-[11px] text-muted-foreground/50">
-                How your education connects to becoming a {goalTitle}
-              </p>
-            )}
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground/40 leading-relaxed mb-4">
-          Add your school details, subjects, and study program below. We'll show you how your current education aligns with your career goal and what to focus on next.
-        </p>
-        <SchoolAlignmentTab goalTitle={goalTitle} />
-      </div>
     </div>
   );
 }
