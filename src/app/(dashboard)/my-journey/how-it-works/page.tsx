@@ -58,8 +58,8 @@ const STAGES = [
     description:
       'Time to do something real. Complete a meaningful action — a course, a project, an application — then reflect on what you learned. Completing these two steps unlocks your personalised career roadmap and school alignment.',
     steps: [
-      { name: 'Complete Aligned Action', detail: 'Take a real step — a course, project, job application, or volunteering' },
-      { name: 'Reflect on Action', detail: 'Think about what you learned and how it connects to your direction' },
+      { name: 'Complete Real-World Actions', detail: 'Take a real step — a course, project, job application, or volunteering' },
+      { name: 'Reflect on What You\'ve Learned', detail: 'Think about what you learned and how it connects to your direction' },
     ],
     extras: [],
   },

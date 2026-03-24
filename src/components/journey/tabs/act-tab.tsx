@@ -8,7 +8,7 @@
  * they are the reward of finishing the full journey.
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   ArrowRight,
   CheckCircle2,
@@ -17,6 +17,8 @@ import {
   GraduationCap,
   Maximize2,
   Sparkles,
+  Save,
+  Loader2,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -273,8 +275,78 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             </p>
             <SchoolAlignmentTab goalTitle={goalTitle} />
           </div>
+
+          {/* Save Snapshot */}
+          <SaveSnapshotButton goalTitle={goalTitle} journey={journey} />
         </>
       )}
+    </div>
+  );
+}
+
+// ── Save Snapshot Button ────────────────────────────────────────────
+
+function SaveSnapshotButton({ goalTitle, journey }: { goalTitle?: string | null; journey: JourneyUIState }) {
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+
+  const handleSave = useCallback(async () => {
+    if (!goalTitle) return;
+    setSaving(true);
+    try {
+      const goalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      await fetch('/api/journey/goal-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          goalId,
+          goalTitle,
+          journeyState: journey.currentState,
+          journeyCompletedSteps: journey.completedSteps,
+          journeySummary: journey.summary,
+        }),
+      });
+      setSavedAt(new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
+    } catch {
+      // Silent fail
+    } finally {
+      setSaving(false);
+    }
+  }, [goalTitle, journey]);
+
+  return (
+    <div className="mt-4 rounded-xl border border-border/30 bg-card/40 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold text-foreground/70">Save your progress</p>
+          <p className="text-[10px] text-muted-foreground/40 mt-0.5">
+            {savedAt
+              ? `Saved at ${savedAt} today`
+              : `Save a snapshot of your ${goalTitle || 'journey'} progress`}
+          </p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving || !goalTitle}
+          className={cn(
+            'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+            saving
+              ? 'bg-muted/30 text-muted-foreground/30'
+              : savedAt
+                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                : 'bg-teal-600 hover:bg-teal-700 text-white',
+          )}
+        >
+          {saving ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : savedAt ? (
+            <CheckCircle2 className="h-3 w-3" />
+          ) : (
+            <Save className="h-3 w-3" />
+          )}
+          {saving ? 'Saving...' : savedAt ? 'Saved' : 'Save snapshot'}
+        </button>
+      </div>
     </div>
   );
 }
