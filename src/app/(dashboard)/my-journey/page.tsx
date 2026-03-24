@@ -438,7 +438,6 @@ export default function MyJourneyPage() {
   }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
 
   // Auto-switch to the appropriate tab based on progress + inspirational messages
-  const discoverLensComplete = journeyData?.journey?.summary?.lenses?.discover?.isComplete ?? false;
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
   const celebratedRef = useRef<Set<string>>(new Set());
 
@@ -452,18 +451,8 @@ export default function MyJourneyPage() {
           duration: 6000,
         });
       }, 500);
-    } else if (discoverLensComplete && !understandComplete && !celebratedRef.current.has('understand')) {
-      celebratedRef.current.add('understand');
-      // Only show the celebration modal if not previously seen for this goal
-      const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
-      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
-        localStorage.setItem(seenKey, 'true');
-        setShowDiscoverCelebration(true);
-      } else {
-        setActiveTab('understand');
-      }
     }
-  }, [discoverLensComplete, understandComplete]);
+  }, [understandComplete]);
 
   // Gate goal sheet — warn if changing an existing goal
   const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
@@ -514,6 +503,19 @@ export default function MyJourneyPage() {
       }
     }
   }, [discoverComplete, journey, queryClient]);
+
+  // Show celebration modal when Discover is first completed
+  const discoverCelebratedRef = useRef(false);
+  useEffect(() => {
+    if (!discoverCelebratedRef.current && discoverComplete && !understandComplete) {
+      discoverCelebratedRef.current = true;
+      const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
+      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
+        localStorage.setItem(seenKey, 'true');
+        setShowDiscoverCelebration(true);
+      }
+    }
+  }, [discoverComplete, understandComplete, goalTitle]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
