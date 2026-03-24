@@ -254,24 +254,13 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
       <div className="my-2 border-t border-amber-500/20" />
 
-      {/* Journey Complete message — when mandatory Grow steps are done */}
+      {/* Journey Complete — subtle inline note */}
       {getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
        getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed' && (
-        <div
-          className="shine-border rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/10 to-transparent py-10 px-6 text-center"
-          style={{ boxShadow: '0 0 40px rgba(16, 185, 129, 0.15), 0 0 80px rgba(16, 185, 129, 0.08)' }}
-        >
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 mx-auto mb-4" style={{ boxShadow: '0 0 30px rgba(16, 185, 129, 0.3)' }}>
-            <CheckCircle2 className="h-8 w-8" />
-          </div>
-          <h2 className="text-xl font-bold text-emerald-400 mb-2">
-            You&apos;ve come a long way.
-          </h2>
-          <p className="text-sm text-muted-foreground/70 max-w-md mx-auto">
-            You&apos;ve reflected, researched, and taken real action. That takes courage and effort — and it&apos;s just the beginning.
-          </p>
-          <p className="text-sm text-muted-foreground/50 mt-2 max-w-md mx-auto">
-            Use your Career Roadmap below to keep building momentum, or explore a new direction whenever you&apos;re ready.
+        <div className="flex items-center gap-2.5 rounded-lg border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
+          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+          <p className="text-xs text-muted-foreground/60">
+            Journey complete — use your roadmap below to keep building momentum.
           </p>
         </div>
       )}
