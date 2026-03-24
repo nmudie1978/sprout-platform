@@ -99,12 +99,12 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
         key={config.id}
         className={cn(
           'rounded-xl border p-3 transition-all',
-          isCurrent && 'border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20',
-          isComplete && 'border-sky-500/20 bg-card/60',
+          isCurrent && 'border-teal-500/40 bg-teal-500/5 ring-1 ring-teal-500/20',
+          isComplete && 'border-border/40 bg-card/60',
           isEffectivelyLocked && 'border-border/30 opacity-40',
         )}
         style={isCurrent ? {
-          boxShadow: '0 0 15px rgba(245, 158, 11, 0.15)',
+          boxShadow: '0 0 15px rgba(20, 184, 166, 0.12)',
         } : undefined}
       >
         <div className="flex items-center gap-2.5">
@@ -112,7 +112,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             className={cn(
               'flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold shrink-0',
               isComplete && 'bg-emerald-500/20 text-emerald-500',
-              isCurrent && 'bg-amber-500/20 text-amber-500',
+              isCurrent && 'bg-teal-500/20 text-teal-500',
               isEffectivelyLocked && 'bg-muted text-muted-foreground/50',
             )}
           >
@@ -131,7 +131,7 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
             )}
           </div>
           {isCurrent && onStartStep && (
-            <Button size="sm" className="h-7 text-[11px] px-3 bg-amber-600 hover:bg-amber-700 shrink-0" onClick={() => onStartStep(config.id)}>
+            <Button size="sm" className="h-7 text-[11px] px-3 bg-teal-600 hover:bg-teal-700 shrink-0" onClick={() => onStartStep(config.id)}>
               Start <ArrowRight className="h-3 w-3 ml-1" />
             </Button>
           )}
