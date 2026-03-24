@@ -71,21 +71,25 @@ function LibraryCard({
   total: number;
 }) {
   const [view, setView] = useState<'list' | 'grid'>('list');
+  const [libPage, setLibPage] = useState(0);
+  const PAGE_SIZE = view === 'list' ? 5 : 6;
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const page = Math.min(libPage, totalPages - 1);
+  const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
-    <GlassCard className="p-4">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <BookmarkCheck className="h-4 w-4 text-blue-500" />
-          <h3 className="text-sm font-semibold">My Library</h3>
-          {total > 0 && (
-            <span className="text-[10px] text-muted-foreground/40">{total}</span>
-          )}
-        </div>
+    <GlassCard className="p-3">
+      <div className="flex items-center gap-2 mb-2">
+        <BookmarkCheck className="h-3.5 w-3.5 text-blue-500" />
+        <h3 className="text-xs font-semibold">My Library</h3>
+        {total > 0 && (
+          <span className="text-[10px] text-muted-foreground/40">{total}</span>
+        )}
+        <span className="flex-1" />
         {items.length > 0 && (
           <div className="flex items-center gap-0.5 rounded-md bg-muted/30 p-0.5">
             <button
-              onClick={() => setView('list')}
+              onClick={() => { setView('list'); setLibPage(0); }}
               className={cn(
                 'p-1 rounded transition-colors',
                 view === 'list' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
@@ -95,7 +99,7 @@ function LibraryCard({
               <FileText className="h-3 w-3" />
             </button>
             <button
-              onClick={() => setView('grid')}
+              onClick={() => { setView('grid'); setLibPage(0); }}
               className={cn(
                 'p-1 rounded transition-colors',
                 view === 'grid' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
@@ -106,12 +110,31 @@ function LibraryCard({
             </button>
           </div>
         )}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1 ml-1">
+            <button
+              onClick={() => setLibPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+            >
+              <ChevronLeft className="h-3 w-3" />
+            </button>
+            <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+            <button
+              onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page >= totalPages - 1}
+              className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+            >
+              <ChevronRight className="h-3 w-3" />
+            </button>
+          </div>
+        )}
       </div>
 
       {items.length > 0 ? (
         view === 'list' ? (
-          <div className="space-y-2">
-            {items.slice(0, 5).map((item, i) => (
+          <div className="space-y-1.5">
+            {pageItems.map((item, i) => (
               <a
                 key={i}
                 href={item.url}
@@ -134,7 +157,7 @@ function LibraryCard({
         ) : (
           /* Grid view — compact thumbnails */
           <div className="grid grid-cols-3 gap-1.5">
-            {items.slice(0, 6).map((item, i) => (
+            {pageItems.map((item, i) => (
               <a
                 key={i}
                 href={item.url}
