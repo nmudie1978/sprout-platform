@@ -148,42 +148,43 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
           className="absolute"
           style={{ left: 12, top: HIGH_Y - 16 }}
         >
-          <div className="w-[160px] rounded-xl border border-dashed border-teal-500/25 bg-teal-500/[0.04] p-3 backdrop-blur-sm">
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-sm">🎓</span>
-              <span className="text-[10px] font-medium text-teal-500/70 uppercase tracking-wider">
-                Your foundation
+          <div className="w-[160px] rounded-xl border border-border/30 bg-card/60 p-3 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="text-xs">🎓</span>
+              <span className="text-[9px] font-semibold text-teal-500/60 uppercase tracking-wider">
+                Your Foundation
               </span>
             </div>
             {eduContext ? (
-              <>
-                <p className="text-xs font-medium text-foreground/80">
-                  {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+              <div className="space-y-1.5">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xs font-semibold text-foreground/80">
+                    {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+                  </span>
                   {eduContext.ageBand && (
-                    <span className="text-muted-foreground/50 font-normal"> ({eduContext.ageBand})</span>
+                    <span className="text-[9px] text-muted-foreground/40">Age {eduContext.ageBand}</span>
                   )}
-                </p>
-                {eduContext.schoolName && (
-                  <p className="text-[10px] text-muted-foreground/50 mt-0.5">{eduContext.schoolName}</p>
-                )}
-                {eduContext.studyProgram && (
-                  <p className="text-[10px] text-muted-foreground/40">{eduContext.studyProgram}</p>
+                </div>
+                {(eduContext.schoolName || eduContext.studyProgram) && (
+                  <p className="text-[9px] text-muted-foreground/40 leading-snug">
+                    {[eduContext.schoolName, eduContext.studyProgram].filter(Boolean).join(' · ')}
+                  </p>
                 )}
                 {eduContext.currentSubjects.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-1.5">
+                  <div className="flex flex-wrap gap-0.5">
                     {eduContext.currentSubjects.map((s) => (
-                      <span key={s} className="inline-flex rounded-full px-1.5 py-0.5 text-[8px] font-medium bg-teal-500/10 text-teal-500/80">
+                      <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-teal-500/8 text-teal-500/70">
                         {s}
                       </span>
                     ))}
                   </div>
                 )}
                 {eduContext.expectedCompletion && (
-                  <p className="text-[9px] text-muted-foreground/30 mt-1.5">Finishing {eduContext.expectedCompletion}</p>
+                  <p className="text-[8px] text-muted-foreground/25">Finishing {eduContext.expectedCompletion}</p>
                 )}
-              </>
+              </div>
             ) : (
-              <p className="text-[10px] text-muted-foreground/40 leading-snug">
+              <p className="text-[9px] text-muted-foreground/35 leading-snug">
                 Where you are today
               </p>
             )}
