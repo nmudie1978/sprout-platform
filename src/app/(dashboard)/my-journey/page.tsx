@@ -648,47 +648,11 @@ export default function MyJourneyPage() {
         onClose={() => setGoalSheetOpen(false)}
         primaryGoal={primaryGoal}
         secondaryGoal={secondaryGoal}
-        onSuccess={async () => {
-          // Save current goal's progress before switching
-          if (goalTitle) {
-            const currentGoalId = goalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            try {
-              await fetch('/api/journey/goal-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  goalId: currentGoalId,
-                  goalTitle,
-                  journeyState: journey.currentState,
-                  journeyCompletedSteps: journey.completedSteps,
-                  journeySummary: journey.summary,
-                }),
-              });
-            } catch {
-              // Non-blocking
-            }
-          }
-
+        onSuccess={() => {
+          // Goals API already handles: save old goal → reset → restore new goal
+          // Just close sheet, reset tab, and refresh data
           setGoalSheetOpen(false);
-
-          // Reset journey so the new goal starts clean
-          try {
-            await fetch('/api/journey/reset', { method: 'POST' });
-          } catch {
-            // Non-blocking
-          }
-
-          // Try to restore saved progress for the new goal
-          try {
-            await fetch('/api/journey/goal-data/migrate', { method: 'POST' });
-          } catch {
-            // Non-blocking — new goal just starts fresh
-          }
-
-          // Reset tab to Discover
           setActiveTab('discover');
-
-          // Refresh journey state
           queryClient.invalidateQueries({ queryKey: ['journey-state'] });
           queryClient.invalidateQueries({ queryKey: ['my-goals'] });
         }}
