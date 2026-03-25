@@ -150,10 +150,9 @@ function EducationEditor({
           <input
             type="text"
             value={ageBand}
-            onChange={(e) => setAgeBand(e.target.value)}
-            placeholder="e.g. 17"
-            className={cn(smallInput, 'w-full')}
-            maxLength={10}
+            readOnly
+            className={cn(smallInput, 'w-full opacity-60 cursor-not-allowed')}
+            tabIndex={-1}
           />
         </div>
         <div>
@@ -310,6 +309,95 @@ function NextDecisionsEditor({
   );
 }
 
+// ── Editable Focus Areas ─────────────────────────────────────────────
+
+function FocusAreasEditor({
+  initial,
+  onChange,
+}: {
+  initial: string[];
+  onChange: (areas: string[]) => void;
+}) {
+  const [items, setItems] = useState<string[]>(initial);
+  const [input, setInput] = useState('');
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  const addItem = useCallback(() => {
+    const trimmed = input.trim();
+    if (trimmed && items.length < 10) {
+      const next = [...items, trimmed];
+      setItems(next);
+      onChange(next);
+    }
+    setInput('');
+  }, [input, items, onChange]);
+
+  const removeItem = useCallback((idx: number) => {
+    const next = items.filter((_, i) => i !== idx);
+    setItems(next);
+    onChange(next);
+  }, [items, onChange]);
+
+  const saveEdit = useCallback((idx: number) => {
+    const trimmed = editValue.trim();
+    if (trimmed) {
+      const next = [...items];
+      next[idx] = trimmed;
+      setItems(next);
+      onChange(next);
+    }
+    setEditingIdx(null);
+    setEditValue('');
+  }, [editValue, items, onChange]);
+
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-start gap-2 group">
+          <span className="h-1 w-1 rounded-full bg-blue-400/50 mt-1.5 shrink-0" />
+          {editingIdx === i ? (
+            <div className="flex-1 flex gap-1.5">
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); saveEdit(i); } if (e.key === 'Escape') { setEditingIdx(null); } }}
+                className="flex-1 rounded border border-input bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+                autoFocus
+              />
+              <button onClick={() => saveEdit(i)} className="text-emerald-500 hover:text-emerald-400"><Check className="h-3 w-3" /></button>
+              <button onClick={() => setEditingIdx(null)} className="text-muted-foreground/40 hover:text-muted-foreground"><X className="h-3 w-3" /></button>
+            </div>
+          ) : (
+            <>
+              <span className="flex-1 text-xs text-muted-foreground/60">{item}</span>
+              <div className="hidden group-hover:flex items-center gap-1">
+                <button onClick={() => { setEditingIdx(i); setEditValue(item); }} className="text-muted-foreground/30 hover:text-muted-foreground"><Pencil className="h-3 w-3" /></button>
+                <button onClick={() => removeItem(i)} className="text-muted-foreground/30 hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
+              </div>
+            </>
+          )}
+        </div>
+      ))}
+      <div className="flex gap-1.5 mt-1">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } }}
+          placeholder="Add an area to strengthen..."
+          className="flex-1 rounded border border-dashed border-border/30 bg-transparent px-2 py-1 text-xs placeholder:text-muted-foreground/30 focus:outline-none focus:border-blue-500/30"
+          maxLength={120}
+        />
+        {input.trim() && (
+          <button onClick={addItem} className="text-blue-400 hover:text-blue-300"><Plus className="h-3 w-3" /></button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Component ───────────────────────────────────────────────────
 
 export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
@@ -384,7 +472,8 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
     ? calculateSubjectAlignment(eduContext.currentSubjects, goalTitle)
     : null;
 
-  // Local next decisions state (starts from mapping defaults, user can edit)
+  // Local editable state (starts from mapping defaults, user can edit)
+  const [customFocusAreas, setCustomFocusAreas] = useState<string[] | null>(null);
   const [customDecisions, setCustomDecisions] = useState<string[] | null>(null);
   const decisions = customDecisions ?? mapping?.nextDecisions ?? [];
 
@@ -557,20 +646,16 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       {/* ── Row 2: What to strengthen + Next decisions (side by side) ── */}
       {mapping && (
         <div className="grid gap-3 sm:grid-cols-2">
-          {/* What to strengthen */}
+          {/* What to strengthen — editable */}
           <div className="rounded-lg border border-border/60 bg-card/50 p-4">
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="h-4 w-4 text-blue-400" />
               <h4 className="text-xs font-semibold">What to strengthen</h4>
             </div>
-            <div className="space-y-1.5">
-              {mapping.focusAreas.map((area) => (
-                <div key={area} className="flex items-start gap-2 text-xs text-muted-foreground/60">
-                  <span className="h-1 w-1 rounded-full bg-blue-400/50 mt-1.5 shrink-0" />
-                  {area}
-                </div>
-              ))}
-            </div>
+            <FocusAreasEditor
+              initial={customFocusAreas ?? mapping.focusAreas}
+              onChange={(areas) => setCustomFocusAreas(areas)}
+            />
           </div>
 
           {/* Next decisions — editable */}

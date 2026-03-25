@@ -830,11 +830,11 @@ export default function ProfilePage() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-lg border border-dashed border-primary/20 p-6 text-center">
-                <Target className="h-8 w-8 mx-auto text-primary/30 mb-2" />
+              <div className="rounded-lg border border-dashed border-emerald-500/20 p-6 flex flex-col items-center text-center">
+                <Target className="h-8 w-8 text-emerald-500/30 mb-2" />
                 <p className="text-sm font-medium text-muted-foreground">No career goal set yet</p>
                 <p className="text-xs text-muted-foreground/60 mt-1">
-                  Setting a goal powers your entire journey — research, roadmap, and action planning
+                  Your goal powers <span className="text-emerald-500/70 font-medium">My Journey</span> — it shapes your research, roadmap, and action plan
                 </p>
               </div>
             )}
@@ -1029,68 +1029,29 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Date of Birth */}
+              {/* Date of Birth — read-only, set at signup */}
               <div>
-                <Label className="text-xs font-medium text-muted-foreground/70 flex items-center gap-1">
-                  Date of Birth <span className="text-amber-500">*</span>
-                  {profile?.user?.authProvider === "VIPPS" && (
-                    <Badge className="ml-1 bg-[#ff5b24]/10 text-[#ff5b24] border-[#ff5b24]/20 text-[8px] px-1 py-0">
-                      Vipps verified
-                    </Badge>
-                  )}
-                  {profile?.user?.dateOfBirth && (
-                    <span className="text-[10px] text-muted-foreground/40 ml-auto font-normal">
+                <Label className="text-xs font-medium text-muted-foreground/70">
+                  Date of Birth
+                </Label>
+                {profile?.user?.dateOfBirth ? (
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="text-sm text-foreground/70">
+                      {new Date(profile.user.dateOfBirth).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                    <span className="text-[10px] text-muted-foreground/40">
                       {(() => {
                         const dob = new Date(profile.user.dateOfBirth);
                         const today = new Date();
                         let age = today.getFullYear() - dob.getFullYear();
-                        const monthDiff = today.getMonth() - dob.getMonth();
-                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) age--;
-                        return `${age} yrs`;
+                        const m = today.getMonth() - dob.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                        return `${age} years old`;
                       })()}
                     </span>
-                  )}
-                </Label>
-                <div className="grid grid-cols-3 gap-2 mt-1">
-                  <Select value={dobDay} onValueChange={setDobDay} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
-                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Day" /></SelectTrigger>
-                    <SelectContent className="max-h-[200px]">
-                      {Array.from({ length: getDaysInMonth(dobMonth, dobYear) }, (_, i) => i + 1).map((d) => (
-                        <SelectItem key={d} value={d.toString()}>{d}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={dobMonth} onValueChange={setDobMonth} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
-                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Month" /></SelectTrigger>
-                    <SelectContent className="max-h-[200px]">
-                      {DOB_MONTHS.map((m) => (
-                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Select value={dobYear} onValueChange={setDobYear} disabled={updateDateOfBirthMutation.isPending || profile?.user?.authProvider === "VIPPS"}>
-                    <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Year" /></SelectTrigger>
-                    <SelectContent className="max-h-[200px]">
-                      {DOB_YEARS.map((y) => (
-                        <SelectItem key={y} value={y.toString()}>{y}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {dobDay && dobMonth && dobYear && profile?.user?.authProvider !== "VIPPS" && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      const dateString = `${dobYear}-${dobMonth}-${dobDay.padStart(2, "0")}`;
-                      updateDateOfBirthMutation.mutate(dateString);
-                    }}
-                    disabled={updateDateOfBirthMutation.isPending}
-                    className="h-7 text-xs mt-2"
-                  >
-                    {updateDateOfBirthMutation.isPending ? "Saving..." : "Save Date of Birth"}
-                  </Button>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground/40 mt-1">Not set</p>
                 )}
               </div>
 
