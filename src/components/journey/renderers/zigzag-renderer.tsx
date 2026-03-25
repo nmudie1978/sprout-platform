@@ -161,16 +161,16 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                   {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
                 </p>
                 {eduContext.ageBand && (
-                  <p className="text-[9px] text-muted-foreground/40">Age {eduContext.ageBand}</p>
+                  <p className="text-[10px] text-muted-foreground/70">Age {eduContext.ageBand}</p>
                 )}
                 {eduContext.schoolName && (
-                  <p className="text-[9px] text-muted-foreground/40">{eduContext.schoolName}</p>
+                  <p className="text-[10px] text-muted-foreground/70">{eduContext.schoolName}</p>
                 )}
                 {eduContext.studyProgram && (
-                  <p className="text-[9px] text-muted-foreground/40">{eduContext.studyProgram}</p>
+                  <p className="text-[10px] text-muted-foreground/70">{eduContext.studyProgram}</p>
                 )}
                 {eduContext.expectedCompletion && (
-                  <p className="text-[9px] text-muted-foreground/40">Finishing {eduContext.expectedCompletion}</p>
+                  <p className="text-[10px] text-muted-foreground/70">Finishing {eduContext.expectedCompletion}</p>
                 )}
                 {eduContext.currentSubjects.length > 0 && (
                   <div className="flex flex-wrap gap-0.5 mt-0.5">
