@@ -67,6 +67,22 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Also sync discoverReflections to the active goal's snapshot so it
+    // survives goal switches without requiring a full step re-completion.
+    const activeGoal = await prisma.journeyGoalData.findFirst({
+      where: { userId: session.user.id, isActive: true },
+      select: { goalId: true, journeySummary: true },
+    });
+    if (activeGoal) {
+      const goalSummary = (activeGoal.journeySummary as Record<string, unknown>) || {};
+      await prisma.journeyGoalData.update({
+        where: { userId_goalId: { userId: session.user.id, goalId: activeGoal.goalId } },
+        data: {
+          journeySummary: JSON.parse(JSON.stringify({ ...goalSummary, discoverReflections })),
+        },
+      }).catch(() => {}); // Non-blocking
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Failed to save discover reflections:', error);

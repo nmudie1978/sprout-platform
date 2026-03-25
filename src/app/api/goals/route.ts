@@ -169,6 +169,7 @@ export async function PUT(request: Request) {
               journeySummary: {
                 strengths: existingSummary.strengths || [],
                 careerInterests: existingSummary.careerInterests || [],
+                discoverReflections: existingSummary.discoverReflections || undefined,
               },
               journeyLastUpdated: new Date(),
             };

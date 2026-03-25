@@ -442,13 +442,22 @@ export default function MyJourneyPage() {
       const previous = queryClient.getQueryData<{ success: boolean; journey: JourneyUIState }>(['journey-state']);
 
       if (previous?.journey) {
+        // Find the next step in sequence so we can mark it as 'next'
+        const currentOrder = JOURNEY_STATE_CONFIG[stepId]?.order ?? -1;
+        const nextStep = previous.journey.steps.find(
+          (s) => (JOURNEY_STATE_CONFIG[s.id as JourneyStateId]?.order ?? -1) === currentOrder + 1
+        );
+
         queryClient.setQueryData(['journey-state'], {
           ...previous,
           journey: {
             ...previous.journey,
-            steps: previous.journey.steps.map((s) =>
-              s.id === stepId ? { ...s, status: 'completed' as const } : s
-            ),
+            currentState: nextStep?.id ?? previous.journey.currentState,
+            steps: previous.journey.steps.map((s) => {
+              if (s.id === stepId) return { ...s, status: 'completed' as const };
+              if (nextStep && s.id === nextStep.id) return { ...s, status: 'next' as const };
+              return s;
+            }),
             completedSteps: [...previous.journey.completedSteps, stepId],
           },
         });
