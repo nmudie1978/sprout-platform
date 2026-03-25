@@ -488,7 +488,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/profile");
       if (!res.ok) return null;
       const d = await res.json();
-      return d.profile || null;
+      return d || null;
     },
     enabled: session?.user.role === "YOUTH",
     staleTime: 5 * 60 * 1000,

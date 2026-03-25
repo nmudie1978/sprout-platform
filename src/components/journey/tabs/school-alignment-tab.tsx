@@ -323,7 +323,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       const res = await fetch('/api/profile');
       if (!res.ok) return null;
       const d = await res.json();
-      const dob = d.profile?.user?.dateOfBirth;
+      const dob = d?.user?.dateOfBirth;
       if (!dob) return null;
       const birth = new Date(dob);
       const now = new Date();
