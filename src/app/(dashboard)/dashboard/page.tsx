@@ -441,6 +441,7 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["my-goals"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
     },
   });
 

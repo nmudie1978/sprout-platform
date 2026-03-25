@@ -726,6 +726,8 @@ export default function GoalsPageContent() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       setEditingSlot(null);
       setPrimaryEditForm(null);
       setSecondaryEditForm(null);

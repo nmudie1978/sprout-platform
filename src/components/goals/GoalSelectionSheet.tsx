@@ -105,6 +105,8 @@ export function GoalSelectionSheet({
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       onSuccess?.(slot);
       onClose();
     },

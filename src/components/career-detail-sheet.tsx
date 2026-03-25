@@ -316,10 +316,12 @@ export function CareerDetailSheet({
         slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
         { description: "View and customise your goals on the Goals page." }
       );
-      // Invalidate goals query
+      // Invalidate goals + journey state so UI reflects the reset
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
     },
     onError: () => {
       toast.error("Failed to set goal", {
