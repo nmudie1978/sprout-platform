@@ -59,7 +59,7 @@ function IndustryBar({
 
       {/* Bar container */}
       <div className="flex-1 flex items-center gap-2">
-        <div className="flex-1 h-5 bg-muted/50 rounded-sm overflow-hidden">
+        <div className="flex-1 h-5 bg-foreground/10 rounded-sm overflow-hidden">
           <div
             className={`h-full rounded-sm ${category.color || "bg-primary"}`}
             style={{ width: `${widthPercent}%` }}

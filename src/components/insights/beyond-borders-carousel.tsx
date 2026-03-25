@@ -37,6 +37,7 @@ import {
   Clock,
   MapPin,
   ArrowRight,
+  ExternalLink,
 } from "lucide-react";
 import { useTranslateContent } from "@/hooks/use-translate-content";
 import { Button } from "@/components/ui/button";
@@ -111,7 +112,7 @@ export function BeyondBordersCarousel() {
         body: JSON.stringify({
           type: "ARTICLE",
           title: article.title,
-          url: `/insights/beyond-borders/${article.slug}`,
+          url: `${window.location.origin}/insights/beyond-borders/${article.slug}`,
           source: "Endeavrly",
           description: article.subtitle,
         }),
@@ -417,6 +418,18 @@ function SmallStepsSection({ getText }: SmallStepsSectionProps) {
                         <p className="text-[11px] italic text-muted-foreground mt-1.5">
                           {step.reassurance}
                         </p>
+                        {step.link && (
+                          <a
+                            href={step.link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1 text-[11px] text-teal-500 hover:text-teal-400 transition-colors mt-2"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            {step.link.label}
+                          </a>
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>

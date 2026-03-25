@@ -529,7 +529,6 @@ export default function MyJourneyPage() {
     if (prevGoalRef.current !== null && prevGoalRef.current !== currentGoal) {
       // Goal changed — reset ALL celebration state to prevent stale popups
       celebratedRef.current = new Set();
-      discoverAdvanceDone.current = false;
       setShowDiscoverCelebration(false);
       setShowUnderstandCelebration(false);
       setActiveTab('discover');
@@ -573,12 +572,12 @@ export default function MyJourneyPage() {
     if (understandOrActStates.includes(journey.currentState)) return true;
 
     const r = reflectionsData?.discoverReflections;
+    // Only the 3 chip-based reflections are required for Discover completion.
+    // Role Models and What You've Tried are optional.
     const reflectionsDone = r
       ? (r.motivations?.length ?? 0) > 0 &&
         (r.workStyle?.length ?? 0) > 0 &&
-        (r.growthAreas?.length ?? 0) > 0 &&
-        (r.roleModels?.trim().length ?? 0) > 0 &&
-        (r.experiences?.trim().length ?? 0) > 0
+        (r.growthAreas?.length ?? 0) > 0
       : false;
 
     const steps = journey.steps || [];
@@ -599,16 +598,11 @@ export default function MyJourneyPage() {
     return !!(actionDone && reflectionDone);
   }, [journey.steps]);
 
-  // Understand celebration — fires when Understand is complete
-  // Guard: only fire when journey data is not from a DIFFERENT goal (stale cache).
-  // Allow if journey has no goal title set (it may not be stored in summary yet).
-  const journeyGoalTitle = journeyData?.journey?.summary?.primaryGoal?.title ?? null;
-  const journeyMatchesGoal = !journeyGoalTitle || !goalTitle || journeyGoalTitle === goalTitle;
-
+  // Understand celebration — only fires on the TRANSITION to complete (not on load/revisit)
+  const prevUnderstandComplete = useRef(understandComplete);
   useEffect(() => {
-    if (journeyLoading) return;
-    if (!journeyMatchesGoal) return; // Don't fire from stale/mismatched journey data
-    if (understandComplete && goalTitle && !celebratedRef.current.has('understand')) {
+    // Only trigger when understandComplete changes from false → true
+    if (understandComplete && !prevUnderstandComplete.current && goalTitle) {
       celebratedRef.current.add('understand');
       const seenKey = `understand-celebrated-${goalTitle}`;
       if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
@@ -618,43 +612,37 @@ export default function MyJourneyPage() {
         setActiveTab('act');
       }
     }
-  }, [understandComplete, goalTitle, journeyMatchesGoal, journeyLoading]);
+    prevUnderstandComplete.current = understandComplete;
+  }, [understandComplete, goalTitle]);
 
   // When Discover is complete: show celebration (once), then advance on continue.
-  const discoverAdvanceDone = useRef(false);
+  // Only fires on the TRANSITION to complete (not on load/revisit/goal switch)
+  const prevDiscoverComplete = useRef(discoverComplete);
+  useEffect(() => {
+    if (!discoverComplete || prevDiscoverComplete.current) {
+      prevDiscoverComplete.current = discoverComplete;
+      return;
+    }
+    prevDiscoverComplete.current = discoverComplete;
 
-  // Reset discover advance ref when goal changes
-  useEffect(() => {
-    discoverAdvanceDone.current = false;
-  }, [primaryGoal?.title]);
-  useEffect(() => {
-    if (journeyLoading) return; // Skip while data is refreshing after goal switch
-    if (!journeyMatchesGoal) return; // Don't fire from stale/mismatched journey data
-    if (discoverAdvanceDone.current || !discoverComplete) return;
     const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
     const stateIsStuck = journey && discoverStates.includes(journey.currentState);
 
     // Only show celebration or advance if the state machine is actually stuck in Discover.
-    // If user is already in Understand/Grow, do nothing — they've already moved past this.
-    if (!stateIsStuck) {
-      discoverAdvanceDone.current = true;
-      return;
-    }
+    if (!stateIsStuck) return;
 
     const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
     const alreadySeen = typeof window !== 'undefined' && localStorage.getItem(seenKey);
 
     if (!alreadySeen) {
-      discoverAdvanceDone.current = true;
       localStorage.setItem(seenKey, 'true');
       setShowDiscoverCelebration(true);
     } else {
-      discoverAdvanceDone.current = true;
       fetch('/api/journey/advance-to-understand', { method: 'POST' })
         .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
         .catch(() => {});
     }
-  }, [discoverComplete, journey, goalTitle, journeyMatchesGoal, journeyLoading, queryClient]);
+  }, [discoverComplete, journey, goalTitle, queryClient]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
@@ -830,6 +818,7 @@ export default function MyJourneyPage() {
           context={{
             completedJobs: journey.summary.alignedActionsCount,
             savedCareers: journey.summary.careerInterests,
+            goalTitle,
             profile: undefined,
             summary: journey.summary as unknown as Record<string, unknown>,
           }}

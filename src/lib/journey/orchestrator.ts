@@ -93,15 +93,16 @@ export class JourneyOrchestrator {
           experiences?: string;
         } | undefined;
 
+        // Only the 3 chip-based reflections are required (motivations, workStyle, growthAreas).
+        // Role Models and What You've Tried are optional bonus reflections.
         const reflectionsFilled = reflections
           ? [
               (reflections.motivations?.length ?? 0) > 0,
               (reflections.workStyle?.length ?? 0) > 0,
               (reflections.growthAreas?.length ?? 0) > 0,
-              (reflections.roleModels?.trim().length ?? 0) > 0,
-              (reflections.experiences?.trim().length ?? 0) > 0,
             ].filter(Boolean).length
           : 0;
+        const requiredReflections = 3;
 
         // When goal is set, ROLE_DEEP_DIVE is hidden — exclude from count
         const hasGoal = this.context.primaryGoalSelected;
@@ -112,8 +113,8 @@ export class JourneyOrchestrator {
           ? progress.completedStates.filter((s) => s !== 'ROLE_DEEP_DIVE').length
           : progress.completedStates.length;
 
-        // Total items: mandatory steps + 5 reflection cards
-        const totalSteps = mandatoryStepCount + 5;
+        // Total items: mandatory steps + 3 required reflection cards
+        const totalSteps = mandatoryStepCount + requiredReflections;
         const completedTotal = completedStepCount + reflectionsFilled;
         finalProgress = Math.round((completedTotal / totalSteps) * 100);
         isComplete = completedTotal >= totalSteps;
@@ -751,10 +752,7 @@ export function validateStepCompletionData(
       if (data.plan.shortTermActions.length < 2) {
         return { valid: false, error: 'At least 2 short-term actions are required' };
       }
-      if (!data.plan.midTermMilestone) {
-        return { valid: false, error: 'Mid-term milestone is required' };
-      }
-      if (!data.plan.skillToBuild) {
+if (!data.plan.skillToBuild) {
         return { valid: false, error: 'Skill to build is required' };
       }
       break;

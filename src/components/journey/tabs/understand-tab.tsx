@@ -52,7 +52,7 @@ const UNDERSTAND_STEPS = [
   {
     id: 'CREATE_ACTION_PLAN',
     stepNumber: 3,
-    title: 'Validate Your Understanding',
+    title: 'Validate Your Understanding of the Role',
     description: 'Write down a few actions you could take based on what you\'ve learned.',
   },
 ];

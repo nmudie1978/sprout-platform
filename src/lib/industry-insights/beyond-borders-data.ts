@@ -48,6 +48,7 @@ export interface SmallStep {
   description: string;
   reassurance: string;
   icon: "plane" | "laptop" | "globe" | "heart" | "users";
+  link?: { url: string; label: string };
 }
 
 // ============================================
@@ -169,6 +170,7 @@ export const SMALL_STEPS: SmallStep[] = [
     reassurance:
       "This can be months or years away — or never. It's just one option among many.",
     icon: "plane",
+    link: { url: "https://erasmus-plus.ec.europa.eu/", label: "Erasmus+ Programme" },
   },
   {
     id: "ss-2",
@@ -178,6 +180,7 @@ export const SMALL_STEPS: SmallStep[] = [
     reassurance:
       "A few weeks in another country doesn't have to be life-changing. It can just be interesting.",
     icon: "globe",
+    link: { url: "https://www.norden.org/en/info-norden", label: "Info Norden" },
   },
   {
     id: "ss-3",
@@ -187,6 +190,7 @@ export const SMALL_STEPS: SmallStep[] = [
     reassurance:
       "You don't need to be an expert to apply. Most internships are designed for people who are still learning.",
     icon: "laptop",
+    link: { url: "https://www.internshala.com/internships/work-from-home-internships", label: "Find remote internships" },
   },
   {
     id: "ss-4",
@@ -196,6 +200,7 @@ export const SMALL_STEPS: SmallStep[] = [
     reassurance:
       "Volunteering doesn't have to be a long-term commitment. Even a few hours can give you perspective.",
     icon: "heart",
+    link: { url: "https://www.unv.org/", label: "UN Volunteers" },
   },
   {
     id: "ss-5",
@@ -205,6 +210,7 @@ export const SMALL_STEPS: SmallStep[] = [
     reassurance:
       "Lurking is fine. You don't have to contribute on day one — or ever, if you prefer to observe.",
     icon: "users",
+    link: { url: "https://github.com/explore", label: "GitHub Explore" },
   },
 ];
 

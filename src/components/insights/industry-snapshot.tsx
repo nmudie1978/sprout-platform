@@ -222,7 +222,7 @@ function getIndustryFromGoal(goalTitle: string): string {
 function MiniBarChart({ value, max, color }: { value: number; max: number; color: string }) {
   const percentage = (value / max) * 100;
   return (
-    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+    <div className="h-1.5 w-full bg-foreground/10 rounded-full overflow-hidden">
       <div
         className={`h-full rounded-full bg-gradient-to-r ${color}`}
         style={{ width: `${percentage}%` }}

@@ -102,7 +102,7 @@ export function BeyondBordersSection() {
         body: JSON.stringify({
           type: "ARTICLE",
           title: article.title,
-          url: `/insights/beyond-borders/${article.slug}`,
+          url: `${window.location.origin}/insights/beyond-borders/${article.slug}`,
           source: "Endeavrly",
           description: article.subtitle,
         }),

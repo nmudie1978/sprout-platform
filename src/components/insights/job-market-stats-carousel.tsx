@@ -213,7 +213,7 @@ function BarListRenderer({ items }: { items: BarItem[] }) {
               </span>
             </div>
             <div className="flex-1 flex items-center gap-1.5">
-              <div className="flex-1 h-3.5 bg-muted/50 rounded-sm overflow-hidden">
+              <div className="flex-1 h-3.5 bg-foreground/10 rounded-sm overflow-hidden">
                 <div
                   className={`h-full rounded-sm transition-all duration-300 ${item.color || "bg-primary"}`}
                   style={{ width: `${widthPercent}%` }}

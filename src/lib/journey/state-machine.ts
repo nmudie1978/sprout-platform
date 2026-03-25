@@ -86,7 +86,7 @@ export const JOURNEY_STATE_DEFINITIONS: Record<JourneyStateId, JourneyStateDefin
   // UNDERSTAND → STRATEGY
   CREATE_ACTION_PLAN: {
     id: 'CREATE_ACTION_PLAN',
-    title: 'Validate Your Understanding',
+    title: 'Validate Your Understanding of the Role',
     description: 'Confirm what you\'ve learned by writing down 3 actions you can take to move forward based on your research',
     order: 5,
     allowedTransitions: ['COMPLETE_ALIGNED_ACTION'],

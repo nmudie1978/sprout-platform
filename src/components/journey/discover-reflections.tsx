@@ -43,12 +43,12 @@ export const EMPTY_REFLECTIONS: DiscoverReflections = {
 
 export function isReflectionsComplete(r: DiscoverReflections | null | undefined): boolean {
   if (!r) return false;
+  // Only the 3 chip-based reflections are required.
+  // Role Models and What You've Tried are optional bonus reflections.
   return (
     r.motivations.length >= 1 &&
     r.workStyle.length >= 1 &&
-    r.growthAreas.length >= 1 &&
-    r.roleModels.trim().length > 0 &&
-    r.experiences.trim().length > 0
+    r.growthAreas.length >= 1
   );
 }
 
@@ -112,7 +112,7 @@ const CARDS: CardConfig[] = [
   {
     id: 'roleModels',
     title: 'Role Models',
-    description: 'Who do you admire and why?',
+    description: 'Who do you admire and why? (optional)',
     icon: Star,
     type: 'text',
     placeholder: 'e.g. My uncle — he started his own business and always helps people in the community.',
@@ -120,7 +120,7 @@ const CARDS: CardConfig[] = [
   {
     id: 'experiences',
     title: 'What You\'ve Tried',
-    description: 'Any work, volunteering, hobbies, or projects?',
+    description: 'Any work, volunteering, hobbies, or projects? (optional)',
     icon: Briefcase,
     type: 'text',
     placeholder: 'e.g. Helped at a summer camp, built a website for fun, part-time in a shop.',

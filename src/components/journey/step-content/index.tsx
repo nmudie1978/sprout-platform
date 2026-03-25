@@ -15,6 +15,13 @@ import type {
   ExploredRole,
   RolePlan,
 } from '@/lib/journey/types';
+import { getAllCareers, type Career } from '@/lib/career-pathways';
+
+/** Look up career data for pre-populating Understand steps */
+function findCareerByTitle(title: string | null | undefined): Career | null {
+  if (!title) return null;
+  return getAllCareers().find((c) => c.title === title) || null;
+}
 
 // ============================================
 // TYPES
@@ -29,6 +36,7 @@ interface StepContentProps {
   context?: {
     completedJobs: number;
     savedCareers: string[];
+    goalTitle?: string | null;
     profile?: {
       displayName?: string;
       bio?: string;
@@ -530,16 +538,15 @@ function PlanBuildContent({
   const s = context?.summary as Record<string, unknown> | undefined;
   const existingPlan = ((s?.rolePlans as Array<Record<string, unknown>>) || [])[0];
   const existingActions = (existingPlan?.shortTermActions as string[]) || [];
-  const [roleTitle, setRoleTitle] = useState((existingPlan?.roleTitle as string) || '');
+  const roleTitle = context?.goalTitle || (existingPlan?.roleTitle as string) || '';
   const [action1, setAction1] = useState(existingActions[0] || '');
   const [action2, setAction2] = useState(existingActions[1] || '');
-  const [milestone, setMilestone] = useState((existingPlan?.midTermMilestone as string) || '');
   const [skill, setSkill] = useState((existingPlan?.skillToBuild as string) || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    if (!roleTitle.trim() || !action1.trim() || !action2.trim() || !milestone.trim() || !skill.trim()) {
+    if (!action1.trim() || !action2.trim() || !skill.trim()) {
       return;
     }
 
@@ -547,9 +554,9 @@ function PlanBuildContent({
     setError(null);
     try {
       const plan: RolePlan = {
-        roleTitle: roleTitle.trim(),
+        roleTitle: roleTitle,
         shortTermActions: [action1.trim(), action2.trim()],
-        midTermMilestone: milestone.trim(),
+        midTermMilestone: '',
         skillToBuild: skill.trim(),
         createdAt: new Date().toISOString(),
       };
@@ -566,35 +573,30 @@ function PlanBuildContent({
     }
   };
 
-  const isValid = roleTitle.trim() && action1.trim() && action2.trim() && milestone.trim() && skill.trim();
+  const isValid = action1.trim() && action2.trim() && skill.trim();
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-        <div className="flex items-start gap-3">
-          <Info className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-emerald-800">
-            Create an actionable plan to move toward your career goal.
-            Focus on concrete steps you can take.
-          </p>
-        </div>
-      </div>
-
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Target Role <span className="text-red-500">*</span>
+            Skill to Build Next <span className="text-red-500">*</span>
           </label>
           <Input
-            value={roleTitle}
-            onChange={(e) => setRoleTitle(e.target.value)}
-            placeholder="What role are you planning toward?"
-            className="h-11"
+            value={skill}
+            onChange={(e) => setSkill(e.target.value)}
+            placeholder="e.g., Python programming, Public speaking"
           />
+          <p className="text-xs text-muted-foreground mt-1">
+            What skill will help you most as a {roleTitle || 'future professional'}?
+          </p>
         </div>
 
         <div className="rounded-xl border border-border p-4 space-y-4">
-          <h4 className="font-medium text-foreground">Short-term Actions (next 1-3 months)</h4>
+          <div>
+            <h4 className="font-medium text-foreground">Recommended Actions</h4>
+            <p className="text-xs text-muted-foreground mt-0.5">Two things you can do in the next 1-3 months</p>
+          </div>
 
           <div>
             <label className="block text-sm text-muted-foreground mb-1">Action 1 <span className="text-red-500">*</span></label>
@@ -613,28 +615,6 @@ function PlanBuildContent({
               placeholder="e.g., Volunteer at a relevant organisation"
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Mid-term Milestone (3-12 months) <span className="text-red-500">*</span>
-          </label>
-          <Input
-            value={milestone}
-            onChange={(e) => setMilestone(e.target.value)}
-            placeholder="e.g., Get an internship or entry-level position"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-foreground/80 mb-2">
-            Skill to Build Next <span className="text-red-500">*</span>
-          </label>
-          <Input
-            value={skill}
-            onChange={(e) => setSkill(e.target.value)}
-            placeholder="e.g., Python programming, Public speaking"
-          />
         </div>
       </div>
 
@@ -679,10 +659,22 @@ function IndustryInsightsContent({
   context?: StepContentProps['context'];
 }) {
   const s = context?.summary as Record<string, unknown> | undefined;
+  const career = findCareerByTitle(context?.goalTitle);
   const existingRole = (s?.roleRealityNotes as string[]) || [];
   const existingInsights = (s?.industryInsightNotes as string[]) || [];
-  const [roleReality, setRoleReality] = useState(existingRole.join('\n'));
-  const [industryInsights, setIndustryInsights] = useState(existingInsights.join('\n'));
+
+  // Pre-populate from career data if user hasn't entered anything yet
+  const defaultRole = existingRole.length > 0
+    ? existingRole.join('\n')
+    : career?.dailyTasks?.join('\n') || '';
+  const defaultInsights = existingInsights.length > 0
+    ? existingInsights.join('\n')
+    : career
+      ? [`Growth outlook: ${career.growthOutlook}`, `Average salary: ${career.avgSalary}`, career.description].join('\n')
+      : '';
+
+  const [roleReality, setRoleReality] = useState(defaultRole);
+  const [industryInsights, setIndustryInsights] = useState(defaultInsights);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -721,7 +713,7 @@ function IndustryInsightsContent({
           <h3 className="text-sm font-semibold">Role Reality</h3>
         </div>
         <p className="text-xs text-muted-foreground/60 mb-3">
-          What does this job actually involve day to day? What surprised you?
+          {career ? "We've filled in what we know — review and edit to match your research." : "What does this job actually involve day to day? What surprised you?"}
         </p>
         <Textarea
           value={roleReality}
@@ -741,7 +733,7 @@ function IndustryInsightsContent({
           <h3 className="text-sm font-semibold">Industry Insights</h3>
         </div>
         <p className="text-xs text-muted-foreground/60 mb-3">
-          Is this industry growing? What trends or changes matter? What are the opportunities?
+          {career ? "Review the industry data below and add anything you've found." : "Is this industry growing? What trends or changes matter? What are the opportunities?"}
         </p>
         <Textarea
           value={industryInsights}
@@ -801,10 +793,21 @@ function CareerShadowContent({
   context?: StepContentProps['context'];
 }) {
   const s = context?.summary as Record<string, unknown> | undefined;
-  const [qualifications, setQualifications] = useState(((s?.pathQualifications as string[]) || []).join('\n'));
-  const [skills, setSkills] = useState(((s?.pathSkills as string[]) || []).join('\n'));
-  const [courses, setCourses] = useState(((s?.pathCourses as string[]) || []).join('\n'));
-  const [requirements, setRequirements] = useState(((s?.pathRequirements as string[]) || []).join('\n'));
+  const career = findCareerByTitle(context?.goalTitle);
+  const existingQualifications = (s?.pathQualifications as string[]) || [];
+  const existingSkills = (s?.pathSkills as string[]) || [];
+  const existingCourses = (s?.pathCourses as string[]) || [];
+  const existingRequirements = (s?.pathRequirements as string[]) || [];
+
+  // Pre-populate from career data if user hasn't entered anything yet
+  const [qualifications, setQualifications] = useState(
+    existingQualifications.length > 0 ? existingQualifications.join('\n') : career?.educationPath || ''
+  );
+  const [skills, setSkills] = useState(
+    existingSkills.length > 0 ? existingSkills.join('\n') : career?.keySkills?.join('\n') || ''
+  );
+  const [courses, setCourses] = useState(existingCourses.join('\n'));
+  const [requirements, setRequirements] = useState(existingRequirements.join('\n'));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -841,7 +844,7 @@ function CareerShadowContent({
           <h3 className="text-sm font-semibold">Qualifications</h3>
         </div>
         <p className="text-xs text-muted-foreground/60 mb-3">
-          What degrees, diplomas, or certifications are needed?
+          {career ? "We've pre-filled what we know — adjust based on your own research." : "What degrees, diplomas, or certifications are needed?"}
         </p>
         <Textarea
           value={qualifications}
@@ -861,7 +864,7 @@ function CareerShadowContent({
           <h3 className="text-sm font-semibold">Key Skills</h3>
         </div>
         <p className="text-xs text-muted-foreground/60 mb-3">
-          What skills are most important for this role?
+          {career ? "Key skills for this role — edit or add your own." : "What skills are most important for this role?"}
         </p>
         <Textarea
           value={skills}
@@ -962,14 +965,17 @@ function AlignedActionContent({
     { value: 'INDUSTRY_EVENT', label: 'Industry Event' },
     { value: 'SMALL_JOB', label: 'Small Job' },
     { value: 'MENTORSHIP_SESSION', label: 'Mentorship' },
+    { value: 'OTHER', label: 'Other' },
   ];
 
   const [actionType, setActionType] = useState('');
+  const [customType, setCustomType] = useState('');
   const [actionTitle, setActionTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = actionType && actionTitle.trim();
+  const effectiveType = actionType === 'OTHER' ? customType.trim() : actionType;
+  const canSubmit = effectiveType && actionTitle.trim();
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -978,9 +984,9 @@ function AlignedActionContent({
     try {
       await onComplete({
         type: 'COMPLETE_ALIGNED_ACTION',
-        actionType: actionType as import('@/lib/journey/types').AlignedActionType,
+        actionType: (actionType === 'OTHER' ? 'PERSONAL_PROJECT' : actionType) as import('@/lib/journey/types').AlignedActionType,
         actionId: `action-${Date.now()}`,
-        actionTitle: actionTitle.trim(),
+        actionTitle: actionType === 'OTHER' ? `[${customType.trim()}] ${actionTitle.trim()}` : actionTitle.trim(),
         linkedToGoal: true,
       });
       onClose();
@@ -1015,6 +1021,15 @@ function AlignedActionContent({
             </button>
           ))}
         </div>
+        {actionType === 'OTHER' && (
+          <Input
+            value={customType}
+            onChange={(e) => setCustomType(e.target.value)}
+            placeholder="e.g. Shadowing, Research, Networking..."
+            className="mt-2 text-sm"
+            maxLength={60}
+          />
+        )}
       </div>
 
       <div className="border-t border-border/30" />
@@ -1396,8 +1411,8 @@ export function StepContent({
       description: 'Capture the qualifications, skills, and courses needed for this career',
     },
     CREATE_ACTION_PLAN: {
-      title: 'Build Your Plan',
-      description: 'Write down 3 actions you can take in the next month to move forward',
+      title: 'Short-term Actions',
+      description: 'A couple of things you can focus on next',
     },
     // ACT lens
     COMPLETE_ALIGNED_ACTION: {

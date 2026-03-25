@@ -158,7 +158,7 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
     id: 'CREATE_ACTION_PLAN',
     lens: 'UNDERSTAND',
     phase: 'STRATEGY',
-    title: 'Validate Your Understanding',
+    title: 'Validate Your Understanding of the Role',
     description: 'Confirm what you\'ve learned by writing down 3 actions you can take to move forward based on your research.',
     order: 5,
     mandatory: true,

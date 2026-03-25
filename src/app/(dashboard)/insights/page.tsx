@@ -176,17 +176,17 @@ export default function IndustryInsightsPage() {
         <p className="text-sm text-muted-foreground">
           {t("trustLine")}
         </p>
-        <div className="flex flex-wrap items-center gap-2 mt-4">
-          <span className="text-[11px] text-muted-foreground/50 mr-1">This page:</span>
-          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400">
+        <div className="flex flex-wrap items-center gap-2 mt-3">
+          <span className="text-[11px] text-muted-foreground/40">Jump to:</span>
+          <a href="#global-lens" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
             <Globe2 className="h-3 w-3" /> Global Lens
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400">
+          </a>
+          <a href="#youth-lens" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors">
             <Sparkles className="h-3 w-3" /> Youth Lens
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400">
+          </a>
+          <a href="#dig-deeper" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-colors">
             <Lightbulb className="h-3 w-3" /> Explore
-          </span>
+          </a>
         </div>
       </motion.div>
 

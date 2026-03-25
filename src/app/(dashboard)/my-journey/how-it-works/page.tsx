@@ -43,7 +43,7 @@ const STAGES = [
     steps: [
       { name: 'Role Reality & Industry Insights', detail: 'Research what the career involves and what trends look like' },
       { name: 'Path, Skills & Requirements', detail: 'Explore qualifications, key skills, and what\'s needed to get started' },
-      { name: 'Validate Your Understanding', detail: 'Write down realistic actions you can take based on your research' },
+      { name: 'Validate Your Understanding of the Role', detail: 'Write down realistic actions you can take based on your research' },
     ],
     extras: [],
   },

@@ -68,11 +68,21 @@ export async function POST(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   };
 
-  // Merge into existing journeySummary
-  const profile = await prisma.youthProfile.findUnique({
+  // Get or create profile, then merge into existing journeySummary
+  let profile = await prisma.youthProfile.findUnique({
     where: { userId: session.user.id },
     select: { journeySummary: true },
   });
+
+  if (!profile) {
+    profile = await prisma.youthProfile.create({
+      data: {
+        userId: session.user.id,
+        displayName: session.user.email?.split('@')[0] || 'User',
+      },
+      select: { journeySummary: true },
+    });
+  }
 
   const existingSummary = (profile?.journeySummary as Record<string, unknown>) || {};
   const updatedSummary = { ...existingSummary, educationContext };

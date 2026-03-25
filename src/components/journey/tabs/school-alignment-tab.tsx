@@ -9,6 +9,7 @@
 
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   GraduationCap,
   BookOpen,
@@ -460,6 +461,8 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       if (context?.previous) {
         queryClient.setQueryData(['education-context'], context.previous);
       }
+      toast.error('Failed to save education details. Please try again.');
+      setEditing(true); // Re-open editor so user can retry
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['education-context'] });
