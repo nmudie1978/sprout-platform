@@ -12,6 +12,7 @@ import { useState, useCallback } from 'react';
 import {
   ArrowRight,
   CheckCircle2,
+  ChevronDown,
   Pencil,
   Route,
   GraduationCap,
@@ -75,6 +76,7 @@ const ACTION_TYPE_LABELS: Record<string, string> = {
 
 export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
+  const [stepsExpanded, setStepsExpanded] = useState(false);
 
   const alignedActions = journey.summary?.alignedActions || [];
   const reflections = journey.summary?.alignedActionReflections || [];
@@ -192,23 +194,50 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
 
   return (
     <div className="space-y-3">
-      {/* Contextual guidance */}
-      <GuidanceStack placement="act" context={guidanceCtx} />
-
-      {/* Two mandatory steps — side by side */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        {renderStep(ACT_STEPS[0])}
-        {renderStep(ACT_STEPS[1])}
-      </div>
+      {/* Steps & guidance — shown normally, or collapsible once grow is complete */}
+      {!growComplete ? (
+        <>
+          <GuidanceStack placement="act" context={guidanceCtx} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            {renderStep(ACT_STEPS[0])}
+            {renderStep(ACT_STEPS[1])}
+          </div>
+        </>
+      ) : (
+        <div>
+          <button
+            onClick={() => setStepsExpanded((v) => !v)}
+            className="flex items-center gap-2 text-xs text-muted-foreground/50 hover:text-muted-foreground/70 transition-colors py-1"
+          >
+            <ChevronDown className={cn("h-3.5 w-3.5 transition-transform duration-200", stepsExpanded && "rotate-180")} />
+            {stepsExpanded ? 'Hide completed steps' : 'Show completed steps'}
+          </button>
+          {stepsExpanded && (
+            <div className="animate-in fade-in slide-in-from-top-1 duration-200 mt-2">
+              <GuidanceStack placement="act" context={guidanceCtx} />
+              <div className="grid gap-3 sm:grid-cols-2 mt-3">
+                {renderStep(ACT_STEPS[0])}
+                {renderStep(ACT_STEPS[1])}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Journey Complete: Roadmap & School unlocked ──────────── */}
       {growComplete && (
         <>
-          {/* Journey complete — compact note */}
-          <div className="flex items-center gap-3 rounded-xl border border-emerald-500/15 bg-emerald-500/[0.04] px-4 py-3">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-            <p className="text-xs text-muted-foreground/60">
-              Journey complete. Your career roadmap and school alignment are below.
+          {/* Journey complete — celebratory note, centred */}
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 flex flex-col items-center gap-2 rounded-xl border border-emerald-500/30 ring-1 ring-emerald-500/20 bg-gradient-to-r from-emerald-500/[0.06] via-teal-500/[0.04] to-emerald-500/[0.06] px-5 py-4 text-center" style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.2), 0 0 40px rgba(16, 185, 129, 0.1), 0 0 80px rgba(16, 185, 129, 0.05)' }}>
+            <div className="animate-in zoom-in duration-300 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/15">
+              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            </div>
+            <p className="text-xs">
+              <span className="font-medium text-emerald-400">You did it!</span>
+              <span className="text-muted-foreground"> Your journey steps are complete.</span>
+            </p>
+            <p className="text-[11px] text-muted-foreground/60 max-w-md leading-relaxed">
+              Use your roadmap to see the milestones ahead and track your progress. Check school alignment to make sure your subject choices support where you&apos;re heading.
             </p>
           </div>
 
