@@ -237,6 +237,7 @@ export const authOptions: NextAuthOptions = {
                 displayName: true,
                 profileVisibility: true,
                 guardianConsent: true,
+                guardianEmail: true,
               },
             },
             employerProfile: {

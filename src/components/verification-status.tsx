@@ -121,7 +121,8 @@ export function VerificationStatus({ compact = false }: VerificationStatusProps)
       actionDescription =
         "As you're under 18, we need your parent or guardian to approve your account before you can apply to jobs.";
 
-      if (!consentRequested) {
+      const alreadySent = !!(youthProfile as Record<string, unknown>)?.guardianEmail;
+      if (!consentRequested && !alreadySent) {
         actionButton = (
           <div className="space-y-3">
             <div className="flex gap-2">
