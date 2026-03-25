@@ -52,12 +52,6 @@ function saveCardData(itemId: string, data: CardData) {
   }
 }
 
-const STATUS_OPTIONS = [
-  { value: 'not_started', label: 'Not Started' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'done', label: 'Done' },
-] as const;
-
 const CONFIDENCE_OPTIONS = [
   { value: 'low', label: 'Low', emoji: '😟' },
   { value: 'medium', label: 'Medium', emoji: '😐' },
@@ -71,7 +65,6 @@ export function TimelineDetailDialog({
   onOpenChange,
   onSaved,
 }: TimelineDetailDialogProps) {
-  const [status, setStatus] = useState('not_started');
   const [notes, setNotes] = useState('');
   const [resourceLink, setResourceLink] = useState('');
   const [confidence, setConfidence] = useState('');
@@ -83,7 +76,6 @@ export function TimelineDetailDialog({
   useEffect(() => {
     if (item && open) {
       const data = loadCardData(item.id);
-      setStatus(data.status);
       setNotes(data.notes);
       setResourceLink(data.resourceLink);
       setConfidence(data.confidence);
@@ -92,21 +84,17 @@ export function TimelineDetailDialog({
     }
   }, [item?.id, open]);
 
-  const hasContent = notes.trim().length > 0 || resourceLink.trim().length > 0;
-  const doneWithoutContent = status === 'done' && !hasContent;
-
   const handleSave = useCallback(() => {
     if (!item) return;
-    if (status === 'done' && !notes.trim() && !resourceLink.trim()) return; // block empty "done"
     setIsSaving(true);
-    saveCardData(item.id, { status, notes, resourceLink, confidence });
+    saveCardData(item.id, { status: 'not_started', notes, resourceLink, confidence });
     setTimeout(() => {
       setIsSaving(false);
       setSaved(true);
       onSaved?.();
       setTimeout(() => onOpenChange(false), 600);
     }, 300);
-  }, [item, status, notes, resourceLink, confidence, onOpenChange, onSaved]);
+  }, [item, notes, resourceLink, confidence, onOpenChange, onSaved]);
 
   if (!item) return null;
 
@@ -143,70 +131,6 @@ export function TimelineDetailDialog({
         </DialogHeader>
 
         <div className="space-y-4 mt-2">
-          {/* Status */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-medium text-foreground/70">Status</p>
-              {allItems && allItems.length > 0 && (() => {
-                // Find the current active position (first non-done)
-                const activeIdx = allItems.findIndex((i) => loadCardData(i.id).status !== 'done');
-                const effectiveIdx = activeIdx === -1 ? allItems.length - 1 : activeIdx;
-                const canGoBack = effectiveIdx > 0;
-                const hasContentForForward = notes.trim().length > 0 || resourceLink.trim().length > 0;
-                const canGoForward = status === 'done' && hasContentForForward && effectiveIdx < allItems.length - 1;
-
-                return (
-                  <div className="flex items-center gap-3">
-                    {canGoBack && (
-                      <button
-                        onClick={() => {
-                          const prevItem = allItems[effectiveIdx - 1];
-                          const prevData = loadCardData(prevItem.id);
-                          saveCardData(prevItem.id, { ...prevData, status: 'not_started' });
-                          onSaved?.();
-                          onOpenChange(false);
-                        }}
-                        className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2"
-                      >
-                        &larr; Previous step
-                      </button>
-                    )}
-                    {canGoForward && (
-                      <button
-                        onClick={() => {
-                          const currentItem = allItems[effectiveIdx];
-                          const currentData = loadCardData(currentItem.id);
-                          saveCardData(currentItem.id, { ...currentData, status: 'done' });
-                          onSaved?.();
-                          onOpenChange(false);
-                        }}
-                        className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors underline underline-offset-2"
-                      >
-                        Next step &rarr;
-                      </button>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {STATUS_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setStatus(opt.value)}
-                  className={cn(
-                    'p-2 rounded-lg text-xs font-medium text-center transition-all border-2',
-                    status === opt.value
-                      ? 'border-amber-500/40 bg-amber-500/10 text-amber-400'
-                      : 'border-transparent bg-muted/30 text-muted-foreground hover:bg-muted/50'
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Notes / Reflections */}
           <div>
             <p className="text-xs font-medium text-foreground/70 mb-2">Notes & Reflections</p>
@@ -260,7 +184,7 @@ export function TimelineDetailDialog({
                 className="flex items-center gap-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground/70 transition-colors"
               >
                 {guidanceOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-                Guidance & suggested steps
+                Guidance & suggestions
               </button>
               {guidanceOpen && (
                 <div className="mt-2 rounded-lg bg-muted/20 p-3 space-y-2">
@@ -286,15 +210,10 @@ export function TimelineDetailDialog({
 
         {/* Save — sticky footer */}
         <div className="sticky bottom-0 pt-3 mt-2 border-t border-border/30 bg-card space-y-2">
-          {doneWithoutContent && (
-            <p className="text-[11px] text-amber-400/80">
-              Add some notes or a resource link before marking as done.
-            </p>
-          )}
           <div className="flex justify-end">
           <Button
             onClick={handleSave}
-            disabled={isSaving || doneWithoutContent}
+            disabled={isSaving}
             size="sm"
             className={cn(
               'text-xs',
