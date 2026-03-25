@@ -520,6 +520,7 @@ export default function MyJourneyPage() {
 
   // Auto-switch to the appropriate tab based on progress + inspirational messages
   const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
+  const initialTabSet = useRef(false);
   const celebratedRef = useRef<Set<string>>(new Set());
   // Reset celebration refs when goal changes so celebrations fire for new goals
   const prevGoalRef = useRef<string | null>(null);
@@ -531,7 +532,8 @@ export default function MyJourneyPage() {
       celebratedRef.current = new Set();
       setShowDiscoverCelebration(false);
       setShowUnderstandCelebration(false);
-      setActiveTab('discover');
+      // Let the auto-tab-select effect pick the right tab after data loads
+      initialTabSet.current = false;
 
       // Sync guidance dismissals so old-goal prompts are cleared
       syncGuidanceGoal(currentGoal);
@@ -589,6 +591,17 @@ export default function MyJourneyPage() {
 
     return !!(reflectionsDone && strengthsDone && careersDone && directionDone);
   }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
+
+  // Auto-select the right tab based on progress (first incomplete stage)
+  useEffect(() => {
+    if (journeyLoading || initialTabSet.current) return;
+    initialTabSet.current = true;
+    if (discoverComplete && !understandComplete) {
+      setActiveTab('understand');
+    } else if (discoverComplete && understandComplete) {
+      setActiveTab('act');
+    }
+  }, [journeyLoading, discoverComplete, understandComplete]);
 
   // Grow (ACT) complete — both mandatory steps done
   const growComplete = useMemo(() => {
@@ -908,7 +921,7 @@ export default function MyJourneyPage() {
           setGoalSheetOpen(false);
           setActiveTab('discover');
           queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-          queryClient.invalidateQueries({ queryKey: ['my-goals'] });
+          queryClient.invalidateQueries({ queryKey: ['goals'] });
           queryClient.invalidateQueries({ queryKey: ['goal-data'] });
           queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
         }}
