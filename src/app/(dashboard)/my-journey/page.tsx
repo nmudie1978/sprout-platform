@@ -225,6 +225,16 @@ const StageTabBar = memo(function StageTabBar({
     return false;
   };
 
+  // Determine which stage the user is currently in (first non-complete, non-locked)
+  const currentStageId = (() => {
+    for (const tab of TABS) {
+      if (isLocked(tab)) continue;
+      const isComp = tab.id === 'discover' ? discoverComplete : lenses[tab.lensKey].isComplete;
+      if (!isComp) return tab.id;
+    }
+    return null; // All complete
+  })();
+
   return (
     <div className="grid grid-cols-3 gap-2 sm:gap-3">
       {TABS.map((tab, i) => {
@@ -314,6 +324,13 @@ const StageTabBar = memo(function StageTabBar({
                 <div className="h-1 rounded-full bg-muted/30" />
               )}
             </div>
+
+            {/* "You are here" — shows only on the current in-progress stage */}
+            {tab.id === currentStageId && (
+              <p className={cn('text-center text-[8px] mt-1.5 tracking-wider uppercase', `text-${tab.color}-500/40`)}>
+                You are here
+              </p>
+            )}
           </button>
         );
       })}
