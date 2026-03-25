@@ -238,7 +238,7 @@ export function DiscoverReflectionsSection() {
 
   return (
     <div>
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 mb-2">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-teal-500/60 mb-2">
         Know yourself better
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -252,8 +252,8 @@ export function DiscoverReflectionsSection() {
             key={card.id}
             className={cn(
               'rounded-xl border transition-all',
-              filled && !expanded ? 'border-teal-500/20 bg-teal-500/[0.03]' : 'border-border/30 bg-card/30',
-              expanded && 'border-teal-500/30 bg-card/50',
+              filled && !expanded ? 'border-teal-500/30 bg-teal-500/[0.05]' : 'border-border/60 bg-card/60',
+              expanded && 'border-teal-500/40 bg-card/70',
             )}
           >
             {/* Header — always visible */}
@@ -263,16 +263,16 @@ export function DiscoverReflectionsSection() {
             >
               <div className={cn(
                 'h-7 w-7 rounded-lg flex items-center justify-center shrink-0',
-                filled ? 'bg-teal-500/15' : 'bg-muted/40',
+                filled ? 'bg-teal-500/15' : 'bg-muted/60',
               )}>
                 {filled ? (
                   <Check className="h-3.5 w-3.5 text-teal-500" />
                 ) : (
-                  <Icon className="h-3.5 w-3.5 text-muted-foreground/50" />
+                  <Icon className="h-3.5 w-3.5 text-muted-foreground/70" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={cn('text-xs font-semibold', filled ? 'text-foreground/80' : 'text-muted-foreground/70')}>
+                <p className={cn('text-xs font-semibold', filled ? 'text-foreground/90' : 'text-foreground/70')}>
                   {card.title}
                 </p>
                 {!expanded && filled && card.type === 'chips' && (
@@ -286,13 +286,13 @@ export function DiscoverReflectionsSection() {
                   </p>
                 )}
                 {!expanded && !filled && (
-                  <p className="text-[10px] text-muted-foreground/40 mt-0.5">{card.description}</p>
+                  <p className="text-[10px] text-muted-foreground/60 mt-0.5">{card.description}</p>
                 )}
               </div>
               {expanded ? (
-                <ChevronUp className="h-4 w-4 text-muted-foreground/30 shrink-0" />
+                <ChevronUp className="h-4 w-4 text-muted-foreground/50 shrink-0" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-muted-foreground/30 shrink-0" />
+                <ChevronDown className="h-4 w-4 text-muted-foreground/50 shrink-0" />
               )}
             </button>
 

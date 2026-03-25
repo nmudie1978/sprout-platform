@@ -133,14 +133,14 @@ export async function POST(req: NextRequest) {
             ...item,
           })),
           schoolTrack: Array.isArray(parsed.schoolTrack)
-            ? parsed.schoolTrack.map((st: Record<string, unknown>, i: number) => ({
+            ? (parsed.schoolTrack as unknown as Record<string, unknown>[]).map((st, i) => ({
                 id: `st-${i}-${Math.random().toString(36).slice(2, 7)}`,
-                stage: st.stage,
-                title: st.title || '',
-                subjects: Array.isArray(st.subjects) ? st.subjects : [],
-                personalLearning: st.personalLearning || undefined,
+                stage: st.stage as 'foundation' | 'education' | 'experience' | 'career',
+                title: (st.title as string) || '',
+                subjects: Array.isArray(st.subjects) ? st.subjects as string[] : [],
+                personalLearning: (st.personalLearning as string) || undefined,
                 startAge: (st.startAge as number) || userAge,
-                endAge: st.endAge || undefined,
+                endAge: (st.endAge as number) || undefined,
               }))
             : undefined,
         };

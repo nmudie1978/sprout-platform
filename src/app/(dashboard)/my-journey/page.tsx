@@ -35,6 +35,7 @@ import { DiscoverCompleteModal } from '@/components/journey/discover-complete-mo
 import { UnderstandCompleteModal } from '@/components/journey/understand-complete-modal';
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
 import { getAllCareers } from '@/lib/career-pathways';
+import { PageContext } from '@/components/ui/page-context';
 import { HelpCircle, Info, X } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
@@ -213,11 +214,13 @@ const StageTabBar = memo(function StageTabBar({
   onTabChange,
   lenses,
   discoverComplete,
+  growComplete,
 }: {
   activeTab: JourneyTab;
   onTabChange: (tab: JourneyTab) => void;
   lenses: { discover: LensProgress; understand: LensProgress; act: LensProgress };
   discoverComplete: boolean;
+  growComplete: boolean;
 }) {
   const isLocked = (tab: TabDef): boolean => {
     if (tab.id === 'discover') return false;
@@ -243,9 +246,9 @@ const StageTabBar = memo(function StageTabBar({
         const isActive = activeTab === tab.id;
         const locked = isLocked(tab);
         const progress = lenses[tab.lensKey];
-        // Override Discover completion/progress with client-side check
-        const isComplete = tab.id === 'discover' ? discoverComplete : progress.isComplete;
-        const displayProgress = tab.id === 'discover' && discoverComplete ? 100 : progress.progress;
+        // Override completion/progress with client-side checks
+        const isComplete = tab.id === 'discover' ? discoverComplete : tab.id === 'act' ? growComplete : progress.isComplete;
+        const displayProgress = (tab.id === 'discover' && discoverComplete) ? 100 : (tab.id === 'act' && growComplete) ? 100 : progress.progress;
 
         return (
           <button
@@ -579,10 +582,19 @@ export default function MyJourneyPage() {
     return !!(reflectionsDone && strengthsDone && careersDone && directionDone);
   }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
 
+  // Grow (ACT) complete — both mandatory steps done
+  const growComplete = useMemo(() => {
+    const steps = journey.steps || [];
+    const actionDone = steps.find((s) => s.id === 'COMPLETE_ALIGNED_ACTION')?.status === 'completed';
+    const reflectionDone = steps.find((s) => s.id === 'SUBMIT_ACTION_REFLECTION')?.status === 'completed';
+    return !!(actionDone && reflectionDone);
+  }, [journey.steps]);
+
   // Understand celebration — fires when Understand is complete
-  // Guard: only fire when journey data belongs to the CURRENT primary goal
+  // Guard: only fire when journey data is not from a DIFFERENT goal (stale cache).
+  // Allow if journey has no goal title set (it may not be stored in summary yet).
   const journeyGoalTitle = journeyData?.journey?.summary?.primaryGoal?.title ?? null;
-  const journeyMatchesGoal = !!goalTitle && journeyGoalTitle === goalTitle;
+  const journeyMatchesGoal = !journeyGoalTitle || !goalTitle || journeyGoalTitle === goalTitle;
 
   useEffect(() => {
     if (journeyLoading) return;
@@ -672,6 +684,12 @@ export default function MyJourneyPage() {
   return (
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
+        <PageContext
+          pageKey="my-journey"
+          purpose="This is your personal growth path — Discover who you are, Understand careers, then take real action."
+          action="Work through each stage step by step. Everything you do here builds towards your future."
+        />
+
         {/* Header row */}
         <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="min-w-0 flex-1">
@@ -758,6 +776,7 @@ export default function MyJourneyPage() {
             onTabChange={setActiveTab}
             lenses={journey.summary.lenses}
             discoverComplete={discoverComplete}
+            growComplete={growComplete}
           />
         </div>
 

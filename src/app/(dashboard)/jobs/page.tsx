@@ -35,6 +35,7 @@ import Link from "next/link";
 import { JobCardV2, JobListHeader } from "@/components/job-card-v2";
 import { ViewModeToggle } from "@/components/view/ViewModeToggle";
 import { useViewMode } from "@/hooks/useViewMode";
+import { PageContext } from "@/components/ui/page-context";
 
 const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ALL: { label: "All Small Jobs", emoji: "🌟" },
@@ -196,6 +197,12 @@ export default function JobsPage() {
           backgroundImage: "radial-gradient(circle, currentColor 0.5px, transparent 0.5px)",
           backgroundSize: "16px 16px",
         }}
+      />
+
+      <PageContext
+        pageKey="jobs"
+        purpose="Find small, real-world jobs near you — babysitting, dog walking, tech help, and more."
+        action="Browse jobs, apply to ones that fit, and start building real experience and responsibility."
       />
 
       <PageHeader

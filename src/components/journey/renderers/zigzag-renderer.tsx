@@ -21,15 +21,6 @@ const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
 const SCHOOL_NODE_WIDTH = 140;
 
-function getCardStatus(itemId: string): string {
-  try {
-    const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
-    return all[itemId]?.status || 'not_started';
-  } catch {
-    return 'not_started';
-  }
-}
-
 export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
   const items = journey.items;
 
@@ -45,15 +36,12 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   });
   const eduContext = eduData?.educationContext;
 
-  // Find current item (first non-done) — used for active highlighting, NOT "you are here"
+  // Find current item based on user age — used for active highlighting
   let currentItemIndex = -1;
   if (userAge != null && items.length > 0) {
-    currentItemIndex = items.findIndex((item) => getCardStatus(item.id) !== 'done');
+    currentItemIndex = items.findIndex((item) => item.startAge >= userAge);
     if (currentItemIndex === -1) currentItemIndex = items.length - 1;
   }
-
-  // Progression stats
-  const doneCount = items.filter((item) => getCardStatus(item.id) === 'done').length;
 
   // School node offset — adds space before the first real item
   const schoolNodeOffset = SCHOOL_NODE_WIDTH + 40;
@@ -78,6 +66,12 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
     [positions, schoolConnectionPoint]
   );
 
+  // SVG path for animateMotion (M + L commands)
+  const motionPath = useMemo(() => {
+    const pts = polylinePoints.split(' ');
+    return `M${pts[0]}` + pts.slice(1).map((p) => ` L${p}`).join('');
+  }, [polylinePoints]);
+
   // Build gradient stops from each item's stage colour
   const gradientStops = useMemo(
     () => {
@@ -96,18 +90,10 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   return (
     <TooltipProvider delayDuration={300}>
     <div className="overflow-x-auto pb-4 -mx-2 px-2">
-      {/* Progression bar — subtle, at top */}
-      <div className="flex items-center justify-between mb-3 px-1">
-        <p className="text-[10px] text-muted-foreground/50">
-          {doneCount} of {items.length} steps completed
-        </p>
-        <div className="flex-1 mx-3 h-1 rounded-full bg-muted/30 overflow-hidden max-w-[200px]">
-          <div
-            className="h-full rounded-full bg-teal-500/60 transition-all duration-500"
-            style={{ width: `${items.length > 0 ? (doneCount / items.length) * 100 : 0}%` }}
-          />
-        </div>
-      </div>
+      {/* Informational hint */}
+      <p className="text-[10px] text-muted-foreground/40 mb-3 px-1">
+        Tap any step to explore what it involves and add your own notes.
+      </p>
 
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
         {/* SVG polyline connector */}
@@ -141,6 +127,19 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
             strokeLinejoin="round"
             strokeLinecap="round"
           />
+          {/* Travelling pulse */}
+          <filter id="pulse-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <circle r="4" fill="rgba(20, 184, 166, 0.8)" filter="url(#pulse-glow)">
+            <animateMotion dur="8s" repeatCount="indefinite" path={motionPath} />
+            <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
+          </circle>
         </svg>
 
         {/* ── School Foundation Node ──────────────────────── */}
@@ -310,12 +309,10 @@ function ZigzagCard({
   isCurrent?: boolean;
 }) {
   const stage = STAGE_CONFIG[item.stage];
-  const cardData = getCardStatus(item.id);
-  const isDone = cardData === 'done';
   const stepType = classifyStepType(item);
   const typeConfig = STEP_TYPE_CONFIG[stepType];
 
-  // Build tooltip text from saved data
+  // Build tooltip text
   const savedData = (() => {
     try {
       const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
@@ -323,20 +320,12 @@ function ZigzagCard({
     } catch { return null; }
   })();
 
-  const tooltipLines: string[] = [];
+  const tooltipLines: string[] = [`${typeConfig.icon} ${typeConfig.label}`];
+  if (item.subtitle) tooltipLines.push(item.subtitle);
   if (savedData) {
-    if (savedData.status && savedData.status !== 'not_started') {
-      tooltipLines.push(`Status: ${savedData.status === 'done' ? '✓ Done' : '⏳ In Progress'}`);
-    }
     if (savedData.notes) tooltipLines.push(`Notes: ${savedData.notes.slice(0, 80)}${savedData.notes.length > 80 ? '...' : ''}`);
     if (savedData.resourceLink) tooltipLines.push(`Resource: ${savedData.resourceLink.slice(0, 60)}`);
     if (savedData.confidence) tooltipLines.push(`Confidence: ${savedData.confidence === 'high' ? '😊 High' : savedData.confidence === 'medium' ? '😐 Medium' : '😟 Low'}`);
-  }
-
-  // Always show a tooltip — step type + subtitle for all, extra detail for completed
-  if (!isDone) {
-    tooltipLines.unshift(`${typeConfig.icon} ${typeConfig.label}`);
-    if (item.subtitle) tooltipLines.push(item.subtitle);
   }
   const hasTooltip = tooltipLines.length > 0;
 
@@ -350,46 +339,25 @@ function ZigzagCard({
         'cursor-pointer',
         isCurrent
           ? 'border-2 shadow-lg bg-card/80'
-          : isDone
-            ? 'border-emerald-500/50 bg-emerald-500/10 shadow-sm'
-            : 'border-border/50 bg-card/80 shadow-sm'
+          : 'border-border/50 bg-card/80 shadow-sm'
       )}
       style={
         isCurrent
           ? { borderColor: stage.color, boxShadow: `0 0 16px ${stage.color}30` }
-          : isDone
-            ? { boxShadow: '0 0 12px rgba(16,185,129,0.15), 0 0 4px rgba(16,185,129,0.1)' }
-            : undefined
+          : undefined
       }
     >
-      {/* Completed banner */}
-      {isDone && (
-        <div className="flex items-center gap-1.5 mb-1.5 pb-1.5 border-b border-emerald-500/20">
-          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500/25">
-            <span className="text-emerald-400 text-[9px] font-bold">✓</span>
-          </div>
-          <span className="text-[9px] font-semibold uppercase tracking-wider text-emerald-500/70">
-            Completed
-          </span>
-        </div>
-      )}
       <div className="flex items-start gap-1.5">
         <div className="flex-1 min-w-0">
           {/* Step type indicator */}
           <span className="text-[9px] text-muted-foreground/40 leading-none">
             {typeConfig.icon}
           </span>
-          <p className={cn(
-            'text-xs font-semibold leading-tight',
-            isDone ? 'text-emerald-300/90' : 'text-foreground'
-          )}>
+          <p className="text-xs font-semibold leading-tight text-foreground">
             {item.title}
           </p>
           {item.subtitle && (
-            <p className={cn(
-              'text-[10px] mt-0.5 leading-snug truncate',
-              isDone ? 'text-emerald-400/40' : 'text-muted-foreground'
-            )}>
+            <p className="text-[10px] mt-0.5 leading-snug truncate text-muted-foreground">
               {item.subtitle}
             </p>
           )}

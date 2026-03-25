@@ -35,6 +35,7 @@ import { motion } from "framer-motion";
 
 // Lightweight components loaded eagerly
 import { WeeklyFactNudge } from "@/components/insights/weekly-fact-nudge";
+import { PageContext } from "@/components/ui/page-context";
 
 // Heavy components loaded lazily - these are below the fold or data-dependent
 const JobMarketStatsCarousel = dynamic(
@@ -151,6 +152,12 @@ export default function IndustryInsightsPage() {
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+
+      <PageContext
+        pageKey="insights"
+        purpose="Real data about careers, industries, and the job market — designed to help you make informed decisions."
+        action="Read articles, watch videos, and save anything useful to your library."
+      />
 
       <PageHeader
         title={t("pageTitle")}

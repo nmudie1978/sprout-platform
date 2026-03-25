@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { SectionWhy } from "@/components/ui/section-why";
+import { PageContext } from "@/components/ui/page-context";
 
 export default function ExplorePage() {
   const { data: session } = useSession();
@@ -164,6 +165,12 @@ export default function ExplorePage() {
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-6">
+      <PageContext
+        pageKey="explore-careers"
+        purpose="This is where you discover careers that match who you are."
+        action="Swipe through careers, save ones you like, and set one as your goal to start your journey."
+      />
+
       {/* Header */}
       <div className="mb-6 text-center">
         <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
