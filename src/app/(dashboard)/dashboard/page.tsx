@@ -492,6 +492,7 @@ export default function DashboardPage() {
   const { data: profileData } = useQuery<{
     displayName: string | null; bio: string | null; phoneNumber: string | null;
     city: string | null; availability: string | null; interests: string[];
+    guardianEmail: string | null; guardianConsent: boolean;
     user: { dateOfBirth: string | null } | null;
   }>({
     queryKey: ["profile-completion"],
@@ -612,6 +613,18 @@ export default function DashboardPage() {
         </div>
 
         <VerificationStatus compact />
+
+        {/* Guardian consent pending — subtle signal */}
+        {profileData && profileData.guardianEmail && !profileData.guardianConsent && (
+          <Link href="/profile" className="block mb-4">
+            <div className="flex items-center gap-2 rounded-lg bg-amber-500/[0.04] border border-amber-500/10 px-3 py-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              <p className="text-[11px] text-muted-foreground/60">
+                Waiting for guardian confirmation
+              </p>
+            </div>
+          </Link>
+        )}
 
         {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
         {isFirstLogin ? (
