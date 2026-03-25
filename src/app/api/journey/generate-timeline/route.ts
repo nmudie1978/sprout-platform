@@ -141,7 +141,8 @@ export async function POST(req: NextRequest) {
 
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { career?: string; journey?: Journey };
-      if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey) {
+      const cachedAgeMatches = cached.journey?.startAge === userAge;
+      if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey && cachedAgeMatches) {
         return NextResponse.json({
           journey: cached.journey,
           cached: true,
