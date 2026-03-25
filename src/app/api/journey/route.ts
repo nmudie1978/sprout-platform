@@ -9,6 +9,7 @@ import {
   type JourneyStateId,
   type JourneySummary,
 } from '@/lib/journey';
+import { JOURNEY_STATES } from '@/lib/journey/types';
 
 /**
  * GET /api/journey
@@ -252,10 +253,16 @@ export async function PATCH(req: NextRequest) {
     let result;
 
     if (action === 'transition' && targetState) {
-      // Forward transition
+      // Validate targetState is a known journey state
+      if (!JOURNEY_STATES.includes(targetState)) {
+        return NextResponse.json({ error: 'Invalid target state' }, { status: 400 });
+      }
       result = orchestrator.transitionTo(targetState as JourneyStateId);
     } else if (action === 'revisit' && stepId) {
-      // Backward navigation
+      // Validate stepId is a known journey state
+      if (!JOURNEY_STATES.includes(stepId)) {
+        return NextResponse.json({ error: 'Invalid step ID' }, { status: 400 });
+      }
       result = orchestrator.revisitStep(stepId as JourneyStateId);
     } else {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

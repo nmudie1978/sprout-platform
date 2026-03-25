@@ -7,6 +7,11 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 
+/** Slugify a goal title for use as goalId */
+function slugifyGoal(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
 // Validation schema for a goal
 const nextStepSchema = z.object({
   id: z.string(),
@@ -100,25 +105,26 @@ export async function PUT(request: Request) {
         : { secondaryGoal: goalWithTimestamp };
 
     // If changing the primary goal, save current progress then reset journey
+    // All operations are wrapped in a transaction to prevent data loss on race conditions
     if (slot === "primary" && goal) {
-      const currentProfile = await prisma.youthProfile.findUnique({
-        where: { userId: session.user.id },
-        select: {
-          primaryGoal: true,
-          journeyState: true,
-          journeyCompletedSteps: true,
-          journeySkippedSteps: true,
-          journeySummary: true,
-        },
-      });
+      const updatedProfile = await prisma.$transaction(async (tx) => {
+        const currentProfile = await tx.youthProfile.findUnique({
+          where: { userId: session.user.id },
+          select: {
+            primaryGoal: true,
+            journeyState: true,
+            journeyCompletedSteps: true,
+            journeySkippedSteps: true,
+            journeySummary: true,
+          },
+        });
 
-      const currentGoal = currentProfile?.primaryGoal as CareerGoal | null;
+        const currentGoal = currentProfile?.primaryGoal as CareerGoal | null;
 
-      // Save current goal's progress before switching (if there is a current goal)
-      if (currentGoal?.title && currentGoal.title !== goal.title) {
-        const goalId = currentGoal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        try {
-          await prisma.journeyGoalData.upsert({
+        // Save current goal's progress before switching (if there is a current goal)
+        if (currentGoal?.title && currentGoal.title !== goal.title) {
+          const goalId = slugifyGoal(currentGoal.title);
+          await tx.journeyGoalData.upsert({
             where: { userId_goalId: { userId: session.user.id, goalId } },
             create: {
               userId: session.user.id,
@@ -135,43 +141,28 @@ export async function PUT(request: Request) {
               journeySummary: currentProfile!.journeySummary || undefined,
             },
           });
-        } catch {
-          // Non-blocking — save failed but we still switch
         }
-      }
 
-      // Check if the new goal has saved progress to restore
-      if (currentGoal?.title !== goal.title) {
-        const newGoalId = goal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        let restored = false;
-        try {
-          const savedData = await prisma.journeyGoalData.findUnique({
+        // Check if the new goal has saved progress to restore
+        let journeyUpdate: Record<string, unknown> = {};
+        if (currentGoal?.title !== goal.title) {
+          const newGoalId = slugifyGoal(goal.title);
+          const savedData = await tx.journeyGoalData.findUnique({
             where: { userId_goalId: { userId: session.user.id, goalId: newGoalId } },
           });
-          if (savedData) {
-            // Restore saved progress for this goal
-            await prisma.youthProfile.update({
-              where: { userId: session.user.id },
-              data: {
-                journeyState: savedData.journeyState,
-                journeyCompletedSteps: savedData.journeyCompletedSteps,
-                journeySkippedSteps: Prisma.DbNull,
-                journeySummary: savedData.journeySummary || undefined,
-                journeyLastUpdated: new Date(),
-              },
-            });
-            restored = true;
-          }
-        } catch {
-          // Non-blocking
-        }
 
-        // If no saved progress, reset to beginning
-        if (!restored) {
-          const existingSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
-          await prisma.youthProfile.update({
-            where: { userId: session.user.id },
-            data: {
+          // Verify goalTitle matches to prevent slug collision from loading wrong data
+          if (savedData && savedData.goalTitle === goal.title) {
+            journeyUpdate = {
+              journeyState: savedData.journeyState,
+              journeyCompletedSteps: savedData.journeyCompletedSteps,
+              journeySkippedSteps: Prisma.DbNull,
+              journeySummary: savedData.journeySummary || undefined,
+              journeyLastUpdated: new Date(),
+            };
+          } else {
+            const existingSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
+            journeyUpdate = {
               journeyState: "REFLECT_ON_STRENGTHS",
               journeyCompletedSteps: [],
               journeySkippedSteps: Prisma.DbNull,
@@ -180,13 +171,34 @@ export async function PUT(request: Request) {
                 careerInterests: existingSummary.careerInterests || [],
               },
               journeyLastUpdated: new Date(),
-            },
-          });
+            };
+          }
         }
-      }
+
+        // Atomically update the profile with new goal + journey state
+        return tx.youthProfile.upsert({
+          where: { userId: session.user.id },
+          create: {
+            userId: session.user.id,
+            displayName: session.user.name || "User",
+            ...updateData,
+            ...journeyUpdate,
+          },
+          update: {
+            ...updateData,
+            ...journeyUpdate,
+          },
+        });
+      });
+
+      return NextResponse.json({
+        success: true,
+        primaryGoal: updatedProfile.primaryGoal as CareerGoal | null,
+        secondaryGoal: updatedProfile.secondaryGoal as CareerGoal | null,
+      });
     }
 
-    // Upsert the profile with the new goal
+    // Non-primary goal or clearing — simple upsert
     const updatedProfile = await prisma.youthProfile.upsert({
       where: { userId: session.user.id },
       create: {

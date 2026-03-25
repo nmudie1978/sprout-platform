@@ -43,6 +43,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 
+/** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
+function safeHref(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return url;
+  } catch { /* invalid URL */ }
+  return '#';
+}
+
 // ── Glass Card ───────────────────────────────────────────────────────
 function GlassCard({
   children,
@@ -138,7 +147,7 @@ function LibraryCard({
             {pageItems.map((item, i) => (
               <a
                 key={i}
-                href={item.url}
+                href={safeHref(item.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
@@ -161,7 +170,7 @@ function LibraryCard({
             {pageItems.map((item, i) => (
               <a
                 key={i}
-                href={item.url}
+                href={safeHref(item.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group rounded-md border border-border/20 overflow-hidden hover:border-border/50 transition-all"
