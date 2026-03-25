@@ -396,7 +396,9 @@ export default function DashboardPage() {
   const { data: dashboardStats } = useQuery<{
     appStats: { applied: number; waiting: number; accepted: number; done: number };
     savedSummary: { total: number; byType: { articles: number; videos: number; podcasts: number; shorts: number } };
+    savedItemsList: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
     exploredCareers: string[];
+    careerInterests: string[];
     recentActivity: { type: string; title: string; time: string }[];
   }>({
     queryKey: ["dashboard-stats"],
@@ -515,12 +517,12 @@ export default function DashboardPage() {
 
   // Real-time stats from DB
   const exploredCareers = dashboardStats?.exploredCareers ?? [];
-  const careerInterests = (dashboardStats as Record<string, unknown>)?.careerInterests as string[] ?? [];
+  const careerInterests = dashboardStats?.careerInterests ?? [];
   const savedSummary = dashboardStats?.savedSummary ?? {
     total: 0,
     byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 },
   };
-  const savedItemsList = ((dashboardStats as Record<string, unknown>)?.savedItemsList as { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[]) ?? [];
+  const savedItemsList = dashboardStats?.savedItemsList ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
 
   // Application stats

@@ -149,7 +149,9 @@ export async function GET() {
     return NextResponse.json({
       appStats: { applied: 0, waiting: 0, accepted: 0, done: 0 },
       savedSummary: { total: 0, byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 } },
+      savedItemsList: [],
       exploredCareers: [],
+      careerInterests: [],
       recentActivity: [],
     });
   }
