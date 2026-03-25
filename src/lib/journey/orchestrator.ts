@@ -681,8 +681,8 @@ export function createOrchestrator(
     const stateId = JOURNEY_STATES[i] as JourneyStateId;
     if (stateId !== reconciledState) continue;
 
-    // If the current state is completed but not in completedSteps, fix it
-    if (hasCompletedOrSkippedState(stateId, context)) {
+    // If the current state is completed (by context flags OR already in completedSteps), advance
+    if (hasCompletedOrSkippedState(stateId, context) || reconciledCompleted.includes(stateId)) {
       if (!reconciledCompleted.includes(stateId)) {
         reconciledCompleted.push(stateId);
       }

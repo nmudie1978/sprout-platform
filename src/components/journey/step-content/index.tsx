@@ -806,8 +806,23 @@ function CareerShadowContent({
   const [skills, setSkills] = useState(
     existingSkills.length > 0 ? existingSkills.join('\n') : career?.keySkills?.join('\n') || ''
   );
-  const [courses, setCourses] = useState(existingCourses.join('\n'));
-  const [requirements, setRequirements] = useState(existingRequirements.join('\n'));
+  const [courses, setCourses] = useState(
+    existingCourses.length > 0
+      ? existingCourses.join('\n')
+      : career
+        ? [
+            career.educationPath,
+            `Search vilbli.no for "${career.title}" programmes`,
+          ].filter(Boolean).join('\n')
+        : ''
+  );
+  const [requirements, setRequirements] = useState(
+    existingRequirements.length > 0
+      ? existingRequirements.join('\n')
+      : career?.entryLevel
+        ? 'No higher education required — entry-level accessible'
+        : ''
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

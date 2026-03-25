@@ -29,6 +29,7 @@ function getOpenAIClient(): OpenAI | null {
 const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY valid JSON.
 Generate 7 items (2 foundation, 2 education, 2 experience, 1 career) + 4 schoolTrack items.
 JSON: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
+CRITICAL: The user's current age is provided. ALL items must have startAge >= the user's current age. Never generate steps for ages younger than the user. The first foundation item should start at exactly the user's age.
 Rules: age-appropriate, practical microActions, encouraging, no jargon, 3+ milestones, career-specific subjects.`;
 
 // ============================================
@@ -123,14 +124,19 @@ export async function POST(req: NextRequest) {
         const parsed = JSON.parse(content);
         if (!isValidJourney(parsed)) throw new Error('Invalid structure');
 
+        // Clamp all ages to be >= user's current age
+        const clampAge = (age: number) => Math.max(age, userAge);
+
         journey = {
           id: `ai-${career.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
           career: parsed.career,
-          startAge: parsed.startAge || userAge,
+          startAge: userAge,
           startYear: parsed.startYear || new Date().getFullYear(),
           items: parsed.items.map((item: Omit<Journey['items'][number], 'id'>, i: number) => ({
             id: `ai-${i}-${Math.random().toString(36).slice(2, 7)}`,
             ...item,
+            startAge: clampAge(item.startAge),
+            endAge: item.endAge ? clampAge(item.endAge) : item.endAge,
           })),
           schoolTrack: Array.isArray(parsed.schoolTrack)
             ? (parsed.schoolTrack as unknown as Record<string, unknown>[]).map((st, i) => ({
@@ -139,8 +145,8 @@ export async function POST(req: NextRequest) {
                 title: (st.title as string) || '',
                 subjects: Array.isArray(st.subjects) ? st.subjects as string[] : [],
                 personalLearning: (st.personalLearning as string) || undefined,
-                startAge: (st.startAge as number) || userAge,
-                endAge: (st.endAge as number) || undefined,
+                startAge: clampAge((st.startAge as number) || userAge),
+                endAge: (st.endAge as number) ? clampAge(st.endAge as number) : undefined,
               }))
             : undefined,
         };
