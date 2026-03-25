@@ -23,6 +23,9 @@
     "refresh:research-facts": "tsx scripts/refresh-research-facts.ts",
     "events:refresh": "tsx scripts/events-refresh.ts",
     "insights:refresh": "tsx scripts/refresh-insights-pool.ts",
+    "perf:journey": "vitest run tests/my-journey-performance/",
+    "perf:journey:ci": "vitest run tests/my-journey-performance/regression/",
+    "perf:journey:check": "tsx scripts/journey-perf-check.ts",
     "prepare": "husky"
   },
   "dependencies": {

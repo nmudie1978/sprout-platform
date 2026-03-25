@@ -43,6 +43,7 @@ import type {
   GoalConfidence,
   GoalTimeframe,
 } from "@/lib/goals/types";
+import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import {
   STATUS_CONFIG,
   CONFIDENCE_CONFIG,
@@ -724,10 +725,16 @@ export default function GoalsPageContent() {
       if (!response.ok) throw new Error("Failed to update goal");
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      if (variables.slot === "primary") {
+        syncGuidanceGoal(variables.goal?.title ?? null);
+      }
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+      queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+      queryClient.invalidateQueries({ queryKey: ["education-context"] });
       setEditingSlot(null);
       setPrimaryEditForm(null);
       setSecondaryEditForm(null);
@@ -933,6 +940,8 @@ export default function GoalsPageContent() {
           queryClient.invalidateQueries({ queryKey: ["goals"] });
           queryClient.invalidateQueries({ queryKey: ["my-goals"] });
           queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+          queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+          queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
         }}
       />
 

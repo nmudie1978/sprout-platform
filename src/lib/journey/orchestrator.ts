@@ -781,3 +781,98 @@ export function validateStepCompletionData(
 
   return { valid: true };
 }
+
+/**
+ * Sanitize step completion data by stripping HTML tags from user-supplied
+ * text fields. Call after validation but before passing to updateSummary.
+ *
+ * Defense-in-depth: React auto-escapes on render, but sanitizing at write
+ * time prevents stored XSS if data is consumed by non-React clients.
+ */
+export function sanitizeStepCompletionData(data: StepCompletionData): StepCompletionData {
+  const strip = (s: string): string => s.replace(/<[^>]*>/g, '').replace(/\0/g, '').trim();
+  const stripArr = (arr: string[]): string[] => arr.map(strip).filter(Boolean);
+
+  switch (data.type) {
+    case 'REFLECT_ON_STRENGTHS':
+      return {
+        ...data,
+        topStrengths: stripArr(data.topStrengths),
+        demonstratedSkills: stripArr(data.demonstratedSkills),
+      };
+    case 'EXPLORE_CAREERS':
+      return {
+        ...data,
+        selectedCareers: stripArr(data.selectedCareers),
+      };
+    case 'ROLE_DEEP_DIVE':
+      return {
+        ...data,
+        role: {
+          ...data.role,
+          title: strip(data.role.title),
+          educationPaths: stripArr(data.role.educationPaths),
+          certifications: stripArr(data.role.certifications),
+          companies: stripArr(data.role.companies),
+          humanSkills: stripArr(data.role.humanSkills),
+          entryExpectations: strip(data.role.entryExpectations),
+        },
+      };
+    case 'REVIEW_INDUSTRY_OUTLOOK':
+      return {
+        ...data,
+        trendsReviewed: stripArr(data.trendsReviewed),
+        outlookNotes: stripArr(data.outlookNotes),
+        roleRealityNotes: data.roleRealityNotes ? stripArr(data.roleRealityNotes) : undefined,
+        industryInsightNotes: data.industryInsightNotes ? stripArr(data.industryInsightNotes) : undefined,
+      };
+    case 'CAREER_SHADOW':
+      return {
+        ...data,
+        qualifications: data.qualifications ? stripArr(data.qualifications) : undefined,
+        keySkills: data.keySkills ? stripArr(data.keySkills) : undefined,
+        courses: data.courses ? stripArr(data.courses) : undefined,
+        requirements: data.requirements ? stripArr(data.requirements) : undefined,
+      };
+    case 'CREATE_ACTION_PLAN':
+      return {
+        ...data,
+        plan: {
+          ...data.plan,
+          roleTitle: strip(data.plan.roleTitle),
+          shortTermActions: stripArr(data.plan.shortTermActions),
+          midTermMilestone: strip(data.plan.midTermMilestone),
+          skillToBuild: strip(data.plan.skillToBuild),
+        },
+      };
+    case 'COMPLETE_ALIGNED_ACTION':
+      return {
+        ...data,
+        actionTitle: strip(data.actionTitle),
+      };
+    case 'SUBMIT_ACTION_REFLECTION':
+      return {
+        ...data,
+        reflectionResponse: strip(data.reflectionResponse),
+      };
+    case 'UPDATE_PLAN':
+      return {
+        ...data,
+        updatedPlan: {
+          ...data.updatedPlan,
+          roleTitle: strip(data.updatedPlan.roleTitle),
+          shortTermActions: stripArr(data.updatedPlan.shortTermActions),
+          midTermMilestone: strip(data.updatedPlan.midTermMilestone),
+          skillToBuild: strip(data.updatedPlan.skillToBuild),
+        },
+        changeReason: strip(data.changeReason),
+      };
+    case 'EXTERNAL_FEEDBACK':
+      return {
+        ...data,
+        feedbackSummary: strip(data.feedbackSummary),
+      };
+    default:
+      return data;
+  }
+}

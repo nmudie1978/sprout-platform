@@ -42,6 +42,7 @@ import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
+import { syncGuidanceGoal } from "@/lib/guidance/rules";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -437,11 +438,16 @@ export default function DashboardPage() {
       if (!response.ok) throw new Error("Failed to switch goal");
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, goalTitle) => {
+      syncGuidanceGoal(goalTitle);
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["my-goals"] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+      queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+      queryClient.invalidateQueries({ queryKey: ["education-context"] });
     },
   });
 

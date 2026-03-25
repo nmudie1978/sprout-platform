@@ -10,7 +10,7 @@
  *   <GuidanceStack placement="dashboard" context={guidanceContext} />
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { GuidanceCallout } from './guidance-callout';
 import { getGuidanceForPlacement, dismissGuidance } from '@/lib/guidance/rules';
@@ -24,6 +24,15 @@ interface GuidanceStackProps {
 
 export function GuidanceStack({ placement, context, className }: GuidanceStackProps) {
   const [dismissedLocal, setDismissedLocal] = useState<Set<string>>(new Set());
+
+  // Reset local dismissals when the goal changes so guidance re-evaluates fresh
+  const prevGoalRef = useRef(context.goalTitle);
+  useEffect(() => {
+    if (prevGoalRef.current !== context.goalTitle) {
+      setDismissedLocal(new Set());
+      prevGoalRef.current = context.goalTitle;
+    }
+  }, [context.goalTitle]);
 
   const items = useMemo(
     () => getGuidanceForPlacement(placement, context),

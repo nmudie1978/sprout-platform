@@ -3,6 +3,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { CareerGoal, GoalSlot, GoalsResponse } from "@/lib/goals/types";
+import { syncGuidanceGoal } from "@/lib/guidance/rules";
+
+/**
+ * Invalidate all caches that derive from the primary goal.
+ * Called after any goal mutation to ensure the entire app
+ * treats the new goal as the single source of truth.
+ */
+function invalidateGoalDependentCaches(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+  queryClient.invalidateQueries({ queryKey: ["goals"] });
+  queryClient.invalidateQueries({ queryKey: ["profile"] });
+  queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+  queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+  queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+  queryClient.invalidateQueries({ queryKey: ["education-context"] });
+}
 
 /**
  * Fetch the user's primary and secondary goals.
@@ -16,6 +32,7 @@ export function useGoals(enabled = true) {
       return res.json();
     },
     enabled,
+    staleTime: 60_000, // 1 min — goals rarely change mid-session
   });
 }
 
@@ -35,11 +52,11 @@ export function useUpdateGoal() {
       if (!res.ok) throw new Error("Failed to update goal");
       return res.json();
     },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+    onSuccess: (_data, variables) => {
+      if (variables.slot === "primary") {
+        syncGuidanceGoal(variables.goal.title);
+      }
+      invalidateGoalDependentCaches(queryClient);
     },
   });
 }
@@ -79,10 +96,10 @@ export function useClearGoal() {
       toast.success(
         slot === "both" ? "Both goals cleared" : `${slot === "primary" ? "Primary" : "Secondary"} goal cleared`
       );
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      if (slot === "primary" || slot === "both") {
+        syncGuidanceGoal(null);
+      }
+      invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {
       toast.error("Failed to clear goal");
@@ -140,15 +157,12 @@ export function usePromoteGoal() {
 
       return res2.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       toast.success("Goals swapped!", {
         description: "Your secondary goal is now primary.",
       });
-      // Fully clear cached timeline data so the new primary triggers a fresh fetch
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
+      syncGuidanceGoal(variables.currentSecondary.title);
+      invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {
       toast.error("Failed to swap goals");

@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { MyJourneyPdfDocument, type JourneyReportData } from "@/lib/reports/myJourneyPdf";
+import { MyJourneyPdfDocument, type JourneyReportData, type RoadmapItem, type SchoolTrackItem } from "@/lib/reports/myJourneyPdf";
 import path from "path";
 import { Font } from "@react-pdf/renderer";
 
@@ -40,6 +40,7 @@ export async function POST() {
         displayName: true,
         primaryGoal: true,
         journeySummary: true,
+        generatedTimeline: true,
       },
     });
 
@@ -54,6 +55,36 @@ export async function POST() {
 
     // Education context
     const eduContext = (summary.educationContext as Record<string, unknown>) || null;
+
+    // Education Roadmap (from generated timeline)
+    const timeline = (profile.generatedTimeline as Record<string, unknown>) || null;
+    let roadmapItems: RoadmapItem[] = [];
+    let schoolTrack: SchoolTrackItem[] = [];
+    let roadmapCareer: string | null = null;
+
+    if (timeline) {
+      roadmapCareer = (timeline.career as string) || null;
+      const rawItems = (timeline.items as RoadmapItem[]) || [];
+      roadmapItems = rawItems.map((item) => ({
+        stage: item.stage || "foundation",
+        title: item.title || "",
+        subtitle: item.subtitle,
+        startAge: item.startAge || 16,
+        endAge: item.endAge,
+        isMilestone: item.isMilestone || false,
+        description: item.description,
+        microActions: item.microActions,
+      }));
+      const rawSchool = (timeline.schoolTrack as SchoolTrackItem[]) || [];
+      schoolTrack = rawSchool.map((item) => ({
+        stage: item.stage || "foundation",
+        title: item.title || "",
+        subjects: item.subjects || [],
+        personalLearning: item.personalLearning,
+        startAge: item.startAge || 16,
+        endAge: item.endAge,
+      }));
+    }
 
     const reportData: JourneyReportData = {
       userName: profile.displayName || "User",
@@ -89,6 +120,10 @@ export async function POST() {
       schoolName: eduContext ? (eduContext.schoolName as string) || null : null,
       subjects: eduContext ? (eduContext.currentSubjects as string[]) || [] : [],
       expectedCompletion: eduContext ? (eduContext.expectedCompletion as string) || null : null,
+      // Education Roadmap
+      roadmapItems,
+      schoolTrack,
+      roadmapCareer,
     };
 
     const pdfBuffer = await renderToBuffer(

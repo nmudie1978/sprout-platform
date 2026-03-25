@@ -30,6 +30,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 import { useGoals } from '@/hooks/use-goals';
+import { syncGuidanceGoal } from '@/lib/guidance/rules';
 import { DiscoverCompleteModal } from '@/components/journey/discover-complete-modal';
 import { UnderstandCompleteModal } from '@/components/journey/understand-complete-modal';
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
@@ -502,9 +503,16 @@ export default function MyJourneyPage() {
       setShowDiscoverCelebration(false);
       setShowUnderstandCelebration(false);
       setActiveTab('discover');
+
+      // Sync guidance dismissals so old-goal prompts are cleared
+      syncGuidanceGoal(currentGoal);
+
+      // Force immediate refetch of journey state — don't wait for staleTime
+      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
+      queryClient.invalidateQueries({ queryKey: ['goal-data'] });
     }
     prevGoalRef.current = currentGoal;
-  }, [primaryGoal?.title]);
+  }, [primaryGoal?.title, queryClient]);
 
   // Gate goal sheet — warn if changing an existing goal
   const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
@@ -554,9 +562,13 @@ export default function MyJourneyPage() {
   }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
 
   // Understand celebration — fires when Understand is complete
-  // Skip if journey is still loading (prevents stale data from triggering popups after goal switch)
+  // Guard: only fire when journey data belongs to the CURRENT primary goal
+  const journeyGoalTitle = journeyData?.journey?.summary?.primaryGoal?.title ?? null;
+  const journeyMatchesGoal = !!goalTitle && journeyGoalTitle === goalTitle;
+
   useEffect(() => {
     if (journeyLoading) return;
+    if (!journeyMatchesGoal) return; // Don't fire from stale/mismatched journey data
     if (understandComplete && goalTitle && !celebratedRef.current.has('understand')) {
       celebratedRef.current.add('understand');
       const seenKey = `understand-celebrated-${goalTitle}`;
@@ -567,7 +579,7 @@ export default function MyJourneyPage() {
         setActiveTab('act');
       }
     }
-  }, [understandComplete, goalTitle]);
+  }, [understandComplete, goalTitle, journeyMatchesGoal, journeyLoading]);
 
   // When Discover is complete: show celebration (once), then advance on continue.
   const discoverAdvanceDone = useRef(false);
@@ -578,6 +590,7 @@ export default function MyJourneyPage() {
   }, [primaryGoal?.title]);
   useEffect(() => {
     if (journeyLoading) return; // Skip while data is refreshing after goal switch
+    if (!journeyMatchesGoal) return; // Don't fire from stale/mismatched journey data
     if (discoverAdvanceDone.current || !discoverComplete) return;
     const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
     const stateIsStuck = journey && discoverStates.includes(journey.currentState);
@@ -602,7 +615,7 @@ export default function MyJourneyPage() {
         .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
         .catch(() => {});
     }
-  }, [discoverComplete, journey, goalTitle, queryClient]);
+  }, [discoverComplete, journey, goalTitle, journeyMatchesGoal, journeyLoading, queryClient]);
 
   const isLoading = sessionStatus === 'loading' || journeyLoading;
 
@@ -850,11 +863,13 @@ export default function MyJourneyPage() {
         secondaryGoal={secondaryGoal}
         onSuccess={() => {
           // Goals API already handles: save old goal → reset → restore new goal
-          // Just close sheet, reset tab, and refresh data
+          // Close sheet, reset tab, and refresh all goal-dependent data
           setGoalSheetOpen(false);
           setActiveTab('discover');
           queryClient.invalidateQueries({ queryKey: ['journey-state'] });
           queryClient.invalidateQueries({ queryKey: ['my-goals'] });
+          queryClient.invalidateQueries({ queryKey: ['goal-data'] });
+          queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
         }}
       />
     </div>

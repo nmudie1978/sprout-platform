@@ -121,6 +121,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate URL scheme — only allow http and https
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        return NextResponse.json(
+          { error: 'Invalid URL: only http and https URLs are allowed' },
+          { status: 400 }
+        );
+      }
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid URL format' },
+        { status: 400 }
+      );
+    }
+
     const validTypes: SavedItemType[] = ['ARTICLE', 'VIDEO', 'PODCAST', 'SHORT'];
     if (!validTypes.includes(type)) {
       return NextResponse.json(

@@ -33,6 +33,7 @@ export {
   JourneyOrchestrator,
   createOrchestrator,
   validateStepCompletionData,
+  sanitizeStepCompletionData,
 } from './orchestrator';
 
 // Timeline Service

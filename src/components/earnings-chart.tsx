@@ -102,11 +102,11 @@ export function EarningsChart() {
           className="mb-6 rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm px-6 py-6"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-muted/50">
-              <BarChart3 className="h-5 w-5 text-muted-foreground" />
+            <div className="p-2 rounded-xl bg-teal-500/10">
+              <BarChart3 className="h-5 w-5 text-teal-500" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-foreground">Earnings Overview</h1>
+              <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">Earnings Overview</h1>
               <p className="text-xs text-muted-foreground/60">Track your income over time</p>
             </div>
           </div>
@@ -148,13 +148,13 @@ export function EarningsChart() {
               transition={{ delay: 0.1 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
             >
-              <Card className="border border-border/40 bg-card/80">
+              <Card className="border border-teal-500/15 bg-card/80">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <div className="flex items-center gap-2 text-sm text-teal-600/70 dark:text-teal-400/70 mb-1">
                     <Wallet className="h-4 w-4" />
                     Total Earned
                   </div>
-                  <div className="text-2xl font-bold text-foreground/80">
+                  <div className="text-2xl font-bold text-teal-600/90 dark:text-teal-400/90">
                     {formatCurrency(summary?.totalEarnings || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground/50">
@@ -163,26 +163,26 @@ export function EarningsChart() {
                 </CardContent>
               </Card>
 
-              <Card className="border border-border/40 bg-card/80">
+              <Card className="border border-blue-500/15 bg-card/80">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <div className="flex items-center gap-2 text-sm text-blue-600/70 dark:text-blue-400/70 mb-1">
                     <Calendar className="h-4 w-4" />
                     Monthly Avg
                   </div>
-                  <div className="text-2xl font-bold text-foreground/80">
+                  <div className="text-2xl font-bold text-blue-600/90 dark:text-blue-400/90">
                     {formatCurrency(summary?.avgMonthly || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground/50">per month</div>
                 </CardContent>
               </Card>
 
-              <Card className="border border-border/40 bg-card/80">
+              <Card className="border border-amber-500/15 bg-card/80">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <div className="flex items-center gap-2 text-sm text-amber-600/70 dark:text-amber-400/70 mb-1">
                     <Trophy className="h-4 w-4" />
                     Best Month
                   </div>
-                  <div className="text-2xl font-bold text-foreground/80">
+                  <div className="text-2xl font-bold text-amber-600/90 dark:text-amber-400/90">
                     {formatCurrency(summary?.bestMonthAmount || 0)}
                   </div>
                   <div className="text-xs text-muted-foreground/50">
@@ -191,9 +191,19 @@ export function EarningsChart() {
                 </CardContent>
               </Card>
 
-              <Card className="border border-border/40 bg-card/80">
+              <Card className={`border bg-card/80 ${
+                summary?.yearOverYearGrowth != null
+                  ? (summary.yearOverYearGrowth >= 0 ? "border-emerald-500/15" : "border-red-500/15")
+                  : "border-border/40"
+              }`}>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <div className={`flex items-center gap-2 text-sm mb-1 ${
+                    summary?.yearOverYearGrowth != null
+                      ? (summary.yearOverYearGrowth >= 0
+                        ? "text-emerald-600/70 dark:text-emerald-400/70"
+                        : "text-red-500/70 dark:text-red-400/70")
+                      : "text-muted-foreground"
+                  }`}>
                     {(summary?.yearOverYearGrowth ?? 0) >= 0 ? (
                       <TrendingUp className="h-4 w-4" />
                     ) : (

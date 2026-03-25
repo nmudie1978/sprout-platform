@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import {
   createOrchestrator,
   validateStepCompletionData,
+  sanitizeStepCompletionData,
   type JourneyStateContext,
   type JourneyStateId,
   type JourneySummary,
@@ -40,6 +41,9 @@ export async function POST(req: NextRequest) {
     if (!validation.valid) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
+
+    // Sanitize user input — strip HTML tags to prevent stored XSS
+    const sanitizedData = sanitizeStepCompletionData(data);
 
     // Fetch current profile and build context
     const profile = await prisma.youthProfile.findUnique({
@@ -147,8 +151,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Update summary with completion data
-    const updatedSummary = orchestrator.updateSummary(data);
+    // Update summary with sanitized completion data
+    const updatedSummary = orchestrator.updateSummary(sanitizedData);
 
     // Mark step as completed and try to advance
     if (!completedSteps.includes(stepId)) {
@@ -208,8 +212,7 @@ export async function POST(req: NextRequest) {
       journey: orchestrator.getUIState(),
     });
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Failed to complete journey step:', errorMsg, error);
-    return NextResponse.json({ error: `Failed to complete journey step: ${errorMsg}` }, { status: 500 });
+    console.error('Failed to complete journey step:', error);
+    return NextResponse.json({ error: 'Failed to complete journey step' }, { status: 500 });
   }
 }

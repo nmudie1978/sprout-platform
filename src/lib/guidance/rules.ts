@@ -279,8 +279,13 @@ export const GUIDANCE_RULES: GuidanceRule[] = [
 // ── Engine ──────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'endeavrly-guidance-dismissed';
+const GOAL_KEY = 'endeavrly-guidance-goal';
 const MAX_PER_PLACEMENT = 2;
 
+/**
+ * Dismissed state is scoped to the active goal. When the goal changes,
+ * all previous dismissals are cleared so guidance can re-evaluate fresh.
+ */
 function getDismissed(): Set<string> {
   if (typeof window === 'undefined') return new Set();
   try {
@@ -296,6 +301,29 @@ export function dismissGuidance(id: string): void {
   const dismissed = getDismissed();
   dismissed.add(id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...dismissed]));
+}
+
+/**
+ * Clear all guidance dismissals. Called when the primary goal changes
+ * so that guidance rules are re-evaluated fresh for the new goal.
+ */
+export function resetGuidanceDismissals(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+/**
+ * Track which goal the dismissed state belongs to. If the goal changed,
+ * automatically clear dismissed state so rules re-evaluate for the new goal.
+ */
+export function syncGuidanceGoal(goalTitle: string | null): void {
+  if (typeof window === 'undefined') return;
+  const prev = localStorage.getItem(GOAL_KEY);
+  const current = goalTitle ?? '';
+  if (prev !== null && prev !== current) {
+    resetGuidanceDismissals();
+  }
+  localStorage.setItem(GOAL_KEY, current);
 }
 
 export function getGuidanceForPlacement(

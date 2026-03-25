@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { searchCareers, getAllCareers, type Career } from "@/lib/career-pathways";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
 import { useDebounce } from "@/hooks/use-debounce";
+import { syncGuidanceGoal } from "@/lib/guidance/rules";
 
 interface GoalSelectionSheetProps {
   open: boolean;
@@ -97,16 +98,22 @@ export function GoalSelectionSheet({
       if (!response.ok) throw new Error("Failed to set goal");
       return { slot };
     },
-    onSuccess: ({ slot }) => {
+    onSuccess: ({ slot }, variables) => {
       toast.success(
         slot === "primary" ? "Primary Goal Set!" : "Secondary Goal Set!",
         { description: "View and customise your goals on the Goals page." }
       );
+      if (slot === "primary") {
+        syncGuidanceGoal(variables.title);
+      }
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+      queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+      queryClient.invalidateQueries({ queryKey: ["education-context"] });
       onSuccess?.(slot);
       onClose();
     },
