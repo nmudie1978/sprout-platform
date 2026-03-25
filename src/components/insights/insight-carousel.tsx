@@ -43,6 +43,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { VideoPlayerModal } from "./video-player-modal";
+import { ReportBrokenLink, isLinkHidden } from "./report-broken-link";
 import { useWatchedVideos, useMarkWatched } from "@/hooks/use-watched";
 import type {
   InsightSectionKey,
@@ -261,25 +262,28 @@ function ArticleCard({ article, onSave, isSaved, isSaving }: ArticleCardProps) {
               <ExternalLink className="h-3 w-3" />
               Read article
             </span>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onSave();
-              }}
-              disabled={isSaving || isSaved}
-              className={cn(
-                "p-1 rounded hover:bg-muted transition-colors",
-                isSaved && "text-primary"
-              )}
-              aria-label={isSaved ? "Saved to library" : "Save to library"}
-            >
-              {isSaved ? (
-                <BookmarkCheck className="h-3.5 w-3.5" />
-              ) : (
-                <Bookmark className="h-3.5 w-3.5" />
-              )}
-            </button>
+            <div className="flex items-center gap-0.5">
+              <ReportBrokenLink url={article.url} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSave();
+                }}
+                disabled={isSaving || isSaved}
+                className={cn(
+                  "p-1 rounded hover:bg-muted transition-colors",
+                  isSaved && "text-primary"
+                )}
+                aria-label={isSaved ? "Saved to library" : "Save to library"}
+              >
+                {isSaved ? (
+                  <BookmarkCheck className="h-3.5 w-3.5" />
+                ) : (
+                  <Bookmark className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -377,25 +381,28 @@ function VideoCard({
               <Play className="h-3 w-3" />
               {isWatched ? "Watch again" : "Watch now"}
             </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onSave();
-              }}
-              disabled={isSaving || isSaved}
-              className={cn(
-                "p-1 rounded hover:bg-muted transition-colors",
-                isSaved && "text-primary"
-              )}
-              aria-label={isSaved ? "Saved to library" : "Save to library"}
-            >
-              {isSaved ? (
-                <BookmarkCheck className="h-3.5 w-3.5" />
-              ) : (
-                <Bookmark className="h-3.5 w-3.5" />
-              )}
-            </button>
+            <div className="flex items-center gap-0.5">
+              <ReportBrokenLink url={`https://www.youtube.com/watch?v=${video.videoId}`} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSave();
+                }}
+                disabled={isSaving || isSaved}
+                className={cn(
+                  "p-1 rounded hover:bg-muted transition-colors",
+                  isSaved && "text-primary"
+                )}
+                aria-label={isSaved ? "Saved to library" : "Save to library"}
+              >
+                {isSaved ? (
+                  <BookmarkCheck className="h-3.5 w-3.5" />
+                ) : (
+                  <Bookmark className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -488,6 +495,7 @@ function ArticleListRow({
           {isNewDrop(article.publishedAt) && <NewDropBadge />}
         </div>
       </div>
+      <ReportBrokenLink url={article.url} />
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -557,6 +565,7 @@ function VideoListRow({
           {isWatched && <WatchedBadge />}
         </div>
       </div>
+      <ReportBrokenLink url={`https://www.youtube.com/watch?v=${video.videoId}`} />
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -648,25 +657,28 @@ function PodcastCard({ podcast, onSave, isSaved, isSaving }: PodcastCardProps) {
               <Headphones className="h-3 w-3" />
               Listen · {podcast.host}
             </span>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onSave();
-              }}
-              disabled={isSaving || isSaved}
-              className={cn(
-                "p-1 rounded hover:bg-muted transition-colors",
-                isSaved && "text-primary"
-              )}
-              aria-label={isSaved ? "Saved to library" : "Save to library"}
-            >
-              {isSaved ? (
-                <BookmarkCheck className="h-3.5 w-3.5" />
-              ) : (
-                <Bookmark className="h-3.5 w-3.5" />
-              )}
-            </button>
+            <div className="flex items-center gap-0.5">
+              <ReportBrokenLink url={podcast.externalUrl} />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onSave();
+                }}
+                disabled={isSaving || isSaved}
+                className={cn(
+                  "p-1 rounded hover:bg-muted transition-colors",
+                  isSaved && "text-primary"
+                )}
+                aria-label={isSaved ? "Saved to library" : "Save to library"}
+              >
+                {isSaved ? (
+                  <BookmarkCheck className="h-3.5 w-3.5" />
+                ) : (
+                  <Bookmark className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -720,6 +732,7 @@ function PodcastListRow({
           {isNewDrop(podcast.publishedAt) && <NewDropBadge />}
         </div>
       </div>
+      <ReportBrokenLink url={podcast.externalUrl} />
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -826,13 +839,16 @@ export function InsightCarousel({
     setPage(0);
   }, [activeTab, viewMode]);
 
-  // Compute pages
-  const currentItems =
-    activeTab === "videos"
-      ? videos
-      : activeTab === "podcasts"
-        ? podcasts
-        : articles;
+  // Compute pages (filter out user-reported broken links)
+  const currentItems = (() => {
+    if (activeTab === "videos") {
+      return videos.filter((v) => !isLinkHidden(`https://www.youtube.com/watch?v=${v.videoId}`));
+    }
+    if (activeTab === "podcasts") {
+      return podcasts.filter((p) => !isLinkHidden(p.externalUrl));
+    }
+    return articles.filter((a) => !isLinkHidden(a.url));
+  })();
   const totalPages = Math.max(1, Math.ceil(currentItems.length / cardsPerPage));
   const safeCurrentPage = Math.min(page, totalPages - 1);
   const pageItems = useMemo(
