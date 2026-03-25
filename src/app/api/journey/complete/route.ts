@@ -146,23 +146,30 @@ export async function POST(req: NextRequest) {
     const completedSteps = orchestrator.getCompletedSteps();
 
     // Auto-advance past ROLE_DEEP_DIVE if user has a goal set — setting a goal
-    // counts as completing the deep dive, but the state machine may not know yet
-    if (currentState === 'ROLE_DEEP_DIVE' && stepId !== 'ROLE_DEEP_DIVE') {
-      const goalTitle = (profile.primaryGoal as Record<string, unknown>)?.title;
-      if (goalTitle) {
-        // Advance the DB state directly past ROLE_DEEP_DIVE
-        const updatedSteps = [...(profile.journeyCompletedSteps as string[] || [])];
-        if (!updatedSteps.includes('ROLE_DEEP_DIVE')) updatedSteps.push('ROLE_DEEP_DIVE');
-        await prisma.youthProfile.update({
-          where: { userId: session.user.id },
-          data: {
-            journeyState: 'REVIEW_INDUSTRY_OUTLOOK',
-            journeyCompletedSteps: updatedSteps,
-          },
-        });
-        // Refresh current state for the gate check
-        currentState = stepId as unknown as typeof currentState;
+    // counts as completing the deep dive, but the state machine may not know yet.
+    // Also handle cases where currentState is any DISCOVER state but user is trying
+    // to complete an UNDERSTAND or ACT step with a goal already set.
+    const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
+    const isStuckInDiscover = discoverStates.includes(currentState);
+    const isTargetingLaterStep = !discoverStates.includes(stepId);
+    const goalTitle2 = profile.primaryGoal && typeof profile.primaryGoal === 'object'
+      ? (profile.primaryGoal as Record<string, unknown>)?.title
+      : null;
+
+    if (isStuckInDiscover && isTargetingLaterStep && goalTitle2) {
+      // Advance the DB state to match what the user is trying to do
+      const updatedSteps = [...(Array.isArray(profile.journeyCompletedSteps) ? profile.journeyCompletedSteps as string[] : [])];
+      for (const ds of discoverStates) {
+        if (!updatedSteps.includes(ds)) updatedSteps.push(ds);
       }
+      await prisma.youthProfile.update({
+        where: { userId: session.user.id },
+        data: {
+          journeyState: stepId,
+          journeyCompletedSteps: updatedSteps,
+        },
+      });
+      currentState = stepId as unknown as typeof currentState;
     }
 
     if (stepId !== currentState && !completedSteps.includes(stepId)) {
