@@ -142,8 +142,29 @@ export async function POST(req: NextRequest) {
     });
 
     // Gate: step must be current state or already completed (for updates)
-    const currentState = orchestrator.getCurrentState();
+    let currentState = orchestrator.getCurrentState();
     const completedSteps = orchestrator.getCompletedSteps();
+
+    // Auto-advance past ROLE_DEEP_DIVE if user has a goal set — setting a goal
+    // counts as completing the deep dive, but the state machine may not know yet
+    if (currentState === 'ROLE_DEEP_DIVE' && stepId !== 'ROLE_DEEP_DIVE') {
+      const goalTitle = (profile.primaryGoal as Record<string, unknown>)?.title;
+      if (goalTitle) {
+        // Advance the DB state directly past ROLE_DEEP_DIVE
+        const updatedSteps = [...(profile.journeyCompletedSteps as string[] || [])];
+        if (!updatedSteps.includes('ROLE_DEEP_DIVE')) updatedSteps.push('ROLE_DEEP_DIVE');
+        await prisma.youthProfile.update({
+          where: { userId: session.user.id },
+          data: {
+            journeyState: 'REVIEW_INDUSTRY_OUTLOOK',
+            journeyCompletedSteps: updatedSteps,
+          },
+        });
+        // Refresh current state for the gate check
+        currentState = stepId as unknown as typeof currentState;
+      }
+    }
+
     if (stepId !== currentState && !completedSteps.includes(stepId)) {
       return NextResponse.json(
         { error: `Complete step "${currentState}" first before "${stepId}"` },
