@@ -117,14 +117,6 @@ const CARDS: CardConfig[] = [
     type: 'text',
     placeholder: 'e.g. My uncle — he started his own business and always helps people in the community.',
   },
-  {
-    id: 'experiences',
-    title: 'What You\'ve Tried',
-    description: 'Any work, volunteering, hobbies, or projects? (optional)',
-    icon: Briefcase,
-    type: 'text',
-    placeholder: 'e.g. Helped at a summer camp, built a website for fun, part-time in a shop.',
-  },
 ];
 
 // ── Chip Selector ────────────────────────────────────────────────────
@@ -138,6 +130,8 @@ function ChipSelector({
   selected: string[];
   onChange: (selected: string[]) => void;
 }) {
+  const [customInput, setCustomInput] = useState('');
+
   const toggle = (opt: string) => {
     onChange(
       selected.includes(opt)
@@ -145,6 +139,17 @@ function ChipSelector({
         : [...selected, opt]
     );
   };
+
+  const addCustom = () => {
+    const trimmed = customInput.trim();
+    if (trimmed && !selected.includes(trimmed) && !options.includes(trimmed)) {
+      onChange([...selected, trimmed]);
+      setCustomInput('');
+    }
+  };
+
+  // Custom items are anything selected that isn't in the predefined options
+  const customItems = selected.filter((s) => !options.includes(s));
 
   return (
     <div className="flex flex-wrap gap-1.5">
@@ -166,6 +171,27 @@ function ChipSelector({
           </button>
         );
       })}
+      {customItems.map((item) => (
+        <button
+          key={item}
+          onClick={() => toggle(item)}
+          className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all border border-teal-500/40 bg-teal-500/10 text-teal-400"
+        >
+          {item}
+          <Check className="h-3 w-3" />
+        </button>
+      ))}
+      <div className="flex items-center gap-1">
+        <input
+          type="text"
+          value={customInput}
+          onChange={(e) => setCustomInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCustom(); } }}
+          placeholder="Other..."
+          className="rounded-full px-3 py-1.5 text-xs border border-dashed border-border/30 bg-transparent text-foreground/70 placeholder:text-muted-foreground/30 focus:outline-none focus:border-teal-500/40 w-24"
+          maxLength={40}
+        />
+      </div>
     </div>
   );
 }
