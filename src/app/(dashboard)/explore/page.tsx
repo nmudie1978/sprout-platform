@@ -20,6 +20,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
+import { SectionWhy } from "@/components/ui/section-why";
 
 export default function ExplorePage() {
   const { data: session } = useSession();
@@ -165,8 +166,9 @@ export default function ExplorePage() {
     <div className="container mx-auto max-w-2xl px-4 py-6">
       {/* Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold flex items-center justify-center gap-2">
           Explore Careers
+          <SectionWhy why="Browse real careers, see what they involve, and save the ones that interest you. This feeds directly into your journey." />
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
           Discover roles that match your interests

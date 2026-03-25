@@ -43,6 +43,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
+import { SectionWhy } from "@/components/ui/section-why";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -65,7 +66,7 @@ function GlassCard({
 }) {
   return (
     <div
-      className={`bg-card/80 backdrop-blur-sm border border-border/40 rounded-2xl ${className}`}
+      className={`bg-card/90 backdrop-blur-sm border border-border rounded-2xl shadow-sm ${className}`}
       style={style}
     >
       {children}
@@ -92,7 +93,7 @@ function LibraryCard({
     <GlassCard className="p-3">
       <div className="flex items-center gap-2 mb-2">
         <BookmarkCheck className="h-3.5 w-3.5 text-blue-500" />
-        <h3 className="text-xs font-semibold">My Library</h3>
+        <h3 className="text-xs font-semibold flex items-center gap-1.5">My Library <SectionWhy why="Articles, videos, and resources you've saved while exploring careers. Your personal research collection." /></h3>
         {total > 0 && (
           <span className="text-[10px] text-muted-foreground/40">{total}</span>
         )}
@@ -299,20 +300,20 @@ function DidYouKnowCard() {
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <div className="rounded-xl border border-border/30 bg-card/50 px-5 py-4">
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/30 mt-0.5 shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-500/60 mt-0.5 shrink-0">
             Did you know?
           </span>
           <a href={fact.href} className="flex-1 min-w-0 group">
-            <p className="text-xs text-muted-foreground/70 leading-relaxed group-hover:text-muted-foreground transition-colors">
+            <p className="text-xs text-foreground/70 leading-relaxed group-hover:text-foreground/90 transition-colors">
               {fact.text}
             </p>
           </a>
-          <span className="text-[9px] text-muted-foreground/25 shrink-0 mt-0.5">{fact.source}</span>
+          <span className="text-[9px] text-amber-500/40 shrink-0 mt-0.5">{fact.source}</span>
           <button
             onClick={refresh}
-            className="p-1 rounded-md text-muted-foreground/25 hover:text-muted-foreground/60 transition-colors shrink-0"
+            className="p-1 rounded-md text-amber-500/30 hover:text-amber-500/70 transition-colors shrink-0"
             title="Show another fact"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -454,10 +455,11 @@ export default function DashboardPage() {
     },
   });
 
-  const displayName =
+  const rawName =
     session?.user?.youthProfile?.displayName ||
     session?.user?.name ||
     "";
+  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
   const journey = journeyData?.journey ?? null;
   const primaryGoal = goalsData?.primaryGoal ?? null;
   const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
@@ -534,13 +536,15 @@ export default function DashboardPage() {
     done: 0,
   };
 
-  // Date
+  // Date & greeting
   const today = new Date();
   const dateStr = today.toLocaleDateString("en-GB", {
     weekday: "short",
     day: "numeric",
     month: "short",
   });
+  const hour = today.getHours();
+  const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
@@ -562,21 +566,52 @@ export default function DashboardPage() {
         }}
       />
 
-      <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-5">
         {/* ── Header ─────────────────────────────────────────── */}
-        <div className="flex items-center justify-between mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-            {isFirstLogin ? `Welcome, ${displayName}` : `Hey, ${displayName}`}
-          </h1>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground/60">
-            <Clock className="h-4 w-4" />
-            {dateStr}
+        <div className="flex items-center justify-between mb-4 sm:mb-5">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
+              {isFirstLogin ? (
+                <>Welcome<span className="text-teal-500">,</span> <span className="text-foreground">{displayName}</span></>
+              ) : (
+                <><span className="text-muted-foreground/70 font-normal">{timeGreeting}</span>{' '}<span className="text-muted-foreground/70 font-normal">{displayName}</span></>
+              )}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground/60 flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              {dateStr}
+            </span>
+            {profileData && (() => {
+              const total = 8;
+              let done = 0;
+              if (profileData.displayName) done++;
+              if (profileData.user?.dateOfBirth) done++;
+              if (profileData.phoneNumber) done++;
+              if (profileData.city) done++;
+              if (profileData.bio) done++;
+              if (profileData.availability) done++;
+              if (profileData.interests?.length > 0) done++;
+              if (goalTitle) done++;
+              const pct = Math.round((done / total) * 100);
+              return (
+                <Link
+                  href="/profile"
+                  title={pct === 100 ? 'Profile complete' : `Profile ${pct}% complete`}
+                  className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors group"
+                >
+                  <User className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
+                  {pct < 100 && (
+                    <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-teal-500 border-2 border-background" />
+                  )}
+                </Link>
+              );
+            })()}
           </div>
         </div>
 
-        <div className="mb-5">
-          <VerificationStatus compact />
-        </div>
+        <VerificationStatus compact />
 
         {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
         {isFirstLogin ? (
@@ -625,8 +660,9 @@ export default function DashboardPage() {
                 <TrendingUp className="h-4 w-4 text-teal-500" />
               </div>
               <div>
-                <h2 className="text-base font-semibold text-foreground">
+                <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5">
                   My Journey
+                  <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Grow — helping you turn career ideas into real steps forward." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60">
                   {goalTitle ? goalTitle : 'Track your growth'}
@@ -735,7 +771,7 @@ export default function DashboardPage() {
             <GlassCard className="p-4 h-full">
               <div className="flex items-center gap-2 mb-3">
                 <Search className="h-3.5 w-3.5 text-teal-500" />
-                <h3 className="text-xs font-semibold">Career Snapshot</h3>
+                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
               </div>
               <div className="space-y-2.5">
                 <a
@@ -771,7 +807,7 @@ export default function DashboardPage() {
               <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
                 <div className="flex items-center gap-2 mb-2">
                   <Search className="h-3.5 w-3.5 text-teal-500" />
-                  <h3 className="text-xs font-semibold">Career Snapshot</h3>
+                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
                 </div>
                 <p className="text-sm text-muted-foreground/40">
                   Set a goal to see career info
@@ -784,9 +820,19 @@ export default function DashboardPage() {
           {(() => {
             const exploredGoals = exploredGoalsData?.goals ?? [];
             const allCareers = getAllCareers();
-            if (exploredGoals.length < 2) {
+            if (exploredGoals.length === 0) {
               return (
-                <LibraryCard items={savedItemsList} total={savedSummary.total} />
+                <Link href="/my-journey" className="block group">
+                  <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-3.5 w-3.5 text-violet-500" />
+                      <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career you've explored is saved here. Compare paths, track your progress, and see how far you've come." /></h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground/40">
+                      Explore careers to build your journey list
+                    </p>
+                  </GlassCard>
+                </Link>
               );
             }
             const PAGE_SIZE = 5;
@@ -867,17 +913,14 @@ export default function DashboardPage() {
 
         {/* ── 3. Library + Jobs ──────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          {/* My Library — only show here if explored journeys took its spot above */}
-          {(exploredGoalsData?.goals ?? []).length >= 2 && (
-            <LibraryCard items={savedItemsList} total={savedSummary.total} />
-          )}
+          <LibraryCard items={savedItemsList} total={savedSummary.total} />
 
           {/* My Jobs */}
           <Link href="/applications" className="block group">
             <GlassCard className="p-4 hover:border-border/60 transition-all">
               <div className="flex items-center gap-2 mb-4">
                 <Briefcase className="h-4 w-4 text-emerald-500" />
-                <h3 className="text-sm font-semibold">My Jobs</h3>
+                <h3 className="text-sm font-semibold flex items-center gap-1.5">My Jobs <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." /></h3>
               </div>
               <div className="grid grid-cols-4 gap-2">
                 {[
@@ -904,7 +947,7 @@ export default function DashboardPage() {
         <GlassCard className="p-3">
           <div className="flex items-center gap-2 mb-1.5">
             <FileText className="h-3.5 w-3.5 text-amber-500" />
-            <h3 className="text-xs font-semibold">Activity</h3>
+            <h3 className="text-xs font-semibold flex items-center gap-1.5">Activity <SectionWhy why="Your recent actions — saving content, exploring careers, setting goals. A log of your progress." /></h3>
           </div>
           {recentActivity.length > 0 ? (
             <div className="space-y-1">
@@ -937,35 +980,7 @@ export default function DashboardPage() {
         </GlassCard>
       </div>
 
-      {/* ── 5. Profile Completion ───────────────────────────── */}
-      {profileData && (() => {
-        const total = 8;
-        let done = 0;
-        if (profileData.displayName) done++;
-        if (profileData.user?.dateOfBirth) done++;
-        if (profileData.phoneNumber) done++;
-        if (profileData.city) done++;
-        if (profileData.bio) done++;
-        if (profileData.availability) done++;
-        if (profileData.interests?.length > 0) done++;
-        if (goalTitle) done++;
-        const pct = Math.round((done / total) * 100);
-        if (pct === 100) return null;
-        return (
-          <Link href="/profile" className="block group">
-            <div className="flex items-center gap-3 rounded-xl border border-border/30 bg-card/50 hover:bg-card/70 px-3 py-2 transition-all mb-4">
-              <User className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
-              <span className="text-[11px] text-muted-foreground/50 flex-1">Profile</span>
-              <span className="text-[10px] text-muted-foreground/40 tabular-nums">{pct}%</span>
-              <div className="w-16 h-1 bg-muted/30 rounded-full overflow-hidden shrink-0">
-                <div className="h-full rounded-full bg-teal-500 transition-all" style={{ width: `${pct}%` }} />
-              </div>
-            </div>
-          </Link>
-        );
-      })()}
-
-      {/* ── 6. Industry Insights Ticker ─────────────────────── */}
+      {/* ── 5. Industry Insights Ticker ─────────────────────── */}
       <DidYouKnowCard />
 
       {/* Career Detail Sheet */}
