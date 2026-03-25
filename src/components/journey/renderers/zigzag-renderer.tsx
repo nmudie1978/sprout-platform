@@ -90,9 +90,8 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   return (
     <TooltipProvider delayDuration={300}>
     <div className="overflow-x-auto pb-4 -mx-2 px-2">
-      {/* Informational hint */}
-      <p className="text-[10px] text-muted-foreground/40 mb-3 px-1">
-        Tap any step to explore what it involves and add your own notes.
+      <p className="text-[10px] text-muted-foreground/30 mb-2 px-1">
+        Tap any step to explore details and add notes
       </p>
 
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
@@ -147,34 +146,39 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
           className="absolute"
           style={{ left: 12, top: HIGH_Y - 16 }}
         >
-          <div className="w-[160px] rounded-xl border border-border/30 bg-card/60 p-3 backdrop-blur-sm">
+          {/* Age pill — above the card, matching other roadmap nodes */}
+          {userAge && (
+            <div className="flex justify-center mb-1.5" style={{ marginTop: -AGE_MARKER_HEIGHT - 4 }}>
+              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/15 text-teal-500 ring-2 ring-teal-500/40">
+                Age {userAge}
+              </span>
+            </div>
+          )}
+          <div className="w-[160px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm">
             <div className="flex items-center gap-1.5 mb-2">
               <span className="text-xs">🎓</span>
-              <span className="text-[9px] font-semibold text-teal-500/60 uppercase tracking-wider">
+              <span className="text-[9px] font-bold text-teal-500/80 uppercase tracking-wider">
                 Your Foundation
               </span>
             </div>
             {eduContext ? (
               <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-foreground/80">
+                <p className="text-xs font-semibold text-foreground/90">
                   {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
                 </p>
-                {eduContext.ageBand && (
-                  <p className="text-[10px] text-muted-foreground/70">Age {eduContext.ageBand}</p>
-                )}
                 {eduContext.schoolName && (
-                  <p className="text-[10px] text-muted-foreground/70">{eduContext.schoolName}</p>
+                  <p className="text-[10px] text-foreground/70">{eduContext.schoolName}</p>
                 )}
                 {eduContext.studyProgram && (
-                  <p className="text-[10px] text-muted-foreground/70">{eduContext.studyProgram}</p>
+                  <p className="text-[10px] text-foreground/70">{eduContext.studyProgram}</p>
                 )}
                 {eduContext.expectedCompletion && (
-                  <p className="text-[10px] text-muted-foreground/70">Finishing {eduContext.expectedCompletion}</p>
+                  <p className="text-[10px] text-foreground/70">Finishing {eduContext.expectedCompletion}</p>
                 )}
                 {eduContext.currentSubjects.length > 0 && (
                   <div className="flex flex-wrap gap-0.5 mt-0.5">
                     {eduContext.currentSubjects.map((s) => (
-                      <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-teal-500/8 text-teal-500/70">
+                      <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-teal-500/10 text-teal-500/80">
                         {s}
                       </span>
                     ))}
@@ -182,7 +186,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 )}
               </div>
             ) : (
-              <p className="text-[9px] text-muted-foreground/35 leading-snug">
+              <p className="text-[10px] text-foreground/50 leading-snug">
                 Where you are today
               </p>
             )}

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
+import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { TimelineStyleSelector } from './timeline-style-selector';
@@ -29,6 +30,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   const { style, setStyle } = useTimelineStyle();
+  const roadmapRef = useRef<HTMLDivElement>(null);
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   useRoadmapCardData(goalId);
 
@@ -57,6 +59,29 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     staleTime: 30 * 60 * 1000,
     retry: 1,
   });
+
+  const journey = data?.journey ?? null;
+  const careerName = journey?.career ?? '';
+
+  // Export as image — must be declared before any early returns
+  const handleExport = useCallback(async () => {
+    if (!roadmapRef.current || !careerName) return;
+    try {
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(roadmapRef.current, {
+        backgroundColor: '#0f1117',
+        scale: 2,
+        useCORS: true,
+      });
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `roadmap-${careerName.toLowerCase().replace(/\s+/g, '-')}.png`;
+      a.click();
+    } catch {
+      toast.error('Failed to export roadmap');
+    }
+  }, [careerName]);
 
   if (!primaryGoalTitle) {
     return (
@@ -92,30 +117,63 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     );
   }
 
-  const journey = data?.journey;
   if (!journey) return null;
 
   const Renderer = RENDERERS[style] || ZigzagRenderer;
 
+  // Timeline summary
+  const firstAge = journey.startAge;
+  const lastAge = journey.items.length > 0
+    ? Math.max(...journey.items.map((i) => i.endAge ?? i.startAge))
+    : firstAge;
+  const spanYears = lastAge - firstAge;
+
+  // Education track label — detect what kind of education path
+  const eduStages = journey.items.filter((i) => i.stage === 'education');
+  const eduLabel = eduStages.some((i) => i.title.toLowerCase().includes('university') || i.title.toLowerCase().includes('degree'))
+    ? 'University'
+    : eduStages.some((i) => i.title.toLowerCase().includes('apprentice'))
+      ? 'Apprenticeship'
+      : 'Education';
+
   return (
     <div>
-      {/* Header row: title + style selector */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs text-muted-foreground/50">
-          Your Path to {journey.career}
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs">
+          <span className="text-muted-foreground/50">Your Path to </span>
+          <span className="font-medium text-foreground/70">{journey.career}</span>
+          {spanYears > 0 && (
+            <span className="text-muted-foreground/30 ml-2">
+              ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
+              {eduStages.length > 0 && <> · {eduLabel} track</>}
+            </span>
+          )}
         </p>
-        <TimelineStyleSelector value={style} onChange={setStyle} />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+            title="Download roadmap as image"
+          >
+            <Download className="h-3 w-3" />
+            <span className="hidden sm:inline">Export</span>
+          </button>
+          <TimelineStyleSelector value={style} onChange={setStyle} />
+        </div>
       </div>
 
       {/* Roadmap */}
-      <Renderer
-        key={`${style}-${saveVersion}`}
-        journey={journey}
-        onItemClick={(item) => setSelectedItem(item)}
-        overlayData={{}}
-        activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
-        userAge={journey.startAge}
-      />
+      <div ref={roadmapRef}>
+        <Renderer
+          key={`${style}-${saveVersion}`}
+          journey={journey}
+          onItemClick={(item) => setSelectedItem(item)}
+          overlayData={{}}
+          activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
+          userAge={journey.startAge}
+        />
+      </div>
 
       {/* Card detail popup */}
       <TimelineDetailDialog

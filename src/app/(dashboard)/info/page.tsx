@@ -60,7 +60,7 @@ export default function InfoPage() {
           {[
             { n: "1", title: "Discover — Know yourself", desc: "Reflect on strengths, explore careers, research what roles actually involve.", color: "teal" },
             { n: "2", title: "Understand — Know the world", desc: "Research role reality and industry insights, understand path and requirements, validate your understanding.", color: "emerald" },
-            { n: "3", title: "Grow — Take action and grow", desc: "Do something real, reflect on what you learned, update your plan.", color: "amber" },
+            { n: "3", title: "Grow — Take action and grow", desc: "Take a meaningful step forward, reflect on what you learned, and shape your next move.", color: "amber" },
           ].map((l) => (
             <div key={l.n} className={`p-3 rounded-lg bg-${l.color}-50/50 dark:bg-${l.color}-950/20 border border-${l.color}-200/50 dark:border-${l.color}-800/30`}>
               <div className="flex items-center gap-2 mb-1">

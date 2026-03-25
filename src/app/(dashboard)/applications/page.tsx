@@ -17,9 +17,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Filter,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo, useCallback, memo } from "react";
+import { toast } from "sonner";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "\u{1F476}",
@@ -297,12 +299,52 @@ export default function ApplicationsPage() {
               <Link href="/dashboard"><ArrowLeft className="h-4 w-4 mr-1" />Back</Link>
             </Button>
           </div>
-          <div className="flex items-center gap-3">
-            <Briefcase className="h-6 w-6 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold">My Applications</h1>
-              <p className="text-sm text-muted-foreground">{applications.length} total</p>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-3">
+              <Briefcase className="h-6 w-6 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold">My Applications</h1>
+                <p className="text-sm text-muted-foreground">{applications.length} total</p>
+              </div>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground/60 hover:text-muted-foreground"
+              onClick={async () => {
+                try {
+                  const res = await fetch('/api/earnings?period=all');
+                  if (!res.ok) throw new Error('Failed to fetch');
+                  const data = await res.json();
+                  // Build simple CSV
+                  const rows = [['Date', 'Job', 'Category', 'Amount', 'Status']];
+                  for (const e of data.earnings ?? []) {
+                    rows.push([
+                      new Date(e.earnedAt).toLocaleDateString(),
+                      e.job?.title ?? 'Unknown',
+                      e.job?.category ?? '',
+                      String(e.amount ?? 0),
+                      e.status ?? '',
+                    ]);
+                  }
+                  rows.push([]);
+                  rows.push(['Total', '', '', String(data.summary?.totalEarnings ?? 0), '']);
+                  const csv = rows.map((r) => r.join(',')).join('\n');
+                  const blob = new Blob([csv], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `earnings-${new Date().toISOString().slice(0, 10)}.csv`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                } catch {
+                  toast.error('Failed to download earnings');
+                }
+              }}
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5" />
+              Earnings CSV
+            </Button>
           </div>
         </motion.div>
 

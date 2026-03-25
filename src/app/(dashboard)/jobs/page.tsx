@@ -126,7 +126,7 @@ export default function JobsPage() {
       }
       if (locationFilter) params.set("location", locationFilter);
       params.set("page", page.toString());
-      params.set("limit", "10");
+      params.set("limit", "5");
 
       const response = await fetch(`/api/jobs?${params}`);
       if (!response.ok) throw new Error("Failed to fetch jobs");

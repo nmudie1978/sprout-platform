@@ -8,7 +8,7 @@
  * they are the reward of finishing the full journey.
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   ArrowRight,
   CheckCircle2,
@@ -30,6 +30,8 @@ import dynamic from 'next/dynamic';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { GuidanceStack } from '@/components/guidance/guidance-stack';
 import { buildGuidanceContext } from '@/lib/guidance/rules';
+import { playCelebrationChime } from '@/lib/audio/celebration';
+import { fireConfetti } from '@/lib/audio/confetti';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -94,6 +96,21 @@ export function ActTab({ journey, goalTitle, onStartStep }: ActTabProps) {
   const growComplete =
     getStepStatus('COMPLETE_ALIGNED_ACTION') === 'completed' &&
     getStepStatus('SUBMIT_ACTION_REFLECTION') === 'completed';
+
+  // Play celebration chime only on the transition to grow complete (not on revisit)
+  const prevGrowComplete = useRef(growComplete);
+  useEffect(() => {
+    // Only play when growComplete transitions from false → true in this session
+    if (growComplete && !prevGrowComplete.current) {
+      const seenKey = `grow-chime-${goalTitle || 'default'}`;
+      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
+        localStorage.setItem(seenKey, 'true');
+        playCelebrationChime();
+        setTimeout(() => fireConfetti(), 300);
+      }
+    }
+    prevGrowComplete.current = growComplete;
+  }, [growComplete, goalTitle]);
 
   const renderStep = (config: typeof ACT_STEPS[number]) => {
     const status = getStepStatus(config.id);

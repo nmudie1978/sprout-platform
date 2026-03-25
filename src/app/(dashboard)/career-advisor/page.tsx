@@ -66,8 +66,8 @@ const defaultPrompts = [
   },
   {
     icon: Briefcase,
-    label: "Find small jobs",
-    prompt: "How can I find my first job as a teenager in Norway?",
+    label: "Education paths",
+    prompt: "What are the main education paths for careers in Norway?",
     color: "from-teal-500 to-pink-500",
   },
   {

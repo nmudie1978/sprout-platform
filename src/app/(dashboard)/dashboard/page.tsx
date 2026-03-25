@@ -479,12 +479,14 @@ export default function DashboardPage() {
         ? "Understand"
         : "Grow";
 
+  // Client-side completion overrides — if the user has moved past a stage,
+  // it must be complete even if the orchestrator's progress calc lags behind
+  const discoverDone = lenses?.discover?.isComplete || currentLens === 'UNDERSTAND' || currentLens === 'ACT';
+  const understandDone = lenses?.understand?.isComplete || currentLens === 'ACT';
+  const growDone = lenses?.act?.isComplete || false;
+
   // Completed lens count
-  const completedLensCount = lenses
-    ? [lenses.discover, lenses.understand, lenses.act].filter(
-        (l) => l.isComplete
-      ).length
-    : 0;
+  const completedLensCount = [discoverDone, understandDone, growDone].filter(Boolean).length;
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -709,20 +711,22 @@ export default function DashboardPage() {
                     const lens = lenses?.[key as keyof typeof lenses];
                     const isActive =
                       currentLens === key.toUpperCase();
+                    // Use client-side completion override
+                    const isLensDone = key === 'discover' ? discoverDone : key === 'understand' ? understandDone : growDone;
                     return (
                       <div key={key} className="flex-1">
                         <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-500",
-                              lens?.isComplete
+                              isLensDone
                                 ? "bg-teal-500"
                                 : isActive
                                   ? "bg-teal-500"
                                   : "bg-transparent"
                             )}
                             style={{
-                              width: `${lens?.progress ?? 0}%`,
+                              width: `${isLensDone ? 100 : (lens?.progress ?? 0)}%`,
                             }}
                           />
                         </div>

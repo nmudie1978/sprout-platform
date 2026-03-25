@@ -361,7 +361,7 @@ export default function IndustryInsightsPage() {
             icon={Lightbulb}
             label="Explore"
             title="Go Further"
-            subtitle="Explore global perspectives and find upcoming career events"
+            subtitle="Explore global perspectives and career possibilities beyond borders"
             gradient="from-emerald-400 via-teal-400 to-emerald-400"
             iconBg="bg-emerald-100 dark:bg-emerald-900/30"
             iconColor="text-emerald-600 dark:text-emerald-400"

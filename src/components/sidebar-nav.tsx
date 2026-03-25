@@ -42,6 +42,7 @@ import {
   Settings,
   Search,
   FileText,
+  Calendar,
   Quote,
 } from "lucide-react";
 
@@ -242,6 +243,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} />
               <NavItem href="/careers" icon={Compass} label="Explore Careers" active={isActive("/careers")} collapsed={collapsed} />
+              <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} />
             </NavSection>
