@@ -9,74 +9,27 @@ import { generateFallbackTimeline } from '@/lib/journey/generate-fallback-timeli
 import type { Journey } from '@/lib/journey/career-journey-types';
 
 // ============================================
-// OPENAI HELPERS (same pattern as /api/chat)
+// OPENAI CLIENT (singleton)
 // ============================================
 
-function isOpenAIConfigured(): boolean {
-  const apiKey = process.env.OPENAI_API_KEY;
-  return !!(
-    apiKey &&
-    apiKey.length > 10 &&
-    apiKey !== 'sk-your-openai-api-key-here' &&
-    apiKey.startsWith('sk-')
-  );
-}
-
+let _openai: OpenAI | null | undefined;
 function getOpenAIClient(): OpenAI | null {
-  if (!isOpenAIConfigured()) return null;
-  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (_openai !== undefined) return _openai;
+  const apiKey = process.env.OPENAI_API_KEY;
+  _openai = apiKey && apiKey.length > 10 && apiKey.startsWith('sk-') && apiKey !== 'sk-your-openai-api-key-here'
+    ? new OpenAI({ apiKey })
+    : null;
+  return _openai;
 }
 
 // ============================================
-// SYSTEM PROMPT
+// COMPACT PROMPT (fewer tokens = faster)
 // ============================================
 
-const SYSTEM_PROMPT = `You are a career timeline generator for a youth platform (ages 15-23).
-Given a career goal, generate a realistic journey with 7 items across 4 stages,
-PLUS a parallel school/learning track showing relevant subjects at each stage.
-
-Rules:
-- Output ONLY valid JSON matching the schema below
-- All text must be in English
-- Items should be age-appropriate, starting from the user's current age
-- Include practical, actionable microActions (2-3 per item)
-- Be encouraging but realistic
-- No jargon or overly complex language
-- schoolTrack subjects should be specific to the career (e.g. "Physics" not "Science")
-
-Required JSON schema:
-{
-  "career": "string (the career title)",
-  "startAge": <user's current age>,
-  "startYear": <current year>,
-  "items": [
-    {
-      "stage": "foundation" | "education" | "experience" | "career",
-      "title": "string (short, clear title)",
-      "subtitle": "string (brief context)",
-      "startAge": number (starting from user's age),
-      "endAge": number | null (optional),
-      "isMilestone": boolean,
-      "icon": "Sparkles" | "Wrench" | "GraduationCap" | "BookOpen" | "Briefcase" | "FolderOpen" | "Target",
-      "description": "string (1-2 sentences)",
-      "microActions": ["string", "string", "string"]
-    }
-  ],
-  "schoolTrack": [
-    {
-      "stage": "foundation" | "education" | "experience" | "career",
-      "title": "string (e.g. 'Focus on STEM subjects')",
-      "subjects": ["string", "string"] (2-4 specific school subjects or courses),
-      "personalLearning": "string (optional self-directed activity)",
-      "startAge": number,
-      "endAge": number | null
-    }
-  ]
-}
-
-Distribution for items: 2 foundation, 2 education, 2 experience, 1 career.
-Distribution for schoolTrack: 1 per stage (4 total).
-Mark milestone items with isMilestone: true (at least 3 milestones).`;
+const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY valid JSON.
+Generate 7 items (2 foundation, 2 education, 2 experience, 1 career) + 4 schoolTrack items.
+JSON: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
+Rules: age-appropriate, practical microActions, encouraging, no jargon, 3+ milestones, career-specific subjects.`;
 
 // ============================================
 // VALIDATION
@@ -87,18 +40,13 @@ function isValidJourney(data: unknown): data is Omit<Journey, 'id'> {
   const obj = data as Record<string, unknown>;
   if (typeof obj.career !== 'string') return false;
   if (typeof obj.startAge !== 'number') return false;
-  if (typeof obj.startYear !== 'number') return false;
   if (!Array.isArray(obj.items) || obj.items.length < 5) return false;
-
   const validStages = ['foundation', 'education', 'experience', 'career'];
   for (const item of obj.items) {
     if (!item || typeof item !== 'object') return false;
     const i = item as Record<string, unknown>;
-    if (typeof i.title !== 'string') return false;
-    if (typeof i.stage !== 'string' || !validStages.includes(i.stage)) return false;
-    if (typeof i.startAge !== 'number') return false;
+    if (typeof i.title !== 'string' || typeof i.stage !== 'string' || !validStages.includes(i.stage)) return false;
   }
-
   return true;
 }
 
@@ -109,64 +57,50 @@ function isValidJourney(data: unknown): data is Omit<Journey, 'id'> {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session || session.user.role !== 'YOUTH') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await req.json();
     const career = typeof body.career === 'string' ? body.career.trim() : '';
-
     if (career.length < 2 || career.length > 100) {
-      return NextResponse.json(
-        { error: 'Career must be between 2 and 100 characters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Career must be between 2 and 100 characters' }, { status: 400 });
     }
 
-    // Get user's age from DOB for age-appropriate roadmap
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { dateOfBirth: true },
-    });
-    const userAge = user?.dateOfBirth
-      ? Math.floor((Date.now() - new Date(user.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
-      : 16; // Default if no DOB set
+    // Parallel: fetch user age + cached timeline + rate limit check
+    const [userData, profile, rateLimit] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { dateOfBirth: true },
+      }),
+      prisma.youthProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { generatedTimeline: true },
+      }),
+      checkRateLimitAsync(`timeline:${session.user.id}`, RateLimits.TIMELINE_GENERATION),
+    ]);
 
-    // Check cache: does the user already have a generated timeline for this career?
-    const profile = await prisma.youthProfile.findUnique({
-      where: { userId: session.user.id },
-      select: { generatedTimeline: true },
-    });
+    const userAge = userData?.dateOfBirth
+      ? Math.floor((Date.now() - new Date(userData.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+      : 16;
 
+    // Check cache
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { career?: string; journey?: Journey };
-      const cachedAgeMatches = cached.journey?.startAge === userAge;
-      if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey && cachedAgeMatches) {
-        return NextResponse.json({
-          journey: cached.journey,
-          cached: true,
-        });
+      if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey && cached.journey.startAge === userAge) {
+        return NextResponse.json({ journey: cached.journey, cached: true });
       }
     }
 
-    // Rate limit check
-    const rateLimit = await checkRateLimitAsync(
-      `timeline:${session.user.id}`,
-      RateLimits.TIMELINE_GENERATION
-    );
-
+    // Rate limit
     if (!rateLimit.success) {
       return NextResponse.json(
-        {
-          error: 'Too many timeline generations. Please try again later.',
-          ...getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset),
-        },
+        { error: 'Too many timeline generations. Please try again later.', ...getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset) },
         { status: 429 }
       );
     }
 
-    // Try OpenAI generation
+    // Generate timeline
     let journey: Journey;
     const openai = getOpenAIClient();
 
@@ -176,77 +110,57 @@ export async function POST(req: NextRequest) {
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Generate a career timeline for: ${career}. The user is currently ${userAge} years old — start the roadmap from age ${userAge}.` },
+            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.` },
           ],
           temperature: 0.7,
-          max_tokens: 1500,
+          max_tokens: 1200,
           response_format: { type: 'json_object' },
         });
 
         const content = completion.choices[0]?.message?.content;
-        if (!content) throw new Error('Empty response from OpenAI');
+        if (!content) throw new Error('Empty response');
 
         const parsed = JSON.parse(content);
+        if (!isValidJourney(parsed)) throw new Error('Invalid structure');
 
-        if (!isValidJourney(parsed)) {
-          console.warn('[Timeline API] Invalid journey structure from OpenAI, using fallback');
-          throw new Error('Invalid journey structure');
-        }
-
-        // Add IDs to items (OpenAI doesn't generate them)
         journey = {
           id: `ai-${career.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
           career: parsed.career,
-          startAge: parsed.startAge,
-          startYear: parsed.startYear,
+          startAge: parsed.startAge || userAge,
+          startYear: parsed.startYear || new Date().getFullYear(),
           items: parsed.items.map((item: Omit<Journey['items'][number], 'id'>, i: number) => ({
             id: `ai-${i}-${Math.random().toString(36).slice(2, 7)}`,
             ...item,
           })),
           schoolTrack: Array.isArray(parsed.schoolTrack)
-            ? parsed.schoolTrack.map((st: any, i: number) => ({
+            ? parsed.schoolTrack.map((st: Record<string, unknown>, i: number) => ({
                 id: `st-${i}-${Math.random().toString(36).slice(2, 7)}`,
                 stage: st.stage,
                 title: st.title || '',
                 subjects: Array.isArray(st.subjects) ? st.subjects : [],
                 personalLearning: st.personalLearning || undefined,
-                startAge: st.startAge || 16,
+                startAge: (st.startAge as number) || userAge,
                 endAge: st.endAge || undefined,
               }))
             : undefined,
         };
       } catch (aiError) {
-        console.error('[Timeline API] OpenAI generation failed, using fallback:', aiError);
+        console.error('[Timeline] OpenAI failed, using fallback:', aiError);
         journey = generateFallbackTimeline(career, userAge);
       }
     } else {
-      console.log('[Timeline API] OpenAI not configured, using fallback');
       journey = generateFallbackTimeline(career, userAge);
     }
 
-    // Cache the result (serialize to plain JSON for Prisma's InputJsonValue)
-    const cachePayload = JSON.parse(JSON.stringify({
-      career,
-      generatedAt: new Date().toISOString(),
-      journey,
-    }));
-
-    await prisma.youthProfile.update({
+    // Cache result (non-blocking — don't wait for this to return the response)
+    prisma.youthProfile.update({
       where: { userId: session.user.id },
-      data: {
-        generatedTimeline: cachePayload,
-      },
-    });
+      data: { generatedTimeline: JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey })) },
+    }).catch((err) => console.error('[Timeline] Cache write failed:', err));
 
-    return NextResponse.json({
-      journey,
-      cached: false,
-    });
+    return NextResponse.json({ journey, cached: false });
   } catch (error) {
-    console.error('[Timeline API] Unexpected error:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate timeline' },
-      { status: 500 }
-    );
+    console.error('[Timeline] Unexpected error:', error);
+    return NextResponse.json({ error: 'Failed to generate timeline' }, { status: 500 });
   }
 }
