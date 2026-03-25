@@ -9,7 +9,7 @@
  * Stages: Discover → Understand → Grow (sequential, gated)
  */
 
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, memo } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -206,7 +206,7 @@ const TABS: TabDef[] = [
 // STAGE TAB BAR
 // ============================================
 
-function StageTabBar({
+const StageTabBar = memo(function StageTabBar({
   activeTab,
   onTabChange,
   lenses,
@@ -318,7 +318,7 @@ function StageTabBar({
       })}
     </div>
   );
-}
+});
 
 // ============================================
 // MAIN PAGE
@@ -357,6 +357,7 @@ export default function MyJourneyPage() {
       return response.json();
     },
     enabled: isYouth,
+    staleTime: 30_000, // 30s — avoid refetch on tab focus / remount
   });
 
   // Fetch reflections directly for Discover completion check
@@ -386,12 +387,17 @@ export default function MyJourneyPage() {
   });
   const goalLastUsed = goalDataResponse?.goalData?.updatedAt || null;
 
-  // Auto-migrate existing data to goal-scoped model on first load
+  // Auto-migrate existing data to goal-scoped model (once per browser)
   const migrationDone = useRef(false);
   useEffect(() => {
     if (isYouth && !migrationDone.current) {
       migrationDone.current = true;
-      fetch('/api/journey/goal-data/migrate', { method: 'POST' }).catch(() => {});
+      const migrated = typeof window !== 'undefined' && localStorage.getItem('journey-goal-data-migrated');
+      if (!migrated) {
+        fetch('/api/journey/goal-data/migrate', { method: 'POST' })
+          .then(() => localStorage.setItem('journey-goal-data-migrated', 'true'))
+          .catch(() => {});
+      }
     }
   }, [isYouth]);
 
@@ -408,11 +414,35 @@ export default function MyJourneyPage() {
       }
       return response.json();
     },
+    onMutate: async ({ stepId }) => {
+      // Optimistic update: mark step as completed immediately in the UI
+      await queryClient.cancelQueries({ queryKey: ['journey-state'] });
+      const previous = queryClient.getQueryData<{ success: boolean; journey: JourneyUIState }>(['journey-state']);
+
+      if (previous?.journey) {
+        queryClient.setQueryData(['journey-state'], {
+          ...previous,
+          journey: {
+            ...previous.journey,
+            steps: previous.journey.steps.map((s) =>
+              s.id === stepId ? { ...s, status: 'completed' as const } : s
+            ),
+            completedSteps: [...previous.journey.completedSteps, stepId],
+          },
+        });
+      }
+
+      return { previous };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journey-state'] });
       setActiveStepId(null);
     },
-    onError: (error: Error) => {
+    onError: (error: Error, _vars, context) => {
+      // Rollback optimistic update on failure
+      if (context?.previous) {
+        queryClient.setQueryData(['journey-state'], context.previous);
+      }
       console.error('Step completion failed:', error.message);
     },
   });
@@ -466,7 +496,12 @@ export default function MyJourneyPage() {
   useEffect(() => {
     const currentGoal = primaryGoal?.title ?? null;
     if (prevGoalRef.current !== null && prevGoalRef.current !== currentGoal) {
+      // Goal changed — reset ALL celebration state to prevent stale popups
       celebratedRef.current = new Set();
+      discoverAdvanceDone.current = false;
+      setShowDiscoverCelebration(false);
+      setShowUnderstandCelebration(false);
+      setActiveTab('discover');
     }
     prevGoalRef.current = currentGoal;
   }, [primaryGoal?.title]);
@@ -519,7 +554,9 @@ export default function MyJourneyPage() {
   }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
 
   // Understand celebration — fires when Understand is complete
+  // Skip if journey is still loading (prevents stale data from triggering popups after goal switch)
   useEffect(() => {
+    if (journeyLoading) return;
     if (understandComplete && goalTitle && !celebratedRef.current.has('understand')) {
       celebratedRef.current.add('understand');
       const seenKey = `understand-celebrated-${goalTitle}`;
@@ -540,6 +577,7 @@ export default function MyJourneyPage() {
     discoverAdvanceDone.current = false;
   }, [primaryGoal?.title]);
   useEffect(() => {
+    if (journeyLoading) return; // Skip while data is refreshing after goal switch
     if (discoverAdvanceDone.current || !discoverComplete) return;
     const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
     const stateIsStuck = journey && discoverStates.includes(journey.currentState);

@@ -28,6 +28,19 @@ export async function GET() {
     const [profile, completedJobs, shadowsCompleted, savedCareers] = await Promise.all([
       prisma.youthProfile.findUnique({
         where: { userId: session.user.id },
+        select: {
+          displayName: true,
+          bio: true,
+          city: true,
+          skillTags: true,
+          interests: true,
+          careerAspiration: true,
+          journeyState: true,
+          journeyCompletedSteps: true,
+          journeySkippedSteps: true,
+          journeySummary: true,
+          primaryGoal: true,
+        },
       }),
       prisma.jobCompletion.count({
         where: {
@@ -254,13 +267,13 @@ export async function PATCH(req: NextRequest) {
 
     if (action === 'transition' && targetState) {
       // Validate targetState is a known journey state
-      if (!JOURNEY_STATES.includes(targetState)) {
+      if (!(JOURNEY_STATES as readonly string[]).includes(targetState)) {
         return NextResponse.json({ error: 'Invalid target state' }, { status: 400 });
       }
       result = orchestrator.transitionTo(targetState as JourneyStateId);
     } else if (action === 'revisit' && stepId) {
       // Validate stepId is a known journey state
-      if (!JOURNEY_STATES.includes(stepId)) {
+      if (!(JOURNEY_STATES as readonly string[]).includes(stepId)) {
         return NextResponse.json({ error: 'Invalid step ID' }, { status: 400 });
       }
       result = orchestrator.revisitStep(stepId as JourneyStateId);
