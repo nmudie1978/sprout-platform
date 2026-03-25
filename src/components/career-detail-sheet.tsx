@@ -45,6 +45,7 @@ import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
+import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { CareerProgressionFlow } from "@/components/careers/CareerProgressionFlow";
 import { RealWorldExamplesLinks } from "@/components/careers/RealWorldExamplesLinks";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -316,12 +317,20 @@ export function CareerDetailSheet({
         slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
         { description: "View and customise your goals on the Goals page." }
       );
-      // Invalidate goals + journey state so UI reflects the reset
+      // Sync guidance dismissals when primary goal changes
+      if (slot === "primary") {
+        const title = career?.title ?? null;
+        syncGuidanceGoal(title);
+      }
+      // Invalidate all goal-dependent caches so UI reflects the new goal
+      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
-      queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      queryClient.invalidateQueries({ queryKey: ["goal-data"] });
+      queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+      queryClient.invalidateQueries({ queryKey: ["education-context"] });
     },
     onError: () => {
       toast.error("Failed to set goal", {
@@ -763,6 +772,9 @@ export function CareerDetailSheet({
                       <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
                       Learn More on Vilbli.no
                     </a>
+                  </Button>
+                  <Button variant="ghost" className="w-full text-muted-foreground/50" size="sm" onClick={onClose}>
+                    Close
                   </Button>
                 </div>
               </div>
