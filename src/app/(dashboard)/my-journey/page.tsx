@@ -36,6 +36,7 @@ import { UnderstandCompleteModal } from '@/components/journey/understand-complet
 import { CareerDetailSheet } from '@/components/career-detail-sheet';
 import { getAllCareers } from '@/lib/career-pathways';
 import { HelpCircle, Info, X } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const StepContent = dynamic(
   () => import('@/components/journey/step-content').then((m) => m.StepContent),
@@ -716,13 +717,19 @@ export default function MyJourneyPage() {
               </div>
             </div>
           </div>
-          <Link
-            href="/my-journey/how-it-works"
-            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
-          >
-            <HelpCircle className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">How it works</span>
-          </Link>
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/my-journey/how-it-works"
+                  className="p-1.5 rounded-lg text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">How it works</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Goal swap reminder — dismissible */}
