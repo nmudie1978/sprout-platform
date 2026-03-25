@@ -5,7 +5,7 @@
  * All data from approved sources (Tier-1 or Tier-2).
  *
  * REFRESH CADENCE: Every 6 months (or quarterly if justified)
- * LAST UPDATED: Q1 2025
+ * LAST UPDATED: Q1 2026
  */
 
 import { TIER1_SOURCES, TIER2_SOURCES, type ApprovedSourceId } from "./tier1-sources";
@@ -56,45 +56,45 @@ export interface GrowingIndustriesData extends InsightCardMeta {
  * Simplified to broad categories for youth comprehension
  */
 export const GROWING_INDUSTRIES_DATA: GrowingIndustriesData = {
-  id: "industry-growth-2025",
+  id: "industry-growth-2026",
   title: "Which industries are growing",
   explanation:
     "Some industries are expanding faster than others due to technology, demographics, and demand.",
   sourceId: TIER1_SOURCES.WORLD_ECONOMIC_FORUM,
   sourceName: "World Economic Forum",
   sourceUrl: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-  lastUpdated: "Q1 2025",
+  lastUpdated: "Q1 2026",
   geographyScope: "Global",
   timeframe: "2025-2030",
   categories: [
     {
-      name: "Technology & Data",
-      growthPercent: 22,
+      name: "Technology & AI",
+      growthPercent: 24,
       color: "bg-cyan-500",
     },
     {
       name: "Care & Wellness",
-      growthPercent: 18,
+      growthPercent: 19,
       color: "bg-rose-500",
     },
     {
       name: "Green & Energy",
-      growthPercent: 15,
+      growthPercent: 17,
       color: "bg-emerald-500",
     },
     {
       name: "Education & Training",
-      growthPercent: 10,
+      growthPercent: 11,
       color: "bg-purple-500",
     },
     {
       name: "Logistics & Supply",
-      growthPercent: 8,
+      growthPercent: 9,
       color: "bg-amber-500",
     },
     {
       name: "Creative & Media",
-      growthPercent: 5,
+      growthPercent: 6,
       color: "bg-pink-500",
     },
   ],
@@ -126,19 +126,19 @@ export interface ReshapingJobsData extends InsightCardMeta {
  * Abstracted to avoid alarming language while being truthful
  */
 export const RESHAPING_JOBS_DATA: ReshapingJobsData = {
-  id: "reshaping-forces-2025",
+  id: "reshaping-forces-2026",
   title: "What's reshaping jobs",
   explanation:
     "Long-term forces influence how jobs change, not individual effort alone.",
   sourceId: TIER1_SOURCES.WORLD_ECONOMIC_FORUM,
   sourceName: "World Economic Forum",
   sourceUrl: "https://www.weforum.org/publications/the-future-of-jobs-report-2025/",
-  lastUpdated: "Q1 2025",
+  lastUpdated: "Q1 2026",
   geographyScope: "Global",
   primaryMetric: {
-    label: "Jobs affected by technology shifts",
-    value: "40%",
-    context: "of current tasks may change by 2030",
+    label: "Key skills expected to change by 2030",
+    value: "39%",
+    context: "of key job skills will shift (down from 44% in 2023)",
   },
   factors: [
     {
