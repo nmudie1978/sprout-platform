@@ -38,7 +38,7 @@ PLUS a parallel school/learning track showing relevant subjects at each stage.
 Rules:
 - Output ONLY valid JSON matching the schema below
 - All text must be in English
-- Items should be age-appropriate (starting age 15)
+- Items should be age-appropriate, starting from the user's current age
 - Include practical, actionable microActions (2-3 per item)
 - Be encouraging but realistic
 - No jargon or overly complex language
@@ -47,14 +47,14 @@ Rules:
 Required JSON schema:
 {
   "career": "string (the career title)",
-  "startAge": 16,
+  "startAge": <user's current age>,
   "startYear": <current year>,
   "items": [
     {
       "stage": "foundation" | "education" | "experience" | "career",
       "title": "string (short, clear title)",
       "subtitle": "string (brief context)",
-      "startAge": number (16-22),
+      "startAge": number (starting from user's age),
       "endAge": number | null (optional),
       "isMilestone": boolean,
       "icon": "Sparkles" | "Wrench" | "GraduationCap" | "BookOpen" | "Briefcase" | "FolderOpen" | "Target",
@@ -124,6 +124,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Get user's age from DOB for age-appropriate roadmap
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { dateOfBirth: true },
+    });
+    const userAge = user?.dateOfBirth
+      ? Math.floor((Date.now() - new Date(user.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+      : 16; // Default if no DOB set
+
     // Check cache: does the user already have a generated timeline for this career?
     const profile = await prisma.youthProfile.findUnique({
       where: { userId: session.user.id },
@@ -166,7 +175,7 @@ export async function POST(req: NextRequest) {
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Generate a career timeline for: ${career}` },
+            { role: 'user', content: `Generate a career timeline for: ${career}. The user is currently ${userAge} years old — start the roadmap from age ${userAge}.` },
           ],
           temperature: 0.7,
           max_tokens: 1500,
@@ -207,11 +216,11 @@ export async function POST(req: NextRequest) {
         };
       } catch (aiError) {
         console.error('[Timeline API] OpenAI generation failed, using fallback:', aiError);
-        journey = generateFallbackTimeline(career);
+        journey = generateFallbackTimeline(career, userAge);
       }
     } else {
       console.log('[Timeline API] OpenAI not configured, using fallback');
-      journey = generateFallbackTimeline(career);
+      journey = generateFallbackTimeline(career, userAge);
     }
 
     // Cache the result (serialize to plain JSON for Prisma's InputJsonValue)

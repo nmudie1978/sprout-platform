@@ -55,17 +55,19 @@ interface EditorSaveData {
 
 function EducationEditor({
   initial,
+  defaultAge,
   onSave,
   onCancel,
 }: {
   initial: EducationContext | null;
+  defaultAge?: number | null;
   onSave: (ctx: EditorSaveData) => void;
   onCancel: () => void;
 }) {
   const [stage, setStage] = useState<EducationStage>(initial?.stage || 'school');
   const [subjects, setSubjects] = useState<string[]>(initial?.currentSubjects || []);
   const [subjectInput, setSubjectInput] = useState('');
-  const [ageBand, setAgeBand] = useState(initial?.ageBand || '');
+  const [ageBand, setAgeBand] = useState(initial?.ageBand || (defaultAge ? String(defaultAge) : ''));
   const [schoolName, setSchoolName] = useState(initial?.schoolName || '');
   const [yearLevel, setYearLevel] = useState(initial?.yearLevel || '');
   const [studyProgram, setStudyProgram] = useState(initial?.studyProgram || '');
@@ -314,6 +316,25 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
 
+  // Fetch user's age from profile DOB for auto-fill
+  const { data: profileAge } = useQuery<number | null>({
+    queryKey: ['user-age'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return null;
+      const d = await res.json();
+      const dob = d.profile?.user?.dateOfBirth;
+      if (!dob) return null;
+      const birth = new Date(dob);
+      const now = new Date();
+      let age = now.getFullYear() - birth.getFullYear();
+      const m = now.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+      return age;
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
   const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -391,6 +412,7 @@ export function SchoolAlignmentTab({ goalTitle }: SchoolAlignmentTabProps) {
       {editing ? (
         <EducationEditor
           initial={eduContext}
+          defaultAge={profileAge}
           onSave={(ctx) => saveMutation.mutate(ctx)}
           onCancel={() => setEditing(false)}
         />
