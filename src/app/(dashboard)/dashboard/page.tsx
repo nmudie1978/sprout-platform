@@ -44,6 +44,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { SectionWhy } from "@/components/ui/section-why";
+import { PageContext } from "@/components/ui/page-context";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -612,6 +613,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <PageContext
+          pageKey="dashboard"
+          purpose="This is your home base — a snapshot of your journey, goals, and activity."
+          action="Check your progress, explore careers, or pick up where you left off."
+        />
+
         <VerificationStatus compact />
 
         {/* Guardian consent pending — subtle signal */}
@@ -848,10 +855,18 @@ export default function DashboardPage() {
                 </Link>
               );
             }
+            // Active goal first, then rest by most recent
+            const sorted = [...exploredGoals].sort((a, b) => {
+              const aActive = a.goalTitle === goalTitle;
+              const bActive = b.goalTitle === goalTitle;
+              if (aActive && !bActive) return -1;
+              if (!aActive && bActive) return 1;
+              return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+            });
             const PAGE_SIZE = 5;
-            const totalPages = Math.ceil(exploredGoals.length / PAGE_SIZE);
+            const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
             const page = Math.min(journeyPage, totalPages - 1);
-            const pageGoals = exploredGoals.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+            const pageGoals = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
             return (
               <GlassCard className="p-3 h-full flex flex-col">
