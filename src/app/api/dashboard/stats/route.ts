@@ -68,7 +68,7 @@ export async function GET() {
         where: { profileId, deletedAt: null },
         select: { title: true, type: true, url: true, thumbnail: true, source: true },
         orderBy: { savedAt: 'desc' },
-        take: 6,
+        take: 30, // Enough for pagination (5-6 per page)
       });
       savedItemsList = items;
     }

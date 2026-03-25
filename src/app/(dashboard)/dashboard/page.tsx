@@ -408,7 +408,8 @@ export default function DashboardPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
-    staleTime: 60 * 1000, // 1 minute — more real-time
+    staleTime: 10 * 1000, // 10 seconds — near real-time for saved content
+    refetchOnWindowFocus: true,
   });
 
   // Explored journeys — all goals the user has saved progress for
