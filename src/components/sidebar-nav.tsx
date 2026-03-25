@@ -42,6 +42,7 @@ import {
   Settings,
   Search,
   FileText,
+  Quote,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -253,7 +254,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Account" collapsed={collapsed}>
               <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} />
-              <NavItem href="/earnings" icon={Wallet} label="Earnings" active={isActive("/earnings")} collapsed={collapsed} />
               {isGuardian && (
                 <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} />
               )}
@@ -262,6 +262,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             <NavSection title="Endeavrly" collapsed={collapsed}>
               <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} />
               <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
+              <NavItem href="/reviews" icon={Quote} label="User Reviews" active={isActive("/reviews")} collapsed={collapsed} />
             </NavSection>
           </>
         )}

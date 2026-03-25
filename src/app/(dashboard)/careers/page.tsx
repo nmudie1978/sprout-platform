@@ -27,7 +27,7 @@ import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
 
 // Pagination constants
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 7;
 
 function CareersPageContent() {
   const { data: session } = useSession();

@@ -257,6 +257,11 @@
     }
   }
 
+  @keyframes testimonial-scroll {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50%); }
+  }
+
   @keyframes fadeInScale {
     from {
       opacity: 0;

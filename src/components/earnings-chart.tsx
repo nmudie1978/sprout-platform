@@ -13,6 +13,7 @@ import {
   Calendar,
   Wallet,
   BarChart3,
+  Briefcase,
   Trophy,
   ArrowLeft,
   Loader2,
@@ -106,8 +107,8 @@ export function EarningsChart() {
               <BarChart3 className="h-5 w-5 text-teal-500" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">Earnings Overview</h1>
-              <p className="text-xs text-muted-foreground/60">Track your income over time</p>
+              <h1 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">Small Jobs Earnings</h1>
+              <p className="text-xs text-muted-foreground/60">Track your income from completed small jobs</p>
             </div>
           </div>
 
@@ -146,7 +147,7 @@ export function EarningsChart() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
+              className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"
             >
               <Card className="border border-teal-500/15 bg-card/80">
                 <CardContent className="p-4">
@@ -159,6 +160,21 @@ export function EarningsChart() {
                   </div>
                   <div className="text-xs text-muted-foreground/50">
                     over {years} year{years > 1 ? "s" : ""}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border border-purple-500/15 bg-card/80">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 text-sm text-purple-600/70 dark:text-purple-400/70 mb-1">
+                    <Briefcase className="h-4 w-4" />
+                    Jobs Completed
+                  </div>
+                  <div className="text-2xl font-bold text-purple-600/90 dark:text-purple-400/90">
+                    {summary?.totalJobs || 0}
+                  </div>
+                  <div className="text-xs text-muted-foreground/50">
+                    small jobs
                   </div>
                 </CardContent>
               </Card>
@@ -276,8 +292,8 @@ export function EarningsChart() {
                   {chartData.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                       <BarChart3 className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                      <p>No earnings data available</p>
-                      <p className="text-sm">Complete small jobs to start tracking your earnings!</p>
+                      <p>No earnings yet</p>
+                      <p className="text-sm">Complete small jobs to start tracking what you earn!</p>
                     </div>
                   ) : (
                     <div className="relative">
