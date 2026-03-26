@@ -34,6 +34,10 @@ const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
   { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
+const GoalSelectionSheet = dynamic(
+  () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
+  { ssr: false }
+);
 
 // ============================================
 // TYPES
@@ -634,6 +638,7 @@ export default function JourneyV2Prototype() {
   }, [goalTitle]);
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
+  const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; colorHex: string }[] = [
     { id: 'discover', label: 'Discover', subtitle: 'Explore the Career', icon: Search, color: 'teal', colorHex: '#14b8a6' },
@@ -653,14 +658,26 @@ export default function JourneyV2Prototype() {
                 Back to current journey
               </Link>
             </div>
-            <h1 className="text-lg font-semibold">
+            <h1 className="text-lg font-semibold flex items-center gap-2">
               {goalTitle ? (
                 <>
                   <span className="text-muted-foreground/50">My Journey to </span>
                   <span className="text-foreground">{goalTitle}</span>
+                  <button
+                    onClick={() => setGoalSheetOpen(true)}
+                    className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors"
+                    title="Change goal"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                 </>
               ) : (
-                <span className="text-muted-foreground/50">Set a career goal to begin</span>
+                <button
+                  onClick={() => setGoalSheetOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                >
+                  <Target className="h-4 w-4" /> Set a career goal
+                </button>
               )}
             </h1>
           </div>
@@ -742,6 +759,15 @@ export default function JourneyV2Prototype() {
           </p>
         </div>
       </div>
+
+      {/* Goal Selection Sheet — real component */}
+      <GoalSelectionSheet
+        open={goalSheetOpen}
+        onClose={() => setGoalSheetOpen(false)}
+        primaryGoal={goalsData?.primaryGoal || null}
+        secondaryGoal={goalsData?.secondaryGoal || null}
+        onSuccess={() => setGoalSheetOpen(false)}
+      />
     </div>
   );
 }
