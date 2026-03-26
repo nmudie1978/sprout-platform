@@ -40,6 +40,24 @@ const GoalSelectionSheet = dynamic(
 );
 
 // ============================================
+// YOUTUBE VIDEO HOOK — searches via API
+// ============================================
+
+function useYouTubeVideo(careerTitle: string | null) {
+  return useQuery<{ videoId: string | null }>({
+    queryKey: ['youtube-video', careerTitle],
+    queryFn: async () => {
+      if (!careerTitle) return { videoId: null };
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(careerTitle)}`);
+      if (!res.ok) return { videoId: null };
+      return res.json();
+    },
+    enabled: !!careerTitle,
+    staleTime: 24 * 60 * 60 * 1000, // 24h cache
+  });
+}
+
+// ============================================
 // TYPES
 // ============================================
 
@@ -59,7 +77,9 @@ function V2DiscoverTab({
   onContinue: () => void;
 }) {
   const [viewedSections, setViewedSections] = useState<Set<string>>(new Set());
-  const [expanded, setExpanded] = useState<string | null>('day-in-life');
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const { data: ytData } = useYouTubeVideo(goalTitle);
+  const videoId = ytData?.videoId ?? null;
 
   const markViewed = (id: string) => {
     setViewedSections((prev) => new Set(prev).add(id));
@@ -85,32 +105,30 @@ function V2DiscoverTab({
       bg: 'bg-red-500/10',
       borderColor: 'border-red-500/20',
       content: (
-        <div className="space-y-3">
-          <a
-            href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(career.title)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => markViewed('day-in-life')}
-            className="block aspect-video rounded-lg bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/20 flex items-center justify-center cursor-pointer hover:from-red-500/15 hover:to-red-500/10 transition-all group"
-          >
-            <div className="text-center">
-              <div className="h-14 w-14 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-3 group-hover:bg-red-500/30 transition-colors">
-                <Play className="h-6 w-6 text-red-400" />
+        <div>
+          {videoId ? (
+            <div className="rounded-lg overflow-hidden border border-border/30">
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}`}
+                className="w-full aspect-video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={`Day in the life — ${career.title}`}
+              />
+            </div>
+          ) : (
+            <a
+              href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(career.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 rounded-lg bg-red-500/[0.06] border border-red-500/15 px-2.5 py-3 hover:bg-red-500/10 transition-all"
+            >
+              <div className="h-7 w-7 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
+                <Play className="h-3 w-3 text-red-400" />
               </div>
-              <p className="text-sm font-medium text-foreground/70">Watch real {career.title}s talk about their day</p>
-              <p className="text-[10px] text-muted-foreground/40 mt-1">Opens YouTube in a new tab</p>
-            </div>
-          </a>
-          <div className="space-y-1.5">
-            <p className="text-[10px] font-medium text-muted-foreground/50">Typical daily tasks:</p>
-            <div className="flex flex-wrap gap-1.5">
-              {career.dailyTasks.map((task) => (
-                <span key={task} className="inline-flex rounded-full px-2.5 py-1 text-[11px] bg-muted/30 text-foreground/60">
-                  {task}
-                </span>
-              ))}
-            </div>
-          </div>
+              <p className="text-[10px] font-medium text-foreground/70 flex-1">Loading video...</p>
+            </a>
+          )}
         </div>
       ),
     },
@@ -123,41 +141,38 @@ function V2DiscoverTab({
       bg: 'bg-emerald-500/10',
       borderColor: 'border-emerald-500/20',
       content: (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/15 p-3">
-              <p className="text-[10px] font-medium text-emerald-500/60 mb-1">Average Salary</p>
-              <p className="text-lg font-bold text-emerald-400">{career.avgSalary}</p>
-              <p className="text-[10px] text-muted-foreground/40">per year in Norway</p>
+        <div className="space-y-2.5">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/15 p-2">
+              <p className="text-[9px] font-medium text-emerald-500/60">Salary</p>
+              <p className="text-sm font-bold text-emerald-400">{career.avgSalary}</p>
             </div>
-            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/15 p-3">
-              <p className="text-[10px] font-medium text-emerald-500/60 mb-1">Growth Outlook</p>
-              <p className="text-lg font-bold text-emerald-400 capitalize">{career.growthOutlook}</p>
-              <p className="text-[10px] text-muted-foreground/40">demand for this role</p>
+            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/15 p-2">
+              <p className="text-[9px] font-medium text-emerald-500/60">Growth</p>
+              <p className="text-sm font-bold text-emerald-400 capitalize">{career.growthOutlook}</p>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground/50 leading-relaxed">{career.description}</p>
-        </div>
-      ),
-    },
-    {
-      id: 'education-path',
-      icon: GraduationCap,
-      title: 'Education Path',
-      subtitle: 'What qualifications you\'ll need',
-      color: 'text-blue-400',
-      bg: 'bg-blue-500/10',
-      borderColor: 'border-blue-500/20',
-      content: (
-        <div className="space-y-3">
-          <div className="rounded-lg bg-blue-500/5 border border-blue-500/15 p-4">
-            <p className="text-sm font-medium text-foreground/80">{career.educationPath}</p>
+          <div className="rounded-lg bg-blue-500/5 border border-blue-500/15 p-2">
+            <p className="text-[9px] font-medium text-blue-400/60">Education Path</p>
+            <p className="text-[11px] font-medium text-foreground/80">{career.educationPath}</p>
           </div>
-          {career.entryLevel && (
-            <div className="rounded-lg bg-teal-500/5 border border-teal-500/15 p-3">
-              <p className="text-xs text-teal-400 font-medium">Entry-level accessible — no higher education required to start</p>
+          {career.entryLevel ? (
+            <p className="text-[10px] text-teal-400 font-medium">No certifications required — entry-level accessible</p>
+          ) : (
+            <div className="flex items-center gap-3">
+              <span className="text-[9px] text-muted-foreground/40">Certifications:</span>
+              {[
+                { label: 'Coursera', url: `https://www.coursera.org/search?query=${encodeURIComponent(career.title)}` },
+                { label: 'Vilbli.no', url: `https://www.vilbli.no/?Ession=SO&Sok=${encodeURIComponent(career.title)}` },
+                { label: 'edX', url: `https://www.edx.org/search?q=${encodeURIComponent(career.title)}` },
+              ].map((link) => (
+                <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-400 hover:text-blue-300 transition-colors">
+                  {link.label}
+                </a>
+              ))}
             </div>
           )}
+          <p className="text-[10px] text-muted-foreground/50 leading-relaxed line-clamp-2">{career.description}</p>
         </div>
       ),
     },
@@ -170,46 +185,12 @@ function V2DiscoverTab({
       bg: 'bg-amber-500/10',
       borderColor: 'border-amber-500/20',
       content: (
-        <div className="space-y-4">
-          <div>
-            <p className="text-[10px] font-medium text-muted-foreground/50 mb-2">Skills needed</p>
-            <div className="flex flex-wrap gap-1.5">
-              {career.keySkills.map((skill) => (
-                <span key={skill} className="inline-flex rounded-full px-3 py-1.5 text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="text-[10px] font-medium text-muted-foreground/50 mb-2">Find certifications & courses</p>
-            <div className="flex flex-wrap gap-2">
-              <a
-                href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" /> Coursera
-              </a>
-              <a
-                href={`https://www.vilbli.no/?Ession=SO&Sok=${encodeURIComponent(career.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" /> Vilbli.no
-              </a>
-              <a
-                href={`https://www.edx.org/search?q=${encodeURIComponent(career.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" /> edX
-              </a>
-            </div>
-          </div>
+        <div className="flex flex-wrap gap-1">
+          {career.keySkills.map((skill) => (
+            <span key={skill} className="inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium bg-amber-500/10 text-amber-400">
+              {skill}
+            </span>
+          ))}
         </div>
       ),
     },
@@ -226,55 +207,55 @@ function V2DiscoverTab({
         <span className="text-[10px] text-muted-foreground/30">{viewedSections.size}/{sections.length} explored</span>
       </div>
 
-      {/* Expandable cards */}
-      <div className="space-y-2">
-        {sections.map((section) => {
-          const Icon = section.icon;
-          const isExpanded = expanded === section.id;
-          const isViewed = viewedSections.has(section.id);
-
-          return (
-            <div
-              key={section.id}
-              className={cn(
-                'rounded-xl border transition-all',
-                isExpanded ? `${section.borderColor} bg-card/70` : 'border-border/40 bg-card/40',
-                isViewed && !isExpanded && 'border-border/60'
-              )}
-            >
-              <button
-                onClick={() => {
-                  setExpanded(isExpanded ? null : section.id);
-                  markViewed(section.id);
-                }}
-                className="w-full flex items-center gap-3 p-4 text-left"
-              >
-                <div className={cn('h-9 w-9 rounded-lg flex items-center justify-center shrink-0', section.bg)}>
-                  {isViewed ? <CheckCircle2 className={cn('h-4 w-4', section.color)} /> : <Icon className={cn('h-4 w-4', section.color)} />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{section.title}</p>
-                  <p className="text-[11px] text-muted-foreground/40">{section.subtitle}</p>
-                </div>
-                {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground/30" /> : <ChevronDown className="h-4 w-4 text-muted-foreground/30" />}
-              </button>
-
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pb-4">{section.content}</div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+      {/* Bento grid — video left, info right */}
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+        {/* Left: Day in the Life — spans 2 cols */}
+        <div className="sm:col-span-2 rounded-2xl border border-red-500/20 bg-gradient-to-b from-card/80 to-card/60 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-3 py-2.5">
+            <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 bg-red-500/10">
+              <Play className="h-3.5 w-3.5 text-red-400" />
             </div>
-          );
-        })}
+            <p className="text-xs font-semibold">A Day in the Life</p>
+          </div>
+          <div className="px-3 pb-3">
+            {sections[0].content}
+          </div>
+        </div>
+
+        {/* Right column — spans 3 cols, stacks salary + skills */}
+        <div className="sm:col-span-3 flex flex-col gap-3">
+          {/* Salary, Growth & Path */}
+          <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-card/80 to-card/60 overflow-hidden flex-1">
+            <div className="flex items-center gap-2.5 px-3 py-2.5">
+              <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 bg-emerald-500/10">
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+              </div>
+              <p className="text-xs font-semibold">Salary, Growth & Path</p>
+            </div>
+            <div className="px-3 pb-3 border-t border-border/15 pt-2.5 text-[11px]">
+              {sections[1].content}
+            </div>
+          </div>
+
+          {/* Key Skills */}
+          <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-b from-card/80 to-card/60 overflow-hidden">
+            <div className="flex items-center gap-2.5 px-3 py-2.5">
+              <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-500/10">
+                <Zap className="h-3.5 w-3.5 text-amber-400" />
+              </div>
+              <p className="text-xs font-semibold">Key Skills</p>
+            </div>
+            <div className="px-3 pb-3 border-t border-border/15 pt-2.5 text-[11px]">
+              {sections[2].content}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Roadmap Preview — the payoff */}
+      <div className="rounded-xl border border-teal-500/20 bg-teal-500/[0.03] p-3 overflow-hidden">
+        <p className="text-[10px] font-medium text-teal-500/60 mb-2">Your roadmap preview</p>
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
       </div>
 
       {/* Continue */}
