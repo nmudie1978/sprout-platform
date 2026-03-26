@@ -167,8 +167,8 @@ const TABS: TabDef[] = [
   {
     id: 'discover',
     label: 'Discover',
-    subtitle: '',
-    items: ['Reflect on your strengths', 'Explore career interests', 'Know yourself better'],
+    subtitle: 'Know Yourself',
+    items: ['Reflect on your strengths', 'Explore career interests', 'Personal reflections'],
     icon: Search,
     lensKey: 'discover',
     color: 'teal',
@@ -180,7 +180,7 @@ const TABS: TabDef[] = [
   {
     id: 'understand',
     label: 'Understand',
-    subtitle: 'Know the World',
+    subtitle: 'Know the Role',
     items: ['Role reality & industry insights', 'Path, skills & requirements', 'Validate your understanding'],
     icon: Globe,
     lensKey: 'understand',

@@ -33,7 +33,7 @@ const STAGES = [
   {
     icon: Globe,
     label: 'Understand',
-    subtitle: 'Know the World',
+    subtitle: 'Know the Role',
     color: 'emerald',
     iconBg: 'bg-emerald-500/10',
     iconColor: 'text-emerald-500',

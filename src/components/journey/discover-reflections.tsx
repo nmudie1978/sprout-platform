@@ -265,7 +265,7 @@ export function DiscoverReflectionsSection() {
   return (
     <div>
       <p className="text-[10px] font-bold uppercase tracking-widest text-teal-500/60 mb-2">
-        Know yourself better
+        Personal Reflections
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
       {CARDS.map((card) => {

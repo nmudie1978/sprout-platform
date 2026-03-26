@@ -468,7 +468,7 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
 
       {/* Completed steps — compact grid */}
       {completedSteps.length > 0 && (
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2">
           {completedSteps.map((config) => {
             const output = getStepOutput(config.id);
             return (
@@ -502,6 +502,25 @@ export function DiscoverTab({ journey, goalTitle, onSetGoal, onStartStep, onConf
               </div>
             );
           })}
+          {/* Reflect on Weaknesses — derived from Growth Areas reflection */}
+          {(reflections?.growthAreas?.length ?? 0) > 0 && (
+            <div className="rounded-lg border border-border/40 bg-card/40 p-3">
+              <div className="flex items-center gap-1.5 mb-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span className="text-[11px] font-semibold truncate">Reflect on Weaknesses</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {reflections!.growthAreas!.slice(0, 3).map((item) => (
+                  <span key={item} className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-amber-500/8 text-amber-400/70">
+                    {item}
+                  </span>
+                ))}
+                {reflections!.growthAreas!.length > 3 && (
+                  <span className="text-[10px] text-muted-foreground/40">+{reflections!.growthAreas!.length - 3}</span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
