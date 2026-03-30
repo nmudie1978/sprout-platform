@@ -131,6 +131,51 @@ function useLearningRecommendations(careerTitle: string | null) {
   });
 }
 
+interface CourseSearchResult {
+  category: 'norway' | 'international' | 'certification';
+  platform: string;
+  label: string;
+  description: string;
+  url: string;
+  free: boolean;
+  tags: string[];
+}
+
+interface CourseSearchResponse {
+  success: boolean;
+  career: string;
+  results: CourseSearchResult[];
+  totalCount: number;
+}
+
+function useCourseSearch(careerTitle: string | null) {
+  return useQuery<CourseSearchResponse>({
+    queryKey: ['course-search', careerTitle],
+    queryFn: async () => {
+      const res = await fetch(`/api/courses/search?career=${encodeURIComponent(careerTitle!)}`);
+      if (!res.ok) throw new Error('Failed');
+      return res.json();
+    },
+    enabled: !!careerTitle,
+    staleTime: 30 * 60 * 1000,
+  });
+}
+
+function useRealityCheckVideo(careerTitle: string | null) {
+  return useQuery<{ videoId: string | null }>({
+    queryKey: ['reality-check-video', careerTitle],
+    queryFn: async () => {
+      if (!careerTitle) return { videoId: null };
+      const query = `what I actually do as a ${careerTitle}`;
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
+      if (!res.ok) return { videoId: null };
+      return res.json();
+    },
+    enabled: !!careerTitle,
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+}
+
 // ─── Fullscreen roadmap overlay ──────────────────────────────────────────────
 
 function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose: () => void }) {
@@ -378,6 +423,8 @@ function UnderstandTab({
 }) {
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
+  const { data: courseSearchData } = useCourseSearch(goalTitle);
+  const { data: realityVideoData } = useRealityCheckVideo(goalTitle);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -385,6 +432,7 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
+  const realityVideoId = realityVideoData?.videoId ?? null;
 
   const allCourses = [
     ...(learningData?.localRegional ?? []),
@@ -512,6 +560,24 @@ function UnderstandTab({
         )}
       </CollapsibleSection>
 
+      {/* Reality Check Video */}
+      {realityVideoId && (
+        <SectionCard>
+          <SectionHeader icon={Play} title="Reality Check" badge={<span className="text-[10px] text-muted-foreground/30">What it's actually like</span>} />
+          <div className="p-4">
+            <div className="rounded-lg overflow-hidden aspect-video max-h-[220px]">
+              <iframe
+                src={`https://www.youtube.com/embed/${realityVideoId}`}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={`What I actually do as a ${goalTitle}`}
+              />
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
       {/* Entry Requirements */}
       <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400">
         {detailsLoading ? <LoadingSkeleton /> : details ? (
@@ -624,12 +690,95 @@ function UnderstandTab({
               </div>
             )}
           </div>
+        ) : courseSearchData?.results && courseSearchData.results.length > 0 ? (
+          <div className="space-y-4">
+            <p className="text-xs text-muted-foreground/50">Search for courses and certifications on trusted platforms.</p>
+
+            {/* Norway */}
+            {(() => {
+              const norway = courseSearchData.results.filter(r => r.category === 'norway');
+              if (norway.length === 0) return null;
+              return (
+                <div>
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <MapPin className="h-3 w-3 text-emerald-400" />
+                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Norway</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {norway.map((r) => (
+                      <a key={r.platform} href={r.url} target="_blank" rel="noopener noreferrer"
+                        className="group flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3 hover:border-border/40 hover:bg-background/50 transition-all"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-medium text-foreground/80 group-hover:text-foreground">{r.label}</p>
+                          <p className="text-[11px] text-muted-foreground/40 mt-0.5">{r.description}</p>
+                        </div>
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0 mt-0.5" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* International */}
+            {(() => {
+              const intl = courseSearchData.results.filter(r => r.category === 'international');
+              if (intl.length === 0) return null;
+              return (
+                <div>
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <Globe className="h-3 w-3 text-blue-400" />
+                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">International</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {intl.map((r) => (
+                      <a key={r.platform} href={r.url} target="_blank" rel="noopener noreferrer"
+                        className="group flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3 hover:border-border/40 hover:bg-background/50 transition-all"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[13px] font-medium text-foreground/80 group-hover:text-foreground">{r.label}</p>
+                            {r.free && <span className="text-[9px] font-medium text-emerald-400 bg-emerald-500/10 rounded px-1.5 py-0.5">Free</span>}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground/40 mt-0.5">{r.description}</p>
+                        </div>
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0 mt-0.5" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Certification searches */}
+            {(() => {
+              const certs = courseSearchData.results.filter(r => r.category === 'certification');
+              if (certs.length === 0) return null;
+              return (
+                <div>
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <Award className="h-3 w-3 text-violet-400" />
+                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Certifications & Requirements</p>
+                  </div>
+                  <div className="space-y-1.5">
+                    {certs.map((r, i) => (
+                      <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
+                        className="group flex items-center gap-3 rounded-lg border border-border/15 bg-background/20 px-3.5 py-2.5 hover:border-border/30 hover:bg-background/40 transition-all"
+                      >
+                        <Search className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0" />
+                        <span className="text-[13px] text-foreground/65 group-hover:text-foreground/80 flex-1">{r.label}</span>
+                        <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
         ) : (
           <div className="rounded-lg border border-border/20 bg-background/30 p-4 text-center">
-            <p className="text-xs text-muted-foreground/50">
-              {learningData?.message || 'No verified courses available for this career yet.'}
-            </p>
-            <p className="text-[10px] text-muted-foreground/30 mt-1">We only show courses we have manually verified — no guesswork.</p>
+            <p className="text-xs text-muted-foreground/50">Loading course search results...</p>
           </div>
         )}
       </CollapsibleSection>
