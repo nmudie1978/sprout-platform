@@ -23,12 +23,18 @@ interface VideoResult {
 }
 
 function buildQueries(career: string): string[] {
+  // Shuffle-resistant ordering: mix different content types so the 2 videos
+  // we pick are likely to be different formats (explainer + podcast/interview)
   return [
     `how to become a ${career}`,
+    `podcast ${career}`,
     `what is a ${career}`,
+    `${career} interview career advice`,
     `roadmap to ${career}`,
-    `what it takes to be a ${career}`,
     `${career} career path explained`,
+    `what it takes to be a ${career}`,
+    `${career} career tips and advice`,
+    `${career} podcast interview`,
     `how to be a ${career}`,
   ];
 }

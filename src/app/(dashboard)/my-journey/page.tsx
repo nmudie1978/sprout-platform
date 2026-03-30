@@ -457,10 +457,10 @@ function UnderstandTab({
         <SectionCard>
           <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
           <div className="p-4">
-            <div className={cn('grid gap-3', careerVideos.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 max-w-md')}>
+            <div className={cn('grid gap-4', careerVideos.length > 1 ? 'grid-cols-1 lg:grid-cols-5' : 'grid-cols-1')}>
               {careerVideos.map((video) => (
-                <div key={video.videoId}>
-                  <p className="text-[10px] font-medium text-muted-foreground/40 mb-2 truncate">{video.title}</p>
+                <div key={video.videoId} className="lg:col-span-2">
+                  <p className="text-[10px] font-medium text-muted-foreground/40 mb-2 line-clamp-1">{video.title}</p>
                   <div className="rounded-lg overflow-hidden border border-border/15">
                     <iframe
                       src={`https://www.youtube.com/embed/${video.videoId}`}
