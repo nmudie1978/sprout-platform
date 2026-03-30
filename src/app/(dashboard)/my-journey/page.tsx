@@ -162,27 +162,19 @@ function useCourseSearch(careerTitle: string | null) {
   });
 }
 
-function useHowToBeVideo(careerTitle: string | null) {
-  return useQuery<{ videoId: string | null }>({
-    queryKey: ['how-to-be-video', careerTitle],
-    queryFn: async () => {
-      if (!careerTitle) return { videoId: null };
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`how to become a ${careerTitle}`)}`);
-      if (!res.ok) return { videoId: null };
-      return res.json();
-    },
-    enabled: !!careerTitle,
-    staleTime: 24 * 60 * 60 * 1000,
-  });
+interface CareerVideo {
+  videoId: string;
+  title: string;
+  thumbnail: string;
+  query: string;
 }
 
-function useWhatIsVideo(careerTitle: string | null) {
-  return useQuery<{ videoId: string | null }>({
-    queryKey: ['what-is-video', careerTitle],
+function useCareerVideos(careerTitle: string | null) {
+  return useQuery<{ videos: CareerVideo[]; count: number }>({
+    queryKey: ['career-videos', careerTitle],
     queryFn: async () => {
-      if (!careerTitle) return { videoId: null };
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`what is a ${careerTitle}`)}`);
-      if (!res.ok) return { videoId: null };
+      const res = await fetch(`/api/youtube-search/career-videos?career=${encodeURIComponent(careerTitle!)}`);
+      if (!res.ok) return { videos: [], count: 0 };
       return res.json();
     },
     enabled: !!careerTitle,
@@ -424,8 +416,7 @@ function UnderstandTab({
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
   const { data: courseSearchData } = useCourseSearch(goalTitle);
-  const { data: howToBeData } = useHowToBeVideo(goalTitle);
-  const { data: whatIsData } = useWhatIsVideo(goalTitle);
+  const { data: careerVideosData } = useCareerVideos(goalTitle);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -433,8 +424,7 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
-  const howToBeVideoId = howToBeData?.videoId ?? null;
-  const whatIsVideoId = whatIsData?.videoId ?? null;
+  const careerVideos = careerVideosData?.videos ?? [];
 
   const allCourses = [
     ...(learningData?.localRegional ?? []),
@@ -462,44 +452,30 @@ function UnderstandTab({
         </SectionCard>
       )}
 
-      {/* The Reality — two compact videos side by side */}
-      <SectionCard>
-        <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
-        <div className="p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">How to become a {goalTitle}</p>
-              <div className="rounded-lg overflow-hidden border border-border/15">
-                <iframe
-                  src={howToBeVideoId
-                    ? `https://www.youtube.com/embed/${howToBeVideoId}`
-                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`how to become a ${goalTitle}`)}`
-                  }
-                  className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`How to become a ${goalTitle}`}
-                />
-              </div>
-            </div>
-            <div>
-              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">What is a {goalTitle}?</p>
-              <div className="rounded-lg overflow-hidden border border-border/15">
-                <iframe
-                  src={whatIsVideoId
-                    ? `https://www.youtube.com/embed/${whatIsVideoId}`
-                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`what is a ${goalTitle}`)}`
-                  }
-                  className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`What is a ${goalTitle}`}
-                />
-              </div>
+      {/* The Reality — best 2 videos picked from multiple search queries */}
+      {careerVideos.length > 0 && (
+        <SectionCard>
+          <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
+          <div className="p-4">
+            <div className={cn('grid gap-3', careerVideos.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 max-w-md')}>
+              {careerVideos.map((video) => (
+                <div key={video.videoId}>
+                  <p className="text-[10px] font-medium text-muted-foreground/40 mb-2 truncate">{video.title}</p>
+                  <div className="rounded-lg overflow-hidden border border-border/15">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.videoId}`}
+                      className="w-full aspect-video"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={video.title}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </SectionCard>
+        </SectionCard>
+      )}
 
       {/* Typical Day */}
       <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
