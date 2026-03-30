@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import {
   Shield,
   GraduationCap,
@@ -68,7 +69,7 @@ interface SharedNodeProps {
   size?: number;
 }
 
-export function SharedNode({ item, onClick, onProgressCycle, progressStatus, size = 40 }: SharedNodeProps) {
+export const SharedNode = memo(function SharedNode({ item, onClick, onProgressCycle, progressStatus, size = 40 }: SharedNodeProps) {
   const stage = STAGE_CONFIG[item.stage];
   const iconName = item.icon ?? stage.icon;
   const IconComponent = ICON_MAP[iconName] ?? ICON_MAP[stage.icon] ?? Sparkles;
@@ -108,4 +109,4 @@ export function SharedNode({ item, onClick, onProgressCycle, progressStatus, siz
       )}
     </div>
   );
-}
+});

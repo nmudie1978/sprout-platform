@@ -32,7 +32,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
       if (!res.ok) return { educationContext: null };
       return res.json();
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
   });
   const eduContext = eduData?.educationContext;
 
