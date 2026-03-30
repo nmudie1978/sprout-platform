@@ -978,49 +978,26 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
 
   return (
     <div className="space-y-5">
-      {/* School & Education pathway */}
-      <SectionCard>
-        <SectionHeader icon={GraduationCap} title="Your Education Path" />
-        <div className="p-4 space-y-4">
-          {/* Degree */}
-          <div className="rounded-lg border border-border/30 bg-background/30 p-4">
-            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-1.5">Recommended Degree</p>
-            <p className="text-sm font-semibold text-foreground/85">{career.educationPath}</p>
-          </div>
-
-          {/* School subjects */}
-          <div>
-            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">Relevant School Subjects</p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {schoolSubjects.map((s) => (
-                <div key={s.subject} className="rounded-lg border border-border/25 bg-background/20 p-3">
-                  <p className="text-xs font-semibold text-foreground/80 mb-0.5">{s.subject}</p>
-                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{s.why}</p>
-                </div>
-              ))}
+      {/* ── Hero: What You Can Do Right Now ── */}
+      <div
+        className="rounded-xl border overflow-hidden"
+        style={{
+          borderColor: 'rgba(20,184,166,0.25)',
+          boxShadow: '0 0 30px rgba(20,184,166,0.08), 0 0 60px rgba(20,184,166,0.04)',
+          background: 'linear-gradient(180deg, rgba(20,184,166,0.06) 0%, transparent 40%)',
+        }}
+      >
+        <div className="px-5 py-4 border-b border-teal-500/15">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-teal-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground/90">What You Can Do Right Now</h3>
+              <p className="text-[10px] text-muted-foreground/40">Actions you can take this week</p>
             </div>
           </div>
-
-          {/* Entry paths from API */}
-          {details && details.entryPaths.length > 0 && (
-            <div className="border-t border-border/20 pt-3">
-              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">Steps to get there</p>
-              <div className="flex flex-wrap gap-2">
-                {details.entryPaths.map((path, i) => (
-                  <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-border/20 bg-background/30 px-3 py-1.5 text-xs text-foreground/60">
-                    <span className="text-[10px] font-bold text-muted-foreground/30">{i + 1}.</span>
-                    {path}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-      </SectionCard>
-
-      {/* Right Now actions */}
-      <SectionCard>
-        <SectionHeader icon={Sparkles} title="What You Can Do Right Now" />
         <div className="p-4 space-y-2">
           <ActionRow
             icon={Play}
@@ -1039,16 +1016,9 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             title={`Build your ${topSkills[0] || 'core'} skills`}
             subtitle={`Start with what you're learning now — ${topSkills.slice(0, 2).join(' and ')} directly support this path`}
           />
-        </div>
-      </SectionCard>
-
-      {/* Make It Real */}
-      <SectionCard>
-        <SectionHeader icon={Users} title="Make It Real" badge={<span className="text-[10px] text-muted-foreground/30">Meaningful next steps</span>} />
-        <div className="p-4 space-y-2">
           <ActionRow
             icon={Users}
-            title={`Have a conversation with a ${career.title}`}
+            title={`Talk to a ${career.title}`}
             subtitle="Ask what they wish they knew at your age. One conversation can change everything."
             variant="highlight"
           />
@@ -1062,7 +1032,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             variant="highlight"
           />
         </div>
-      </SectionCard>
+      </div>
 
       {/* What This Means */}
       <SectionCard>
