@@ -162,13 +162,26 @@ function useCourseSearch(careerTitle: string | null) {
   });
 }
 
-function useRealityCheckVideo(careerTitle: string | null) {
+function useRealityDayVideo(careerTitle: string | null) {
   return useQuery<{ videoId: string | null }>({
-    queryKey: ['reality-check-video', careerTitle],
+    queryKey: ['reality-day-video', careerTitle],
     queryFn: async () => {
       if (!careerTitle) return { videoId: null };
-      const query = `the truth about being a ${careerTitle} pros cons reality`;
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`a day in the life of a ${careerTitle}`)}`);
+      if (!res.ok) return { videoId: null };
+      return res.json();
+    },
+    enabled: !!careerTitle,
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+}
+
+function useWhatIsVideo(careerTitle: string | null) {
+  return useQuery<{ videoId: string | null }>({
+    queryKey: ['what-is-video', careerTitle],
+    queryFn: async () => {
+      if (!careerTitle) return { videoId: null };
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`what is a ${careerTitle}`)}`);
       if (!res.ok) return { videoId: null };
       return res.json();
     },
@@ -411,7 +424,8 @@ function UnderstandTab({
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
   const { data: courseSearchData } = useCourseSearch(goalTitle);
-  const { data: realityVideoData } = useRealityCheckVideo(goalTitle);
+  const { data: realityDayData } = useRealityDayVideo(goalTitle);
+  const { data: whatIsData } = useWhatIsVideo(goalTitle);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -419,7 +433,8 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
-  const realityVideoId = realityVideoData?.videoId ?? null;
+  const realityDayVideoId = realityDayData?.videoId ?? null;
+  const whatIsVideoId = whatIsData?.videoId ?? null;
 
   const allCourses = [
     ...(learningData?.localRegional ?? []),
@@ -447,25 +462,41 @@ function UnderstandTab({
         </SectionCard>
       )}
 
-      {/* Reality Check Video — compact, always visible */}
+      {/* The Reality — two compact videos side by side */}
       <SectionCard>
-        <div className="flex items-center gap-2.5 px-5 py-3 border-b border-border/30">
-          <Play className="h-4 w-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-foreground/90">The Reality</h3>
-          <span className="text-[10px] text-muted-foreground/30 ml-auto">The truth about this career</span>
-        </div>
+        <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
         <div className="p-4">
-          <div className="rounded-lg overflow-hidden border border-border/15 max-w-sm">
-            <iframe
-              src={realityVideoId
-                ? `https://www.youtube.com/embed/${realityVideoId}`
-                : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`the truth about being a ${goalTitle} pros cons`)}`
-              }
-              className="w-full aspect-video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={`The reality of being a ${goalTitle}`}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">A Day in the Life</p>
+              <div className="rounded-lg overflow-hidden border border-border/15">
+                <iframe
+                  src={realityDayVideoId
+                    ? `https://www.youtube.com/embed/${realityDayVideoId}`
+                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`a day in the life of a ${goalTitle}`)}`
+                  }
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`A day in the life of a ${goalTitle}`}
+                />
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">What is a {goalTitle}?</p>
+              <div className="rounded-lg overflow-hidden border border-border/15">
+                <iframe
+                  src={whatIsVideoId
+                    ? `https://www.youtube.com/embed/${whatIsVideoId}`
+                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`what is a ${goalTitle}`)}`
+                  }
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`What is a ${goalTitle}`}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </SectionCard>
