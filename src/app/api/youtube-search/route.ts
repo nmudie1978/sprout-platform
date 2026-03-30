@@ -22,8 +22,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const query = `day in the life ${career}`;
-    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=1&videoDuration=medium&relevanceLanguage=en&key=${apiKey}`;
+    // Use the query as-is — callers pass the full search string
+    // (e.g. "day in the life Doctor" or "what I actually do as a Doctor")
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(career)}&type=video&maxResults=1&videoDuration=medium&relevanceLanguage=en&key=${apiKey}`;
 
     const res = await fetch(url, { next: { revalidate: 86400 } }); // Cache 24h
     if (!res.ok) {

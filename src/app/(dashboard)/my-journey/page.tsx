@@ -93,7 +93,8 @@ function useYouTubeVideo(careerTitle: string | null) {
     queryKey: ['youtube-video', careerTitle],
     queryFn: async () => {
       if (!careerTitle) return { videoId: null };
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(careerTitle)}`);
+      const query = `day in the life ${careerTitle}`;
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
       if (!res.ok) return { videoId: null };
       return res.json();
     },
