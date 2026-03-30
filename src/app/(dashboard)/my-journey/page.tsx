@@ -285,8 +285,8 @@ function DiscoverTab({
     <div className="space-y-5">
       {/* Hero: Video + Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        {/* Video — 3 cols */}
-        <SectionCard className="lg:col-span-3">
+        {/* Video — 2 cols */}
+        <SectionCard className="lg:col-span-2">
           <SectionHeader icon={Play} title="A Day in the Life" />
           <div className="p-4">
             {videoId ? (
@@ -318,8 +318,8 @@ function DiscoverTab({
           </div>
         </SectionCard>
 
-        {/* Overview stats — 2 cols */}
-        <div className="lg:col-span-2 space-y-4">
+        {/* Overview stats — 3 cols */}
+        <div className="lg:col-span-3 space-y-4">
           <SectionCard>
             <SectionHeader icon={BarChart3} title="Career Overview" />
             <div className="p-4 grid grid-cols-2 gap-3">
