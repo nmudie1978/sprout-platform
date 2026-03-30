@@ -162,12 +162,12 @@ function useCourseSearch(careerTitle: string | null) {
   });
 }
 
-function useRealityDayVideo(careerTitle: string | null) {
+function useHowToBeVideo(careerTitle: string | null) {
   return useQuery<{ videoId: string | null }>({
-    queryKey: ['reality-day-video', careerTitle],
+    queryKey: ['how-to-be-video', careerTitle],
     queryFn: async () => {
       if (!careerTitle) return { videoId: null };
-      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`a day in the life of a ${careerTitle}`)}`);
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(`how to become a ${careerTitle}`)}`);
       if (!res.ok) return { videoId: null };
       return res.json();
     },
@@ -424,7 +424,7 @@ function UnderstandTab({
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
   const { data: courseSearchData } = useCourseSearch(goalTitle);
-  const { data: realityDayData } = useRealityDayVideo(goalTitle);
+  const { data: howToBeData } = useHowToBeVideo(goalTitle);
   const { data: whatIsData } = useWhatIsVideo(goalTitle);
 
   if (!career || !goalTitle) {
@@ -433,7 +433,7 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
-  const realityDayVideoId = realityDayData?.videoId ?? null;
+  const howToBeVideoId = howToBeData?.videoId ?? null;
   const whatIsVideoId = whatIsData?.videoId ?? null;
 
   const allCourses = [
@@ -468,17 +468,17 @@ function UnderstandTab({
         <div className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">A Day in the Life</p>
+              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">How to become a {goalTitle}</p>
               <div className="rounded-lg overflow-hidden border border-border/15">
                 <iframe
-                  src={realityDayVideoId
-                    ? `https://www.youtube.com/embed/${realityDayVideoId}`
-                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`a day in the life of a ${goalTitle}`)}`
+                  src={howToBeVideoId
+                    ? `https://www.youtube.com/embed/${howToBeVideoId}`
+                    : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`how to become a ${goalTitle}`)}`
                   }
                   className="w-full aspect-video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  title={`A day in the life of a ${goalTitle}`}
+                  title={`How to become a ${goalTitle}`}
                 />
               </div>
             </div>
