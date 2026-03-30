@@ -289,6 +289,9 @@ function DiscoverTab({
 
   return (
     <div className="space-y-5">
+      {/* Brief description */}
+      <p className="text-sm text-foreground/60 leading-relaxed">{career.description}</p>
+
       {/* Hero: Video + Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Video — 2 cols */}
