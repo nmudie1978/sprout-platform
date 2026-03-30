@@ -460,6 +460,30 @@ function UnderstandTab({
         </SectionCard>
       )}
 
+      {/* Reality Check Video — compact, always visible */}
+      {realityVideoId && (
+        <SectionCard>
+          <div className="flex items-start gap-4 p-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Play className="h-3.5 w-3.5 text-amber-400" />
+                <p className="text-xs font-semibold text-foreground/80">What it's actually like</p>
+              </div>
+              <p className="text-[11px] text-muted-foreground/40">Hear from a real {goalTitle} about their day-to-day work</p>
+            </div>
+            <div className="w-[200px] shrink-0 rounded-md overflow-hidden border border-border/20">
+              <iframe
+                src={`https://www.youtube.com/embed/${realityVideoId}`}
+                className="w-full aspect-video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={`What I actually do as a ${goalTitle}`}
+              />
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
       {/* Typical Day */}
       <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
         {detailsLoading ? <LoadingSkeleton /> : details ? (
@@ -542,28 +566,15 @@ function UnderstandTab({
               </div>
             )}
 
-            {/* Reality check — text + video side by side */}
-            {(details.realityCheck || realityVideoId) && (
+            {/* Reality check text */}
+            {details.realityCheck && (
               <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-4">
-                <div className="flex items-start gap-3 mb-3">
+                <div className="flex items-start gap-3">
                   <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                  <p className="text-xs font-semibold text-amber-400">Reality Check</p>
-                </div>
-                <div className={cn('grid gap-3', realityVideoId && details.realityCheck ? 'grid-cols-1 sm:grid-cols-[1fr,180px]' : '')}>
-                  {details.realityCheck && (
+                  <div>
+                    <p className="text-xs font-semibold text-amber-400 mb-1">Reality Check</p>
                     <p className="text-[13px] text-foreground/60 leading-relaxed">{details.realityCheck}</p>
-                  )}
-                  {realityVideoId && (
-                    <div className="rounded-md overflow-hidden aspect-video sm:aspect-auto sm:h-[100px] shrink-0">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${realityVideoId}`}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        title={`What I actually do as a ${goalTitle}`}
-                      />
-                    </div>
-                  )}
+                  </div>
                 </div>
               </div>
             )}
