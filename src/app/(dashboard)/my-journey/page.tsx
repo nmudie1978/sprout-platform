@@ -167,7 +167,7 @@ function useRealityCheckVideo(careerTitle: string | null) {
     queryKey: ['reality-check-video', careerTitle],
     queryFn: async () => {
       if (!careerTitle) return { videoId: null };
-      const query = `what I actually do as a ${careerTitle}`;
+      const query = `the truth about being a ${careerTitle} pros cons reality`;
       const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
       if (!res.ok) return { videoId: null };
       return res.json();
@@ -290,32 +290,18 @@ function DiscoverTab({
         <SectionCard className="lg:col-span-2">
           <SectionHeader icon={Play} title="A Day in the Life" />
           <div className="p-4">
-            {videoId ? (
-              <div className="rounded-lg overflow-hidden">
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}`}
-                  className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`Day in the life — ${career.title}`}
-                />
-              </div>
-            ) : (
-              <a
-                href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(career.title)}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-lg border border-border/30 bg-muted/10 px-4 py-6 hover:bg-muted/20 transition-colors"
-              >
-                <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
-                  <Play className="h-4 w-4 text-red-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground/70">Watch on YouTube</p>
-                  <p className="text-xs text-muted-foreground/50">See what a day as a {career.title} looks like</p>
-                </div>
-                <ExternalLink className="h-4 w-4 text-muted-foreground/30 ml-auto" />
-              </a>
-            )}
+            <div className="rounded-lg overflow-hidden">
+              <iframe
+                src={videoId
+                  ? `https://www.youtube.com/embed/${videoId}`
+                  : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`day in the life ${career.title}`)}`
+                }
+                className="w-full aspect-video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={`Day in the life — ${career.title}`}
+              />
+            </div>
           </div>
         </SectionCard>
 
@@ -462,28 +448,27 @@ function UnderstandTab({
       )}
 
       {/* Reality Check Video — compact, always visible */}
-      {realityVideoId && (
-        <SectionCard>
-          <div className="flex items-start gap-4 p-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Play className="h-3.5 w-3.5 text-amber-400" />
-                <p className="text-xs font-semibold text-foreground/80">What it's actually like</p>
-              </div>
-              <p className="text-[11px] text-muted-foreground/40">Hear from a real {goalTitle} about their day-to-day work</p>
-            </div>
-            <div className="w-[200px] shrink-0 rounded-md overflow-hidden border border-border/20">
-              <iframe
-                src={`https://www.youtube.com/embed/${realityVideoId}`}
-                className="w-full aspect-video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={`What I actually do as a ${goalTitle}`}
-              />
-            </div>
+      <SectionCard>
+        <div className="flex items-center gap-2.5 px-5 py-3 border-b border-border/30">
+          <Play className="h-4 w-4 text-amber-400" />
+          <h3 className="text-sm font-semibold text-foreground/90">The Reality</h3>
+          <span className="text-[10px] text-muted-foreground/30 ml-auto">The truth about this career</span>
+        </div>
+        <div className="p-4">
+          <div className="rounded-lg overflow-hidden border border-border/15 max-w-sm">
+            <iframe
+              src={realityVideoId
+                ? `https://www.youtube.com/embed/${realityVideoId}`
+                : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`the truth about being a ${goalTitle} pros cons`)}`
+              }
+              className="w-full aspect-video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={`The reality of being a ${goalTitle}`}
+            />
           </div>
-        </SectionCard>
-      )}
+        </div>
+      </SectionCard>
 
       {/* Typical Day */}
       <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
