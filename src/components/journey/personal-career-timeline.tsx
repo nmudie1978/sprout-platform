@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
+import type { CardDataSummary } from './renderers/types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { TimelineStyleSelector } from './timeline-style-selector';
-import { TimelineDetailDialog } from './timeline';
+import { TimelineDetailDialog, loadCardData, cycleProgress } from './timeline';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
 
@@ -62,6 +63,28 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
 
   const journey = data?.journey ?? null;
   const careerName = journey?.career ?? '';
+
+  // Build per-node card data summaries for visual indicators on the roadmap
+  const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
+    if (!journey) return {};
+    const map: Record<string, CardDataSummary> = {};
+    for (const item of journey.items) {
+      const d = loadCardData(item.id);
+      map[item.id] = {
+        status: d.status || 'not_started',
+        stickyNote: d.stickyNote,
+        hasStickyNote: Boolean(d.stickyNote),
+        hasNotes: Boolean(d.notes),
+      };
+    }
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [journey, saveVersion]);
+
+  const handleProgressCycle = useCallback((itemId: string) => {
+    cycleProgress(itemId);
+    setSaveVersion((v) => v + 1);
+  }, []);
 
   // Export as image — must be declared before any early returns
   const handleExport = useCallback(async () => {
@@ -172,6 +195,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
           overlayData={{}}
           activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
           userAge={journey.startAge}
+          cardDataMap={cardDataMap}
+          onProgressCycle={handleProgressCycle}
         />
       </div>
 

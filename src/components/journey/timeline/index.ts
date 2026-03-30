@@ -1,2 +1,2 @@
 export { JourneyTimeline } from './journey-timeline';
-export { TimelineDetailDialog } from './timeline-detail-dialog';
+export { TimelineDetailDialog, loadCardData, cycleProgress } from './timeline-detail-dialog';

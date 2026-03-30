@@ -1,6 +1,13 @@
 import type { Journey, JourneyItem } from '@/lib/journey/career-journey-types';
 import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
 
+export interface CardDataSummary {
+  status: 'not_started' | 'in_progress' | 'done';
+  stickyNote?: string;
+  hasStickyNote: boolean;
+  hasNotes: boolean;
+}
+
 export interface RendererProps {
   journey: Journey;
   onItemClick: (item: JourneyItem) => void;
@@ -8,4 +15,8 @@ export interface RendererProps {
   activeLayers?: Record<OverlayLayerId, boolean>;
   /** User's current age — used to show "You Are Here" marker */
   userAge?: number;
+  /** Per-node card data summaries for visual indicators */
+  cardDataMap?: Record<string, CardDataSummary>;
+  /** Callback to cycle a node's progress status */
+  onProgressCycle?: (itemId: string) => void;
 }

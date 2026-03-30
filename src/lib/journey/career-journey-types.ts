@@ -13,6 +13,17 @@ import type { CareerJourney, CareerJourneyItem, CareerJourneyStage } from './dem
 
 export type JourneyStage = 'foundation' | 'education' | 'experience' | 'career';
 
+export interface SuggestedResource {
+  label: string;
+  url: string;
+  type: 'course' | 'article' | 'tool' | 'platform' | 'video';
+}
+
+export interface HowToStep {
+  step: string;
+  detail?: string;
+}
+
 export interface JourneyItem {
   id: string;
   stage: JourneyStage;
@@ -24,6 +35,9 @@ export interface JourneyItem {
   icon?: string;
   description?: string;
   microActions?: string[];
+  suggestedResources?: SuggestedResource[];
+  howTo?: HowToStep[];
+  isCustom?: boolean;
 }
 
 export interface SchoolTrackItem {

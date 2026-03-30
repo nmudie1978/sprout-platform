@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
@@ -19,35 +18,20 @@ import {
   TrendingDown,
   Minus,
   Banknote,
-  GraduationCap,
-  Briefcase,
-  Sparkles,
-  ExternalLink,
-  Sun,
-  Clock,
-  Sunset,
-  Wrench,
-  Users,
   Target,
-  AlertTriangle,
-  ChevronRight,
-  ChevronDown,
   Check,
   Loader2,
   Star,
   ArrowLeftRight,
-  Video,
   Bookmark,
   BookmarkCheck,
-  BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
-import { CareerProgressionFlow } from "@/components/careers/CareerProgressionFlow";
-import { RealWorldExamplesLinks } from "@/components/careers/RealWorldExamplesLinks";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 
 interface CareerDetailSheetProps {
@@ -76,79 +60,6 @@ const growthConfig = {
     bg: "bg-blue-100 dark:bg-blue-950",
   },
 };
-
-// Types for API response
-interface CareerDetails {
-  typicalDay: {
-    morning: string[];
-    midday: string[];
-    afternoon: string[];
-    tools?: string[];
-    environment?: string;
-  };
-  whatYouActuallyDo: string[];
-  whoThisIsGoodFor: string[];
-  topSkills: string[];
-  entryPaths: string[];
-  realityCheck?: string;
-}
-
-interface CareerPathProgression {
-  entry: string[];
-  core: string[];
-  next: string[];
-}
-
-/* ------------------------------------------------------------------ */
-/*  AccordionSection — independently collapsible section               */
-/* ------------------------------------------------------------------ */
-
-function AccordionSection({
-  icon,
-  title,
-  children,
-  defaultOpen = false,
-}: {
-  icon: ReactNode;
-  title: string;
-  children: ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  return (
-    <div className="border rounded-lg overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 px-3 py-3 text-left hover:bg-muted/50 transition-colors"
-      >
-        {icon}
-        <span className="text-sm font-semibold flex-1">{title}</span>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        </motion.span>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-3 pb-3 border-t pt-3">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
 
 // Swap Modal Component
 function SwapGoalModal({
@@ -245,22 +156,6 @@ export function CareerDetailSheet({
   // Always render Dialog - control visibility with open prop
   const isOpen = career !== null;
 
-  // Fetch career details on demand (lazy loading)
-  const { data: careerData, isLoading: isLoadingDetails } = useQuery({
-    queryKey: ["career-details", career?.id],
-    queryFn: async () => {
-      const response = await fetch(`/api/career-details/${career!.id}`);
-      if (!response.ok) throw new Error("Failed to fetch career details");
-      return response.json() as Promise<{
-        details: CareerDetails | null;
-        progression: CareerPathProgression | null;
-        hasDetails: boolean;
-      }>;
-    },
-    enabled: !!career?.id,
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-  });
-
   // Fetch current goals
   const { data: goalsData } = useQuery({
     queryKey: ["goals"],
@@ -274,10 +169,6 @@ export function CareerDetailSheet({
 
   const primaryGoal: CareerGoal | null = goalsData?.primaryGoal || null;
   const secondaryGoal: CareerGoal | null = goalsData?.secondaryGoal || null;
-
-  const details = careerData?.details;
-  const progression = careerData?.progression;
-  const hasSpecificContent = careerData?.hasDetails ?? false;
 
   // Reset state when career changes
   useEffect(() => {
@@ -461,250 +352,41 @@ export function CareerDetailSheet({
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <Button variant="outline" size="sm" className="text-xs" asChild>
-                    <a
-                      href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <BookOpen className="h-3.5 w-3.5 mr-1.5" />
-                      Start Learning
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-xs" asChild>
-                    <a
-                      href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(career.title)}&location=Norway`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                      See Job Listings
-                    </a>
-                  </Button>
-                </div>
+                {/* Key Skills */}
+                {career.keySkills.length > 0 && (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <Sparkles className="h-3 w-3 text-teal-500" />
+                      <span className="text-[10px] font-medium text-muted-foreground">Key Skills</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {career.keySkills.slice(0, 4).map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="outline"
+                          className="text-[10px] capitalize bg-teal-500/5 border-teal-500/20"
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </DialogHeader>
 
               <div className="p-4 space-y-5">
-                {/* Loading State */}
-                {isLoadingDetails && (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    <span className="ml-2 text-sm text-muted-foreground">Loading details...</span>
-                  </div>
-                )}
+                {/* Journey nudge */}
+                <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-3">
+                  <p className="text-xs font-medium text-teal-700 dark:text-teal-400">
+                    Set this as your goal to explore it in depth
+                  </p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                    My Journey gives you the full picture — daily tasks, entry criteria, typical week, personality fit, and more.
+                  </p>
+                </div>
 
-                {/* Content - accordion sections, only show when loaded */}
-                {details && (
-                  <div className="space-y-2">
-                    {/* A Typical Day — most important, open by default */}
-                    <AccordionSection
-                      icon={<Clock className="h-4 w-4 text-blue-600" />}
-                      title="A Typical Day"
-                      defaultOpen
-                    >
-                      <div className="space-y-3">
-                        <div>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <Sun className="h-3.5 w-3.5 text-amber-500" />
-                            <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Morning</span>
-                          </div>
-                          <ul className="space-y-0.5">
-                            {details.typicalDay.morning.map((task, i) => (
-                              <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                                <span className="text-blue-500 mt-0.5">•</span>
-                                {task}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <Clock className="h-3.5 w-3.5 text-blue-500" />
-                            <span className="text-xs font-medium text-blue-700 dark:text-blue-400">Midday</span>
-                          </div>
-                          <ul className="space-y-0.5">
-                            {details.typicalDay.midday.map((task, i) => (
-                              <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                                <span className="text-blue-500 mt-0.5">•</span>
-                                {task}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <Sunset className="h-3.5 w-3.5 text-orange-500" />
-                            <span className="text-xs font-medium text-orange-700 dark:text-orange-400">Afternoon</span>
-                          </div>
-                          <ul className="space-y-0.5">
-                            {details.typicalDay.afternoon.map((task, i) => (
-                              <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
-                                <span className="text-blue-500 mt-0.5">•</span>
-                                {task}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        {(details.typicalDay.tools || details.typicalDay.environment) && (
-                          <div className="pt-2 border-t border-muted">
-                            {details.typicalDay.tools && (
-                              <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                                <Wrench className="h-3 w-3 text-muted-foreground" />
-                                <span className="text-[10px] text-muted-foreground">Tools:</span>
-                                {details.typicalDay.tools.map((tool) => (
-                                  <Badge key={tool} variant="secondary" className="text-[9px] px-1.5 py-0">
-                                    {tool}
-                                  </Badge>
-                                ))}
-                              </div>
-                            )}
-                            {details.typicalDay.environment && (
-                              <p className="text-[10px] text-muted-foreground">
-                                Environment: {details.typicalDay.environment}
-                              </p>
-                            )}
-                          </div>
-                        )}
-
-                        <div className="pt-2 border-t border-muted">
-                          <a
-                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`"a day in the life" ${career.title}`)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                          >
-                            <Video className="h-3.5 w-3.5" />
-                            Watch: A Day in the Life
-                            <ExternalLink className="h-3 w-3 ml-auto opacity-50" />
-                          </a>
-                        </div>
-                      </div>
-                    </AccordionSection>
-
-                    {/* What You Actually Do */}
-                    <AccordionSection
-                      icon={<Briefcase className="h-4 w-4 text-amber-500" />}
-                      title="What You Actually Do"
-                    >
-                      <ul className="space-y-1">
-                        {details.whatYouActuallyDo.map((task, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                            <ChevronRight className="h-3 w-3 text-amber-500 mt-0.5 flex-shrink-0" />
-                            {task}
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionSection>
-
-                    {/* Skills You'll Use Most */}
-                    <AccordionSection
-                      icon={<Sparkles className="h-4 w-4 text-teal-500" />}
-                      title="Skills You'll Use Most"
-                    >
-                      <div className="flex flex-wrap gap-1.5">
-                        {details.topSkills.map((skill) => (
-                          <Badge
-                            key={skill}
-                            variant="outline"
-                            className="text-[10px] capitalize bg-teal-500/5 border-teal-500/20"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </AccordionSection>
-
-                    {/* Who This Role Is Good For */}
-                    <AccordionSection
-                      icon={<Users className="h-4 w-4 text-green-500" />}
-                      title="Who This Role Is Good For"
-                    >
-                      <ul className="space-y-1">
-                        {details.whoThisIsGoodFor.map((trait, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                            <span className="text-green-500 mt-0.5">✓</span>
-                            {trait}
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionSection>
-
-                    {/* Entry Paths */}
-                    <AccordionSection
-                      icon={<Target className="h-4 w-4 text-blue-500" />}
-                      title="Entry Paths"
-                    >
-                      <ul className="space-y-1">
-                        {details.entryPaths.map((path, i) => (
-                          <li key={i} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                            <span className="text-blue-500 font-bold">{i + 1}.</span>
-                            {path}
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionSection>
-
-                    {/* Career Progression */}
-                    {progression && (
-                      <AccordionSection
-                        icon={<TrendingUp className="h-4 w-4 text-teal-500" />}
-                        title="Career Progression"
-                      >
-                        <p className="text-[10px] text-muted-foreground mb-3">
-                          A typical path — there are many ways to get there.
-                        </p>
-                        <CareerProgressionFlow progression={progression} />
-                      </AccordionSection>
-                    )}
-
-                    {/* Education Path */}
-                    <AccordionSection
-                      icon={<GraduationCap className="h-4 w-4 text-teal-500" />}
-                      title="Education Overview"
-                    >
-                      <p className="text-xs text-muted-foreground">{career.educationPath}</p>
-                      <a
-                        href={`https://www.classcentral.com/search?q=${encodeURIComponent(career.title)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2"
-                      >
-                        <BookOpen className="h-3 w-3" />
-                        Find courses
-                      </a>
-                    </AccordionSection>
-
-                    {/* Reality Check */}
-                    {details.realityCheck && (
-                      <AccordionSection
-                        icon={<AlertTriangle className="h-4 w-4 text-amber-500" />}
-                        title="Reality Check"
-                      >
-                        <p className="text-xs text-amber-700 dark:text-amber-300">
-                          {details.realityCheck}
-                        </p>
-                      </AccordionSection>
-                    )}
-
-                    {/* Real-World Examples */}
-                    <RealWorldExamplesLinks careerTitle={career.title} />
-
-                    {/* Content note */}
-                    {!hasSpecificContent && (
-                      <p className="text-[10px] text-muted-foreground text-center italic">
-                        General information shown. More detailed content coming soon.
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Actions - always show */}
-                <div className="pt-3 border-t space-y-2">
+                {/* Actions */}
+                <div className="space-y-2">
                   {isYouth && (
                     <>
                       {/* Already added indicator */}
@@ -763,16 +445,6 @@ export function CareerDetailSheet({
                       )}
                     </>
                   )}
-                  <Button variant="outline" className="w-full" size="sm" asChild>
-                    <a
-                      href={`https://vilbli.no/?Ession=SO&Sok=${encodeURIComponent(career.title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                      Learn More on Vilbli.no
-                    </a>
-                  </Button>
                   <Button variant="ghost" className="w-full text-muted-foreground/50" size="sm" onClick={onClose}>
                     Close
                   </Button>

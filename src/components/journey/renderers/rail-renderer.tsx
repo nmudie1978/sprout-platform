@@ -14,7 +14,7 @@ const H_SPACING = 200;
 const CAREER_TRACK_Y = 40;
 const CARD_WIDTH = 180;
 
-export function RailRenderer({ journey, onItemClick, overlayData, activeLayers }: RendererProps) {
+export function RailRenderer({ journey, onItemClick, overlayData, activeLayers, cardDataMap, onProgressCycle }: RendererProps) {
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
@@ -93,7 +93,13 @@ export function RailRenderer({ journey, onItemClick, overlayData, activeLayers }
                   </span>
                 </div>
 
-                <SharedNode item={item} onClick={() => onItemClick(item)} size={NODE_SIZE} />
+                <SharedNode
+                  item={item}
+                  onClick={() => onItemClick(item)}
+                  size={NODE_SIZE}
+                  progressStatus={cardDataMap?.[item.id]?.status}
+                  onProgressCycle={onProgressCycle ? () => onProgressCycle(item.id) : undefined}
+                />
 
                 <RailCard
                   item={item}

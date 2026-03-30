@@ -134,239 +134,177 @@ Never store:
 
 <journey_logic>
 
-# MY JOURNEY FRAMEWORK (CORE PRODUCT CONTRACT)
+# My Journey Framework (Current Implementation)
 
-## PURPOSE
-The “My Journey” experience is the core of the Endeavrly product.
+## Overview
 
-It is NOT a roadmap viewer.
-It is a guided system that helps users:
-1. understand themselves
-2. understand the world
-3. take meaningful action
+The My Journey experience is structured into three core stages:
 
-All features, components, and UI decisions in this area MUST align with this framework.
+1. Discover → Explore the career
+2. Understand → Know the role in depth
+3. Grow → Take initial steps toward the career
 
----
+This structure represents a progression from awareness → clarity → early action.
 
-## CORE STRUCTURE
-
-My Journey is built around three stages:
-
-1. DISCOVER (Know Yourself)
-2. UNDERSTAND (Know the World)
-3. ACT (Take Action)
-
-These are NOT labels — they define product behavior, data flow, and UX.
+The current implementation is intentionally lightweight and mostly informational, with limited personalization and automation.
 
 ---
 
-## STAGE DEFINITIONS
+## 1. Discover (Explore the Career)
 
-### 1. DISCOVER (Know Yourself)
+### Purpose
 
-**Purpose**
-Help the user build self-awareness and direction.
+Discover is designed to introduce the user to a career at a high level.
 
-**This stage is:**
-- introspective
-- user-input driven
-- reflective
+It helps answer:
+- What is this career?
+- What does it involve?
+- Is this something I might be interested in?
 
-**Must include:**
-- reflection on strengths
-- reflection on weaknesses / growth areas
-- ambitions / motivations
-- interests
-- career exploration (shortlisting)
-- primary and secondary goals
+### Content & Features
 
-**IMPORTANT RULES**
-- DO NOT implement a generic “Notes” feature here
-- DO implement structured reflection inputs
-- All capture must be contextual (e.g. tied to prompts)
-- Output of this stage = “user signals”
+Discover typically includes:
 
-**USER SIGNALS**
-This stage produces structured signals such as:
-- strengths
-- interests
-- preferences
-- saved career paths
-- motivations
+- A Day in the Life (video-based content)
+- Salary range
+- Growth outlook
+- Education path (high-level)
+- Key skills required (e.g. communication, empathy, etc.)
+- A high-level career roadmap preview
 
-These signals must be reusable across the system (especially ACT).
+### UX Characteristics
 
----
+- Passive exploration
+- Content-driven (video + summary cards)
+- No user input required
+- Designed to spark curiosity and initial interest
 
-### 2. UNDERSTAND (Know the World)
+### Notes
 
-**Purpose**
-Help the user understand careers, industries, and reality.
-
-**This stage is:**
-- external
-- insight-driven
-- exploration-focused
-
-**Must include:**
-- role understanding (what the job actually involves)
-- industry insights and trends
-- skills required
-- schooling / qualification requirements
-- real-world expectations
-- curated content (videos, podcasts, articles)
-- saved content
-
-**CONTENT RULES**
-- Saved content belongs here (not in Discover)
-- This is the home of “My Content”
-- Content should support decision-making, not distract
+- Discover is not deep or technical
+- It should feel accessible, engaging, and easy to consume
+- It sets the context for deeper exploration in Understand
 
 ---
 
-### 3. ACT (Take Action)
+## 2. Understand (Know the Role)
 
-**Purpose**
-Convert clarity into real-world progress.
+### Purpose
 
-**This stage is:**
-- execution-focused
-- practical
-- forward-moving
+Understand provides a deeper, more structured view of the career.
 
-**Must include:**
+It helps answer:
+- What does this job actually involve day-to-day?
+- What do I need to qualify?
+- What skills and knowledge are required?
+- What is the reality of this role?
 
-1. ROADMAP
-   - the career path (e.g. Doctor journey)
-   - age-based progression
-   - milestones
-   - MUST include schooling / academic dimension
+### Content & Features
 
-2. LEARNING GOALS
-   - short-term and long-term goals
-   - skill-based progression
+Understand typically includes:
 
-3. REAL-WORLD ACTIONS
-   - internships
-   - volunteering
-   - clubs
-   - projects
-   - shadowing
+- Role Reality:
+  - Core responsibilities (e.g. diagnose conditions, prescribe treatments)
+- Education & Qualifications:
+  - Degree requirements
+  - Specialization paths
+- Key Skills:
+  - More explicit breakdown of required capabilities
+- Courses & Certifications:
+  - External learning platforms (e.g. Coursera, edX)
+- Entry Requirements:
+  - Basic eligibility and expectations
+- Industry Outlook:
+  - Growth level
+  - Salary range
+- Notes:
+  - User can optionally write personal notes and reflections
 
-4. NEXT BEST STEP
-   - system-generated guidance
-   - must be visible and actionable
+### UX Characteristics
 
-5. REFLECTION LOOP
-   - reflect on what was learned
-   - update direction
-   - feed back into journey
+- More structured and informational than Discover
+- Still largely passive consumption
+- Some optional user input (notes)
+- Provides clarity and realism
 
----
+### Notes
 
-## ROADMAP POSITIONING (CRITICAL)
-
-The roadmap:
-- MUST live inside ACT
-- MUST NOT represent the entire journey
-- MUST NOT replace DISCOVER or UNDERSTAND
-
-It is one component of execution, not the product itself.
+- Understand bridges curiosity and informed decision-making
+- It introduces more detail but does not yet drive action
 
 ---
 
-## DATA FLOW (MANDATORY LOGIC)
+## 3. Grow (Your Roadmap & Next Steps)
 
-DISCOVER → produces signals  
-UNDERSTAND → enriches context  
-ACT → executes based on both  
+### Purpose
 
-Additionally:
-ACT → reflection → feeds back into DISCOVER/ACT
+Grow introduces early action and direction for the user.
 
-This loop must be preserved.
+It helps answer:
+- What should I do next if I want to pursue this career?
+- What does the path forward look like?
 
----
+### Content & Features
 
-## NOTES / CONTENT RULES
+Grow currently includes:
 
-- Discover = structured reflection (no generic notes tab)
-- Understand = saved content (videos, articles, podcasts)
-- Act = action-related reflection only
+1. Recommended Next Steps
+   - Example actions:
+     - Research degree programmes
+     - Watch more videos
+     - Talk to someone in the role
+   - These are static suggestions
 
-Avoid:
-- dump buckets
-- duplicated content areas
-- detached “My Content” tabs outside context
+2. Career Roadmap
+   - Visual roadmap (e.g. age 18–22 university track)
+   - Timeline-based progression
+   - Can be viewed in different formats (e.g. Zigzag, Rail, Steps)
 
----
+### UX Characteristics
 
-## UX PRINCIPLES
+- Light action orientation
+- Static and generic recommendations
+- No strong personalization or intelligence
+- Roadmap is a key visual element
 
-- Separate thinking (Discover) from doing (Act)
-- Keep exploration (Understand) distinct from introspection
-- Avoid mixing stages visually or conceptually
-- Ensure user always knows:
-  - where they are
-  - what they should do next
-  - why it matters
+### Notes
 
----
-
-## HOW YOUR JOURNEY WORKS (SYSTEM MESSAGE)
-
-The system must clearly communicate:
-
-DISCOVER
-→ understand yourself  
-→ define direction  
-
-UNDERSTAND
-→ understand the path and reality  
-→ validate your direction  
-
-ACT
-→ take real steps forward  
-→ learn, adapt, progress  
-
-This explanation must match the actual UI and behavior.
+- Grow is currently the weakest of the three sections
+- It lacks dynamic behavior and contextual guidance
+- It does not yet adapt to user behavior or progress
+- It introduces action but does not strongly drive momentum
 
 ---
 
-## IMPLEMENTATION RULES FOR CLAUDE
+## Design Principles (Current State)
 
-When modifying or adding features:
-
-1. ALWAYS map the feature to one of:
-   - Discover
-   - Understand
-   - Act
-
-2. NEVER:
-   - place roadmap logic outside ACT
-   - add generic notes systems in Discover
-   - mix content and reflection in the same layer
-   - create new top-level tabs that break this structure
-
-3. ALWAYS:
-   - maintain separation of concerns
-   - ensure data flows between stages
-   - keep UI aligned with framework meaning
+- Minimal friction
+- No mandatory user input
+- Clean, card-based UI
+- Focus on clarity over complexity
+- Content-first approach
 
 ---
 
-## SUCCESS CRITERIA
+## Known Limitations
 
-The system should feel like:
-- a guided decision engine
-- a structured personal journey
+- Grow lacks intelligence and personalization
+- Recommended steps are generic and static
+- No concept of momentum or progression tracking
+- Limited feedback loop from user behavior
+- No dynamic “next best action” system
 
-NOT:
-- a static roadmap viewer
-- a content dashboard
-- a collection of disconnected features
- 
+---
+
+## Summary
+
+The current model follows a clear progression:
+
+Discover → “This looks interesting”
+Understand → “I understand what this involves”
+Grow → “Here are some initial steps”
+
+However, Grow does not yet fully deliver on action, guidance, or personalization and is a key area for future enhancement. 
 </journey_logic>
 
 

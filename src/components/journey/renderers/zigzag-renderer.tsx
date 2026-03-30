@@ -9,7 +9,7 @@ import type { EducationContext } from '@/lib/education/types';
 import { EDUCATION_STAGE_CONFIG } from '@/lib/education/types';
 import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
 import { cn } from '@/lib/utils';
-import type { RendererProps } from './types';
+import type { RendererProps, CardDataSummary } from './types';
 import { SharedNode } from './shared-node';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
@@ -21,7 +21,7 @@ const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
 const SCHOOL_NODE_WIDTH = 140;
 
-export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge }: RendererProps) {
+export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge, cardDataMap, onProgressCycle }: RendererProps) {
   const items = journey.items;
 
   // Fetch education context for the school node
@@ -248,12 +248,15 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     overlayNodeData={overlayData?.[item.id]}
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
+                    cardData={cardDataMap?.[item.id]}
                   />
                 )}
                 <SharedNode
                   item={item}
                   onClick={() => onItemClick(item)}
                   size={isCurrent ? NODE_SIZE + 6 : NODE_SIZE}
+                  progressStatus={cardDataMap?.[item.id]?.status}
+                  onProgressCycle={onProgressCycle ? () => onProgressCycle(item.id) : undefined}
                 />
                 {/* Card below node for high positions */}
                 {isHigh && (
@@ -263,6 +266,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     overlayNodeData={overlayData?.[item.id]}
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
+                    cardData={cardDataMap?.[item.id]}
                   />
                 )}
                 {/* Age marker below card for low positions */}
@@ -305,33 +309,29 @@ function ZigzagCard({
   overlayNodeData,
   activeLayers,
   isCurrent,
+  cardData,
 }: {
   item: JourneyItem;
   onClick: () => void;
   overlayNodeData?: NodeOverlayData;
   activeLayers?: Record<OverlayLayerId, boolean>;
   isCurrent?: boolean;
+  cardData?: CardDataSummary;
 }) {
   const stage = STAGE_CONFIG[item.stage];
   const stepType = classifyStepType(item);
   const typeConfig = STEP_TYPE_CONFIG[stepType];
 
-  // Build tooltip text
-  const savedData = (() => {
-    try {
-      const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
-      return all[item.id] || null;
-    } catch { return null; }
-  })();
-
   const tooltipLines: string[] = [`${typeConfig.icon} ${typeConfig.label}`];
   if (item.subtitle) tooltipLines.push(item.subtitle);
-  if (savedData) {
-    if (savedData.notes) tooltipLines.push(`Notes: ${savedData.notes.slice(0, 80)}${savedData.notes.length > 80 ? '...' : ''}`);
-    if (savedData.resourceLink) tooltipLines.push(`Resource: ${savedData.resourceLink.slice(0, 60)}`);
-    if (savedData.confidence) tooltipLines.push(`Confidence: ${savedData.confidence === 'high' ? '😊 High' : savedData.confidence === 'medium' ? '😐 Medium' : '😟 Low'}`);
-  }
+  if (cardData?.stickyNote) tooltipLines.push(`📌 ${cardData.stickyNote}`);
   const hasTooltip = tooltipLines.length > 0;
+
+  const statusDot = cardData?.status === 'done'
+    ? 'bg-emerald-500'
+    : cardData?.status === 'in_progress'
+      ? 'bg-amber-500'
+      : null;
 
   const card = (
     <button
@@ -353,10 +353,17 @@ function ZigzagCard({
     >
       <div className="flex items-start gap-1.5">
         <div className="flex-1 min-w-0">
-          {/* Step type indicator */}
-          <span className="text-[9px] text-muted-foreground/40 leading-none">
-            {typeConfig.icon}
-          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-[9px] text-muted-foreground/40 leading-none">
+              {typeConfig.icon}
+            </span>
+            {statusDot && (
+              <span className={cn('h-1.5 w-1.5 rounded-full', statusDot)} />
+            )}
+            {cardData?.hasStickyNote && (
+              <span className="text-[8px]" title={cardData.stickyNote}>📌</span>
+            )}
+          </div>
           <p className="text-xs font-semibold leading-tight text-foreground">
             {item.title}
           </p>

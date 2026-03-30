@@ -3,928 +3,1099 @@
 /**
  * MY JOURNEY PAGE
  *
- * Redesigned layout: clean header, stage-aware tab bar with progress
- * indicators and lock states, no goal swap clutter.
+ * Three-stage career exploration:
+ *   Discover = Overview (video, salary, growth, skills, roadmap)
+ *   Understand = Deep dive (typical day, entry requirements, verified courses, tools, notes)
+ *   Grow = Action plan (school connection, next steps, portfolio ideas)
  *
- * Stages: Discover → Understand → Grow (sequential, gated)
+ * Data sources:
+ *   - Career basics: getAllCareers() from career-pathways
+ *   - Career details: /api/career-details/[id] (typical day, entry paths, tools, reality check)
+ *   - Verified courses: /api/learning/recommendations (real, geo-filtered courses)
+ *   - YouTube: /api/youtube-search
  */
 
-import { useState, useCallback, useEffect, useRef, useMemo, memo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  Lock,
-  Search,
-  Globe,
-  Rocket,
-  Target,
-  ArrowRight,
-  CheckCircle2,
-} from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
-
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Search, Globe, Rocket, Play, TrendingUp,
+  ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
+  Eye, ExternalLink, ChevronDown,
+  Target, Sparkles, Save, Maximize2, X,
+  Heart, Wrench, CheckCircle2, Clock, MapPin, Award, Users,
+  DollarSign, BarChart3, Layers, AlertCircle,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
-import { syncGuidanceGoal } from '@/lib/guidance/rules';
-import { DiscoverCompleteModal } from '@/components/journey/discover-complete-modal';
-import { UnderstandCompleteModal } from '@/components/journey/understand-complete-modal';
-import { CareerDetailSheet } from '@/components/career-detail-sheet';
-import { getAllCareers } from '@/lib/career-pathways';
-import { PageContext } from '@/components/ui/page-context';
-import { HelpCircle, Info, X } from 'lucide-react';
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { getAllCareers, type Career } from '@/lib/career-pathways';
+import type { CareerDetails } from '@/lib/career-typical-days';
+import type { CareerProgression } from '@/lib/career-progressions';
+import type { JourneyUIState } from '@/lib/journey/types';
 
-const StepContent = dynamic(
-  () => import('@/components/journey/step-content').then((m) => m.StepContent),
-  { ssr: false }
+const PersonalCareerTimeline = dynamic(
+  () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
+  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
 );
 const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
   { ssr: false }
 );
-const DiscoverTab = dynamic(
-  () => import('@/components/journey/tabs/discover-tab').then((m) => m.DiscoverTab),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
-);
-const UnderstandTab = dynamic(
-  () => import('@/components/journey/tabs/understand-tab').then((m) => m.UnderstandTab),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
-);
-const ActTab = dynamic(
-  () => import('@/components/journey/tabs/act-tab').then((m) => m.ActTab),
-  { ssr: false, loading: () => <div className="h-48 animate-pulse rounded-xl bg-muted/50" /> }
-);
 
-import type {
-  JourneyUIState,
-  JourneyStateId,
-  JourneyStepStatus,
-  StepCompletionData,
-  StateConfig,
-  LensProgress,
-} from '@/lib/journey/types';
-import type { CareerGoal } from '@/lib/goals/types';
-import { JOURNEY_STATE_CONFIG } from '@/lib/journey/types';
+// ─── Types ───────────────────────────────────────────────────────────────────
 
-// ============================================
-// DEMO JOURNEY (fallback)
-// ============================================
+type V2Tab = 'discover' | 'understand' | 'grow';
 
-const DEMO_JOURNEY: JourneyUIState = {
-  currentLens: 'DISCOVER',
-  currentState: 'ROLE_DEEP_DIVE',
-  completedSteps: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'],
-  skippedSteps: {} as Record<JourneyStateId, never>,
-  canAdvanceToNextLens: false,
-  nextStepReason: 'Complete a deep dive into a role you\'re interested in.',
-  steps: (Object.values(JOURNEY_STATE_CONFIG) as StateConfig[])
-    .sort((a, b) => a.order - b.order)
-    .map((config) => {
-      const completed: JourneyStateId[] = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'];
-      const current: JourneyStateId = 'ROLE_DEEP_DIVE';
-      let status: JourneyStepStatus = 'locked';
-      if (completed.includes(config.id)) status = 'completed';
-      else if (config.id === current) status = 'next';
-      return {
-        id: config.id,
-        title: config.title,
-        description: config.description,
-        status,
-        order: config.order,
-        artifacts: [],
-        mandatory: config.mandatory,
-        optional: !config.mandatory,
-        stepNumber: config.stepNumber,
-      };
-    }),
-  summary: {
-    lenses: {
-      discover: { progress: 67, completedMandatory: ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS'], completedOptional: [], totalMandatory: 3, totalOptional: 0, isComplete: false },
-      understand: { progress: 0, completedMandatory: [], completedOptional: [], totalMandatory: 3, totalOptional: 0, isComplete: false },
-      act: { progress: 0, completedMandatory: [], completedOptional: [], totalMandatory: 2, totalOptional: 2, isComplete: false },
-    },
-    overallProgress: 22,
-    primaryGoal: { title: null, selectedAt: null },
-    strengths: ['Communication', 'Problem Solving', 'Teamwork'],
-    demonstratedSkills: [],
-    careerInterests: ['Software Development'],
-    exploredRoles: [{ title: 'Junior Software Developer', exploredAt: new Date().toISOString(), educationPaths: ['Computer Science degree', 'Coding bootcamp'], certifications: [], companies: [], humanSkills: ['Communication', 'Collaboration'], entryExpectations: 'Entry-level, some coding experience preferred.' }],
-    rolePlans: [],
-    certificationsRequired: [],
-    companiesOfInterest: [],
-    futureOutlookNotes: [],
-    roleRealityNotes: [],
-    industryInsightNotes: [],
-    pathQualifications: [],
-    pathSkills: [],
-    pathCourses: [],
-    pathRequirements: [],
-    nextActions: [],
-    alignedActions: [],
-    alignedActionsCount: 0,
-    alignedActionReflections: [],
-    savedSummary: { total: 0, byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 } },
-    recentSavedItems: [],
-    timelineSummary: { totalEvents: 2, thisMonth: 1 },
-    lastTimelineEventAt: new Date().toISOString(),
-    shadowSummary: { total: 0, accepted: 0, skipped: false, skipReason: null, pending: 0, completed: 0, declined: 0, lastUpdatedAt: null },
-    reflectionSummary: { total: 0, thisMonth: 0, lastReflectionAt: null },
-    industryInsightsSummary: { trendsReviewed: 0, insightsSaved: 0, lastReviewedAt: null },
-    requirementsReviewed: false,
-    planCreated: false,
-    planUpdatedAt: null,
-    planChangeReason: null,
-    externalFeedback: [],
-  },
-};
-
-// ============================================
-// TAB CONFIGURATION
-// ============================================
-
-type JourneyTab = 'discover' | 'understand' | 'act';
-
-interface TabDef {
-  id: JourneyTab;
-  label: string;
-  subtitle: string;
-  items: string[];
-  icon: typeof Search;
-  lensKey: 'discover' | 'understand' | 'act';
-  color: string;
-  activeRing: string;
-  activeBg: string;
-  progressBg: string;
-  progressFill: string;
+interface CareerDetailsResponse {
+  career: Career;
+  category: string;
+  details: CareerDetails | null;
+  progression: CareerProgression | null;
+  hasDetails: boolean;
 }
 
-const TABS: TabDef[] = [
-  {
-    id: 'discover',
-    label: 'Discover',
-    subtitle: 'Know Yourself',
-    items: ['Reflect on your strengths', 'Explore career interests', 'Personal reflections'],
-    icon: Search,
-    lensKey: 'discover',
-    color: 'teal',
-    activeRing: 'ring-teal-500/60',
-    activeBg: 'bg-teal-500/10',
-    progressBg: 'bg-teal-500/15',
-    progressFill: 'bg-teal-500',
-  },
-  {
-    id: 'understand',
-    label: 'Understand',
-    subtitle: 'Know the Role',
-    items: ['Role reality & industry insights', 'Path, skills & requirements', 'Validate your understanding'],
-    icon: Globe,
-    lensKey: 'understand',
-    color: 'emerald',
-    activeRing: 'ring-emerald-500/60',
-    activeBg: 'bg-emerald-500/10',
-    progressBg: 'bg-emerald-500/15',
-    progressFill: 'bg-emerald-500',
-  },
-  {
-    id: 'act',
-    label: 'Grow',
-    subtitle: 'Take Action & Grow',
-    items: ['Complete real-world actions', 'Reflect on what you\'ve learned', 'Generate career roadmap'],
-    icon: Rocket,
-    lensKey: 'act',
-    color: 'amber',
-    activeRing: 'ring-amber-500/60',
-    activeBg: 'bg-amber-500/10',
-    progressBg: 'bg-amber-500/15',
-    progressFill: 'bg-amber-500',
-  },
-];
+interface LearningResource {
+  id: string;
+  title: string;
+  provider: string;
+  providerType: string;
+  deliveryMode: string;
+  regionScope: string;
+  regionDetails: string | null;
+  duration: string;
+  cost: string;
+  costCurrency: string | null;
+  financialAidAvailable: boolean;
+  certificationType: string;
+  ageSuitability: string;
+  prerequisiteLevel: string;
+  prerequisiteDetails: string | null;
+  officialUrl: string;
+  description: string | null;
+  highlights: string[];
+}
 
-// ============================================
-// STAGE TAB BAR
-// ============================================
+interface LearningResponse {
+  success: boolean;
+  message: string;
+  localRegional: LearningResource[];
+  international: LearningResource[];
+  totalCount: number;
+  meta: { userAge: number; careerGoals: string[]; verificationNote: string };
+}
 
-const StageTabBar = memo(function StageTabBar({
-  activeTab,
-  onTabChange,
-  lenses,
-  discoverComplete,
-  growComplete,
-}: {
-  activeTab: JourneyTab;
-  onTabChange: (tab: JourneyTab) => void;
-  lenses: { discover: LensProgress; understand: LensProgress; act: LensProgress };
-  discoverComplete: boolean;
-  growComplete: boolean;
-}) {
-  const isLocked = (tab: TabDef): boolean => {
-    if (tab.id === 'discover') return false;
-    if (tab.id === 'understand') return !discoverComplete;
-    if (tab.id === 'act') return !lenses.understand.isComplete;
-    return false;
-  };
+// ─── Data hooks ──────────────────────────────────────────────────────────────
 
-  // Determine which stage the user is currently in (first non-complete, non-locked)
-  const currentStageId = (() => {
-    for (const tab of TABS) {
-      if (isLocked(tab)) continue;
-      const isComp = tab.id === 'discover' ? discoverComplete : lenses[tab.lensKey].isComplete;
-      if (!isComp) return tab.id;
-    }
-    return null; // All complete
-  })();
-
-  return (
-    <div className="grid grid-cols-3 gap-2 sm:gap-3">
-      {TABS.map((tab, i) => {
-        const TabIcon = tab.icon;
-        const isActive = activeTab === tab.id;
-        const locked = isLocked(tab);
-        const progress = lenses[tab.lensKey];
-        // Override completion/progress with client-side checks
-        const isComplete = tab.id === 'discover' ? discoverComplete : tab.id === 'act' ? growComplete : progress.isComplete;
-        const displayProgress = (tab.id === 'discover' && discoverComplete) ? 100 : (tab.id === 'act' && growComplete) ? 100 : progress.progress;
-
-        return (
-          <button
-            key={tab.id}
-            onClick={() => !locked && onTabChange(tab.id)}
-            disabled={locked}
-            className={cn(
-              'relative rounded-xl border p-3 sm:p-4 text-left transition-all',
-              isActive && `${tab.activeBg} border-${tab.color}-500/40 ring-1 ${tab.activeRing}`,
-              !isActive && !locked && 'border-border/50 hover:border-border/80 hover:bg-muted/30',
-              locked && 'border-border/20 opacity-40 cursor-not-allowed',
-            )}
-            style={isActive ? {
-              boxShadow: tab.id === 'discover'
-                ? '0 0 20px rgba(20, 184, 166, 0.25), 0 0 40px rgba(20, 184, 166, 0.1)'
-                : tab.id === 'understand'
-                  ? '0 0 15px rgba(16, 185, 129, 0.2)'
-                  : '0 0 15px rgba(245, 158, 11, 0.2)',
-            } : undefined}
-          >
-            {/* Header row */}
-            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-              <div className="flex items-center gap-2">
-                {isComplete ? (
-                  <CheckCircle2 className={cn('h-4 w-4 sm:h-5 sm:w-5', `text-${tab.color}-500`)} />
-                ) : locked ? (
-                  <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground/50" />
-                ) : (
-                  <TabIcon className={cn('h-4 w-4 sm:h-5 sm:w-5', isActive ? `text-${tab.color}-500` : 'text-muted-foreground')} />
-                )}
-                <span className={cn(
-                  'text-sm sm:text-base font-semibold',
-                  isActive ? 'text-foreground' : 'text-muted-foreground',
-                  locked && 'text-muted-foreground/50',
-                )}>
-                  {tab.label}
-                </span>
-              </div>
-              {!locked && displayProgress > 0 && (
-                <span className={cn('text-[10px] sm:text-xs font-semibold', `text-${tab.color}-500`)}>
-                  {displayProgress}%
-                </span>
-              )}
-            </div>
-
-            {/* Subtitle */}
-            <p className={cn(
-              'text-[10px] sm:text-xs',
-              isActive ? `text-${tab.color}-500/70` : 'text-muted-foreground/60',
-              locked && 'text-muted-foreground/30',
-            )}>
-              {tab.subtitle}
-            </p>
-
-            {/* Framework items */}
-            {isActive && (
-              <ul className="mt-2 space-y-1">
-                {tab.items.map((item) => (
-                  <li key={item} className={cn('text-[10px] sm:text-[11px] flex items-center gap-2', `text-${tab.color}-500/70`)}>
-                    <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', `bg-${tab.color}-500`)} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {/* Progress bar */}
-            <div className="mt-2 sm:mt-3">
-              {!locked ? (
-                <div className={cn('h-1 rounded-full', tab.progressBg)}>
-                  <div
-                    className={cn('h-full rounded-full transition-all duration-500', tab.progressFill)}
-                    style={{ width: `${displayProgress}%` }}
-                  />
-                </div>
-              ) : (
-                <div className="h-1 rounded-full bg-muted/30" />
-              )}
-            </div>
-
-            {/* "You are here" — shows only on the current in-progress stage */}
-            {tab.id === currentStageId && (
-              <p className={cn('text-center text-[8px] mt-1.5 tracking-wider uppercase', `text-${tab.color}-500/40`)}>
-                You are here
-              </p>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  );
-});
-
-// ============================================
-// MAIN PAGE
-// ============================================
-
-export default function MyJourneyPage() {
-  const { data: session, status: sessionStatus } = useSession();
-  const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<JourneyTab>('discover');
-  const [activeStepId, setActiveStepId] = useState<JourneyStateId | null>(null);
-  const [goalSheetOpen, setGoalSheetOpen] = useState(false);
-  const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
-  const [showDiscoverCelebration, setShowDiscoverCelebration] = useState(false);
-  const [showUnderstandCelebration, setShowUnderstandCelebration] = useState(false);
-  const [showCareerDetail, setShowCareerDetail] = useState(false);
-  const [goalBannerDismissed, setGoalBannerDismissed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('journey-goal-banner-dismissed') === 'true';
-    }
-    return false;
-  });
-
-  const isYouth = session?.user?.role === 'YOUTH';
-  const { data: goalsData } = useGoals(isYouth);
-  const primaryGoal = goalsData?.primaryGoal ?? null;
-  const secondaryGoal = goalsData?.secondaryGoal ?? null;
-
-  const {
-    data: journeyData,
-    isLoading: journeyLoading,
-  } = useQuery<{ success: boolean; journey: JourneyUIState }>({
-    queryKey: ['journey-state'],
+function useYouTubeVideo(careerTitle: string | null) {
+  return useQuery<{ videoId: string | null }>({
+    queryKey: ['youtube-video', careerTitle],
     queryFn: async () => {
-      const response = await fetch('/api/journey');
-      if (!response.ok) throw new Error('Failed to fetch journey state');
-      return response.json();
-    },
-    enabled: isYouth,
-    staleTime: 30_000, // 30s — avoid refetch on tab focus / remount
-  });
-
-  // Fetch reflections directly for Discover completion check
-  const { data: reflectionsData } = useQuery<{ discoverReflections: { motivations?: string[]; workStyle?: string[]; growthAreas?: string[]; roleModels?: string; experiences?: string } | null }>({
-    queryKey: ['discover-reflections'],
-    queryFn: async () => {
-      const res = await fetch('/api/discover/reflections');
-      if (!res.ok) return { discoverReflections: null };
+      if (!careerTitle) return { videoId: null };
+      const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(careerTitle)}`);
+      if (!res.ok) return { videoId: null };
       return res.json();
     },
-    enabled: isYouth,
-    staleTime: 2 * 60 * 1000,
+    enabled: !!careerTitle,
+    staleTime: 24 * 60 * 60 * 1000,
   });
+}
 
-  // Fetch goal-scoped data for "last used" timestamp
-  const earlyGoalTitle = primaryGoal?.title ?? null;
-  const goalSlug = earlyGoalTitle?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || null;
-  const { data: goalDataResponse } = useQuery<{ goalData: { updatedAt: string; createdAt: string } | null }>({
-    queryKey: ['goal-data', goalSlug],
+function useCareerDetails(careerId: string | null) {
+  return useQuery<CareerDetailsResponse>({
+    queryKey: ['career-details', careerId],
     queryFn: async () => {
-      const res = await fetch(`/api/journey/goal-data?goalId=${goalSlug}`);
-      if (!res.ok) return { goalData: null };
+      const res = await fetch(`/api/career-details/${careerId}`);
+      if (!res.ok) throw new Error('Failed to fetch career details');
       return res.json();
     },
-    enabled: isYouth && !!goalSlug,
+    enabled: !!careerId,
     staleTime: 5 * 60 * 1000,
   });
-  const goalLastUsed = goalDataResponse?.goalData?.updatedAt || null;
+}
 
-  // Auto-migrate existing data to goal-scoped model (once per browser)
-  const migrationDone = useRef(false);
+function useLearningRecommendations(careerTitle: string | null) {
+  return useQuery<LearningResponse>({
+    queryKey: ['learning-recommendations', careerTitle],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (careerTitle) params.set('careers', careerTitle);
+      params.set('maxResults', '10');
+      const res = await fetch(`/api/learning/recommendations?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch recommendations');
+      return res.json();
+    },
+    enabled: !!careerTitle,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+// ─── Fullscreen roadmap overlay ──────────────────────────────────────────────
+
+function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose: () => void }) {
   useEffect(() => {
-    if (isYouth && !migrationDone.current) {
-      migrationDone.current = true;
-      const migrated = typeof window !== 'undefined' && localStorage.getItem('journey-goal-data-migrated');
-      if (!migrated) {
-        fetch('/api/journey/goal-data/migrate', { method: 'POST' })
-          .then(() => localStorage.setItem('journey-goal-data-migrated', 'true'))
-          .catch(() => {});
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', handleKeyDown); document.body.style.overflow = ''; };
+  }, [onClose]);
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col"
+    >
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
+        <div className="flex items-center gap-3">
+          <Rocket className="h-5 w-5 text-amber-400" />
+          <div>
+            <h2 className="text-base font-semibold">Career Roadmap</h2>
+            <p className="text-xs text-muted-foreground/50">Your path to {goalTitle}</p>
+          </div>
+        </div>
+        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
+          <X className="h-3.5 w-3.5" /> Close
+        </button>
+      </div>
+      <div className="flex-1 overflow-auto p-6">
+        <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Shared UI components ────────────────────────────────────────────────────
+
+function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)}>
+      {children}
+    </div>
+  );
+}
+
+function SectionHeader({ icon: Icon, title, badge }: { icon: typeof Eye; title: string; badge?: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
+      <div className="flex items-center gap-2.5">
+        <Icon className="h-4 w-4 text-muted-foreground/60" />
+        <h3 className="text-sm font-semibold text-foreground/90">{title}</h3>
+      </div>
+      {badge}
+    </div>
+  );
+}
+
+function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border/30 p-12 text-center">
+      <Icon className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
+      <p className="text-sm text-muted-foreground/50">{message}</p>
+    </div>
+  );
+}
+
+function StatCard({ label, value, icon: Icon, accent }: { label: string; value: string; icon: typeof TrendingUp; accent?: string }) {
+  return (
+    <div className="rounded-lg border border-border/30 bg-background/50 p-3.5">
+      <div className="flex items-center gap-2 mb-1.5">
+        <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
+        <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{label}</span>
+      </div>
+      <p className="text-sm font-semibold text-foreground/90">{value}</p>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-16 rounded-lg bg-muted/20 animate-pulse" />
+      ))}
+    </div>
+  );
+}
+
+// ─── DISCOVER TAB ────────────────────────────────────────────────────────────
+
+function DiscoverTab({
+  career,
+  goalTitle,
+  onContinue,
+}: {
+  career: Career | null;
+  goalTitle: string | null;
+  onContinue: () => void;
+}) {
+  const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
+  const { data: ytData } = useYouTubeVideo(goalTitle);
+  const videoId = ytData?.videoId ?? null;
+
+  if (!career || !goalTitle) {
+    return <EmptyState icon={Target} message="Set a career goal to start exploring" />;
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Hero: Video + Overview */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        {/* Video — 3 cols */}
+        <SectionCard className="lg:col-span-3">
+          <SectionHeader icon={Play} title="A Day in the Life" />
+          <div className="p-4">
+            {videoId ? (
+              <div className="rounded-lg overflow-hidden">
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`Day in the life — ${career.title}`}
+                />
+              </div>
+            ) : (
+              <a
+                href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(career.title)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-lg border border-border/30 bg-muted/10 px-4 py-6 hover:bg-muted/20 transition-colors"
+              >
+                <div className="h-10 w-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                  <Play className="h-4 w-4 text-red-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground/70">Watch on YouTube</p>
+                  <p className="text-xs text-muted-foreground/50">See what a day as a {career.title} looks like</p>
+                </div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground/30 ml-auto" />
+              </a>
+            )}
+          </div>
+        </SectionCard>
+
+        {/* Overview stats — 2 cols */}
+        <div className="lg:col-span-2 space-y-4">
+          <SectionCard>
+            <SectionHeader icon={BarChart3} title="Career Overview" />
+            <div className="p-4 grid grid-cols-2 gap-3">
+              <StatCard label="Avg. Salary" value={career.avgSalary} icon={DollarSign} accent="text-emerald-400" />
+              <StatCard
+                label="Growth"
+                value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
+                icon={TrendingUp}
+                accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
+              />
+              <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3.5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
+                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Education Path</span>
+                </div>
+                <p className="text-sm text-foreground/80">{career.educationPath}</p>
+              </div>
+              {career.entryLevel && (
+                <div className="col-span-2 rounded-lg border border-teal-500/20 bg-teal-500/5 px-3.5 py-2.5">
+                  <p className="text-xs text-teal-400 font-medium">Entry-level accessible — no degree required</p>
+                </div>
+              )}
+            </div>
+          </SectionCard>
+        </div>
+      </div>
+
+      {/* Roadmap preview */}
+      <SectionCard>
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
+          <div className="flex items-center gap-2.5">
+            <Rocket className="h-4 w-4 text-muted-foreground/60" />
+            <h3 className="text-sm font-semibold text-foreground/90">Career Roadmap</h3>
+          </div>
+          <button onClick={() => setRoadmapFullscreen(true)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium text-muted-foreground/50 hover:text-foreground hover:bg-muted/50 transition-colors">
+            <Maximize2 className="h-3 w-3" /> Full screen
+          </button>
+        </div>
+        <div className="p-4">
+          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        </div>
+      </SectionCard>
+
+      <AnimatePresence>
+        {roadmapFullscreen && <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />}
+      </AnimatePresence>
+
+      {/* Next */}
+      <div className="flex justify-end pt-2">
+        <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
+          Understand <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── UNDERSTAND TAB ──────────────────────────────────────────────────────────
+
+function CollapsibleSection({
+  title, icon: Icon, defaultOpen = false, count, accent, children,
+}: {
+  title: string; icon: typeof Eye; defaultOpen?: boolean; count?: number; accent?: string; children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <SectionCard>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-2.5 px-5 py-3.5 text-left hover:bg-muted/5 transition-colors">
+        <Icon className={cn('h-4 w-4', accent || 'text-muted-foreground/60')} />
+        <h3 className="text-sm font-semibold text-foreground/90 flex-1">{title}</h3>
+        {count !== undefined && <span className="text-[10px] text-muted-foreground/40">{count}</span>}
+        <ChevronDown className={cn('h-4 w-4 text-muted-foreground/30 transition-transform', open && 'rotate-180')} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+            <div className="px-5 pb-5 border-t border-border/30 pt-4">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </SectionCard>
+  );
+}
+
+function UnderstandTab({
+  career,
+  goalTitle,
+  notes,
+  onNotesChange,
+  notesSaved,
+  onSaveNotes,
+  onContinue,
+}: {
+  career: Career | null;
+  goalTitle: string | null;
+  notes: string;
+  onNotesChange: (v: string) => void;
+  notesSaved: boolean;
+  onSaveNotes: () => void;
+  onContinue: () => void;
+}) {
+  const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
+  const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
+
+  if (!career || !goalTitle) {
+    return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
+  }
+
+  const details = detailsData?.details ?? null;
+  const progression = detailsData?.progression ?? null;
+
+  const allCourses = [
+    ...(learningData?.localRegional ?? []),
+    ...(learningData?.international ?? []),
+  ];
+
+  return (
+    <div className="space-y-4">
+      {/* What You'll Actually Do — short, punchy list from API (distinct from Discover's overview) */}
+      {details && details.whatYouActuallyDo.length > 0 && (
+        <SectionCard>
+          <SectionHeader icon={Briefcase} title="What You'll Actually Do" />
+          <div className="p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {details.whatYouActuallyDo.map((task, i) => (
+                <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3.5 py-2.5">
+                  <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+                  </div>
+                  <span className="text-[13px] text-foreground/70 leading-relaxed">{task}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
+      {/* Typical Day */}
+      <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
+        {detailsLoading ? <LoadingSkeleton /> : details ? (
+          <div className="space-y-4">
+            {/* Timeline-style day breakdown */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 sm:gap-0">
+              {([
+                { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅' },
+                { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️' },
+                { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆' },
+              ] as const).map(({ label, time, items, icon }, idx) => (
+                <div key={label} className={cn(
+                  'relative p-4',
+                  idx < 2 && 'sm:border-r border-border/20',
+                  idx > 0 && 'border-t sm:border-t-0 border-border/20',
+                )}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-sm">{icon}</span>
+                    <div>
+                      <p className="text-xs font-semibold text-foreground/80">{label}</p>
+                      <p className="text-[10px] text-muted-foreground/40">{time}</p>
+                    </div>
+                  </div>
+                  <ul className="space-y-2">
+                    {items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <div className="h-5 w-5 rounded-md bg-muted/30 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[9px] font-bold text-muted-foreground/40">{i + 1}</span>
+                        </div>
+                        <span className="text-[13px] text-foreground/65 leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            {details.typicalDay.environment && (
+              <div className="flex items-center gap-2.5 rounded-lg bg-muted/10 px-4 py-2.5">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground/40" />
+                <span className="text-xs text-muted-foreground/60">{details.typicalDay.environment}</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground/40">Detailed day info not yet available for this career.</p>
+        )}
+      </CollapsibleSection>
+
+      {/* Is This Right for Me? */}
+      <CollapsibleSection title="Is This Right for Me?" icon={Heart} accent="text-rose-400">
+        {detailsLoading ? <LoadingSkeleton /> : details ? (
+          <div className="space-y-5">
+            {/* Who it's for — card grid */}
+            <div>
+              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">This role suits people who</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {details.whoThisIsGoodFor.map((trait, i) => (
+                  <div key={i} className="flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3">
+                    <div className="h-6 w-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="h-3 w-3 text-emerald-400" />
+                    </div>
+                    <p className="text-[13px] text-foreground/70 leading-relaxed">{trait}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top skills from API */}
+            {details.topSkills.length > 0 && (
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">Key strengths needed</p>
+                <div className="flex flex-wrap gap-2">
+                  {details.topSkills.map((skill, i) => (
+                    <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-background/40 px-3 py-1.5 text-xs font-medium text-foreground/65">
+                      <Sparkles className="h-3 w-3 text-muted-foreground/30" />
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Reality check */}
+            {details.realityCheck && (
+              <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-semibold text-amber-400 mb-1">Reality Check</p>
+                    <p className="text-[13px] text-foreground/60 leading-relaxed">{details.realityCheck}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground/40">Personality fit data not yet available for this career.</p>
+        )}
+      </CollapsibleSection>
+
+      {/* Entry Requirements */}
+      <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400">
+        {detailsLoading ? <LoadingSkeleton /> : details ? (
+          <div className="space-y-4">
+            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">How to get started</p>
+            {/* Stepped pathway */}
+            <div className="relative">
+              {/* Vertical connector line */}
+              {details.entryPaths.length > 1 && (
+                <div className="absolute left-[15px] top-6 bottom-6 w-px bg-gradient-to-b from-border/40 via-border/20 to-transparent" />
+              )}
+              <div className="space-y-3">
+                {details.entryPaths.map((path, i) => (
+                  <div key={i} className="relative flex items-start gap-4">
+                    <div className="relative z-10 h-8 w-8 rounded-lg bg-foreground/5 border border-border/30 flex items-center justify-center shrink-0">
+                      <span className="text-[11px] font-bold text-foreground/50">{i + 1}</span>
+                    </div>
+                    <div className="flex-1 rounded-lg border border-border/20 bg-background/30 p-3.5 mt-0.5">
+                      <p className="text-[13px] text-foreground/75 leading-relaxed">{path}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-sm text-foreground/70">{career.educationPath}</p>
+            <p className="text-xs text-muted-foreground/40">Detailed entry requirement data is being verified for this career.</p>
+          </div>
+        )}
+      </CollapsibleSection>
+
+      {/* Career Progression */}
+      {progression && progression.levels.length > 0 && (
+        <CollapsibleSection title="Career Progression" icon={Layers} accent="text-emerald-400" count={progression.levels.length}>
+          {/* Horizontal progression bar */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {progression.levels.map((level, i) => {
+                const colors = [
+                  { bg: 'bg-blue-500/8', border: 'border-blue-500/20', dot: 'bg-blue-400', text: 'text-blue-400' },
+                  { bg: 'bg-emerald-500/8', border: 'border-emerald-500/20', dot: 'bg-emerald-400', text: 'text-emerald-400' },
+                  { bg: 'bg-amber-500/8', border: 'border-amber-500/20', dot: 'bg-amber-400', text: 'text-amber-400' },
+                  { bg: 'bg-violet-500/8', border: 'border-violet-500/20', dot: 'bg-violet-400', text: 'text-violet-400' },
+                ];
+                const c = colors[i] || colors[0];
+                return (
+                  <div key={level.level} className={cn('rounded-lg border p-3.5', c.border, c.bg)}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={cn('h-2 w-2 rounded-full', c.dot)} />
+                      <span className={cn('text-[10px] font-semibold uppercase tracking-wider', c.text)}>
+                        {level.level}
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-foreground/85 mb-0.5">{level.title}</p>
+                    <p className="text-[11px] text-muted-foreground/45 mb-2">{level.yearsExperience}</p>
+                    <p className="text-sm font-bold text-foreground/70">{level.salaryRange}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </CollapsibleSection>
+      )}
+
+      {/* Verified Courses & Certifications */}
+      <CollapsibleSection
+        title="Courses & Certifications"
+        icon={Award}
+        accent="text-violet-400"
+        count={allCourses.length || undefined}
+      >
+        {learningLoading ? <LoadingSkeleton /> : allCourses.length > 0 ? (
+          <div className="space-y-4">
+            {learningData?.meta?.verificationNote && (
+              <div className="flex items-start gap-2 rounded-lg border border-blue-500/15 bg-blue-500/5 p-3">
+                <CheckCircle2 className="h-3.5 w-3.5 text-blue-400 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-blue-400/80">{learningData.meta.verificationNote}</p>
+              </div>
+            )}
+
+            {/* Local/Regional courses */}
+            {(learningData?.localRegional?.length ?? 0) > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-2.5">
+                  <MapPin className="h-3 w-3 text-emerald-400" />
+                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Local & Regional</p>
+                </div>
+                <div className="space-y-2">
+                  {learningData!.localRegional.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* International courses */}
+            {(learningData?.international?.length ?? 0) > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-2.5">
+                  <Globe className="h-3 w-3 text-blue-400" />
+                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">International</p>
+                </div>
+                <div className="space-y-2">
+                  {learningData!.international.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-border/20 bg-background/30 p-4 text-center">
+            <p className="text-xs text-muted-foreground/50">
+              {learningData?.message || 'No verified courses available for this career yet.'}
+            </p>
+            <p className="text-[10px] text-muted-foreground/30 mt-1">We only show courses we have manually verified — no guesswork.</p>
+          </div>
+        )}
+      </CollapsibleSection>
+
+      {/* Tools of the Trade */}
+      {details?.typicalDay.tools && details.typicalDay.tools.length > 0 && (
+        <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" count={details.typicalDay.tools.length}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {details.typicalDay.tools.map((tool, i) => (
+              <div key={i} className="flex items-center gap-2.5 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5">
+                <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0" />
+                <span className="text-[13px] text-foreground/65">{tool}</span>
+              </div>
+            ))}
+          </div>
+        </CollapsibleSection>
+      )}
+
+      {/* Your Notes */}
+      <SectionCard>
+        <SectionHeader
+          icon={Pencil}
+          title="Your Notes"
+          badge={notesSaved ? (
+            <span className="flex items-center gap-1 text-[10px] text-emerald-400">
+              <CheckCircle2 className="h-3 w-3" /> Saved
+            </span>
+          ) : undefined}
+        />
+        <div className="p-4">
+          {notesSaved && notes ? (
+            <div className="rounded-lg border border-border/20 bg-background/30 p-3.5">
+              <p className="text-sm text-foreground/70 leading-relaxed whitespace-pre-wrap">{notes}</p>
+              <button
+                onClick={() => { onNotesChange(notes); /* keep content, allow re-edit via unsaved state */ }}
+                className="text-[10px] text-muted-foreground/40 hover:text-foreground mt-2 transition-colors"
+              >
+                Edit
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <textarea
+                value={notes}
+                onChange={(e) => onNotesChange(e.target.value)}
+                placeholder="Add anything you've found — reflections, links, research notes, things that surprised you..."
+                className="flex-1 rounded-lg border border-border/30 bg-background/50 px-3.5 py-2.5 text-sm text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none"
+                rows={3}
+                maxLength={2000}
+              />
+              <button
+                onClick={onSaveNotes}
+                disabled={!notes.trim()}
+                className="self-end px-3 py-2 rounded-lg text-xs font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20 shrink-0"
+              >
+                <Save className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
+      </SectionCard>
+
+      {/* Next */}
+      <div className="flex justify-end pt-2">
+        <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
+          Grow <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CourseCard({ course }: { course: LearningResource }) {
+  return (
+    <a
+      href={course.officialUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block rounded-lg border border-border/25 bg-background/30 hover:border-border/50 hover:bg-background/50 transition-all overflow-hidden"
+    >
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-foreground/85 group-hover:text-foreground transition-colors leading-snug">{course.title}</p>
+            <p className="text-xs text-muted-foreground/50 mt-1">{course.provider}</p>
+          </div>
+          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 transition-colors shrink-0 mt-0.5" />
+        </div>
+
+        {course.description && (
+          <p className="text-xs text-muted-foreground/40 mt-2 leading-relaxed line-clamp-2">{course.description}</p>
+        )}
+
+        {/* Metadata row */}
+        <div className="flex flex-wrap items-center gap-2 mt-3">
+          <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/50">
+            <Clock className="h-2.5 w-2.5" /> {course.duration}
+          </span>
+          <span className={cn(
+            'inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium',
+            course.cost === 'Free' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-muted/20 text-muted-foreground/50',
+          )}>
+            {course.cost}
+          </span>
+          {course.regionDetails && (
+            <span className="inline-flex items-center gap-1 rounded-md bg-muted/20 px-2 py-0.5 text-[10px] text-muted-foreground/40">
+              <MapPin className="h-2.5 w-2.5" /> {course.regionDetails}
+            </span>
+          )}
+          {course.financialAidAvailable && (
+            <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] text-blue-400">
+              Aid available
+            </span>
+          )}
+        </div>
+
+        {course.highlights.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2.5">
+            {course.highlights.slice(0, 3).map((h, i) => (
+              <span key={i} className="inline-flex rounded-full border border-border/15 px-2 py-0.5 text-[10px] text-muted-foreground/40">{h}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </a>
+  );
+}
+
+// ─── GROW TAB ────────────────────────────────────────────────────────────────
+
+function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
+  const { data: detailsData } = useCareerDetails(career?.id ?? null);
+  const details = detailsData?.details ?? null;
+
+  if (!goalTitle || !career) {
+    return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
+  }
+
+  // Build contextual actions from real career data
+  const topSkills = details?.topSkills ?? career.keySkills;
+
+  // Map career skills to school subjects
+  const skillToSubject: Record<string, { subject: string; why: string }> = {
+    'medical knowledge': { subject: 'Biology', why: 'Foundation of medical science' },
+    'biology': { subject: 'Biology', why: 'Understanding living systems' },
+    'chemistry': { subject: 'Chemistry', why: 'Chemical processes and reactions' },
+    'communication': { subject: 'English', why: 'Clear writing and speaking' },
+    'empathy': { subject: 'Psychology', why: 'Understanding human behaviour' },
+    'analytical': { subject: 'Maths', why: 'Logical reasoning and analysis' },
+    'mathematics': { subject: 'Maths', why: 'Calculations and problem-solving' },
+    'numeracy': { subject: 'Maths', why: 'Core numeracy and calculations' },
+    'accounting': { subject: 'Business Studies', why: 'Understanding commercial context' },
+    'financial': { subject: 'Economics', why: 'Market and financial systems' },
+    'programming': { subject: 'Computer Science', why: 'Coding and computational thinking' },
+    'software': { subject: 'Computer Science', why: 'Programming and systems design' },
+    'coding': { subject: 'Computer Science', why: 'Building with code' },
+    'data': { subject: 'Maths / Statistics', why: 'Working with numbers and patterns' },
+    'design': { subject: 'Art & Design', why: 'Visual thinking and creativity' },
+    'creative': { subject: 'Art & Design', why: 'Creative expression and innovation' },
+    'physics': { subject: 'Physics', why: 'Understanding physical systems' },
+    'engineering': { subject: 'Physics', why: 'Core engineering principles' },
+    'writing': { subject: 'English', why: 'Written communication skills' },
+    'research': { subject: 'Science', why: 'Scientific method and inquiry' },
+    'legal': { subject: 'History / Politics', why: 'Understanding law and governance' },
+    'teaching': { subject: 'Your chosen specialist subject', why: 'Deep knowledge in what you teach' },
+    'patient care': { subject: 'Biology', why: 'Understanding the human body' },
+    'decision-making': { subject: 'Maths', why: 'Logic and structured reasoning' },
+    'problem-solving': { subject: 'Maths', why: 'Analytical thinking' },
+    'teamwork': { subject: 'PE / Drama', why: 'Collaboration and group dynamics' },
+    'organisation': { subject: 'Business Studies', why: 'Planning and management' },
+    'stress management': { subject: 'PE', why: 'Physical and mental resilience' },
+  };
+
+  const schoolSubjects = useMemo(() => {
+    const seen = new Set<string>();
+    const subjects: { subject: string; why: string }[] = [];
+    for (const skill of career.keySkills) {
+      const key = skill.toLowerCase();
+      for (const [match, val] of Object.entries(skillToSubject)) {
+        if (key.includes(match) && !seen.has(val.subject)) {
+          seen.add(val.subject);
+          subjects.push(val);
+          if (subjects.length >= 4) break;
+        }
       }
+      if (subjects.length >= 4) break;
     }
-  }, [isYouth]);
+    // Fallback if no matches
+    if (subjects.length === 0) {
+      subjects.push(
+        { subject: 'English', why: 'Communication in any career' },
+        { subject: 'Maths', why: 'Problem-solving and logic' },
+      );
+    }
+    return subjects;
+  }, [career.keySkills]);
 
-  const completeStepMutation = useMutation({
-    mutationFn: async ({ stepId, data }: { stepId: JourneyStateId; data: StepCompletionData }) => {
-      const response = await fetch('/api/journey/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stepId, data }),
-      });
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to complete step');
-      }
-      return response.json();
-    },
-    onMutate: async ({ stepId }) => {
-      // Optimistic update: mark step as completed immediately in the UI
-      await queryClient.cancelQueries({ queryKey: ['journey-state'] });
-      const previous = queryClient.getQueryData<{ success: boolean; journey: JourneyUIState }>(['journey-state']);
+  return (
+    <div className="space-y-5">
+      {/* School & Education pathway */}
+      <SectionCard>
+        <SectionHeader icon={GraduationCap} title="Your Education Path" />
+        <div className="p-4 space-y-4">
+          {/* Degree */}
+          <div className="rounded-lg border border-border/30 bg-background/30 p-4">
+            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-1.5">Recommended Degree</p>
+            <p className="text-sm font-semibold text-foreground/85">{career.educationPath}</p>
+          </div>
 
-      if (previous?.journey) {
-        // Find the next step in sequence so we can mark it as 'next'
-        const currentOrder = JOURNEY_STATE_CONFIG[stepId]?.order ?? -1;
-        const nextStep = previous.journey.steps.find(
-          (s) => (JOURNEY_STATE_CONFIG[s.id as JourneyStateId]?.order ?? -1) === currentOrder + 1
-        );
+          {/* School subjects */}
+          <div>
+            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">Relevant School Subjects</p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {schoolSubjects.map((s) => (
+                <div key={s.subject} className="rounded-lg border border-border/25 bg-background/20 p-3">
+                  <p className="text-xs font-semibold text-foreground/80 mb-0.5">{s.subject}</p>
+                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{s.why}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        queryClient.setQueryData(['journey-state'], {
-          ...previous,
-          journey: {
-            ...previous.journey,
-            currentState: nextStep?.id ?? previous.journey.currentState,
-            steps: previous.journey.steps.map((s) => {
-              if (s.id === stepId) return { ...s, status: 'completed' as const };
-              if (nextStep && s.id === nextStep.id) return { ...s, status: 'next' as const };
-              return s;
-            }),
-            completedSteps: [...previous.journey.completedSteps, stepId],
-          },
-        });
-      }
+          {/* Entry paths from API */}
+          {details && details.entryPaths.length > 0 && (
+            <div className="border-t border-border/20 pt-3">
+              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-2">Steps to get there</p>
+              <div className="flex flex-wrap gap-2">
+                {details.entryPaths.map((path, i) => (
+                  <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-border/20 bg-background/30 px-3 py-1.5 text-xs text-foreground/60">
+                    <span className="text-[10px] font-bold text-muted-foreground/30">{i + 1}.</span>
+                    {path}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </SectionCard>
 
-      return { previous };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-      setActiveStepId(null);
-    },
-    onError: (error: Error, _vars, context) => {
-      // Rollback optimistic update on failure
-      if (context?.previous) {
-        queryClient.setQueryData(['journey-state'], context.previous);
-      }
-      console.error('Step completion failed:', error.message);
-    },
-  });
+      {/* Right Now actions */}
+      <SectionCard>
+        <SectionHeader icon={Sparkles} title="What You Can Do Right Now" />
+        <div className="p-4 space-y-2">
+          <ActionRow
+            icon={Play}
+            title={`Watch: A Day in the Life of a ${career.title}`}
+            subtitle="5 minutes — see the role first-hand"
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`"a day in the life" ${career.title}`)}`}
+          />
+          <ActionRow
+            icon={GraduationCap}
+            title={`Research ${career.educationPath.split('(')[0].trim()} routes`}
+            subtitle="Compare programmes, entry requirements, and locations"
+            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} education pathway ${career.educationPath.split('(')[0].trim()}`)}`}
+          />
+          <ActionRow
+            icon={BookOpen}
+            title={`Build your ${topSkills[0] || 'core'} skills`}
+            subtitle={`Start with what you're learning now — ${topSkills.slice(0, 2).join(' and ')} directly support this path`}
+          />
+        </div>
+      </SectionCard>
 
-  // Save career interests without completing the step
-  const saveInterestsMutation = useMutation({
-    mutationFn: async (careerInterests: string[]) => {
-      const response = await fetch('/api/journey/save-interests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ careerInterests }),
-      });
-      if (!response.ok) throw new Error('Failed to save interests');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-      setActiveStepId(null);
-    },
-  });
+      {/* Make It Real */}
+      <SectionCard>
+        <SectionHeader icon={Users} title="Make It Real" badge={<span className="text-[10px] text-muted-foreground/30">Meaningful next steps</span>} />
+        <div className="p-4 space-y-2">
+          <ActionRow
+            icon={Users}
+            title={`Have a conversation with a ${career.title}`}
+            subtitle="Ask what they wish they knew at your age. One conversation can change everything."
+            variant="highlight"
+          />
+          <ActionRow
+            icon={Briefcase}
+            title="Start a small project"
+            subtitle={details?.whatYouActuallyDo?.[0]
+              ? `Try something related to "${details.whatYouActuallyDo[0].toLowerCase()}" — build experience before you need it.`
+              : 'Build something hands-on to test the waters — experience before commitment.'
+            }
+            variant="highlight"
+          />
+        </div>
+      </SectionCard>
 
-  const handleCompleteStep = useCallback(
-    async (data: StepCompletionData) => {
-      if (!activeStepId) return;
-      // For EXPLORE_CAREERS, just save interests — don't complete the step yet
-      if (activeStepId === 'EXPLORE_CAREERS' && data.type === 'EXPLORE_CAREERS') {
-        await saveInterestsMutation.mutateAsync(data.selectedCareers);
-        return;
-      }
-      await completeStepMutation.mutateAsync({ stepId: activeStepId, data });
-    },
-    [activeStepId, completeStepMutation, saveInterestsMutation]
+      {/* What This Means */}
+      <SectionCard>
+        <SectionHeader icon={Target} title="Where You Stand" />
+        <div className="p-5">
+          <p className="text-sm text-foreground/60 leading-[1.8]">
+            {career.growthOutlook === 'high'
+              ? `${career.title} is a high-demand field with strong long-term prospects. Exploring this now — before committing to ${career.educationPath.split('(')[0].trim()} — gives you a real advantage. Focus on ${topSkills.slice(0, 2).join(' and ')} through your schoolwork and small real-world experiences.`
+              : career.growthOutlook === 'medium'
+              ? `This is a growing field with solid career paths. The skills you build — ${topSkills.slice(0, 2).join(' and ')} — are transferable even if you change direction later. You're exploring at exactly the right time.`
+              : `${career.title} is a stable career with clear pathways. Building strength in ${topSkills.slice(0, 2).join(' and ')} now gives you a foundation whether you stay on this path or pivot later.`
+            }
+          </p>
+        </div>
+      </SectionCard>
+
+      <div className="text-center py-2">
+        <p className="text-[10px] text-muted-foreground/25">These suggestions adapt as you explore. Move at your own pace.</p>
+      </div>
+    </div>
+  );
+}
+
+function ActionRow({
+  icon: Icon,
+  title,
+  subtitle,
+  href,
+  variant = 'default',
+}: {
+  icon: typeof Play;
+  title: string;
+  subtitle: string;
+  href?: string;
+  variant?: 'default' | 'highlight';
+}) {
+  const content = (
+    <div className={cn(
+      'group flex items-center gap-3.5 rounded-lg border p-3.5 transition-all',
+      variant === 'highlight'
+        ? 'border-border/20 bg-muted/5 hover:border-border/40 hover:bg-muted/10'
+        : 'border-border/20 bg-background/30 hover:border-border/40 hover:bg-background/50',
+    )}>
+      <div className="h-9 w-9 rounded-lg bg-muted/20 flex items-center justify-center shrink-0 group-hover:bg-muted/30 transition-colors">
+        <Icon className="h-4 w-4 text-muted-foreground/50 group-hover:text-foreground/60 transition-colors" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground/80 leading-tight">{title}</p>
+        <p className="text-xs text-muted-foreground/45 mt-0.5 leading-relaxed">{subtitle}</p>
+      </div>
+      {href && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0" />}
+    </div>
   );
 
-  // Confirm exploration and complete the EXPLORE_CAREERS step
-  const handleConfirmExploration = useCallback(async () => {
-    const interests = journeyData?.journey?.summary?.careerInterests;
-    if (!interests?.length) return;
-    await completeStepMutation.mutateAsync({
-      stepId: 'EXPLORE_CAREERS',
-      data: { type: 'EXPLORE_CAREERS', selectedCareers: interests },
-    });
-  }, [completeStepMutation, journeyData?.journey?.summary?.careerInterests]);
+  if (href) {
+    return <a href={href} target="_blank" rel="noopener noreferrer">{content}</a>;
+  }
+  return content;
+}
 
-  // Auto-switch to the appropriate tab based on progress + inspirational messages
-  const understandComplete = journeyData?.journey?.summary?.lenses?.understand?.isComplete ?? false;
-  const initialTabSet = useRef(false);
-  const celebratedRef = useRef<Set<string>>(new Set());
-  // Reset celebration refs when goal changes so celebrations fire for new goals
-  const prevGoalRef = useRef<string | null>(null);
+// ─── MAIN PAGE ───────────────────────────────────────────────────────────────
 
-  useEffect(() => {
-    const currentGoal = primaryGoal?.title ?? null;
-    if (prevGoalRef.current !== null && prevGoalRef.current !== currentGoal) {
-      // Goal changed — reset ALL celebration state to prevent stale popups
-      celebratedRef.current = new Set();
-      setShowDiscoverCelebration(false);
-      setShowUnderstandCelebration(false);
-      // Let the auto-tab-select effect pick the right tab after data loads
-      initialTabSet.current = false;
+export default function MyJourneyPage() {
+  const { data: session } = useSession();
+  const isYouth = session?.user?.role === 'YOUTH';
+  const { data: goalsData } = useGoals(isYouth);
+  const goalTitle = goalsData?.primaryGoal?.title ?? null;
 
-      // Sync guidance dismissals so old-goal prompts are cleared
-      syncGuidanceGoal(currentGoal);
+  const { data: journeyData } = useQuery<{ success: boolean; journey: JourneyUIState }>({
+    queryKey: ['journey-state'],
+    queryFn: async () => {
+      const res = await fetch('/api/journey');
+      if (!res.ok) throw new Error('Failed');
+      return res.json();
+    },
+    enabled: isYouth,
+    staleTime: 30_000,
+  });
 
-      // Force immediate refetch of journey state — don't wait for staleTime
-      queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-      queryClient.invalidateQueries({ queryKey: ['goal-data'] });
-    }
-    prevGoalRef.current = currentGoal;
-  }, [primaryGoal?.title, queryClient]);
-
-  // Gate goal sheet — warn if changing an existing goal
-  const currentGoalTitle = primaryGoal?.title ?? journeyData?.journey?.summary?.primaryGoal?.title ?? null;
-  const handleOpenGoalSheet = useCallback(() => {
-    if (currentGoalTitle) {
-      setShowGoalChangeWarning(true);
-    } else {
-      setGoalSheetOpen(true);
-    }
-  }, [currentGoalTitle]);
-
-  // Compute Discover completion client-side (bypasses orchestrator chain)
-  // NOTE: Must be above early returns to keep hooks in stable order.
-  const journey = journeyData?.journey ?? DEMO_JOURNEY;
-  const goalTitle = primaryGoal?.title ?? journey.summary?.primaryGoal?.title ?? null;
-
-  // Look up career data for the goal title (for the detail sheet)
-  const goalCareer = useMemo(() => {
+  const career = useMemo(() => {
     if (!goalTitle) return null;
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
-  const discoverComplete = useMemo(() => {
-    const understandOrActStates = [
-      'REVIEW_INDUSTRY_OUTLOOK', 'CAREER_SHADOW', 'CREATE_ACTION_PLAN',
-      'COMPLETE_ALIGNED_ACTION', 'SUBMIT_ACTION_REFLECTION', 'UPDATE_PLAN', 'EXTERNAL_FEEDBACK',
-    ];
-    if (understandOrActStates.includes(journey.currentState)) return true;
+  const [activeTab, setActiveTab] = useState<V2Tab>('discover');
+  const [goalSheetOpen, setGoalSheetOpen] = useState(false);
+  const [understandNotes, setUnderstandNotes] = useState('');
+  const [understandNotesSaved, setUnderstandNotesSaved] = useState(false);
 
-    const r = reflectionsData?.discoverReflections;
-    // Only the 3 chip-based reflections are required for Discover completion.
-    // Role Models and What You've Tried are optional.
-    const reflectionsDone = r
-      ? (r.motivations?.length ?? 0) > 0 &&
-        (r.workStyle?.length ?? 0) > 0 &&
-        (r.growthAreas?.length ?? 0) > 0
-      : false;
-
-    const steps = journey.steps || [];
-    const strengthsDone = steps.find((s) => s.id === 'REFLECT_ON_STRENGTHS')?.status === 'completed';
-    const careersDone = steps.find((s) => s.id === 'EXPLORE_CAREERS')?.status === 'completed';
-    const directionDone = goalTitle
-      ? true
-      : steps.find((s) => s.id === 'ROLE_DEEP_DIVE')?.status === 'completed';
-
-    return !!(reflectionsDone && strengthsDone && careersDone && directionDone);
-  }, [journey.currentState, journey.steps, reflectionsData, goalTitle]);
-
-  // Auto-select the right tab based on progress (first incomplete stage)
-  useEffect(() => {
-    if (journeyLoading || initialTabSet.current) return;
-    initialTabSet.current = true;
-    if (discoverComplete && !understandComplete) {
-      setActiveTab('understand');
-    } else if (discoverComplete && understandComplete) {
-      setActiveTab('act');
-    }
-  }, [journeyLoading, discoverComplete, understandComplete]);
-
-  // Grow (ACT) complete — both mandatory steps done
-  const growComplete = useMemo(() => {
-    const steps = journey.steps || [];
-    const actionDone = steps.find((s) => s.id === 'COMPLETE_ALIGNED_ACTION')?.status === 'completed';
-    const reflectionDone = steps.find((s) => s.id === 'SUBMIT_ACTION_REFLECTION')?.status === 'completed';
-    return !!(actionDone && reflectionDone);
-  }, [journey.steps]);
-
-  // Understand celebration — only fires on the TRANSITION to complete (not on load/revisit)
-  const prevUnderstandComplete = useRef(understandComplete);
-  useEffect(() => {
-    // Only trigger when understandComplete changes from false → true
-    if (understandComplete && !prevUnderstandComplete.current && goalTitle) {
-      celebratedRef.current.add('understand');
-      const seenKey = `understand-celebrated-${goalTitle}`;
-      if (typeof window !== 'undefined' && !localStorage.getItem(seenKey)) {
-        localStorage.setItem(seenKey, 'true');
-        setShowUnderstandCelebration(true);
-      } else {
-        setActiveTab('act');
-      }
-    }
-    prevUnderstandComplete.current = understandComplete;
-  }, [understandComplete, goalTitle]);
-
-  // When Discover is complete: show celebration (once), then advance on continue.
-  // Only fires on the TRANSITION to complete (not on load/revisit/goal switch)
-  const prevDiscoverComplete = useRef(discoverComplete);
-  useEffect(() => {
-    if (!discoverComplete || prevDiscoverComplete.current) {
-      prevDiscoverComplete.current = discoverComplete;
-      return;
-    }
-    prevDiscoverComplete.current = discoverComplete;
-
-    const discoverStates = ['REFLECT_ON_STRENGTHS', 'EXPLORE_CAREERS', 'ROLE_DEEP_DIVE'];
-    const stateIsStuck = journey && discoverStates.includes(journey.currentState);
-
-    // Only show celebration or advance if the state machine is actually stuck in Discover.
-    if (!stateIsStuck) return;
-
-    const seenKey = `discover-celebrated-${goalTitle || 'default'}`;
-    const alreadySeen = typeof window !== 'undefined' && localStorage.getItem(seenKey);
-
-    if (!alreadySeen) {
-      localStorage.setItem(seenKey, 'true');
-      setShowDiscoverCelebration(true);
-    } else {
-      fetch('/api/journey/advance-to-understand', { method: 'POST' })
-        .then(() => queryClient.invalidateQueries({ queryKey: ['journey-state'] }))
-        .catch(() => {});
-    }
-  }, [discoverComplete, journey, goalTitle, queryClient]);
-
-  const isLoading = sessionStatus === 'loading' || journeyLoading;
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
-        <div className="space-y-6">
-          <Skeleton className="h-12 w-48" />
-          <div className="grid grid-cols-3 gap-3">
-            <Skeleton className="h-24" />
-            <Skeleton className="h-24" />
-            <Skeleton className="h-24" />
-          </div>
-          <Skeleton className="h-96" />
-        </div>
-      </div>
-    );
-  }
-
-  if (session?.user?.role !== 'YOUTH') {
-    return (
-      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-4xl">
-        <Card className="border-2">
-          <CardContent className="py-12 text-center">
-            <Lock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">This page is only available for youth members.</p>
-            <Button className="mt-4" asChild>
-              <Link href="/dashboard">Go to Dashboard</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string }[] = [
+    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)' },
+    { id: 'understand', label: 'Understand', subtitle: 'Know the role', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)' },
+    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)' },
+  ];
 
   return (
-    <div className="min-h-full">
-      <div className="container mx-auto px-3 py-4 sm:px-6 sm:py-8 max-w-5xl">
-        <PageContext
-          pageKey="my-journey"
-          purpose="This is your personal growth path — Discover who you are, Understand careers, then take real action."
-          action="Work through each stage step by step. Everything you do here builds towards your future."
-        />
-
-        {/* Header row */}
-        <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-lg bg-teal-500/10 shrink-0">
-                <Target className="h-4 w-4 text-teal-400" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50">
-                  My Journey
-                </p>
-                {goalTitle ? (
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => goalCareer && setShowCareerDetail(true)}
-                        className={goalCareer ? 'text-left hover:text-teal-400 transition-colors' : 'text-left'}
-                        title={goalCareer ? 'View career details' : undefined}
-                      >
-                        <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">
-                          {goalTitle}
-                        </h1>
-                      </button>
-                      <button
-                        onClick={handleOpenGoalSheet}
-                        className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
-                        title="Change career goal"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                      </button>
-                    </div>
-                    {goalLastUsed && (
-                      <p className="text-[10px] text-muted-foreground/35 mt-0.5">
-                        Last saved {new Date(goalLastUsed).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })} at {new Date(goalLastUsed).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <h1 className="text-base sm:text-lg font-semibold tracking-tight text-muted-foreground">
-                    Start exploring at your own pace
-                  </h1>
-                )}
-              </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {/* Header */}
+        <div className="mb-6">
+          {goalTitle ? (
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-semibold text-foreground">
+                <span className="text-muted-foreground/50">My Journey to </span>
+                {goalTitle}
+              </h1>
+              <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change goal">
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
             </div>
-          </div>
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="/my-journey/how-it-works"
-                  className="p-1.5 rounded-lg text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors shrink-0"
-                >
-                  <HelpCircle className="h-4 w-4" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">How it works</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-
-        {/* Goal swap reminder — dismissible */}
-        {goalTitle && !goalBannerDismissed && (
-          <div className="flex items-center gap-2 rounded-lg bg-teal-500/5 border border-teal-500/15 px-3 py-2 mb-4">
-            <Info className="h-3.5 w-3.5 text-teal-500 shrink-0" />
-            <p className="text-[11px] text-muted-foreground/70 flex-1">
-              You can change your career goal anytime — your progress is always saved per goal.
-            </p>
-            <button
-              onClick={() => {
-                setGoalBannerDismissed(true);
-                localStorage.setItem('journey-goal-banner-dismissed', 'true');
-              }}
-              className="p-0.5 rounded text-muted-foreground/40 hover:text-muted-foreground transition-colors shrink-0"
-            >
-              <X className="h-3 w-3" />
+          ) : (
+            <button onClick={() => setGoalSheetOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors">
+              <Target className="h-4 w-4" /> Set a career goal
             </button>
-          </div>
-        )}
-
-        {/* Stage Tab Bar */}
-        <div className="mb-6 sm:mb-8">
-          <StageTabBar
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            lenses={journey.summary.lenses}
-            discoverComplete={discoverComplete}
-            growComplete={growComplete}
-          />
-        </div>
-
-        {/* Tab Content */}
-        <div>
-          {activeTab === 'discover' && (
-            <DiscoverTab
-              journey={journey}
-              goalTitle={goalTitle}
-              onSetGoal={handleOpenGoalSheet}
-              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
-              onConfirmExploration={handleConfirmExploration}
-              onContinueToUnderstand={() => setActiveTab('understand')}
-            />
-          )}
-          {activeTab === 'understand' && (
-            <UnderstandTab
-              journey={journey}
-              goalTitle={goalTitle}
-              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
-              onContinueToGrow={() => setActiveTab('act')}
-              forceActive={discoverComplete}
-            />
-          )}
-          {activeTab === 'act' && (
-            <ActTab
-              journey={journey}
-              goalTitle={goalTitle}
-              onStartStep={(stepId) => setActiveStepId(stepId as JourneyStateId)}
-            />
           )}
         </div>
+
+        {/* Tab bar */}
+        <div className="grid grid-cols-3 gap-2 mb-6">
+          {tabs.map((tab) => {
+            const TabIcon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  'relative rounded-xl border px-4 py-3.5 text-left transition-all duration-200',
+                  isActive ? 'border-transparent' : 'border-border/40 hover:border-border/60 hover:bg-muted/20',
+                )}
+                style={isActive ? {
+                  boxShadow: `0 0 20px ${tab.glow}, 0 0 40px ${tab.glow.replace('0.25', '0.1')}, inset 0 1px 0 rgba(255,255,255,0.05)`,
+                  border: `1px solid ${tab.glow.replace('0.25', '0.4')}`,
+                  background: `linear-gradient(180deg, ${tab.glow.replace('0.25', '0.08')} 0%, transparent 100%)`,
+                } : undefined}
+              >
+                <div className="flex items-center gap-2 mb-0.5">
+                  <TabIcon className={cn('h-3.5 w-3.5', isActive ? tab.color : 'text-muted-foreground/50')} />
+                  <span className={cn('text-sm font-semibold', isActive ? 'text-foreground' : 'text-muted-foreground/60')}>{tab.label}</span>
+                </div>
+                <p className={cn('text-[11px]', isActive ? 'text-foreground/50' : 'text-muted-foreground/30')}>{tab.subtitle}</p>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            {activeTab === 'discover' && (
+              <DiscoverTab career={career} goalTitle={goalTitle} onContinue={() => setActiveTab('understand')} />
+            )}
+            {activeTab === 'understand' && (
+              <UnderstandTab
+                career={career}
+                goalTitle={goalTitle}
+                notes={understandNotes}
+                onNotesChange={(v) => { setUnderstandNotes(v); setUnderstandNotesSaved(false); }}
+                notesSaved={understandNotesSaved}
+                onSaveNotes={() => setUnderstandNotesSaved(true)}
+                onContinue={() => setActiveTab('grow')}
+              />
+            )}
+            {activeTab === 'grow' && (
+              <GrowTab goalTitle={goalTitle} career={career} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Step Content Modal */}
-      {activeStepId && journey && (
-        <StepContent
-          stepId={activeStepId}
-          isOpen={!!activeStepId}
-          onClose={() => setActiveStepId(null)}
-          onComplete={handleCompleteStep}
-          context={{
-            completedJobs: journey.summary.alignedActionsCount,
-            savedCareers: journey.summary.careerInterests,
-            goalTitle,
-            profile: undefined,
-            summary: journey.summary as unknown as Record<string, unknown>,
-          }}
-        />
-      )}
-
-      {/* Goal Change Warning */}
-      {showGoalChangeWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowGoalChangeWarning(false)}>
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Your progress for <strong>{goalTitle}</strong> will be saved. You can switch back anytime and pick up where you left off.
-            </p>
-            <div className="rounded-lg bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
-              <p className="text-[11px] font-medium text-muted-foreground/80">What happens when you switch:</p>
-              <ul className="text-[11px] text-muted-foreground/60 space-y-1 ml-3">
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Strengths and interests carry over to any goal</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Research, actions, and roadmap saved per goal</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-0.5">&#10003;</span> Switch back to restore all previous progress</li>
-              </ul>
-            </div>
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" size="sm" onClick={() => setShowGoalChangeWarning(false)}>
-                Keep current goal
-              </Button>
-              <Button size="sm" className="bg-amber-600 hover:bg-amber-700" onClick={() => {
-                setShowGoalChangeWarning(false);
-                setGoalSheetOpen(true);
-              }}>
-                Change goal
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Career Detail Sheet — opened by clicking goal title */}
-      <CareerDetailSheet
-        career={showCareerDetail ? goalCareer : null}
-        onClose={() => setShowCareerDetail(false)}
-      />
-
-      {/* Discover Completion Celebration */}
-      <DiscoverCompleteModal
-        open={showDiscoverCelebration}
-        onContinue={async () => {
-          setShowDiscoverCelebration(false);
-          // Ensure state machine is advanced before switching tab
-          try {
-            await fetch('/api/journey/advance-to-understand', { method: 'POST' });
-            await queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-          } catch {}
-          setActiveTab('understand');
-        }}
-        strengths={journey.summary?.strengths ?? []}
-        motivations={reflectionsData?.discoverReflections?.motivations ?? []}
-        workStyle={reflectionsData?.discoverReflections?.workStyle ?? []}
-        growthAreas={reflectionsData?.discoverReflections?.growthAreas ?? []}
-        goalTitle={goalTitle}
-        careerInterests={journey.summary?.careerInterests ?? []}
-      />
-
-      {/* Understand Completion Celebration */}
-      <UnderstandCompleteModal
-        open={showUnderstandCelebration}
-        onContinue={() => {
-          setShowUnderstandCelebration(false);
-          setActiveTab('act');
-        }}
-        goalTitle={goalTitle}
-        roleRealityNotes={journey.summary?.roleRealityNotes ?? []}
-        industryInsightNotes={journey.summary?.industryInsightNotes ?? []}
-        pathSkills={journey.summary?.pathSkills ?? []}
-        actionPlan={journey.summary?.rolePlans?.[0] ?? null}
-      />
-
-      {/* Goal Selection Sheet */}
       <GoalSelectionSheet
         open={goalSheetOpen}
         onClose={() => setGoalSheetOpen(false)}
-        primaryGoal={primaryGoal}
-        secondaryGoal={secondaryGoal}
-        onSuccess={() => {
-          // Goals API already handles: save old goal → reset → restore new goal
-          // Close sheet, reset tab, and refresh all goal-dependent data
-          setGoalSheetOpen(false);
-          setActiveTab('discover');
-          queryClient.invalidateQueries({ queryKey: ['journey-state'] });
-          queryClient.invalidateQueries({ queryKey: ['goals'] });
-          queryClient.invalidateQueries({ queryKey: ['goal-data'] });
-          queryClient.invalidateQueries({ queryKey: ['discover-reflections'] });
-        }}
+        primaryGoal={goalsData?.primaryGoal || null}
+        secondaryGoal={goalsData?.secondaryGoal || null}
+        onSuccess={() => setGoalSheetOpen(false)}
       />
     </div>
   );

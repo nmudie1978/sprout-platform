@@ -11,7 +11,7 @@ const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
 const LINE_X = NODE_SIZE / 2;
 
-export function SteppingRenderer({ journey, onItemClick, overlayData, activeLayers }: RendererProps) {
+export function SteppingRenderer({ journey, onItemClick, overlayData, activeLayers, cardDataMap, onProgressCycle }: RendererProps) {
   const items = journey.items;
   const totalHeight = items.length * ROW_HEIGHT + NODE_SIZE;
 
@@ -73,7 +73,13 @@ export function SteppingRenderer({ journey, onItemClick, overlayData, activeLaye
           >
             {/* Node */}
             <div className="flex-shrink-0">
-              <SharedNode item={item} onClick={() => onItemClick(item)} size={NODE_SIZE} />
+              <SharedNode
+                item={item}
+                onClick={() => onItemClick(item)}
+                size={NODE_SIZE}
+                progressStatus={cardDataMap?.[item.id]?.status}
+                onProgressCycle={onProgressCycle ? () => onProgressCycle(item.id) : undefined}
+              />
             </div>
 
             {/* Card */}
