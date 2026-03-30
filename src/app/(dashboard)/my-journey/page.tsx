@@ -542,15 +542,28 @@ function UnderstandTab({
               </div>
             )}
 
-            {/* Reality check */}
-            {details.realityCheck && (
+            {/* Reality check — text + video side by side */}
+            {(details.realityCheck || realityVideoId) && (
               <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-4">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3 mb-3">
                   <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-semibold text-amber-400 mb-1">Reality Check</p>
+                  <p className="text-xs font-semibold text-amber-400">Reality Check</p>
+                </div>
+                <div className={cn('grid gap-3', realityVideoId && details.realityCheck ? 'grid-cols-1 sm:grid-cols-[1fr,180px]' : '')}>
+                  {details.realityCheck && (
                     <p className="text-[13px] text-foreground/60 leading-relaxed">{details.realityCheck}</p>
-                  </div>
+                  )}
+                  {realityVideoId && (
+                    <div className="rounded-md overflow-hidden aspect-video sm:aspect-auto sm:h-[100px] shrink-0">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${realityVideoId}`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={`What I actually do as a ${goalTitle}`}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -559,24 +572,6 @@ function UnderstandTab({
           <p className="text-xs text-muted-foreground/40">Personality fit data not yet available for this career.</p>
         )}
       </CollapsibleSection>
-
-      {/* Reality Check Video */}
-      {realityVideoId && (
-        <SectionCard>
-          <SectionHeader icon={Play} title="Reality Check" badge={<span className="text-[10px] text-muted-foreground/30">What it's actually like</span>} />
-          <div className="p-4">
-            <div className="rounded-lg overflow-hidden aspect-video max-h-[220px]">
-              <iframe
-                src={`https://www.youtube.com/embed/${realityVideoId}`}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={`What I actually do as a ${goalTitle}`}
-              />
-            </div>
-          </div>
-        </SectionCard>
-      )}
 
       {/* Entry Requirements */}
       <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400">
