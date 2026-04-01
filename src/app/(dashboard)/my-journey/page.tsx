@@ -310,16 +310,41 @@ function DiscoverTab({
 }) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
+  const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
   const videoId = ytData?.videoId ?? null;
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Target} message="Set a career goal to start exploring" />;
   }
 
+  const dDetails = discoverDetails?.details ?? null;
+
   return (
     <div className="space-y-5">
-      {/* Brief description */}
-      <p className="text-sm text-foreground/60 leading-relaxed">{career.description}</p>
+      {/* Role introduction */}
+      <div className="rounded-xl border border-border/30 bg-muted/5 p-5">
+        <p className="text-sm text-foreground/65 leading-relaxed">{career.description}</p>
+        {dDetails && (
+          <div className="mt-3 pt-3 border-t border-border/15 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {dDetails.whoThisIsGoodFor.length > 0 && (
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1.5">Suited to</p>
+                <p className="text-xs text-foreground/50 leading-relaxed">{dDetails.whoThisIsGoodFor.slice(0, 2).join('. ')}.</p>
+              </div>
+            )}
+            {dDetails.topSkills.length > 0 && (
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1.5">Key strengths</p>
+                <div className="flex flex-wrap gap-1">
+                  {dDetails.topSkills.slice(0, 4).map((s, i) => (
+                    <span key={i} className="inline-flex rounded-full border border-border/20 bg-background/30 px-2 py-0.5 text-[10px] text-foreground/50">{s}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Hero: Video + Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
