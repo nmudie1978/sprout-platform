@@ -1197,7 +1197,16 @@ export default function MyJourneyPage() {
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
-  const [activeTab, setActiveTab] = useState<V2Tab>('discover');
+  const [activeTab, setActiveTab] = useState<V2Tab>(() => {
+    if (typeof window === 'undefined') return 'discover';
+    const hash = window.location.hash.replace('#', '') as V2Tab;
+    return ['discover', 'understand', 'grow'].includes(hash) ? hash : 'discover';
+  });
+
+  // Sync tab to URL hash so back button restores it
+  useEffect(() => {
+    window.location.hash = activeTab;
+  }, [activeTab]);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
   // Persist notes per career in localStorage
