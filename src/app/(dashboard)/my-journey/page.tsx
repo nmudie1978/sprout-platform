@@ -1300,8 +1300,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </SectionCard>
       )}
 
-      {/* 4. My Notes */}
-      <CareerNotes careerTitle={goalTitle} />
     </div>
   );
 }
