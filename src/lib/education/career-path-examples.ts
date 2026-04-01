@@ -12,6 +12,7 @@ export interface CareerPathStep {
 }
 
 export interface CareerPathExample {
+  name: string;        // e.g. "Ingrid S."
   title: string;       // e.g. "Doctor — Oslo"
   currentAge: number;
   location: string;
@@ -28,6 +29,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'doctor',
     examples: [
       {
+        name: 'Ingrid S.',
         title: 'Doctor — Oslo',
         currentAge: 35,
         location: 'Oslo',
@@ -41,6 +43,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Lars M.',
         title: 'Doctor — Bergen',
         currentAge: 31,
         location: 'Bergen',
@@ -58,6 +61,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'nurse',
     examples: [
       {
+        name: 'Emilie K.',
         title: 'Nurse — Trondheim',
         currentAge: 28,
         location: 'Trondheim',
@@ -70,6 +74,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Kristian H.',
         title: 'Nurse — Oslo',
         currentAge: 26,
         location: 'Oslo',
@@ -86,6 +91,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'psychologist',
     examples: [
       {
+        name: 'Nora B.',
         title: 'Psychologist — Oslo',
         currentAge: 32,
         location: 'Oslo',
@@ -98,6 +104,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Henrik J.',
         title: 'Psychologist — Tromsø',
         currentAge: 29,
         location: 'Tromsø',
@@ -114,6 +121,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'software-developer',
     examples: [
       {
+        name: 'Sander L.',
         title: 'Software Developer — Oslo',
         currentAge: 27,
         location: 'Oslo',
@@ -126,6 +134,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Maja R.',
         title: 'Software Developer — Trondheim',
         currentAge: 29,
         location: 'Trondheim',
@@ -143,6 +152,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'engineer',
     examples: [
       {
+        name: 'Erik T.',
         title: 'Mechanical Engineer — Stavanger',
         currentAge: 34,
         location: 'Stavanger',
@@ -156,6 +166,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Silje A.',
         title: 'Civil Engineer — Bergen',
         currentAge: 30,
         location: 'Bergen',
@@ -174,6 +185,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'teacher',
     examples: [
       {
+        name: 'Thea N.',
         title: 'Primary Teacher — Oslo',
         currentAge: 29,
         location: 'Oslo',
@@ -186,6 +198,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Jonas F.',
         title: 'Upper Secondary Teacher — Trondheim',
         currentAge: 32,
         location: 'Trondheim',
@@ -203,6 +216,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'accountant',
     examples: [
       {
+        name: 'Marte V.',
         title: 'Accountant — Oslo',
         currentAge: 30,
         location: 'Oslo',
@@ -216,6 +230,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Ole K.',
         title: 'Accountant — Bergen',
         currentAge: 28,
         location: 'Bergen',
@@ -233,6 +248,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'lawyer',
     examples: [
       {
+        name: 'Hanna G.',
         title: 'Lawyer — Oslo',
         currentAge: 33,
         location: 'Oslo',
@@ -246,6 +262,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Andreas D.',
         title: 'Lawyer — Bergen',
         currentAge: 30,
         location: 'Bergen',
@@ -263,6 +280,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'healthcare-worker',
     examples: [
       {
+        name: 'Fatima A.',
         title: 'Healthcare Worker — Drammen',
         currentAge: 24,
         location: 'Drammen',
@@ -275,6 +293,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Markus E.',
         title: 'Healthcare Worker → Nurse — Oslo',
         currentAge: 27,
         location: 'Oslo',
@@ -292,6 +311,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'physiotherapist',
     examples: [
       {
+        name: 'Ida W.',
         title: 'Physiotherapist — Oslo',
         currentAge: 28,
         location: 'Oslo',
@@ -304,6 +324,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Tobias P.',
         title: 'Physiotherapist — Tromsø',
         currentAge: 26,
         location: 'Tromsø',
@@ -320,6 +341,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
     careerId: 'data-analyst',
     examples: [
       {
+        name: 'Linnea S.',
         title: 'Data Analyst — Oslo',
         currentAge: 26,
         location: 'Oslo',
@@ -332,6 +354,7 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
         ],
       },
       {
+        name: 'Oscar H.',
         title: 'Data Analyst — Trondheim',
         currentAge: 28,
         location: 'Trondheim',

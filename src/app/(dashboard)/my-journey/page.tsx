@@ -1279,8 +1279,10 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   {paths.slice(0, 2).map((path, pi) => (
                     <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
                       <div className="flex items-center justify-between mb-3">
-                        <p className="text-xs font-semibold text-foreground/75">{path.title}</p>
-                        <span className="text-[10px] text-muted-foreground/35">Age {path.currentAge}</span>
+                        <div>
+                          <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
+                          <p className="text-[10px] text-muted-foreground/40">{path.title} · Age {path.currentAge}</p>
+                        </div>
                       </div>
                       <div className="relative">
                         {/* Vertical connector */}
