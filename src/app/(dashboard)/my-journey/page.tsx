@@ -975,74 +975,68 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
   return (
     <SectionCard>
       <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/40">{notes.length}</span> : undefined} />
-      <div className="p-4 space-y-3">
-        {/* Existing notes */}
-        {notes.map((note) => {
-          const cat = catConfig(note.category);
-          return (
-            <div key={note.id} className="rounded-lg border border-border/20 bg-background/30 p-3">
-              {editingId === note.id ? (
-                <div className="space-y-2">
-                  <textarea value={editText} onChange={(e) => setEditText(e.target.value)}
-                    className="w-full rounded-md border border-border/30 bg-background/50 px-3 py-2 text-sm text-foreground/80 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none" rows={2} />
-                  <div className="flex gap-2">
-                    <button onClick={() => saveEdit(note.id)} className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-foreground text-background hover:bg-foreground/90">Save</button>
-                    <button onClick={() => setEditingId(null)} className="px-2.5 py-1 rounded-md text-[11px] text-muted-foreground/50 hover:text-foreground">Cancel</button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm text-foreground/70 leading-relaxed flex-1">{note.text}</p>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/30 hover:text-foreground/60 transition-colors">
-                        <Pencil className="h-3 w-3" />
-                      </button>
-                      <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/30 hover:text-red-400 transition-colors">
-                        <Trash2 className="h-3 w-3" />
-                      </button>
+      <div className="px-4 pb-3">
+        {/* Notes list — compact rows */}
+        {notes.length > 0 && (
+          <div className="divide-y divide-border/15">
+            {notes.map((note) => {
+              const cat = catConfig(note.category);
+              return (
+                <div key={note.id} className="py-2 group">
+                  {editingId === note.id ? (
+                    <div className="flex gap-2">
+                      <input value={editText} onChange={(e) => setEditText(e.target.value)}
+                        className="flex-1 rounded-md border border-border/30 bg-background/50 px-2.5 py-1.5 text-xs text-foreground/80 focus:outline-none focus:ring-1 focus:ring-foreground/20"
+                        onKeyDown={(e) => { if (e.key === 'Enter') saveEdit(note.id); if (e.key === 'Escape') setEditingId(null); }}
+                        autoFocus
+                      />
+                      <button onClick={() => saveEdit(note.id)} className="px-2 py-1 rounded text-[10px] font-medium bg-foreground text-background">Save</button>
+                      <button onClick={() => setEditingId(null)} className="px-2 py-1 rounded text-[10px] text-muted-foreground/40">Cancel</button>
                     </div>
-                  </div>
-                  <span className={cn('inline-flex rounded-full px-2 py-0.5 text-[9px] font-medium mt-2', cat.color)}>{cat.label}</span>
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        {/* Add new note */}
-        <div className="space-y-2">
-          <textarea
-            value={newText}
-            onChange={(e) => setNewText(e.target.value)}
-            placeholder="Add a note — reflections, links, questions, things that surprised you..."
-            className="w-full rounded-lg border border-border/30 bg-background/50 px-3.5 py-2.5 text-sm text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none"
-            rows={2}
-            maxLength={2000}
-          />
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1.5">
-              {NOTE_CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setNewCategory(cat.id)}
-                  className={cn(
-                    'rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors',
-                    newCategory === cat.id ? cat.color : 'bg-muted/20 text-muted-foreground/30 hover:text-muted-foreground/50',
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium', cat.color)}>{cat.label}</span>
+                      <p className="text-xs text-foreground/65 flex-1 truncate">{note.text}</p>
+                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                        <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/30 hover:text-foreground/60"><Pencil className="h-2.5 w-2.5" /></button>
+                        <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/30 hover:text-red-400"><Trash2 className="h-2.5 w-2.5" /></button>
+                      </div>
+                    </div>
                   )}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={addNote}
-              disabled={!newText.trim()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20"
-            >
-              <Plus className="h-3 w-3" /> Add
-            </button>
+                </div>
+              );
+            })}
           </div>
+        )}
+
+        {/* Add — inline input */}
+        <div className="flex items-center gap-2 pt-2 border-t border-border/10 mt-1">
+          <div className="relative flex-1">
+            <input
+              value={newText}
+              onChange={(e) => setNewText(e.target.value)}
+              placeholder="Add a note..."
+              className="w-full rounded-md border border-border/20 bg-background/30 pl-2.5 pr-2.5 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:ring-1 focus:ring-foreground/15"
+              maxLength={500}
+              onKeyDown={(e) => { if (e.key === 'Enter' && newText.trim()) addNote(); }}
+            />
+          </div>
+          <select
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value as NoteCategory)}
+            className="rounded-md border border-border/20 bg-background/30 px-1.5 py-1.5 text-[10px] text-muted-foreground/50 focus:outline-none shrink-0"
+          >
+            {NOTE_CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>{cat.label}</option>
+            ))}
+          </select>
+          <button
+            onClick={addNote}
+            disabled={!newText.trim()}
+            className="shrink-0 p-1.5 rounded-md bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20"
+          >
+            <Plus className="h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
     </SectionCard>
