@@ -1114,6 +1114,10 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     return subjects;
   }, [career.keySkills]);
 
+  // Grow accordion — only one section open at a time
+  const [growSection, setGrowSection] = useState<string | null>('actions');
+  const toggleGrow = (id: string) => setGrowSection(prev => prev === id ? null : id);
+
   // Build a contextual career consideration summary
   const careerConsideration = useMemo(() => {
     const edu = career.educationPath;
@@ -1156,8 +1160,8 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
 
   return (
     <div className="space-y-5">
-      {/* Career consideration — honest context */}
-      <div className="rounded-xl border border-border/30 bg-muted/5 px-5 py-4">
+      {/* Career overview — before you start + where you stand */}
+      <div className="rounded-xl border border-border/30 bg-muted/5 px-5 py-4 space-y-3">
         <div className="flex items-start gap-3">
           <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
           <div>
@@ -1168,30 +1172,25 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             )}
           </div>
         </div>
-      </div>
-
-      {/* ── Hero: What You Can Do Right Now ── */}
-      <div
-        className="rounded-xl border overflow-hidden"
-        style={{
-          borderColor: 'rgba(20,184,166,0.25)',
-          boxShadow: '0 0 30px rgba(20,184,166,0.08), 0 0 60px rgba(20,184,166,0.04)',
-          background: 'linear-gradient(180deg, rgba(20,184,166,0.06) 0%, transparent 40%)',
-        }}
-      >
-        <div className="px-5 py-4 border-b border-teal-500/15">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-teal-400" />
-            </div>
+        <div className="border-t border-border/20 pt-3">
+          <div className="flex items-start gap-3">
+            <Target className="h-4 w-4 text-teal-400 shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-sm font-semibold text-foreground/90">What You Can Do Right Now</h3>
-              <p className="text-[10px] text-muted-foreground/40">Actions you can take this week</p>
+              <p className="text-xs font-semibold text-foreground/70 mb-1.5">Where you stand</p>
+              <p className="text-sm text-foreground/55 leading-relaxed">
+                {career.growthOutlook === 'high'
+                  ? `${career.title} is a high-demand field with strong long-term prospects. Exploring this now — before committing to ${career.educationPath.split('(')[0].trim()} — gives you a real advantage. Focus on ${topSkills.slice(0, 2).join(' and ')} through your schoolwork and small real-world experiences.`
+                  : career.growthOutlook === 'medium'
+                  ? `This is a growing field with solid career paths. The skills you build — ${topSkills.slice(0, 2).join(' and ')} — are transferable even if you change direction later. You're exploring at exactly the right time.`
+                  : `${career.title} is a stable career with clear pathways. Building strength in ${topSkills.slice(0, 2).join(' and ')} now gives you a foundation whether you stay on this path or pivot later.`
+                }
+              </p>
             </div>
           </div>
         </div>
-        <div className="p-4 space-y-3">
-          {/* 1. Education programmes — specific Norwegian data when available */}
+      </div>
+
+      {/* 1. Education programmes */}
           {(() => {
             const eduData = getNorwayProgrammes(career.id, career.title);
             if (eduData) {
@@ -1321,24 +1320,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               <ArrowRight className="h-4 w-4 text-amber-400/30 group-hover:text-amber-400/60 shrink-0" />
             </div>
           </a>
-
-        </div>
-      </div>
-
-      {/* What This Means */}
-      <SectionCard>
-        <SectionHeader icon={Target} title="Where You Stand" />
-        <div className="p-5">
-          <p className="text-sm text-foreground/60 leading-[1.8]">
-            {career.growthOutlook === 'high'
-              ? `${career.title} is a high-demand field with strong long-term prospects. Exploring this now — before committing to ${career.educationPath.split('(')[0].trim()} — gives you a real advantage. Focus on ${topSkills.slice(0, 2).join(' and ')} through your schoolwork and small real-world experiences.`
-              : career.growthOutlook === 'medium'
-              ? `This is a growing field with solid career paths. The skills you build — ${topSkills.slice(0, 2).join(' and ')} — are transferable even if you change direction later. You're exploring at exactly the right time.`
-              : `${career.title} is a stable career with clear pathways. Building strength in ${topSkills.slice(0, 2).join(' and ')} now gives you a foundation whether you stay on this path or pivot later.`
-            }
-          </p>
-        </div>
-      </SectionCard>
 
       <div className="text-center py-2">
         <p className="text-[10px] text-muted-foreground/25">These suggestions adapt as you explore. Move at your own pace.</p>
