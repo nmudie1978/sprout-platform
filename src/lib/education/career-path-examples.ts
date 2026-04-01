@@ -368,6 +368,110 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
       },
     ],
   },
+  'it-project-manager': {
+    careerId: 'it-project-manager',
+    examples: [
+      {
+        name: 'Kamil W.',
+        title: 'IT Project Manager — Oslo',
+        currentAge: 33,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — realfag + IT' },
+          { age: 19, label: 'Informatikk bachelor at UiO (3 years)' },
+          { age: 22, label: 'Junior developer — Sopra Steria' },
+          { age: 25, label: 'PRINCE2 certification' },
+          { age: 26, label: 'IT team lead — Telenor' },
+          { age: 29, label: 'IT Project Manager — DNB' },
+          { age: 33, label: 'Senior Project Manager, digital transformation' },
+        ],
+      },
+      {
+        name: 'Astrid B.',
+        title: 'IT Project Manager — Bergen',
+        currentAge: 30,
+        location: 'Bergen',
+        steps: [
+          { age: 16, label: 'Videregående — studiespesialisering' },
+          { age: 19, label: 'Økonomi og administrasjon at NHH (3 years)' },
+          { age: 22, label: 'Business analyst — Accenture' },
+          { age: 24, label: 'Scrum Master certification' },
+          { age: 26, label: 'Agile project manager — Eviny' },
+          { age: 30, label: 'IT Project Manager, cloud migration' },
+        ],
+      },
+    ],
+  },
+  'programme-manager': {
+    careerId: 'programme-manager',
+    examples: [
+      {
+        name: 'Nicky M.',
+        title: 'Programme Manager — Oslo',
+        currentAge: 42,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — realfag' },
+          { age: 19, label: 'Engineering degree (4 years)' },
+          { age: 23, label: 'Network engineer — Ericsson' },
+          { age: 27, label: 'PRINCE2 + PMP certifications' },
+          { age: 28, label: 'Project manager — Telenor' },
+          { age: 33, label: 'Senior project manager — multiple programmes' },
+          { age: 37, label: 'MSP certification' },
+          { age: 38, label: 'Programme manager — Telenor' },
+          { age: 42, label: 'Head of Programme Management, digital transformation' },
+        ],
+      },
+      {
+        name: 'Saghi K.',
+        title: 'Programme Manager — Oslo',
+        currentAge: 38,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — studiespesialisering' },
+          { age: 19, label: 'Psychology degree at UiO (6 years)' },
+          { age: 25, label: 'Clinical psychologist — DPS' },
+          { age: 28, label: 'Team lead, psychology department' },
+          { age: 31, label: 'Programme coordinator — health services' },
+          { age: 35, label: 'MSP + change management certification' },
+          { age: 38, label: 'Programme manager — health sector transformation' },
+        ],
+      },
+    ],
+  },
+  'cybersecurity': {
+    careerId: 'cybersecurity',
+    examples: [
+      {
+        name: 'Viktor L.',
+        title: 'Cybersecurity Analyst — Oslo',
+        currentAge: 27,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — IT + realfag' },
+          { age: 19, label: 'Informatikk bachelor at NTNU (3 years)' },
+          { age: 22, label: 'CompTIA Security+ certification' },
+          { age: 22, label: 'SOC analyst — Mnemonic' },
+          { age: 25, label: 'CEH certification' },
+          { age: 27, label: 'Senior security analyst — Equinor' },
+        ],
+      },
+      {
+        name: 'Runa S.',
+        title: 'Security Engineer — Trondheim',
+        currentAge: 29,
+        location: 'Trondheim',
+        steps: [
+          { age: 16, label: 'Videregående — realfag' },
+          { age: 19, label: 'Datateknologi sivilingeniør at NTNU (5 years)' },
+          { age: 24, label: 'Developer — Telenor' },
+          { age: 26, label: 'OSCP certification' },
+          { age: 27, label: 'Penetration tester — NorSIS' },
+          { age: 29, label: 'Security engineer — Statkraft' },
+        ],
+      },
+    ],
+  },
 };
 
 export function getCareerPathExamples(careerId: string, careerTitle: string): CareerPathExample[] {
