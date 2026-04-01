@@ -396,21 +396,20 @@ function DiscoverTab({
 // ─── UNDERSTAND TAB ──────────────────────────────────────────────────────────
 
 function CollapsibleSection({
-  title, icon: Icon, defaultOpen = false, count, accent, children,
+  title, icon: Icon, count, accent, children, isOpen, onToggle,
 }: {
-  title: string; icon: typeof Eye; defaultOpen?: boolean; count?: number; accent?: string; children: React.ReactNode;
+  title: string; icon: typeof Eye; count?: number; accent?: string; children: React.ReactNode; isOpen: boolean; onToggle: () => void;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
   return (
     <SectionCard>
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-2.5 px-5 py-3.5 text-left hover:bg-muted/5 transition-colors">
+      <button onClick={onToggle} className="w-full flex items-center gap-2.5 px-5 py-3.5 text-left hover:bg-muted/5 transition-colors">
         <Icon className={cn('h-4 w-4', accent || 'text-muted-foreground/60')} />
         <h3 className="text-sm font-semibold text-foreground/90 flex-1">{title}</h3>
         {count !== undefined && <span className="text-[10px] text-muted-foreground/40">{count}</span>}
-        <ChevronDown className={cn('h-4 w-4 text-muted-foreground/30 transition-transform', open && 'rotate-180')} />
+        <ChevronDown className={cn('h-4 w-4 text-muted-foreground/30 transition-transform', isOpen && 'rotate-180')} />
       </button>
       <AnimatePresence initial={false}>
-        {open && (
+        {isOpen && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
             <div className="px-5 pb-5 border-t border-border/30 pt-4">{children}</div>
           </motion.div>
@@ -441,6 +440,10 @@ function UnderstandTab({
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
   const careerVideos = careerVideosData?.videos ?? [];
+
+  // Accordion — only one section open at a time (null = all collapsed)
+  const [openSection, setOpenSection] = useState<string | null>(null);
+  const toggle = (id: string) => setOpenSection(prev => prev === id ? null : id);
 
   const allCourses = [
     ...(learningData?.localRegional ?? []),
@@ -496,7 +499,7 @@ function UnderstandTab({
       )}
 
       {/* Typical Day */}
-      <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
+      <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" isOpen={openSection === 'typical-day'} onToggle={() => toggle('typical-day')} count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
         {detailsLoading ? <LoadingSkeleton /> : details ? (
           <div className="space-y-4">
             {/* Timeline-style day breakdown */}
@@ -544,7 +547,7 @@ function UnderstandTab({
       </CollapsibleSection>
 
       {/* Is This Right for Me? */}
-      <CollapsibleSection title="Is This Right for Me?" icon={Heart} accent="text-rose-400">
+      <CollapsibleSection title="Is This Right for Me?" icon={Heart} accent="text-rose-400" isOpen={openSection === 'fit'} onToggle={() => toggle('fit')}>
         {detailsLoading ? <LoadingSkeleton /> : details ? (
           <div className="space-y-5">
             {/* Who it's for — card grid */}
@@ -596,7 +599,7 @@ function UnderstandTab({
       </CollapsibleSection>
 
       {/* Entry Requirements */}
-      <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400">
+      <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400" isOpen={openSection === 'entry'} onToggle={() => toggle('entry')}>
         {detailsLoading ? <LoadingSkeleton /> : details ? (
           <div className="space-y-3">
             {/* Horizontal rail timeline */}
@@ -632,7 +635,7 @@ function UnderstandTab({
 
       {/* Career Progression */}
       {progression && progression.levels.length > 0 && (
-        <CollapsibleSection title="Career Progression" icon={Layers} accent="text-emerald-400" count={progression.levels.length}>
+        <CollapsibleSection title="Career Progression" icon={Layers} accent="text-emerald-400" isOpen={openSection === 'progression'} onToggle={() => toggle('progression')} count={progression.levels.length}>
           {/* Horizontal progression bar */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -668,6 +671,8 @@ function UnderstandTab({
         title="Courses & Certifications"
         icon={Award}
         accent="text-violet-400"
+        isOpen={openSection === 'courses'}
+        onToggle={() => toggle('courses')}
         count={allCourses.length || undefined}
       >
         {learningLoading ? <LoadingSkeleton /> : allCourses.length > 0 ? (
@@ -804,7 +809,7 @@ function UnderstandTab({
 
       {/* Tools of the Trade */}
       {details?.typicalDay.tools && details.typicalDay.tools.length > 0 && (
-        <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" count={details.typicalDay.tools.length}>
+        <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" isOpen={openSection === 'tools'} onToggle={() => toggle('tools')} count={details.typicalDay.tools.length}>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {details.typicalDay.tools.map((tool, i) => (
               <a
