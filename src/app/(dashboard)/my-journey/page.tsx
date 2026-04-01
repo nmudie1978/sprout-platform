@@ -571,24 +571,27 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── BOTTOM: Carousel — Education, Career Paths, Tools ── */}
-      <SectionCard>
-        {/* Tab bar */}
-        <div className="flex border-b border-border/20">
+      {/* ── BOTTOM: Tabbed carousel — Education, Career Paths, Tools ── */}
+      <div className="rounded-xl border border-border/30 overflow-hidden">
+        {/* Tab bar — coloured pills */}
+        <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
           {([
-            { id: 'education' as const, label: 'Education & Certs', icon: GraduationCap },
-            { id: 'paths' as const, label: 'Real Career Paths', icon: Users },
-            { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench },
+            { id: 'education' as const, label: 'Education & Certs', icon: GraduationCap, color: 'text-violet-400', bg: 'bg-violet-500/10', activeBorder: 'border-violet-500/30', activeBg: 'bg-violet-500/15' },
+            { id: 'paths' as const, label: 'Real Career Paths', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', activeBorder: 'border-emerald-500/30', activeBg: 'bg-emerald-500/15' },
+            { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15' },
           ]).map((tab) => {
             const TabIcon = tab.icon;
             const active = carouselTab === tab.id;
             return (
               <button key={tab.id} onClick={() => setCarouselTab(tab.id)}
-                className={cn('flex-1 flex items-center justify-center gap-2 px-3 py-3 text-xs font-medium transition-colors border-b-2 -mb-px',
-                  active ? 'border-foreground/50 text-foreground/80' : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60'
+                className={cn(
+                  'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border',
+                  active
+                    ? `${tab.activeBg} ${tab.activeBorder} ${tab.color}`
+                    : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
                 )}
               >
-                <TabIcon className="h-3.5 w-3.5" />
+                <TabIcon className={cn('h-3.5 w-3.5', active ? tab.color : '')} />
                 {tab.label}
               </button>
             );
@@ -701,7 +704,7 @@ function UnderstandTab({
             );
           })()}
         </div>
-      </SectionCard>
+      </div>
 
       {/* Next */}
       <div className="flex justify-end pt-2">
