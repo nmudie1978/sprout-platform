@@ -1135,35 +1135,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           </div>
         </div>
         <div className="p-4 space-y-3">
-          {/* 1. Entry requirements */}
-          <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.03] p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                <Search className="h-4 w-4 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground/85">Entry requirements</p>
-                <p className="text-[11px] text-muted-foreground/40">{career.educationPath}</p>
-              </div>
-            </div>
-            {details?.entryPaths && details.entryPaths.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-3 ml-12">
-                {details.entryPaths.slice(0, 3).map((p, i) => (
-                  <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/10 bg-blue-500/5 px-2.5 py-1 text-[11px] text-foreground/60">
-                    <span className="text-[9px] font-bold text-blue-400">{i + 1}</span> {p}
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2 ml-12">
-              <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/15 bg-blue-500/5 px-3 py-1.5 text-[11px] font-medium text-blue-400 hover:bg-blue-500/10 transition-colors">
-                utdanning.no <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-            </div>
-          </div>
-
-          {/* 2. Education programmes */}
+          {/* 1. Education programmes */}
           <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.03] p-4">
             <div className="flex items-center gap-3 mb-3">
               <div className="h-9 w-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
