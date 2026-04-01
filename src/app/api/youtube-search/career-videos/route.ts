@@ -60,6 +60,25 @@ const REJECT_PATTERNS = [
   /\bgameplay\b/i,
   /\btrailer\b/i,
   /\bmusic video\b/i,
+  // News / TV shows — not career exploration
+  /\bgood morning\b/i,
+  /\bbreaking news\b/i,
+  /\bnews\b.*\binterview\b/i,
+  /\binterview\b.*\bnews\b/i,
+  /\bthis morning\b/i,
+  /\blorraine\b/i,
+  /\bgmb\b/i,
+  /\bbbc\b.*\bnews\b/i,
+  /\bcnn\b/i,
+  /\bfox news\b/i,
+  /\bnbc\b/i,
+  /\bitv\b.*\bnews\b/i,
+  /\bdaily mail\b/i,
+  // Specific person interviews (not career-focused)
+  /\binterview with\b/i,
+  /\btalks to\b/i,
+  /\bspeaks to\b/i,
+  /\bsits down with\b/i,
 ];
 
 // Words/phrases that indicate the video IS about career exploration
