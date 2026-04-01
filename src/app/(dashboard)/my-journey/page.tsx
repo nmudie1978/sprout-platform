@@ -34,6 +34,7 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
+import { getNorwayProgrammes } from '@/lib/education/norway-programmes';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -1189,31 +1190,73 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           </div>
         </div>
         <div className="p-4 space-y-3">
-          {/* 1. Education programmes */}
-          <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.03] p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-9 w-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
-                <GraduationCap className="h-4 w-4 text-violet-400" />
+          {/* 1. Education programmes — specific Norwegian data when available */}
+          {(() => {
+            const eduData = getNorwayProgrammes(career.id, career.title);
+            if (eduData) {
+              return (
+                <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.03] p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
+                      <GraduationCap className="h-4 w-4 text-violet-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground/85">Education in Norway</p>
+                      <p className="text-[11px] text-muted-foreground/40">{eduData.summary}</p>
+                    </div>
+                  </div>
+                  {/* Programme list */}
+                  <div className="space-y-1.5 ml-12">
+                    {eduData.programmes.map((prog, i) => (
+                      <a key={i} href={prog.url} target="_blank" rel="noopener noreferrer"
+                        className="group flex items-center gap-3 rounded-lg border border-border/15 bg-background/20 px-3 py-2 hover:border-violet-500/20 hover:bg-violet-500/[0.03] transition-colors"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-foreground/75 group-hover:text-foreground/90">{prog.programme}</p>
+                          <p className="text-[10px] text-muted-foreground/40">{prog.institution} — {prog.city} — {prog.duration}</p>
+                        </div>
+                        <span className="text-[9px] text-muted-foreground/30 shrink-0">{prog.applicationVia}</span>
+                        <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-violet-400/50 shrink-0" />
+                      </a>
+                    ))}
+                  </div>
+                  {/* Alternative paths */}
+                  {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
+                    <div className="ml-12 pt-1">
+                      <p className="text-[10px] text-muted-foreground/35 mb-1">Other routes in:</p>
+                      {eduData.alternativePaths.map((alt, i) => (
+                        <p key={i} className="text-[11px] text-muted-foreground/45 leading-relaxed">· {alt}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            // Fallback for careers without specific Norwegian data
+            return (
+              <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.03] p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-9 w-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
+                    <GraduationCap className="h-4 w-4 text-violet-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground/85">Find education programmes</p>
+                    <p className="text-[11px] text-muted-foreground/40">Search Norwegian and international platforms</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 ml-12">
+                  <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                    Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                  <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                    Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground/85">Find education programmes</p>
-                <p className="text-[11px] text-muted-foreground/40">Compare universities, vocational routes, and deadlines</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 ml-12">
-              {[
-                { label: 'Utdanning.no', href: `https://utdanning.no/sok?q=${encodeURIComponent(career.title)}` },
-                { label: 'Samordna Opptak', href: `https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}` },
-                { label: 'Coursera', href: `https://www.coursera.org/search?query=${encodeURIComponent(career.title)}` },
-                { label: 'edX', href: `https://www.edx.org/search?q=${encodeURIComponent(career.title)}` },
-              ].map((link) => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                  {link.label} <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              ))}
-            </div>
-          </div>
+            );
+          })()}
 
           {/* 3. LinkedIn */}
           <a href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`}
