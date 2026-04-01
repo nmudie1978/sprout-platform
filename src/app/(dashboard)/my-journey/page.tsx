@@ -35,6 +35,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
+import { getToolInfo } from '@/lib/education/tool-links';
 import { getCareerPathExamples } from '@/lib/education/career-path-examples';
 
 const PersonalCareerTimeline = dynamic(
@@ -810,20 +811,27 @@ function UnderstandTab({
       {/* Tools of the Trade */}
       {details?.typicalDay.tools && details.typicalDay.tools.length > 0 && (
         <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" isOpen={openSection === 'tools'} onToggle={() => toggle('tools')} count={details.typicalDay.tools.length}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {details.typicalDay.tools.map((tool, i) => (
-              <a
-                key={i}
-                href={`https://www.google.com/search?q=${encodeURIComponent(tool)}&udm=2`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2.5 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5 hover:border-border/40 hover:bg-background/50 transition-colors"
-              >
-                <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/50 shrink-0" />
-                <span className="text-[13px] text-foreground/65 group-hover:text-foreground/80 flex-1">{tool}</span>
-                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
-              </a>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {details.typicalDay.tools.map((tool, i) => {
+              const info = getToolInfo(tool);
+              const href = info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`;
+              return (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5 hover:border-border/40 hover:bg-background/50 transition-colors"
+                >
+                  <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/50 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/85">{tool}</p>
+                    {info && <p className="text-[10px] text-muted-foreground/35 mt-0.5">{info.description}</p>}
+                  </div>
+                  <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
+                </a>
+              );
+            })}
           </div>
         </CollapsibleSection>
       )}
