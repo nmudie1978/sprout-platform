@@ -21,20 +21,20 @@ interface VideoResult {
 function buildQueries(career: string): string[] {
   // Ordered by likely quality for "reality" content
   // Each query targets a different content style
+  // Interleaved so the 2 picked videos are different formats
   return [
-    // Reality / honesty — first-person accounts
-    `"${career}" honest truth pros and cons`,
-    `what they don't tell you about being a ${career}`,
+    // Happiness / satisfaction — honest reflections
+    `would you be happy as a ${career}`,
+    `is being a ${career} worth it`,
+    // Reality / honesty
     `the reality of being a ${career}`,
-    // Practical career guidance
-    `how to become a ${career} step by step`,
-    `${career} career advice for beginners`,
-    // Podcasts and interviews (tend to be deeper)
+    `what they don't tell you about being a ${career}`,
+    // Podcasts and interviews
     `${career} podcast career`,
-    `${career} interview day in the life`,
+    `${career} career honest review`,
     // Fallbacks
-    `what is a ${career} career explained`,
-    `${career} career path`,
+    `${career} pros and cons career`,
+    `should you become a ${career}`,
   ];
 }
 
