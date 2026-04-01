@@ -1024,110 +1024,93 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           </div>
         </div>
         <div className="p-4 space-y-3">
-          {/* 1. Entry requirements — show what we know + link to learn more */}
-          <div className="rounded-lg border border-border/20 bg-background/30 p-4 space-y-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                <Search className="h-4 w-4 text-muted-foreground/50" />
+          {/* 1. Entry requirements */}
+          <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.03] p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                <Search className="h-4 w-4 text-blue-400" />
               </div>
-              <p className="text-sm font-medium text-foreground/80">Entry requirements for {career.title}</p>
-            </div>
-            <div className="ml-[42px] space-y-2">
-              <p className="text-xs text-foreground/60 leading-relaxed">
-                <span className="font-medium">Education:</span> {career.educationPath}
-              </p>
-              {details?.entryPaths && details.entryPaths.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {details.entryPaths.slice(0, 3).map((p, i) => (
-                    <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[11px] text-foreground/50">{p}</span>
-                  ))}
-                </div>
-              )}
-              <div className="flex gap-2 pt-1">
-                <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-2.5 py-1 text-[11px] font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
-                  View on utdanning.no <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-                <a href="/my-journey" onClick={(e) => { e.preventDefault(); document.querySelector('[data-tab="understand"]')?.dispatchEvent(new Event('click')); }}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-2.5 py-1 text-[11px] font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
-                  See full details in Understand <ArrowRight className="h-2.5 w-2.5" />
-                </a>
+              <div>
+                <p className="text-sm font-semibold text-foreground/85">Entry requirements</p>
+                <p className="text-[11px] text-muted-foreground/40">{career.educationPath}</p>
               </div>
             </div>
-          </div>
-
-          {/* 2. Education programmes — direct links */}
-          <div className="rounded-lg border border-border/20 bg-background/30 p-4 space-y-2.5">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                <GraduationCap className="h-4 w-4 text-muted-foreground/50" />
+            {details?.entryPaths && details.entryPaths.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-3 ml-12">
+                {details.entryPaths.slice(0, 3).map((p, i) => (
+                  <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/10 bg-blue-500/5 px-2.5 py-1 text-[11px] text-foreground/60">
+                    <span className="text-[9px] font-bold text-blue-400">{i + 1}</span> {p}
+                  </span>
+                ))}
               </div>
-              <p className="text-sm font-medium text-foreground/80">Find education programmes</p>
-            </div>
-            <div className="ml-[42px] flex flex-wrap gap-2">
+            )}
+            <div className="flex gap-2 ml-12">
               <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
-                Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-              <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
-                Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-              <a href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
-                Coursera <ExternalLink className="h-2.5 w-2.5" />
+                className="inline-flex items-center gap-1.5 rounded-lg border border-blue-500/15 bg-blue-500/5 px-3 py-1.5 text-[11px] font-medium text-blue-400 hover:bg-blue-500/10 transition-colors">
+                utdanning.no <ExternalLink className="h-2.5 w-2.5" />
               </a>
             </div>
           </div>
 
-          {/* 3. LinkedIn — direct career search */}
-          <div className="rounded-lg border border-border/20 bg-background/30 p-4">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                <Users className="h-4 w-4 text-muted-foreground/50" />
+          {/* 2. Education programmes */}
+          <div className="rounded-xl border border-violet-500/15 bg-violet-500/[0.03] p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-9 w-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0">
+                <GraduationCap className="h-4 w-4 text-violet-400" />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-foreground/80">Study real career paths on LinkedIn</p>
-                <p className="text-xs text-muted-foreground/40 mt-0.5">Find people who are {career.title}s — see what they studied and where they started</p>
+              <div>
+                <p className="text-sm font-semibold text-foreground/85">Find education programmes</p>
+                <p className="text-[11px] text-muted-foreground/40">Compare universities, vocational routes, and deadlines</p>
               </div>
-              <a href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`} target="_blank" rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-3 py-1.5 text-xs font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
-                Search <ExternalLink className="h-3 w-3" />
-              </a>
+            </div>
+            <div className="flex flex-wrap gap-2 ml-12">
+              {[
+                { label: 'Utdanning.no', href: `https://utdanning.no/sok?q=${encodeURIComponent(career.title)}` },
+                { label: 'Samordna Opptak', href: `https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}` },
+                { label: 'Coursera', href: `https://www.coursera.org/search?query=${encodeURIComponent(career.title)}` },
+                { label: 'edX', href: `https://www.edx.org/search?q=${encodeURIComponent(career.title)}` },
+              ].map((link) => (
+                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                  {link.label} <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* 4. Open days — search for events */}
-          <div className="rounded-lg border border-border/20 bg-background/30 p-4">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                <Globe className="h-4 w-4 text-muted-foreground/50" />
+          {/* 3. LinkedIn */}
+          <a href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`}
+            target="_blank" rel="noopener noreferrer"
+            className="group block rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:bg-emerald-500/[0.06] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <Users className="h-4 w-4 text-emerald-400" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-foreground/80">Find career events & open days</p>
-                <p className="text-xs text-muted-foreground/40 mt-0.5">Universities and employers run free sessions you can attend</p>
+                <p className="text-sm font-semibold text-foreground/85">Study real career paths on LinkedIn</p>
+                <p className="text-[11px] text-muted-foreground/40">Find {career.title}s — see what they studied, where they started, and how long it took</p>
               </div>
-              <a href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} open day webinar Norway 2026`)}`} target="_blank" rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-3 py-1.5 text-xs font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
-                Search <ExternalLink className="h-3 w-3" />
-              </a>
+              <ExternalLink className="h-4 w-4 text-emerald-400/30 group-hover:text-emerald-400/60 shrink-0" />
             </div>
-          </div>
+          </a>
 
-          {/* 5. Guidance counsellor — internal prompt */}
-          <div className="rounded-lg border border-border/20 bg-muted/5 p-4">
-            <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
-                <Target className="h-4 w-4 text-teal-400" />
+          {/* 4. Career events — link to in-app page */}
+          <a href="/career-events"
+            className="group block rounded-xl border border-amber-500/15 bg-amber-500/[0.03] p-4 hover:bg-amber-500/[0.06] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                <Globe className="h-4 w-4 text-amber-400" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-foreground/80">Talk to your school guidance counsellor</p>
-                <p className="text-xs text-muted-foreground/40 mt-0.5">
-                  Ask about subject choices for {career.educationPath.split('(')[0].trim()} and any work experience programmes available at your school
-                </p>
+                <p className="text-sm font-semibold text-foreground/85">Browse career events & open days</p>
+                <p className="text-[11px] text-muted-foreground/40">Find upcoming events, webinars, and open days relevant to your career goals</p>
               </div>
+              <ArrowRight className="h-4 w-4 text-amber-400/30 group-hover:text-amber-400/60 shrink-0" />
             </div>
-          </div>
+          </a>
+
         </div>
       </div>
 
