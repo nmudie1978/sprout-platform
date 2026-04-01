@@ -25,6 +25,7 @@ function buildQueries(career: string): string[] {
   return [
     // Happiness / satisfaction — honest reflections
     `would you be happy as a ${career}`,
+    `the worst part of being a ${career}`,
     `is being a ${career} worth it`,
     // Reality / honesty
     `the reality of being a ${career}`,
