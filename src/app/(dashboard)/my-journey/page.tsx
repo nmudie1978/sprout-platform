@@ -1023,37 +1023,111 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             </div>
           </div>
         </div>
-        <div className="p-4 space-y-2">
-          <ActionRow
-            icon={Search}
-            title={`Research entry requirements for ${career.title} in Norway`}
-            subtitle="Find out exactly what qualifications, grades, and experience you need"
-            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} entry requirements Norway`)}`}
-          />
-          <ActionRow
-            icon={GraduationCap}
-            title={`Find education programmes that lead to ${career.title}`}
-            subtitle="Compare universities, vocational routes, and application deadlines"
-            href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`}
-          />
-          <ActionRow
-            icon={Users}
-            title={`Find 3 ${career.title}s on LinkedIn — study their career paths`}
-            subtitle="See what they studied, where they started, and how long it took"
-            href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`}
-          />
-          <ActionRow
-            icon={Globe}
-            title="Attend a career open day or webinar"
-            subtitle="Universities and employers run free sessions — search for upcoming events"
-            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} career open day webinar 2026`)}`}
-          />
-          <ActionRow
-            icon={Target}
-            title="Talk to your school guidance counsellor about this direction"
-            subtitle="They can help you choose the right subjects and plan your next steps"
-            variant="highlight"
-          />
+        <div className="p-4 space-y-3">
+          {/* 1. Entry requirements — show what we know + link to learn more */}
+          <div className="rounded-lg border border-border/20 bg-background/30 p-4 space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                <Search className="h-4 w-4 text-muted-foreground/50" />
+              </div>
+              <p className="text-sm font-medium text-foreground/80">Entry requirements for {career.title}</p>
+            </div>
+            <div className="ml-[42px] space-y-2">
+              <p className="text-xs text-foreground/60 leading-relaxed">
+                <span className="font-medium">Education:</span> {career.educationPath}
+              </p>
+              {details?.entryPaths && details.entryPaths.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {details.entryPaths.slice(0, 3).map((p, i) => (
+                    <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[11px] text-foreground/50">{p}</span>
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-2 pt-1">
+                <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-2.5 py-1 text-[11px] font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
+                  View on utdanning.no <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+                <a href="/my-journey" onClick={(e) => { e.preventDefault(); document.querySelector('[data-tab="understand"]')?.dispatchEvent(new Event('click')); }}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-2.5 py-1 text-[11px] font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
+                  See full details in Understand <ArrowRight className="h-2.5 w-2.5" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Education programmes — direct links */}
+          <div className="rounded-lg border border-border/20 bg-background/30 p-4 space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                <GraduationCap className="h-4 w-4 text-muted-foreground/50" />
+              </div>
+              <p className="text-sm font-medium text-foreground/80">Find education programmes</p>
+            </div>
+            <div className="ml-[42px] flex flex-wrap gap-2">
+              <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
+                Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+              <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
+                Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+              <a href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/15 bg-background/20 px-3 py-1.5 text-xs text-foreground/60 hover:bg-muted/20 transition-colors">
+                Coursera <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+          </div>
+
+          {/* 3. LinkedIn — direct career search */}
+          <div className="rounded-lg border border-border/20 bg-background/30 p-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                <Users className="h-4 w-4 text-muted-foreground/50" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground/80">Study real career paths on LinkedIn</p>
+                <p className="text-xs text-muted-foreground/40 mt-0.5">Find people who are {career.title}s — see what they studied and where they started</p>
+              </div>
+              <a href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`} target="_blank" rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-3 py-1.5 text-xs font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
+                Search <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+
+          {/* 4. Open days — search for events */}
+          <div className="rounded-lg border border-border/20 bg-background/30 p-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                <Globe className="h-4 w-4 text-muted-foreground/50" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground/80">Find career events & open days</p>
+                <p className="text-xs text-muted-foreground/40 mt-0.5">Universities and employers run free sessions you can attend</p>
+              </div>
+              <a href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} open day webinar Norway 2026`)}`} target="_blank" rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-muted/20 px-3 py-1.5 text-xs font-medium text-foreground/60 hover:bg-muted/30 transition-colors">
+                Search <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+
+          {/* 5. Guidance counsellor — internal prompt */}
+          <div className="rounded-lg border border-border/20 bg-muted/5 p-4">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
+                <Target className="h-4 w-4 text-teal-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground/80">Talk to your school guidance counsellor</p>
+                <p className="text-xs text-muted-foreground/40 mt-0.5">
+                  Ask about subject choices for {career.educationPath.split('(')[0].trim()} and any work experience programmes available at your school
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
