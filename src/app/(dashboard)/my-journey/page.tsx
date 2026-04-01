@@ -321,29 +321,22 @@ function DiscoverTab({
 
   return (
     <div className="space-y-5">
-      {/* Role introduction */}
-      <div className="rounded-xl border border-border/30 bg-muted/5 p-5">
-        <p className="text-sm text-foreground/65 leading-relaxed">{career.description}</p>
-        {dDetails && (
-          <div className="mt-3 pt-3 border-t border-border/15 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {dDetails.whoThisIsGoodFor.length > 0 && (
-              <div>
-                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1.5">Suited to</p>
-                <p className="text-xs text-foreground/50 leading-relaxed">{dDetails.whoThisIsGoodFor.slice(0, 2).join('. ')}.</p>
-              </div>
-            )}
-            {dDetails.topSkills.length > 0 && (
-              <div>
-                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1.5">Key strengths</p>
-                <div className="flex flex-wrap gap-1">
-                  {dDetails.topSkills.slice(0, 4).map((s, i) => (
-                    <span key={i} className="inline-flex rounded-full border border-border/20 bg-background/30 px-2 py-0.5 text-[10px] text-foreground/50">{s}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+      {/* Role overview */}
+      <div
+        className="rounded-xl border-2 p-5"
+        style={{
+          borderColor: 'rgba(20,184,166,0.3)',
+          boxShadow: '0 0 20px rgba(20,184,166,0.06)',
+          background: 'linear-gradient(135deg, rgba(20,184,166,0.04) 0%, transparent 50%)',
+        }}
+      >
+        <p className="text-sm text-foreground/70 leading-[1.8]">
+          {career.description}
+          {dDetails?.realityCheck ? ` ${dDetails.realityCheck}` : ''}
+          {dDetails?.whoThisIsGoodFor?.length ? ` This role suits ${dDetails.whoThisIsGoodFor.slice(0, 2).join(' and ').toLowerCase()}.` : ''}
+          {` The education path is typically ${career.educationPath.toLowerCase()}.`}
+          {career.growthOutlook === 'high' ? ' Demand is high and growing.' : career.growthOutlook === 'medium' ? ' The field is growing steadily.' : ' This is a stable career.'}
+        </p>
       </div>
 
       {/* Hero: Video + Overview */}
