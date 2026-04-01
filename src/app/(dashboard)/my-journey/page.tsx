@@ -1226,45 +1226,38 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             return (
               <div className="space-y-3">
                 <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
-                {/* Programme table — card rows */}
-                <div className="space-y-0">
-                  {/* Header */}
-                  <div className="grid grid-cols-12 gap-2 px-4 py-2 text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">
-                    <div className="col-span-1">#</div>
-                    <div className="col-span-4">Programme</div>
-                    <div className="col-span-3">Institution</div>
-                    <div className="col-span-1">City</div>
-                    <div className="col-span-1">Duration</div>
-                    <div className="col-span-2 text-right">Apply via</div>
-                  </div>
-                  {/* Rows */}
-                  <div className="space-y-2">
-                    {eduData.programmes.map((prog, i) => (
-                      <a key={i} href={prog.url} target="_blank" rel="noopener noreferrer"
-                        className="group grid grid-cols-12 gap-2 items-center rounded-lg border border-border/20 bg-background/20 px-4 py-3 hover:border-violet-500/20 hover:bg-violet-500/[0.03] transition-all"
-                      >
-                        <div className="col-span-1">
-                          <span className="text-lg font-bold text-muted-foreground/20">{String(i + 1).padStart(2, '0')}</span>
-                        </div>
-                        <div className="col-span-4">
-                          <p className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">{prog.programme}</p>
-                        </div>
-                        <div className="col-span-3">
-                          <p className="text-xs text-muted-foreground/50">{prog.institution}</p>
-                        </div>
-                        <div className="col-span-1">
-                          <p className="text-xs text-muted-foreground/50">{prog.city}</p>
-                        </div>
-                        <div className="col-span-1">
-                          <p className="text-xs text-muted-foreground/50">{prog.duration}</p>
-                        </div>
-                        <div className="col-span-2 flex items-center justify-end gap-2">
-                          <span className="text-[10px] text-muted-foreground/35">{prog.applicationVia}</span>
-                          <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50 shrink-0" />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
+                {/* Programme table */}
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Apply via</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {eduData.programmes.map((prog, i) => (
+                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2">
+                            <a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a>
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td>
+                          <td className="px-3 py-2 text-muted-foreground/40">{prog.applicationVia}</td>
+                          <td className="px-2 py-2">
+                            <a href={prog.url} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" />
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
                 {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
                   <div className="pt-1">
