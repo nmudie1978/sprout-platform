@@ -135,9 +135,111 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
   },
 };
 
+// ============================================
+// Professional certifications & courses
+// For careers that don't have a formal degree programme
+// ============================================
+
+export interface ProfessionalCert {
+  name: string;
+  provider: string;
+  duration: string;
+  cost: string;
+  url: string;
+  recognised: string;  // e.g. "Globally recognised"
+}
+
+export interface CertificationPath {
+  summary: string;
+  certifications: ProfessionalCert[];
+  recommendedDegrees?: string[];  // e.g. ["Bachelor's in IT", "Bachelor's in Business"]
+}
+
+const CERTIFICATION_PATHS: Record<string, CertificationPath> = {
+  'project': {
+    summary: 'Project management is a skills-based career. While a degree helps, industry certifications are what employers look for. Most project managers start in technical or business roles and transition into management.',
+    certifications: [
+      { name: 'PRINCE2 Foundation & Practitioner', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~15,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/project-management/prince2', recognised: 'Globally recognised, standard in Norway/UK' },
+      { name: 'PMP (Project Management Professional)', provider: 'PMI', duration: 'Self-paced + exam', cost: '~5,000 NOK (exam)', url: 'https://www.pmi.org/certifications/project-management-pmp', recognised: 'Globally recognised, standard in US/international' },
+      { name: 'Certified Scrum Master (CSM)', provider: 'Scrum Alliance', duration: '2 days + exam', cost: '~12,000 NOK', url: 'https://www.scrumalliance.org/get-certified/scrum-master-track/certified-scrummaster', recognised: 'Industry standard for agile teams' },
+      { name: 'ITIL 4 Foundation', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~10,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/itil-4', recognised: 'IT service management standard' },
+    ],
+    recommendedDegrees: ["Bachelor's in IT or Computer Science", "Bachelor's in Business Administration", "Master's in Project Management"],
+  },
+  'programme': {
+    summary: 'Programme management typically requires 10+ years of project management experience. There is no direct degree — it\'s a senior role you grow into. Certifications like MSP and PgMP demonstrate readiness.',
+    certifications: [
+      { name: 'MSP (Managing Successful Programmes)', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~20,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/programme-management/msp', recognised: 'Standard for programme management in Norway/UK' },
+      { name: 'PgMP (Programme Management Professional)', provider: 'PMI', duration: 'Self-paced + exam', cost: '~7,000 NOK (exam)', url: 'https://www.pmi.org/certifications/program-management-pgmp', recognised: 'Globally recognised senior PM credential' },
+      { name: 'PRINCE2 Agile', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~15,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/project-management/prince2-agile', recognised: 'Combines PRINCE2 with agile methods' },
+      { name: 'SAFe Program Consultant (SPC)', provider: 'Scaled Agile', duration: '4 days + exam', cost: '~25,000 NOK', url: 'https://scaledagile.com/training/safe-program-consultant/', recognised: 'Enterprise agile at scale' },
+    ],
+    recommendedDegrees: ["Bachelor's in IT or Engineering", "MBA or Master's in Business", "Master's in Project Management"],
+  },
+  'cyber': {
+    summary: 'Cybersecurity is one of the fastest-growing fields. While a degree in IT or computer science helps, industry certifications are essential and often valued more than degrees by employers.',
+    certifications: [
+      { name: 'CompTIA Security+', provider: 'CompTIA', duration: 'Self-paced + exam', cost: '~4,000 NOK', url: 'https://www.comptia.org/certifications/security', recognised: 'Entry-level industry standard' },
+      { name: 'CISSP', provider: 'ISC²', duration: 'Self-paced + exam', cost: '~8,000 NOK (exam)', url: 'https://www.isc2.org/certifications/cissp', recognised: 'Gold standard for senior security roles' },
+      { name: 'CEH (Certified Ethical Hacker)', provider: 'EC-Council', duration: '5 days + exam', cost: '~15,000 NOK', url: 'https://www.eccouncil.org/programs/certified-ethical-hacker-ceh/', recognised: 'Penetration testing standard' },
+      { name: 'OSCP', provider: 'Offensive Security', duration: 'Self-paced + exam', cost: '~12,000 NOK', url: 'https://www.offsec.com/courses/pen-200/', recognised: 'Hands-on penetration testing — highly respected' },
+    ],
+    recommendedDegrees: ["Bachelor's in Computer Science or IT", "Bachelor's in Cybersecurity", "Master's in Information Security"],
+  },
+  'cloud': {
+    summary: 'Cloud engineering is certification-driven. The major cloud providers (AWS, Azure, Google Cloud) each have their own certification paths that employers specifically look for.',
+    certifications: [
+      { name: 'AWS Solutions Architect Associate', provider: 'Amazon Web Services', duration: 'Self-paced + exam', cost: '~2,000 NOK', url: 'https://aws.amazon.com/certification/certified-solutions-architect-associate/', recognised: 'Most in-demand cloud cert globally' },
+      { name: 'Azure Administrator Associate', provider: 'Microsoft', duration: 'Self-paced + exam', cost: '~2,000 NOK', url: 'https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/', recognised: 'Standard for Microsoft cloud environments' },
+      { name: 'Google Cloud Professional Cloud Architect', provider: 'Google', duration: 'Self-paced + exam', cost: '~2,500 NOK', url: 'https://cloud.google.com/learn/certification/cloud-architect', recognised: 'GCP enterprise standard' },
+      { name: 'Kubernetes Administrator (CKA)', provider: 'CNCF', duration: 'Self-paced + exam', cost: '~3,000 NOK', url: 'https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/', recognised: 'Container orchestration standard' },
+    ],
+    recommendedDegrees: ["Bachelor's in Computer Science or IT", "Bachelor's in Software Engineering"],
+  },
+  'data': {
+    summary: 'Data science and analytics roles value a mix of formal education and practical skills. A degree in statistics, maths, or computer science provides the foundation, but practical certifications and portfolio projects matter equally.',
+    certifications: [
+      { name: 'Google Data Analytics Certificate', provider: 'Google (via Coursera)', duration: '6 months part-time', cost: '~3,000 NOK', url: 'https://www.coursera.org/professional-certificates/google-data-analytics', recognised: 'Industry-recognised entry-level credential' },
+      { name: 'AWS Machine Learning Specialty', provider: 'Amazon Web Services', duration: 'Self-paced + exam', cost: '~3,500 NOK', url: 'https://aws.amazon.com/certification/certified-machine-learning-specialty/', recognised: 'Cloud ML standard' },
+      { name: 'TensorFlow Developer Certificate', provider: 'Google', duration: 'Self-paced + exam', cost: '~1,500 NOK', url: 'https://www.tensorflow.org/certificate', recognised: 'Deep learning credential' },
+      { name: 'Microsoft Power BI Data Analyst', provider: 'Microsoft', duration: 'Self-paced + exam', cost: '~2,000 NOK', url: 'https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/', recognised: 'Business intelligence standard' },
+    ],
+    recommendedDegrees: ["Bachelor's in Statistics or Mathematics", "Bachelor's in Computer Science", "Master's in Data Science"],
+  },
+  'product': {
+    summary: 'Product management is a cross-functional role with no single degree path. Most product managers come from engineering, design, or business backgrounds. Certifications help but experience matters most.',
+    certifications: [
+      { name: 'Certified Scrum Product Owner (CSPO)', provider: 'Scrum Alliance', duration: '2 days + exam', cost: '~12,000 NOK', url: 'https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner', recognised: 'Agile product ownership standard' },
+      { name: 'Product Management Certificate', provider: 'Product School', duration: '8 weeks', cost: '~40,000 NOK', url: 'https://productschool.com/product-management-certification', recognised: 'Recognised by tech companies globally' },
+      { name: 'SAFe Product Owner/Product Manager', provider: 'Scaled Agile', duration: '2 days + exam', cost: '~15,000 NOK', url: 'https://scaledagile.com/training/safe-product-owner-product-manager/', recognised: 'Enterprise product management' },
+    ],
+    recommendedDegrees: ["Bachelor's in Computer Science or Engineering", "Bachelor's in Business", "MBA"],
+  },
+  'ux': {
+    summary: 'UX design can be entered through bootcamps, self-study, or formal education. A strong portfolio matters more than any specific degree. Google\'s UX certificate is a popular entry point.',
+    certifications: [
+      { name: 'Google UX Design Certificate', provider: 'Google (via Coursera)', duration: '6 months part-time', cost: '~3,000 NOK', url: 'https://www.coursera.org/professional-certificates/google-ux-design', recognised: 'Industry-recognised entry-level credential' },
+      { name: 'Nielsen Norman Group UX Certification', provider: 'NN/g', duration: 'Multiple courses + exam', cost: '~30,000 NOK', url: 'https://www.nngroup.com/ux-certification/', recognised: 'Gold standard in UX research and design' },
+      { name: 'Interaction Design Foundation', provider: 'IxDF', duration: 'Self-paced courses', cost: '~2,000 NOK/year', url: 'https://www.interaction-design.org/', recognised: 'Comprehensive UX learning platform' },
+    ],
+    recommendedDegrees: ["Bachelor's in Interaction Design", "Bachelor's in Visual Communication", "Bachelor's in Informatics"],
+  },
+};
+
+function getCertificationPath(careerId: string, careerTitle: string): CertificationPath | null {
+  const titleLower = careerTitle.toLowerCase();
+  const idLower = careerId.toLowerCase();
+
+  for (const [key, value] of Object.entries(CERTIFICATION_PATHS)) {
+    if (idLower.includes(key) || titleLower.includes(key)) return value;
+  }
+  return null;
+}
+
 /**
  * Look up Norwegian education programmes for a career.
  * Matches by career ID first, then falls back to keyword matching on the career title.
+ * Also returns professional certifications as an alternative path.
  */
 export function getNorwayProgrammes(careerId: string, careerTitle: string): CareerEducationPath | null {
   // Direct ID match
@@ -155,3 +257,5 @@ export function getNorwayProgrammes(careerId: string, careerTitle: string): Care
 
   return null;
 }
+
+export { getCertificationPath };

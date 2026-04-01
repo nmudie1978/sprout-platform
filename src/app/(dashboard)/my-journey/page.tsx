@@ -34,7 +34,7 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
-import { getNorwayProgrammes } from '@/lib/education/norway-programmes';
+import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
 import { getCareerPathExamples } from '@/lib/education/career-path-examples';
 
 const PersonalCareerTimeline = dynamic(
@@ -1298,12 +1298,65 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               </div>
             );
           }
+          // Check for professional certifications
+          const certPath = getCertificationPath(career.id, career.title);
+          if (certPath) {
+            return (
+              <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
+                {/* Certification table */}
+                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">Recommended certifications</p>
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Cost</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {certPath.certifications.map((cert, i) => (
+                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2">
+                            <a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a>
+                            <p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p>
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td>
+                          <td className="px-2 py-2">
+                            <a href={cert.url} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" />
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
+                  <div className="pt-1">
+                    <p className="text-[10px] text-muted-foreground/35 mb-1">Recommended degree backgrounds:</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {certPath.recommendedDegrees.map((deg, i) => (
+                        <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[10px] text-muted-foreground/45">{deg}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // Generic fallback
           return (
             <div className="space-y-3">
               <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
                 The typical education path for {career.title} is: {career.educationPath.toLowerCase()}.
               </p>
-              {/* Entry paths from API if available */}
               {details?.entryPaths && details.entryPaths.length > 0 && (
                 <div className="rounded-lg border border-border/20 overflow-hidden">
                   <table className="w-full text-xs">
@@ -1324,21 +1377,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   </table>
                 </div>
               )}
-              <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">Search for programmes</p>
-              <div className="flex flex-wrap gap-2">
-                <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                  Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-                <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                  Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-                <a href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                  Coursera <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              </div>
             </div>
           );
         })()}
