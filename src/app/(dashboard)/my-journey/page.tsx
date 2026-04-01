@@ -1206,6 +1206,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                     </div>
                   </div>
                   {/* Programme list */}
+                  <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider ml-12 mb-1.5">Most popular programmes in Norway</p>
                   <div className="space-y-1.5 ml-12">
                     {eduData.programmes.map((prog, i) => (
                       <a key={i} href={prog.url} target="_blank" rel="noopener noreferrer"
