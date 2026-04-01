@@ -1197,13 +1197,16 @@ export default function MyJourneyPage() {
     return getAllCareers().find((c) => c.title === goalTitle) || null;
   }, [goalTitle]);
 
-  const [activeTab, setActiveTab] = useState<V2Tab>(() => {
-    if (typeof window === 'undefined') return 'discover';
-    const hash = window.location.hash.replace('#', '') as V2Tab;
-    return ['discover', 'understand', 'grow'].includes(hash) ? hash : 'discover';
-  });
+  const [activeTab, setActiveTab] = useState<V2Tab>('discover');
 
-  // Sync tab to URL hash so back button restores it
+  // Read hash on mount (client only) and sync tab changes to hash
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '') as V2Tab;
+    if (['discover', 'understand', 'grow'].includes(hash)) {
+      setActiveTab(hash);
+    }
+  }, []);
+
   useEffect(() => {
     window.location.hash = activeTab;
   }, [activeTab]);
