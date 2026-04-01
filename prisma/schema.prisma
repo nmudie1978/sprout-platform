@@ -2991,3 +2991,43 @@ model JourneyGoalData {
   @@index([userId])
   @@index([userId, isActive])
 }
+
+// ============================================
+// CAREER STORIES — "From the Field"
+// Short video stories from real professionals
+// ============================================
+
+model CareerStory {
+  id          String   @id @default(cuid())
+
+  // Video
+  videoUrl    String   // YouTube URL (e.g. https://youtube.com/watch?v=xxx or youtu.be/xxx)
+  videoId     String   // Extracted YouTube video ID for embedding
+  duration    String?  // e.g. "3:45"
+
+  // Person
+  name        String   // e.g. "Nicky M."
+  jobTitle    String   // e.g. "Programme Manager"
+  company     String?  // e.g. "Telenor" (optional, can be anonymised)
+  location    String?  // e.g. "Oslo"
+  yearsInRole Int?     // e.g. 15
+
+  // Tagging — links story to careers
+  careerTags  String[] // e.g. ["it-project-manager", "programme-manager"]
+  industry    String?  // e.g. "Telecommunications"
+
+  // Content
+  headline    String   // e.g. "From junior dev to running a €50M programme"
+  takeaways   String[] // 2-3 key points, e.g. ["Started as a developer", "Moved into management after 8 years"]
+
+  // Admin
+  featured    Boolean  @default(false)
+  published   Boolean  @default(false)
+  uploadedBy  String?  // Admin user ID who uploaded
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published])
+  @@index([careerTags])
+}

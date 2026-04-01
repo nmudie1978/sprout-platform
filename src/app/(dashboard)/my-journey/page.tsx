@@ -26,7 +26,7 @@ import {
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, CheckCircle2, Clock, MapPin, Award, Users,
-  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag,
+  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
@@ -181,6 +181,32 @@ function useCareerVideos(careerTitle: string | null) {
     },
     enabled: !!careerTitle,
     staleTime: 24 * 60 * 60 * 1000,
+  });
+}
+
+interface CareerStoryData {
+  id: string;
+  videoId: string;
+  name: string;
+  jobTitle: string;
+  company: string | null;
+  location: string | null;
+  yearsInRole: number | null;
+  headline: string;
+  takeaways: string[];
+  duration: string | null;
+}
+
+function useCareerStories(careerId: string | null) {
+  return useQuery<{ stories: CareerStoryData[]; count: number }>({
+    queryKey: ['career-stories', careerId],
+    queryFn: async () => {
+      const res = await fetch(`/api/career-stories?career=${encodeURIComponent(careerId!)}`);
+      if (!res.ok) return { stories: [], count: 0 };
+      return res.json();
+    },
+    enabled: !!careerId,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -1049,7 +1075,9 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
 
 function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
   const { data: detailsData } = useCareerDetails(career?.id ?? null);
+  const { data: storiesData } = useCareerStories(career?.id ?? null);
   const details = detailsData?.details ?? null;
+  const careerStories = storiesData?.stories ?? [];
 
   if (!goalTitle || !career) {
     return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
@@ -1321,6 +1349,48 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           </CollapsibleSection>
         );
       })()}
+
+      {/* 3. From the Field — real professional stories */}
+      {careerStories.length > 0 && (
+        <CollapsibleSection title="From the Field" icon={Video} accent="text-rose-400" isOpen={growSection === 'stories'} onToggle={() => toggleGrow('stories')} count={careerStories.length}>
+          <p className="text-[11px] text-muted-foreground/40 mb-3">Real professionals share their journey, challenges, and advice</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {careerStories.slice(0, 2).map((story) => (
+              <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
+                {/* Video embed */}
+                <div className="aspect-video">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${story.videoId}`}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={story.headline}
+                  />
+                </div>
+                {/* Info */}
+                <div className="p-3.5">
+                  <p className="text-xs font-semibold text-foreground/80 mb-1">{story.headline}</p>
+                  <p className="text-[11px] text-muted-foreground/45">
+                    {story.name} — {story.jobTitle}
+                    {story.company ? ` at ${story.company}` : ''}
+                    {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
+                  </p>
+                  {story.takeaways.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      {story.takeaways.map((t, i) => (
+                        <div key={i} className="flex items-start gap-1.5">
+                          <div className="h-1 w-1 rounded-full bg-rose-400/40 mt-1.5 shrink-0" />
+                          <p className="text-[10px] text-muted-foreground/40 leading-relaxed">{t}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CollapsibleSection>
+      )}
 
           {/* 4. Career events — link to in-app page */}
           <a href="/career-events"
