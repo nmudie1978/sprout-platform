@@ -298,18 +298,28 @@ function DiscoverTab({
         <SectionCard className="lg:col-span-2">
           <SectionHeader icon={Play} title="A Day in the Life" />
           <div className="p-4">
-            <div className="rounded-lg overflow-hidden">
-              <iframe
-                src={videoId
-                  ? `https://www.youtube.com/embed/${videoId}`
-                  : `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(`day in the life ${career.title}`)}`
-                }
-                className="w-full aspect-video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={`Day in the life — ${career.title}`}
-              />
-            </div>
+            {videoId ? (
+              <div className="rounded-lg overflow-hidden">
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`Day in the life — ${career.title}`}
+                />
+              </div>
+            ) : (
+              <a
+                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`day in the life ${career.title}`)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border/30 bg-muted/10 aspect-video hover:bg-muted/20 transition-colors"
+              >
+                <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
+                  <Play className="h-5 w-5 text-red-400" />
+                </div>
+                <p className="text-xs text-muted-foreground/50">Watch on YouTube</p>
+              </a>
+            )}
           </div>
         </SectionCard>
 
