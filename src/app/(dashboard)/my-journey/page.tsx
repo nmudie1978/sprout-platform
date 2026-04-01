@@ -36,7 +36,8 @@ import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
 import { getToolInfo } from '@/lib/education/tool-links';
-import { getCareerPathExamples } from '@/lib/education/career-path-examples';
+import { getCareerPathExamples, careerPathToJourney, type CareerPathExample } from '@/lib/education/career-path-examples';
+import type { Journey } from '@/lib/journey/career-journey-types';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -483,9 +484,18 @@ function UnderstandTab({
   return (
     <div className="space-y-4">
       {/* Intro */}
-      <p className="text-sm text-muted-foreground/50 leading-relaxed">
-        Here&apos;s what being a <span className="text-foreground/70 font-medium">{goalTitle}</span> actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
-      </p>
+      <div
+        className="rounded-xl border-2 p-5"
+        style={{
+          borderColor: 'rgba(59,130,246,0.3)',
+          boxShadow: '0 0 20px rgba(59,130,246,0.06)',
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.04) 0%, transparent 50%)',
+        }}
+      >
+        <p className="text-sm text-foreground/70 leading-[1.8]">
+          Here&apos;s what being a <span className="font-semibold text-foreground/90">{goalTitle}</span> actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
+        </p>
+      </div>
 
       {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -925,6 +935,58 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
 
 // ─── GROW TAB ────────────────────────────────────────────────────────────────
 
+function RoadmapWithRoutes({ goalTitle, career, altPaths }: { goalTitle: string; career: Career; altPaths: CareerPathExample[] }) {
+  const [activeRoute, setActiveRoute] = useState<'default' | number>('default');
+
+  const altJourney = activeRoute !== 'default' && altPaths[activeRoute]
+    ? careerPathToJourney(altPaths[activeRoute], career.id) as Journey
+    : null;
+
+  return (
+    <div>
+      {/* Route pills */}
+      <div className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto">
+        <button
+          onClick={() => setActiveRoute('default')}
+          className={cn(
+            'shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all border',
+            activeRoute === 'default'
+              ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
+              : 'border-border/20 text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
+          )}
+        >
+          Default route
+        </button>
+        {altPaths.slice(0, 2).map((path, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveRoute(i)}
+            className={cn(
+              'shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all border',
+              activeRoute === i
+                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                : 'border-border/20 text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
+            )}
+          >
+            {path.name}&apos;s route
+          </button>
+        ))}
+      </div>
+      {activeRoute !== 'default' && altPaths[activeRoute] && (
+        <p className="px-4 pt-1 pb-0 text-[10px] text-muted-foreground/35">
+          {altPaths[activeRoute].title} · Age {altPaths[activeRoute].currentAge}
+        </p>
+      )}
+      <div className="p-4">
+        <PersonalCareerTimeline
+          primaryGoalTitle={goalTitle}
+          overrideJourney={altJourney}
+        />
+      </div>
+    </div>
+  );
+}
+
 function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
   const { data: detailsData } = useCareerDetails(career?.id ?? null);
   const { data: storiesData } = useCareerStories(career?.id ?? null);
@@ -1064,11 +1126,20 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   return (
     <div className="space-y-5">
       {/* Intro */}
-      <p className="text-sm text-muted-foreground/50 leading-relaxed">
-        This is your space. Track your progress toward becoming a <span className="text-foreground/70 font-medium">{goalTitle}</span>, set actions, and build momentum — one step at a time.
-      </p>
+      <div
+        className="rounded-xl border-2 p-5"
+        style={{
+          borderColor: 'rgba(245,158,11,0.3)',
+          boxShadow: '0 0 20px rgba(245,158,11,0.06)',
+          background: 'linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 50%)',
+        }}
+      >
+        <p className="text-sm text-foreground/70 leading-[1.8]">
+          This is your space. Track your progress toward becoming a <span className="font-semibold text-foreground/90">{goalTitle}</span>, set actions, and build momentum — one step at a time. Your roadmap shows the path ahead, and you can explore how real people in this field got to where they are.
+        </p>
+      </div>
 
-      {/* 1. My Roadmap */}
+      {/* 1. My Roadmap — with route selector */}
       <SectionCard>
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
           <div className="flex items-center gap-2.5">
@@ -1076,9 +1147,18 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             <h3 className="text-sm font-semibold text-foreground/90">My Roadmap</h3>
           </div>
         </div>
-        <div className="p-4">
-          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-        </div>
+        {/* Route selector */}
+        {(() => {
+          const altPaths = getCareerPathExamples(career.id, career.title);
+          if (altPaths.length === 0) {
+            return (
+              <div className="p-4">
+                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+              </div>
+            );
+          }
+          return <RoadmapWithRoutes goalTitle={goalTitle!} career={career} altPaths={altPaths} />;
+        })()}
       </SectionCard>
 
       {/* 2. My Actions — personal action tracker */}

@@ -19,6 +19,7 @@ function slugify(text: string): string {
 
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
+  overrideJourney?: Journey | null;
 }
 
 const RENDERERS = {
@@ -27,7 +28,7 @@ const RENDERERS = {
   stepping: SteppingRenderer,
 } as const;
 
-export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimelineProps) {
+export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   const { style, setStyle } = useTimelineStyle();
@@ -61,7 +62,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle }: PersonalCareerTimel
     retry: 1,
   });
 
-  const journey = data?.journey ?? null;
+  const journey = overrideJourney ?? data?.journey ?? null;
   const careerName = journey?.career ?? '';
 
   // Build per-node card data summaries for visual indicators on the roadmap

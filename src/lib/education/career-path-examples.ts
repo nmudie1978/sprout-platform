@@ -486,3 +486,50 @@ export function getCareerPathExamples(careerId: string, careerTitle: string): Ca
 
   return [];
 }
+
+/** Convert a CareerPathExample into a Journey object for the roadmap renderer */
+export function careerPathToJourney(path: CareerPathExample, careerId: string): {
+  id: string;
+  career: string;
+  startAge: number;
+  startYear: number;
+  items: {
+    id: string;
+    stage: 'foundation' | 'education' | 'experience' | 'career';
+    title: string;
+    subtitle: string;
+    startAge: number;
+    endAge?: number;
+    isMilestone: boolean;
+    icon: string;
+  }[];
+} {
+  const stageIcons: Record<string, string> = {
+    foundation: 'Sparkles',
+    education: 'GraduationCap',
+    experience: 'Briefcase',
+    career: 'Target',
+  };
+
+  return {
+    id: `alt-${careerId}-${path.name.replace(/\s/g, '')}`,
+    career: path.title,
+    startAge: path.steps[0]?.age ?? 16,
+    startYear: new Date().getFullYear() - (path.currentAge - (path.steps[0]?.age ?? 16)),
+    items: path.steps.map((step, i) => {
+      // Determine stage from age
+      const stage = step.age < 19 ? 'foundation' : step.age < 23 ? 'education' : step.age < 28 ? 'experience' : 'career';
+      const nextAge = path.steps[i + 1]?.age;
+      return {
+        id: `alt-${i}-${Math.random().toString(36).slice(2, 7)}`,
+        stage: stage as 'foundation' | 'education' | 'experience' | 'career',
+        title: step.label,
+        subtitle: `Age ${step.age}`,
+        startAge: step.age,
+        endAge: nextAge && nextAge > step.age ? nextAge : undefined,
+        isMilestone: i === path.steps.length - 1 || step.label.toLowerCase().includes('certif') || step.label.toLowerCase().includes('graduate'),
+        icon: stageIcons[stage] || 'Sparkles',
+      };
+    }),
+  };
+}
