@@ -1226,20 +1226,38 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             return (
               <div className="space-y-3">
                 <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
-                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">Most popular programmes in Norway</p>
-                <div className="space-y-1.5">
-                  {eduData.programmes.map((prog, i) => (
-                    <a key={i} href={prog.url} target="_blank" rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-lg border border-border/15 bg-background/20 px-3 py-2 hover:border-violet-500/20 hover:bg-violet-500/[0.03] transition-colors"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-foreground/75 group-hover:text-foreground/90">{prog.programme}</p>
-                        <p className="text-[10px] text-muted-foreground/40">{prog.institution} — {prog.city} — {prog.duration}</p>
-                      </div>
-                      <span className="text-[9px] text-muted-foreground/30 shrink-0">{prog.applicationVia}</span>
-                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-violet-400/50 shrink-0" />
-                    </a>
-                  ))}
+                {/* Programme table */}
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Apply via</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {eduData.programmes.map((prog, i) => (
+                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2">
+                            <a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a>
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td>
+                          <td className="px-3 py-2 text-muted-foreground/40">{prog.applicationVia}</td>
+                          <td className="px-2 py-2">
+                            <a href={prog.url} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" />
+                            </a>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
                 {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
                   <div className="pt-1">
