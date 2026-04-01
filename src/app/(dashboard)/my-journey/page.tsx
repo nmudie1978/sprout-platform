@@ -484,70 +484,70 @@ function UnderstandTab({
     ...(learningData?.international ?? []),
   ];
 
+  // Carousel state for bottom section
+  const [carouselTab, setCarouselTab] = useState<'education' | 'paths' | 'tools'>('education');
+
   return (
     <div className="space-y-4">
-      {/* What You'll Actually Do — short, punchy list from API (distinct from Discover's overview) */}
-      {details && details.whatYouActuallyDo.length > 0 && (
-        <SectionCard>
-          <SectionHeader icon={Briefcase} title="What You'll Actually Do" />
-          <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {details.whatYouActuallyDo.map((task, i) => (
-                <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3.5 py-2.5">
-                  <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+      {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Left: What You'll Actually Do */}
+        {details && details.whatYouActuallyDo.length > 0 && (
+          <SectionCard>
+            <SectionHeader icon={Briefcase} title="What You'll Actually Do" />
+            <div className="p-4">
+              <div className="space-y-1.5">
+                {details.whatYouActuallyDo.map((task, i) => (
+                  <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
+                    <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+                    </div>
+                    <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
                   </div>
-                  <span className="text-[13px] text-foreground/70 leading-relaxed">{task}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </SectionCard>
-      )}
+          </SectionCard>
+        )}
 
-      {/* The Reality — best 2 videos picked from multiple search queries */}
-      {careerVideos.length > 0 && (
+        {/* Right: The Reality — videos */}
         <SectionCard>
           <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
-          <div className="px-4 py-5">
-            <div className={cn(
-              'flex justify-center gap-8 flex-wrap',
-            )}>
-              {careerVideos.map((video) => (
-                <div key={video.videoId} className="w-full max-w-[280px]">
-                  <p className="text-[10px] font-medium text-muted-foreground/40 mb-2 line-clamp-1 text-center">{video.title}</p>
-                  <div className="rounded-lg overflow-hidden border border-border/15">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.videoId}`}
-                      className="w-full aspect-video"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      title={video.title}
-                    />
-                  </div>
+          <div className="p-4 space-y-3">
+            {careerVideos.length > 0 ? careerVideos.map((video) => (
+              <div key={video.videoId}>
+                <p className="text-[10px] font-medium text-muted-foreground/40 mb-1.5 line-clamp-1">{video.title}</p>
+                <div className="rounded-lg overflow-hidden border border-border/15">
+                  <iframe src={`https://www.youtube.com/embed/${video.videoId}`} className="w-full aspect-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={video.title} />
                 </div>
-              ))}
-            </div>
+              </div>
+            )) : (
+              <p className="text-xs text-muted-foreground/40 text-center py-4">Videos loading...</p>
+            )}
+            {details?.realityCheck && (
+              <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-3">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
+                </div>
+              </div>
+            )}
           </div>
         </SectionCard>
-      )}
+      </div>
 
-      {/* Typical Day */}
-      <CollapsibleSection title="A Typical Day" icon={Clock} accent="text-amber-400" isOpen={openSection === 'typical-day'} onToggle={() => toggle('typical-day')} count={details ? (details.typicalDay.morning.length + details.typicalDay.midday.length + details.typicalDay.afternoon.length) : undefined}>
-        {detailsLoading ? <LoadingSkeleton /> : details ? (
-          <div className="space-y-4">
-            {/* Timeline-style day breakdown */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 sm:gap-0">
+      {/* ── MIDDLE: A Typical Day — always visible ── */}
+      <SectionCard>
+        <SectionHeader icon={Clock} title="A Typical Day" />
+        {detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details ? (
+          <div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
               {([
                 { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅' },
                 { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️' },
                 { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆' },
               ] as const).map(({ label, time, items, icon }, idx) => (
-                <div key={label} className={cn(
-                  'relative p-4',
-                  idx < 2 && 'sm:border-r border-border/20',
-                  idx > 0 && 'border-t sm:border-t-0 border-border/20',
-                )}>
+                <div key={label} className={cn('relative p-4', idx < 2 && 'sm:border-r border-border/20', idx > 0 && 'border-t sm:border-t-0 border-border/20')}>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-sm">{icon}</span>
                     <div>
@@ -555,13 +555,11 @@ function UnderstandTab({
                       <p className="text-[10px] text-muted-foreground/40">{time}</p>
                     </div>
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5">
                     {items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <div className="h-5 w-5 rounded-md bg-muted/30 flex items-center justify-center shrink-0 mt-0.5">
-                          <span className="text-[9px] font-bold text-muted-foreground/40">{i + 1}</span>
-                        </div>
-                        <span className="text-[13px] text-foreground/65 leading-relaxed">{item}</span>
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-[9px] font-bold text-muted-foreground/30 mt-0.5 w-3 shrink-0">{i + 1}</span>
+                        <span className="text-xs text-foreground/60 leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -569,314 +567,148 @@ function UnderstandTab({
               ))}
             </div>
             {details.typicalDay.environment && (
-              <div className="flex items-center gap-2.5 rounded-lg bg-muted/10 px-4 py-2.5">
-                <MapPin className="h-3.5 w-3.5 text-muted-foreground/40" />
-                <span className="text-xs text-muted-foreground/60">{details.typicalDay.environment}</span>
+              <div className="flex items-center gap-2.5 px-4 py-2.5 border-t border-border/15 bg-muted/5">
+                <MapPin className="h-3 w-3 text-muted-foreground/40" />
+                <span className="text-[11px] text-muted-foreground/50">{details.typicalDay.environment}</span>
               </div>
             )}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground/40">Detailed day info not yet available for this career.</p>
+          <div className="p-4"><p className="text-xs text-muted-foreground/40">Loading...</p></div>
         )}
-      </CollapsibleSection>
+      </SectionCard>
 
-      {/* Is This Right for Me? */}
-      <CollapsibleSection title="Is This Right for Me?" icon={Heart} accent="text-rose-400" isOpen={openSection === 'fit'} onToggle={() => toggle('fit')}>
-        {detailsLoading ? <LoadingSkeleton /> : details ? (
-          <div className="space-y-5">
-            {/* Who it's for — card grid */}
-            <div>
-              <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">This role suits people who</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {details.whoThisIsGoodFor.map((trait, i) => (
-                  <div key={i} className="flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3">
-                    <div className="h-6 w-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-                    </div>
-                    <p className="text-[13px] text-foreground/70 leading-relaxed">{trait}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Top skills from API */}
-            {details.topSkills.length > 0 && (
-              <div>
-                <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider mb-3">Key strengths needed</p>
-                <div className="flex flex-wrap gap-2">
-                  {details.topSkills.map((skill, i) => (
-                    <span key={i} className="inline-flex items-center gap-1.5 rounded-lg border border-border/25 bg-background/40 px-3 py-1.5 text-xs font-medium text-foreground/65">
-                      <Sparkles className="h-3 w-3 text-muted-foreground/30" />
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Reality check text */}
-            {details.realityCheck && (
-              <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-semibold text-amber-400 mb-1">Reality Check</p>
-                    <p className="text-[13px] text-foreground/60 leading-relaxed">{details.realityCheck}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground/40">Personality fit data not yet available for this career.</p>
-        )}
-      </CollapsibleSection>
-
-      {/* Entry Requirements */}
-      <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400" isOpen={openSection === 'entry'} onToggle={() => toggle('entry')}>
-        {detailsLoading ? <LoadingSkeleton /> : details ? (
-          <div className="space-y-3">
-            {/* Horizontal rail timeline */}
-            <div className="relative">
-              {/* Rail line */}
-              {details.entryPaths.length > 1 && (
-                <div className="absolute top-4 left-4 right-4 h-px bg-gradient-to-r from-blue-500/30 via-blue-500/20 to-blue-500/5" />
-              )}
-              <div className="relative flex gap-0 overflow-x-auto pb-2">
-                {details.entryPaths.map((path, i) => (
-                  <div key={i} className="flex flex-col items-center flex-1 min-w-[120px] px-2">
-                    {/* Node */}
-                    <div className={cn(
-                      'relative z-10 h-8 w-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors',
-                      i === 0 ? 'bg-blue-500 border-blue-400 text-white' : 'bg-background border-border/40 text-muted-foreground/50',
-                    )}>
-                      <span className="text-[10px] font-bold">{i + 1}</span>
-                    </div>
-                    {/* Label */}
-                    <p className="text-[11px] text-foreground/65 text-center mt-2 leading-snug">{path}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-sm text-foreground/70">{career.educationPath}</p>
-            <p className="text-xs text-muted-foreground/40">Detailed entry requirement data is being verified for this career.</p>
-          </div>
-        )}
-      </CollapsibleSection>
-
-      {/* Career Progression */}
-      {progression && progression.levels.length > 0 && (
-        <CollapsibleSection title="Career Progression" icon={Layers} accent="text-emerald-400" isOpen={openSection === 'progression'} onToggle={() => toggle('progression')} count={progression.levels.length}>
-          {/* Horizontal progression bar */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {progression.levels.map((level, i) => {
-                const colors = [
-                  { bg: 'bg-blue-500/8', border: 'border-blue-500/20', dot: 'bg-blue-400', text: 'text-blue-400' },
-                  { bg: 'bg-emerald-500/8', border: 'border-emerald-500/20', dot: 'bg-emerald-400', text: 'text-emerald-400' },
-                  { bg: 'bg-amber-500/8', border: 'border-amber-500/20', dot: 'bg-amber-400', text: 'text-amber-400' },
-                  { bg: 'bg-violet-500/8', border: 'border-violet-500/20', dot: 'bg-violet-400', text: 'text-violet-400' },
-                ];
-                const c = colors[i] || colors[0];
-                return (
-                  <div key={level.level} className={cn('rounded-lg border p-3.5', c.border, c.bg)}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={cn('h-2 w-2 rounded-full', c.dot)} />
-                      <span className={cn('text-[10px] font-semibold uppercase tracking-wider', c.text)}>
-                        {level.level}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-foreground/85 mb-0.5">{level.title}</p>
-                    <p className="text-[11px] text-muted-foreground/45 mb-2">{level.yearsExperience}</p>
-                    <p className="text-sm font-bold text-foreground/70">{level.salaryRange}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Education & Certifications — uses Norway programmes + professional certs */}
-      <CollapsibleSection
-        title="Education & Certifications"
-        icon={GraduationCap}
-        accent="text-violet-400"
-        isOpen={openSection === 'courses'}
-        onToggle={() => toggle('courses')}
-      >
-        {(() => {
-          const eduData = getNorwayProgrammes(career.id, career.title);
-          if (eduData) {
+      {/* ── BOTTOM: Carousel — Education, Career Paths, Tools ── */}
+      <SectionCard>
+        {/* Tab bar */}
+        <div className="flex border-b border-border/20">
+          {([
+            { id: 'education' as const, label: 'Education & Certs', icon: GraduationCap },
+            { id: 'paths' as const, label: 'Real Career Paths', icon: Users },
+            { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench },
+          ]).map((tab) => {
+            const TabIcon = tab.icon;
+            const active = carouselTab === tab.id;
             return (
-              <div className="space-y-3">
-                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
-                <div className="rounded-lg border border-border/20 overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-border/20 bg-muted/10">
+              <button key={tab.id} onClick={() => setCarouselTab(tab.id)}
+                className={cn('flex-1 flex items-center justify-center gap-2 px-3 py-3 text-xs font-medium transition-colors border-b-2 -mb-px',
+                  active ? 'border-foreground/50 text-foreground/80' : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60'
+                )}
+              >
+                <TabIcon className="h-3.5 w-3.5" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <div className="p-4">
+          {carouselTab === 'education' && (() => {
+            const eduData = getNorwayProgrammes(career.id, career.title);
+            if (eduData) {
+              return (
+                <div className="space-y-3">
+                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
+                  <div className="rounded-lg border border-border/20 overflow-hidden">
+                    <table className="w-full text-xs">
+                      <thead><tr className="border-b border-border/20 bg-muted/10">
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Apply via</th>
                         <th className="w-8"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/10">
-                      {eduData.programmes.map((prog, i) => (
-                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
-                          <td className="px-3 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td>
-                          <td className="px-3 py-2 text-muted-foreground/40">{prog.applicationVia}</td>
-                          <td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
-                  <div className="pt-1">
-                    <p className="text-[10px] text-muted-foreground/35 mb-1">Other routes in:</p>
-                    {eduData.alternativePaths.map((alt, i) => (
-                      <p key={i} className="text-[11px] text-muted-foreground/45 leading-relaxed">· {alt}</p>
-                    ))}
+                      </tr></thead>
+                      <tbody className="divide-y divide-border/10">
+                        {eduData.programmes.map((prog, i) => (
+                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td><td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td><td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td><td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td><td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                )}
-              </div>
-            );
-          }
-          // Professional certifications fallback
-          const certPath = getCertificationPath(career.id, career.title);
-          if (certPath) {
-            return (
-              <div className="space-y-3">
-                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
-                <div className="rounded-lg border border-border/20 overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-border/20 bg-muted/10">
+                  {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
+                    <div className="pt-1">{eduData.alternativePaths.map((alt, i) => <p key={i} className="text-[11px] text-muted-foreground/45 leading-relaxed">· {alt}</p>)}</div>
+                  )}
+                </div>
+              );
+            }
+            const certPath = getCertificationPath(career.id, career.title);
+            if (certPath) {
+              return (
+                <div className="space-y-3">
+                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
+                  <div className="rounded-lg border border-border/20 overflow-hidden">
+                    <table className="w-full text-xs">
+                      <thead><tr className="border-b border-border/20 bg-muted/10">
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Cost</th>
                         <th className="w-8"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/10">
-                      {certPath.certifications.map((cert, i) => (
-                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
-                          <td className="px-3 py-2">
-                            <a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a>
-                            <p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p>
-                          </td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td>
-                          <td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </tr></thead>
+                      <tbody className="divide-y divide-border/10">
+                        {certPath.certifications.map((cert, i) => (
+                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a><p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p></td><td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td><td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td><td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td><td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {certPath.recommendedDegrees && <div className="flex flex-wrap gap-1.5 pt-1">{certPath.recommendedDegrees.map((d, i) => <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[10px] text-muted-foreground/45">{d}</span>)}</div>}
                 </div>
-                {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
-                  <div className="pt-1">
-                    <p className="text-[10px] text-muted-foreground/35 mb-1">Recommended degree backgrounds:</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {certPath.recommendedDegrees.map((deg, i) => (
-                        <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[10px] text-muted-foreground/45">{deg}</span>
-                      ))}
+              );
+            }
+            return <div className="space-y-2"><p className="text-sm text-foreground/70">{career.educationPath}</p>{details?.entryPaths && details.entryPaths.map((p, i) => <p key={i} className="text-xs text-muted-foreground/50">· {p}</p>)}</div>;
+          })()}
+
+          {carouselTab === 'paths' && (() => {
+            const paths = getCareerPathExamples(career.id, career.title);
+            if (paths.length === 0) return <p className="text-xs text-muted-foreground/40">Career path examples coming soon for this role.</p>;
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {paths.slice(0, 2).map((path, pi) => (
+                  <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
+                    <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
+                    <p className="text-[10px] text-muted-foreground/40 mb-3">{path.title} · Age {path.currentAge}</p>
+                    <div className="relative">
+                      <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
+                      <div className="space-y-1.5">
+                        {path.steps.map((step, si) => (
+                          <div key={si} className="flex items-start gap-3 relative">
+                            <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
+                            <div className="flex-1"><span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span><span className="text-[11px] text-foreground/60">{step.label}</span></div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                )}
+                ))}
               </div>
             );
-          }
-          // Generic fallback
-          return (
-            <div className="space-y-2">
-              <p className="text-sm text-foreground/70">{career.educationPath}</p>
-              {details?.entryPaths && details.entryPaths.length > 0 && (
-                <div className="space-y-1">
-                  {details.entryPaths.map((path, i) => (
-                    <p key={i} className="text-xs text-muted-foreground/50">· {path}</p>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })()}
-      </CollapsibleSection>
+          })()}
 
-      {/* Tools of the Trade */}
-      {details?.typicalDay.tools && details.typicalDay.tools.length > 0 && (
-        <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" isOpen={openSection === 'tools'} onToggle={() => toggle('tools')} count={details.typicalDay.tools.length}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {details.typicalDay.tools.map((tool, i) => {
-              const info = getToolInfo(tool);
-              const href = info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`;
-              return (
-                <a
-                  key={i}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-3 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5 hover:border-border/40 hover:bg-background/50 transition-colors"
-                >
-                  <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/50 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/85">{tool}</p>
-                    {info && <p className="text-[10px] text-muted-foreground/35 mt-0.5">{info.description}</p>}
-                  </div>
-                  <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
-                </a>
-              );
-            })}
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Real Career Paths */}
-      {(() => {
-        const paths = getCareerPathExamples(career.id, career.title);
-        if (paths.length === 0) return null;
-        return (
-          <CollapsibleSection title="Real Career Paths" icon={Users} accent="text-emerald-400" isOpen={openSection === 'paths'} onToggle={() => toggle('paths')}>
-            <p className="text-[11px] text-muted-foreground/40 mb-3">Based on typical career journeys in Norway</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {paths.slice(0, 2).map((path, pi) => (
-                <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
-                      <p className="text-[10px] text-muted-foreground/40">{path.title} · Age {path.currentAge}</p>
-                    </div>
-                  </div>
-                  <div className="relative">
-                    <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
-                    <div className="space-y-1.5">
-                      {path.steps.map((step, si) => (
-                        <div key={si} className="flex items-start gap-3 relative">
-                          <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
-                          <div className="flex-1 min-w-0">
-                            <span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span>
-                            <span className="text-[11px] text-foreground/60">{step.label}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CollapsibleSection>
-        );
-      })()}
+          {carouselTab === 'tools' && (() => {
+            if (!details?.typicalDay.tools?.length) return <p className="text-xs text-muted-foreground/40">Tool information coming soon for this role.</p>;
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {details.typicalDay.tools.map((tool, i) => {
+                  const info = getToolInfo(tool);
+                  return (
+                    <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
+                      className="group flex items-center gap-3 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5 hover:border-border/40 hover:bg-background/50 transition-colors">
+                      <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/50 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/85">{tool}</p>
+                        {info && <p className="text-[10px] text-muted-foreground/35 mt-0.5">{info.description}</p>}
+                      </div>
+                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
+                    </a>
+                  );
+                })}
+              </div>
+            );
+          })()}
+        </div>
+      </SectionCard>
 
       {/* Next */}
       <div className="flex justify-end pt-2">
