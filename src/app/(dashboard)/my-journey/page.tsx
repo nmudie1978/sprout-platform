@@ -1144,8 +1144,26 @@ export default function MyJourneyPage() {
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
+
+  // Persist notes per career in localStorage
+  const notesKey = goalTitle ? `journey-notes-${goalTitle}` : null;
   const [understandNotes, setUnderstandNotes] = useState('');
   const [understandNotesSaved, setUnderstandNotesSaved] = useState(false);
+
+  // Load saved notes when career changes
+  useEffect(() => {
+    if (!notesKey) return;
+    try {
+      const saved = localStorage.getItem(notesKey);
+      if (saved) {
+        setUnderstandNotes(saved);
+        setUnderstandNotesSaved(true);
+      } else {
+        setUnderstandNotes('');
+        setUnderstandNotesSaved(false);
+      }
+    } catch { /* ignore */ }
+  }, [notesKey]);
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string }[] = [
     { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)' },
@@ -1223,7 +1241,10 @@ export default function MyJourneyPage() {
                 notes={understandNotes}
                 onNotesChange={(v) => { setUnderstandNotes(v); setUnderstandNotesSaved(false); }}
                 notesSaved={understandNotesSaved}
-                onSaveNotes={() => setUnderstandNotesSaved(true)}
+                onSaveNotes={() => {
+                  setUnderstandNotesSaved(true);
+                  if (notesKey) try { localStorage.setItem(notesKey, understandNotes); } catch { /* ignore */ }
+                }}
                 onContinue={() => setActiveTab('grow')}
               />
             )}
