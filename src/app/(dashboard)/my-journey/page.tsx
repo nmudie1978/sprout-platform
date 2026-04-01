@@ -482,6 +482,11 @@ function UnderstandTab({
 
   return (
     <div className="space-y-4">
+      {/* Intro */}
+      <p className="text-sm text-muted-foreground/50 leading-relaxed">
+        Here&apos;s what being a <span className="text-foreground/70 font-medium">{goalTitle}</span> actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
+      </p>
+
       {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left: What You'll Actually Do */}
@@ -606,8 +611,8 @@ function UnderstandTab({
               return (
                 <div className="space-y-3">
                   <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
-                  <div className="rounded-lg border border-border/20 overflow-hidden">
-                    <table className="w-full text-xs">
+                  <div className="rounded-lg border border-border/30 overflow-hidden">
+                    <table className="w-full text-xs [&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border/15 [&_td]:border-border/10">
                       <thead><tr className="border-b border-border/20 bg-muted/10">
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
@@ -633,8 +638,8 @@ function UnderstandTab({
               return (
                 <div className="space-y-3">
                   <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
-                  <div className="rounded-lg border border-border/20 overflow-hidden">
-                    <table className="w-full text-xs">
+                  <div className="rounded-lg border border-border/30 overflow-hidden">
+                    <table className="w-full text-xs [&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border/15 [&_td]:border-border/10">
                       <thead><tr className="border-b border-border/20 bg-muted/10">
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
                         <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
@@ -1058,6 +1063,11 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
 
   return (
     <div className="space-y-5">
+      {/* Intro */}
+      <p className="text-sm text-muted-foreground/50 leading-relaxed">
+        This is your space. Track your progress toward becoming a <span className="text-foreground/70 font-medium">{goalTitle}</span>, set actions, and build momentum — one step at a time.
+      </p>
+
       {/* 1. My Roadmap */}
       <SectionCard>
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
