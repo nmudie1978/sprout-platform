@@ -1025,35 +1025,33 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </div>
         <div className="p-4 space-y-2">
           <ActionRow
-            icon={Play}
-            title={`Watch: A Day in the Life of a ${career.title}`}
-            subtitle="5 minutes — see the role first-hand"
-            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`"a day in the life" ${career.title}`)}`}
+            icon={Search}
+            title={`Research entry requirements for ${career.title} in Norway`}
+            subtitle="Find out exactly what qualifications, grades, and experience you need"
+            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} entry requirements Norway`)}`}
           />
           <ActionRow
             icon={GraduationCap}
-            title={`Research ${career.educationPath.split('(')[0].trim()} routes`}
-            subtitle="Compare programmes, entry requirements, and locations"
-            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} education pathway ${career.educationPath.split('(')[0].trim()}`)}`}
-          />
-          <ActionRow
-            icon={BookOpen}
-            title={`Build your ${topSkills[0] || 'core'} skills`}
-            subtitle={`Start with what you're learning now — ${topSkills.slice(0, 2).join(' and ')} directly support this path`}
+            title={`Find education programmes that lead to ${career.title}`}
+            subtitle="Compare universities, vocational routes, and application deadlines"
+            href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`}
           />
           <ActionRow
             icon={Users}
-            title={`Talk to a ${career.title}`}
-            subtitle="Ask what they wish they knew at your age. One conversation can change everything."
-            variant="highlight"
+            title={`Find 3 ${career.title}s on LinkedIn — study their career paths`}
+            subtitle="See what they studied, where they started, and how long it took"
+            href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`}
           />
           <ActionRow
-            icon={Briefcase}
-            title="Start a small project"
-            subtitle={details?.whatYouActuallyDo?.[0]
-              ? `Try something related to "${details.whatYouActuallyDo[0].toLowerCase()}" — build experience before you need it.`
-              : 'Build something hands-on to test the waters — experience before commitment.'
-            }
+            icon={Globe}
+            title="Attend a career open day or webinar"
+            subtitle="Universities and employers run free sessions — search for upcoming events"
+            href={`https://www.google.com/search?q=${encodeURIComponent(`${career.title} career open day webinar 2026`)}`}
+          />
+          <ActionRow
+            icon={Target}
+            title="Talk to your school guidance counsellor about this direction"
+            subtitle="They can help you choose the right subjects and plan your next steps"
             variant="highlight"
           />
         </div>
