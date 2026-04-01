@@ -26,7 +26,7 @@ import {
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, CheckCircle2, Clock, MapPin, Award, Users,
-  DollarSign, BarChart3, Layers, AlertCircle,
+  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
@@ -423,18 +423,10 @@ function CollapsibleSection({
 function UnderstandTab({
   career,
   goalTitle,
-  notes,
-  onNotesChange,
-  notesSaved,
-  onSaveNotes,
   onContinue,
 }: {
   career: Career | null;
   goalTitle: string | null;
-  notes: string;
-  onNotesChange: (v: string) => void;
-  notesSaved: boolean;
-  onSaveNotes: () => void;
   onContinue: () => void;
 }) {
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
@@ -606,23 +598,25 @@ function UnderstandTab({
       {/* Entry Requirements */}
       <CollapsibleSection title="Entry Requirements" icon={GraduationCap} accent="text-blue-400">
         {detailsLoading ? <LoadingSkeleton /> : details ? (
-          <div className="space-y-4">
-            <p className="text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">How to get started</p>
-            {/* Stepped pathway */}
+          <div className="space-y-3">
+            {/* Horizontal rail timeline */}
             <div className="relative">
-              {/* Vertical connector line */}
+              {/* Rail line */}
               {details.entryPaths.length > 1 && (
-                <div className="absolute left-[15px] top-6 bottom-6 w-px bg-gradient-to-b from-border/40 via-border/20 to-transparent" />
+                <div className="absolute top-4 left-4 right-4 h-px bg-gradient-to-r from-blue-500/30 via-blue-500/20 to-blue-500/5" />
               )}
-              <div className="space-y-3">
+              <div className="relative flex gap-0 overflow-x-auto pb-2">
                 {details.entryPaths.map((path, i) => (
-                  <div key={i} className="relative flex items-start gap-4">
-                    <div className="relative z-10 h-8 w-8 rounded-lg bg-foreground/5 border border-border/30 flex items-center justify-center shrink-0">
-                      <span className="text-[11px] font-bold text-foreground/50">{i + 1}</span>
+                  <div key={i} className="flex flex-col items-center flex-1 min-w-[120px] px-2">
+                    {/* Node */}
+                    <div className={cn(
+                      'relative z-10 h-8 w-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors',
+                      i === 0 ? 'bg-blue-500 border-blue-400 text-white' : 'bg-background border-border/40 text-muted-foreground/50',
+                    )}>
+                      <span className="text-[10px] font-bold">{i + 1}</span>
                     </div>
-                    <div className="flex-1 rounded-lg border border-border/20 bg-background/30 p-3.5 mt-0.5">
-                      <p className="text-[13px] text-foreground/75 leading-relaxed">{path}</p>
-                    </div>
+                    {/* Label */}
+                    <p className="text-[11px] text-foreground/65 text-center mt-2 leading-snug">{path}</p>
                   </div>
                 ))}
               </div>
@@ -813,58 +807,24 @@ function UnderstandTab({
         <CollapsibleSection title="Tools of the Trade" icon={Wrench} accent="text-slate-400" count={details.typicalDay.tools.length}>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {details.typicalDay.tools.map((tool, i) => (
-              <div key={i} className="flex items-center gap-2.5 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5">
-                <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0" />
-                <span className="text-[13px] text-foreground/65">{tool}</span>
-              </div>
+              <a
+                key={i}
+                href={`https://www.google.com/search?q=${encodeURIComponent(tool)}&udm=2`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-2.5 rounded-lg border border-border/20 bg-background/30 px-3.5 py-2.5 hover:border-border/40 hover:bg-background/50 transition-colors"
+              >
+                <Wrench className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground/50 shrink-0" />
+                <span className="text-[13px] text-foreground/65 group-hover:text-foreground/80 flex-1">{tool}</span>
+                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
+              </a>
             ))}
           </div>
         </CollapsibleSection>
       )}
 
       {/* Your Notes */}
-      <SectionCard>
-        <SectionHeader
-          icon={Pencil}
-          title="Your Notes"
-          badge={notesSaved ? (
-            <span className="flex items-center gap-1 text-[10px] text-emerald-400">
-              <CheckCircle2 className="h-3 w-3" /> Saved
-            </span>
-          ) : undefined}
-        />
-        <div className="p-4">
-          {notesSaved && notes ? (
-            <div className="rounded-lg border border-border/20 bg-background/30 p-3.5">
-              <p className="text-sm text-foreground/70 leading-relaxed whitespace-pre-wrap">{notes}</p>
-              <button
-                onClick={() => { onNotesChange(notes); /* keep content, allow re-edit via unsaved state */ }}
-                className="text-[10px] text-muted-foreground/40 hover:text-foreground mt-2 transition-colors"
-              >
-                Edit
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <textarea
-                value={notes}
-                onChange={(e) => onNotesChange(e.target.value)}
-                placeholder="Add anything you've found — reflections, links, research notes, things that surprised you..."
-                className="flex-1 rounded-lg border border-border/30 bg-background/50 px-3.5 py-2.5 text-sm text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none"
-                rows={3}
-                maxLength={2000}
-              />
-              <button
-                onClick={onSaveNotes}
-                disabled={!notes.trim()}
-                className="self-end px-3 py-2 rounded-lg text-xs font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20 shrink-0"
-              >
-                <Save className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          )}
-        </div>
-      </SectionCard>
+      <CareerNotes careerTitle={goalTitle} />
 
       {/* Next */}
       <div className="flex justify-end pt-2">
@@ -929,6 +889,158 @@ function CourseCard({ course }: { course: LearningResource }) {
         )}
       </div>
     </a>
+  );
+}
+
+// ─── Career Notes ────────────────────────────────────────────────────────────
+
+const NOTE_CATEGORIES = [
+  { id: 'general', label: 'General', color: 'bg-foreground/10 text-foreground/60' },
+  { id: 'research', label: 'Research', color: 'bg-blue-500/10 text-blue-400' },
+  { id: 'reflection', label: 'Reflection', color: 'bg-violet-500/10 text-violet-400' },
+  { id: 'question', label: 'Question', color: 'bg-amber-500/10 text-amber-400' },
+  { id: 'link', label: 'Link / Resource', color: 'bg-emerald-500/10 text-emerald-400' },
+] as const;
+
+type NoteCategory = typeof NOTE_CATEGORIES[number]['id'];
+
+interface CareerNote {
+  id: string;
+  text: string;
+  category: NoteCategory;
+  createdAt: string;
+}
+
+function loadNotes(careerTitle: string): CareerNote[] {
+  try {
+    const key = `journey-notes-v2-${careerTitle}`;
+    return JSON.parse(localStorage.getItem(key) || '[]');
+  } catch { return []; }
+}
+
+function saveNotes(careerTitle: string, notes: CareerNote[]) {
+  try {
+    localStorage.setItem(`journey-notes-v2-${careerTitle}`, JSON.stringify(notes));
+  } catch { /* ignore */ }
+}
+
+function CareerNotes({ careerTitle }: { careerTitle: string }) {
+  const [notes, setNotes] = useState<CareerNote[]>([]);
+  const [newText, setNewText] = useState('');
+  const [newCategory, setNewCategory] = useState<NoteCategory>('general');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+
+  useEffect(() => {
+    setNotes(loadNotes(careerTitle));
+    setEditingId(null);
+    setNewText('');
+  }, [careerTitle]);
+
+  const addNote = () => {
+    if (!newText.trim()) return;
+    const updated = [...notes, { id: Date.now().toString(), text: newText.trim(), category: newCategory, createdAt: new Date().toISOString() }];
+    setNotes(updated);
+    saveNotes(careerTitle, updated);
+    setNewText('');
+    setNewCategory('general');
+  };
+
+  const deleteNote = (id: string) => {
+    const updated = notes.filter(n => n.id !== id);
+    setNotes(updated);
+    saveNotes(careerTitle, updated);
+  };
+
+  const startEdit = (note: CareerNote) => {
+    setEditingId(note.id);
+    setEditText(note.text);
+  };
+
+  const saveEdit = (id: string) => {
+    if (!editText.trim()) return;
+    const updated = notes.map(n => n.id === id ? { ...n, text: editText.trim() } : n);
+    setNotes(updated);
+    saveNotes(careerTitle, updated);
+    setEditingId(null);
+  };
+
+  const catConfig = (id: NoteCategory) => NOTE_CATEGORIES.find(c => c.id === id) || NOTE_CATEGORIES[0];
+
+  return (
+    <SectionCard>
+      <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/40">{notes.length}</span> : undefined} />
+      <div className="p-4 space-y-3">
+        {/* Existing notes */}
+        {notes.map((note) => {
+          const cat = catConfig(note.category);
+          return (
+            <div key={note.id} className="rounded-lg border border-border/20 bg-background/30 p-3">
+              {editingId === note.id ? (
+                <div className="space-y-2">
+                  <textarea value={editText} onChange={(e) => setEditText(e.target.value)}
+                    className="w-full rounded-md border border-border/30 bg-background/50 px-3 py-2 text-sm text-foreground/80 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none" rows={2} />
+                  <div className="flex gap-2">
+                    <button onClick={() => saveEdit(note.id)} className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-foreground text-background hover:bg-foreground/90">Save</button>
+                    <button onClick={() => setEditingId(null)} className="px-2.5 py-1 rounded-md text-[11px] text-muted-foreground/50 hover:text-foreground">Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm text-foreground/70 leading-relaxed flex-1">{note.text}</p>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button onClick={() => startEdit(note)} className="p-1 rounded text-muted-foreground/30 hover:text-foreground/60 transition-colors">
+                        <Pencil className="h-3 w-3" />
+                      </button>
+                      <button onClick={() => deleteNote(note.id)} className="p-1 rounded text-muted-foreground/30 hover:text-red-400 transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                  <span className={cn('inline-flex rounded-full px-2 py-0.5 text-[9px] font-medium mt-2', cat.color)}>{cat.label}</span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Add new note */}
+        <div className="space-y-2">
+          <textarea
+            value={newText}
+            onChange={(e) => setNewText(e.target.value)}
+            placeholder="Add a note — reflections, links, questions, things that surprised you..."
+            className="w-full rounded-lg border border-border/30 bg-background/50 px-3.5 py-2.5 text-sm text-foreground/80 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 resize-none"
+            rows={2}
+            maxLength={2000}
+          />
+          <div className="flex items-center justify-between">
+            <div className="flex gap-1.5">
+              {NOTE_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setNewCategory(cat.id)}
+                  className={cn(
+                    'rounded-full px-2.5 py-0.5 text-[10px] font-medium transition-colors',
+                    newCategory === cat.id ? cat.color : 'bg-muted/20 text-muted-foreground/30 hover:text-muted-foreground/50',
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={addNote}
+              disabled={!newText.trim()}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20"
+            >
+              <Plus className="h-3 w-3" /> Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </SectionCard>
   );
 }
 
@@ -1212,25 +1324,6 @@ export default function MyJourneyPage() {
   }, [activeTab]);
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
-  // Persist notes per career in localStorage
-  const notesKey = goalTitle ? `journey-notes-${goalTitle}` : null;
-  const [understandNotes, setUnderstandNotes] = useState('');
-  const [understandNotesSaved, setUnderstandNotesSaved] = useState(false);
-
-  // Load saved notes when career changes
-  useEffect(() => {
-    if (!notesKey) return;
-    try {
-      const saved = localStorage.getItem(notesKey);
-      if (saved) {
-        setUnderstandNotes(saved);
-        setUnderstandNotesSaved(true);
-      } else {
-        setUnderstandNotes('');
-        setUnderstandNotesSaved(false);
-      }
-    } catch { /* ignore */ }
-  }, [notesKey]);
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string }[] = [
     { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)' },
@@ -1305,13 +1398,6 @@ export default function MyJourneyPage() {
               <UnderstandTab
                 career={career}
                 goalTitle={goalTitle}
-                notes={understandNotes}
-                onNotesChange={(v) => { setUnderstandNotes(v); setUnderstandNotesSaved(false); }}
-                notesSaved={understandNotesSaved}
-                onSaveNotes={() => {
-                  setUnderstandNotesSaved(true);
-                  if (notesKey) try { localStorage.setItem(notesKey, understandNotes); } catch { /* ignore */ }
-                }}
                 onContinue={() => setActiveTab('grow')}
               />
             )}
