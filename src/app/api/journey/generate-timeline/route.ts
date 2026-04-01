@@ -27,10 +27,27 @@ function getOpenAIClient(): OpenAI | null {
 // ============================================
 
 const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY valid JSON.
-Generate 7 items (2 foundation, 2 education, 2 experience, 1 career) + 4 schoolTrack items.
+
+REALISTIC CAREER PROGRESSION (MANDATORY ORDER):
+1. FOUNDATION (ages 16-19): School subjects — videregående (upper secondary) in Norway. Focus on relevant subjects. NO professional certifications at this stage.
+2. EDUCATION (ages 19-24): University degree or vocational training (fagbrev). The specific programme that leads to this career. Duration must be realistic (3-6 years for degree, 2+2 for fagbrev).
+3. EXPERIENCE (ages 22-28): Entry-level job, internship, or apprenticeship. First real work in the field. Then progression to mid-level after 2-3 years.
+4. PROFESSIONAL DEVELOPMENT (ages 25+): Professional certifications (e.g. PRINCE2, PMP, CISSP) ONLY after gaining work experience. Never before age 23. Never during school or university.
+5. CAREER (ages 28+): Senior role, specialist position, or leadership. Only after 5+ years of work experience.
+
+Generate 7-8 items following this exact order + 4 schoolTrack items.
 JSON: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
-CRITICAL: The user's current age is provided. ALL items must have startAge >= the user's current age. Never generate steps for ages younger than the user. The first foundation item should start at exactly the user's age.
-Rules: age-appropriate, practical microActions, encouraging, no jargon, 3+ milestones, career-specific subjects.`;
+
+CRITICAL RULES:
+- The user's current age is provided. ALL items must have startAge >= the user's current age.
+- The first foundation item should start at exactly the user's age.
+- NEVER suggest professional certifications (PRINCE2, PMP, AWS, etc.) before age 23 or before completing university.
+- NEVER suggest courses outside school/university for anyone under 20.
+- School foundation (ages 16-19) should focus ONLY on school subjects relevant to the career.
+- Internships come AFTER university, not during school.
+- Career progression must be realistic — no one becomes a senior engineer at 22 or a CIO at 25.
+- Use Norwegian context: videregående, university names (UiO, NTNU, OsloMet), Norwegian companies.
+- Be encouraging but honest about the time commitment required.`;
 
 // ============================================
 // VALIDATION

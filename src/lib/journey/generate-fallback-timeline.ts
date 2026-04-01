@@ -1,9 +1,10 @@
 /**
  * Fallback Timeline Generator
  *
- * Produces a template-based Journey when OpenAI is unavailable.
- * Interpolates the career title into generic but useful milestone descriptions.
- * Ages are offset from the user's actual current age.
+ * Produces a realistic career roadmap when OpenAI is unavailable.
+ * Follows mandatory progression: School → University → Internship → Work → Senior role
+ * No professional certifications before age 23.
+ * Uses Norwegian context (videregående, universities).
  */
 
 import type { Journey, JourneyItem, JourneyStage, SchoolTrackItem } from './career-journey-types';
@@ -14,168 +15,172 @@ function id(): string {
 
 export function generateFallbackTimeline(career: string, userAge = 16): Journey {
   const currentYear = new Date().getFullYear();
-  const a = userAge; // shorthand for age offset
+  const a = Math.max(userAge, 16);
 
   const items: JourneyItem[] = [
-    // Foundation (2 items)
+    // 1. Foundation: School (ages 16-19)
     {
       id: id(),
       stage: 'foundation' as JourneyStage,
-      title: 'Explore your interests',
-      subtitle: `Discover what draws you to ${career}`,
+      title: 'Your Foundation',
+      subtitle: 'Where you are today',
       startAge: a,
       isMilestone: false,
       icon: 'Sparkles',
-      description: `Start by exploring what interests you about ${career}. Talk to people in the field, read about it, and reflect on what excites you.`,
+      description: `Focus on your school subjects. Choose subjects that are relevant to ${career} — this is your foundation for everything that follows.`,
       microActions: [
-        'Research what a typical day looks like',
-        'List 3 things that interest you about this path',
-        'Talk to someone who works in this area',
+        'Identify which school subjects are most relevant',
+        'Talk to your teachers about this career direction',
+        'Research what grades are needed for university entry',
       ],
     },
     {
       id: id(),
       stage: 'foundation' as JourneyStage,
-      title: 'Build core skills',
-      subtitle: 'Develop your foundation',
-      startAge: a,
-      endAge: a + 1,
+      title: 'Complete Videregående',
+      subtitle: 'Upper secondary school',
+      startAge: Math.max(a, 17),
+      endAge: Math.max(a + 2, 19),
       isMilestone: true,
-      icon: 'Wrench',
-      description: `Focus on building the core skills needed for ${career}. This might include communication, teamwork, and problem-solving.`,
-      microActions: [
-        'Identify 3 key skills for this career',
-        'Find a free online course or resource',
-        'Practice one skill this week',
-      ],
-    },
-    // Education (2 items)
-    {
-      id: id(),
-      stage: 'education' as JourneyStage,
-      title: 'Research education pathways',
-      subtitle: `Understand what qualifications help in ${career}`,
-      startAge: a + 1,
-      isMilestone: false,
       icon: 'GraduationCap',
-      description: `Look into courses, apprenticeships, or certifications that could help you enter ${career}. Not every path requires a degree.`,
+      description: 'Complete your upper secondary education with strong grades in relevant subjects. This is your ticket to university or vocational training.',
       microActions: [
-        'Research 2-3 education pathways',
-        'Compare apprenticeships vs university',
-        'Talk to a career advisor',
+        'Maintain strong grades in key subjects',
+        'Apply to university via Samordna opptak',
+        'Attend open days at universities you are considering',
+      ],
+    },
+    // 2. Education: University (ages 19-22/24)
+    {
+      id: id(),
+      stage: 'education' as JourneyStage,
+      title: `Study towards ${career}`,
+      subtitle: 'University or vocational training',
+      startAge: Math.max(a + 3, 19),
+      endAge: Math.max(a + 6, 22),
+      isMilestone: false,
+      icon: 'BookOpen',
+      description: `Begin your degree or vocational programme. This is where you build the deep knowledge needed for ${career}. Stay curious and make connections.`,
+      microActions: [
+        'Enrol in your chosen programme',
+        'Join student organisations related to your field',
+        'Look for summer internship opportunities from year 2',
       ],
     },
     {
       id: id(),
       stage: 'education' as JourneyStage,
-      title: 'Start learning',
-      subtitle: 'Commit to a learning path',
-      startAge: a + 2,
-      endAge: a + 4,
+      title: 'Graduate',
+      subtitle: 'Complete your education',
+      startAge: Math.max(a + 6, 22),
       isMilestone: true,
-      icon: 'BookOpen',
-      description: `Begin your chosen education or training path for ${career}. Stay curious and build connections along the way.`,
+      icon: 'GraduationCap',
+      description: `Complete your degree or training. You now have the educational foundation to enter ${career}.`,
       microActions: [
-        'Enrol in your chosen course or programme',
-        'Join a relevant community or group',
-        'Set monthly learning goals',
+        'Complete your final project or thesis',
+        'Update your CV with your qualification',
+        'Start applying for graduate positions',
       ],
     },
-    // Experience (2 items)
+    // 3. Experience: Entry-level work (ages 22-25)
     {
       id: id(),
       stage: 'experience' as JourneyStage,
-      title: 'Get hands-on experience',
-      subtitle: 'Apply what you\'ve learned',
-      startAge: a + 2,
-      endAge: a + 3,
+      title: `Entry-level ${career} role`,
+      subtitle: 'Your first professional position',
+      startAge: Math.max(a + 6, 22),
+      endAge: Math.max(a + 9, 25),
       isMilestone: false,
       icon: 'Briefcase',
-      description: `Look for internships, volunteering, or part-time work related to ${career}. Real-world experience is invaluable.`,
+      description: `Start building real-world experience in ${career}. Focus on learning from senior colleagues, understanding the industry, and proving yourself.`,
       microActions: [
-        'Apply for an internship or work experience',
-        'Volunteer in a related area',
-        'Start a personal project',
+        'Apply for entry-level positions',
+        'Find a mentor in your workplace',
+        'Set 90-day learning goals with your manager',
       ],
     },
+    // 4. Professional development (ages 25+)
     {
       id: id(),
       stage: 'experience' as JourneyStage,
-      title: 'Build your portfolio',
-      subtitle: 'Show what you can do',
-      startAge: a + 3,
-      endAge: a + 4,
+      title: 'Professional certifications',
+      subtitle: 'Strengthen your credentials',
+      startAge: Math.max(a + 9, 25),
+      endAge: Math.max(a + 10, 27),
       isMilestone: true,
-      icon: 'FolderOpen',
-      description: `Collect evidence of your skills and achievements. A portfolio helps you stand out when applying for ${career} roles.`,
+      icon: 'Award',
+      description: `Now that you have work experience, consider professional certifications relevant to ${career}. These demonstrate expertise and open doors to senior roles.`,
       microActions: [
-        'Document your best work',
-        'Get a recommendation or reference',
-        'Update your profile with new skills',
+        'Research which certifications are valued in your field',
+        'Discuss certification goals with your employer',
+        'Enrol in a certification programme',
       ],
     },
-    // Career (1 item)
+    // 5. Career: Senior role (ages 27+)
     {
       id: id(),
       stage: 'career' as JourneyStage,
-      title: `Enter ${career}`,
-      subtitle: 'Take the first step into your career',
-      startAge: a + 4,
+      title: `Senior ${career}`,
+      subtitle: 'Established professional',
+      startAge: Math.max(a + 11, 27),
       isMilestone: true,
       icon: 'Target',
-      description: `You've built the skills, education, and experience. Now it's time to pursue your first role in ${career}.`,
+      description: `With 5+ years of experience and professional certifications, you are now positioned for senior roles in ${career}. Consider specialisation or leadership paths.`,
       microActions: [
-        'Prepare your CV and cover letter',
-        'Apply for entry-level positions',
-        'Prepare for interviews',
+        'Apply for senior positions',
+        'Consider whether you want to specialise or lead',
+        'Mentor junior colleagues',
       ],
     },
   ];
+
+  // Filter out items that start before the user's age
+  const filteredItems = items.filter(item => item.startAge >= a);
 
   const schoolTrack: SchoolTrackItem[] = [
     {
       id: id(),
       stage: 'foundation',
       title: 'Choose relevant subjects',
-      subjects: ['Mathematics', 'English', 'ICT / Digital Skills'],
-      personalLearning: `Research what ${career} involves day-to-day`,
+      subjects: ['Focus on subjects relevant to your career goal'],
+      personalLearning: `Explore what ${career} involves through reading and conversations`,
       startAge: a,
-      endAge: a + 1,
+      endAge: Math.max(a + 1, 17),
+    },
+    {
+      id: id(),
+      stage: 'foundation',
+      title: 'Prepare for university',
+      subjects: ['Strengthen grades in key subjects'],
+      personalLearning: 'Research university programmes and entry requirements',
+      startAge: Math.max(a + 1, 17),
+      endAge: Math.max(a + 3, 19),
     },
     {
       id: id(),
       stage: 'education',
-      title: 'Specialise your studies',
-      subjects: ['Relevant A-levels or vocational courses'],
-      personalLearning: `Take online courses related to ${career}`,
-      startAge: a + 1,
-      endAge: a + 2,
+      title: 'University studies',
+      subjects: ['Core programme subjects'],
+      personalLearning: 'Build professional network through student organisations',
+      startAge: Math.max(a + 3, 19),
+      endAge: Math.max(a + 6, 22),
     },
     {
       id: id(),
       stage: 'experience',
-      title: 'Apply knowledge practically',
-      subjects: ['Degree or apprenticeship modules'],
-      personalLearning: `Work on personal projects related to ${career}`,
-      startAge: a + 2,
-      endAge: a + 4,
-    },
-    {
-      id: id(),
-      stage: 'career',
-      title: 'Continuous development',
-      subjects: ['Professional certifications'],
-      personalLearning: 'Stay current with industry developments',
-      startAge: a + 4,
+      title: 'Early career',
+      subjects: ['On-the-job learning'],
+      personalLearning: 'Professional development and industry certifications',
+      startAge: Math.max(a + 6, 22),
     },
   ];
 
   return {
-    id: `fallback-${career.toLowerCase().replace(/\s+/g, '-')}`,
+    id: `fb-${career.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
     career,
     startAge: a,
     startYear: currentYear,
-    items,
+    items: filteredItems,
     schoolTrack,
   };
 }
