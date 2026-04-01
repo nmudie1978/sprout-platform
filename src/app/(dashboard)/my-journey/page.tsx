@@ -25,7 +25,7 @@ import {
   ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
-  Heart, Wrench, CheckCircle2, Clock, MapPin, Award, Users,
+  Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -391,26 +391,6 @@ function DiscoverTab({
           </SectionCard>
         </div>
       </div>
-
-      {/* Roadmap preview */}
-      <SectionCard>
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
-          <div className="flex items-center gap-2.5">
-            <Rocket className="h-4 w-4 text-muted-foreground/60" />
-            <h3 className="text-sm font-semibold text-foreground/90">Career Roadmap</h3>
-          </div>
-          <button onClick={() => setRoadmapFullscreen(true)} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium text-muted-foreground/50 hover:text-foreground hover:bg-muted/50 transition-colors">
-            <Maximize2 className="h-3 w-3" /> Full screen
-          </button>
-        </div>
-        <div className="p-4">
-          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-        </div>
-      </SectionCard>
-
-      <AnimatePresence>
-        {roadmapFullscreen && <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />}
-      </AnimatePresence>
 
       {/* Next */}
       <div className="flex justify-end pt-2">
@@ -836,8 +816,42 @@ function UnderstandTab({
         </CollapsibleSection>
       )}
 
-      {/* Your Notes */}
-      <CareerNotes careerTitle={goalTitle} />
+      {/* Real Career Paths */}
+      {(() => {
+        const paths = getCareerPathExamples(career.id, career.title);
+        if (paths.length === 0) return null;
+        return (
+          <CollapsibleSection title="Real Career Paths" icon={Users} accent="text-emerald-400" isOpen={openSection === 'paths'} onToggle={() => toggle('paths')}>
+            <p className="text-[11px] text-muted-foreground/40 mb-3">Based on typical career journeys in Norway</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {paths.slice(0, 2).map((path, pi) => (
+                <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
+                      <p className="text-[10px] text-muted-foreground/40">{path.title} · Age {path.currentAge}</p>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
+                    <div className="space-y-1.5">
+                      {path.steps.map((step, si) => (
+                        <div key={si} className="flex items-start gap-3 relative">
+                          <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
+                          <div className="flex-1 min-w-0">
+                            <span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span>
+                            <span className="text-[11px] text-foreground/60">{step.label}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CollapsibleSection>
+        );
+      })()}
 
       {/* Next */}
       <div className="flex justify-end pt-2">
@@ -1166,185 +1180,128 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     return summary;
   }, [career, details]);
 
+  // My Actions — persisted per career in localStorage
+  const actionsKey = `journey-actions-${career.id}`;
+  const [actions, setActions] = useState<{ id: string; text: string; done: boolean }[]>([]);
+  const [newAction, setNewAction] = useState('');
+
+  useEffect(() => {
+    try { setActions(JSON.parse(localStorage.getItem(actionsKey) || '[]')); } catch { setActions([]); }
+  }, [actionsKey]);
+
+  const saveActions = (updated: typeof actions) => {
+    setActions(updated);
+    try { localStorage.setItem(actionsKey, JSON.stringify(updated)); } catch { /* ignore */ }
+  };
+
+  const addAction = () => {
+    if (!newAction.trim()) return;
+    saveActions([...actions, { id: Date.now().toString(), text: newAction.trim(), done: false }]);
+    setNewAction('');
+  };
+
+  const toggleAction = (id: string) => saveActions(actions.map(a => a.id === id ? { ...a, done: !a.done } : a));
+  const deleteAction = (id: string) => saveActions(actions.filter(a => a.id !== id));
+
   return (
     <div className="space-y-5">
-      {/* Career overview — side by side cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Before you start */}
-        <div
-          className="rounded-xl border overflow-hidden p-5"
-          style={{
-            borderColor: 'rgba(245,158,11,0.2)',
-            background: 'linear-gradient(135deg, rgba(245,158,11,0.06) 0%, transparent 60%)',
-          }}
-        >
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-              <AlertCircle className="h-4 w-4 text-amber-400" />
-            </div>
-            <p className="text-sm font-semibold text-foreground/85">Before you start</p>
-          </div>
-          <p className="text-[13px] text-foreground/55 leading-relaxed">{careerConsideration}</p>
-          {details?.realityCheck && (
-            <p className="text-[11px] text-muted-foreground/35 mt-3 italic leading-relaxed border-t border-amber-500/10 pt-3">{details.realityCheck}</p>
-          )}
-        </div>
-
-        {/* Where you stand */}
-        <div
-          className="rounded-xl border overflow-hidden p-5"
-          style={{
-            borderColor: 'rgba(20,184,166,0.2)',
-            background: 'linear-gradient(135deg, rgba(20,184,166,0.06) 0%, transparent 60%)',
-          }}
-        >
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
-              <Target className="h-4 w-4 text-teal-400" />
-            </div>
-            <p className="text-sm font-semibold text-foreground/85">Where you stand</p>
-          </div>
-          <p className="text-[13px] text-foreground/55 leading-relaxed">
-            {career.growthOutlook === 'high'
-              ? `${career.title} is a high-demand field with strong long-term prospects. Exploring this now — before committing to ${career.educationPath.split('(')[0].trim()} — gives you a real advantage.`
-              : career.growthOutlook === 'medium'
-              ? `This is a growing field with solid career paths. The skills you build — ${topSkills.slice(0, 2).join(' and ')} — are transferable even if you change direction later.`
-              : `${career.title} is a stable career with clear pathways. Building strength in ${topSkills.slice(0, 2).join(' and ')} now gives you a strong foundation.`
-            }
-          </p>
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-teal-500/10">
-            <span className={cn(
-              'inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold',
-              career.growthOutlook === 'high' ? 'bg-emerald-500/10 text-emerald-400' :
-              career.growthOutlook === 'medium' ? 'bg-amber-500/10 text-amber-400' :
-              'bg-muted/30 text-muted-foreground/50',
-            )}>
-              {career.growthOutlook === 'high' ? 'High demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
-            </span>
-            <span className="text-[10px] text-muted-foreground/30">{career.avgSalary}</span>
+      {/* 1. My Roadmap */}
+      <SectionCard>
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
+          <div className="flex items-center gap-2.5">
+            <Rocket className="h-4 w-4 text-teal-400" />
+            <h3 className="text-sm font-semibold text-foreground/90">My Roadmap</h3>
           </div>
         </div>
-      </div>
+        <div className="p-4">
+          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        </div>
+      </SectionCard>
 
-      {/* 1. Real career path examples */}
-      {(() => {
-        const paths = getCareerPathExamples(career.id, career.title);
-        if (paths.length === 0) {
-          // Fallback — show a generic progression from the career data
-          if (!details?.entryPaths?.length) return null;
-          return (
-            <CollapsibleSection title="Typical Career Path" icon={Users} accent="text-emerald-400" isOpen={growSection === 'paths'} onToggle={() => toggleGrow('paths')}>
-              <p className="text-[11px] text-muted-foreground/40 mb-3">A typical progression for {career.title} in Norway</p>
-              <div className="rounded-lg border border-border/20 bg-background/20 p-3.5">
-                <div className="relative">
-                  <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
-                  <div className="space-y-2">
-                    {details.entryPaths.map((step, i) => (
-                      <div key={i} className="flex items-start gap-3 relative">
-                        <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
-                        <span className="text-[11px] text-foreground/60">{step}</span>
-                      </div>
-                    ))}
-                  </div>
+      {/* 2. My Actions — personal action tracker */}
+      <SectionCard>
+        <SectionHeader icon={Target} title="My Actions" badge={actions.filter(a => a.done).length > 0 ? <span className="text-[10px] text-emerald-400">{actions.filter(a => a.done).length}/{actions.length} done</span> : undefined} />
+        <div className="px-4 pb-3">
+          {/* Action list */}
+          {actions.length > 0 && (
+            <div className="divide-y divide-border/10">
+              {actions.map((action) => (
+                <div key={action.id} className="py-2 group flex items-center gap-2.5">
+                  <button onClick={() => toggleAction(action.id)}
+                    className={cn('flex h-4 w-4 items-center justify-center rounded border shrink-0 transition-colors',
+                      action.done ? 'bg-emerald-500 border-emerald-500' : 'border-muted-foreground/30 hover:border-foreground/50'
+                    )}
+                  >
+                    {action.done && <Check className="h-2.5 w-2.5 text-white" />}
+                  </button>
+                  <span className={cn('text-xs flex-1', action.done ? 'text-muted-foreground/40 line-through' : 'text-foreground/70')}>{action.text}</span>
+                  <button onClick={() => deleteAction(action.id)} className="p-1 rounded text-muted-foreground/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Trash2 className="h-2.5 w-2.5" />
+                  </button>
                 </div>
-              </div>
-            </CollapsibleSection>
-          );
-        }
-        return (
-          <CollapsibleSection title="Real Career Paths" icon={Users} accent="text-emerald-400" isOpen={growSection === 'paths'} onToggle={() => toggleGrow('paths')}>
-            <p className="text-[11px] text-muted-foreground/40 mb-3">Based on typical career journeys in Norway</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {paths.slice(0, 2).map((path, pi) => (
-                <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
-                      <p className="text-[10px] text-muted-foreground/40">{path.title} · Age {path.currentAge}</p>
-                    </div>
+              ))}
+            </div>
+          )}
+          {/* Add action */}
+          <div className="flex items-center gap-2 pt-2 border-t border-border/10 mt-1">
+            <input
+              value={newAction}
+              onChange={(e) => setNewAction(e.target.value)}
+              placeholder="Add an action — e.g. Research UiO programme, attend open day..."
+              className="flex-1 rounded-md border border-border/20 bg-background/30 px-2.5 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:ring-1 focus:ring-foreground/15"
+              onKeyDown={(e) => { if (e.key === 'Enter' && newAction.trim()) addAction(); }}
+            />
+            <button onClick={addAction} disabled={!newAction.trim()} className="shrink-0 p-1.5 rounded-md bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20">
+              <Plus className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* 3. From the Field — real professional stories */}
+      {careerStories.length > 0 && (
+        <SectionCard>
+          <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} />
+          <div className="p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {careerStories.slice(0, 2).map((story) => (
+                <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
+                  <div className="aspect-video">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${story.videoId}`}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={story.headline}
+                    />
                   </div>
-                  <div className="relative">
-                    <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
-                    <div className="space-y-1.5">
-                      {path.steps.map((step, si) => (
-                        <div key={si} className="flex items-start gap-3 relative">
-                          <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
-                          <div className="flex-1 min-w-0">
-                            <span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span>
-                            <span className="text-[11px] text-foreground/60">{step.label}</span>
+                  <div className="p-3.5">
+                    <p className="text-xs font-semibold text-foreground/80 mb-1">{story.headline}</p>
+                    <p className="text-[11px] text-muted-foreground/45">
+                      {story.name} — {story.jobTitle}
+                      {story.company ? ` at ${story.company}` : ''}
+                      {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
+                    </p>
+                    {story.takeaways.length > 0 && (
+                      <div className="mt-2 space-y-1">
+                        {story.takeaways.map((t, i) => (
+                          <div key={i} className="flex items-start gap-1.5">
+                            <div className="h-1 w-1 rounded-full bg-rose-400/40 mt-1.5 shrink-0" />
+                            <p className="text-[10px] text-muted-foreground/40 leading-relaxed">{t}</p>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
-          </CollapsibleSection>
-        );
-      })()}
-
-      {/* 3. From the Field — real professional stories */}
-      {careerStories.length > 0 && (
-        <CollapsibleSection title="From the Field" icon={Video} accent="text-rose-400" isOpen={growSection === 'stories'} onToggle={() => toggleGrow('stories')} count={careerStories.length}>
-          <p className="text-[11px] text-muted-foreground/40 mb-3">Real professionals share their journey, challenges, and advice</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {careerStories.slice(0, 2).map((story) => (
-              <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
-                {/* Video embed */}
-                <div className="aspect-video">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${story.videoId}`}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title={story.headline}
-                  />
-                </div>
-                {/* Info */}
-                <div className="p-3.5">
-                  <p className="text-xs font-semibold text-foreground/80 mb-1">{story.headline}</p>
-                  <p className="text-[11px] text-muted-foreground/45">
-                    {story.name} — {story.jobTitle}
-                    {story.company ? ` at ${story.company}` : ''}
-                    {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
-                  </p>
-                  {story.takeaways.length > 0 && (
-                    <div className="mt-2 space-y-1">
-                      {story.takeaways.map((t, i) => (
-                        <div key={i} className="flex items-start gap-1.5">
-                          <div className="h-1 w-1 rounded-full bg-rose-400/40 mt-1.5 shrink-0" />
-                          <p className="text-[10px] text-muted-foreground/40 leading-relaxed">{t}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
-        </CollapsibleSection>
+        </SectionCard>
       )}
 
-          {/* 4. Career events — link to in-app page */}
-          <a href="/career-events"
-            className="group block rounded-xl border border-amber-500/15 bg-amber-500/[0.03] p-4 hover:bg-amber-500/[0.06] transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
-                <Globe className="h-4 w-4 text-amber-400" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground/85">Browse career events & open days</p>
-                <p className="text-[11px] text-muted-foreground/40">Find upcoming events, webinars, and open days relevant to your career goals</p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-amber-400/30 group-hover:text-amber-400/60 shrink-0" />
-            </div>
-          </a>
-
-      <div className="text-center py-2">
-        <p className="text-[10px] text-muted-foreground/25">These suggestions adapt as you explore. Move at your own pace.</p>
-      </div>
+      {/* 4. My Notes */}
+      <CareerNotes careerTitle={goalTitle} />
     </div>
   );
 }
