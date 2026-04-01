@@ -1112,8 +1112,62 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     return subjects;
   }, [career.keySkills]);
 
+  // Build a contextual career consideration summary
+  const careerConsideration = useMemo(() => {
+    const edu = career.educationPath;
+    const realityText = details?.realityCheck;
+    const entryPaths = details?.entryPaths ?? [];
+    const isEntry = career.entryLevel;
+
+    // Extract duration hints from education path
+    const yearMatch = edu.match(/(\d+)\s*[-–]\s*(\d+)\s*years?/i) || edu.match(/(\d+)\s*years?/i);
+    const totalYears = yearMatch
+      ? yearMatch[2] ? parseInt(yearMatch[2]) : parseInt(yearMatch[1])
+      : null;
+
+    // Count steps
+    const stepCount = entryPaths.length;
+
+    let summary = '';
+
+    if (isEntry) {
+      summary = `${career.title} is accessible without a university degree — you can get started through vocational training or on-the-job experience. This makes it one of the more direct career paths available to you right now.`;
+    } else if (totalYears && totalYears >= 8) {
+      summary = `Becoming a ${career.title} is a long-term commitment. The typical pathway involves ${edu.toLowerCase()}, which means ${totalYears}+ years of education and training before you're fully qualified. This is a career you grow into over time — start building relevant experience and knowledge now.`;
+    } else if (totalYears && totalYears >= 4) {
+      summary = `${career.title} requires a solid educational foundation — typically ${edu.toLowerCase()}. That's around ${totalYears} years of study, so it's worth making sure this direction feels right before committing.`;
+    } else if (stepCount >= 3) {
+      summary = `The path to ${career.title} has several stages: ${entryPaths.slice(0, 3).join(', then ')}. Each step builds on the last, so start by understanding what the first step requires.`;
+    } else {
+      summary = `To pursue a career as a ${career.title}, you'll need ${edu.toLowerCase()}. Understanding the requirements early gives you time to prepare and make informed decisions.`;
+    }
+
+    // Append growth context
+    if (career.growthOutlook === 'high') {
+      summary += ` The good news: demand for this role is high and growing.`;
+    } else if (career.growthOutlook === 'stable') {
+      summary += ` This is a stable career with consistent demand.`;
+    }
+
+    return summary;
+  }, [career, details]);
+
   return (
     <div className="space-y-5">
+      {/* Career consideration — honest context */}
+      <div className="rounded-xl border border-border/30 bg-muted/5 px-5 py-4">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-foreground/70 mb-1.5">Before you start</p>
+            <p className="text-sm text-foreground/55 leading-relaxed">{careerConsideration}</p>
+            {details?.realityCheck && (
+              <p className="text-xs text-muted-foreground/40 mt-2 italic leading-relaxed">{details.realityCheck}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* ── Hero: What You Can Do Right Now ── */}
       <div
         className="rounded-xl border overflow-hidden"
