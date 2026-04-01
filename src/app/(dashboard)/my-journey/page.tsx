@@ -35,6 +35,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
 import { getNorwayProgrammes } from '@/lib/education/norway-programmes';
+import { getCareerPathExamples } from '@/lib/education/career-path-examples';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -1259,22 +1260,49 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             );
           })()}
 
-          {/* 3. LinkedIn */}
-          <a href={`https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}&origin=GLOBAL_SEARCH_HEADER`}
-            target="_blank" rel="noopener noreferrer"
-            className="group block rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:bg-emerald-500/[0.06] transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <Users className="h-4 w-4 text-emerald-400" />
+          {/* 3. Real career path examples */}
+          {(() => {
+            const paths = getCareerPathExamples(career.id, career.title);
+            if (paths.length === 0) return null;
+            return (
+              <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                    <Users className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground/85">Real Career Paths</p>
+                    <p className="text-[11px] text-muted-foreground/40">Based on typical career journeys in Norway</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ml-12">
+                  {paths.slice(0, 2).map((path, pi) => (
+                    <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-xs font-semibold text-foreground/75">{path.title}</p>
+                        <span className="text-[10px] text-muted-foreground/35">Age {path.currentAge}</span>
+                      </div>
+                      <div className="relative">
+                        {/* Vertical connector */}
+                        <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
+                        <div className="space-y-1.5">
+                          {path.steps.map((step, si) => (
+                            <div key={si} className="flex items-start gap-3 relative">
+                              <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
+                              <div className="flex-1 min-w-0">
+                                <span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span>
+                                <span className="text-[11px] text-foreground/60">{step.label}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground/85">Study real career paths on LinkedIn</p>
-                <p className="text-[11px] text-muted-foreground/40">Find {career.title}s — see what they studied, where they started, and how long it took</p>
-              </div>
-              <ExternalLink className="h-4 w-4 text-emerald-400/30 group-hover:text-emerald-400/60 shrink-0" />
-            </div>
-          </a>
+            );
+          })()}
 
           {/* 4. Career events — link to in-app page */}
           <a href="/career-events"
