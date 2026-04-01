@@ -1299,15 +1299,46 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             );
           }
           return (
-            <div className="flex flex-wrap gap-2">
-              <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-              <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
-                Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
-              </a>
+            <div className="space-y-3">
+              <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
+                The typical education path for {career.title} is: {career.educationPath.toLowerCase()}.
+              </p>
+              {/* Entry paths from API if available */}
+              {details?.entryPaths && details.entryPaths.length > 0 && (
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">#</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Step</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {details.entryPaths.map((path, i) => (
+                        <tr key={i} className="hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2 text-muted-foreground/30 font-bold">{i + 1}</td>
+                          <td className="px-3 py-2 text-foreground/65">{path}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">Search for programmes</p>
+              <div className="flex flex-wrap gap-2">
+                <a href={`https://utdanning.no/sok?q=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                  Utdanning.no <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+                <a href={`https://www.samordnaopptak.no/info/studier-og-soking/sokeresultat/?search=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                  Samordna Opptak <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+                <a href={`https://www.coursera.org/search?query=${encodeURIComponent(career.title)}`} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/10 bg-violet-500/5 px-3 py-1.5 text-[11px] font-medium text-violet-400 hover:bg-violet-500/10 transition-colors">
+                  Coursera <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
             </div>
           );
         })()}
@@ -1316,7 +1347,28 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       {/* 2. Real career path examples */}
       {(() => {
         const paths = getCareerPathExamples(career.id, career.title);
-        if (paths.length === 0) return null;
+        if (paths.length === 0) {
+          // Fallback — show a generic progression from the career data
+          if (!details?.entryPaths?.length) return null;
+          return (
+            <CollapsibleSection title="Typical Career Path" icon={Users} accent="text-emerald-400" isOpen={growSection === 'paths'} onToggle={() => toggleGrow('paths')}>
+              <p className="text-[11px] text-muted-foreground/40 mb-3">A typical progression for {career.title} in Norway</p>
+              <div className="rounded-lg border border-border/20 bg-background/20 p-3.5">
+                <div className="relative">
+                  <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
+                  <div className="space-y-2">
+                    {details.entryPaths.map((step, i) => (
+                      <div key={i} className="flex items-start gap-3 relative">
+                        <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
+                        <span className="text-[11px] text-foreground/60">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CollapsibleSection>
+          );
+        }
         return (
           <CollapsibleSection title="Real Career Paths" icon={Users} accent="text-emerald-400" isOpen={growSection === 'paths'} onToggle={() => toggleGrow('paths')}>
             <p className="text-[11px] text-muted-foreground/40 mb-3">Based on typical career journeys in Norway</p>
