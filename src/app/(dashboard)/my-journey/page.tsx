@@ -694,145 +694,117 @@ function UnderstandTab({
         </CollapsibleSection>
       )}
 
-      {/* Verified Courses & Certifications */}
+      {/* Education & Certifications — uses Norway programmes + professional certs */}
       <CollapsibleSection
-        title="Courses & Certifications"
-        icon={Award}
+        title="Education & Certifications"
+        icon={GraduationCap}
         accent="text-violet-400"
         isOpen={openSection === 'courses'}
         onToggle={() => toggle('courses')}
-        count={allCourses.length || undefined}
       >
-        {learningLoading ? <LoadingSkeleton /> : allCourses.length > 0 ? (
-          <div className="space-y-4">
-            {learningData?.meta?.verificationNote && (
-              <div className="flex items-start gap-2 rounded-lg border border-blue-500/15 bg-blue-500/5 p-3">
-                <CheckCircle2 className="h-3.5 w-3.5 text-blue-400 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-blue-400/80">{learningData.meta.verificationNote}</p>
-              </div>
-            )}
-
-            {/* Local/Regional courses */}
-            {(learningData?.localRegional?.length ?? 0) > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2.5">
-                  <MapPin className="h-3 w-3 text-emerald-400" />
-                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Local & Regional</p>
+        {(() => {
+          const eduData = getNorwayProgrammes(career.id, career.title);
+          if (eduData) {
+            return (
+              <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Apply via</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {eduData.programmes.map((prog, i) => (
+                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td>
+                          <td className="px-3 py-2 text-muted-foreground/40">{prog.applicationVia}</td>
+                          <td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <div className="space-y-2">
-                  {learningData!.localRegional.map((course) => (
-                    <CourseCard key={course.id} course={course} />
+                {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
+                  <div className="pt-1">
+                    <p className="text-[10px] text-muted-foreground/35 mb-1">Other routes in:</p>
+                    {eduData.alternativePaths.map((alt, i) => (
+                      <p key={i} className="text-[11px] text-muted-foreground/45 leading-relaxed">· {alt}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+          // Professional certifications fallback
+          const certPath = getCertificationPath(career.id, career.title);
+          if (certPath) {
+            return (
+              <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
+                <div className="rounded-lg border border-border/20 overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/20 bg-muted/10">
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Cost</th>
+                        <th className="w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/10">
+                      {certPath.certifications.map((cert, i) => (
+                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
+                          <td className="px-3 py-2">
+                            <a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a>
+                            <p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p>
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td>
+                          <td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td>
+                          <td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
+                  <div className="pt-1">
+                    <p className="text-[10px] text-muted-foreground/35 mb-1">Recommended degree backgrounds:</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {certPath.recommendedDegrees.map((deg, i) => (
+                        <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[10px] text-muted-foreground/45">{deg}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          }
+          // Generic fallback
+          return (
+            <div className="space-y-2">
+              <p className="text-sm text-foreground/70">{career.educationPath}</p>
+              {details?.entryPaths && details.entryPaths.length > 0 && (
+                <div className="space-y-1">
+                  {details.entryPaths.map((path, i) => (
+                    <p key={i} className="text-xs text-muted-foreground/50">· {path}</p>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* International courses */}
-            {(learningData?.international?.length ?? 0) > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2.5">
-                  <Globe className="h-3 w-3 text-blue-400" />
-                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">International</p>
-                </div>
-                <div className="space-y-2">
-                  {learningData!.international.map((course) => (
-                    <CourseCard key={course.id} course={course} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : courseSearchData?.results && courseSearchData.results.length > 0 ? (
-          <div className="space-y-4">
-            <p className="text-xs text-muted-foreground/50">Search for courses and certifications on trusted platforms.</p>
-
-            {/* Norway */}
-            {(() => {
-              const norway = courseSearchData.results.filter(r => r.category === 'norway');
-              if (norway.length === 0) return null;
-              return (
-                <div>
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <MapPin className="h-3 w-3 text-emerald-400" />
-                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Norway</p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {norway.map((r) => (
-                      <a key={r.platform} href={r.url} target="_blank" rel="noopener noreferrer"
-                        className="group flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3 hover:border-border/40 hover:bg-background/50 transition-all"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-medium text-foreground/80 group-hover:text-foreground">{r.label}</p>
-                          <p className="text-[11px] text-muted-foreground/40 mt-0.5">{r.description}</p>
-                        </div>
-                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0 mt-0.5" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* International */}
-            {(() => {
-              const intl = courseSearchData.results.filter(r => r.category === 'international');
-              if (intl.length === 0) return null;
-              return (
-                <div>
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <Globe className="h-3 w-3 text-blue-400" />
-                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">International</p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {intl.map((r) => (
-                      <a key={r.platform} href={r.url} target="_blank" rel="noopener noreferrer"
-                        className="group flex items-start gap-3 rounded-lg border border-border/20 bg-background/30 p-3 hover:border-border/40 hover:bg-background/50 transition-all"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-[13px] font-medium text-foreground/80 group-hover:text-foreground">{r.label}</p>
-                            {r.free && <span className="text-[9px] font-medium text-emerald-400 bg-emerald-500/10 rounded px-1.5 py-0.5">Free</span>}
-                          </div>
-                          <p className="text-[11px] text-muted-foreground/40 mt-0.5">{r.description}</p>
-                        </div>
-                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-muted-foreground/50 shrink-0 mt-0.5" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Certification searches */}
-            {(() => {
-              const certs = courseSearchData.results.filter(r => r.category === 'certification');
-              if (certs.length === 0) return null;
-              return (
-                <div>
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <Award className="h-3 w-3 text-violet-400" />
-                    <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Certifications & Requirements</p>
-                  </div>
-                  <div className="space-y-1.5">
-                    {certs.map((r, i) => (
-                      <a key={i} href={r.url} target="_blank" rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-lg border border-border/15 bg-background/20 px-3.5 py-2.5 hover:border-border/30 hover:bg-background/40 transition-all"
-                      >
-                        <Search className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0" />
-                        <span className="text-[13px] text-foreground/65 group-hover:text-foreground/80 flex-1">{r.label}</span>
-                        <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-muted-foreground/40 shrink-0" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        ) : (
-          <div className="rounded-lg border border-border/20 bg-background/30 p-4 text-center">
-            <p className="text-xs text-muted-foreground/50">Loading course search results...</p>
-          </div>
-        )}
+              )}
+            </div>
+          );
+        })()}
       </CollapsibleSection>
 
       {/* Tools of the Trade */}
@@ -1246,143 +1218,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </div>
       </div>
 
-      {/* 1. Education programmes */}
-      <CollapsibleSection title="Education in Norway" icon={GraduationCap} accent="text-violet-400" isOpen={growSection === 'education'} onToggle={() => toggleGrow('education')}>
-        {(() => {
-          const eduData = getNorwayProgrammes(career.id, career.title);
-          if (eduData) {
-            return (
-              <div className="space-y-3">
-                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
-                {/* Programme table */}
-                <div className="rounded-lg border border-border/20 overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-border/20 bg-muted/10">
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Apply via</th>
-                        <th className="w-8"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/10">
-                      {eduData.programmes.map((prog, i) => (
-                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
-                          <td className="px-3 py-2">
-                            <a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a>
-                          </td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td>
-                          <td className="px-3 py-2 text-muted-foreground/40">{prog.applicationVia}</td>
-                          <td className="px-2 py-2">
-                            <a href={prog.url} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" />
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
-                  <div className="pt-1">
-                    <p className="text-[10px] text-muted-foreground/35 mb-1">Other routes in:</p>
-                    {eduData.alternativePaths.map((alt, i) => (
-                      <p key={i} className="text-[11px] text-muted-foreground/45 leading-relaxed">· {alt}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          }
-          // Check for professional certifications
-          const certPath = getCertificationPath(career.id, career.title);
-          if (certPath) {
-            return (
-              <div className="space-y-3">
-                <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
-                {/* Certification table */}
-                <p className="text-[10px] font-medium text-muted-foreground/40 uppercase tracking-wider">Recommended certifications</p>
-                <div className="rounded-lg border border-border/20 overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-border/20 bg-muted/10">
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Cost</th>
-                        <th className="w-8"></th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/10">
-                      {certPath.certifications.map((cert, i) => (
-                        <tr key={i} className="group hover:bg-muted/5 transition-colors">
-                          <td className="px-3 py-2">
-                            <a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a>
-                            <p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p>
-                          </td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td>
-                          <td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td>
-                          <td className="px-2 py-2">
-                            <a href={cert.url} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" />
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
-                  <div className="pt-1">
-                    <p className="text-[10px] text-muted-foreground/35 mb-1">Recommended degree backgrounds:</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {certPath.recommendedDegrees.map((deg, i) => (
-                        <span key={i} className="inline-flex rounded-md border border-border/15 bg-background/20 px-2 py-0.5 text-[10px] text-muted-foreground/45">{deg}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          // Generic fallback
-          return (
-            <div className="space-y-3">
-              <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
-                The typical education path for {career.title} is: {career.educationPath.toLowerCase()}.
-              </p>
-              {details?.entryPaths && details.entryPaths.length > 0 && (
-                <div className="rounded-lg border border-border/20 overflow-hidden">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b border-border/20 bg-muted/10">
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">#</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Step</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/10">
-                      {details.entryPaths.map((path, i) => (
-                        <tr key={i} className="hover:bg-muted/5 transition-colors">
-                          <td className="px-3 py-2 text-muted-foreground/30 font-bold">{i + 1}</td>
-                          <td className="px-3 py-2 text-foreground/65">{path}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          );
-        })()}
-      </CollapsibleSection>
-
-      {/* 2. Real career path examples */}
+      {/* 1. Real career path examples */}
       {(() => {
         const paths = getCareerPathExamples(career.id, career.title);
         if (paths.length === 0) {
