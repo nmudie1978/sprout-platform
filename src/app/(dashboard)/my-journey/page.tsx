@@ -480,6 +480,7 @@ function UnderstandTab({
 
   // Carousel state for bottom section
   const [carouselTab, setCarouselTab] = useState<'education' | 'paths' | 'tools'>('education');
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   return (
     <div className="space-y-4">
@@ -632,7 +633,18 @@ function UnderstandTab({
                       </tr></thead>
                       <tbody className="divide-y divide-border/10">
                         {eduData.programmes.map((prog, i) => (
-                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2 border-r border-border/10"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.institution}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.city}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.duration}</td><td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                          <tr key={i} onClick={() => setSelectedRow(selectedRow === i ? null : i)}
+                            className={cn('group cursor-pointer transition-all duration-200',
+                              selectedRow === i
+                                ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
+                                : 'hover:bg-muted/5'
+                            )}>
+                            <td className="px-3 py-2 border-r border-border/10"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.institution}</td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.city}</td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.duration}</td>
+                            <td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3 w-3 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/15 group-hover:text-violet-400/50')} /></a></td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -659,7 +671,18 @@ function UnderstandTab({
                       </tr></thead>
                       <tbody className="divide-y divide-border/10">
                         {certPath.certifications.map((cert, i) => (
-                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2 border-r border-border/10"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a><p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p></td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.provider}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.duration}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.cost}</td><td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                          <tr key={i} onClick={() => setSelectedRow(selectedRow === i ? null : i)}
+                            className={cn('group cursor-pointer transition-all duration-200',
+                              selectedRow === i
+                                ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
+                                : 'hover:bg-muted/5'
+                            )}>
+                            <td className="px-3 py-2 border-r border-border/10"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a><p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p></td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.provider}</td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.duration}</td>
+                            <td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.cost}</td>
+                            <td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3 w-3 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/15 group-hover:text-violet-400/50')} /></a></td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
