@@ -133,6 +133,42 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
       { programme: 'Fysioterapi (bachelor)', englishName: 'Physiotherapy (Bachelor)', institution: 'UiT Norges arktiske universitet', city: 'Tromsø', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/340977/fysioterapeututdanning' },
     ],
   },
+  'police-officer': {
+    careerId: 'police-officer',
+    summary: 'In Norway, becoming a police officer requires a 3-year bachelor\'s degree at Politihøgskolen (Police University College). Entry is extremely competitive — typically 3,000+ applicants for ~700 places. You must pass physical tests, background checks, and be a Norwegian citizen.',
+    programmes: [
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Oslo', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Stavern', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Bodø', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
+    ],
+    alternativePaths: ['No alternative route — Politihøgskolen is the only path to becoming a police officer in Norway'],
+  },
+  'firefighter': {
+    careerId: 'firefighter',
+    summary: 'Norwegian firefighters train at Norges brannskole (Norwegian Fire Academy) in Tjeldsund, Nordland. The programme is 1 year. Many candidates have a technical fagbrev or relevant work experience before applying. You must pass demanding physical tests.',
+    programmes: [
+      { programme: 'Grunnkurs for brann- og redningspersonell', englishName: 'Basic Course for Fire and Rescue Personnel', institution: 'Norges brannskole', city: 'Tjeldsund', duration: '1 year', type: 'vocational' as const, applicationVia: 'Norges brannskole direct', url: 'https://www.nbsk.no/' },
+    ],
+    alternativePaths: ['Deltidsbrannkonstabel (part-time firefighter) — shorter training, common in rural areas', 'Technical fagbrev + fire academy provides the strongest application'],
+  },
+  'airline-pilot': {
+    careerId: 'airline-pilot',
+    summary: 'Becoming an airline pilot in Norway requires an ATPL (Airline Transport Pilot Licence). You can train through an integrated flight school programme (18-24 months) or via a modular route. Norwegian airlines typically require 1,500+ flight hours.',
+    programmes: [
+      { programme: 'Integrated ATPL Programme', englishName: 'Airline Pilot Training', institution: 'OSM Aviation Academy', city: 'Oslo/Arendal', duration: '18-24 months', type: 'vocational' as const, applicationVia: 'Direct application', url: 'https://www.osmaviationacademy.com/' },
+      { programme: 'Trafikkflygerutdanning', englishName: 'Commercial Pilot Training', institution: 'Scandinavian Aviation Academy', city: 'Various', duration: '18-24 months', type: 'vocational' as const, applicationVia: 'Direct application', url: 'https://www.pilot.no/' },
+      { programme: 'Luftfartsfag', englishName: 'Aviation Studies', institution: 'University of Tromsø (UiT)', city: 'Tromsø/Bardufoss', duration: '3 years (bachelor + ATPL)', type: 'bachelor' as const, applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/341185/luftfartsfag' },
+    ],
+    alternativePaths: ['Military pilot training via Luftforsvaret (Norwegian Air Force)', 'Modular route: PPL → CPL → IR → ATPL theory — cheaper but takes longer'],
+  },
+  'helicopter-pilot': {
+    careerId: 'helicopter-pilot',
+    summary: 'Helicopter pilots in Norway typically train for a CPL-H (Commercial Pilot Licence — Helicopter). Offshore helicopter operations (North Sea) require additional training including HUET (Helicopter Underwater Escape Training).',
+    programmes: [
+      { programme: 'Helikopterflygerutdanning', englishName: 'Helicopter Pilot Training', institution: 'Helicopter Flight Training AS', city: 'Stavanger', duration: '12-18 months', type: 'vocational' as const, applicationVia: 'Direct application', url: 'https://www.hft.no/' },
+    ],
+    alternativePaths: ['Military helicopter pilot training via Forsvaret', 'Train abroad (USA, South Africa) — typically cheaper, then convert licence to EASA'],
+  },
 };
 
 // ============================================

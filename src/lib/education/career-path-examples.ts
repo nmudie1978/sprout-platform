@@ -472,6 +472,87 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
       },
     ],
   },
+  'police-officer': {
+    careerId: 'police-officer',
+    examples: [
+      {
+        name: 'Thomas A.',
+        title: 'Police Officer — Oslo',
+        currentAge: 28,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — studiespesialisering' },
+          { age: 19, label: 'Politihøgskolen bachelor (3 years)' },
+          { age: 22, label: 'Politibetjent — ordensavdeling, Oslo' },
+          { age: 25, label: 'Specialisation in investigation' },
+          { age: 28, label: 'Etterforsker (detective) — Oslo politidistrikt' },
+        ],
+      },
+      {
+        name: 'Maria L.',
+        title: 'Police Officer — Tromsø',
+        currentAge: 26,
+        location: 'Tromsø',
+        steps: [
+          { age: 16, label: 'Videregående — idrettsfag' },
+          { age: 19, label: 'Politihøgskolen bachelor, Bodø (3 years)' },
+          { age: 22, label: 'Politibetjent — patrol, Troms politidistrikt' },
+          { age: 26, label: 'Senior politibetjent + field training officer' },
+        ],
+      },
+    ],
+  },
+  'airline-pilot': {
+    careerId: 'airline-pilot',
+    examples: [
+      {
+        name: 'Christian F.',
+        title: 'Airline Pilot — Oslo',
+        currentAge: 30,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — realfag' },
+          { age: 19, label: 'OSM Aviation Academy ATPL programme (2 years)' },
+          { age: 21, label: 'Flight instructor — building hours' },
+          { age: 23, label: 'First officer — Widerøe (regional)' },
+          { age: 27, label: 'First officer — Norwegian/SAS' },
+          { age: 30, label: 'Captain upgrade training' },
+        ],
+      },
+      {
+        name: 'Lina H.',
+        title: 'Airline Pilot — Tromsø',
+        currentAge: 28,
+        location: 'Tromsø',
+        steps: [
+          { age: 16, label: 'Videregående — realfag' },
+          { age: 19, label: 'Luftfartsfag bachelor at UiT (3 years)' },
+          { age: 22, label: 'CPL + flight instructor rating' },
+          { age: 24, label: 'First officer — Widerøe' },
+          { age: 28, label: 'First officer — SAS (B737)' },
+        ],
+      },
+    ],
+  },
+  'site-reliability-engineer': {
+    careerId: 'site-reliability-engineer',
+    examples: [
+      {
+        name: 'Daniel K.',
+        title: 'SRE — Oslo',
+        currentAge: 29,
+        location: 'Oslo',
+        steps: [
+          { age: 16, label: 'Videregående — realfag + IT' },
+          { age: 19, label: 'Informatikk bachelor at UiO (3 years)' },
+          { age: 22, label: 'Junior sysadmin — Schibsted' },
+          { age: 24, label: 'DevOps engineer — Finn.no' },
+          { age: 27, label: 'AWS + Kubernetes certifications' },
+          { age: 29, label: 'Senior SRE — Vipps' },
+        ],
+      },
+    ],
+  },
 };
 
 export function getCareerPathExamples(careerId: string, careerTitle: string): CareerPathExample[] {
