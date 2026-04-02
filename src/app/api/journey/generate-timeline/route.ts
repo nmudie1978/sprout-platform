@@ -102,13 +102,30 @@ export async function POST(req: NextRequest) {
       ? Math.floor((Date.now() - new Date(userData.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
       : 16;
 
-    // Check cache
+    // Check per-user cache first
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { career?: string; journey?: Journey };
       if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey && cached.journey.startAge === userAge) {
         return NextResponse.json({ journey: cached.journey, cached: true });
       }
     }
+
+    // Check global cache — same career + age = same timeline for all users
+    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}`;
+    try {
+      const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
+      if (globalCached && globalCached.expiresAt > new Date()) {
+        const cachedJourney = (globalCached.data as { journey: Journey }).journey;
+        if (cachedJourney) {
+          // Save to per-user cache too (non-blocking)
+          prisma.youthProfile.update({
+            where: { userId: session.user.id },
+            data: { generatedTimeline: JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
+          }).catch(() => {});
+          return NextResponse.json({ journey: cachedJourney, cached: true });
+        }
+      }
+    } catch { /* global cache miss */ }
 
     // Rate limit
     if (!rateLimit.success) {
@@ -175,11 +192,19 @@ export async function POST(req: NextRequest) {
       journey = generateFallbackTimeline(career, userAge);
     }
 
-    // Cache result (non-blocking — don't wait for this to return the response)
+    // Cache result (non-blocking)
+    const cacheData = JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey }));
+    // Per-user cache
     prisma.youthProfile.update({
       where: { userId: session.user.id },
-      data: { generatedTimeline: JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey })) },
-    }).catch((err) => console.error('[Timeline] Cache write failed:', err));
+      data: { generatedTimeline: cacheData },
+    }).catch(() => {});
+    // Global cache (30 days — same career+age serves all users)
+    prisma.videoCache.upsert({
+      where: { cacheKey: globalCacheKey },
+      create: { cacheKey: globalCacheKey, data: { journey }, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+      update: { data: { journey }, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+    }).catch(() => {});
 
     return NextResponse.json({ journey, cached: false });
   } catch (error) {

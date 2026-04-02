@@ -1182,41 +1182,76 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         })()}
       </SectionCard>
 
-      {/* 2. My Actions — personal action tracker */}
+      {/* 2. My Actions */}
       <SectionCard>
-        <SectionHeader icon={Target} title="My Actions" badge={actions.filter(a => a.done).length > 0 ? <span className="text-[10px] text-emerald-400">{actions.filter(a => a.done).length}/{actions.length} done</span> : undefined} />
-        <div className="px-4 pb-3">
+        <div className="px-4 py-3 border-b border-border/20 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-teal-400" />
+            <h3 className="text-sm font-semibold text-foreground/90">My Actions</h3>
+          </div>
+          {actions.length > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-16 rounded-full bg-foreground/5 overflow-hidden">
+                <div className="h-full rounded-full bg-emerald-500 transition-all duration-300" style={{ width: `${actions.length > 0 ? (actions.filter(a => a.done).length / actions.length) * 100 : 0}%` }} />
+              </div>
+              <span className="text-[10px] text-muted-foreground/40">{actions.filter(a => a.done).length}/{actions.length}</span>
+            </div>
+          )}
+        </div>
+        <div className="px-4 py-2">
+          {/* Suggested actions when empty */}
+          {actions.length === 0 && (
+            <div className="py-2 space-y-1.5">
+              <p className="text-[10px] text-muted-foreground/35 uppercase tracking-wider mb-2">Suggested actions</p>
+              {[
+                `Research ${career.educationPath.split('+')[0].trim()} programmes`,
+                `Find 3 ${career.title}s on LinkedIn`,
+                `Attend a career event or open day`,
+                `Talk to someone working in this field`,
+              ].map((suggestion) => (
+                <button key={suggestion} onClick={() => { setNewAction(suggestion); }}
+                  className="w-full text-left flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground/40 hover:text-foreground/60 hover:bg-muted/10 transition-colors"
+                >
+                  <Plus className="h-3 w-3 shrink-0" />
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Action list */}
           {actions.length > 0 && (
-            <div className="divide-y divide-border/10">
+            <div className="space-y-0.5 py-1">
               {actions.map((action) => (
-                <div key={action.id} className="py-2 group flex items-center gap-2.5">
+                <div key={action.id} className={cn(
+                  'group flex items-center gap-2.5 rounded-md px-2 py-1.5 -mx-1 transition-colors',
+                  action.done ? 'opacity-50' : 'hover:bg-muted/5'
+                )}>
                   <button onClick={() => toggleAction(action.id)}
-                    className={cn('flex h-4 w-4 items-center justify-center rounded border shrink-0 transition-colors',
-                      action.done ? 'bg-emerald-500 border-emerald-500' : 'border-muted-foreground/30 hover:border-foreground/50'
+                    className={cn('flex h-4 w-4 items-center justify-center rounded border shrink-0 transition-all',
+                      action.done ? 'bg-emerald-500 border-emerald-500 scale-90' : 'border-muted-foreground/25 hover:border-teal-400'
                     )}
                   >
                     {action.done && <Check className="h-2.5 w-2.5 text-white" />}
                   </button>
                   <span className={cn('text-xs flex-1', action.done ? 'text-muted-foreground/40 line-through' : 'text-foreground/70')}>{action.text}</span>
-                  <button onClick={() => deleteAction(action.id)} className="p-1 rounded text-muted-foreground/20 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => deleteAction(action.id)} className="p-0.5 rounded text-muted-foreground/15 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
                     <Trash2 className="h-2.5 w-2.5" />
                   </button>
                 </div>
               ))}
             </div>
           )}
-          {/* Add action */}
-          <div className="flex items-center gap-2 pt-2 border-t border-border/10 mt-1">
+          {/* Add input — always visible */}
+          <div className="flex items-center gap-2 pt-1.5 mt-1 border-t border-border/10">
             <input
               value={newAction}
               onChange={(e) => setNewAction(e.target.value)}
-              placeholder="Add an action — e.g. Research UiO programme, attend open day..."
-              className="flex-1 rounded-md border border-border/20 bg-background/30 px-2.5 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:ring-1 focus:ring-foreground/15"
+              placeholder="Add an action..."
+              className="flex-1 bg-transparent px-1 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/20 focus:outline-none"
               onKeyDown={(e) => { if (e.key === 'Enter' && newAction.trim()) addAction(); }}
             />
-            <button onClick={addAction} disabled={!newAction.trim()} className="shrink-0 p-1.5 rounded-md bg-foreground text-background hover:bg-foreground/90 transition-colors disabled:opacity-20">
-              <Plus className="h-3.5 w-3.5" />
+            <button onClick={addAction} disabled={!newAction.trim()} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-medium bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition-colors disabled:opacity-20">
+              Add
             </button>
           </div>
         </div>
