@@ -3031,3 +3031,19 @@ model CareerStory {
   @@index([published])
   @@index([careerTags])
 }
+
+// ============================================
+// VIDEO CACHE — avoid repeated YouTube API calls
+// ============================================
+
+model VideoCache {
+  id        String   @id @default(cuid())
+  cacheKey  String   @unique  // e.g. "career-videos:doctor" or "ditl:nurse"
+  data      Json               // cached API response
+  expiresAt DateTime           // when to refresh (e.g. 7 days)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cacheKey])
+  @@index([expiresAt])
+}
