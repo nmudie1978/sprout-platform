@@ -335,7 +335,6 @@ function DiscoverTab({
           {career.description}
           {dDetails?.realityCheck ? ` ${dDetails.realityCheck}` : ''}
           {dDetails?.whoThisIsGoodFor?.length ? ` This role suits ${dDetails.whoThisIsGoodFor.slice(0, 2).join(' and ').toLowerCase()}.` : ''}
-          {` The education path is typically ${career.educationPath.toLowerCase()}.`}
           {career.growthOutlook === 'high' ? ' Demand is high and growing.' : career.growthOutlook === 'medium' ? ' The field is growing steadily.' : ' This is a stable career.'}
         </p>
       </div>
