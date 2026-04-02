@@ -103,13 +103,30 @@ export async function GET(req: NextRequest) {
   const seen = new Set<string>();
   const videos: VideoResult[] = [];
 
+  // Try strict filtered search first
   for (const query of queries) {
-    if (videos.length >= 2) break;
+    if (videos.length >= 1) break;
     const result = await searchYouTube(query, apiKey, career);
     if (result && !seen.has(result.videoId)) {
       seen.add(result.videoId);
       videos.push(result);
     }
+  }
+
+  // Fallback for niche careers — simple search without strict filtering
+  if (videos.length === 0) {
+    const fallbackQuery = `${career} career explained`;
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(fallbackQuery)}&type=video&maxResults=1&videoDuration=medium&relevanceLanguage=en&key=${apiKey}`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        const item = data.items?.[0];
+        if (item?.id?.videoId) {
+          videos.push({ videoId: item.id.videoId, title: item.snippet?.title ?? '', thumbnail: item.snippet?.thumbnails?.medium?.url ?? '', query: fallbackQuery });
+        }
+      }
+    } catch { /* fallback failed */ }
   }
 
   const response = { career, videos, count: videos.length };
