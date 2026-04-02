@@ -622,17 +622,17 @@ function UnderstandTab({
                 <div className="space-y-3">
                   <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{eduData.summary}</p>
                   <div className="rounded-lg border border-border/30 overflow-hidden">
-                    <table className="w-full text-xs [&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border/15 [&_td]:border-border/10">
+                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
                       <thead><tr className="border-b border-border/20 bg-muted/10">
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Programme</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Institution</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">City</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Programme</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Institution</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">City</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Duration</th>
                         <th className="w-8"></th>
                       </tr></thead>
                       <tbody className="divide-y divide-border/10">
                         {eduData.programmes.map((prog, i) => (
-                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td><td className="px-3 py-2 text-muted-foreground/50">{prog.institution}</td><td className="px-3 py-2 text-muted-foreground/50">{prog.city}</td><td className="px-3 py-2 text-muted-foreground/50">{prog.duration}</td><td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2 border-r border-border/10"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{prog.programme}</a></td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.institution}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.city}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{prog.duration}</td><td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
                         ))}
                       </tbody>
                     </table>
@@ -649,17 +649,17 @@ function UnderstandTab({
                 <div className="space-y-3">
                   <p className="text-[11px] text-muted-foreground/40 leading-relaxed">{certPath.summary}</p>
                   <div className="rounded-lg border border-border/30 overflow-hidden">
-                    <table className="w-full text-xs [&_th]:border-r [&_th:last-child]:border-r-0 [&_td]:border-r [&_td:last-child]:border-r-0 [&_th]:border-border/15 [&_td]:border-border/10">
+                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
                       <thead><tr className="border-b border-border/20 bg-muted/10">
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Certification</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Provider</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Duration</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider">Cost</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Certification</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Provider</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Duration</th>
+                        <th className="text-left px-3 py-2 text-[10px] font-medium text-muted-foreground/50 uppercase tracking-wider border-r border-border/15 last:border-r-0">Cost</th>
                         <th className="w-8"></th>
                       </tr></thead>
                       <tbody className="divide-y divide-border/10">
                         {certPath.certifications.map((cert, i) => (
-                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a><p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p></td><td className="px-3 py-2 text-muted-foreground/50">{cert.provider}</td><td className="px-3 py-2 text-muted-foreground/50">{cert.duration}</td><td className="px-3 py-2 text-muted-foreground/50">{cert.cost}</td><td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
+                          <tr key={i} className="group hover:bg-muted/5"><td className="px-3 py-2 border-r border-border/10"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground/75 hover:text-foreground font-medium">{cert.name}</a><p className="text-[9px] text-muted-foreground/30 mt-0.5">{cert.recognised}</p></td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.provider}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.duration}</td><td className="px-3 py-2 text-muted-foreground/50 border-r border-border/10">{cert.cost}</td><td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3 text-muted-foreground/15 group-hover:text-violet-400/50" /></a></td></tr>
                         ))}
                       </tbody>
                     </table>
