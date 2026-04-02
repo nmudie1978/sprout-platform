@@ -556,11 +556,25 @@ const CAREER_PATHS: Record<string, CareerPathExamples> = {
 };
 
 export function getCareerPathExamples(careerId: string, careerTitle: string): CareerPathExample[] {
+  // 1. Exact ID match
   if (CAREER_PATHS[careerId]) return CAREER_PATHS[careerId].examples;
 
+  // 2. Try matching career ID with common variations
+  const idLower = careerId.toLowerCase();
+  for (const [key] of Object.entries(CAREER_PATHS)) {
+    if (idLower === key || idLower.startsWith(key + '-') || key.startsWith(idLower + '-')) {
+      return CAREER_PATHS[key].examples;
+    }
+  }
+
+  // 3. Title match — but require the key to be a significant part of the title
+  //    (avoid "engineer" matching "network engineer" to mechanical engineer)
   const titleLower = careerTitle.toLowerCase();
+  const titleWords = titleLower.split(/[\s/()]+/).filter(w => w.length > 2);
   for (const [key, value] of Object.entries(CAREER_PATHS)) {
-    if (titleLower.includes(key.replace('-', ' ')) || titleLower.includes(key)) {
+    const keyWords = key.replace(/-/g, ' ').split(' ').filter(w => w.length > 2);
+    // All key words must appear in the title
+    if (keyWords.every(kw => titleWords.some(tw => tw === kw || tw.startsWith(kw)))) {
       return value.examples;
     }
   }

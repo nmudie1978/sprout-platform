@@ -283,10 +283,11 @@ export function getNorwayProgrammes(careerId: string, careerTitle: string): Care
     return CAREER_EDUCATION[careerId];
   }
 
-  // Keyword match on title
-  const titleLower = careerTitle.toLowerCase();
+  // Title match — all key words must appear in the title
+  const titleWords = careerTitle.toLowerCase().split(/[\s/()]+/).filter(w => w.length > 2);
   for (const [key, value] of Object.entries(CAREER_EDUCATION)) {
-    if (titleLower.includes(key.replace('-', ' ')) || titleLower.includes(key)) {
+    const keyWords = key.replace(/-/g, ' ').split(' ').filter(w => w.length > 2);
+    if (keyWords.every(kw => titleWords.some(tw => tw === kw || tw.startsWith(kw)))) {
       return value;
     }
   }
