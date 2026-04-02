@@ -249,7 +249,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)}>
+    <div className={cn('rounded-xl border border-border/60 bg-card/50 overflow-hidden shadow-sm', className)}>
       {children}
     </div>
   );
