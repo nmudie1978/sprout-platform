@@ -901,7 +901,7 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <div className="divide-y divide-border/20 flex-1">
+                <div className="divide-y divide-border/20 flex-1 rounded-lg border border-border/20 overflow-hidden mt-1.5">
                   {pageGoals.map((goal) => {
                     const career = allCareers.find((c) => c.title === goal.goalTitle);
                     const stepsCompleted = (goal.journeyCompletedSteps || []).length;
@@ -915,7 +915,7 @@ export default function DashboardPage() {
                         }}
                         disabled={isCurrentGoal || switchGoalMutation.isPending}
                         className={cn(
-                          "w-full flex items-center gap-2 py-1.5 text-left transition-colors",
+                          "w-full flex items-center gap-2 px-2.5 py-2 text-left transition-colors",
                           !isCurrentGoal && "hover:bg-muted/40",
                         )}
                       >
