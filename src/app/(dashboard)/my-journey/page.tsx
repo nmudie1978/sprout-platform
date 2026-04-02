@@ -34,9 +34,11 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { JourneyUIState } from '@/lib/journey/types';
+import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { getCareerPathExamples, careerPathToJourney, type CareerPathExample } from '@/lib/education/career-path-examples';
+import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import type { Journey } from '@/lib/journey/career-journey-types';
 
 const PersonalCareerTimeline = dynamic(
@@ -166,19 +168,12 @@ function useCourseSearch(careerTitle: string | null) {
   });
 }
 
-interface CareerVideo {
-  videoId: string;
-  title: string;
-  thumbnail: string;
-  query: string;
-}
-
-function useCareerVideos(careerTitle: string | null) {
-  return useQuery<{ videos: CareerVideo[]; count: number }>({
-    queryKey: ['career-videos', careerTitle],
+function useCareerReality(careerTitle: string | null) {
+  return useQuery<RealityCheckResult>({
+    queryKey: ['career-reality', careerTitle],
     queryFn: async () => {
-      const res = await fetch(`/api/youtube-search/career-videos?career=${encodeURIComponent(careerTitle!)}`);
-      if (!res.ok) return { videos: [], count: 0 };
+      const res = await fetch(`/api/career-reality?career=${encodeURIComponent(careerTitle!)}`);
+      if (!res.ok) throw new Error('Failed to fetch reality check');
       return res.json();
     },
     enabled: !!careerTitle,
@@ -249,7 +244,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-border/60 bg-card/50 overflow-hidden shadow-sm', className)}>
+    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)' }}>
       {children}
     </div>
   );
@@ -459,7 +454,7 @@ function UnderstandTab({
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
   const { data: courseSearchData } = useCourseSearch(goalTitle);
-  const { data: careerVideosData } = useCareerVideos(goalTitle);
+  const { data: realityData, isLoading: realityLoading } = useCareerReality(goalTitle);
 
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -472,7 +467,6 @@ function UnderstandTab({
 
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
-  const careerVideos = careerVideosData?.videos ?? [];
   const toggle = (id: string) => setOpenSection(prev => prev === id ? null : id);
 
   const allCourses = [
@@ -517,30 +511,82 @@ function UnderstandTab({
           </SectionCard>
         )}
 
-        {/* Right: The Reality — videos */}
+        {/* Right: The Reality — dynamic reality check */}
         <SectionCard>
-          <SectionHeader icon={Play} title="The Reality" />
+          <SectionHeader icon={Eye} title="The Reality" />
           <div className="p-4 space-y-3">
-            {careerVideos.length > 0 ? (
-              <div>
-                <p className="text-[10px] font-medium text-muted-foreground/40 mb-1.5 line-clamp-1">{careerVideos[0].title}</p>
-                <div className="rounded-lg overflow-hidden border border-border/15">
-                  <iframe src={`https://www.youtube.com/embed/${careerVideos[0].videoId}`} className="w-full aspect-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={careerVideos[0].title} />
-                </div>
+            {realityLoading ? (
+              <div className="space-y-2.5">
+                <div className="h-3 w-full rounded bg-muted-foreground/5 animate-pulse" />
+                <div className="h-3 w-4/5 rounded bg-muted-foreground/5 animate-pulse" />
+                <div className="h-3 w-3/5 rounded bg-muted-foreground/5 animate-pulse" />
               </div>
-            ) : details?.realityCheck ? null : (
-              <div className="flex items-center justify-center py-6">
-                <div className="animate-pulse h-4 w-4 rounded-full bg-muted-foreground/10" />
-              </div>
-            )}
-            {details?.realityCheck && (
+            ) : realityData ? (
+              <>
+                {/* Summary */}
+                <p className="text-[11px] text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
+
+                {/* Reality points */}
+                {realityData.realityPoints.length > 0 && (
+                  <div className="space-y-1">
+                    {realityData.realityPoints.map((point, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <AlertCircle className="h-3 w-3 text-amber-400/70 shrink-0 mt-0.5" />
+                        <p className="text-[10px] text-foreground/50 leading-relaxed">{point}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Fit signal */}
+                {realityData.fitSignal && (
+                  <div className="rounded-lg border border-emerald-500/15 bg-emerald-500/5 px-3 py-2">
+                    <p className="text-[10px] text-emerald-300/70 leading-relaxed">
+                      <span className="font-medium text-emerald-300/90">Good fit: </span>
+                      {realityData.fitSignal}
+                    </p>
+                  </div>
+                )}
+
+                {/* Video cards */}
+                {realityData.videos.length > 0 && (
+                  <div className="space-y-2 pt-1">
+                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/30">Real voices</p>
+                    {realityData.videos.map((video) => (
+                      <a
+                        key={video.videoId}
+                        href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex gap-3 rounded-lg border border-border/15 bg-background/30 p-2 transition-colors hover:border-border/30 hover:bg-background/50"
+                      >
+                        <div className="relative shrink-0 w-24 aspect-video rounded overflow-hidden bg-muted/20">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-colors">
+                            <Play className="h-4 w-4 text-white/90 fill-white/90" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0 py-0.5">
+                          <p className="text-[10px] font-medium text-foreground/70 leading-snug line-clamp-2">{video.title.replace(/&amp;/g, '&')}</p>
+                          <p className="text-[9px] text-muted-foreground/40 mt-0.5">{video.channel}</p>
+                          <p className="text-[9px] text-muted-foreground/30 mt-1 italic">{video.whySelected}</p>
+                        </div>
+                        <ExternalLink className="h-3 w-3 text-muted-foreground/20 shrink-0 mt-1 group-hover:text-muted-foreground/40 transition-colors" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : details?.realityCheck ? (
+              /* Fallback to static realityCheck if API fails */
               <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-3">
                 <div className="flex items-start gap-2">
                   <AlertCircle className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
                   <p className="text-[11px] text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </SectionCard>
       </div>
@@ -588,7 +634,7 @@ function UnderstandTab({
       </SectionCard>
 
       {/* ── BOTTOM: Tabbed carousel — Education, Career Paths, Tools ── */}
-      <div className="rounded-xl border border-border/30 overflow-hidden">
+      <div className="rounded-xl border border-border/40 overflow-hidden" style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)' }}>
         {/* Tab bar — coloured pills */}
         <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
           {([
@@ -694,31 +740,9 @@ function UnderstandTab({
             return <div className="space-y-2"><p className="text-sm text-foreground/70">{career.educationPath}</p>{details?.entryPaths && details.entryPaths.map((p, i) => <p key={i} className="text-xs text-muted-foreground/50">· {p}</p>)}</div>;
           })()}
 
-          {carouselTab === 'paths' && (() => {
-            const paths = getCareerPathExamples(career.id, career.title);
-            if (paths.length === 0) return <p className="text-xs text-muted-foreground/40">Career path examples coming soon for this role.</p>;
-            return (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {paths.slice(0, 2).map((path, pi) => (
-                  <div key={pi} className="rounded-lg border border-border/20 bg-background/20 p-3.5">
-                    <p className="text-xs font-semibold text-foreground/75">{path.name}</p>
-                    <p className="text-[10px] text-muted-foreground/40 mb-3">{path.title} · Age {path.currentAge}</p>
-                    <div className="relative">
-                      <div className="absolute left-[5px] top-2 bottom-2 w-px bg-gradient-to-b from-emerald-500/30 via-emerald-500/15 to-transparent" />
-                      <div className="space-y-1.5">
-                        {path.steps.map((step, si) => (
-                          <div key={si} className="flex items-start gap-3 relative">
-                            <div className="relative z-10 h-[11px] w-[11px] rounded-full border-2 border-emerald-500/30 bg-background shrink-0 mt-1" />
-                            <div className="flex-1"><span className="text-[10px] font-bold text-emerald-400/60 mr-1.5">{step.age}</span><span className="text-[11px] text-foreground/60">{step.label}</span></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            );
-          })()}
+          {carouselTab === 'paths' && (
+            <CareerPathExamplesPanel careerId={career.id} careerTitle={career.title} />
+          )}
 
           {carouselTab === 'tools' && (() => {
             if (!details?.typicalDay.tools?.length) return <p className="text-xs text-muted-foreground/40">Tool information coming soon for this role.</p>;
@@ -1191,70 +1215,97 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             <Target className="h-4 w-4 text-teal-400" />
             <h3 className="text-sm font-semibold text-foreground/90">My Actions</h3>
           </div>
-          {actions.length > 0 && (
-            <div className="flex items-center gap-2">
-              <div className="h-1.5 w-16 rounded-full bg-foreground/5 overflow-hidden">
-                <div className="h-full rounded-full bg-emerald-500 transition-all duration-300" style={{ width: `${actions.length > 0 ? (actions.filter(a => a.done).length / actions.length) * 100 : 0}%` }} />
+          {actions.length > 0 && (() => {
+            const doneCount = actions.filter(a => a.done).length;
+            const total = actions.length;
+            const pct = Math.round((doneCount / total) * 100);
+            return (
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-16 rounded-full bg-foreground/5 overflow-hidden">
+                  <div className="h-full rounded-full bg-emerald-500 transition-all duration-300" style={{ width: `${pct}%` }} />
+                </div>
+                <span className="text-[10px] text-muted-foreground/40">{doneCount}/{total}</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/40">{actions.filter(a => a.done).length}/{actions.length}</span>
-            </div>
-          )}
+            );
+          })()}
         </div>
-        <div className="px-4 py-2">
-          {/* Suggested actions when empty */}
+        <div className="px-4 py-3 space-y-3">
+          {/* Empty state — suggestions */}
           {actions.length === 0 && (
-            <div className="py-2 space-y-1.5">
-              <p className="text-[10px] text-muted-foreground/35 uppercase tracking-wider mb-2">Suggested actions</p>
-              {[
-                `Research ${career.educationPath.split('+')[0].trim()} programmes`,
-                `Find 3 ${career.title}s on LinkedIn`,
-                `Attend a career event or open day`,
-                `Talk to someone working in this field`,
-              ].map((suggestion) => (
-                <button key={suggestion} onClick={() => { setNewAction(suggestion); }}
-                  className="w-full text-left flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground/40 hover:text-foreground/60 hover:bg-muted/10 transition-colors"
-                >
-                  <Plus className="h-3 w-3 shrink-0" />
-                  {suggestion}
-                </button>
-              ))}
+            <div className="space-y-2.5">
+              <p className="text-[10px] text-muted-foreground/40">
+                Track what you need to do next. Here are some ideas:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {[
+                  `Research ${career.educationPath.split('+')[0].trim()} programmes`,
+                  `Find 3 ${career.title}s on LinkedIn`,
+                  `Attend a career event or open day`,
+                  `Talk to someone in this field`,
+                ].map((suggestion) => (
+                  <button key={suggestion} onClick={() => { saveActions([...actions, { id: Date.now().toString() + suggestion.slice(0, 4), text: suggestion, done: false }]); }}
+                    className="flex items-center gap-2 rounded-lg border border-border/15 bg-muted/5 px-3 py-2 text-[11px] text-muted-foreground/50 hover:text-foreground/70 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all text-left"
+                  >
+                    <Plus className="h-3 w-3 shrink-0 text-teal-500/40" />
+                    <span>{suggestion}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           {/* Action list */}
-          {actions.length > 0 && (
-            <div className="space-y-0.5 py-1">
-              {actions.map((action) => (
-                <div key={action.id} className={cn(
-                  'group flex items-center gap-2.5 rounded-md px-2 py-1.5 -mx-1 transition-colors',
-                  action.done ? 'opacity-50' : 'hover:bg-muted/5'
-                )}>
-                  <button onClick={() => toggleAction(action.id)}
-                    className={cn('flex h-4 w-4 items-center justify-center rounded border shrink-0 transition-all',
-                      action.done ? 'bg-emerald-500 border-emerald-500 scale-90' : 'border-muted-foreground/25 hover:border-teal-400'
-                    )}
-                  >
-                    {action.done && <Check className="h-2.5 w-2.5 text-white" />}
-                  </button>
-                  <span className={cn('text-xs flex-1', action.done ? 'text-muted-foreground/40 line-through' : 'text-foreground/70')}>{action.text}</span>
-                  <button onClick={() => deleteAction(action.id)} className="p-0.5 rounded text-muted-foreground/15 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
-                    <Trash2 className="h-2.5 w-2.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {/* Add input — always visible */}
-          <div className="flex items-center gap-2 pt-1.5 mt-1 border-t border-border/10">
+          {actions.length > 0 && (() => {
+            const pending = actions.filter(a => !a.done);
+            const completed = actions.filter(a => a.done);
+            return (
+              <div className="space-y-1">
+                {pending.map((action) => (
+                  <div key={action.id} className="group flex items-center gap-2.5 rounded-lg px-2.5 py-2 -mx-1 hover:bg-muted/5 transition-colors">
+                    <button onClick={() => toggleAction(action.id)}
+                      className="flex h-[18px] w-[18px] items-center justify-center rounded-md border border-muted-foreground/20 shrink-0 transition-all hover:border-teal-400 hover:bg-teal-500/5"
+                    />
+                    <span className="text-[13px] flex-1 text-foreground/75 leading-snug">{action.text}</span>
+                    <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/10 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+                {completed.length > 0 && (
+                  <>
+                    {pending.length > 0 && <div className="border-t border-border/10 my-1.5" />}
+                    {completed.map((action) => (
+                      <div key={action.id} className="group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 -mx-1 transition-colors">
+                        <button onClick={() => toggleAction(action.id)}
+                          className="flex h-[18px] w-[18px] items-center justify-center rounded-md bg-emerald-500/15 border border-emerald-500/30 shrink-0 transition-all hover:bg-emerald-500/25"
+                        >
+                          <Check className="h-2.5 w-2.5 text-emerald-500" />
+                        </button>
+                        <span className="text-[13px] flex-1 text-muted-foreground/35 line-through leading-snug">{action.text}</span>
+                        <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/10 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            );
+          })()}
+          {/* Add input */}
+          <div className="flex items-center gap-2 rounded-lg border border-border/15 bg-muted/5 px-3 py-2 focus-within:border-teal-500/30 focus-within:bg-teal-500/[0.02] transition-colors">
+            <Plus className="h-3 w-3 shrink-0 text-muted-foreground/20" />
             <input
               value={newAction}
               onChange={(e) => setNewAction(e.target.value)}
               placeholder="Add an action..."
-              className="flex-1 bg-transparent px-1 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/20 focus:outline-none"
+              className="flex-1 bg-transparent text-[13px] text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none"
               onKeyDown={(e) => { if (e.key === 'Enter' && newAction.trim()) addAction(); }}
             />
-            <button onClick={addAction} disabled={!newAction.trim()} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-medium bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition-colors disabled:opacity-20">
-              Add
-            </button>
+            {newAction.trim() && (
+              <button onClick={addAction} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-medium bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 transition-colors">
+                Add
+              </button>
+            )}
           </div>
         </div>
       </SectionCard>

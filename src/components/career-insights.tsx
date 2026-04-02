@@ -397,7 +397,6 @@ export function CareerInsights({ compact = false }: CareerInsightsProps) {
       {/* Career Detail Sheet */}
       <CareerDetailSheet
         career={selectedCareer?.career || null}
-        matchScore={selectedCareer?.matchScore}
         onClose={() => setSelectedCareer(null)}
       />
 

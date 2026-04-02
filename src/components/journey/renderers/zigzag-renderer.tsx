@@ -21,8 +21,17 @@ const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
 const SCHOOL_NODE_WIDTH = 140;
 
+/** Stable ID for the "Your Foundation" synthetic item — persists across goal changes */
+export const FOUNDATION_ITEM_ID = 'my-foundation';
+
 export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge, cardDataMap, onProgressCycle }: RendererProps) {
-  const items = journey.items;
+  // Filter out the first foundation item if it duplicates the hardcoded school node
+  const items = useMemo(
+    () => journey.items.filter(
+      (item, i) => !(i === 0 && item.stage === 'foundation' && item.title.toLowerCase().includes('your foundation'))
+    ),
+    [journey.items]
+  );
 
   // Fetch education context for the school node
   const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
@@ -42,6 +51,19 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
     currentItemIndex = items.findIndex((item) => item.startAge >= userAge);
     if (currentItemIndex === -1) currentItemIndex = items.length - 1;
   }
+
+  // "You are here" position — first non-done step (or foundation if nothing done)
+  const youAreHereIndex = useMemo(() => {
+    // Check foundation first
+    const foundationDone = cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done';
+    if (!foundationDone) return -1; // -1 = foundation
+    // Find first non-done step
+    for (let i = 0; i < items.length; i++) {
+      const s = cardDataMap?.[items[i].id]?.status;
+      if (s !== 'done') return i;
+    }
+    return items.length - 1; // all done — show at last
+  }, [cardDataMap, items]);
 
   // School node offset — adds space before the first real item
   const schoolNodeOffset = SCHOOL_NODE_WIDTH + 40;
@@ -141,7 +163,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
           </circle>
         </svg>
 
-        {/* ── School Foundation Node ──────────────────────── */}
+        {/* ── School Foundation Node (clickable) ──────────────────────── */}
         <div
           className="absolute"
           style={{ left: 12, top: HIGH_Y - 16 }}
@@ -154,12 +176,42 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               </span>
             </div>
           )}
-          <div className="w-[160px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm">
+          <button
+            onClick={() => {
+              const foundationItem: JourneyItem = {
+                id: FOUNDATION_ITEM_ID,
+                stage: 'foundation',
+                title: 'Your Foundation',
+                subtitle: eduContext
+                  ? `${EDUCATION_STAGE_CONFIG[eduContext.stage].label}${eduContext.schoolName ? ` · ${eduContext.schoolName}` : ''}`
+                  : 'Where you are today',
+                startAge: userAge ?? journey.startAge,
+                isMilestone: false,
+                icon: 'Sparkles',
+                description: eduContext
+                  ? `Your current education: ${EDUCATION_STAGE_CONFIG[eduContext.stage].label}.${eduContext.studyProgram ? ` Studying ${eduContext.studyProgram}.` : ''}${eduContext.expectedCompletion ? ` Finishing ${eduContext.expectedCompletion}.` : ''} This is your starting point — everything builds from here.`
+                  : 'Where you are today. Tap to add details about your current situation.',
+                microActions: [
+                  'Identify which school subjects are most relevant to your goal',
+                  'Talk to your teachers about this career direction',
+                  'Research what grades are needed for the next step',
+                ],
+              };
+              onItemClick(foundationItem);
+            }}
+            className="w-[160px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
             <div className="flex items-center gap-1.5 mb-2">
               <span className="text-xs">🎓</span>
               <span className="text-[9px] font-bold text-teal-500/80 uppercase tracking-wider">
                 Your Foundation
               </span>
+              {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && (
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              )}
+              {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'in_progress' && (
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              )}
             </div>
             {eduContext ? (
               <div className="space-y-1.5">
@@ -187,10 +239,17 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               </div>
             ) : (
               <p className="text-[10px] text-foreground/50 leading-snug">
-                Where you are today
+                Tap to add your school &amp; subjects
               </p>
             )}
-          </div>
+            {/* "You are here" tag — shown on foundation when it's the current position */}
+            {youAreHereIndex === -1 && (
+              <div className="mt-2 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
+                <span className="text-[8px] font-medium text-teal-400/70 uppercase tracking-wider">You are here</span>
+              </div>
+            )}
+          </button>
         </div>
 
         {/* Positioned nodes + cards + age markers */}
@@ -249,6 +308,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
+                    isYouAreHere={youAreHereIndex === i}
                   />
                 )}
                 <SharedNode
@@ -267,6 +327,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
+                    isYouAreHere={youAreHereIndex === i}
                   />
                 )}
                 {/* Age marker below card for low positions */}
@@ -310,6 +371,7 @@ function ZigzagCard({
   activeLayers,
   isCurrent,
   cardData,
+  isYouAreHere,
 }: {
   item: JourneyItem;
   onClick: () => void;
@@ -317,6 +379,7 @@ function ZigzagCard({
   activeLayers?: Record<OverlayLayerId, boolean>;
   isCurrent?: boolean;
   cardData?: CardDataSummary;
+  isYouAreHere?: boolean;
 }) {
   const stage = STAGE_CONFIG[item.stage];
   const stepType = classifyStepType(item);
@@ -371,6 +434,12 @@ function ZigzagCard({
             <p className="text-[10px] mt-0.5 leading-snug truncate text-muted-foreground">
               {item.subtitle}
             </p>
+          )}
+          {isYouAreHere && (
+            <div className="flex items-center gap-1 mt-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
+              <span className="text-[8px] font-medium text-teal-400/70 uppercase tracking-wider">You are here</span>
+            </div>
           )}
         </div>
       </div>

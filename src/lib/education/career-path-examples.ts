@@ -567,14 +567,19 @@ export function getCareerPathExamples(careerId: string, careerTitle: string): Ca
     }
   }
 
-  // 3. Title match — but require the key to be a significant part of the title
-  //    (avoid "engineer" matching "network engineer" to mechanical engineer)
+  // 3. Title match — require strong bidirectional overlap
+  //    e.g. "software developer" matches "software-developer" but
+  //    "network engineer" does NOT match generic "engineer"
   const titleLower = careerTitle.toLowerCase();
-  const titleWords = titleLower.split(/[\s/()]+/).filter(w => w.length > 2);
+  const STOP_WORDS = new Set(['the', 'and', 'for', 'with', 'senior', 'junior', 'lead', 'chief', 'head']);
+  const titleWords = titleLower.split(/[\s/()]+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
   for (const [key, value] of Object.entries(CAREER_PATHS)) {
-    const keyWords = key.replace(/-/g, ' ').split(' ').filter(w => w.length > 2);
-    // All key words must appear in the title
-    if (keyWords.every(kw => titleWords.some(tw => tw === kw || tw.startsWith(kw)))) {
+    const keyWords = key.replace(/-/g, ' ').split(' ').filter(w => w.length > 2 && !STOP_WORDS.has(w));
+    // All key words must appear in the title AND all title words must appear in the key
+    // This prevents "engineer" from matching "network engineer"
+    const keyMatchesTitle = keyWords.every(kw => titleWords.some(tw => tw === kw || tw.startsWith(kw)));
+    const titleMatchesKey = titleWords.every(tw => keyWords.some(kw => tw === kw || kw.startsWith(tw)));
+    if (keyMatchesTitle && titleMatchesKey) {
       return value.examples;
     }
   }

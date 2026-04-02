@@ -187,12 +187,12 @@ describe('CREATE_ACTION_PLAN Validation', () => {
     expect(result.valid).toBe(false);
   });
 
-  it('rejects missing mid-term milestone', () => {
+  it('accepts empty mid-term milestone (optional field)', () => {
     const result = validateStepCompletionData('CREATE_ACTION_PLAN', {
       type: 'CREATE_ACTION_PLAN',
       plan: { ...makeRolePlan(), midTermMilestone: '' },
     });
-    expect(result.valid).toBe(false);
+    expect(result.valid).toBe(true);
   });
 
   it('rejects missing skill to build', () => {

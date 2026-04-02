@@ -115,7 +115,8 @@ export async function POST(req: NextRequest) {
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
-        const cachedJourney = (globalCached.data as { journey: Journey }).journey;
+        const cachedData = globalCached.data as Record<string, unknown> | null;
+        const cachedJourney = (cachedData as { journey?: Journey })?.journey;
         if (cachedJourney) {
           // Save to per-user cache too (non-blocking)
           prisma.youthProfile.update({
@@ -202,8 +203,8 @@ export async function POST(req: NextRequest) {
     // Global cache (30 days — same career+age serves all users)
     prisma.videoCache.upsert({
       where: { cacheKey: globalCacheKey },
-      create: { cacheKey: globalCacheKey, data: { journey }, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-      update: { data: { journey }, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+      create: { cacheKey: globalCacheKey, data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
+      update: { data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
     }).catch(() => {});
 
     return NextResponse.json({ journey, cached: false });

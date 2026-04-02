@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import type { CardDataSummary } from './renderers/types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
+import { FOUNDATION_ITEM_ID } from './renderers/zigzag-renderer';
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog, loadCardData, cycleProgress } from './timeline';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
@@ -35,6 +36,46 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
   const roadmapRef = useRef<HTMLDivElement>(null);
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   useRoadmapCardData(goalId);
+
+  // Foundation card data — persisted at profile level (survives goal changes)
+  const [foundationCardData, setFoundationCardData] = useState<Record<string, unknown> | null>(null);
+  const foundationSyncRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load foundation data from DB on mount
+  useEffect(() => {
+    fetch('/api/journey/foundation-data')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.foundationCardData) {
+          setFoundationCardData(data.foundationCardData as Record<string, unknown>);
+          // Also write to localStorage so TimelineDetailDialog can read it
+          try {
+            const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
+            all[FOUNDATION_ITEM_ID] = data.foundationCardData;
+            localStorage.setItem('roadmap-card-data', JSON.stringify(all));
+          } catch { /* silent */ }
+        }
+      })
+      .catch(() => { /* silent */ });
+  }, []);
+
+  // Sync foundation data to DB (debounced)
+  const syncFoundationToDb = useCallback(() => {
+    if (foundationSyncRef.current) clearTimeout(foundationSyncRef.current);
+    foundationSyncRef.current = setTimeout(() => {
+      try {
+        const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
+        const fData = all[FOUNDATION_ITEM_ID];
+        if (fData) {
+          fetch('/api/journey/foundation-data', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ foundationCardData: fData }),
+          }).catch(() => { /* silent */ });
+        }
+      } catch { /* silent */ }
+    }, 2000);
+  }, []);
 
   const {
     data,
@@ -78,6 +119,14 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
         hasNotes: Boolean(d.notes),
       };
     }
+    // Include foundation card data
+    const fd = loadCardData(FOUNDATION_ITEM_ID);
+    map[FOUNDATION_ITEM_ID] = {
+      status: fd.status || 'not_started',
+      stickyNote: fd.stickyNote,
+      hasStickyNote: Boolean(fd.stickyNote),
+      hasNotes: Boolean(fd.notes),
+    };
     return map;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [journey, saveVersion]);
@@ -85,7 +134,10 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
   const handleProgressCycle = useCallback((itemId: string) => {
     cycleProgress(itemId);
     setSaveVersion((v) => v + 1);
-  }, []);
+    if (itemId === FOUNDATION_ITEM_ID) {
+      syncFoundationToDb();
+    }
+  }, [syncFoundationToDb]);
 
   // Export as image — must be declared before any early returns
   const handleExport = useCallback(async () => {
@@ -206,7 +258,13 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
         item={selectedItem}
         allItems={journey.items}
         open={!!selectedItem}
-        onSaved={() => setSaveVersion((v) => v + 1)}
+        onSaved={() => {
+          setSaveVersion((v) => v + 1);
+          // If saving foundation data, sync to profile-level DB storage
+          if (selectedItem?.id === FOUNDATION_ITEM_ID) {
+            syncFoundationToDb();
+          }
+        }}
         onOpenChange={(open) => {
           if (!open) setSelectedItem(null);
         }}

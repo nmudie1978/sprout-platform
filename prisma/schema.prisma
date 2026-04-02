@@ -409,7 +409,8 @@ model YouthProfile {
   // Structured Career Goals (Primary + Secondary)
   primaryGoal   Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
   secondaryGoal Json? // Same structure, optional
-  generatedTimeline Json? // Cached AI-generated career timeline
+  generatedTimeline  Json? // Cached AI-generated career timeline
+  foundationCardData Json? // User-editable "Your Foundation" step — persists across goal changes
 
   // ============================================
   // JOURNEY STATE MACHINE FIELDS

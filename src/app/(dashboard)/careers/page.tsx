@@ -461,9 +461,6 @@ function CareersPageContent() {
       {/* Career Detail Sheet with Learn More content */}
       <CareerDetailSheet
         career={selectedCareer}
-        matchScore={
-          selectedCareer ? recommendationMap.get(selectedCareer.id) : undefined
-        }
         onClose={() => setSelectedCareer(null)}
       />
     </div>

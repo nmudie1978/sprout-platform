@@ -36,7 +36,6 @@ import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 
 interface CareerDetailSheetProps {
   career: Career | null;
-  matchScore?: number;
   onClose: () => void;
 }
 
@@ -142,7 +141,6 @@ function SwapGoalModal({
 
 export function CareerDetailSheet({
   career,
-  matchScore,
   onClose,
 }: CareerDetailSheetProps) {
   const { data: session } = useSession();
@@ -311,28 +309,6 @@ export function CareerDetailSheet({
                   </button>
                 </div>
 
-                {/* Match Score */}
-                {matchScore !== undefined && (
-                  <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-teal-500/10">
-                    <div className="relative w-10 h-10 flex-shrink-0">
-                      <svg className="w-10 h-10 transform -rotate-90">
-                        <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" className="text-muted/30" />
-                        <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray={`${(matchScore / 100) * 100.5} 100.5`} className="text-teal-500" strokeLinecap="round" />
-                      </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
-                        {matchScore}%
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-teal-700 dark:text-teal-400">
-                        Match Score
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">
-                        Based on your skills and experience
-                      </p>
-                    </div>
-                  </div>
-                )}
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-2 gap-2 mt-3">

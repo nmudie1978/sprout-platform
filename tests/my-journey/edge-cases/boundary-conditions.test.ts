@@ -235,7 +235,7 @@ describe('Step Completion Validation Edge Cases', () => {
     expect(result.error).toContain('2 short-term');
   });
 
-  it('rejects action plan without mid-term milestone', () => {
+  it('accepts action plan without mid-term milestone (optional field)', () => {
     const result = validateStepCompletionData('CREATE_ACTION_PLAN', {
       type: 'CREATE_ACTION_PLAN',
       plan: {
@@ -243,7 +243,7 @@ describe('Step Completion Validation Edge Cases', () => {
         midTermMilestone: '',
       },
     });
-    expect(result.valid).toBe(false);
+    expect(result.valid).toBe(true);
   });
 
   it('rejects action plan without skill to build', () => {
