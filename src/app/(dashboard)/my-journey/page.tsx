@@ -519,7 +519,7 @@ function UnderstandTab({
 
         {/* Right: The Reality — videos */}
         <SectionCard>
-          <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
+          <SectionHeader icon={Play} title="The Reality" />
           <div className="p-4 space-y-3">
             {careerVideos.length > 0 ? (
               <div>
