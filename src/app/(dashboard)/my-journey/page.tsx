@@ -461,6 +461,11 @@ function UnderstandTab({
   const { data: courseSearchData } = useCourseSearch(goalTitle);
   const { data: careerVideosData } = useCareerVideos(goalTitle);
 
+  // All hooks must be called before any early return
+  const [openSection, setOpenSection] = useState<string | null>(null);
+  const [carouselTab, setCarouselTab] = useState<'education' | 'paths' | 'tools'>('education');
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
+
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
   }
@@ -468,19 +473,12 @@ function UnderstandTab({
   const details = detailsData?.details ?? null;
   const progression = detailsData?.progression ?? null;
   const careerVideos = careerVideosData?.videos ?? [];
-
-  // Accordion — only one section open at a time (null = all collapsed)
-  const [openSection, setOpenSection] = useState<string | null>(null);
   const toggle = (id: string) => setOpenSection(prev => prev === id ? null : id);
 
   const allCourses = [
     ...(learningData?.localRegional ?? []),
     ...(learningData?.international ?? []),
   ];
-
-  // Carousel state for bottom section
-  const [carouselTab, setCarouselTab] = useState<'education' | 'paths' | 'tools'>('education');
-  const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   return (
     <div className="space-y-4">
