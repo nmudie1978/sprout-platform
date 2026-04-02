@@ -521,15 +521,17 @@ function UnderstandTab({
         <SectionCard>
           <SectionHeader icon={Play} title="The Reality" badge={<span className="text-[10px] text-muted-foreground/30">See for yourself</span>} />
           <div className="p-4 space-y-3">
-            {careerVideos.length > 0 ? careerVideos.map((video) => (
-              <div key={video.videoId}>
-                <p className="text-[10px] font-medium text-muted-foreground/40 mb-1.5 line-clamp-1">{video.title}</p>
+            {careerVideos.length > 0 ? (
+              <div>
+                <p className="text-[10px] font-medium text-muted-foreground/40 mb-1.5 line-clamp-1">{careerVideos[0].title}</p>
                 <div className="rounded-lg overflow-hidden border border-border/15">
-                  <iframe src={`https://www.youtube.com/embed/${video.videoId}`} className="w-full aspect-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={video.title} />
+                  <iframe src={`https://www.youtube.com/embed/${careerVideos[0].videoId}`} className="w-full aspect-video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title={careerVideos[0].title} />
                 </div>
               </div>
-            )) : (
-              <p className="text-xs text-muted-foreground/40 text-center py-4">Videos loading...</p>
+            ) : details?.realityCheck ? null : (
+              <div className="flex items-center justify-center py-6">
+                <div className="animate-pulse h-4 w-4 rounded-full bg-muted-foreground/10" />
+              </div>
             )}
             {details?.realityCheck && (
               <div className="rounded-lg border border-amber-500/15 bg-amber-500/5 p-3">
