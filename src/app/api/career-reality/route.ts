@@ -39,11 +39,11 @@ interface RawVideo {
 
 function buildQueries(career: string): string[] {
   return [
-    `the reality of being a ${career}`,
-    `${career} pros and cons`,
+    `the harsh reality of being a ${career}`,
     `what they don't tell you about being a ${career}`,
-    `is being a ${career} worth it`,
-    `the worst part of being a ${career}`,
+    `the worst part of being a ${career} honest`,
+    `struggles of being a ${career}`,
+    `I regret becoming a ${career}`,
   ];
 }
 
@@ -64,6 +64,8 @@ const REJECT_PATTERNS = [
   /\btutorial\b/i, /\bfull course\b/i, /\bcertification\b/i,
   /\bresume\b/i, /\bcv\b/i, /\bjob interview\b/i,
   /\br\/\w+/i, /\breddit\b/i, /\bstories\b/i, /\bask reddit\b/i,
+  /\bvs\.?\b/i, /\bversus\b/i, /\bor\b.*\bwhich\b/i, /\bshould you become\b/i,
+  /\bsalary\b.*\b\d{4}\b/i, /\bhow much\b.*\bmake\b/i, /\bsalary breakdown\b/i,
 ];
 
 // Scoring tiers — heavier = more "reality" focused
@@ -73,6 +75,8 @@ const STRONG_SIGNALS: [RegExp, string][] = [
   [/\bharsh\b/i, 'Honest about the challenges'],
   [/\bworst\b/i, 'Reveals the hardest parts'],
   [/\bhardest\b/i, 'Reveals the hardest parts'],
+  [/\bstruggl/i, 'Real struggles from experience'],
+  [/\bburnout\b/i, 'Honest about the toll it takes'],
   [/\bshouldn'?t\b/i, 'Useful reality check before committing'],
   [/\breasons? not to\b/i, 'Useful reality check before committing'],
   [/\bnobody tells you\b/i, 'Insider perspective most people miss'],
@@ -82,6 +86,9 @@ const STRONG_SIGNALS: [RegExp, string][] = [
   [/\bregret/i, 'Important considerations before starting'],
   [/\bmistake/i, 'Lessons learned from experience'],
   [/\bbefore you\b.*\bbecome\b/i, 'What to know before committing'],
+  [/\bquit\b/i, 'Why some people leave the profession'],
+  [/\bhate\b.*\bjob\b/i, 'Honest frustrations from the field'],
+  [/\btoxic\b/i, 'Honest about workplace culture'],
 ];
 
 const MEDIUM_SIGNALS: [RegExp, string][] = [
@@ -188,7 +195,7 @@ async function findBestVideos(career: string): Promise<RealityVideo[]> {
 
   // Fallback for niche careers
   if (candidates.length === 0) {
-    const fallbackResults = await searchYouTube(`${career} career reality honest`, apiKey, career);
+    const fallbackResults = await searchYouTube(`${career} harsh truth struggles honest`, apiKey, career);
     for (const r of fallbackResults) {
       if (!seen.has(r.videoId)) {
         seen.add(r.videoId);
@@ -336,7 +343,9 @@ export async function GET(req: NextRequest) {
     update: { data: response as any, expiresAt: new Date(Date.now() + ttl) },
   }).catch(() => { /* non-blocking */ });
 
+  // Shorter edge cache when videos are missing so retries happen sooner
+  const edgeTtl = videos.length > 0 ? 86400 : 300;
   return NextResponse.json(response, {
-    headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
+    headers: { 'Cache-Control': `public, s-maxage=${edgeTtl}, stale-while-revalidate=${edgeTtl}` },
   });
 }
