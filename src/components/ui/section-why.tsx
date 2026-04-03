@@ -13,6 +13,8 @@ interface SectionWhyProps {
 export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
   return (
     <Popover>
+      {/* Wrap in a span that stops click propagation to prevent parent Link navigation */}
+      <span onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
       <PopoverTrigger asChild>
         <button
           className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -28,6 +30,7 @@ export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
       >
         {why}
       </PopoverContent>
+      </span>
     </Popover>
   );
 }

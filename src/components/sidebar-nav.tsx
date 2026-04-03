@@ -176,7 +176,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
   // Check if there's an active journey (goal set)
   const { data: goalsData } = useQuery<{ primaryGoal: { title: string } | null }>({
-    queryKey: ["my-goals"],
+    queryKey: ["goals"],
     queryFn: async () => {
       const response = await fetch("/api/goals");
       if (!response.ok) return { primaryGoal: null };

@@ -19,4 +19,6 @@ export interface RendererProps {
   cardDataMap?: Record<string, CardDataSummary>;
   /** Callback to cycle a node's progress status */
   onProgressCycle?: (itemId: string) => void;
+  /** Career title — used for subject alignment on foundation node */
+  careerTitle?: string;
 }

@@ -105,6 +105,12 @@ export function GoalSelectionSheet({
       );
       if (slot === "primary") {
         syncGuidanceGoal(variables.title);
+        // Pre-generate the career roadmap so it's cached before the user reaches Grow
+        fetch("/api/journey/generate-timeline", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ career: variables.title }),
+        }).catch(() => {});
       }
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });

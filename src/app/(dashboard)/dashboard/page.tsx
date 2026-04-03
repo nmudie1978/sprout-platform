@@ -45,6 +45,7 @@ import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { SectionWhy } from "@/components/ui/section-why";
 import { PageContext } from "@/components/ui/page-context";
+import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -370,7 +371,7 @@ export default function DashboardPage() {
   }, [isFirstLogin, dismissOnboarding]);
 
   const { data: goalsData } = useQuery<GoalsResponse>({
-    queryKey: ["my-goals"],
+    queryKey: ["goals"],
     queryFn: async () => {
       const response = await fetch("/api/goals");
       if (!response.ok) return { primaryGoal: null, secondaryGoal: null };
@@ -446,7 +447,6 @@ export default function DashboardPage() {
     onSuccess: (_data, goalTitle) => {
       syncGuidanceGoal(goalTitle);
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
-      queryClient.invalidateQueries({ queryKey: ["my-goals"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
@@ -511,6 +511,7 @@ export default function DashboardPage() {
 
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
+  const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
   const [switchConfirm, setSwitchConfirm] = useState<{ goalTitle: string; emoji: string } | null>(null);
   const goalCareer = useMemo(() => {
@@ -686,8 +687,16 @@ export default function DashboardPage() {
                   My Journey
                   <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Grow — helping you turn career ideas into real steps forward." />
                 </h2>
-                <p className="text-xs text-muted-foreground/60">
+                <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
                   {goalTitle ? goalTitle : 'Track your growth'}
+                  {goalTitle && (
+                    <button
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
+                      className="text-[9px] text-teal-500/60 hover:text-teal-500 transition-colors font-medium"
+                    >
+                      change
+                    </button>
+                  )}
                 </p>
               </div>
             </div>
@@ -1019,6 +1028,16 @@ export default function DashboardPage() {
       <CareerDetailSheet
         career={showGoalDetail ? goalCareer : null}
         onClose={() => setShowGoalDetail(false)}
+      />
+
+      {/* Goal Selection Sheet */}
+      <GoalSelectionSheet
+        open={showGoalSheet}
+        onClose={() => setShowGoalSheet(false)}
+        targetSlot="primary"
+        primaryGoal={primaryGoal}
+        secondaryGoal={goalsData?.secondaryGoal ?? null}
+        onSuccess={() => setShowGoalSheet(false)}
       />
 
       {/* Switch Journey Confirmation */}

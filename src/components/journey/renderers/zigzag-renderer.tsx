@@ -6,7 +6,8 @@ import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-typ
 import { classifyStepType } from '@/lib/education/alignment';
 import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import type { EducationContext } from '@/lib/education/types';
-import { EDUCATION_STAGE_CONFIG } from '@/lib/education/types';
+import { EDUCATION_STAGE_CONFIG, ALIGNMENT_CONFIG } from '@/lib/education/types';
+import { calculateSubjectAlignment } from '@/lib/education/alignment';
 import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps, CardDataSummary } from './types';
@@ -19,12 +20,12 @@ const HIGH_Y = 90;
 const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
-const SCHOOL_NODE_WIDTH = 140;
+const SCHOOL_NODE_WIDTH = 170;
 
 /** Stable ID for the "Your Foundation" synthetic item — persists across goal changes */
 export const FOUNDATION_ITEM_ID = 'my-foundation';
 
-export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge, cardDataMap, onProgressCycle }: RendererProps) {
+export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers, userAge, cardDataMap, onProgressCycle, careerTitle }: RendererProps) {
   // Filter out the first foundation item if it duplicates the hardcoded school node
   const items = useMemo(
     () => journey.items.filter(
@@ -44,6 +45,12 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
     staleTime: 30 * 60 * 1000,
   });
   const eduContext = eduData?.educationContext;
+
+  // Compute subject alignment against the career
+  const alignment = useMemo(() => {
+    if (!eduContext?.currentSubjects?.length || !careerTitle) return null;
+    return calculateSubjectAlignment(eduContext.currentSubjects, careerTitle);
+  }, [eduContext?.currentSubjects, careerTitle]);
 
   // Find current item based on user age — used for active highlighting
   let currentItemIndex = -1;
@@ -199,7 +206,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               };
               onItemClick(foundationItem);
             }}
-            className="w-[160px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="w-[180px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="flex items-center gap-1.5 mb-2">
               <span className="text-xs">🎓</span>
@@ -229,11 +236,38 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 )}
                 {eduContext.currentSubjects.length > 0 && (
                   <div className="flex flex-wrap gap-0.5 mt-0.5">
-                    {eduContext.currentSubjects.map((s) => (
-                      <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-teal-500/10 text-teal-500/80">
-                        {s}
-                      </span>
-                    ))}
+                    {eduContext.currentSubjects.map((s) => {
+                      const isMatched = alignment?.matchedKey.some(
+                        (k) => s.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(s.toLowerCase())
+                      );
+                      return (
+                        <span key={s} className={cn(
+                          'inline-flex rounded px-1 py-0.5 text-[7px] font-medium',
+                          alignment && isMatched
+                            ? 'bg-emerald-500/15 text-emerald-400'
+                            : 'bg-teal-500/10 text-teal-500/80'
+                        )}>
+                          {alignment && isMatched && '✓ '}{s}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+                {/* Alignment indicator */}
+                {alignment && alignment.alignment !== 'unknown' && (
+                  <div className={cn('rounded-md px-2 py-1.5 mt-1', ALIGNMENT_CONFIG[alignment.alignment].bgClass)}>
+                    <p className={cn('text-[8px] font-semibold uppercase tracking-wider', ALIGNMENT_CONFIG[alignment.alignment].colorClass)}>
+                      {ALIGNMENT_CONFIG[alignment.alignment].label}
+                    </p>
+                    {alignment.missingKey.length > 0 && (
+                      <div className="flex flex-wrap gap-0.5 mt-1">
+                        {alignment.missingKey.map((s) => (
+                          <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-red-500/10 text-red-400/80">
+                            + {s}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -938,7 +938,7 @@ export default function GoalsPageContent() {
         secondaryGoal={secondaryGoal}
         onSuccess={() => {
           queryClient.invalidateQueries({ queryKey: ["goals"] });
-          queryClient.invalidateQueries({ queryKey: ["my-goals"] });
+          queryClient.invalidateQueries({ queryKey: ["goals"] });
           queryClient.invalidateQueries({ queryKey: ["journey-state"] });
           queryClient.invalidateQueries({ queryKey: ["goal-data"] });
           queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });

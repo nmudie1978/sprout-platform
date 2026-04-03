@@ -106,7 +106,7 @@ export default function PersonalisationDemoPage() {
   });
 
   const { data: goalsData, isLoading: gLoading } = useQuery<{ primaryGoal: { title: string } | null }>({
-    queryKey: ["my-goals"],
+    queryKey: ["goals"],
     queryFn: async () => { const r = await fetch("/api/goals"); return r.ok ? r.json() : { primaryGoal: null }; },
     enabled: !!session, staleTime: 60_000,
   });

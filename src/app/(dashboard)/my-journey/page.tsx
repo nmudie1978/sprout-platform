@@ -242,9 +242,9 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 
 // ─── Shared UI components ────────────────────────────────────────────────────
 
-function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
+function SectionCard({ children, className, style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)' }}>
+    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)', ...style }}>
       {children}
     </div>
   );
@@ -1187,7 +1187,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       </div>
 
       {/* 1. My Roadmap — with route selector */}
-      <SectionCard>
+      <SectionCard className="border-teal-500/25" style={{ boxShadow: '0 0 25px rgba(20,184,166,0.12), 0 0 50px rgba(20,184,166,0.06)' }}>
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
           <div className="flex items-center gap-2.5">
             <Rocket className="h-4 w-4 text-teal-400" />

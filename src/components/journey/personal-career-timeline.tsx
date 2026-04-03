@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
+import { generateFallbackTimeline } from '@/lib/journey/generate-fallback-timeline';
 import type { CardDataSummary } from './renderers/types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/zigzag-renderer';
@@ -77,9 +78,16 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     }, 2000);
   }, []);
 
+  // Generate a client-side fallback so the roadmap renders instantly
+  const fallbackJourney = useMemo(
+    () => primaryGoalTitle ? generateFallbackTimeline(primaryGoalTitle) : null,
+    [primaryGoalTitle]
+  );
+
   const {
     data,
     isLoading,
+    isFetching,
     isError,
     error,
   } = useQuery<{ journey: Journey; cached: boolean }>({
@@ -101,6 +109,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     enabled: !!primaryGoalTitle,
     staleTime: 30 * 60 * 1000,
     retry: 1,
+    // Show fallback roadmap instantly while AI version loads
+    placeholderData: fallbackJourney ? { journey: fallbackJourney, cached: false } : undefined,
   });
 
   const journey = overrideJourney ?? data?.journey ?? null;
@@ -195,6 +205,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
 
   if (!journey) return null;
 
+  // Show "personalising" when we're displaying fallback while AI version loads
+  const isPreliminary = isFetching && !data?.cached;
   const Renderer = RENDERERS[style] || ZigzagRenderer;
 
   // Timeline summary
@@ -225,6 +237,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
               {eduStages.length > 0 && <> · {eduLabel} track</>}
             </span>
           )}
+          {isPreliminary && (
+            <span className="ml-2 inline-flex items-center gap-1 text-muted-foreground/30">
+              <RefreshCw className="h-3 w-3 animate-spin" />
+              <span className="text-[10px]">Personalising...</span>
+            </span>
+          )}
         </p>
         <div className="flex items-center gap-2">
           <button
@@ -250,6 +268,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
           userAge={journey.startAge}
           cardDataMap={cardDataMap}
           onProgressCycle={handleProgressCycle}
+          careerTitle={primaryGoalTitle ?? undefined}
         />
       </div>
 

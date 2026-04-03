@@ -1752,7 +1752,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
     ],
     whoThisIsGoodFor: [
       "Detail-oriented investigators",
-      "People who enjoy breaking things",
+      "People who enjoy finding and fixing problems",
       "Those who think about edge cases",
       "Methodical problem-solvers",
       "People who advocate for users",
@@ -9703,7 +9703,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "You simulate real-world attackers to find vulnerabilities in systems, networks, and applications before malicious actors do, then help organisations fix what you find.",
       "Norway's critical infrastructure in oil and gas, maritime, and finance creates strong demand for offensive security professionals, with firms like mnemonic and Netsecurity leading the market.",
     ],
-    whoThisIsGoodFor: ["Creative problem solvers with hacker mindsets", "People who enjoy puzzle-solving and breaking things", "Those who stay current with evolving attack techniques", "Detail-oriented reporters who can explain findings clearly"],
+    whoThisIsGoodFor: ["Creative problem solvers with hacker mindsets", "People who enjoy puzzle-solving and testing boundaries", "Those who stay current with evolving attack techniques", "Detail-oriented reporters who can explain findings clearly"],
     topSkills: ["Penetration testing", "Exploit development", "Network security", "Web application security", "Report writing"],
     entryPaths: ["Security analyst with CTF competition background", "Systems administrator who learned offensive techniques", "Computer science graduate with security certifications (OSCP)"],
     realityCheck: "The glamorous hacking is maybe 40% of the job; the rest is scoping, reporting, and convincing clients to actually fix things.",

@@ -162,6 +162,12 @@ export function usePromoteGoal() {
         description: "Your secondary goal is now primary.",
       });
       syncGuidanceGoal(variables.currentSecondary.title);
+      // Pre-generate the career roadmap for the new primary goal
+      fetch("/api/journey/generate-timeline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ career: variables.currentSecondary.title }),
+      }).catch(() => {});
       invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {

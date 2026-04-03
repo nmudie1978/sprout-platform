@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate timeline
+    // Generate timeline via AI (synchronous — Vercel kills function after response)
     let journey: Journey;
     const openai = getOpenAIClient();
 
@@ -159,7 +159,6 @@ export async function POST(req: NextRequest) {
         const parsed = JSON.parse(content);
         if (!isValidJourney(parsed)) throw new Error('Invalid structure');
 
-        // Clamp all ages to be >= user's current age
         const clampAge = (age: number) => Math.max(age, userAge);
 
         journey = {
@@ -195,12 +194,10 @@ export async function POST(req: NextRequest) {
 
     // Cache result (non-blocking)
     const cacheData = JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey }));
-    // Per-user cache
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },
     }).catch(() => {});
-    // Global cache (30 days — same career+age serves all users)
     prisma.videoCache.upsert({
       where: { cacheKey: globalCacheKey },
       create: { cacheKey: globalCacheKey, data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
@@ -90,6 +91,7 @@ export function TimelineDetailDialog({
   onOpenChange,
   onSaved,
 }: TimelineDetailDialogProps) {
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState<CardData['status']>('not_started');
   const [completedActions, setCompletedActions] = useState<number[]>([]);
   const [dirty, setDirty] = useState(false);
@@ -181,6 +183,8 @@ export function TimelineDetailDialog({
             currentSubjects: subjects,
           }),
         });
+        // Invalidate so the roadmap foundation node picks up the new data
+        queryClient.invalidateQueries({ queryKey: ['education-context'] });
       } catch { /* silent */ }
     }
 
