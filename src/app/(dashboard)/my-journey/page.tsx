@@ -406,6 +406,54 @@ function DiscoverTab({
         </div>
       </div>
 
+      {/* Quick insights row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* How long */}
+        {(() => {
+          const yearMatch = career.educationPath.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || career.educationPath.match(/(\d+)\s*years?/i);
+          const years = yearMatch ? parseInt(yearMatch[2] || yearMatch[1]) : null;
+          const qualifiedAge = years ? 16 + years : null;
+          return (
+            <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-3.5 w-3.5 text-violet-400" />
+                <span className="text-[10px] font-semibold text-violet-400 uppercase tracking-wider">Timeline</span>
+              </div>
+              {qualifiedAge ? (
+                <p className="text-xs text-foreground/70 leading-relaxed">
+                  You could be qualified by <span className="font-semibold text-foreground/90">age {qualifiedAge}</span>
+                  <span className="text-muted-foreground/40"> — that&apos;s ~{years} years from now</span>
+                </p>
+              ) : (
+                <p className="text-xs text-foreground/70 leading-relaxed">{career.educationPath}</p>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* Work environment */}
+        {dDetails?.typicalDay.environment && (
+          <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="h-3.5 w-3.5 text-amber-400" />
+              <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Where you&apos;ll work</span>
+            </div>
+            <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.typicalDay.environment}</p>
+          </div>
+        )}
+
+        {/* Reality teaser */}
+        {dDetails?.realityCheck && (
+          <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
+              <span className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider">Good to know</span>
+            </div>
+            <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.realityCheck}</p>
+          </div>
+        )}
+      </div>
+
       {/* Next */}
       <div className="flex justify-end pt-2">
         <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
@@ -1435,7 +1483,7 @@ export default function MyJourneyPage() {
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string }[] = [
     { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)' },
-    { id: 'understand', label: 'Understand', subtitle: 'Know the role', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)' },
+    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)' },
     { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)' },
   ];
 

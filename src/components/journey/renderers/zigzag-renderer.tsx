@@ -20,7 +20,7 @@ const HIGH_Y = 90;
 const LOW_Y = 220;
 const CARD_WIDTH = 150;
 const AGE_MARKER_HEIGHT = 24;
-const SCHOOL_NODE_WIDTH = 170;
+const SCHOOL_NODE_WIDTH = 190;
 
 /** Stable ID for the "Your Foundation" synthetic item — persists across goal changes */
 export const FOUNDATION_ITEM_ID = 'my-foundation';
@@ -221,13 +221,16 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               };
               onItemClick(foundationItem);
             }}
-            className="w-[180px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="w-[200px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div className="flex items-center gap-1.5 mb-2">
-              <span className="text-xs">🎓</span>
-              <span className="text-[9px] font-bold text-teal-500/80 uppercase tracking-wider">
-                Your Foundation
-              </span>
+            {/* Header row */}
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px]">🎓</span>
+                <span className="text-[8px] font-bold text-teal-500/80 uppercase tracking-wider">
+                  Your Foundation
+                </span>
+              </div>
               {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && (
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               )}
@@ -237,52 +240,67 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
             </div>
             {eduContext ? (
               <div className="space-y-1.5">
-                <p className="text-xs font-semibold text-foreground/90">
-                  {EDUCATION_STAGE_CONFIG[eduContext.stage].label}
-                </p>
-                {eduContext.schoolName && (
-                  <p className="text-[10px] text-foreground/70">{eduContext.schoolName}</p>
-                )}
-                {eduContext.studyProgram && (
-                  <p className="text-[10px] text-foreground/70">{eduContext.studyProgram}</p>
-                )}
-                {eduContext.expectedCompletion && (
-                  <p className="text-[10px] text-foreground/70">Finishing {eduContext.expectedCompletion}</p>
-                )}
+                {/* Info grid */}
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[8px]">
+                  <div>
+                    <span className="text-muted-foreground/35 uppercase tracking-wider">Stage</span>
+                    <p className="text-foreground/80 font-medium">{EDUCATION_STAGE_CONFIG[eduContext.stage].label}</p>
+                  </div>
+                  {eduContext.schoolName && (
+                    <div>
+                      <span className="text-muted-foreground/35 uppercase tracking-wider">School</span>
+                      <p className="text-foreground/80 font-medium truncate">{eduContext.schoolName}</p>
+                    </div>
+                  )}
+                  {eduContext.studyProgram && (
+                    <div>
+                      <span className="text-muted-foreground/35 uppercase tracking-wider">Track</span>
+                      <p className="text-foreground/80 font-medium truncate">{eduContext.studyProgram}</p>
+                    </div>
+                  )}
+                  {eduContext.expectedCompletion && (
+                    <div>
+                      <span className="text-muted-foreground/35 uppercase tracking-wider">Finish</span>
+                      <p className="text-foreground/80 font-medium">{eduContext.expectedCompletion}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Subjects */}
                 {allSubjects.length > 0 && (
-                  <div className="flex flex-wrap gap-0.5 mt-0.5">
-                    {allSubjects.map((s) => {
-                      const isMatched = alignment?.matchedKey.some(
-                        (k) => s.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(s.toLowerCase())
-                      );
-                      return (
-                        <span key={s} className={cn(
-                          'inline-flex rounded px-1 py-0.5 text-[7px] font-medium',
-                          alignment && isMatched
-                            ? 'bg-emerald-500/15 text-emerald-400'
-                            : 'bg-teal-500/10 text-teal-500/80'
-                        )}>
-                          {alignment && isMatched && '✓ '}{s}
-                        </span>
-                      );
-                    })}
+                  <div className="border-t border-border/15 pt-1.5">
+                    <div className="flex flex-wrap gap-[3px]">
+                      {allSubjects.map((s) => {
+                        const isMatched = alignment?.matchedKey.some(
+                          (k) => s.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(s.toLowerCase())
+                        );
+                        return (
+                          <span key={s} className={cn(
+                            'inline-flex rounded-full px-1.5 py-[1px] text-[7px] font-medium leading-none',
+                            alignment && isMatched
+                              ? 'bg-sky-500/15 text-sky-400'
+                              : 'bg-foreground/5 text-foreground/40'
+                          )}>
+                            {s}
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
-                {/* Alignment indicator */}
+
+                {/* Alignment message — sky for positive, amber for partial, rose for gaps */}
                 {alignment && alignment.alignment !== 'unknown' && (
-                  <div className={cn('rounded-md px-2 py-1.5 mt-1', ALIGNMENT_CONFIG[alignment.alignment].bgClass)}>
-                    <p className={cn('text-[8px] font-semibold uppercase tracking-wider', ALIGNMENT_CONFIG[alignment.alignment].colorClass)}>
-                      {ALIGNMENT_CONFIG[alignment.alignment].label}
+                  <div className={cn('border-t border-border/15 pt-1.5')}>
+                    <p className={cn('text-[7px] font-medium',
+                      alignment.alignment === 'strong' ? 'text-sky-400' : alignment.alignment === 'partial' ? 'text-amber-400' : 'text-rose-400'
+                    )}>
+                      {alignment.alignment === 'strong'
+                        ? '✨ You\'re on the right track!'
+                        : alignment.alignment === 'partial'
+                          ? `Nearly there — consider ${alignment.missingKey.join(', ')}`
+                          : `Consider adding ${alignment.missingKey.join(', ')}`}
                     </p>
-                    {alignment.missingKey.length > 0 && (
-                      <div className="flex flex-wrap gap-0.5 mt-1">
-                        {alignment.missingKey.map((s) => (
-                          <span key={s} className="inline-flex rounded px-1 py-0.5 text-[7px] font-medium bg-red-500/10 text-red-400/80">
-                            + {s}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 )}
               </div>

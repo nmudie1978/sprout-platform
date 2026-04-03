@@ -153,11 +153,17 @@ export async function PUT(request: Request) {
 
           // Verify goalTitle matches to prevent slug collision from loading wrong data
           if (savedData && savedData.goalTitle === goal.title) {
+            // Preserve educationContext from current profile — it's user-level, not goal-level
+            const currentSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
+            const restoredSummary = (savedData.journeySummary as Record<string, unknown>) || {};
             journeyUpdate = {
               journeyState: savedData.journeyState,
               journeyCompletedSteps: savedData.journeyCompletedSteps,
               journeySkippedSteps: Prisma.DbNull,
-              journeySummary: savedData.journeySummary || undefined,
+              journeySummary: {
+                ...restoredSummary,
+                educationContext: restoredSummary.educationContext || currentSummary.educationContext || undefined,
+              },
               journeyLastUpdated: new Date(),
             };
           } else {
@@ -170,6 +176,7 @@ export async function PUT(request: Request) {
                 strengths: existingSummary.strengths || [],
                 careerInterests: existingSummary.careerInterests || [],
                 discoverReflections: existingSummary.discoverReflections || undefined,
+                educationContext: existingSummary.educationContext || undefined,
               },
               journeyLastUpdated: new Date(),
             };

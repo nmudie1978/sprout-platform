@@ -14,6 +14,7 @@ import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import { cn } from '@/lib/utils';
 import {
   Check,
+  ChevronDown,
   Circle,
   CircleDot,
   CheckCircle2,
@@ -22,6 +23,7 @@ import {
   X,
 } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
+import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 
 interface TimelineDetailDialogProps {
   item: JourneyItem | null;
@@ -104,6 +106,7 @@ export function TimelineDetailDialog({
   const [expectedCompletion, setExpectedCompletion] = useState('');
   const [subjects, setSubjects] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState('');
+  const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
 
   const isFoundation = item?.id === FOUNDATION_ITEM_ID;
 
@@ -284,33 +287,95 @@ export function TimelineDetailDialog({
                 />
               </div>
 
-              {/* Subjects */}
+              {/* Subjects — dropdown multi-select */}
               <div>
-                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Subjects</label>
+                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Your Subjects</label>
+
+                {/* Selected subjects as removable pills */}
                 {subjects.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1.5 mb-2">
                     {subjects.map(s => (
                       <span key={s} className="inline-flex items-center gap-1 rounded-full border border-teal-500/20 bg-teal-500/5 px-2 py-0.5 text-[10px] text-teal-400">
                         {s}
-                        <button onClick={() => removeSubject(s)} className="hover:text-red-400 transition-colors">
+                        <button onClick={() => { setSubjects(prev => prev.filter(x => x !== s)); setDirty(true); }} className="hover:text-red-400 transition-colors">
                           <X className="h-2.5 w-2.5" />
                         </button>
                       </span>
                     ))}
                   </div>
                 )}
-                <div className="flex gap-1.5 mt-1">
-                  <input
-                    value={newSubject}
-                    onChange={(e) => setNewSubject(e.target.value)}
-                    placeholder="Add a subject..."
-                    className="flex-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-1.5 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSubject(); } }}
-                  />
-                  <button onClick={addSubject} disabled={!newSubject.trim()} className="shrink-0 rounded-lg bg-teal-500/10 px-2.5 py-1.5 text-teal-400 hover:bg-teal-500/20 transition-colors disabled:opacity-20">
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+
+                {/* Dropdown trigger */}
+                <button
+                  type="button"
+                  onClick={() => setSubjectDropdownOpen(prev => !prev)}
+                  className="w-full flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-left hover:border-border/50 transition-colors"
+                >
+                  <span className={subjects.length > 0 ? 'text-foreground/60' : 'text-muted-foreground/30'}>
+                    {subjects.length > 0 ? `${subjects.length} subject${subjects.length !== 1 ? 's' : ''} selected` : 'Select subjects...'}
+                  </span>
+                  <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/40 transition-transform', subjectDropdownOpen && 'rotate-180')} />
+                </button>
+
+                {/* Dropdown panel */}
+                {subjectDropdownOpen && (
+                  <div className="mt-1.5 rounded-lg border border-border/30 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden">
+                    <div className="max-h-[220px] overflow-y-auto p-2 space-y-2">
+                      {SUBJECT_GROUPS.map((group) => {
+                        const categoryColors: Record<string, string> = {
+                          'Mathematics & Science': 'text-blue-400',
+                          'Technology': 'text-violet-400',
+                          'Languages': 'text-amber-400',
+                          'Humanities & Social': 'text-rose-400',
+                          'Business & Finance': 'text-emerald-400',
+                          'Creative & Practical': 'text-orange-400',
+                          'Health & Care': 'text-pink-400',
+                        };
+                        const color = categoryColors[group.category] || 'text-muted-foreground/50';
+                        return (
+                          <div key={group.category}>
+                            <p className={cn('text-[9px] font-bold uppercase tracking-wider px-1 mb-1', color)}>{group.category}</p>
+                            {group.subjects.map((s) => {
+                              const selected = subjects.includes(s);
+                              return (
+                                <button
+                                  key={s}
+                                  type="button"
+                                  onClick={() => {
+                                    setSubjects(prev => selected ? prev.filter(x => x !== s) : [...prev, s]);
+                                    setDirty(true);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] text-left hover:bg-muted/30 transition-colors"
+                                >
+                                  <div className={cn(
+                                    'h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0',
+                                    selected ? 'bg-teal-500 border-teal-500' : 'border-border/40'
+                                  )}>
+                                    {selected && <Check className="h-2.5 w-2.5 text-white" />}
+                                  </div>
+                                  <span className={selected ? 'text-foreground/80 font-medium' : 'text-foreground/50'}>{s}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {/* Other subject input inside dropdown */}
+                    <div className="flex gap-1.5 p-2 border-t border-border/20">
+                      <input
+                        value={newSubject}
+                        onChange={(e) => setNewSubject(e.target.value)}
+                        placeholder="Other subject..."
+                        className="flex-1 rounded-md border border-border/30 bg-muted/10 px-2.5 py-1.5 text-[10px] text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSubject(); } }}
+                      />
+                      <button onClick={addSubject} disabled={!newSubject.trim()} className="shrink-0 rounded-md bg-teal-500/10 px-2 py-1.5 text-teal-400 hover:bg-teal-500/20 transition-colors disabled:opacity-20">
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
