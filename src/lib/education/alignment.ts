@@ -49,6 +49,15 @@ const CAREER_SUBJECT_MAP: CareerSubjectMapping[] = [
     whySubjectsMatter: 'Software development relies on logical and mathematical thinking. Starting early with code gives you a real advantage.',
   },
   {
+    career: 'qa engineer',
+    keySubjects: ['Computer Science', 'Mathematics', 'English'],
+    supportingSubjects: ['Business Studies', 'Design & Technology', 'Psychology'],
+    focusAreas: ['Logical thinking', 'Attention to detail', 'Communication skills'],
+    nextDecisions: ['Learn the basics of programming and testing', 'Choose maths and computing subjects', 'Practice structured problem-solving'],
+    whySubjectsMatter: 'QA engineering requires logical thinking, precision, and the ability to communicate issues clearly — computer science, maths, and English are your foundations.',
+    aliases: ['test engineer', 'quality assurance', 'software tester', 'QA', 'SDET'],
+  },
+  {
     career: 'engineer',
     keySubjects: ['Mathematics', 'Physics', 'Design & Technology'],
     supportingSubjects: ['Computer Science', 'Chemistry', 'English'],

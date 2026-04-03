@@ -46,11 +46,26 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   });
   const eduContext = eduData?.educationContext;
 
+  // Collect all known subjects — from currentSubjects + parse studyProgram as a fallback
+  const allSubjects = useMemo(() => {
+    if (!eduContext) return [];
+    const subjects = [...(eduContext.currentSubjects || [])];
+    // If the user put subjects in the programme field (common), parse them too
+    if (eduContext.studyProgram) {
+      const parsed = eduContext.studyProgram
+        .split(/[,;/&+]+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 1 && !subjects.some((ex) => ex.toLowerCase() === s.toLowerCase()));
+      subjects.push(...parsed);
+    }
+    return subjects;
+  }, [eduContext]);
+
   // Compute subject alignment against the career
   const alignment = useMemo(() => {
-    if (!eduContext?.currentSubjects?.length || !careerTitle) return null;
-    return calculateSubjectAlignment(eduContext.currentSubjects, careerTitle);
-  }, [eduContext?.currentSubjects, careerTitle]);
+    if (!allSubjects.length || !careerTitle) return null;
+    return calculateSubjectAlignment(allSubjects, careerTitle);
+  }, [allSubjects, careerTitle]);
 
   // Find current item based on user age — used for active highlighting
   let currentItemIndex = -1;
@@ -234,9 +249,9 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 {eduContext.expectedCompletion && (
                   <p className="text-[10px] text-foreground/70">Finishing {eduContext.expectedCompletion}</p>
                 )}
-                {eduContext.currentSubjects.length > 0 && (
+                {allSubjects.length > 0 && (
                   <div className="flex flex-wrap gap-0.5 mt-0.5">
-                    {eduContext.currentSubjects.map((s) => {
+                    {allSubjects.map((s) => {
                       const isMatched = alignment?.matchedKey.some(
                         (k) => s.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(s.toLowerCase())
                       );
