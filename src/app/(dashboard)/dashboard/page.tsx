@@ -754,11 +754,6 @@ export default function DashboardPage() {
                   })}
                 </div>
 
-                {/* Jobs stats */}
-                <div className="flex items-center gap-4 text-xs text-muted-foreground/50">
-                  <span>{appStats.applied} jobs</span>
-                  <span>{appStats.applied} applied</span>
-                </div>
               </div>
             </div>
           </GlassCard>

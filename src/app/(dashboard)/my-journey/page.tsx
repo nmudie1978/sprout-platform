@@ -177,7 +177,8 @@ function useCareerReality(careerTitle: string | null) {
       return res.json();
     },
     enabled: !!careerTitle,
-    staleTime: 24 * 60 * 60 * 1000,
+    // If videos are missing (quota was exhausted), refetch sooner
+    staleTime: 5 * 60 * 1000,
   });
 }
 
