@@ -115,13 +115,18 @@ const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.25;
 
+// Tight inner cluster radius for the top matches — sits visibly detached
+// from the outer rings so the most important careers feel pulled toward "you".
+const TOP_MATCH_RADIUS = 22;
+
 function placeDots(careers: Career[]): PlacedDot[] {
   if (careers.length === 0) return [];
 
-  // Bucket into 3 relevance rings by rank position.
-  const total = careers.length;
-  const ringFor = (idx: number): 0 | 1 | 2 => {
-    const ratio = idx / Math.max(1, total);
+  // Bucket non-top matches into 3 relevance rings by rank position.
+  // Top matches get their own inner cluster, so exclude them from the bucketing.
+  const nonTopCount = Math.max(0, careers.length - TOP_MATCH_COUNT);
+  const ringFor = (nonTopIdx: number): 0 | 1 | 2 => {
+    const ratio = nonTopIdx / Math.max(1, nonTopCount);
     if (ratio < 0.33) return 0;
     if (ratio < 0.66) return 1;
     return 2;
@@ -132,12 +137,28 @@ function placeDots(careers: Career[]): PlacedDot[] {
 
   const placed: PlacedDot[] = [];
   careers.forEach((career, idx) => {
-    const ring = ringFor(idx);
+    const isTop = idx < TOP_MATCH_COUNT;
+
+    // Top matches: tight inner cluster, equally spaced around the centre.
+    if (isTop) {
+      const angleDeg = (idx / TOP_MATCH_COUNT) * 360 - 90;
+      const angleRad = (angleDeg) * (Math.PI / 180);
+      placed.push({
+        career,
+        ring: 0,
+        cx: CENTER + TOP_MATCH_RADIUS * Math.cos(angleRad),
+        cy: CENTER + TOP_MATCH_RADIUS * Math.sin(angleRad),
+        topMatch: true,
+      });
+      return;
+    }
+
     const cat = findCareerCategory(career.id);
     if (!cat) return;
     const sliceIdx = CATEGORY_ORDER.indexOf(cat);
     if (sliceIdx < 0) return;
 
+    const ring = ringFor(idx - TOP_MATCH_COUNT);
     const sliceKey = `${ring}-${cat}`;
     const within = sliceCounts.get(sliceKey) || 0;
     sliceCounts.set(sliceKey, within + 1);
@@ -160,7 +181,6 @@ function placeDots(careers: Career[]): PlacedDot[] {
       ring,
       cx: CENTER + r * Math.cos(angleRad),
       cy: CENTER + r * Math.sin(angleRad),
-      topMatch: idx < TOP_MATCH_COUNT,
     });
   });
 
@@ -169,7 +189,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
 
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
-  const [zoom, setZoom] = useState(2);
+  const [zoom, setZoom] = useState(1);
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
 
