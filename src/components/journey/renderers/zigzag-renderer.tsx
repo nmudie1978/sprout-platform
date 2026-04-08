@@ -221,66 +221,69 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               };
               onItemClick(foundationItem);
             }}
-            className="w-[200px] rounded-xl border border-teal-500/30 bg-card/80 p-3 backdrop-blur-sm text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="w-[210px] rounded-xl border bg-card p-3.5 text-left transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-teal-500/40 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            {/* Header row */}
-            <div className="flex items-center justify-between mb-1.5">
+            {/* Header row — single calm label, status as a tiny dot */}
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px]">🎓</span>
-                <span className="text-[8px] font-bold text-teal-500/80 uppercase tracking-wider">
-                  Your Foundation
+                <span className="text-xs">🎓</span>
+                <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Foundation
                 </span>
               </div>
               {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && (
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400" title="Complete" />
               )}
               {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'in_progress' && (
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400/40" title="In progress" />
               )}
             </div>
             {eduContext ? (
-              <div className="space-y-1.5">
-                {/* Info grid */}
-                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[8px]">
-                  <div>
-                    <span className="text-muted-foreground/35 uppercase tracking-wider">Stage</span>
-                    <p className="text-foreground/80 font-medium">{EDUCATION_STAGE_CONFIG[eduContext.stage].label}</p>
+              <div className="space-y-3">
+                {/* Stat rows — label/value with consistent neutral typography */}
+                <div className="space-y-1.5">
+                  <div className="flex items-baseline justify-between gap-2 text-[10px]">
+                    <span className="text-muted-foreground">Stage</span>
+                    <span className="text-foreground font-medium truncate">{EDUCATION_STAGE_CONFIG[eduContext.stage].label}</span>
                   </div>
                   {eduContext.schoolName && (
-                    <div>
-                      <span className="text-muted-foreground/35 uppercase tracking-wider">School</span>
-                      <p className="text-foreground/80 font-medium truncate">{eduContext.schoolName}</p>
+                    <div className="flex items-baseline justify-between gap-2 text-[10px]">
+                      <span className="text-muted-foreground">School</span>
+                      <span className="text-foreground font-medium truncate">{eduContext.schoolName}</span>
                     </div>
                   )}
                   {eduContext.studyProgram && (
-                    <div>
-                      <span className="text-muted-foreground/35 uppercase tracking-wider">Track</span>
-                      <p className="text-foreground/80 font-medium truncate">{eduContext.studyProgram}</p>
+                    <div className="flex items-baseline justify-between gap-2 text-[10px]">
+                      <span className="text-muted-foreground">Track</span>
+                      <span className="text-foreground font-medium truncate">{eduContext.studyProgram}</span>
                     </div>
                   )}
                   {eduContext.expectedCompletion && (
-                    <div>
-                      <span className="text-muted-foreground/35 uppercase tracking-wider">Finish</span>
-                      <p className="text-foreground/80 font-medium">{eduContext.expectedCompletion}</p>
+                    <div className="flex items-baseline justify-between gap-2 text-[10px]">
+                      <span className="text-muted-foreground">Finish</span>
+                      <span className="text-foreground font-medium">{eduContext.expectedCompletion}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Subjects */}
+                {/* Subjects — single accent system: teal for matched, neutral for the rest */}
                 {allSubjects.length > 0 && (
-                  <div className="border-t border-border/15 pt-1.5">
-                    <div className="flex flex-wrap gap-[3px]">
+                  <div className="pt-2.5 border-t border-border/40">
+                    <div className="flex flex-wrap gap-1">
                       {allSubjects.map((s) => {
                         const isMatched = alignment?.matchedKey.some(
                           (k) => s.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(s.toLowerCase())
                         );
                         return (
-                          <span key={s} className={cn(
-                            'inline-flex rounded-full px-1.5 py-[1px] text-[7px] font-medium leading-none',
-                            alignment && isMatched
-                              ? 'bg-sky-500/15 text-sky-400'
-                              : 'bg-foreground/5 text-foreground/40'
-                          )}>
+                          <span
+                            key={s}
+                            className={cn(
+                              'inline-flex rounded-md px-1.5 py-0.5 text-[9px] font-medium leading-tight',
+                              alignment && isMatched
+                                ? 'bg-teal-500/15 text-teal-600 dark:text-teal-300 ring-1 ring-inset ring-teal-500/30'
+                                : 'bg-muted text-muted-foreground'
+                            )}
+                          >
                             {s}
                           </span>
                         );
@@ -289,23 +292,31 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                   </div>
                 )}
 
-                {/* Alignment message — sky for positive, amber for partial, rose for gaps */}
+                {/* Alignment message — unified calm style, no colour rainbow */}
                 {alignment && alignment.alignment !== 'unknown' && (
-                  <div className={cn('border-t border-border/15 pt-1.5')}>
-                    <p className={cn('text-[7px] font-medium',
-                      alignment.alignment === 'strong' ? 'text-sky-400' : alignment.alignment === 'partial' ? 'text-amber-400' : 'text-rose-400'
-                    )}>
-                      {alignment.alignment === 'strong'
-                        ? '✨ You\'re on the right track!'
-                        : alignment.alignment === 'partial'
-                          ? `Nearly there — consider ${alignment.missingKey.join(', ')}`
-                          : `Consider adding ${alignment.missingKey.join(', ')}`}
-                    </p>
+                  <div className="pt-2.5 border-t border-border/40">
+                    <div className="flex items-start gap-1.5">
+                      <span
+                        className={cn(
+                          'h-1 w-1 rounded-full mt-[5px] shrink-0',
+                          alignment.alignment === 'strong'
+                            ? 'bg-teal-400'
+                            : 'bg-muted-foreground/50'
+                        )}
+                      />
+                      <p className="text-[9px] text-muted-foreground leading-snug">
+                        {alignment.alignment === 'strong'
+                          ? "You're on the right track"
+                          : alignment.alignment === 'partial'
+                            ? `Nearly there — consider ${alignment.missingKey.join(', ')}`
+                            : `Consider adding ${alignment.missingKey.join(', ')}`}
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
-              <p className="text-[10px] text-foreground/50 leading-snug">
+              <p className="text-[10px] text-muted-foreground leading-snug">
                 Tap to add your school &amp; subjects
               </p>
             )}
