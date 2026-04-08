@@ -1738,26 +1738,110 @@ export default function MyJourneyPage() {
     { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)' },
   ];
 
+  // First-time empty state — when there's no career goal yet, show a single
+  // welcoming screen explaining the framework instead of three confused tabs.
+  if (!goalTitle) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          <div className="text-center">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/15 mb-4">
+              <Sparkles className="h-6 w-6 text-teal-500" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
+              My Journey
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
+              Pick a career to explore in depth, and we&rsquo;ll walk you from curiosity to a real plan &mdash; one step at a time.
+            </p>
+          </div>
+
+          <div className="mt-10 space-y-3">
+            {[
+              {
+                n: 1,
+                title: "Discover",
+                subtitle: "Explore the career",
+                body: "Get a high-level view: what it is, who does it, salary range, and whether it's worth a closer look.",
+              },
+              {
+                n: 2,
+                title: "Understand",
+                subtitle: "Know the reality",
+                body: "Go deeper into day-to-day work, qualifications, and the hard parts.",
+              },
+              {
+                n: 3,
+                title: "Grow",
+                subtitle: "Build your roadmap",
+                body: "Map your path, set concrete next steps, and track your progress.",
+              },
+            ].map((stage) => (
+              <div
+                key={stage.n}
+                className="flex items-start gap-3 rounded-xl border bg-card p-4"
+              >
+                <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
+                  <span className="text-xs font-bold text-teal-500">{stage.n}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-0.5">
+                    <p className="text-sm font-semibold">{stage.title}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      &middot; {stage.subtitle}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {stage.body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-center">
+            <button
+              onClick={() => setGoalSheetOpen(true)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold transition-colors"
+            >
+              <Target className="h-4 w-4" />
+              Pick a career to explore
+            </button>
+            <a
+              href="/careers/radar"
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border bg-background hover:bg-muted/50 text-sm font-medium transition-colors"
+            >
+              <Sparkles className="h-4 w-4 text-teal-500" />
+              Or browse your matches first
+            </a>
+          </div>
+        </div>
+
+        <GoalSelectionSheet
+          open={goalSheetOpen}
+          onClose={() => setGoalSheetOpen(false)}
+          primaryGoal={goalsData?.primaryGoal || null}
+          secondaryGoal={goalsData?.secondaryGoal || null}
+          onSuccess={() => setGoalSheetOpen(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6">
-          {goalTitle ? (
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-semibold text-foreground">
-                <span className="text-muted-foreground/50">My Journey to </span>
-                {goalTitle}
-              </h1>
-              <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change goal">
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ) : (
-            <button onClick={() => setGoalSheetOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors">
-              <Target className="h-4 w-4" /> Set a career goal
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold text-foreground">
+              <span className="text-muted-foreground/50">My Journey to </span>
+              {goalTitle}
+            </h1>
+            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change goal">
+              <Pencil className="h-3.5 w-3.5" />
             </button>
-          )}
+          </div>
         </div>
 
         {/* Tab bar */}

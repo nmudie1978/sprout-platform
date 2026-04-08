@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -67,7 +66,6 @@ type Step = 1 | 2 | 3;
 
 export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizardProps) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [workStyle, setWorkStyle] = useState<string | null>(null);
@@ -114,11 +112,10 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["onboarding-status"] });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      // Just close the wizard. The user lands back on the dashboard, where
+      // the first-action card and "Suggested for you" cards take over and
+      // guide them toward the radar at their own pace.
       onComplete();
-      // Take the user straight to their freshly populated radar — this is
-      // the "wow moment" of onboarding. The radar's existing dot animation
-      // pops in on first render, which delivers the reveal for free.
-      router.push("/careers/radar?reveal=1");
     },
     onError: () => {
       toast.error("Couldn't save — please try again.");

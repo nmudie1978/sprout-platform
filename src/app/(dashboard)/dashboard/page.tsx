@@ -714,18 +714,18 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
-                          {hasDiscoveryPrefs ? "Your radar is ready" : "Start here"}
+                          {hasDiscoveryPrefs ? "Ready when you are" : "Start here"}
                         </p>
                         <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          Open your Career Radar
+                          {hasDiscoveryPrefs ? "See your career matches" : "Find your matches"}
                         </h2>
                         <p className="text-sm text-muted-foreground/70 leading-relaxed mb-3 max-w-md">
                           {hasDiscoveryPrefs
-                            ? "See the careers we mapped to you. Tap any dot to find out what the role actually involves."
+                            ? "We mapped careers to what you said you like. Tap any one to find out what the role actually involves."
                             : "Tell us what you like and we'll show you careers across every path."}
                         </p>
                         <span className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-600 dark:text-teal-400">
-                          Open the radar
+                          Take a look
                           <ArrowRight className="h-4 w-4" />
                         </span>
                       </div>
@@ -738,6 +738,89 @@ export default function DashboardPage() {
           }
 
           return null;
+        })()}
+
+        {/* ── Suggested for you — first-session orientation ──
+            A calm row of three suggestions that disappears once the user
+            has done at least two of them OR after their second visit.
+            Not a checklist. No ticks, no progress bar, no completion
+            psychology. Just a gentle menu of "things to try first".
+        */}
+        {(() => {
+          const dpRaw = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
+          const hasRadar = !!dpRaw && (
+            (dpRaw.subjects?.length ?? 0) > 0 ||
+            (dpRaw.workStyles?.length ?? 0) > 0
+          );
+          const hasGoal = !!goalTitle;
+          const exploredCount = (profileData as { exploredCareerCount?: number } | null)?.exploredCareerCount ?? 0;
+          const hasExplored = exploredCount > 0;
+
+          // Hide once the user is meaningfully bedded in
+          const completedCount =
+            (hasRadar ? 1 : 0) + (hasExplored ? 1 : 0) + (hasGoal ? 1 : 0);
+          if (isFirstLogin || completedCount >= 2) return null;
+
+          const suggestions = [
+            {
+              done: hasRadar,
+              href: "/careers/radar",
+              icon: Sparkles,
+              label: "Open your Career Radar",
+              hint: "See careers mapped to what you like.",
+            },
+            {
+              done: hasExplored,
+              href: "/careers",
+              icon: Target,
+              label: "Save a career to explore",
+              hint: "Tap any career and add it to My Journey.",
+            },
+            {
+              done: hasGoal,
+              href: "/my-journey",
+              icon: TrendingUp,
+              label: "Look at your roadmap",
+              hint: "Once you pick a career, your path appears here.",
+            },
+          ];
+
+          return (
+            <div className="mb-6">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
+                Suggested for you
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {suggestions.map((s) => {
+                  const Icon = s.icon;
+                  return (
+                    <Link
+                      key={s.label}
+                      href={s.href}
+                      className={cn(
+                        "group rounded-xl border bg-card p-3 transition-colors flex items-start gap-2.5",
+                        s.done
+                          ? "opacity-50 hover:opacity-70"
+                          : "hover:border-teal-500/40 hover:bg-teal-500/[0.03]"
+                      )}
+                    >
+                      <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
+                        <Icon className="h-3.5 w-3.5 text-teal-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold leading-tight">
+                          {s.label}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+                          {s.hint}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          );
         })()}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
