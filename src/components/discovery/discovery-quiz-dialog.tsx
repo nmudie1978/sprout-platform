@@ -36,6 +36,11 @@ const SUBJECTS: { id: string; label: string }[] = [
   { id: "business", label: "Business / Economics" },
   { id: "languages", label: "Languages" },
   { id: "psychology", label: "Psychology" },
+  { id: "design-tech", label: "Design & Technology" },
+  { id: "health-social", label: "Health & Social Care" },
+  { id: "drama", label: "Drama" },
+  { id: "food-tech", label: "Food Tech" },
+  { id: "media-studies", label: "Media Studies" },
 ];
 
 const WORK_STYLES: { id: string; label: string; emoji: string }[] = [

@@ -61,6 +61,11 @@ const SUBJECT_LABELS: Record<string, string> = {
   business: "Business",
   languages: "Languages",
   psychology: "Psychology",
+  "design-tech": "Design & Tech",
+  "health-social": "Health & Social",
+  drama: "Drama",
+  "food-tech": "Food Tech",
+  "media-studies": "Media Studies",
 };
 
 const WORK_STYLE_LABELS: Record<string, string> = {

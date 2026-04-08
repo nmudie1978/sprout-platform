@@ -5004,6 +5004,11 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 2, SALES_MARKETING: 2 },
   languages:    { HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1 },
   psychology:   { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2 },
+  "design-tech":   { MANUFACTURING_ENGINEERING: 3, TECHNOLOGY_IT: 1, HOSPITALITY_TOURISM: 1 },
+  "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, EDUCATION_TRAINING: 1 },
+  drama:           { HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, SALES_MARKETING: 2 },
+  "food-tech":     { HOSPITALITY_TOURISM: 3, HEALTHCARE_LIFE_SCIENCES: 1 },
+  "media-studies": { SALES_MARKETING: 3, TECHNOLOGY_IT: 1 },
 };
 
 // Minimum subject-score a career needs to make it onto the radar.
