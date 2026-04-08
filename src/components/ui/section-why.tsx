@@ -16,9 +16,11 @@ export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          // Stop both bubbling AND default action so parent Links don't fire
+          // stopPropagation prevents the click bubbling up to a parent Link.
+          // CRITICAL: do NOT call preventDefault here — Radix's Slot composes
+          // event handlers and skips its own onClick if the child called
+          // preventDefault, which would stop the popover from opening.
           onClick={(e) => {
-            e.preventDefault();
             e.stopPropagation();
           }}
           onMouseDown={(e) => {
