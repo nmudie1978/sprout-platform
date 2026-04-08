@@ -358,10 +358,25 @@ function CareersPageContent() {
       {/* Results */}
       {totalItems > 0 ? (
         <>
+          {/* Column headers — list view only. Mirrors the ListRow grid so
+              labels line up over their data columns. */}
+          {viewMode === "list" && (
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              <span>Career</span>
+              <span className="px-4" />
+              <span className="flex items-center justify-end gap-3">
+                {isYouth && recommendationMap.size > 0 && (
+                  <span className="w-10 text-right">Match</span>
+                )}
+                <span className="w-16 text-right">Salary</span>
+                <span className="w-12 text-center">Growth</span>
+              </span>
+            </div>
+          )}
           <div
             className={
               viewMode === "list"
-                ? "border rounded-md overflow-hidden bg-background"
+                ? "border rounded-b-md overflow-hidden bg-background"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
