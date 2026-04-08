@@ -7478,54 +7478,139 @@ export function getRecommendationsFromAspiration(
     return [];
   }
 
-  const allCareers = getAllCareers();
-  const aspirationLower = aspiration.toLowerCase();
+  const aspirationLower = aspiration.toLowerCase().trim();
 
-  // Extract meaningful words from aspiration (filter out common words)
+  // ── Step 1: find an anchor career ────────────────────────────
+  // The aspiration *usually* maps to an existing career in our pathways
+  // (e.g. "SAFe Agile Coach"). When it does, that anchor career is the
+  // ground truth for category + skill profile, and recommendations
+  // become "careers similar to this one" rather than "careers whose
+  // title contains a word from the aspiration", which is what produced
+  // the "Assistant Coach" / "Football Coach" false positives.
+  let anchorCareer: Career | null = null;
+  let anchorCategory: CareerCategory | null = null;
+  for (const [category, list] of Object.entries(CAREER_PATHWAYS) as [CareerCategory, Career[]][]) {
+    const exact = list.find((c) => c.title.toLowerCase() === aspirationLower);
+    if (exact) {
+      anchorCareer = exact;
+      anchorCategory = category;
+      break;
+    }
+  }
+  // Fall back to the closest title match if no exact hit (longest
+  // shared substring of words).
+  if (!anchorCareer) {
+    const aspirationTokens = new Set(
+      aspirationLower.split(/\s+/).filter((w) => w.length > 2)
+    );
+    let bestOverlap = 0;
+    for (const [category, list] of Object.entries(CAREER_PATHWAYS) as [CareerCategory, Career[]][]) {
+      for (const c of list) {
+        const titleTokens = c.title.toLowerCase().split(/\s+/);
+        const overlap = titleTokens.filter((t) => aspirationTokens.has(t)).length;
+        if (overlap > bestOverlap) {
+          bestOverlap = overlap;
+          anchorCareer = c;
+          anchorCategory = category;
+        }
+      }
+    }
+    if (bestOverlap === 0) {
+      anchorCareer = null;
+      anchorCategory = null;
+    }
+  }
+
+  // ── Step 2: build a profile to match against ─────────────────
+  // When we have an anchor we use *its* skill set as the truth.
+  // Otherwise we fall back to keywords pulled from the raw aspiration.
   const commonWords = new Set([
     "i", "want", "to", "be", "a", "an", "the", "become", "work", "as",
     "in", "with", "for", "and", "or", "my", "is", "am", "like", "would",
-    "love", "interested", "career", "job", "profession", "future", "dream"
+    "love", "interested", "career", "job", "profession", "future", "dream",
   ]);
-
-  const aspirationWords = aspiration
-    .toLowerCase()
+  const aspirationWords = aspirationLower
     .split(/\s+/)
-    .filter(word => word.length > 2 && !commonWords.has(word));
+    .filter((w) => w.length > 2 && !commonWords.has(w));
 
+  const profileSkills = new Set(
+    (anchorCareer?.keySkills ?? []).map((s) => s.toLowerCase())
+  );
+
+  // ── Step 3: score every other career ─────────────────────────
   const recommendations: { career: Career; matchScore: number }[] = [];
 
-  for (const career of allCareers) {
-    let matchScore = 0;
-    const titleLower = career.title.toLowerCase();
-    const descLower = career.description.toLowerCase();
-    const skillsLower = career.keySkills.map(s => s.toLowerCase());
+  for (const [category, list] of Object.entries(CAREER_PATHWAYS) as [CareerCategory, Career[]][]) {
+    for (const career of list) {
+      // Don't recommend the user's own goal back to them.
+      if (anchorCareer && career.id === anchorCareer.id) continue;
 
-    // Check for exact title match (highest priority)
-    if (aspirationLower.includes(titleLower) || titleLower.includes(aspirationLower)) {
-      matchScore += 100;
-    }
+      let score = 0;
+      const titleLower = career.title.toLowerCase();
+      const skillsLower = career.keySkills.map((s) => s.toLowerCase());
 
-    // Check for word matches in title
-    for (const word of aspirationWords) {
-      if (titleLower.includes(word)) {
-        matchScore += 50;
+      if (anchorCareer && anchorCategory) {
+        // Same category is the dominant signal — different category
+        // careers need a *very* strong skill overlap to qualify.
+        const sameCategory = category === anchorCategory;
+        if (sameCategory) score += 40;
+
+        // Skill overlap with the anchor (Jaccard-ish — each shared
+        // skill is worth a lot, partial substring matches less).
+        let exactSkillHits = 0;
+        let partialSkillHits = 0;
+        for (const s of skillsLower) {
+          if (profileSkills.has(s)) {
+            exactSkillHits++;
+          } else if ([...profileSkills].some((p) => p.includes(s) || s.includes(p))) {
+            partialSkillHits++;
+          }
+        }
+        score += exactSkillHits * 18 + partialSkillHits * 6;
+
+        // Cross-category careers must have at least one real skill
+        // overlap, otherwise they're just noise.
+        if (!sameCategory && exactSkillHits + partialSkillHits === 0) {
+          continue;
+        }
+
+        // A small bonus when the title shares a meaningful word with
+        // the anchor — but only if we're already in the same category,
+        // so "coach" doesn't drag in unrelated coaching titles.
+        if (sameCategory) {
+          const anchorTitleTokens = anchorCareer.title
+            .toLowerCase()
+            .split(/\s+/)
+            .filter((w) => w.length > 2 && !commonWords.has(w));
+          const titleOverlap = anchorTitleTokens.filter((t) => titleLower.includes(t)).length;
+          score += titleOverlap * 8;
+        }
+      } else {
+        // No anchor — best-effort keyword match (legacy behaviour,
+        // tightened so isolated word hits don't dominate).
+        for (const word of aspirationWords) {
+          if (titleLower.split(/\s+/).includes(word)) score += 25;
+          if (skillsLower.some((s) => s === word)) score += 15;
+        }
+        if (score === 0) continue;
       }
-      if (descLower.includes(word)) {
-        matchScore += 20;
-      }
-      if (skillsLower.some(skill => skill.includes(word))) {
-        matchScore += 10;
+
+      if (career.entryLevel) score *= 1.05;
+
+      if (score > 0) {
+        recommendations.push({ career, matchScore: score });
       }
     }
+  }
 
-    // Boost entry-level careers slightly
-    if (career.entryLevel && matchScore > 0) {
-      matchScore *= 1.2;
-    }
-
-    if (matchScore > 0) {
-      recommendations.push({ career, matchScore });
+  // Normalise to 0–100 so the gauge in the UI is meaningful regardless
+  // of which anchor produced the list.
+  if (recommendations.length > 0) {
+    const max = Math.max(...recommendations.map((r) => r.matchScore));
+    if (max > 0) {
+      for (const r of recommendations) {
+        r.matchScore = Math.round((r.matchScore / max) * 100);
+      }
     }
   }
 
@@ -7602,6 +7687,7 @@ export function getRelatedNicheCareers(career: Career, limit = 3): Career[] {
  */
 export interface DiscoveryPreferences {
   subjects?: string[];   // School subjects they enjoy
+  starredSubjects?: string[]; // Subjects the user has emphasised (double-clicked)
   workStyles?: string[]; // hands-on, desk, outdoors, mixed, creative
   peoplePref?: string;   // with-people, mixed, mostly-alone
   interests?: string[];  // Free-form interest tags
@@ -7712,7 +7798,7 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   chemistry:    { HEALTHCARE_LIFE_SCIENCES: 2, MANUFACTURING_ENGINEERING: 2 },
   physics:      { MANUFACTURING_ENGINEERING: 3, TECHNOLOGY_IT: 2, TELECOMMUNICATIONS: 2 },
   math:         { TECHNOLOGY_IT: 2, FINANCE_BANKING: 3, MANUFACTURING_ENGINEERING: 2 },
-  computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2 },
+  computing:    { TECHNOLOGY_IT: 6, TELECOMMUNICATIONS: 3 },
   english:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, SALES_MARKETING: 2, CREATIVE_MEDIA: 2 },
   history:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 2 },
   geography:    { LOGISTICS_TRANSPORT: 2, HOSPITALITY_TOURISM: 2, PUBLIC_SERVICE_SAFETY: 1 },
@@ -7752,6 +7838,26 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
 // that genuinely belong. Generic subjects (math, english) should still
 // rely on category weighting because there's no clean career list for them.
 const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
+  computing: [
+    // Core software & web
+    "software-developer", "frontend-developer", "backend-developer",
+    "full-stack-engineer", "mobile-developer", "game-developer",
+    // Data & AI
+    "data-analyst", "data-scientist", "data-engineer",
+    "machine-learning-engineer", "ai-engineer", "ai-researcher",
+    "computer-vision-engineer", "nlp-engineer",
+    // Infra & ops
+    "devops-engineer", "cloud-engineer", "site-reliability-engineer",
+    "systems-engineer", "network-engineer", "platform-engineer",
+    // Security
+    "cybersecurity-analyst", "security-engineer", "security-architect",
+    // Design / product / QA
+    "ux-designer", "ui-designer", "qa-engineer", "test-automation-engineer",
+    // Support / entry level
+    "it-support-specialist", "database-administrator",
+    // Emerging
+    "blockchain-developer", "ar-vr-developer", "robotics-engineer",
+  ],
   music: [
     // Playing & performance
     "musician", "vocalist", "dj", "session-musician", "orchestra-member", "busker",
@@ -7849,12 +7955,12 @@ export function getMatchReasons(
  * Hard filter — if the user picked styles, the career must match at least one.
  * "mixed" on either side acts as a wildcard.
  */
-function passesWorkStyleFilter(career: Career, chosenStyles: string[]): boolean {
-  if (chosenStyles.length === 0) return true;
-  if (chosenStyles.includes("mixed")) return true;
-  const careerSetting = getCareerWorkSetting(career);
-  if (careerSetting === "mixed") return true;
-  return chosenStyles.includes(careerSetting);
+function passesWorkStyleFilter(_career: Career, _chosenStyles: string[]): boolean {
+  // Work style is now a SOFT scoring signal, not a hard filter — see
+  // getCareersFromDiscovery. Picking "Outdoors" alone used to wipe out
+  // ~95% of the catalogue and produced radars with only 4–6 dots; now
+  // it just boosts matching careers in the score stage.
+  return true;
 }
 
 /**
@@ -7864,11 +7970,8 @@ function passesWorkStyleFilter(career: Career, chosenStyles: string[]): boolean 
  *   "mostly-alone" → require low or medium
  *   "mixed" or unset → no filter
  */
-function passesPeopleFilter(career: Career, peoplePref?: string): boolean {
-  if (!peoplePref || peoplePref === "mixed") return true;
-  const intensity = getCareerPeopleIntensity(career);
-  if (peoplePref === "with-people") return intensity === "high" || intensity === "medium";
-  if (peoplePref === "mostly-alone") return intensity === "low" || intensity === "medium";
+function passesPeopleFilter(_career: Career, _peoplePref?: string): boolean {
+  // Soft signal — see scoring stage in getCareersFromDiscovery.
   return true;
 }
 
@@ -7905,12 +8008,20 @@ export function getCareersFromDiscovery(
   if (filtered.length === 0) return [];
 
   // Stage 2: soft scoring on subjects (and free-form interests, if present)
+  // Starred subjects (double-clicked by the user) carry 4× the weight,
+  // letting users emphasise their strongest interests dramatically. This
+  // also makes their categories qualify for a much larger per-category
+  // cap downstream (capForScore scales linearly with category score).
+  const starredSet = new Set((prefs.starredSubjects || []).map((s) => s.toLowerCase()));
+  const subjectWeight = (subj: string) => (starredSet.has(subj.toLowerCase()) ? 4 : 1);
+
   const subjectCategoryScores: Partial<Record<CareerCategory, number>> = {};
   for (const subj of prefs.subjects || []) {
     const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
     if (!weights) continue;
+    const mult = subjectWeight(subj);
     for (const [cat, w] of Object.entries(weights) as [CareerCategory, number][]) {
-      subjectCategoryScores[cat] = (subjectCategoryScores[cat] || 0) + w;
+      subjectCategoryScores[cat] = (subjectCategoryScores[cat] || 0) + w * mult;
     }
   }
 
@@ -7932,6 +8043,29 @@ export function getCareersFromDiscovery(
     // sort to the top of their category before the cap is applied.
     if (isExplicitlyBoosted) {
       score += 15;
+    }
+
+    // Soft work-style preference. The user's chosen styles boost matching
+    // careers but never exclude others, so picking "Outdoors" doesn't
+    // shrink the radar to a handful of forestry roles.
+    if (chosenStyles.length > 0 && !chosenStyles.includes('mixed')) {
+      const careerSetting = getCareerWorkSetting(career);
+      if (careerSetting === 'mixed' || chosenStyles.includes(careerSetting)) {
+        score += 3;
+      }
+    }
+
+    // Soft people-preference. Same idea: nudges, doesn't exclude.
+    if (prefs.peoplePref && prefs.peoplePref !== 'mixed') {
+      const intensity = getCareerPeopleIntensity(career);
+      const wantsPeople = prefs.peoplePref === 'with-people';
+      const wantsAlone = prefs.peoplePref === 'mostly-alone';
+      if (
+        (wantsPeople && (intensity === 'high' || intensity === 'medium')) ||
+        (wantsAlone && (intensity === 'low' || intensity === 'medium'))
+      ) {
+        score += 2;
+      }
     }
 
     // Free-form interests: title/skills match (kept narrow, no description scan)
@@ -7975,11 +8109,14 @@ export function getCareersFromDiscovery(
   const capForScore = (score: number): number => {
     if (!hasScoreableInputs) return 5;
     if (score <= 0) return 0;
-    return Math.min(8, Math.max(2, score + 2));
+    // Ceiling raised to 14 so categories backed by a starred subject
+    // (which now multiplies category score by 4) can actually expand
+    // their footprint on the radar instead of being capped at 8.
+    return Math.min(14, Math.max(2, Math.round(score) + 2));
   };
 
   const perCategoryCount = new Map<CareerCategory, number>();
-  const cappedByCategory: { career: Career; score: number }[] = [];
+  const cappedByCategory: { career: Career; score: number; isExplicitlyBoosted: boolean }[] = [];
   for (const item of matched) {
     const cat = findCareerCategory(item.career.id);
     if (!cat) continue;
@@ -8001,13 +8138,28 @@ export function getCareersFromDiscovery(
     cappedByCategory.push(item);
   }
 
-  // Interleave entry-level and non-entry to keep vocational paths visible.
-  const entry = cappedByCategory.filter((m) => m.career.entryLevel).map((m) => m.career);
-  const rest = cappedByCategory.filter((m) => !m.career.entryLevel).map((m) => m.career);
-  const interleaved: Career[] = [];
-  while (interleaved.length < limit && (entry.length || rest.length)) {
+  // Boosted careers (from explicit per-subject boost lists) get absolute
+  // priority — every career on a hand-curated subject list must make it
+  // onto the radar, otherwise picking "Music" alongside "Computing" would
+  // see all 28 music careers shoved out by 30 tech careers.
+  const boostedAll = cappedByCategory.filter((m) => m.isExplicitlyBoosted).map((m) => m.career);
+  const nonBoosted = cappedByCategory.filter((m) => !m.isExplicitlyBoosted);
+
+  // Interleave entry-level and non-entry within the non-boosted pool to
+  // keep vocational paths visible alongside university tracks.
+  const entry = nonBoosted.filter((m) => m.career.entryLevel).map((m) => m.career);
+  const rest = nonBoosted.filter((m) => !m.career.entryLevel).map((m) => m.career);
+
+  // Make sure the limit accommodates ALL boosted careers — boosted is the
+  // user's explicit "yes I'm interested in this exact thing" signal, so we
+  // never want to truncate it. The radar can render extra dots; the visual
+  // budget caveats only apply to the soft-scored long tail.
+  const effectiveLimit = Math.max(limit, boostedAll.length + 20);
+
+  const interleaved: Career[] = [...boostedAll];
+  while (interleaved.length < effectiveLimit && (entry.length || rest.length)) {
     if (entry.length) interleaved.push(entry.shift()!);
-    if (interleaved.length >= limit) break;
+    if (interleaved.length >= effectiveLimit) break;
     if (rest.length) interleaved.push(rest.shift()!);
   }
   return interleaved;

@@ -253,6 +253,7 @@ export async function PATCH(req: NextRequest) {
       const sanitized = dp
         ? {
             subjects: Array.isArray(dp.subjects) ? dp.subjects.slice(0, 20).map(String) : [],
+            starredSubjects: Array.isArray(dp.starredSubjects) ? dp.starredSubjects.slice(0, 20).map(String) : [],
             workStyles: Array.isArray(dp.workStyles) ? dp.workStyles.slice(0, 10).map(String) : [],
             peoplePref: typeof dp.peoplePref === "string" ? dp.peoplePref.slice(0, 50) : undefined,
             interests: Array.isArray(dp.interests) ? dp.interests.slice(0, 30).map(String) : [],

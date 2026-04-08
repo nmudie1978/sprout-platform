@@ -16,20 +16,21 @@ import type {
  * Parse salary string like "550,000 - 900,000 kr/year" to { min: 550, max: 900 }
  */
 export function parseSalaryRange(salaryString: string): SalaryRange | null {
-  // Handle variable salaries like "Variable - from loss to millions"
-  if (salaryString.toLowerCase().includes("variable")) {
-    return null;
-  }
-
-  // Match pattern: "X,XXX,XXX - Y,YYY,YYY kr/year" or similar
+  // Match pattern: "X,XXX,XXX - Y,YYY,YYY kr/year" or similar.
+  // We extract numbers FIRST and only fall back to null when there are
+  // genuinely none — strings like "150,000 - 800,000 kr/year (highly
+  // variable)" still contain a real numeric range that the user expects
+  // the salary filter to honour.
   const matches = salaryString.match(/[\d,]+/g);
-  if (!matches || matches.length < 2) return null;
+  if (!matches || matches.length === 0) return null;
 
   const parseNumber = (str: string) =>
     parseInt(str.replace(/,/g, ""), 10) / 1000; // Convert to thousands
 
   const min = parseNumber(matches[0]);
-  const max = parseNumber(matches[1]);
+  // If only a single number is given (e.g. "150,000 kr/year"), treat it
+  // as both min and max so single-value salaries are still filterable.
+  const max = matches.length >= 2 ? parseNumber(matches[1]) : min;
 
   if (isNaN(min) || isNaN(max)) return null;
 

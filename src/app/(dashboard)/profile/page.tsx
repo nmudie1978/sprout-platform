@@ -102,6 +102,9 @@ export default function ProfilePage() {
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
 
+  // Guardian email re-send state
+  const [resendingGuardianEmail, setResendingGuardianEmail] = useState(false);
+
   // Goal sheet state
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
@@ -868,14 +871,51 @@ export default function ProfilePage() {
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         Guardian verification is required for users aged 16–17. This helps keep Endeavrly safe for young users.
                       </p>
-                      {!profile.guardianConsent && (
-                        <Link
-                          href="/guardian-consent"
-                          className="inline-flex items-center text-xs text-primary hover:underline"
-                        >
-                          Complete guardian verification
-                          <ExternalLink className="h-3 w-3 ml-1" />
-                        </Link>
+                      {!profile.guardianConsent && profile.guardianEmail && (
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            disabled={resendingGuardianEmail}
+                            onClick={async () => {
+                              if (!profile.guardianEmail) return;
+                              setResendingGuardianEmail(true);
+                              try {
+                                const res = await fetch("/api/guardian-consent", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ guardianEmail: profile.guardianEmail }),
+                                });
+                                if (res.ok) {
+                                  toast({
+                                    title: "Email sent",
+                                    description: `We've re-sent the consent email to ${profile.guardianEmail}.`,
+                                  });
+                                } else {
+                                  const data = await res.json().catch(() => ({}));
+                                  toast({
+                                    title: "Couldn't send email",
+                                    description: data.error || "Please try again.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              } catch {
+                                toast({
+                                  title: "Couldn't send email",
+                                  description: "Please try again.",
+                                  variant: "destructive",
+                                });
+                              } finally {
+                                setResendingGuardianEmail(false);
+                              }
+                            }}
+                            className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {resendingGuardianEmail ? "Sending…" : "Resend guardian email"}
+                          </button>
+                          <span className="text-[10px] text-muted-foreground/50">
+                            Sent to {profile.guardianEmail}
+                          </span>
+                        </div>
                       )}
                     </div>
                   </>

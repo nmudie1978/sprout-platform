@@ -586,7 +586,6 @@ export default function DashboardPage() {
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
-  const [activityPage, setActivityPage] = useState(0);
   const [switchConfirm, setSwitchConfirm] = useState<{ goalTitle: string; emoji: string } | null>(null);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
@@ -838,11 +837,11 @@ export default function DashboardPage() {
                           {hasDiscoveryPrefs ? "Ready when you are" : "Start here"}
                         </p>
                         <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          {hasDiscoveryPrefs ? "See your career matches" : "Find your matches"}
+                          {hasDiscoveryPrefs ? "We found career matches for you" : "Find your matches"}
                         </h2>
                         <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
                           {hasDiscoveryPrefs
-                            ? "Based on what you told us during sign-up, we've mapped careers to your interests. Tap any one to find out what the role actually involves."
+                            ? "Based on your interests, we've mapped careers across every path. Take a look."
                             : "Tell us what you like and we'll show you careers across every path."}
                         </p>
                         <span className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-400">
@@ -1287,76 +1286,8 @@ export default function DashboardPage() {
           </GlassCard>
         </div>
 
-        {/* ── 4. Activity + Saved Careers ────────────────────── */}
+        {/* ── 4. Saved Careers + Small Jobs ────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {(() => {
-          const ACTIVITY_PAGE_SIZE = 4;
-          const totalActivityPages = Math.max(1, Math.ceil(recentActivity.length / ACTIVITY_PAGE_SIZE));
-          const safeActivityPage = Math.min(Math.max(0, activityPage), totalActivityPages - 1);
-          const pageActivity = recentActivity.slice(
-            safeActivityPage * ACTIVITY_PAGE_SIZE,
-            (safeActivityPage + 1) * ACTIVITY_PAGE_SIZE
-          );
-          return (
-            <GlassCard className="p-3">
-              <div className="flex items-center gap-2 mb-1.5">
-                <FileText className="h-3.5 w-3.5 text-amber-500" />
-                <h3 className="text-xs font-semibold flex items-center gap-1.5">Activity <SectionWhy why="Your recent actions — saving content, exploring careers, setting goals. A log of your progress." /></h3>
-                <span className="flex-1" />
-                {totalActivityPages > 1 && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => setActivityPage((p) => Math.max(0, p - 1))}
-                      disabled={safeActivityPage === 0}
-                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-                    >
-                      <ChevronLeft className="h-3 w-3" />
-                    </button>
-                    <span className="text-[9px] text-muted-foreground/30 tabular-nums">
-                      {safeActivityPage + 1}/{totalActivityPages}
-                    </span>
-                    <button
-                      onClick={() => setActivityPage((p) => Math.min(totalActivityPages - 1, p + 1))}
-                      disabled={safeActivityPage >= totalActivityPages - 1}
-                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-                    >
-                      <ChevronRight className="h-3 w-3" />
-                    </button>
-                  </div>
-                )}
-              </div>
-              {recentActivity.length > 0 ? (
-                <div className="space-y-1">
-                  {pageActivity.map((item, i) => (
-                    <div key={`${safeActivityPage}-${i}`} className="flex items-center gap-2 text-[11px]">
-                      <div className={cn(
-                        "h-1 w-1 rounded-full shrink-0",
-                        item.type === 'application' ? 'bg-emerald-500/50' :
-                        item.type === 'saved' ? 'bg-blue-500/50' :
-                        'bg-amber-500/50'
-                      )} />
-                      <span className="text-muted-foreground/60 truncate flex-1">{item.title}</span>
-                      <span className="text-[9px] text-muted-foreground/30 shrink-0">
-                        {(() => {
-                          const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
-                          if (s < 60) return 'now';
-                          if (s < 3600) return `${Math.floor(s / 60)}m`;
-                          if (s < 86400) return `${Math.floor(s / 3600)}h`;
-                          return `${Math.floor(s / 86400)}d`;
-                        })()}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
-                  No recent activity
-                </p>
-              )}
-            </GlassCard>
-          );
-        })()}
-
         {/* My Small Jobs — minimised, deliberately small footprint.
             Career exploration is the centre of gravity now; small jobs
             are a side surface and shouldn't compete with it visually. */}
@@ -1445,7 +1376,7 @@ export default function DashboardPage() {
               <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
                 <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Progress for {goalTitle || 'your current goal'} is saved</li>
                 <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> You can switch back anytime</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Strengths and interests carry over</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> All of your data can be restored later</li>
               </ul>
             </div>
             <div className="flex justify-end gap-2">

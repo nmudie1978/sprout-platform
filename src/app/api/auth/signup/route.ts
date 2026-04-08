@@ -16,6 +16,7 @@ import {
   PLATFORM_MIN_AGE,
   PLATFORM_MAX_AGE,
 } from "@/lib/safety/age";
+import { sendGuardianConsentEmail } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -187,16 +188,28 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Log the consent request so the audit trail exists from day one.
-      // The actual outbound email integration is wired up separately —
-      // for now this puts the data in place so the parent flow can run.
-      if (needsGuardianConsent && trimmedGuardianEmail) {
+      // Log the consent request and fire off the guardian email via Resend.
+      // The audit log is the source of truth — if mail fails (e.g. Resend
+      // outage) the youth account still exists and the email can be re-
+      // triggered later from the profile page.
+      if (needsGuardianConsent && trimmedGuardianEmail && guardianToken) {
         await logAuditAction({
           userId: newUser.id,
           action: AuditAction.GUARDIAN_CONSENT_REQUESTED,
           metadata: { guardianEmail: trimmedGuardianEmail, atSignup: true },
           ipAddress: req.headers.get("x-forwarded-for") || undefined,
           userAgent: req.headers.get("user-agent") || undefined,
+        });
+
+        // Fire-and-forget — don't block signup if Resend is slow or
+        // misconfigured. Errors are logged inside sendMail().
+        sendGuardianConsentEmail({
+          guardianEmail: trimmedGuardianEmail,
+          youthDisplayName: `${trimmedFirst} ${trimmedLast}`.trim(),
+          youthFirstName: trimmedFirst,
+          consentToken: guardianToken,
+        }).catch((err) => {
+          console.error("[signup] Guardian email send failed:", err);
         });
       }
     } else if (role === "EMPLOYER") {

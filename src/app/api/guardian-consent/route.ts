@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateGuardianToken, logAuditAction, recordConsent } from "@/lib/safety";
 import { AuditAction, AccountStatus } from "@prisma/client";
+import { sendGuardianConsentEmail } from "@/lib/mail";
 
 // POST /api/guardian-consent - Request guardian consent (by youth)
 export async function POST(req: NextRequest) {
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
     const guardianToken = generateGuardianToken();
 
     // Update youth profile with guardian email and token
-    await prisma.youthProfile.update({
+    const updated = await prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: {
         guardianEmail,
@@ -37,6 +38,7 @@ export async function POST(req: NextRequest) {
         guardianConsent: false, // Reset if they're re-requesting
         guardianConsentAt: null,
       },
+      select: { displayName: true, user: { select: { fullName: true } } },
     });
 
     // Log the consent request
@@ -58,14 +60,23 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // TODO: Send actual email to guardian with consent link
-    // The consent link is: /guardian-consent/${guardianToken}
-    // This should be sent via email, NEVER returned to the client
+    // Send the actual email via Resend. Fire-and-forget so a transient
+    // mail outage never blocks the youth from re-trying. The consent link
+    // is delivered via email only — never returned to the client.
+    const firstName = updated.displayName || updated.user.fullName?.split(" ")[0] || "Your child";
+    const fullDisplay = updated.user.fullName || updated.displayName || firstName;
+    sendGuardianConsentEmail({
+      guardianEmail,
+      youthDisplayName: fullDisplay,
+      youthFirstName: firstName,
+      consentToken: guardianToken,
+    }).catch((err) => {
+      console.error("[guardian-consent] Email send failed:", err);
+    });
 
     return NextResponse.json({
       success: true,
       message: "Guardian consent request sent. Please ask your guardian to check their email.",
-      // Note: Consent link is sent via email only - never exposed in API response
     });
   } catch (error) {
     console.error("Failed to request guardian consent:", error);

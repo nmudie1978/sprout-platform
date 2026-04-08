@@ -459,46 +459,48 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         {/* Subtle top fade */}
         <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none" />
 
-        {/* Theme toggle */}
-        <button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 group/theme",
-            collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2"
-          )}
-          title={collapsed ? (theme === "dark" ? "Light Mode" : "Dark Mode") : undefined}
-        >
-          {mounted && theme === "dark" ? (
-            <Sun className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:rotate-90 group-hover/theme:text-amber-400" />
-          ) : (
-            <Moon className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:-rotate-12 group-hover/theme:text-blue-400" />
-          )}
-          {!collapsed && <span>{mounted && theme === "dark" ? "Light Mode" : "Dark Mode"}</span>}
-        </button>
+        {/* Theme toggle — hidden when collapsed to avoid icon-stack misclicks */}
+        {!collapsed && (
+          <button
+            type="button"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 group/theme px-3 py-2"
+          >
+            {mounted && theme === "dark" ? (
+              <Sun className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:rotate-90 group-hover/theme:text-amber-400" />
+            ) : (
+              <Moon className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:-rotate-12 group-hover/theme:text-blue-400" />
+            )}
+            <span>{mounted && theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+          </button>
+        )}
 
-        {/* Sign out */}
-        <button
-          onClick={() => signOut({ callbackUrl: "/" })}
-          className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout",
-            collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2"
-          )}
-          title={collapsed ? "Sign Out" : undefined}
-        >
-          <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/signout:translate-x-0.5" />
-          {!collapsed && <span>Sign Out</span>}
-        </button>
+        {/* Sign out — hidden when collapsed so it can't be confused with the expand chevron */}
+        {!collapsed && (
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout px-3 py-2"
+          >
+            <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/signout:translate-x-0.5" />
+            <span>Sign Out</span>
+          </button>
+        )}
 
-        {/* Collapse toggle */}
+        {/* Collapse / expand toggle — when collapsed this is the only thing in
+            the bottom slot, so there's no risk of accidentally clicking
+            sign-out and being kicked back to the landing page. */}
         <button
+          type="button"
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 hover:text-slate-400 hover:bg-white/5 transition-all duration-200",
-            collapsed ? "justify-center px-2 py-2" : "px-3 py-2"
+            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
+            collapsed ? "justify-center px-2 py-3 ring-1 ring-slate-800/60" : "px-3 py-2"
           )}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4 shrink-0" /> : <ChevronLeft className="h-4 w-4 shrink-0" />}
+          {collapsed ? <ChevronRight className="h-5 w-5 shrink-0" /> : <ChevronLeft className="h-4 w-4 shrink-0" />}
           {!collapsed && <span className="text-xs">Collapse</span>}
         </button>
       </div>

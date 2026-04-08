@@ -73,6 +73,7 @@ export function DiscoveryQuizDialog({
 }: DiscoveryQuizDialogProps) {
   const queryClient = useQueryClient();
   const [subjects, setSubjects] = useState<string[]>([]);
+  const [starredSubjects, setStarredSubjects] = useState<string[]>([]);
   const [workStyles, setWorkStyles] = useState<string[]>([]);
   const [peoplePref, setPeoplePref] = useState<string | undefined>(undefined);
 
@@ -80,10 +81,36 @@ export function DiscoveryQuizDialog({
   useEffect(() => {
     if (open) {
       setSubjects(initialValue?.subjects || []);
+      setStarredSubjects(initialValue?.starredSubjects || []);
       setWorkStyles(initialValue?.workStyles || []);
       setPeoplePref(initialValue?.peoplePref);
     }
   }, [open, initialValue]);
+
+  // Click handler that distinguishes single vs double click using
+  // MouseEvent.detail (the browser's own click counter — much more
+  // reliable than a setTimeout race, and per-click rather than per-pill
+  // so clicking subject A then B never crosses wires).
+  const handleSubjectClick = (id: string, e: React.MouseEvent) => {
+    if (e.detail === 2) {
+      // Double-click: ensure selected AND toggle the star. The preceding
+      // single-click (detail===1) would have toggled selection, so we
+      // re-assert "selected" here regardless of that intermediate state.
+      setSubjects((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      setStarredSubjects((prev) =>
+        prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      );
+      return;
+    }
+    // Single click: toggle selection. Unselecting also clears the star.
+    setSubjects((prev) => {
+      if (prev.includes(id)) {
+        setStarredSubjects((s) => s.filter((x) => x !== id));
+        return prev.filter((s) => s !== id);
+      }
+      return [...prev, id];
+    });
+  };
 
   const toggle = (
     list: string[],
@@ -97,6 +124,7 @@ export function DiscoveryQuizDialog({
     mutationFn: async () => {
       const prefs: DiscoveryPreferences = {
         subjects,
+        starredSubjects,
         workStyles,
         peoplePref,
       };
@@ -140,19 +168,35 @@ export function DiscoveryQuizDialog({
           {/* Subjects */}
           <div>
             <Label className="text-xs font-semibold">Subjects you enjoy</Label>
-            <p className="text-[10px] text-muted-foreground mb-2">Pick any that apply.</p>
+            <p className="text-[10px] text-muted-foreground mb-2">
+              Tap to pick. Double-tap to ⭐ a subject you really love — it counts more.
+            </p>
             <div className="flex flex-wrap gap-1.5">
-              {SUBJECTS.map((s) => (
-                <Badge
-                  key={s.id}
-                  variant={subjects.includes(s.id) ? "default" : "outline"}
-                  className="cursor-pointer text-[11px] px-2 py-0.5"
-                  onClick={() => toggle(subjects, setSubjects, s.id)}
-                >
-                  {s.label}
-                </Badge>
-              ))}
+              {SUBJECTS.map((s) => {
+                const selected = subjects.includes(s.id);
+                const starred = starredSubjects.includes(s.id);
+                return (
+                  <Badge
+                    key={s.id}
+                    variant={selected ? "default" : "outline"}
+                    className={`cursor-pointer text-[11px] px-2 py-0.5 select-none ${
+                      starred
+                        ? "ring-2 ring-amber-400/70 bg-amber-500/20 text-amber-100 hover:bg-amber-500/30"
+                        : ""
+                    }`}
+                    onClick={(e) => handleSubjectClick(s.id, e)}
+                  >
+                    {starred && <span className="mr-1">⭐</span>}
+                    {s.label}
+                  </Badge>
+                );
+              })}
             </div>
+            {subjects.length >= 6 && (
+              <p className="text-[10px] text-amber-500/80 mt-2 animate-in fade-in duration-300">
+                Tip: picking your top 4–5 makes the radar sharper.
+              </p>
+            )}
           </div>
 
           {/* Work styles */}

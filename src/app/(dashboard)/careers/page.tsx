@@ -274,16 +274,6 @@ function CareersPageContent() {
             <span className={`text-xs sm:text-sm font-semibold tabular-nums ${stat.color}`}>{stat.value}</span>
           </div>
         ))}
-        {insightsData?.recommendations?.length > 0 && (
-          <button
-            onClick={() => document.getElementById("recommended-careers")?.scrollIntoView({ behavior: "smooth" })}
-            className="flex items-center gap-1.5 sm:gap-2 bg-card/80 border border-border/40 rounded-xl px-2 sm:px-3 py-1.5 active:border-pink-500/40 sm:hover:border-pink-500/40 active:bg-pink-500/5 sm:hover:bg-pink-500/5 transition-colors group shrink-0"
-          >
-            <Heart className="h-3.5 w-3.5 text-pink-500" />
-            <span className="text-[11px] sm:text-xs text-muted-foreground group-hover:text-pink-400 transition-colors">Matches</span>
-            <span className="text-xs sm:text-sm font-semibold tabular-nums text-pink-500">{insightsData.recommendations.length}</span>
-          </button>
-        )}
       </div>
 
       {/* Primary Filters Bar */}
@@ -455,29 +445,35 @@ function CareersPageContent() {
       )}
 
       {/* Recommended Careers (anchor for Matches pill) */}
-      {isYouth && insightsData?.recommendations?.length > 0 && (
-        <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">
-          <div className="flex items-center gap-2 mb-4">
-            <Heart className="h-5 w-5 text-pink-500" />
-            <h2 className="text-lg font-semibold">Recommended for You</h2>
-            <span className="text-xs text-muted-foreground">Based on your primary goal</span>
+      {(() => {
+        const topRecs = (insightsData?.recommendations ?? [])
+          .filter((rec: any) => Math.round(rec.matchScore) > 70)
+          .slice(0, 3);
+        if (!isYouth || topRecs.length === 0) return null;
+        return (
+          <div id="recommended-careers" className="mt-8 pt-6 border-t border-border scroll-mt-20">
+            <div className="flex items-center gap-2 mb-4">
+              <Heart className="h-5 w-5 text-pink-500" />
+              <h2 className="text-lg font-semibold">Recommended for You</h2>
+              <span className="text-xs text-muted-foreground">Based on your primary goal</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {topRecs.map((rec: any) => {
+                const career = rec.career;
+                const matchScore = Math.min(Math.round(rec.matchScore), 100);
+                return (
+                  <CareerScoreCard
+                    key={career.id}
+                    career={career}
+                    matchScore={matchScore}
+                    onLearnMore={() => setSelectedCareer(career)}
+                  />
+                );
+              })}
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {insightsData.recommendations.slice(0, 6).map((rec: any) => {
-              const career = rec.career;
-              const matchScore = Math.min(Math.round(rec.matchScore), 100);
-              return (
-                <CareerScoreCard
-                  key={career.id}
-                  career={career}
-                  matchScore={matchScore}
-                  onLearnMore={() => setSelectedCareer(career)}
-                />
-              );
-            })}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Career Detail Sheet with Learn More content */}
       <CareerDetailSheet
