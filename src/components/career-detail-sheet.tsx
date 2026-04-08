@@ -270,23 +270,23 @@ export function CareerDetailSheet({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto p-0">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden p-0">
           {career && (
             <>
               {/* Header */}
               <DialogHeader className="sticky top-0 bg-background z-10 p-4 pb-3 border-b">
-                <div className="flex items-start gap-3">
-                  <span className="text-3xl">{career.emoji}</span>
+                <div className="flex items-start gap-3 min-w-0">
+                  <span className="text-3xl shrink-0">{career.emoji}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <DialogTitle className="text-lg leading-tight">{career.title}</DialogTitle>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <DialogTitle className="text-lg leading-tight break-words min-w-0">{career.title}</DialogTitle>
                       {career.entryLevel && (
                         <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
                           Entry Level
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-muted-foreground mt-1 break-words">
                       {career.description}
                     </p>
                   </div>
@@ -313,20 +313,20 @@ export function CareerDetailSheet({
 
 
                 {/* Quick Stats */}
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <div className="p-2 rounded-lg border bg-muted/30">
+                <div className="grid grid-cols-2 gap-2 mt-3 min-w-0">
+                  <div className="p-2 rounded-lg border bg-muted/30 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <Banknote className="h-3.5 w-3.5 text-green-600" />
+                      <Banknote className="h-3.5 w-3.5 text-green-600 shrink-0" />
                       <span className="text-[10px] font-medium">Salary</span>
                     </div>
-                    <p className="text-sm font-semibold">{career.avgSalary}</p>
+                    <p className="text-xs font-semibold leading-snug break-words">{career.avgSalary}</p>
                   </div>
-                  <div className="p-2 rounded-lg border bg-muted/30">
+                  <div className="p-2 rounded-lg border bg-muted/30 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <GrowthIcon className={`h-3.5 w-3.5 ${growth.color}`} />
+                      <GrowthIcon className={`h-3.5 w-3.5 ${growth.color} shrink-0`} />
                       <span className="text-[10px] font-medium">Growth</span>
                     </div>
-                    <p className={`text-sm font-semibold ${growth.color}`}>{growth.label}</p>
+                    <p className={`text-xs font-semibold leading-snug break-words ${growth.color}`}>{growth.label}</p>
                   </div>
                 </div>
 
