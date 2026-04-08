@@ -707,32 +707,40 @@ export default function DashboardPage() {
           if (!hasGoal) {
             return (
               <Link href="/careers/radar" className="block mb-6">
-                <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80 hover:border-teal-500/50 transition-colors">
+                <GlassCard
+                  className="relative overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/[0.08] via-card/80 to-card/80 hover:border-pink-500/50 transition-colors"
+                  style={{
+                    boxShadow:
+                      "0 0 24px rgba(244,114,182,0.18), 0 0 48px rgba(244,114,182,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
+                  }}
+                >
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
-                        <Sparkles className="h-5 w-5 text-teal-500" />
+                      <div className="p-2.5 rounded-xl bg-pink-500/15 shrink-0">
+                        <Sparkles className="h-5 w-5 text-pink-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-pink-400/80 mb-1">
                           {hasDiscoveryPrefs ? "Ready when you are" : "Start here"}
                         </p>
                         <h2 className="text-lg font-semibold text-foreground mb-1.5">
                           {hasDiscoveryPrefs ? "See your career matches" : "Find your matches"}
                         </h2>
-                        <p className="text-sm text-muted-foreground/70 leading-relaxed mb-3 max-w-md">
+                        <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
                           {hasDiscoveryPrefs
                             ? "We mapped careers to what you said you like. Tap any one to find out what the role actually involves."
                             : "Tell us what you like and we'll show you careers across every path."}
                         </p>
-                        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-600 dark:text-teal-400">
+                        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-400">
                           Take a look
                           <ArrowRight className="h-4 w-4" />
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
+                  {/* Decorative inner glow */}
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-pink-500/15 to-transparent pointer-events-none" />
+                  <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-pink-500/[0.06] blur-3xl pointer-events-none" />
                 </GlassCard>
               </Link>
             );
