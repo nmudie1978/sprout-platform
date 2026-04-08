@@ -374,6 +374,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             {/* YOURS — personal surfaces, physically separated at the top */}
             <NavSection title="Yours" collapsed={collapsed} accent>
+              <NavItem href="/dashboard" icon={LayoutDashboard} label="My Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal />
               <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
@@ -381,7 +382,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
-              <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
               <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} />
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
