@@ -247,14 +247,10 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
             collapsed ? "p-1" : "p-1.5"
           )}
         >
-          {/* Ambient outer glow — soft, slow pulse */}
+          {/* Ambient outer glow — soft, slow breathing pulse on the border */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_5s_ease-in-out_infinite]"
-            style={{
-              boxShadow:
-                "0 0 18px 0 rgba(45,212,191,0.10), inset 0 0 24px 0 rgba(20,184,166,0.06)",
-            }}
+            className="pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_4.5s_ease-in-out_infinite]"
           />
           {/* Slow drifting sheen across the panel */}
           <div

@@ -816,7 +816,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "perf-test-engineer",
-      title: "Performance / Load Test Engineer",
+      title: "Load Test Engineer",
       emoji: "📈",
       description: "Design and execute performance and load tests to ensure systems scale reliably under production traffic patterns.",
       avgSalary: "550,000 - 850,000 kr/year",
@@ -838,7 +838,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "backend-engineer-distributed",
-      title: "Backend Engineer (Distributed Systems)",
+      title: "Distributed Systems Engineer",
       emoji: "🔀",
       description: "Build and maintain distributed backend systems handling high concurrency, data replication, and fault tolerance at scale.",
       avgSalary: "650,000 - 1,050,000 kr/year",
@@ -1168,7 +1168,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cto",
-      title: "Chief Technology Officer (CTO)",
+      title: "Chief Technology Officer",
       emoji: "👔",
       description: "Executive responsible for technology vision, engineering strategy, and innovation, reporting to the CEO and board.",
       avgSalary: "1,500,000 - 3,000,000 kr/year",
@@ -1190,7 +1190,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-product-manager",
-      title: "Product Manager (Senior)",
+      title: "Senior Product Manager",
       emoji: "📱",
       description: "Own product strategy and roadmap for a key product area, leading cross-functional teams to deliver business outcomes.",
       avgSalary: "700,000 - 1,050,000 kr/year",
@@ -1278,7 +1278,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "technical-director-gaming",
-      title: "Technical Director (Gaming)",
+      title: "Gaming Technical Director",
       emoji: "🎮",
       description: "Lead technical strategy and engineering for game studios, making engine, tool, and infrastructure decisions for game development.",
       avgSalary: "900,000 - 1,400,000 kr/year",
@@ -1300,7 +1300,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "platform-director-media",
-      title: "Platform Director (Media/Streaming)",
+      title: "Streaming Platform Director",
       emoji: "📺",
       description: "Lead platform strategy and engineering for media and streaming products, ensuring scalable content delivery and user experience.",
       avgSalary: "1,100,000 - 1,700,000 kr/year",
@@ -1311,7 +1311,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "product-director-consumer",
-      title: "Product Director (Consumer Platforms)",
+      title: "Consumer Product Director",
       emoji: "📱",
       description: "Lead product strategy for consumer-facing platforms, driving user growth, engagement, and retention at scale.",
       avgSalary: "1,100,000 - 1,700,000 kr/year",
@@ -1406,7 +1406,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "entrepreneur",
-      title: "Entrepreneur / Startup Founder",
+      title: "Startup Founder",
       emoji: "🚀",
       description: "Start and grow your own business, turning ideas into products and services.",
       avgSalary: "Variable - from loss to millions",
@@ -1417,7 +1417,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lawyer",
-      title: "Lawyer (Advokat)",
+      title: "Lawyer",
       emoji: "⚖️",
       description: "Provide legal advice, represent clients in court, and draft legal documents.",
       avgSalary: "600,000 - 1,200,000 kr/year",
@@ -1428,7 +1428,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "police-officer",
-      title: "Police Officer (Politi)",
+      title: "Police Officer",
       emoji: "👮",
       description: "Maintain public safety, enforce laws, investigate crimes, and assist communities across Norway. In Norway, police officers must complete a 3-year bachelor's degree at Politihøgskolen (Police University College) in Oslo, Stavern, or Bodø. Entry is highly competitive with strict physical, academic, and character requirements.",
       avgSalary: "450,000 - 700,000 kr/year",
@@ -1439,7 +1439,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "firefighter",
-      title: "Firefighter (Brannkonstabel)",
+      title: "Firefighter",
       emoji: "🚒",
       description: "Respond to fires, accidents, and emergencies across Norway. Norwegian firefighters train through the Norges brannskole (Norwegian Fire Academy) in Tjeldsund. Many fire departments also require EMT/first responder certification. The role combines rescue work, fire suppression, hazmat response, and public education.",
       avgSalary: "420,000 - 600,000 kr/year",
@@ -1450,7 +1450,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "social-worker",
-      title: "Social Worker (Sosionom)",
+      title: "Social Worker",
       emoji: "🤝",
       description: "Help individuals and families cope with challenges, access services, and improve their lives.",
       avgSalary: "450,000 - 600,000 kr/year",
@@ -1461,7 +1461,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "environmental-scientist",
-      title: "Environmental Scientist (Miljørådgiver)",
+      title: "Environmental Scientist",
       emoji: "🌍",
       description: "Study environmental problems and develop solutions for pollution, conservation, and sustainability.",
       avgSalary: "500,000 - 750,000 kr/year",
@@ -1549,7 +1549,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-management-consultant",
-      title: "Management Consultant (Senior)",
+      title: "Senior Management Consultant",
       emoji: "💼",
       description: "Lead consulting engagements advising C-suite clients on strategy, operations, and transformation with hands-on delivery.",
       avgSalary: "800,000 - 1,400,000 kr/year",
@@ -1648,7 +1648,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "oss-bss-transformation-lead",
-      title: "OSS/BSS Transformation Lead",
+      title: "Telecom Transformation Lead",
       emoji: "📡",
       description: "Lead telecom OSS/BSS transformation programmes modernising operations and business support systems for telco operators.",
       avgSalary: "900,000 - 1,500,000 kr/year",
@@ -1901,7 +1901,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "independent-contractor-technical",
-      title: "Independent Contractor (Senior Technical)",
+      title: "Senior Technical Contractor",
       emoji: "🧑‍💻",
       description: "Provide senior technical expertise as an independent contractor, working on complex projects across multiple clients.",
       avgSalary: "800,000 - 1,800,000+ kr/year",
@@ -1951,7 +1951,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   FINANCE_BANKING: [
     {
       id: "accountant",
-      title: "Accountant (Regnskapsfører)",
+      title: "Accountant",
       emoji: "🧮",
       description: "Manage financial records, prepare statements, and ensure tax compliance for businesses.",
       avgSalary: "480,000 - 700,000 kr/year",
@@ -1973,7 +1973,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "bank-advisor",
-      title: "Bank Advisor (Bankrådgiver)",
+      title: "Bank Advisor",
       emoji: "🏦",
       description: "Help bank customers with accounts, loans, mortgages, and financial products.",
       avgSalary: "450,000 - 650,000 kr/year",
@@ -1995,7 +1995,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "auditor",
-      title: "Auditor (Revisor)",
+      title: "Auditor",
       emoji: "🔍",
       description: "Examine financial records to ensure accuracy, compliance, and detect fraud.",
       avgSalary: "550,000 - 900,000 kr/year",
@@ -2105,7 +2105,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "chief-financial-officer",
-      title: "Chief Financial Officer (CFO)",
+      title: "Chief Financial Officer",
       emoji: "👔",
       description: "Executive responsible for all financial matters including strategy, reporting, investor relations, and capital allocation.",
       avgSalary: "1,500,000 - 3,000,000+ kr/year",
@@ -2190,7 +2190,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "content-creator",
-      title: "Content Creator / Social Media Manager",
+      title: "Social Media Manager",
       emoji: "✨",
       description: "Create engaging content for social media, blogs, and digital platforms.",
       avgSalary: "400,000 - 650,000 kr/year",
@@ -2355,7 +2355,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "chief-marketing-officer",
-      title: "Chief Marketing Officer (CMO)",
+      title: "Chief Marketing Officer",
       emoji: "📣",
       description: "Executive responsible for marketing strategy, brand, demand generation, and market positioning across the organisation.",
       avgSalary: "1,400,000 - 2,500,000 kr/year",
@@ -2438,7 +2438,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "electrician",
-      title: "Electrician (Elektriker)",
+      title: "Electrician",
       emoji: "🔌",
       description: "Install, maintain, and repair electrical systems in buildings and facilities.",
       avgSalary: "450,000 - 650,000 kr/year",
@@ -2450,7 +2450,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "plumber",
-      title: "Plumber (Rørlegger)",
+      title: "Plumber",
       emoji: "🔧",
       description: "Install and repair water, heating, and drainage systems in buildings.",
       avgSalary: "420,000 - 620,000 kr/year",
@@ -2485,7 +2485,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "process-operator",
-      title: "Process Operator (Prosessoperatør)",
+      title: "Process Operator",
       emoji: "🏭",
       description: "Monitor and control industrial processes in manufacturing and energy plants.",
       avgSalary: "450,000 - 650,000 kr/year",
@@ -2497,7 +2497,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "carpenter",
-      title: "Carpenter (Tømrer)",
+      title: "Carpenter",
       emoji: "🪚",
       description: "Build and repair wooden structures and frameworks for buildings.",
       avgSalary: "420,000 - 600,000 kr/year",
@@ -2509,7 +2509,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hvac-technician",
-      title: "HVAC Technician (Ventilasjons- og klimatekniker)",
+      title: "HVAC Technician",
       emoji: "❄️",
       description: "Install, maintain, and repair heating, ventilation, and air conditioning systems.",
       avgSalary: "450,000 - 620,000 kr/year",
@@ -2521,7 +2521,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "painter",
-      title: "Painter (Maler)",
+      title: "Painter",
       emoji: "🎨",
       description: "Apply paint, wallpaper, and other finishes to interior and exterior surfaces.",
       avgSalary: "380,000 - 520,000 kr/year",
@@ -2533,7 +2533,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "welder",
-      title: "Welder (Sveiser)",
+      title: "Welder",
       emoji: "🔥",
       description: "Join metal parts using various welding techniques in construction and manufacturing.",
       avgSalary: "420,000 - 600,000 kr/year",
@@ -2545,7 +2545,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "auto-mechanic",
-      title: "Auto Mechanic (Bilmekaniker)",
+      title: "Auto Mechanic",
       emoji: "🚗",
       description: "Diagnose, repair, and maintain vehicles including cars, trucks, and motorcycles.",
       avgSalary: "400,000 - 580,000 kr/year",
@@ -2612,7 +2612,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "engineering-director",
-      title: "Engineering Director (Industrial)",
+      title: "Industrial Engineering Director",
       emoji: "⚙️",
       description: "Lead engineering departments in manufacturing, energy, or infrastructure organisations driving technical excellence.",
       avgSalary: "1,000,000 - 1,600,000 kr/year",
@@ -3937,7 +3937,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "truck-driver",
-      title: "Truck Driver (Lastebilsjåfør)",
+      title: "Truck Driver",
       emoji: "🚛",
       description: "Transport goods across the country or internationally in heavy vehicles.",
       avgSalary: "400,000 - 550,000 kr/year",
@@ -3960,7 +3960,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "freight-forwarder",
-      title: "Freight Forwarder (Speditør)",
+      title: "Freight Forwarder",
       emoji: "🌍",
       description: "Arrange international shipping and handle customs documentation.",
       avgSalary: "450,000 - 650,000 kr/year",
@@ -3983,7 +3983,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "warehouse-worker",
-      title: "Warehouse Worker (Lagermedarbeider)",
+      title: "Warehouse Worker",
       emoji: "📦",
       description: "Pick, pack, and organise goods in warehouses for shipping and storage.",
       avgSalary: "350,000 - 450,000 kr/year",
@@ -4045,7 +4045,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "chef",
-      title: "Chef (Kokk)",
+      title: "Chef",
       emoji: "👨‍🍳",
       description: "Prepare and cook meals in restaurants, hotels, or catering services.",
       avgSalary: "380,000 - 600,000 kr/year",
@@ -4069,7 +4069,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "flight-attendant",
-      title: "Flight Attendant (Kabinansatt)",
+      title: "Flight Attendant",
       emoji: "✈️",
       description: "Ensure passenger safety and comfort on commercial flights.",
       avgSalary: "380,000 - 550,000 kr/year",
@@ -4080,7 +4080,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "hairdresser",
-      title: "Hairdresser (Frisør)",
+      title: "Hairdresser",
       emoji: "💇",
       description: "Cut, style, and color hair, providing beauty services to clients.",
       avgSalary: "320,000 - 480,000 kr/year",
@@ -4092,7 +4092,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "fitness-instructor",
-      title: "Fitness Instructor / Personal Trainer",
+      title: "Personal Trainer",
       emoji: "🏋️",
       description: "Lead fitness classes and provide personal training to help clients reach health goals.",
       avgSalary: "350,000 - 550,000 kr/year",
@@ -4104,7 +4104,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "restaurant-server",
-      title: "Restaurant Server (Servitør)",
+      title: "Restaurant Server",
       emoji: "🍽️",
       description: "Serve food and drinks to guests, ensuring a positive dining experience.",
       avgSalary: "320,000 - 450,000 kr/year",
@@ -4139,7 +4139,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "massage-therapist",
-      title: "Massage Therapist (Massør)",
+      title: "Massage Therapist",
       emoji: "💆",
       description: "Provide therapeutic massage treatments to relieve pain, reduce stress, and improve wellbeing.",
       avgSalary: "350,000 - 500,000 kr/year",
@@ -4151,7 +4151,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "beautician",
-      title: "Beautician / Makeup Artist (Kosmetolog)",
+      title: "Makeup Artist",
       emoji: "💄",
       description: "Provide skincare treatments, apply makeup, and advise clients on beauty routines.",
       avgSalary: "320,000 - 480,000 kr/year",
@@ -4163,7 +4163,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "nail-technician",
-      title: "Nail Technician (Negltekniker)",
+      title: "Nail Technician",
       emoji: "💅",
       description: "Provide manicures, pedicures, nail art, and nail enhancements to clients.",
       avgSalary: "300,000 - 420,000 kr/year",
@@ -4187,7 +4187,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "video-editor",
-      title: "Video Editor / Videographer",
+      title: "Video Editor",
       emoji: "🎬",
       description: "Shoot and edit video content for films, commercials, social media, and corporate clients.",
       avgSalary: "400,000 - 650,000 kr/year",
@@ -4199,7 +4199,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "interior-designer",
-      title: "Interior Designer (Interiørdesigner)",
+      title: "Interior Designer",
       emoji: "🏠",
       description: "Design functional and aesthetic interior spaces for homes, offices, and commercial buildings.",
       avgSalary: "450,000 - 700,000 kr/year",
@@ -4210,7 +4210,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "architect",
-      title: "Architect (Arkitekt)",
+      title: "Architect",
       emoji: "🏛️",
       description: "Design buildings and structures, balancing aesthetics, functionality, and safety requirements.",
       avgSalary: "550,000 - 900,000 kr/year",
@@ -4239,7 +4239,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // Architecture & Strategy
     {
       id: "telco-oss-bss-architect",
-      title: "OSS/BSS Solutions Architect",
+      title: "Telecom Solutions Architect",
       emoji: "📡",
       description: "Design end-to-end OSS/BSS solutions aligning business processes with TM Forum standards for telecommunications operators.",
       avgSalary: "800,000 - 1,200,000 kr/year",
@@ -4250,7 +4250,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-network-architect",
-      title: "Network Architect (Core, Transport, Access)",
+      title: "Telecom Network Architect",
       emoji: "🌐",
       description: "Design network infrastructure spanning core, transport, and access layers for telecom carriers, including 5G rollout planning.",
       avgSalary: "750,000 - 1,200,000 kr/year",
@@ -4261,7 +4261,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-enterprise-architect",
-      title: "Enterprise Architect (TM Forum Aligned)",
+      title: "Enterprise Architect",
       emoji: "🏛️",
       description: "Govern the enterprise architecture landscape for telecom operators, ensuring alignment with TM Forum eTOM/SID and business strategy.",
       avgSalary: "900,000 - 1,400,000 kr/year",
@@ -4306,7 +4306,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-oss-bss-director",
-      title: "OSS/BSS Program Director",
+      title: "Telecom Program Director",
       emoji: "📋",
       description: "Direct large OSS/BSS delivery programmes with cross-functional teams, vendor management, and executive reporting.",
       avgSalary: "1,000,000 - 1,600,000 kr/year",
@@ -4317,7 +4317,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-digital-transformation-mgr",
-      title: "Digital Transformation Manager (Telco)",
+      title: "Telecom Transformation Manager",
       emoji: "💡",
       description: "Manage digital transformation workstreams focused on process automation and customer experience improvement in telecom.",
       avgSalary: "700,000 - 1,100,000 kr/year",
@@ -4328,7 +4328,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-fulfilment-head",
-      title: "Head of Order-to-Activation / Fulfilment",
+      title: "Head of Service Fulfilment",
       emoji: "📦",
       description: "Own the end-to-end order-to-activation process ensuring timely service delivery and low fallout rates in telecom operations.",
       avgSalary: "800,000 - 1,300,000 kr/year",
@@ -4339,7 +4339,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-safe-rte",
-      title: "SAFe Release Train Engineer (Telco)",
+      title: "Telecom Release Train Engineer",
       emoji: "🚂",
       description: "Facilitate agile release trains within telecom programmes, removing impediments and driving flow across multiple teams.",
       avgSalary: "750,000 - 1,100,000 kr/year",
