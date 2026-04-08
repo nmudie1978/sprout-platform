@@ -564,7 +564,11 @@ export default function DashboardPage() {
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
 
-  // Profile completion — lightweight check
+  // Profile completion — lightweight check.
+  // While guardian consent is still pending we poll every 15s and
+  // refetch on window focus, so the dashboard updates as soon as the
+  // parent confirms (instead of waiting up to 5 minutes for stale cache).
+  // Once consent is granted the polling stops automatically.
   const { data: profileData } = useQuery<{
     displayName: string | null; bio: string | null; phoneNumber: string | null;
     city: string | null; country: string | null; availability: string | null; interests: string[];
@@ -580,6 +584,14 @@ export default function DashboardPage() {
     },
     enabled: session?.user.role === "YOUTH",
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: (query) => {
+      const d = query.state.data;
+      return !!(d && d.guardianEmail && !d.guardianConsent);
+    },
+    refetchInterval: (query) => {
+      const d = query.state.data;
+      return d && d.guardianEmail && !d.guardianConsent ? 15_000 : false;
+    },
   });
 
   // Career detail sheet
@@ -816,49 +828,10 @@ export default function DashboardPage() {
             );
           }
 
-          // State 2 & 3: completed onboarding but no goal yet → open radar
-          if (!hasGoal && !careerMatchesCardDismissed) {
-            return (
-              <Link href="/careers/radar" onClick={dismissCareerMatchesCard} className="block mb-6">
-                <GlassCard
-                  className="relative overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/[0.08] via-card/80 to-card/80 hover:border-pink-500/50 transition-colors"
-                  style={{
-                    boxShadow:
-                      "0 0 24px rgba(244,114,182,0.18), 0 0 48px rgba(244,114,182,0.08), inset 0 1px 0 rgba(255,255,255,0.04)",
-                  }}
-                >
-                  <div className="p-5 sm:p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-xl bg-pink-500/15 shrink-0">
-                        <Sparkles className="h-5 w-5 text-pink-400" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-pink-400/80 mb-1">
-                          {hasDiscoveryPrefs ? "Ready when you are" : "Start here"}
-                        </p>
-                        <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          {hasDiscoveryPrefs ? "We found career matches for you" : "Find your matches"}
-                        </h2>
-                        <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
-                          {hasDiscoveryPrefs
-                            ? "Based on your interests, we've mapped careers across every path. Take a look."
-                            : "Tell us what you like and we'll show you careers across every path."}
-                        </p>
-                        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-400">
-                          Take a look
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Decorative inner glow */}
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-pink-500/15 to-transparent pointer-events-none" />
-                  <div className="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-pink-500/[0.06] blur-3xl pointer-events-none" />
-                </GlassCard>
-              </Link>
-            );
-          }
-
+          // State 2 & 3 (completed onboarding but no goal yet) used to be
+          // a giant pink "Find your matches" hero card here. It's been
+          // demoted to one of the First-steps cards below — the radar is
+          // one of several recommended next moves, not THE next move.
           return null;
         })()}
 
@@ -873,7 +846,24 @@ export default function DashboardPage() {
           // Hide once the user has actually picked a career to commit to
           if (isFirstLogin || hasGoal) return null;
 
+          // Re-derive prefs flag locally — the parent IIFE that tracked it
+          // is gone now that the giant pink "Find your matches" card has
+          // been demoted into this First-steps row.
+          const dp = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
+          const hasDiscoveryPrefs = !!dp && (
+            (dp.subjects?.length ?? 0) > 0 ||
+            (dp.workStyles?.length ?? 0) > 0
+          );
+
           const steps = [
+            {
+              href: "/careers/radar",
+              icon: Sparkles,
+              label: hasDiscoveryPrefs ? "See your career matches" : "Find your matches",
+              hint: hasDiscoveryPrefs
+                ? "Careers mapped to the interests you told us about."
+                : "Tell us what you like and we'll map careers across every path.",
+            },
             {
               href: "/careers",
               icon: Compass,
@@ -899,7 +889,7 @@ export default function DashboardPage() {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
                 First steps
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                 {steps.map((s) => {
                   const Icon = s.icon;
                   return (

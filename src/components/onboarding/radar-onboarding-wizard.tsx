@@ -112,6 +112,11 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["onboarding-status"] });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      // The dashboard reads its own copy of the profile under a separate
+      // query key — invalidate that too so the "Find your matches" card
+      // flips to "We found career matches for you" immediately instead of
+      // waiting for the 5-min stale window to expire.
+      queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
       // Just close the wizard. The user lands back on the dashboard, where
       // the first-action card and "Suggested for you" cards take over and
       // guide them toward the radar at their own pace.

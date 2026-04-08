@@ -387,7 +387,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal />
-              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
+              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
               <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} personal />
             </NavSection>
 
