@@ -29,6 +29,7 @@ import {
   ChevronLeft,
   ChevronRight,
   User,
+  PlayCircle,
 } from "lucide-react";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
@@ -740,69 +741,51 @@ export default function DashboardPage() {
           return null;
         })()}
 
-        {/* ── Suggested for you — first-session orientation ──
-            A calm row of three suggestions that disappears once the user
-            has done at least two of them OR after their second visit.
-            Not a checklist. No ticks, no progress bar, no completion
-            psychology. Just a gentle menu of "things to try first".
+        {/* ── First steps — small concrete actions, not feature shortcuts.
+            Three calm cards guiding a brand-new user toward small first
+            actions that aren't the radar (the radar already has its own
+            hero card above). Vanishes once the user has set a goal —
+            from that point forward My Journey is the centre of gravity.
         */}
         {(() => {
-          const dpRaw = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
-          const hasRadar = !!dpRaw && (
-            (dpRaw.subjects?.length ?? 0) > 0 ||
-            (dpRaw.workStyles?.length ?? 0) > 0
-          );
           const hasGoal = !!goalTitle;
-          const exploredCount = (profileData as { exploredCareerCount?: number } | null)?.exploredCareerCount ?? 0;
-          const hasExplored = exploredCount > 0;
+          // Hide once the user has actually picked a career to commit to
+          if (isFirstLogin || hasGoal) return null;
 
-          // Hide once the user is meaningfully bedded in
-          const completedCount =
-            (hasRadar ? 1 : 0) + (hasExplored ? 1 : 0) + (hasGoal ? 1 : 0);
-          if (isFirstLogin || completedCount >= 2) return null;
-
-          const suggestions = [
+          const steps = [
             {
-              done: hasRadar,
-              href: "/careers/radar",
-              icon: Sparkles,
-              label: "Open your Career Radar",
-              hint: "See careers mapped to what you like.",
-            },
-            {
-              done: hasExplored,
               href: "/careers",
-              icon: Target,
-              label: "Save a career to explore",
-              hint: "Tap any career and add it to My Journey.",
+              icon: Compass,
+              label: "Browse some careers",
+              hint: "Look around 400+ jobs from healthcare to tech.",
             },
             {
-              done: hasGoal,
+              href: "/careers",
+              icon: PlayCircle,
+              label: "Watch a day in the life",
+              hint: "Real videos of what these jobs actually look like.",
+            },
+            {
               href: "/my-journey",
-              icon: TrendingUp,
-              label: "Look at your roadmap",
-              hint: "Once you pick a career, your path appears here.",
+              icon: Target,
+              label: "Set your first career goal",
+              hint: "Pick one to explore in depth in My Journey.",
             },
           ];
 
           return (
             <div className="mb-6">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
-                Suggested for you
+                First steps
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {suggestions.map((s) => {
+                {steps.map((s) => {
                   const Icon = s.icon;
                   return (
                     <Link
                       key={s.label}
                       href={s.href}
-                      className={cn(
-                        "group rounded-xl border bg-card p-3 transition-colors flex items-start gap-2.5",
-                        s.done
-                          ? "opacity-50 hover:opacity-70"
-                          : "hover:border-teal-500/40 hover:bg-teal-500/[0.03]"
-                      )}
+                      className="group rounded-xl border bg-card p-3 transition-colors flex items-start gap-2.5 hover:border-teal-500/40 hover:bg-teal-500/[0.03]"
                     >
                       <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
                         <Icon className="h-3.5 w-3.5 text-teal-500" />
@@ -855,14 +838,9 @@ export default function DashboardPage() {
 
               {/* Stage & progress bar */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-muted-foreground mb-1">
-                  Current stage:{" "}
-                  <span className="font-semibold text-teal-500">
-                    {currentStageLabel}
-                  </span>
-                </p>
-
-                {/* Three-stage progress bar */}
+                {/* Three-stage progress bar — the active stage label below
+                    shows which stage you're on, so no separate "Current
+                    stage: X" line needed (it duplicated the label). */}
                 <div className="flex gap-1 mb-3">
                   {LENS_LABELS.map(({ key, label }) => {
                     const lens = lenses?.[key as keyof typeof lenses];
@@ -891,7 +869,7 @@ export default function DashboardPage() {
                           className={cn(
                             "text-[10px] mt-1 text-center",
                             isActive
-                              ? "text-foreground font-medium"
+                              ? "text-teal-500 font-semibold"
                               : "text-muted-foreground/40"
                           )}
                         >
