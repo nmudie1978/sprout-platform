@@ -768,16 +768,16 @@ export default function DashboardPage() {
               hint: "Look around 400+ jobs from healthcare to tech.",
             },
             {
-              href: "/careers",
-              icon: PlayCircle,
-              label: "Watch a day in the life",
-              hint: "Real videos of what these jobs actually look like.",
-            },
-            {
               href: "/my-journey",
               icon: Target,
               label: "Set your first career goal",
               hint: "Pick one to explore in depth in My Journey.",
+            },
+            {
+              href: "/insights#dig-deeper",
+              icon: TrendingUp,
+              label: "Jobs & roles on the rise",
+              hint: "See which careers are growing and the skills they need.",
             },
           ];
 
