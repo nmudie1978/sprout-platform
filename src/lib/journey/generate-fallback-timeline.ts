@@ -92,6 +92,21 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
+        title: `Apply for entry-level ${career} roles`,
+        subtitle: 'Find your first job',
+        startAge: Math.max(a + 6, 22),
+        isMilestone: true,
+        icon: 'FolderOpen',
+        description: `Now that you've graduated, the next step is finding the right entry-level role in ${career}. This phase is about job-hunting — researching employers, tailoring your CV, applying widely, and interviewing.`,
+        microActions: [
+          'Apply for entry-level positions',
+          'Tailor your CV and cover letter for each role',
+          'Practise interview questions for the field',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
         title: `Entry-level ${career} role`,
         subtitle: 'Your first professional position',
         startAge: Math.max(a + 6, 22),
@@ -100,9 +115,9 @@ export function generateFallbackTimeline(
         icon: 'Briefcase',
         description: `Start building real-world experience in ${career}. Focus on learning from senior colleagues, understanding the industry, and proving yourself.`,
         microActions: [
-          'Apply for entry-level positions',
           'Find a mentor in your workplace',
           'Set 90-day learning goals with your manager',
+          'Build relationships across your team',
         ],
       },
       {
@@ -178,6 +193,21 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
+        title: `Apply for entry-level ${career} roles`,
+        subtitle: 'Find your first job',
+        startAge: gradAge,
+        isMilestone: true,
+        icon: 'FolderOpen',
+        description: `Now that you've graduated, the next step is finding the right entry-level role in ${career}. This phase is about job-hunting — researching employers, tailoring your CV, applying widely, and interviewing.`,
+        microActions: [
+          'Apply for graduate / entry-level positions',
+          'Tailor your CV and cover letter for each role',
+          'Practise interview questions for the field',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
         title: `Entry-level ${career} role`,
         subtitle: 'Your first professional position',
         startAge: gradAge,
@@ -186,9 +216,9 @@ export function generateFallbackTimeline(
         icon: 'Briefcase',
         description: `Start building real-world experience in ${career}. Focus on learning from senior colleagues, understanding the industry, and proving yourself.`,
         microActions: [
-          'Apply for graduate / entry-level positions',
           'Find a mentor in your workplace',
           'Set 90-day learning goals with your manager',
+          'Build relationships across your team',
         ],
       },
       {
@@ -262,6 +292,21 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
+        title: `Apply for entry-level ${career} roles`,
+        subtitle: 'Find your first job',
+        startAge: gradAge,
+        isMilestone: true,
+        icon: 'FolderOpen',
+        description: `Now that you've earned your qualification, the next step is finding the right entry-level role in ${career}. Vocational hiring often happens through trade contacts and word-of-mouth as well as job boards — work both channels.`,
+        microActions: [
+          'Apply for entry-level positions',
+          'Tap your training network for openings',
+          'Tailor your CV and prepare for interviews',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
         title: `Entry-level ${career} role`,
         subtitle: 'Your first professional position',
         startAge: gradAge,
@@ -270,9 +315,9 @@ export function generateFallbackTimeline(
         icon: 'Briefcase',
         description: `Start building real-world experience in ${career}. Vocational entry usually means hitting the ground running — learn from experienced colleagues fast.`,
         microActions: [
-          'Apply for entry-level positions',
           'Find a mentor at your workplace',
           'Take on responsibility quickly',
+          'Build relationships with experienced colleagues',
         ],
       },
       {
@@ -330,6 +375,21 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
+        title: `Apply for entry-level ${career} roles`,
+        subtitle: 'Find your first job',
+        startAge: a + 2,
+        isMilestone: true,
+        icon: 'FolderOpen',
+        description: `With a foundation in place, the next step is finding the right entry-level role in ${career}. Apply widely, tailor each application, and use any practical work or portfolio you have as evidence.`,
+        microActions: [
+          'Apply for entry-level positions',
+          'Tailor your CV and cover letter for each role',
+          'Practise interview questions for the field',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
         title: `Entry-level ${career} role`,
         subtitle: 'Your first professional position',
         startAge: a + 2,
@@ -338,9 +398,9 @@ export function generateFallbackTimeline(
         icon: 'Briefcase',
         description: `Build real-world experience in ${career}. Focus on learning from senior colleagues and proving yourself.`,
         microActions: [
-          'Apply for entry-level positions',
           'Find a mentor in your workplace',
           'Set 90-day learning goals',
+          'Build relationships across your team',
         ],
       },
       {

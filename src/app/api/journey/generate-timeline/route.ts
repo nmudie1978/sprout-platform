@@ -31,7 +31,7 @@ const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY 
 REALISTIC CAREER PROGRESSION (MANDATORY ORDER):
 1. FOUNDATION (ages 16-19): School subjects — videregående (upper secondary) in Norway. Focus on relevant subjects. NO professional certifications at this stage.
 2. EDUCATION (ages 19-24): University degree or vocational training (fagbrev). The specific programme that leads to this career. Duration must be realistic (3-6 years for degree, 2+2 for fagbrev).
-3. EXPERIENCE (ages 22-28): Entry-level job, internship, or apprenticeship. First real work in the field. Then progression to mid-level after 2-3 years.
+3. EXPERIENCE (ages 22-28): Always include TWO distinct steps for getting into work — first an "Apply for entry-level X roles" milestone (the job-search phase: CV, applications, interviews), THEN a separate "Entry-level X role" step for the actual job. Never jump from graduation straight into a role without showing the application phase. Then progression to mid-level after 2-3 years.
 4. PROFESSIONAL DEVELOPMENT (ages 25+): Professional certifications (e.g. PRINCE2, PMP, CISSP) ONLY after gaining work experience. Never before age 23. Never during school or university.
 5. CAREER (ages 28+): Senior role, specialist position, or leadership. Only after 5+ years of work experience.
 
