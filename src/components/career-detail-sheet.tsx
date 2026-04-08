@@ -270,9 +270,9 @@ export function CareerDetailSheet({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden p-0">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overflow-x-hidden p-0 [&>*]:min-w-0">
           {career && (
-            <>
+            <div className="min-w-0 w-full overflow-x-hidden">
               {/* Header */}
               <DialogHeader className="sticky top-0 bg-background z-10 p-4 pb-3 border-b">
                 <div className="flex items-start gap-3 min-w-0">
@@ -481,7 +481,7 @@ export function CareerDetailSheet({
                   </Button>
                 </div>
               </div>
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>

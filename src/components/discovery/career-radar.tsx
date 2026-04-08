@@ -535,6 +535,16 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 animationDelay: `${d.ring * 120 + idx * 22}ms`,
               }}
             >
+              {/* Invisible hit-area so the click target is always solid,
+                  even in "rings" mode where the visible circle has fill="none"
+                  and only the 2px stroke can intercept pointer events. */}
+              <circle
+                cx={d.cx}
+                cy={d.cy}
+                r={12}
+                fill="transparent"
+                pointerEvents="all"
+              />
               {/* Top match halo: faint pulsing ring behind top markers */}
               {d.topMatch && (
                 <circle
@@ -542,7 +552,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   cy={d.cy}
                   r={viewMode === "emoji" ? 13 : 11}
                   fill="none"
-                  className="stroke-pink-400/70 radar-top-halo"
+                  className="stroke-pink-400/70 radar-top-halo pointer-events-none"
                   strokeWidth={1.25}
                 />
               )}
