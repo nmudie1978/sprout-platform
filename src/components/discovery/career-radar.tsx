@@ -32,13 +32,19 @@ interface CareerRadarProps {
 }
 
 // Map each category to a fixed angle slice (degrees) so positioning is stable.
+// Order is the angular position around the radar, starting from the top.
+// New categories are interleaved so visually-related slices sit next to
+// each other (e.g. Sport next to Health, Creative next to Marketing).
 const CATEGORY_ORDER: CareerCategory[] = [
   "HEALTHCARE_LIFE_SCIENCES",
+  "SPORT_FITNESS",
   "EDUCATION_TRAINING",
+  "PUBLIC_SERVICE_SAFETY",
   "TECHNOLOGY_IT",
   "BUSINESS_MANAGEMENT",
   "FINANCE_BANKING",
   "SALES_MARKETING",
+  "CREATIVE_MEDIA",
   "MANUFACTURING_ENGINEERING",
   "LOGISTICS_TRANSPORT",
   "HOSPITALITY_TOURISM",
@@ -94,6 +100,9 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   LOGISTICS_TRANSPORT: "Logistics",
   HOSPITALITY_TOURISM: "Hospitality",
   TELECOMMUNICATIONS: "Telecom",
+  CREATIVE_MEDIA: "Creative",
+  PUBLIC_SERVICE_SAFETY: "Public",
+  SPORT_FITNESS: "Sport",
 };
 
 interface PlacedDot {
@@ -106,9 +115,12 @@ interface PlacedDot {
 
 const TOP_MATCH_COUNT = 3;
 
-const SIZE = 320;
+// Sized up from 320 to 440 when we expanded from 10 to 13 categories — slices
+// went from 36° to ~27.7°, so each dot has less angular room. Bigger SVG
+// keeps everything legible.
+const SIZE = 440;
 const CENTER = SIZE / 2;
-const RING_RADII = [60, 110, 150]; // outer edge of each ring band
+const RING_RADII = [85, 155, 210]; // outer edge of each ring band
 // Padding around the SVG so category labels around the outer ring aren't clipped
 const VIEWBOX_PAD = 40;
 const ZOOM_MIN = 0.6;
@@ -145,8 +157,8 @@ function placeDots(careers: Career[]): PlacedDot[] {
   // into adjacent slices (e.g. 5 Tech dots fanning to ±27° instead of ±14°).
   // Even distribution + a small slice-edge padding keeps every dot inside
   // its own category visually.
-  const SLICE_WIDTH = 360 / CATEGORY_ORDER.length; // 36°
-  const SLICE_PADDING = 4; // degrees of margin from each edge
+  const SLICE_WIDTH = 360 / CATEGORY_ORDER.length; // ~27.7° at 13 categories
+  const SLICE_PADDING = 3; // degrees of margin from each edge (tighter at 13 slices)
   const placed: PlacedDot[] = [];
 
   for (const [key, group] of buckets.entries()) {
@@ -156,12 +168,14 @@ function placeDots(careers: Career[]): PlacedDot[] {
     if (sliceIdx < 0) continue;
     const sliceStart = sliceIdx * SLICE_WIDTH + SLICE_PADDING;
     const sliceUsable = SLICE_WIDTH - SLICE_PADDING * 2;
+    // Place each dot near the outer edge of its ring band, giving a bit of
+    // breathing room from the next ring boundary.
     const baseR =
       ring === 0
-        ? RING_RADII[0] - 18
+        ? RING_RADII[0] - 22
         : ring === 1
-        ? RING_RADII[1] - 18
-        : RING_RADII[2] - 14;
+        ? RING_RADII[1] - 22
+        : RING_RADII[2] - 18;
 
     group.forEach((p, i) => {
       // Even distribution: single dot sits dead-centre; multiple dots span
@@ -170,8 +184,9 @@ function placeDots(careers: Career[]): PlacedDot[] {
       const angleDeg = sliceStart + sliceUsable * t - 90;
       const angleRad = angleDeg * (Math.PI / 180);
       // For crowded slices, alternate a small radial offset so dots don't
-      // collide visually even when angular spacing is tight.
-      const r = group.length > 4 ? baseR + (i % 2 === 0 ? -4 : 4) : baseR;
+      // collide visually even when angular spacing is tight. Threshold lowered
+      // from 4 to 3 because thinner slices crowd faster.
+      const r = group.length > 3 ? baseR + (i % 2 === 0 ? -5 : 5) : baseR;
       placed.push({
         career: p.career,
         ring,
