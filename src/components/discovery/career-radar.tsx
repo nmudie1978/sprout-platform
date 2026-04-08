@@ -12,6 +12,7 @@ import {
 } from "@/lib/career-pathways";
 import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * Career Radar
@@ -100,7 +101,10 @@ interface PlacedDot {
   ring: 0 | 1 | 2; // 0 = strongest, 2 = worth a look
   cx: number;
   cy: number;
+  topMatch?: boolean; // First few overall matches — highlighted distinctly
 }
+
+const TOP_MATCH_COUNT = 3;
 
 const SIZE = 320;
 const CENTER = SIZE / 2;
@@ -156,6 +160,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
       ring,
       cx: CENTER + r * Math.cos(angleRad),
       cy: CENTER + r * Math.sin(angleRad),
+      topMatch: idx < TOP_MATCH_COUNT,
     });
   });
 
@@ -164,7 +169,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
 
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(2);
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
@@ -391,6 +396,17 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 animationDelay: `${d.ring * 120 + idx * 22}ms`,
               }}
             >
+              {/* Top match halo: faint pulsing ring behind top dots */}
+              {d.topMatch && (
+                <circle
+                  cx={d.cx}
+                  cy={d.cy}
+                  r={11}
+                  fill="none"
+                  className="stroke-pink-400/70 radar-top-halo"
+                  strokeWidth={1.25}
+                />
+              )}
               {/* Entry-level marker: outer ring around the dot, NOT a size change */}
               {d.career.entryLevel && (
                 <circle
@@ -406,7 +422,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 cx={d.cx}
                 cy={d.cy}
                 r={6}
-                className="fill-teal-500 transition-all duration-150 group-hover:fill-teal-400 radar-dot-circle"
+                className={cn(
+                  "transition-all duration-150 radar-dot-circle",
+                  d.topMatch
+                    ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
+                    : "fill-teal-500 group-hover:fill-teal-400"
+                )}
               />
             </g>
           ))}
@@ -425,8 +446,18 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             r: 8;
             filter: drop-shadow(0 0 6px rgb(20 184 166 / 0.6));
           }
+          @keyframes radar-top-halo-pulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); transform-box: fill-box; transform-origin: center; }
+            50%      { opacity: 1;    transform: scale(1.15); transform-box: fill-box; transform-origin: center; }
+          }
+          .radar-top-halo {
+            animation: radar-top-halo-pulse 2.4s ease-in-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+          }
           @media (prefers-reduced-motion: reduce) {
             .radar-dot { animation: none; }
+            .radar-top-halo { animation: none; }
           }
         `}</style>
 
@@ -448,7 +479,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
       {/* Legend */}
       <div className="px-4 py-2 border-t flex items-center justify-between flex-wrap gap-2 text-[10px] text-muted-foreground">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2 h-2 rounded-full bg-pink-400 shadow-[0_0_4px_rgba(244,114,182,0.7)]" />
+            Top match
+          </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-2 h-2 rounded-full bg-teal-500" />
             Career
