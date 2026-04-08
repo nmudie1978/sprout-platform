@@ -171,6 +171,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
   const [viewMode, setViewMode] = useState<"dots" | "rings" | "emoji">("dots");
+  const [filterMode, setFilterMode] = useState<"all" | "strong" | "top">("all");
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
 
@@ -184,6 +185,13 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   }, [preferences]);
 
   const dots = useMemo(() => placeDots(matched), [matched]);
+
+  // Filter applied to both the radar dots and the matches report list
+  const visibleDots = useMemo(() => {
+    if (filterMode === "top") return dots.filter((d) => d.topMatch);
+    if (filterMode === "strong") return dots.filter((d) => d.ring === 0);
+    return dots;
+  }, [dots, filterMode]);
 
   const hasPrefs =
     !!preferences &&
@@ -237,7 +245,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-muted-foreground">
-            {dots.length} match{dots.length !== 1 ? "es" : ""}
+            {visibleDots.length} of {dots.length} match{dots.length !== 1 ? "es" : ""}
           </span>
           {/* View mode toggle */}
           <div className="flex items-center rounded-md border bg-background text-[10px]">
@@ -405,7 +413,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           })}
 
           {/* Dots — staggered fade/scale-in from centre */}
-          {dots.map((d, idx) => (
+          {visibleDots.map((d, idx) => (
             <g
               key={d.career.id}
               onMouseEnter={() => setHovered(d)}
@@ -555,93 +563,200 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
     </div>
 
-    {/* ─── Matches Report — separate card, sits below the radar with a gap ─── */}
+    {/* ─── Matches Report — separate card, carousel of bands with filter ─── */}
     <div className="mt-4 rounded-2xl border bg-card overflow-hidden">
-      <div className="px-4 py-3 border-b">
-        <h3 className="text-sm font-semibold">Matches Report</h3>
-        <p className="text-[11px] text-muted-foreground">
-          Every career on your radar, grouped by relevance.
-        </p>
+      {/* Header with title + filter pills */}
+      <div className="px-4 py-3 border-b flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 className="text-sm font-semibold">Matches Report</h3>
+          <p className="text-[11px] text-muted-foreground">
+            {visibleDots.length} of {dots.length} careers shown
+          </p>
+        </div>
+        {/* Filter toggle — drives both the radar and the report */}
+        <div className="flex items-center rounded-md border bg-background text-[10px]">
+          {([
+            { id: "all", label: "All" },
+            { id: "strong", label: "Strong" },
+            { id: "top", label: "Top only" },
+          ] as const).map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => {
+                setFilterMode(opt.id);
+                setCarouselIdx(0);
+              }}
+              className={cn(
+                "h-7 px-2.5 transition-colors first:rounded-l-md last:rounded-r-md",
+                filterMode === opt.id
+                  ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
+                  : "hover:bg-muted text-muted-foreground"
+              )}
+              aria-pressed={filterMode === opt.id}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="divide-y">
-        {([0, 1, 2] as const).map((ring) => {
-          const ringDots = dots.filter((d) => d.ring === ring);
-          if (ringDots.length === 0) return null;
-          const label =
-            ring === 0
-              ? "Strong match"
-              : ring === 1
-              ? "Good match"
-              : "Worth a look";
-          const accent =
-            ring === 0
-              ? "text-teal-600 dark:text-teal-400"
-              : ring === 1
-              ? "text-teal-500/80"
-              : "text-muted-foreground";
+
+      {/* Build bands from the *filtered* dots so the carousel reflects the filter */}
+      {(() => {
+        const bands = ([0, 1, 2] as const)
+          .map((ring) => {
+            const ringDots = visibleDots.filter((d) => d.ring === ring);
+            if (ringDots.length === 0) return null;
+            return {
+              ring,
+              label:
+                ring === 0
+                  ? "Strong match"
+                  : ring === 1
+                  ? "Good match"
+                  : "Worth a look",
+              accent:
+                ring === 0
+                  ? "text-teal-600 dark:text-teal-400"
+                  : ring === 1
+                  ? "text-teal-500/80"
+                  : "text-muted-foreground",
+              dots: ringDots,
+            };
+          })
+          .filter((b): b is NonNullable<typeof b> => b !== null);
+
+        if (bands.length === 0) {
           return (
-            <div key={ring}>
-              <div className="px-4 pt-3 pb-1 flex items-baseline gap-2 bg-muted/20">
-                <p className={cn("text-[11px] font-semibold uppercase tracking-wide", accent)}>
-                  {label}
-                </p>
-                <span className="text-[10px] text-muted-foreground">
-                  {ringDots.length} {ringDots.length === 1 ? "career" : "careers"}
-                </span>
-              </div>
-              <div className="divide-y">
-                {ringDots.map((d) => {
-                  const cat = findCareerCategory(d.career.id);
-                  const catLabel = cat ? CATEGORY_LABEL[cat] : "";
-                  return (
-                    <button
-                      key={d.career.id}
-                      type="button"
-                      onClick={() => {
-                        window.dispatchEvent(
-                          new CustomEvent("open-career-detail", {
-                            detail: d.career,
-                          })
-                        );
-                      }}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-muted/50 transition-colors",
-                        d.topMatch && "bg-pink-500/5"
-                      )}
-                    >
-                      <span className="text-lg shrink-0">{d.career.emoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-medium truncate">
-                            {d.career.title}
-                          </span>
-                          {d.topMatch && (
-                            <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
-                              Top
-                            </span>
-                          )}
-                          {d.career.entryLevel && (
-                            <span
-                              className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0"
-                              title="Entry-level path"
-                            />
-                          )}
-                        </div>
-                        <p className="text-[11px] text-muted-foreground truncate">
-                          {catLabel} · {d.career.avgSalary?.split(" ")[0]}
-                        </p>
-                      </div>
-                      <span className="text-[11px] text-muted-foreground shrink-0">
-                        Open →
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="px-4 py-8 text-center text-xs text-muted-foreground">
+              No careers match this filter.
             </div>
           );
-        })}
-      </div>
+        }
+
+        const safeIdx = Math.min(carouselIdx, bands.length - 1);
+        const goTo = (i: number) => {
+          const el = carouselRef.current;
+          if (!el) return;
+          const slide = el.children[i] as HTMLElement | undefined;
+          if (slide) {
+            el.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+            setCarouselIdx(i);
+          }
+        };
+        const handleScroll = () => {
+          const el = carouselRef.current;
+          if (!el) return;
+          const slideWidth = el.clientWidth;
+          const idx = Math.round(el.scrollLeft / slideWidth);
+          if (idx !== carouselIdx) setCarouselIdx(idx);
+        };
+
+        return (
+          <div>
+            {/* Carousel sub-header */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2">
+              <div className="flex items-baseline gap-2">
+                <p className={cn("text-[11px] font-semibold uppercase tracking-wide", bands[safeIdx]?.accent)}>
+                  {bands[safeIdx]?.label}
+                </p>
+                <span className="text-[10px] text-muted-foreground">
+                  {bands[safeIdx]?.dots.length}{" "}
+                  {bands[safeIdx]?.dots.length === 1 ? "career" : "careers"}
+                </span>
+              </div>
+              {bands.length > 1 && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => goTo(Math.max(0, safeIdx - 1))}
+                    disabled={safeIdx === 0}
+                    className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Previous band"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goTo(Math.min(bands.length - 1, safeIdx + 1))}
+                    disabled={safeIdx >= bands.length - 1}
+                    className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Next band"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Scroll-snap carousel of bands */}
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {bands.map((band) => (
+                <div key={band.ring} className="snap-start shrink-0 w-full px-4 pb-3">
+                  <div className="rounded-lg border bg-background overflow-hidden divide-y">
+                    {band.dots.map((d) => (
+                      <button
+                        key={d.career.id}
+                        type="button"
+                        onClick={() => {
+                          window.dispatchEvent(
+                            new CustomEvent("open-career-detail", {
+                              detail: d.career,
+                            })
+                          );
+                        }}
+                        className={cn(
+                          "w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors",
+                          d.topMatch && "bg-pink-500/5"
+                        )}
+                      >
+                        <span className="text-xl shrink-0">{d.career.emoji}</span>
+                        <span className="text-sm truncate flex-1">{d.career.title}</span>
+                        {d.topMatch && (
+                          <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
+                            Top
+                          </span>
+                        )}
+                        {d.career.entryLevel && (
+                          <span
+                            className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0"
+                            title="Entry-level path"
+                          />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Dot indicators */}
+            {bands.length > 1 && (
+              <div className="flex items-center justify-center gap-1.5 pb-3">
+                {bands.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => goTo(i)}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all",
+                      i === safeIdx
+                        ? "w-6 bg-teal-500"
+                        : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                    )}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   </>
   );
