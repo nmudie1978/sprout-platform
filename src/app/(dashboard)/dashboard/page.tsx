@@ -859,7 +859,7 @@ export default function DashboardPage() {
             {
               href: "/careers/radar",
               icon: Sparkles,
-              label: hasDiscoveryPrefs ? "See your career matches" : "Find your matches",
+              label: hasDiscoveryPrefs ? "See your career radar" : "Find your matches",
               hint: hasDiscoveryPrefs
                 ? "Careers mapped to the interests you told us about."
                 : "Tell us what you like and we'll map careers across every path.",
@@ -876,12 +876,6 @@ export default function DashboardPage() {
               label: "Set your first career goal",
               hint: "Pick one to explore in depth in My Journey.",
             },
-            {
-              href: "/insights#jobs-on-the-rise",
-              icon: TrendingUp,
-              label: "Jobs & roles on the rise",
-              hint: "See which careers are growing and the skills they need.",
-            },
           ];
 
           return (
@@ -889,7 +883,7 @@ export default function DashboardPage() {
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
                 First steps
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {steps.map((s) => {
                   const Icon = s.icon;
                   return (
