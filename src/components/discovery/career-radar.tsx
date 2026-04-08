@@ -481,7 +481,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 <circle
                   cx={d.cx}
                   cy={d.cy}
-                  r={6}
+                  r={3}
                   className={cn(
                     "transition-all duration-150 radar-dot-circle",
                     d.topMatch
