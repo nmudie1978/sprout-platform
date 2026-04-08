@@ -12,7 +12,7 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +75,8 @@ interface PlacedDot {
   cx: number;
   cy: number;
   topMatch?: boolean; // First few overall matches — highlighted distinctly
-  isActiveGoal?: boolean; // True when this dot is the user's current primary goal
+  isActiveGoal?: boolean; // True when this dot is one of the user's active goals
+  goalSlot?: "primary" | "secondary"; // Which slot, if isActiveGoal
 }
 
 const TOP_MATCH_COUNT = 3;
@@ -100,7 +101,24 @@ const ZOOM_STEP = 0.25;
 const STRONG_BAND_SIZE = 10;
 const GOOD_BAND_SIZE = 20;
 
-function placeDots(careers: Career[], activeGoalCareerId?: string | null): PlacedDot[] {
+/**
+ * Build a 2-letter monogram from a career title for the Initials view.
+ * Strips parens/slashes, takes the first letter of the first two words,
+ * falls back to the first 2 letters if there's only one word.
+ */
+function careerInitials(title: string): string {
+  const cleaned = title.replace(/[(){}\[\]\/]/g, " ").replace(/\s+/g, " ").trim();
+  const words = cleaned.split(" ").filter(Boolean);
+  if (words.length === 0) return "?";
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
+function placeDots(
+  careers: Career[],
+  primaryGoalId?: string | null,
+  secondaryGoalId?: string | null
+): PlacedDot[] {
   if (careers.length === 0) return [];
 
   // Bucket into 3 relevance rings by absolute rank position.
@@ -164,7 +182,15 @@ function placeDots(careers: Career[], activeGoalCareerId?: string | null): Place
         cx: CENTER + r * Math.cos(angleRad),
         cy: CENTER + r * Math.sin(angleRad),
         topMatch: p.idx < TOP_MATCH_COUNT,
-        isActiveGoal: !!activeGoalCareerId && p.career.id === activeGoalCareerId,
+        isActiveGoal:
+          (!!primaryGoalId && p.career.id === primaryGoalId) ||
+          (!!secondaryGoalId && p.career.id === secondaryGoalId),
+        goalSlot:
+          !!primaryGoalId && p.career.id === primaryGoalId
+            ? "primary"
+            : !!secondaryGoalId && p.career.id === secondaryGoalId
+            ? "secondary"
+            : undefined,
       });
     });
   }
@@ -175,8 +201,25 @@ function placeDots(careers: Career[], activeGoalCareerId?: string | null): Place
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [viewMode, setViewMode] = useState<"dots" | "rings" | "emoji">("dots");
-  const [filterMode, setFilterMode] = useState<"all" | "strong" | "top">("all");
+  const [viewMode, setViewMode] = useState<"dots" | "rings" | "initials">("dots");
+  // Multi-select tier filter — start with everything visible.
+  // The active goal is always shown regardless of which tiers are toggled.
+  type Tier = "top" | "strong" | "good" | "worth";
+  const ALL_TIERS: Tier[] = ["top", "strong", "good", "worth"];
+  const [activeTiers, setActiveTiers] = useState<Set<Tier>>(new Set(ALL_TIERS));
+  const [filterOpen, setFilterOpen] = useState(false);
+  const toggleTier = (t: Tier) => {
+    setActiveTiers((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t);
+      else next.add(t);
+      // Don't allow zero tiers — re-add the one being removed
+      if (next.size === 0) next.add(t);
+      return next;
+    });
+    setCarouselIdx(0);
+  };
+  const allTiersOn = activeTiers.size === ALL_TIERS.length;
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
 
@@ -184,24 +227,35 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   // can see at a glance how their current journey relates to their wider
   // discovery preferences. Goals are stored by `title`, so we resolve to a
   // career id by case-insensitive title match against CAREER_PATHWAYS.
-  const { data: goalsData } = useQuery<{ primaryGoal: { title?: string | null } | null }>({
+  const { data: goalsData } = useQuery<{
+    primaryGoal: { title?: string | null } | null;
+    secondaryGoal: { title?: string | null } | null;
+  }>({
     queryKey: ["goals"],
     queryFn: async () => {
       const res = await fetch("/api/goals");
-      if (!res.ok) return { primaryGoal: null };
+      if (!res.ok) return { primaryGoal: null, secondaryGoal: null };
       return res.json();
     },
     staleTime: 5 * 60 * 1000,
   });
-  const activeGoalCareerId = useMemo(() => {
-    const title = goalsData?.primaryGoal?.title?.trim().toLowerCase();
-    if (!title) return null;
+  const resolveCareerIdByTitle = (title?: string | null) => {
+    const t = title?.trim().toLowerCase();
+    if (!t) return null;
     for (const list of Object.values(CAREER_PATHWAYS)) {
-      const hit = list.find((c) => c.title.toLowerCase() === title);
+      const hit = list.find((c) => c.title.toLowerCase() === t);
       if (hit) return hit.id;
     }
     return null;
-  }, [goalsData?.primaryGoal?.title]);
+  };
+  const primaryGoalCareerId = useMemo(
+    () => resolveCareerIdByTitle(goalsData?.primaryGoal?.title),
+    [goalsData?.primaryGoal?.title]
+  );
+  const secondaryGoalCareerId = useMemo(
+    () => resolveCareerIdByTitle(goalsData?.secondaryGoal?.title),
+    [goalsData?.secondaryGoal?.title]
+  );
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
@@ -216,69 +270,24 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     return getCareersFromDiscovery(preferences, 60);
   }, [preferences]);
 
-  const dots = useMemo(() => placeDots(matched, activeGoalCareerId), [matched, activeGoalCareerId]);
+  const dots = useMemo(
+    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId),
+    [matched, primaryGoalCareerId, secondaryGoalCareerId]
+  );
 
   // Filter applied to both the radar dots and the matches report list.
-  // "top only" mode also re-spaces the dots so they don't bunch on top of
-  // each other, since with only ~3 dots there's plenty of empty radar.
+  // The active goal is always shown regardless of which tiers are toggled,
+  // so the user never loses sight of their current journey target.
   const visibleDots = useMemo(() => {
-    if (filterMode === "strong") {
-      // Strong band + active goal — never hide the user's current target
-      return dots.filter((d) => d.ring === 0 || d.isActiveGoal);
-    }
-    if (filterMode === "top") {
-      // Include the top matches AND the active goal (if it isn't already a
-      // top match), so the user can always see where their current journey
-      // target sits even when it didn't make the top 3.
-      const topDots = dots.filter(
-        (d) => d.topMatch || d.isActiveGoal
-      );
-      if (topDots.length === 0) return topDots;
-
-      // Spread top dots within their OWN category slice — never push them
-      // across slice boundaries. Each slice is 36° wide; we leave a small
-      // padding from the edges so dots don't sit right on the divider line.
-      // Two radii (inner / outer) are used so even when 2+ dots share the
-      // same slice they get a tiny radial offset for extra clarity.
-      const TOP_RADIUS_INNER = 80;
-      const TOP_RADIUS_OUTER = 110;
-      const SLICE_WIDTH = 360 / CATEGORY_ORDER.length;
-      const SLICE_PADDING = 6; // degrees of margin from each slice edge
-
-      // Bucket top dots by category
-      const byCategory = new Map<CareerCategory, PlacedDot[]>();
-      for (const d of topDots) {
-        const cat = findCareerCategory(d.career.id);
-        if (!cat) continue;
-        if (!byCategory.has(cat)) byCategory.set(cat, []);
-        byCategory.get(cat)!.push(d);
-      }
-
-      const result: PlacedDot[] = [];
-      for (const [cat, ringDots] of byCategory.entries()) {
-        const sliceIdx = CATEGORY_ORDER.indexOf(cat);
-        if (sliceIdx < 0) continue;
-        const sliceStart = sliceIdx * SLICE_WIDTH + SLICE_PADDING;
-        const sliceUsable = SLICE_WIDTH - SLICE_PADDING * 2;
-
-        ringDots.forEach((d, i) => {
-          // Distribute angles evenly across the usable slice width
-          const t = ringDots.length === 1 ? 0.5 : i / (ringDots.length - 1);
-          const angleDeg = sliceStart + sliceUsable * t - 90; // -90 so 0 is top
-          const rad = angleDeg * (Math.PI / 180);
-          // Alternate inner / outer radius so adjacent dots have visual gap
-          const r = i % 2 === 0 ? TOP_RADIUS_INNER : TOP_RADIUS_OUTER;
-          result.push({
-            ...d,
-            cx: CENTER + r * Math.cos(rad),
-            cy: CENTER + r * Math.sin(rad),
-          });
-        });
-      }
-      return result;
-    }
-    return dots;
-  }, [dots, filterMode]);
+    const tierOf = (d: PlacedDot): Tier => {
+      if (d.topMatch) return "top";
+      if (d.ring === 0) return "strong";
+      if (d.ring === 1) return "good";
+      return "worth";
+    };
+    if (allTiersOn) return dots;
+    return dots.filter((d) => activeTiers.has(tierOf(d)) || d.isActiveGoal);
+  }, [dots, activeTiers, allTiersOn]);
 
   const hasPrefs =
     !!preferences &&
@@ -336,7 +345,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           {/* View mode toggle */}
           <div className="flex items-center rounded-md border bg-background text-[10px]">
-            {(["dots", "rings", "emoji"] as const).map((m) => (
+            {(["dots", "rings", "initials"] as const).map((m) => (
               <button
                 key={m}
                 type="button"
@@ -353,31 +362,96 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               </button>
             ))}
           </div>
-          {/* Filter toggle — drives both the radar and the matches report */}
-          <div className="flex items-center rounded-md border bg-background text-[10px]">
-            {([
-              { id: "all", label: "All" },
-              { id: "strong", label: "Strong" },
-              { id: "top", label: "Top only" },
-            ] as const).map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => {
-                  setFilterMode(opt.id);
-                  setCarouselIdx(0);
-                }}
-                className={cn(
-                  "h-7 px-2 transition-colors first:rounded-l-md last:rounded-r-md",
-                  filterMode === opt.id
-                    ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
-                    : "hover:bg-muted text-muted-foreground"
-                )}
-                aria-pressed={filterMode === opt.id}
-              >
-                {opt.label}
-              </button>
-            ))}
+          {/* Tier filter — multi-select dropdown.
+              Drives both the radar and the matches report.
+              The active goal is always shown regardless of selection. */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setFilterOpen((o) => !o)}
+              className={cn(
+                "h-7 px-2.5 rounded-md border bg-background text-[10px] flex items-center gap-1.5 transition-colors",
+                allTiersOn
+                  ? "text-muted-foreground hover:bg-muted"
+                  : "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold border-teal-500/30"
+              )}
+              aria-haspopup="true"
+              aria-expanded={filterOpen}
+            >
+              <Settings2 className="h-3 w-3" />
+              {allTiersOn
+                ? "Show all"
+                : activeTiers.size === 1
+                ? `Only ${
+                    activeTiers.has("top")
+                      ? "Top"
+                      : activeTiers.has("strong")
+                      ? "Strong"
+                      : activeTiers.has("good")
+                      ? "Good"
+                      : "Worth a look"
+                  }`
+                : `${activeTiers.size} tiers`}
+              <ChevronDown className="h-3 w-3" />
+            </button>
+            {filterOpen && (
+              <>
+                {/* Click-away */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setFilterOpen(false)}
+                />
+                <div className="absolute right-0 mt-1 z-50 w-44 rounded-lg border bg-popover shadow-lg p-1.5 text-[11px]">
+                  <p className="px-2 pt-1 pb-1.5 text-[9px] uppercase tracking-wide text-muted-foreground font-semibold">
+                    Show on radar
+                  </p>
+                  {([
+                    { id: "top", label: "Top match", swatch: "bg-pink-400" },
+                    { id: "strong", label: "Strong", swatch: "bg-teal-500" },
+                    { id: "good", label: "Good", swatch: "bg-teal-500/70" },
+                    { id: "worth", label: "Worth a look", swatch: "bg-slate-400/70" },
+                  ] as const).map((opt) => {
+                    const checked = activeTiers.has(opt.id);
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => toggleTier(opt.id)}
+                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-muted transition-colors text-left"
+                      >
+                        <span
+                          className={cn(
+                            "w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-colors",
+                            checked
+                              ? "bg-teal-500 border-teal-500"
+                              : "border-border"
+                          )}
+                        >
+                          {checked && (
+                            <svg
+                              viewBox="0 0 12 12"
+                              className="w-2.5 h-2.5 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="2 6 5 9 10 3" />
+                            </svg>
+                          )}
+                        </span>
+                        <span className={cn("inline-block w-2 h-2 rounded-full shrink-0", opt.swatch)} />
+                        <span className="flex-1">{opt.label}</span>
+                      </button>
+                    );
+                  })}
+                  <div className="border-t mt-1 pt-1 px-2 pb-0.5 text-[9px] text-muted-foreground">
+                    Your active goal is always shown.
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -418,7 +492,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             onClick={onEditPreferences}
           >
             <Settings2 className="h-3 w-3 mr-1" />
-            Edit
+            What I like
           </Button>
         </div>
       </div>
@@ -569,7 +643,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 <circle
                   cx={d.cx}
                   cy={d.cy}
-                  r={viewMode === "emoji" ? 13 : 11}
+                  r={viewMode === "initials" ? 13 : 11}
                   fill="none"
                   className="stroke-pink-400/70 radar-top-halo pointer-events-none"
                   strokeWidth={1.25}
@@ -613,7 +687,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                       ? "fill-teal-500 group-hover:fill-teal-400"
                       : d.ring === 1
                       ? "fill-teal-500/70 group-hover:fill-teal-400"
-                      : "fill-teal-500/40 group-hover:fill-teal-400"
+                      : "fill-slate-400/70 group-hover:fill-slate-300"
                   )}
                 />
               )}
@@ -632,24 +706,48 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                       ? "stroke-teal-500 group-hover:stroke-teal-400"
                       : d.ring === 1
                       ? "stroke-teal-500/70 group-hover:stroke-teal-400"
-                      : "stroke-teal-500/40 group-hover:stroke-teal-400"
+                      : "stroke-slate-400/70 group-hover:stroke-slate-300"
                   )}
                 />
               )}
-              {viewMode === "emoji" && (
-                <text
-                  x={d.cx}
-                  y={d.cy}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  style={{ fontSize: 12 }}
-                  className={cn(
-                    "transition-all duration-150 radar-dot-circle select-none",
-                    d.topMatch && "drop-shadow-[0_0_4px_rgba(244,114,182,0.8)]"
-                  )}
-                >
-                  {d.career.emoji}
-                </text>
+              {viewMode === "initials" && (
+                <>
+                  <circle
+                    cx={d.cx}
+                    cy={d.cy}
+                    r={9}
+                    className={cn(
+                      "transition-all duration-150 radar-dot-circle",
+                      d.topMatch
+                        ? "fill-pink-500/15 stroke-pink-400"
+                        : d.ring === 0
+                        ? "fill-teal-500/15 stroke-teal-500"
+                        : d.ring === 1
+                        ? "fill-teal-500/10 stroke-teal-500/70"
+                        : "fill-slate-500/10 stroke-slate-400/70"
+                    )}
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={d.cx}
+                    y={d.cy}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{ fontSize: 7, fontWeight: 600 }}
+                    className={cn(
+                      "transition-all duration-150 select-none pointer-events-none",
+                      d.topMatch
+                        ? "fill-pink-300"
+                        : d.ring === 0
+                        ? "fill-teal-300"
+                        : d.ring === 1
+                        ? "fill-teal-300/85"
+                        : "fill-slate-300/85"
+                    )}
+                  >
+                    {careerInitials(d.career.title)}
+                  </text>
+                </>
               )}
             </g>
           ))}
@@ -712,7 +810,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               )}
               {hovered.isActiveGoal && (
                 <div className="mt-1 text-[10px] text-amber-500 font-medium">
-                  Your current goal
+                  {hovered.goalSlot === "secondary"
+                    ? "Your current secondary goal"
+                    : "Your current primary goal"}
                 </div>
               )}
             </div>
@@ -739,7 +839,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             Good
           </span>
           <span className="flex items-center gap-1">
-            <span className="inline-block w-2 h-2 rounded-full bg-teal-500/40" />
+            <span className="inline-block w-2 h-2 rounded-full bg-slate-400/70" />
             Worth a look
           </span>
           <span className="flex items-center gap-1">
