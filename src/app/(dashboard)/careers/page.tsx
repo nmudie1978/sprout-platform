@@ -25,8 +25,6 @@ import {
 import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
-import { CareerRadar } from "@/components/discovery/career-radar";
-import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 
 // Pagination constants
@@ -40,7 +38,6 @@ function CareersPageContent() {
   const isMobile = useIsMobile();
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [showDiscoveryQuiz, setShowDiscoveryQuiz] = useState(false);
 
   // Pull profile to get discoveryPreferences for the Career Radar.
   const { data: profileData } = useQuery({
@@ -288,35 +285,35 @@ function CareersPageContent() {
         )}
       </div>
 
-      {/* My Career Radar — sub-section, sits above the All Careers filter/list */}
+      {/* My Career Radar entry-point — links to /careers/radar sub-page */}
       {isYouth && (
-        <section className="mt-6 mb-8">
-          <div className="mb-3">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-teal-500" />
-              My Career Radar
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Careers mapped to what you like — including ones you&apos;ve probably never heard of.
-            </p>
+        <Link
+          href="/careers/radar"
+          className="block mt-4 mb-5 group"
+        >
+          <div className="rounded-xl border bg-gradient-to-r from-teal-500/10 via-card to-pink-500/5 hover:border-teal-500/40 transition-colors p-3 sm:p-4 flex items-center gap-3">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-500" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold flex items-center gap-1.5">
+                My Career Radar
+                {discoveryPreferences && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/15 text-teal-600 dark:text-teal-400 font-medium">
+                    Set up
+                  </span>
+                )}
+              </p>
+              <p className="text-[11px] text-muted-foreground line-clamp-1">
+                {discoveryPreferences
+                  ? "See careers mapped to your subjects and work style."
+                  : "Tell us what you like and we'll map careers across every path."}
+              </p>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-teal-500 group-hover:translate-x-0.5 transition-all shrink-0" />
           </div>
-          <CareerRadar
-            preferences={discoveryPreferences}
-            onEditPreferences={() => setShowDiscoveryQuiz(true)}
-          />
-        </section>
+        </Link>
       )}
-
-      {/* All Careers section header */}
-      <div className="pt-6 border-t border-border mb-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Briefcase className="h-4 w-4 text-primary" />
-          All Careers
-        </h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Browse and filter the full catalogue.
-        </p>
-      </div>
 
       {/* Primary Filters Bar */}
       <CareerFilterBar
@@ -517,14 +514,6 @@ function CareersPageContent() {
         onClose={() => setSelectedCareer(null)}
       />
 
-      {/* Discovery Quiz Dialog */}
-      {isYouth && (
-        <DiscoveryQuizDialog
-          open={showDiscoveryQuiz}
-          onClose={() => setShowDiscoveryQuiz(false)}
-          initialValue={discoveryPreferences}
-        />
-      )}
     </div>
   );
 }
