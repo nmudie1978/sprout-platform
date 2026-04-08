@@ -79,58 +79,6 @@ function getDaysInMonth(month: string, year: string): number {
   return new Date(parseInt(year), parseInt(month), 0).getDate();
 }
 
-const AVAILABILITY_OPTIONS = [
-  { key: "weekday-mornings", label: "Weekday mornings" },
-  { key: "weekday-afternoons", label: "Weekday afternoons" },
-  { key: "weekday-evenings", label: "Weekday evenings" },
-  { key: "saturdays", label: "Saturdays" },
-  { key: "sundays", label: "Sundays" },
-  { key: "school-holidays", label: "School holidays" },
-] as const;
-
-function AvailabilityPicker({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  // Parse stored value (comma-separated keys) into Set
-  const selected = new Set(value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []);
-
-  const toggle = (key: string) => {
-    const next = new Set(selected);
-    if (next.has(key)) next.delete(key);
-    else next.add(key);
-    // Store as comma-separated labels for backward compatibility with existing display
-    const labels = AVAILABILITY_OPTIONS
-      .filter((o) => next.has(o.key))
-      .map((o) => o.label);
-    onChange(labels.join(", "));
-  };
-
-  // Check if a label (from old format) or key matches
-  const isSelected = (opt: typeof AVAILABILITY_OPTIONS[number]) =>
-    selected.has(opt.key) || selected.has(opt.label);
-
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      {AVAILABILITY_OPTIONS.map((opt) => (
-        <button
-          key={opt.key}
-          type="button"
-          onClick={() => toggle(isSelected(opt) ? opt.label : opt.key)}
-          className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-colors text-left ${
-            isSelected(opt)
-              ? "border-primary bg-primary/10 text-primary font-medium"
-              : "border-border hover:bg-muted/50 text-muted-foreground"
-          }`}
-        >
-          <span className={`h-3 w-3 rounded-sm border flex items-center justify-center shrink-0 ${
-            isSelected(opt) ? "bg-primary border-primary" : "border-muted-foreground/30"
-          }`}>
-            {isSelected(opt) && <CheckCircle2 className="h-2.5 w-2.5 text-primary-foreground" />}
-          </span>
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -1055,17 +1003,6 @@ export default function ProfilePage() {
                 ) : (
                   <p className="text-sm text-muted-foreground/40 mt-1">Not set</p>
                 )}
-              </div>
-
-              {/* Availability — compact chips */}
-              <div>
-                <Label className="text-xs font-medium text-muted-foreground/70">Availability</Label>
-                <div className="mt-1">
-                  <AvailabilityPicker
-                    value={formData.availability}
-                    onChange={(val) => setFormData({ ...formData, availability: val })}
-                  />
-                </div>
               </div>
 
               {/* Discovery Interests — powers the Career Radar */}
