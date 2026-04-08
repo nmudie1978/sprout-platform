@@ -469,6 +469,16 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           role="img"
           aria-label="Career radar visualisation"
         >
+          {/* Radial gradient for the rotating sweep cone — fades teal to
+              transparent so the leading edge is bright and the trail dies. */}
+          <defs>
+            <linearGradient id="radar-sweep-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(45, 212, 191, 0)" />
+              <stop offset="70%" stopColor="rgba(45, 212, 191, 0.18)" />
+              <stop offset="100%" stopColor="rgba(45, 212, 191, 0.45)" />
+            </linearGradient>
+          </defs>
+
           {/* Concentric ring bands */}
           {RING_RADII.map((r, i) => (
             <circle
@@ -482,6 +492,40 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               strokeDasharray={i === RING_RADII.length - 1 ? "0" : "2 4"}
             />
           ))}
+
+          {/* Rotating radar sweep — one full revolution every 20s. The cone
+              is a 35° sector at the top of the radar (angle 0 = up, swept
+              clockwise). The whole <g> rotates around CENTER via CSS, so
+              the leading bright edge passes each slice in turn. */}
+          {(() => {
+            const sweepDeg = 35;
+            const r = RING_RADII[RING_RADII.length - 1];
+            // Sector from -sweepDeg to 0, oriented "up" (-90° in SVG terms).
+            const a1 = ((-90 - sweepDeg) * Math.PI) / 180;
+            const a2 = (-90 * Math.PI) / 180;
+            const x1 = CENTER + r * Math.cos(a1);
+            const y1 = CENTER + r * Math.sin(a1);
+            const x2 = CENTER + r * Math.cos(a2);
+            const y2 = CENTER + r * Math.sin(a2);
+            const d = `M ${CENTER} ${CENTER} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`;
+            return (
+              <g
+                className="motion-safe:animate-[radar-sweep_20s_linear_infinite] pointer-events-none"
+                style={{ transformOrigin: `${CENTER}px ${CENTER}px` }}
+              >
+                <path d={d} fill="url(#radar-sweep-gradient)" />
+                {/* Leading bright edge — a thin line right at the front of the cone */}
+                <line
+                  x1={CENTER}
+                  y1={CENTER}
+                  x2={x2}
+                  y2={y2}
+                  className="stroke-teal-400/70"
+                  strokeWidth={1.25}
+                />
+              </g>
+            );
+          })()}
 
           {/* Slice dividers — very faint */}
           {CATEGORY_ORDER.map((_, i) => {

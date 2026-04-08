@@ -215,6 +215,12 @@
     }
   }
 
+  /* Career Radar — slow rotating sweep cone, one full revolution every 20s */
+  @keyframes radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   /* "Yours" sidebar section — irregular ambient glow that flickers and
      swells unpredictably so it never feels like a regular pulse */
   @keyframes yours-glow {

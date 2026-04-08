@@ -228,17 +228,17 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     <div>
       {/* Header row */}
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs">
-          <span className="text-muted-foreground/50">Your Path to </span>
-          <span className="font-medium text-foreground/70">{journey.career}</span>
+        <p className="text-sm">
+          <span className="text-foreground/75">Your Path to </span>
+          <span className="font-semibold text-foreground">{journey.career}</span>
           {spanYears > 0 && (
-            <span className="text-muted-foreground/30 ml-2">
+            <span className="text-foreground/65 ml-2">
               ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
               {eduStages.length > 0 && <> · {eduLabel} track</>}
             </span>
           )}
           {isPreliminary && (
-            <span className="ml-2 inline-flex items-center gap-1 text-muted-foreground/30">
+            <span className="ml-2 inline-flex items-center gap-1 text-foreground/55">
               <RefreshCw className="h-3 w-3 animate-spin" />
               <span className="text-[10px]">Personalising...</span>
             </span>
