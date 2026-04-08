@@ -44,6 +44,8 @@ import {
   FileText,
   Calendar,
   Quote,
+  ChevronDown,
+  Radar,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -63,6 +65,12 @@ interface NavItemProps {
   badge?: number;
   statusDot?: boolean;
   collapsed?: boolean;
+  /**
+   * Marks this nav item as a "personal" surface (My Journey, My Jobs, My
+   * Career Radar, etc.) — gets a subtle teal accent so the user can see at
+   * a glance which sections belong to them vs. catalogue/exploration ones.
+   */
+  personal?: boolean;
 }
 
 interface NavSectionProps {
@@ -73,7 +81,7 @@ interface NavSectionProps {
 
 // ── Nav Item ─────────────────────────────────────────────────────────
 
-function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed }: NavItemProps) {
+function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed, personal }: NavItemProps) {
   const router = useRouter();
   const handleMouseEnter = useCallback(() => {
     router.prefetch(href);
@@ -85,12 +93,19 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed 
       {active && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
       )}
+      {/* Personal accent — a quiet 2px teal rail that shows this section
+          belongs to the user. Sits flush with the active glow when active. */}
+      {personal && !active && (
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 rounded-r-full bg-teal-400/40 group-hover:bg-teal-400/70 transition-colors" />
+      )}
       <div
         className={cn(
           "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
           collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
           active
             ? "bg-teal-500/15 text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
+            : personal
+            ? "text-teal-100/80 hover:text-teal-100 hover:bg-teal-500/[0.06]"
             : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
         )}
       >
@@ -100,7 +115,11 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed 
         )}
         <Icon className={cn(
           "h-[18px] w-[18px] shrink-0 transition-all duration-200 ease-out",
-          active ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]" : "group-hover:scale-110 group-hover:text-slate-200"
+          active
+            ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]"
+            : personal
+            ? "text-teal-400/70 group-hover:scale-110 group-hover:text-teal-300"
+            : "group-hover:scale-110 group-hover:text-slate-200"
         )} />
         {!collapsed && <span className="flex-1 truncate">{label}</span>}
         {!collapsed && statusDot && (
@@ -113,6 +132,91 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed 
         )}
       </div>
     </Link>
+  );
+}
+
+// ── Nav Group (parent item with collapsible children) ───────────────
+
+interface NavGroupProps {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  active?: boolean;
+  collapsed?: boolean;
+  /** Whether any child route is active — keeps the group open. */
+  childActive?: boolean;
+  children: React.ReactNode;
+}
+
+function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, children }: NavGroupProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState<boolean>(!!(active || childActive));
+
+  // Auto-open when a child route becomes active (e.g. via direct nav)
+  useEffect(() => {
+    if (active || childActive) setOpen(true);
+  }, [active, childActive]);
+
+  const handleMouseEnter = useCallback(() => router.prefetch(href), [router, href]);
+
+  return (
+    <div>
+      <div className="block group relative">
+        {(active || childActive) && (
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
+        )}
+        <div
+          className={cn(
+            "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
+            collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
+            (active || childActive)
+              ? "bg-teal-500/15 text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
+              : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+          )}
+        >
+          <Link
+            href={href}
+            prefetch={true}
+            onMouseEnter={handleMouseEnter}
+            className="flex items-center gap-3 flex-1 min-w-0"
+            title={collapsed ? label : undefined}
+          >
+            <Icon
+              className={cn(
+                "h-[18px] w-[18px] shrink-0 transition-all duration-200 ease-out",
+                (active || childActive)
+                  ? "text-teal-400 drop-shadow-[0_0_6px_rgba(45,212,191,0.5)]"
+                  : "group-hover:scale-110 group-hover:text-slate-200"
+              )}
+            />
+            {!collapsed && <span className="flex-1 truncate">{label}</span>}
+          </Link>
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen((o) => !o);
+              }}
+              className="p-0.5 rounded hover:bg-white/10 transition-colors"
+              aria-label={open ? `Collapse ${label}` : `Expand ${label}`}
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 transition-transform duration-200",
+                  open ? "rotate-0" : "-rotate-90"
+                )}
+              />
+            </button>
+          )}
+        </div>
+      </div>
+      {!collapsed && open && (
+        <div className="relative mt-0.5 ml-[18px] pl-3 border-l border-slate-800/60 space-y-0.5">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -241,8 +345,24 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             <NavSection title="Explore" collapsed={collapsed}>
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
-              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} />
-              <NavItem href="/careers" icon={Compass} label="Explore Careers" active={isActive("/careers")} collapsed={collapsed} />
+              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
+              <NavGroup
+                href="/careers"
+                icon={Compass}
+                label="Explore Careers"
+                active={pathname === "/careers"}
+                childActive={isActive("/careers/radar")}
+                collapsed={collapsed}
+              >
+                <NavItem
+                  href="/careers/radar"
+                  icon={Radar}
+                  label="My Career Radar"
+                  active={isActive("/careers/radar")}
+                  collapsed={collapsed}
+                  personal
+                />
+              </NavGroup>
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} />
@@ -250,7 +370,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Small Jobs" collapsed={collapsed}>
               <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} />
-              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} />
+              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
               <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} />
             </NavSection>
 
