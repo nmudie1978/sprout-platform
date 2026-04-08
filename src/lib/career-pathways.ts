@@ -4363,7 +4363,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-oss-engineer",
-      title: "OSS Engineer (Inventory, Assurance, Fulfilment)",
+      title: "Telecom Operations Engineer",
       emoji: "🔧",
       description: "Build and maintain OSS systems handling network inventory, service assurance, and fulfilment for telecom operators.",
       avgSalary: "500,000 - 800,000 kr/year",
@@ -4375,7 +4375,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-noc-lead",
-      title: "NOC / Service Assurance Lead",
+      title: "Network Operations Lead",
       emoji: "📊",
       description: "Lead network operations centre teams ensuring service quality, rapid incident response, and SLA compliance.",
       avgSalary: "650,000 - 1,000,000 kr/year",
@@ -4398,7 +4398,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-test-env-lead",
-      title: "Test Environment / Network Validation Lead",
+      title: "Network Test Lead",
       emoji: "🧪",
       description: "Manage test environments and validation processes for network and OSS/BSS releases in telecom organisations.",
       avgSalary: "650,000 - 1,000,000 kr/year",
@@ -4410,7 +4410,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // BSS / Commercial Systems
     {
       id: "telco-catalog-manager",
-      title: "Product Catalog Manager (TMF 620/633)",
+      title: "Product Catalog Manager",
       emoji: "📚",
       description: "Manage the product and service catalogue for telecom operators, ensuring alignment with TM Forum standards (TMF 620/633).",
       avgSalary: "650,000 - 1,000,000 kr/year",
@@ -4421,7 +4421,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-cpq-architect",
-      title: "CPQ Architect / Lead",
+      title: "CPQ Architect",
       emoji: "💰",
       description: "Architect the Configure-Price-Quote system for complex telecom product bundling, pricing rules, and approval workflows.",
       avgSalary: "750,000 - 1,150,000 kr/year",
@@ -4467,7 +4467,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // Cloud, Virtualisation & Infrastructure
     {
       id: "telco-cloud-engineer",
-      title: "Telco Cloud Engineer (NFV / CNF / Kubernetes)",
+      title: "Telco Cloud Engineer",
       emoji: "☁️",
       description: "Deploy and operate cloud-native and virtualised network functions on telco infrastructure using Kubernetes and NFV/CNF technologies.",
       avgSalary: "550,000 - 900,000 kr/year",
@@ -4491,7 +4491,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "telco-sre",
-      title: "Platform Reliability Engineer (SRE – Telco)",
+      title: "Telecom Platform Reliability Engineer",
       emoji: "🔧",
       description: "Ensure platform reliability and availability for telco-grade workloads through SRE practices, observability, and automation.",
       avgSalary: "600,000 - 950,000 kr/year",
@@ -4514,7 +4514,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // Cross-Over Roles (Telco x Software)
     {
       id: "cross-oss-bss-product-mgr",
-      title: "OSS/BSS Product Manager",
+      title: "Telecom Product Manager",
       emoji: "📱",
       description: "Own the product vision and roadmap for OSS/BSS platforms, bridging telecom domain knowledge with modern software practices.",
       avgSalary: "700,000 - 1,100,000 kr/year",
@@ -4548,7 +4548,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cross-api-integration-architect",
-      title: "API & Integration Architect (TMF, REST, Event-Driven)",
+      title: "Integration Architect",
       emoji: "🔗",
       description: "Architect integration layers using TMF Open APIs, REST, and event-driven patterns to connect telco BSS/OSS with modern microservices.",
       avgSalary: "800,000 - 1,200,000 kr/year",
@@ -4570,7 +4570,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cross-observability-eng",
-      title: "Observability Engineer (Telco + Cloud)",
+      title: "Observability Engineer",
       emoji: "👁️",
       description: "Build unified observability across telecom network and cloud application stacks using Prometheus, Grafana, and OpenTelemetry.",
       avgSalary: "600,000 - 950,000 kr/year",
