@@ -80,6 +80,44 @@ function GlassCard({
   );
 }
 
+// ── Country flag helper ──────────────────────────────────────────────
+// Maps a free-text country string (as stored on YouthProfile.country)
+// to a Unicode flag emoji. We accept the country names actually used
+// in the codebase plus a few obvious aliases. Returns null when we
+// don't recognise the country, in which case the dashboard renders no
+// flag at all rather than guessing wrong. New countries: just add the
+// (name → ISO 3166-1 alpha-2) entry.
+const COUNTRY_TO_ISO: Record<string, string> = {
+  norway: 'NO', norge: 'NO',
+  sweden: 'SE', sverige: 'SE',
+  denmark: 'DK', danmark: 'DK',
+  finland: 'FI', suomi: 'FI',
+  iceland: 'IS', island: 'IS',
+  germany: 'DE', deutschland: 'DE',
+  france: 'FR',
+  spain: 'ES',
+  italy: 'IT',
+  netherlands: 'NL', nederland: 'NL',
+  belgium: 'BE',
+  poland: 'PL',
+  portugal: 'PT',
+  ireland: 'IE',
+  'united kingdom': 'GB', uk: 'GB', britain: 'GB',
+  'united states': 'US', usa: 'US', us: 'US',
+  canada: 'CA',
+  australia: 'AU',
+};
+function countryFlagEmoji(countryName?: string | null): string | null {
+  if (!countryName) return null;
+  const iso = COUNTRY_TO_ISO[countryName.trim().toLowerCase()];
+  if (!iso || iso.length !== 2) return null;
+  // Regional indicator base offset — A = 0x1F1E6, so 'NO' becomes 🇳🇴.
+  return String.fromCodePoint(
+    iso.charCodeAt(0) - 65 + 0x1F1E6,
+    iso.charCodeAt(1) - 65 + 0x1F1E6,
+  );
+}
+
 // ── Library Card with View Toggle ────────────────────────────────────
 function LibraryCard({
   items,
@@ -529,7 +567,7 @@ export default function DashboardPage() {
   // Profile completion — lightweight check
   const { data: profileData } = useQuery<{
     displayName: string | null; bio: string | null; phoneNumber: string | null;
-    city: string | null; availability: string | null; interests: string[];
+    city: string | null; country: string | null; availability: string | null; interests: string[];
     guardianEmail: string | null; guardianConsent: boolean;
     user: { dateOfBirth: string | null } | null;
   }>({
@@ -619,7 +657,7 @@ export default function DashboardPage() {
       <div className="max-w-4xl mx-auto px-3 sm:px-6 py-4 sm:py-5">
         {/* ── Header ─────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-4 sm:mb-5">
-          <div>
+          <div className="flex items-center gap-2.5">
             <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
               {isFirstLogin ? (
                 <>Welcome<span className="text-teal-500">,</span> <span className="text-foreground">{displayName}</span></>
@@ -627,6 +665,23 @@ export default function DashboardPage() {
                 <><span className="text-muted-foreground/70 font-normal">{timeGreeting}</span>{' '}<span className="text-muted-foreground/70 font-normal">{displayName}</span></>
               )}
             </h1>
+            {/* Country flag — small, subtle. Only renders if we know
+                the user's country. Localises the experience without
+                being loud. Uses Unicode regional-indicator emojis so
+                no asset files are needed. */}
+            {(() => {
+              const flag = countryFlagEmoji(profileData?.country);
+              if (!flag) return null;
+              return (
+                <span
+                  title={profileData?.country ?? undefined}
+                  aria-label={`Country: ${profileData?.country ?? 'unknown'}`}
+                  className="text-base opacity-70 hover:opacity-100 transition-opacity leading-none select-none"
+                >
+                  {flag}
+                </span>
+              );
+            })()}
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground/60 flex items-center gap-2">
