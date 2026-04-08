@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import {
   CAREER_PATHWAYS,
   findCareerCategory,
@@ -10,7 +10,7 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -170,6 +170,8 @@ function placeDots(careers: Career[]): PlacedDot[] {
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(2);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [carouselIdx, setCarouselIdx] = useState(0);
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
@@ -496,35 +498,93 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <span>Inner ring = strongest match</span>
       </div>
 
-      {/* List view of matched careers, grouped by relevance band */}
-      <div className="border-t bg-muted/10">
-        <div className="px-4 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-            All matches
-          </p>
-          <div className="space-y-3">
-            {([0, 1, 2] as const).map((ring) => {
-              const ringDots = dots.filter((d) => d.ring === ring);
-              if (ringDots.length === 0) return null;
-              const label =
+      {/* Carousel of matched careers, one slide per relevance band */}
+      {(() => {
+        const bands = ([0, 1, 2] as const)
+          .map((ring) => {
+            const ringDots = dots.filter((d) => d.ring === ring);
+            if (ringDots.length === 0) return null;
+            return {
+              ring,
+              label:
                 ring === 0
                   ? "Strong match"
                   : ring === 1
                   ? "Good match"
-                  : "Worth a look";
-              const accent =
-                ring === 0
-                  ? "text-teal-600 dark:text-teal-400"
-                  : ring === 1
-                  ? "text-teal-500/80"
-                  : "text-muted-foreground";
-              return (
-                <div key={ring}>
-                  <p className={`text-[10px] font-medium mb-1 ${accent}`}>
-                    {label} · {ringDots.length}
-                  </p>
+                  : "Worth a look",
+              dots: ringDots,
+            };
+          })
+          .filter((b): b is NonNullable<typeof b> => b !== null);
+
+        if (bands.length === 0) return null;
+
+        const goTo = (i: number) => {
+          const el = carouselRef.current;
+          if (!el) return;
+          const slide = el.children[i] as HTMLElement | undefined;
+          if (slide) {
+            el.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+            setCarouselIdx(i);
+          }
+        };
+
+        const handleScroll = () => {
+          const el = carouselRef.current;
+          if (!el) return;
+          const slideWidth = el.clientWidth;
+          const idx = Math.round(el.scrollLeft / slideWidth);
+          if (idx !== carouselIdx) setCarouselIdx(idx);
+        };
+
+        return (
+          <div className="border-t bg-muted/10">
+            {/* Carousel header */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2">
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  All matches
+                </p>
+                <span className="text-[10px] text-teal-500 font-medium">
+                  · {bands[carouselIdx]?.label} · {bands[carouselIdx]?.dots.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => goTo(Math.max(0, carouselIdx - 1))}
+                  disabled={carouselIdx === 0}
+                  className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Previous band"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(Math.min(bands.length - 1, carouselIdx + 1))}
+                  disabled={carouselIdx >= bands.length - 1}
+                  className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Next band"
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Scroll-snap carousel */}
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {bands.map((band) => (
+                <div
+                  key={band.ring}
+                  className="snap-start shrink-0 w-full px-4"
+                >
                   <div className="rounded-lg border bg-card overflow-hidden">
-                    {ringDots.map((d, idx) => {
+                    {band.dots.map((d, idx) => {
                       const cat = findCareerCategory(d.career.id);
                       const catLabel = cat ? CATEGORY_LABEL[cat] : "";
                       return (
@@ -538,9 +598,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                               })
                             );
                           }}
-                          className={`w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors ${
-                            idx > 0 ? "border-t" : ""
-                          }`}
+                          className={cn(
+                            "w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors",
+                            idx > 0 && "border-t",
+                            d.topMatch && "bg-pink-500/5"
+                          )}
                         >
                           <span className="text-base shrink-0">{d.career.emoji}</span>
                           <div className="flex-1 min-w-0">
@@ -548,6 +610,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                               <span className="text-xs font-medium truncate">
                                 {d.career.title}
                               </span>
+                              {d.topMatch && (
+                                <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
+                                  Top
+                                </span>
+                              )}
                               {d.career.entryLevel && (
                                 <span className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0" />
                               )}
@@ -564,11 +631,29 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     })}
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Dot indicators */}
+            <div className="flex items-center justify-center gap-1.5 pb-3">
+              {bands.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all",
+                    i === carouselIdx
+                      ? "w-6 bg-teal-500"
+                      : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                  )}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      })()}
     </div>
   );
 }
