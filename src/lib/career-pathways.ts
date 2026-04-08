@@ -5499,7 +5499,12 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 2, SALES_MARKETING: 2 },
   languages:    { HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 1 },
   psychology:   { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 2, SPORT_FITNESS: 1 },
-  "design-tech":   { CREATIVE_MEDIA: 2, MANUFACTURING_ENGINEERING: 3, TECHNOLOGY_IT: 1, HOSPITALITY_TOURISM: 1 },
+  // Design & Tech intentionally does NOT weight Trade — Plumber/Carpenter/
+  // Welder etc. shouldn't appear from a "design" interest. Redirected to
+  // Creative (interior, fashion, animation, product design) and Tech
+  // (UX, frontend, game dev). Trades are still reachable via physics,
+  // chemistry, math.
+  "design-tech":   { CREATIVE_MEDIA: 4, TECHNOLOGY_IT: 2, HOSPITALITY_TOURISM: 1 },
   "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 3, SPORT_FITNESS: 1 },
   drama:           { CREATIVE_MEDIA: 3, HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, SALES_MARKETING: 2 },
   "food-tech":     { HOSPITALITY_TOURISM: 3, HEALTHCARE_LIFE_SCIENCES: 1, SPORT_FITNESS: 1 },
