@@ -477,7 +477,7 @@ function YouAreHerePill({
   onForward: () => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-1 mb-1.5">
+    <div className="flex items-center justify-center gap-1 mt-2">
       {canGoBack ? (
         <button
           onClick={(e) => {
@@ -485,16 +485,21 @@ function YouAreHerePill({
             onBack();
           }}
           aria-label="Move back to previous step"
-          className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-teal-500/15 text-teal-400 ring-1 ring-teal-500/40 hover:bg-teal-500/25 transition"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-fuchsia-500/20 text-fuchsia-300 ring-1 ring-fuchsia-400/60 hover:bg-fuchsia-500/30 transition shadow-[0_0_8px_rgba(217,70,239,0.4)]"
         >
           <ChevronLeft className="h-3 w-3" />
         </button>
       ) : (
-        <span className="h-4 w-4" />
+        <span className="h-5 w-5" />
       )}
-      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-teal-500/15 ring-1 ring-teal-500/40">
-        <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-        <span className="text-[9px] font-semibold text-teal-300 uppercase tracking-wider">You are here</span>
+      {/* You-are-here pill — fuchsia/pink to stand out from the teal palette,
+          with a steady glow + pulsing inner dot so it's instantly noticed. */}
+      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-gradient-to-r from-fuchsia-500/25 to-pink-500/25 ring-1 ring-fuchsia-400/70 shadow-[0_0_14px_rgba(217,70,239,0.5)] motion-safe:animate-[here-pulse_2.4s_ease-in-out_infinite]">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-fuchsia-300 opacity-75 motion-safe:animate-ping" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-fuchsia-300" />
+        </span>
+        <span className="text-[10px] font-bold text-fuchsia-100 uppercase tracking-wider">You are here</span>
       </span>
       {canGoForward ? (
         <button
@@ -503,12 +508,12 @@ function YouAreHerePill({
             onForward();
           }}
           aria-label="Move forward to next step"
-          className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-teal-500/15 text-teal-400 ring-1 ring-teal-500/40 hover:bg-teal-500/25 transition"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-fuchsia-500/20 text-fuchsia-300 ring-1 ring-fuchsia-400/60 hover:bg-fuchsia-500/30 transition shadow-[0_0_8px_rgba(217,70,239,0.4)]"
         >
           <ChevronRight className="h-3 w-3" />
         </button>
       ) : (
-        <span className="h-4 w-4" />
+        <span className="h-5 w-5" />
       )}
     </div>
   );
@@ -516,10 +521,12 @@ function YouAreHerePill({
 
 function CompletePill() {
   return (
-    <div className="flex justify-center mb-1.5">
-      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-emerald-500/20 ring-1 ring-emerald-500/50">
-        <Check className="h-2.5 w-2.5 text-emerald-400" strokeWidth={3} />
-        <span className="text-[9px] font-semibold text-emerald-300 uppercase tracking-wider">Complete</span>
+    <div className="flex justify-center mt-2">
+      {/* Complete pill — bright emerald with a soft glow so finished steps
+          read as definitively done at a glance. */}
+      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-gradient-to-r from-emerald-500/30 to-emerald-400/25 ring-1 ring-emerald-400/70 shadow-[0_0_12px_rgba(52,211,153,0.45)]">
+        <Check className="h-3 w-3 text-emerald-200" strokeWidth={3.5} />
+        <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Complete</span>
       </span>
     </div>
   );
@@ -568,15 +575,6 @@ function ZigzagCard({
   const isDone = cardData?.status === 'done';
   const card = (
     <div className="w-full my-2">
-      {isYouAreHere && (
-        <YouAreHerePill
-          canGoBack={!!canGoBack}
-          canGoForward={!!canGoForward}
-          onBack={onYouAreHereBack ?? (() => {})}
-          onForward={onYouAreHereForward ?? (() => {})}
-        />
-      )}
-      {isDone && <CompletePill />}
     <button
       onClick={onClick}
       className={cn(
@@ -618,6 +616,17 @@ function ZigzagCard({
         </div>
       </div>
     </button>
+    {/* Status pills sit BELOW the card so they always read as the
+        bottom-most element of the step — never confused with the title. */}
+    {isYouAreHere && (
+      <YouAreHerePill
+        canGoBack={!!canGoBack}
+        canGoForward={!!canGoForward}
+        onBack={onYouAreHereBack ?? (() => {})}
+        onForward={onYouAreHereForward ?? (() => {})}
+      />
+    )}
+    {isDone && !isYouAreHere && <CompletePill />}
     </div>
   );
 

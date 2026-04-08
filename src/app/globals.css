@@ -221,6 +221,21 @@
     to { transform: rotate(360deg); }
   }
 
+  /* Roadmap "You are here" pill — calm breathing glow so the marker
+     stands out without flashing. Paired with an inner ping on the dot. */
+  @keyframes here-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 10px rgba(217, 70, 239, 0.35),
+        0 0 22px rgba(217, 70, 239, 0.15);
+    }
+    50% {
+      box-shadow:
+        0 0 18px rgba(217, 70, 239, 0.6),
+        0 0 36px rgba(217, 70, 239, 0.28);
+    }
+  }
+
   /* "Yours" sidebar section — irregular ambient glow that flickers and
      swells unpredictably so it never feels like a regular pulse */
   @keyframes yours-glow {
