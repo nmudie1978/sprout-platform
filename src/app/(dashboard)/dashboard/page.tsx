@@ -591,7 +591,32 @@ export default function DashboardPage() {
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
     const all = getAllCareers();
-    return all.find((c) => c.title === goalTitle) || null;
+    // Normalise both sides before comparing so a stored goal title like
+    // "Doctor / Physician" or "Nurse (Sykepleier)" still resolves to the
+    // canonical catalogue entry ("Doctor", "Nurse"). Without this the
+    // Career Snapshot card silently fails to render for any user whose
+    // saved goal pre-dates the slash cleanup.
+    const normalise = (s: string) => s.replace(/\s*\([^)]*\)\s*/g, ' ').trim().toLowerCase();
+    const alternates = (s: string) =>
+      normalise(s)
+        .split(/\s*\/\s*|\s+or\s+/i)
+        .map(p => p.trim())
+        .filter(Boolean);
+
+    // 1. Strict normalised match.
+    const target = normalise(goalTitle);
+    const direct = all.find((c) => normalise(c.title) === target);
+    if (direct) return direct;
+
+    // 2. Try each slash-separated alternate from the goal title.
+    for (const alt of alternates(goalTitle)) {
+      const hit = all.find((c) => normalise(c.title) === alt);
+      if (hit) return hit;
+    }
+
+    // 3. Try the reverse — match a catalogue title that has any
+    // alternate equal to the (cleaned) goal title.
+    return all.find((c) => alternates(c.title).includes(target)) || null;
   }, [goalTitle]);
 
   // Strengths from journey

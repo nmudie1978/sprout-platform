@@ -54,7 +54,7 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
     <button
       type="button"
       onClick={onLearnMore}
-      className="w-full grid grid-cols-[minmax(0,18rem)_5rem_3rem_auto] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
+      className="grid grid-cols-[18rem_6rem_4rem_8rem] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
     >
       {/* Title */}
       <span className="flex items-center gap-2 min-w-0">

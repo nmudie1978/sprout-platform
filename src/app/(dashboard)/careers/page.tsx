@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { CareerCardV2, type ViewMode } from "@/components/career-card-v2";
+import { CareerScoreCard } from "@/components/careers/career-score-card";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { CareerFilterBar } from "@/components/careers/career-filter-bar";
 import { CareerActiveChips } from "@/components/careers/career-active-chips";
@@ -361,7 +362,7 @@ function CareersPageContent() {
           {/* Column headers — list view only. Mirrors the ListRow grid so
               labels line up over their data columns. */}
           {viewMode === "list" && (
-            <div className="grid grid-cols-[minmax(0,18rem)_5rem_3rem_auto] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+            <div className="inline-grid grid-cols-[18rem_6rem_4rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit">
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
@@ -371,7 +372,7 @@ function CareersPageContent() {
           <div
             className={
               viewMode === "list"
-                ? "border rounded-b-md overflow-hidden bg-background"
+                ? "border rounded-b-md overflow-hidden bg-background w-fit"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
@@ -461,27 +462,17 @@ function CareersPageContent() {
             <h2 className="text-lg font-semibold">Recommended for You</h2>
             <span className="text-xs text-muted-foreground">Based on your primary goal</span>
           </div>
-          <div className="border rounded-xl overflow-hidden bg-card">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {insightsData.recommendations.slice(0, 6).map((rec: any) => {
               const career = rec.career;
               const matchScore = Math.min(Math.round(rec.matchScore), 100);
               return (
-                <button
+                <CareerScoreCard
                   key={career.id}
-                  onClick={() => setSelectedCareer(career)}
-                  className="flex items-center gap-3 w-full px-4 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors text-left"
-                >
-                  <span className="text-lg shrink-0">{career.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{career.title}</p>
-                    <p className="text-[11px] text-muted-foreground truncate">{career.description}</p>
-                  </div>
-                  {matchScore > 0 && (
-                    <span className="text-xs font-semibold text-pink-500 shrink-0">{matchScore}%</span>
-                  )}
-                  <span className="text-xs text-muted-foreground shrink-0">{career.avgSalary?.split(" ")[0]}</span>
-                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                </button>
+                  career={career}
+                  matchScore={matchScore}
+                  onLearnMore={() => setSelectedCareer(career)}
+                />
               );
             })}
           </div>
