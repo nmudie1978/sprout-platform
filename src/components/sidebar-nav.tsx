@@ -374,7 +374,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             {/* YOURS — personal surfaces, physically separated at the top */}
             <NavSection title="Yours" collapsed={collapsed} accent>
-              <NavItem href="/dashboard" icon={LayoutDashboard} label="My Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal />
+              <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal />
               <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
