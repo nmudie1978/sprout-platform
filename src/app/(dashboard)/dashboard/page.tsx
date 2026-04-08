@@ -646,44 +646,99 @@ export default function DashboardPage() {
           </Link>
         )}
 
-        {/* ── Primary Action Card (first login = onboarding, returning = continue) ── */}
-        {isFirstLogin ? (
-          <div className="mb-6">
-            <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80">
-              <div className="p-5 sm:p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
-                    <Rocket className="h-5 w-5 text-teal-500" />
+        {/* ── First-action card ───────────────────────────────────
+            Three states, in order of priority:
+            1. First login + wizard not yet completed → open the wizard
+            2. Wizard completed but radar empty → take them to the radar
+            3. Radar populated but no goal yet → nudge them toward Career Radar
+            Card disappears once they have a primary goal set.
+        */}
+        {(() => {
+          // discoveryPreferences is a Json field on YouthProfile not declared
+          // in the local profileData type — read it dynamically.
+          const dp = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
+          const hasDiscoveryPrefs = !!dp && (
+            (dp.subjects?.length ?? 0) > 0 ||
+            (dp.workStyles?.length ?? 0) > 0
+          );
+          const hasGoal = !!goalTitle;
+
+          // State 1: brand-new user, wizard hasn't been used
+          if (isFirstLogin) {
+            return (
+              <div className="mb-6">
+                <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80">
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
+                        <Sparkles className="h-5 w-5 text-teal-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
+                          60 seconds
+                        </p>
+                        <h2 className="text-lg font-semibold text-foreground mb-1.5">
+                          Build your Career Radar
+                        </h2>
+                        <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
+                          Three quick questions and we&rsquo;ll show you careers from across every path &mdash; including ones you&rsquo;ve probably never heard of.
+                        </p>
+                        <button
+                          onClick={() => {
+                            dismissedRef.current = true;
+                            setShowOnboardingWizard(true);
+                          }}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                        >
+                          Start
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
-                      Step 1 of 3
-                    </p>
-                    <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                      Start your journey
-                    </h2>
-                    <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
-                      Take a minute to tell us about your interests and direction.
-                      We'll use it to shape your personal roadmap — no pressure, you can change it anytime.
-                    </p>
-                    <button
-                      onClick={() => {
-                        dismissedRef.current = true;
-                        setShowOnboardingWizard(true);
-                      }}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
-                    >
-                      Get started
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
+                </GlassCard>
               </div>
-              {/* Subtle decorative gradient */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
-            </GlassCard>
-          </div>
-        ) : null}
+            );
+          }
+
+          // State 2 & 3: completed onboarding but no goal yet → open radar
+          if (!hasGoal) {
+            return (
+              <Link href="/careers/radar" className="block mb-6">
+                <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80 hover:border-teal-500/50 transition-colors">
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
+                        <Sparkles className="h-5 w-5 text-teal-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
+                          {hasDiscoveryPrefs ? "Your radar is ready" : "Start here"}
+                        </p>
+                        <h2 className="text-lg font-semibold text-foreground mb-1.5">
+                          Open your Career Radar
+                        </h2>
+                        <p className="text-sm text-muted-foreground/70 leading-relaxed mb-3 max-w-md">
+                          {hasDiscoveryPrefs
+                            ? "See the careers we mapped to you. Tap any dot to find out what the role actually involves."
+                            : "Tell us what you like and we'll show you careers across every path."}
+                        </p>
+                        <span className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-600 dark:text-teal-400">
+                          Open the radar
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
+                </GlassCard>
+              </Link>
+            );
+          }
+
+          return null;
+        })()}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         <Link href="/my-journey" className="block mb-6 group">
