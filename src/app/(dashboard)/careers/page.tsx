@@ -288,6 +288,36 @@ function CareersPageContent() {
         )}
       </div>
 
+      {/* My Career Radar — sub-section, sits above the All Careers filter/list */}
+      {isYouth && (
+        <section className="mt-6 mb-8">
+          <div className="mb-3">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-teal-500" />
+              My Career Radar
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Careers mapped to what you like — including ones you&apos;ve probably never heard of.
+            </p>
+          </div>
+          <CareerRadar
+            preferences={discoveryPreferences}
+            onEditPreferences={() => setShowDiscoveryQuiz(true)}
+          />
+        </section>
+      )}
+
+      {/* All Careers section header */}
+      <div className="pt-6 border-t border-border mb-4">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <Briefcase className="h-4 w-4 text-primary" />
+          All Careers
+        </h2>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Browse and filter the full catalogue.
+        </p>
+      </div>
+
       {/* Primary Filters Bar */}
       <CareerFilterBar
         filters={filters}
@@ -332,21 +362,7 @@ function CareersPageContent() {
         </div>
       )}
 
-      {/* Career Radar — discovery surface */}
-      {isYouth && (
-        <div className="mt-6">
-          <CareerRadar
-            preferences={discoveryPreferences}
-            onEditPreferences={() => setShowDiscoveryQuiz(true)}
-          />
-        </div>
-      )}
-
-      {/* Results Header */}
-      <div className="mt-6 mb-4 pt-6 border-t border-border">
-        <h2 className="text-lg font-semibold mb-1">All Careers</h2>
-      </div>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 mt-4">
         <p className="text-xs text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>

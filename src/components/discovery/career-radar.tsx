@@ -180,7 +180,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       <div className="flex items-center justify-between px-4 py-3 border-b">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-teal-500" />
-          <h3 className="text-sm font-semibold">Your Career Radar</h3>
+          <h3 className="text-sm font-semibold">My Career Radar</h3>
           <span className="text-[10px] text-muted-foreground">
             {dots.length} match{dots.length !== 1 ? "es" : ""}
           </span>
