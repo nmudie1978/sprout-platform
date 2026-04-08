@@ -77,6 +77,12 @@ interface NavSectionProps {
   title: string;
   children: React.ReactNode;
   collapsed?: boolean;
+  /**
+   * "Yours" sections get a teal-tinted header and a soft bordered container
+   * around the children, physically separating personal surfaces from
+   * catalogue ones.
+   */
+  accent?: boolean;
 }
 
 // ── Nav Item ─────────────────────────────────────────────────────────
@@ -222,7 +228,30 @@ function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, chi
 
 // ── Nav Section ──────────────────────────────────────────────────────
 
-function NavSection({ title, children, collapsed }: NavSectionProps) {
+function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
+  if (accent) {
+    return (
+      <div className="mb-5">
+        {!collapsed && (
+          <div className="flex items-center gap-1.5 px-3 mb-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.8)]" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-teal-300">
+              {title}
+            </p>
+          </div>
+        )}
+        {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
+        <div
+          className={cn(
+            "space-y-0.5 rounded-xl border border-teal-500/20 bg-gradient-to-b from-teal-500/[0.07] to-teal-500/[0.02]",
+            collapsed ? "p-1" : "p-1.5"
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="mb-5">
       {!collapsed && (
@@ -343,26 +372,16 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
       <nav className="flex-1 px-2 relative">
         {userRole === "YOUTH" && (
           <>
+            {/* YOURS — personal surfaces, physically separated at the top */}
+            <NavSection title="Yours" collapsed={collapsed} accent>
+              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
+              <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal />
+              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
+            </NavSection>
+
             <NavSection title="Explore" collapsed={collapsed}>
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
-              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
-              <NavGroup
-                href="/careers"
-                icon={Compass}
-                label="Explore Careers"
-                active={pathname === "/careers"}
-                childActive={isActive("/careers/radar")}
-                collapsed={collapsed}
-              >
-                <NavItem
-                  href="/careers/radar"
-                  icon={Radar}
-                  label="My Career Radar"
-                  active={isActive("/careers/radar")}
-                  collapsed={collapsed}
-                  personal
-                />
-              </NavGroup>
+              <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} />
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} />
@@ -370,7 +389,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Small Jobs" collapsed={collapsed}>
               <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} />
-              <NavItem href="/applications" icon={FileText} label="My Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
               <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} />
             </NavSection>
 
