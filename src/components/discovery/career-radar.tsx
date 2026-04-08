@@ -127,15 +127,21 @@ const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.25;
 
+// Fixed band sizes — Strong is always the top 12, Good is always the next 24,
+// the rest are "Worth a look". This is intentional: ratio-based bands meant
+// "Strong" stretched as far as the result count, diluting its meaning. Fixed
+// sizes keep the top tier scarce and useful regardless of how many matches
+// the discovery quiz produced.
+const STRONG_BAND_SIZE = 12;
+const GOOD_BAND_SIZE = 24;
+
 function placeDots(careers: Career[]): PlacedDot[] {
   if (careers.length === 0) return [];
 
-  // Bucket into 3 relevance rings by rank position.
-  const total = careers.length;
+  // Bucket into 3 relevance rings by absolute rank position.
   const ringFor = (idx: number): 0 | 1 | 2 => {
-    const ratio = idx / Math.max(1, total);
-    if (ratio < 0.33) return 0;
-    if (ratio < 0.66) return 1;
+    if (idx < STRONG_BAND_SIZE) return 0;
+    if (idx < STRONG_BAND_SIZE + GOOD_BAND_SIZE) return 1;
     return 2;
   };
 
@@ -214,7 +220,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   const matched = useMemo(() => {
     if (!preferences) return [];
-    return getCareersFromDiscovery(preferences, 30);
+    // 80 dots fits across 13 slices × 3 rings on the resized radar (~2/cell
+    // average, ~6 in the busiest cells). Bands below split this into a
+    // fixed-size Strong (12) + Good (24) + Worth a look (rest) so the top
+    // tier always means something, regardless of how many results came back.
+    return getCareersFromDiscovery(preferences, 80);
   }, [preferences]);
 
   const dots = useMemo(() => placeDots(matched), [matched]);

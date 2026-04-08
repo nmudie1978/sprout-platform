@@ -5436,7 +5436,7 @@ function passesPeopleFilter(career: Career, peoplePref?: string): boolean {
  */
 export function getCareersFromDiscovery(
   prefs: DiscoveryPreferences,
-  limit = 12
+  limit = 80
 ): Career[] {
   const all = getAllCareers();
   if (!all.length) return [];
