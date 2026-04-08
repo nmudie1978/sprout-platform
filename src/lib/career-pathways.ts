@@ -5682,18 +5682,36 @@ export function getCareersFromDiscovery(
 
   if (matched.length === 0) return [];
 
-  // Per-category cap so a single high-scoring category (e.g. Tech for a
-  // Math+Computing user) cannot flood one slice with 25+ dots while other
-  // slices sit empty. With 13 categories × 5 careers = 65 max, which
-  // dovetails nicely with the overall limit.
-  const PER_CATEGORY_CAP = 5;
+  // Per-category cap, weighted by the category's subject score so dominant
+  // interests visually dominate the radar.
+  //
+  // Without this, a flat cap of 5 made every category look identical: a
+  // Computing+Design user saw the same number of Tech dots as Hospitality
+  // dots, which contradicts the score that placed them there in the first
+  // place. With the weighted cap, a category scoring 5 gets ~7 slots while
+  // a category scoring 1 gets only 3 — high-affinity slices look denser.
+  //
+  // When no scoreable subjects are picked (just work-style + people-pref),
+  // all eligible careers score 0, so we fall back to a flat cap of 5 to
+  // preserve the previous balanced behaviour.
+  const capForScore = (score: number): number => {
+    if (!hasScoreableInputs) return 5;
+    if (score <= 0) return 0;
+    return Math.min(8, Math.max(2, score + 2));
+  };
+
   const perCategoryCount = new Map<CareerCategory, number>();
   const cappedByCategory: { career: Career; score: number }[] = [];
   for (const item of matched) {
     const cat = findCareerCategory(item.career.id);
     if (!cat) continue;
+    // Look up the category score from the precomputed map (not the per-career
+    // score, which can include free-form interest bonuses). This is what made
+    // the category eligible in the first place.
+    const catScore = subjectCategoryScores[cat] || 0;
+    const cap = capForScore(catScore);
     const count = perCategoryCount.get(cat) || 0;
-    if (count >= PER_CATEGORY_CAP) continue;
+    if (count >= cap) continue;
     perCategoryCount.set(cat, count + 1);
     cappedByCategory.push(item);
   }
