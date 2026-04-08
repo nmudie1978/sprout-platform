@@ -179,10 +179,12 @@ function useCardsPerPage(compact?: boolean): number {
 function NewDropBadge() {
   return (
     <span
-      className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded"
+      className="inline-flex items-center gap-1 text-[9px] text-emerald-600 dark:text-emerald-400"
       aria-label="New drop"
+      title="New drop"
     >
-      New drop
+      <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
+      New
     </span>
   );
 }
