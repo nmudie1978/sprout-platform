@@ -89,7 +89,7 @@ function LibraryCard({
 }) {
   const [view, setView] = useState<'list' | 'grid'>('list');
   const [libPage, setLibPage] = useState(0);
-  const PAGE_SIZE = view === 'list' ? 5 : 6;
+  const PAGE_SIZE = 5;
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const page = Math.min(libPage, totalPages - 1);
   const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -450,7 +450,12 @@ export default function DashboardPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
-    staleTime: 5 * 60 * 1000,
+    // Always refetch when the dashboard mounts or regains focus — otherwise
+    // journey progress made elsewhere (e.g. /my-journey, career details) is
+    // invisible here until the cache expires.
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const queryClient = useQueryClient();
@@ -537,6 +542,7 @@ export default function DashboardPage() {
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [journeyPage, setJourneyPage] = useState(0);
+  const [activityPage, setActivityPage] = useState(0);
   const [switchConfirm, setSwitchConfirm] = useState<{ goalTitle: string; emoji: string } | null>(null);
   const goalCareer = useMemo(() => {
     if (!goalTitle) return null;
@@ -845,12 +851,19 @@ export default function DashboardPage() {
                 <TrendingUp className="h-4 w-4 text-teal-500" />
               </div>
               <div>
-                <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5">
-                  My Journey
+                <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
+                  {goalTitle ? (
+                    <>
+                      My Journey to becoming a{' '}
+                      <span className="text-teal-400 font-bold">{goalTitle}</span>
+                    </>
+                  ) : (
+                    'My Journey'
+                  )}
                   <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Grow — helping you turn career ideas into real steps forward." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                  {goalTitle ? goalTitle : 'Track your growth'}
+                  {goalTitle ? 'Your chosen path' : 'Track your growth'}
                   {goalTitle && (
                     <button
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
@@ -1030,9 +1043,9 @@ export default function DashboardPage() {
               if (!aActive && bActive) return 1;
               return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             });
-            const PAGE_SIZE = 5;
-            const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
-            const page = Math.min(journeyPage, totalPages - 1);
+            const PAGE_SIZE = 3;
+            const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+            const page = Math.min(Math.max(0, journeyPage), totalPages - 1);
             const pageGoals = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
             return (
@@ -1064,12 +1077,11 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <div className="divide-y divide-border/20 flex-1 rounded-lg border border-border/20 overflow-hidden mt-1.5">
+                <div className="divide-y divide-border/60 flex-1 rounded-lg border border-border/60 overflow-hidden mt-1.5 bg-muted/10">
                   {pageGoals.map((goal) => {
                     const career = allCareers.find((c) => c.title === goal.goalTitle);
-                    const stepsCompleted = (goal.journeyCompletedSteps || []).length;
-                    const totalSteps = 8;
                     const isCurrentGoal = goal.goalTitle === goalTitle;
+                    const salaryShort = career?.avgSalary?.split(" ")[0];
                     return (
                       <button
                         key={goal.goalId}
@@ -1091,9 +1103,11 @@ export default function DashboardPage() {
                             Active
                           </span>
                         )}
-                        <span className="text-[10px] text-muted-foreground/25 shrink-0 tabular-nums">
-                          {stepsCompleted}/{totalSteps}
-                        </span>
+                        {salaryShort && (
+                          <span className="text-[10px] text-muted-foreground/40 shrink-0 tabular-nums">
+                            {salaryShort}
+                          </span>
+                        )}
                         {!isCurrentGoal && (
                           <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
                         )}
@@ -1106,145 +1120,190 @@ export default function DashboardPage() {
           })()}
         </div>
 
-        {/* ── 3. Library + Jobs ──────────────────────────────── */}
+        {/* ── 3. Library + Saved Careers ─────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
           <LibraryCard items={savedItemsList} total={savedSummary.total} />
 
-          {/* My Jobs */}
-          {(() => {
-            const hasJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done > 0;
-            const inner = (
-              <GlassCard className={cn("p-4", hasJobs && "hover:border-border/60 transition-all")}>
-                <div className="flex items-center gap-2 mb-4">
-                  <Briefcase className="h-4 w-4 text-emerald-500" />
-                  <h3 className="text-sm font-semibold flex items-center gap-1.5">My Jobs <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." /></h3>
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {[
-                    { label: "Applied", value: appStats.applied },
-                    { label: "Waiting", value: appStats.waiting },
-                    { label: "Accepted", value: appStats.accepted },
-                    { label: "Done", value: appStats.done },
-                  ].map((stat) => (
-                    <div key={stat.label} className="text-center">
-                      <p className="text-lg font-bold text-foreground">
-                        {stat.value}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground/50">
-                        {stat.label}
-                      </p>
-                    </div>
+          {/* Saved Careers — promoted to row 3 in place of My Jobs */}
+          <GlassCard className="p-3">
+            <div className="flex items-center gap-2 mb-1.5">
+              <Heart className="h-3.5 w-3.5 text-pink-500" />
+              <h3 className="text-xs font-semibold flex items-center gap-1.5">Saved careers <SectionWhy why="Careers you've saved from Explore Careers. Tap to revisit and dig deeper." /></h3>
+            </div>
+            {savedCareers.length > 0 ? (
+              <>
+                <div className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10 mt-1.5">
+                  {savedCareersVisible.map((c) => (
+                    <button
+                      key={c.careerId}
+                      type="button"
+                      onClick={() => {
+                        const found = getAllCareers().find((x) => x.id === c.careerId);
+                        if (found) setSavedCareerDetail(found);
+                      }}
+                      className="w-full flex items-center gap-2 px-2.5 py-2 text-[11px] hover:bg-muted/40 transition-colors text-left"
+                    >
+                      <span className="shrink-0 text-sm">{c.careerEmoji}</span>
+                      <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
+                      <span className="text-[9px] text-muted-foreground/30 shrink-0">
+                        {(() => {
+                          const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
+                          if (s < 60) return 'now';
+                          if (s < 3600) return `${Math.floor(s / 60)}m`;
+                          if (s < 86400) return `${Math.floor(s / 3600)}h`;
+                          return `${Math.floor(s / 86400)}d`;
+                        })()}
+                      </span>
+                    </button>
                   ))}
                 </div>
-              </GlassCard>
-            );
-            return hasJobs ? (
-              <Link href="/applications" className="block group">{inner}</Link>
-            ) : inner;
-          })()}
+                {savedCareersPageCount > 1 && (
+                  <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-border/30">
+                    <button
+                      type="button"
+                      onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
+                      disabled={savedCareersPage === 0}
+                      className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="h-3 w-3" />
+                    </button>
+                    <span className="text-[9px] text-muted-foreground/40 tabular-nums">
+                      {savedCareersPage + 1} / {savedCareersPageCount}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
+                      disabled={savedCareersPage >= savedCareersPageCount - 1}
+                      className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
+                No saved careers yet
+              </p>
+            )}
+          </GlassCard>
         </div>
 
         {/* ── 4. Activity + Saved Careers ────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <GlassCard className="p-3">
-          <div className="flex items-center gap-2 mb-1.5">
-            <FileText className="h-3.5 w-3.5 text-amber-500" />
-            <h3 className="text-xs font-semibold flex items-center gap-1.5">Activity <SectionWhy why="Your recent actions — saving content, exploring careers, setting goals. A log of your progress." /></h3>
-          </div>
-          {recentActivity.length > 0 ? (
-            <div className="space-y-1">
-              {recentActivity.slice(0, 3).map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-[11px]">
-                  <div className={cn(
-                    "h-1 w-1 rounded-full shrink-0",
-                    item.type === 'application' ? 'bg-emerald-500/50' :
-                    item.type === 'saved' ? 'bg-blue-500/50' :
-                    'bg-amber-500/50'
-                  )} />
-                  <span className="text-muted-foreground/60 truncate flex-1">{item.title}</span>
-                  <span className="text-[9px] text-muted-foreground/30 shrink-0">
-                    {(() => {
-                      const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
-                      if (s < 60) return 'now';
-                      if (s < 3600) return `${Math.floor(s / 60)}m`;
-                      if (s < 86400) return `${Math.floor(s / 3600)}h`;
-                      return `${Math.floor(s / 86400)}d`;
-                    })()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
-              No recent activity
-            </p>
-          )}
-        </GlassCard>
-
-        <GlassCard className="p-3">
-          <div className="flex items-center gap-2 mb-1.5">
-            <Heart className="h-3.5 w-3.5 text-pink-500" />
-            <h3 className="text-xs font-semibold flex items-center gap-1.5">Saved careers <SectionWhy why="Careers you've saved from Explore Careers. Tap to revisit and dig deeper." /></h3>
-          </div>
-          {savedCareers.length > 0 ? (
-            <>
-              <div className="space-y-1">
-                {savedCareersVisible.map((c) => (
-                  <button
-                    key={c.careerId}
-                    type="button"
-                    onClick={() => {
-                      const found = getAllCareers().find((x) => x.id === c.careerId);
-                      if (found) setSavedCareerDetail(found);
-                    }}
-                    className="w-full flex items-center gap-2 text-[11px] hover:text-foreground transition-colors text-left"
-                  >
-                    <span className="shrink-0">{c.careerEmoji}</span>
-                    <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
-                    <span className="text-[9px] text-muted-foreground/30 shrink-0">
-                      {(() => {
-                        const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
-                        if (s < 60) return 'now';
-                        if (s < 3600) return `${Math.floor(s / 60)}m`;
-                        if (s < 86400) return `${Math.floor(s / 3600)}h`;
-                        return `${Math.floor(s / 86400)}d`;
-                      })()}
+        {(() => {
+          const ACTIVITY_PAGE_SIZE = 4;
+          const totalActivityPages = Math.max(1, Math.ceil(recentActivity.length / ACTIVITY_PAGE_SIZE));
+          const safeActivityPage = Math.min(Math.max(0, activityPage), totalActivityPages - 1);
+          const pageActivity = recentActivity.slice(
+            safeActivityPage * ACTIVITY_PAGE_SIZE,
+            (safeActivityPage + 1) * ACTIVITY_PAGE_SIZE
+          );
+          return (
+            <GlassCard className="p-3">
+              <div className="flex items-center gap-2 mb-1.5">
+                <FileText className="h-3.5 w-3.5 text-amber-500" />
+                <h3 className="text-xs font-semibold flex items-center gap-1.5">Activity <SectionWhy why="Your recent actions — saving content, exploring careers, setting goals. A log of your progress." /></h3>
+                <span className="flex-1" />
+                {totalActivityPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setActivityPage((p) => Math.max(0, p - 1))}
+                      disabled={safeActivityPage === 0}
+                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                    >
+                      <ChevronLeft className="h-3 w-3" />
+                    </button>
+                    <span className="text-[9px] text-muted-foreground/30 tabular-nums">
+                      {safeActivityPage + 1}/{totalActivityPages}
                     </span>
-                  </button>
+                    <button
+                      onClick={() => setActivityPage((p) => Math.min(totalActivityPages - 1, p + 1))}
+                      disabled={safeActivityPage >= totalActivityPages - 1}
+                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                    >
+                      <ChevronRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
+              {recentActivity.length > 0 ? (
+                <div className="space-y-1">
+                  {pageActivity.map((item, i) => (
+                    <div key={`${safeActivityPage}-${i}`} className="flex items-center gap-2 text-[11px]">
+                      <div className={cn(
+                        "h-1 w-1 rounded-full shrink-0",
+                        item.type === 'application' ? 'bg-emerald-500/50' :
+                        item.type === 'saved' ? 'bg-blue-500/50' :
+                        'bg-amber-500/50'
+                      )} />
+                      <span className="text-muted-foreground/60 truncate flex-1">{item.title}</span>
+                      <span className="text-[9px] text-muted-foreground/30 shrink-0">
+                        {(() => {
+                          const s = Math.floor((Date.now() - new Date(item.time).getTime()) / 1000);
+                          if (s < 60) return 'now';
+                          if (s < 3600) return `${Math.floor(s / 60)}m`;
+                          if (s < 86400) return `${Math.floor(s / 3600)}h`;
+                          return `${Math.floor(s / 86400)}d`;
+                        })()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
+                  No recent activity
+                </p>
+              )}
+            </GlassCard>
+          );
+        })()}
+
+        {/* My Small Jobs — minimised, deliberately small footprint.
+            Career exploration is the centre of gravity now; small jobs
+            are a side surface and shouldn't compete with it visually. */}
+        {(() => {
+          const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
+          const inner = (
+            <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
+              <div className="flex items-center gap-2 mb-1.5">
+                <Briefcase className="h-3.5 w-3.5 text-emerald-500/70" />
+                <h3 className="text-xs font-semibold flex items-center gap-1.5">
+                  My Small Jobs
+                  <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." />
+                </h3>
+                <span className="flex-1" />
+                {totalJobs > 0 && (
+                  <span className="text-[10px] text-muted-foreground/40 tabular-nums">
+                    {totalJobs}
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-1 text-center">
+                {[
+                  { label: "Applied", value: appStats.applied },
+                  { label: "Waiting", value: appStats.waiting },
+                  { label: "Accepted", value: appStats.accepted },
+                  { label: "Done", value: appStats.done },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <p className="text-xs font-semibold text-foreground/70 tabular-nums">
+                      {stat.value}
+                    </p>
+                    <p className="text-[9px] text-muted-foreground/40 leading-tight">
+                      {stat.label}
+                    </p>
+                  </div>
                 ))}
               </div>
-              {savedCareersPageCount > 1 && (
-                <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-border/30">
-                  <button
-                    type="button"
-                    onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
-                    disabled={savedCareersPage === 0}
-                    className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Previous page"
-                  >
-                    <ChevronLeft className="h-3 w-3" />
-                  </button>
-                  <span className="text-[9px] text-muted-foreground/40 tabular-nums">
-                    {savedCareersPage + 1} / {savedCareersPageCount}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
-                    disabled={savedCareersPage >= savedCareersPageCount - 1}
-                    className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                    aria-label="Next page"
-                  >
-                    <ChevronRight className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
-              No saved careers yet
-            </p>
-          )}
-        </GlassCard>
+            </GlassCard>
+          );
+          return totalJobs > 0 ? (
+            <Link href="/applications" className="block group">{inner}</Link>
+          ) : inner;
+        })()}
         </div>
       </div>
 
