@@ -222,9 +222,17 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   // "top only" mode also re-spaces the dots so they don't bunch on top of
   // each other, since with only ~3 dots there's plenty of empty radar.
   const visibleDots = useMemo(() => {
-    if (filterMode === "strong") return dots.filter((d) => d.ring === 0);
+    if (filterMode === "strong") {
+      // Strong band + active goal — never hide the user's current target
+      return dots.filter((d) => d.ring === 0 || d.isActiveGoal);
+    }
     if (filterMode === "top") {
-      const topDots = dots.filter((d) => d.topMatch);
+      // Include the top matches AND the active goal (if it isn't already a
+      // top match), so the user can always see where their current journey
+      // target sits even when it didn't make the top 3.
+      const topDots = dots.filter(
+        (d) => d.topMatch || d.isActiveGoal
+      );
       if (topDots.length === 0) return topDots;
 
       // Spread top dots within their OWN category slice — never push them
