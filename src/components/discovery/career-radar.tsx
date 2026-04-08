@@ -266,6 +266,32 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               </button>
             ))}
           </div>
+          {/* Filter toggle — drives both the radar and the matches report */}
+          <div className="flex items-center rounded-md border bg-background text-[10px]">
+            {([
+              { id: "all", label: "All" },
+              { id: "strong", label: "Strong" },
+              { id: "top", label: "Top only" },
+            ] as const).map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => {
+                  setFilterMode(opt.id);
+                  setCarouselIdx(0);
+                }}
+                className={cn(
+                  "h-7 px-2 transition-colors first:rounded-l-md last:rounded-r-md",
+                  filterMode === opt.id
+                    ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
+                    : "hover:bg-muted text-muted-foreground"
+                )}
+                aria-pressed={filterMode === opt.id}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-1">
           {/* Zoom controls */}
@@ -565,40 +591,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
     {/* ─── Matches Report — separate card, carousel of bands with filter ─── */}
     <div className="mt-4 rounded-2xl border bg-card overflow-hidden">
-      {/* Header with title + filter pills */}
-      <div className="px-4 py-3 border-b flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h3 className="text-sm font-semibold">Matches Report</h3>
-          <p className="text-[11px] text-muted-foreground">
-            {visibleDots.length} of {dots.length} careers shown
-          </p>
-        </div>
-        {/* Filter toggle — drives both the radar and the report */}
-        <div className="flex items-center rounded-md border bg-background text-[10px]">
-          {([
-            { id: "all", label: "All" },
-            { id: "strong", label: "Strong" },
-            { id: "top", label: "Top only" },
-          ] as const).map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              onClick={() => {
-                setFilterMode(opt.id);
-                setCarouselIdx(0);
-              }}
-              className={cn(
-                "h-7 px-2.5 transition-colors first:rounded-l-md last:rounded-r-md",
-                filterMode === opt.id
-                  ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
-                  : "hover:bg-muted text-muted-foreground"
-              )}
-              aria-pressed={filterMode === opt.id}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+      {/* Header */}
+      <div className="px-4 py-3 border-b">
+        <h3 className="text-sm font-semibold">Matches Report</h3>
+        <p className="text-[11px] text-muted-foreground">
+          {visibleDots.length} of {dots.length} careers shown
+        </p>
       </div>
 
       {/* Build bands from the *filtered* dots so the carousel reflects the filter */}
