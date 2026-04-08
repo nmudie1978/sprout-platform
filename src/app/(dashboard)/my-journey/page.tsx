@@ -26,7 +26,7 @@ import {
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
-  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video,
+  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
@@ -1196,28 +1196,145 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     return summary;
   }, [career, details]);
 
-  // My Actions — persisted per career in localStorage
+  // ── Momentum (formerly "My Actions") ──────────────────────────────
+  // The emotional anchor of the journey. Each action is typed (research /
+  // reach out / do / learn / reflect) and on completion the user can leave
+  // a quick reaction + one-line note. Over weeks this becomes a personal
+  // journey log they can scroll back through.
+  type ActionType = 'research' | 'reach' | 'do' | 'learn' | 'reflect';
+  type ActionReaction = 'confirmed' | 'unsure' | 'mixed';
+  type Action = {
+    id: string;
+    text: string;
+    done: boolean;
+    type?: ActionType;
+    completedAt?: number;
+    reaction?: ActionReaction;
+    note?: string;
+  };
+
   const actionsKey = `journey-actions-${career.id}`;
-  const [actions, setActions] = useState<{ id: string; text: string; done: boolean }[]>([]);
+  const [actions, setActions] = useState<Action[]>([]);
   const [newAction, setNewAction] = useState('');
+  const [newActionType, setNewActionType] = useState<ActionType>('research');
+  // Action id awaiting a reflection (just ticked off, prompt is open)
+  const [reflectingId, setReflectingId] = useState<string | null>(null);
+  const [reflectionNote, setReflectionNote] = useState('');
 
   useEffect(() => {
     try { setActions(JSON.parse(localStorage.getItem(actionsKey) || '[]')); } catch { setActions([]); }
   }, [actionsKey]);
 
-  const saveActions = (updated: typeof actions) => {
+  const saveActions = (updated: Action[]) => {
     setActions(updated);
     try { localStorage.setItem(actionsKey, JSON.stringify(updated)); } catch { /* ignore */ }
   };
 
   const addAction = () => {
     if (!newAction.trim()) return;
-    saveActions([...actions, { id: Date.now().toString(), text: newAction.trim(), done: false }]);
+    saveActions([...actions, {
+      id: Date.now().toString(),
+      text: newAction.trim(),
+      done: false,
+      type: newActionType,
+    }]);
     setNewAction('');
   };
 
-  const toggleAction = (id: string) => saveActions(actions.map(a => a.id === id ? { ...a, done: !a.done } : a));
+  const toggleAction = (id: string) => {
+    const target = actions.find(a => a.id === id);
+    if (!target) return;
+    const becomingDone = !target.done;
+    saveActions(actions.map(a => a.id === id
+      ? {
+          ...a,
+          done: becomingDone,
+          completedAt: becomingDone ? Date.now() : undefined,
+          // Clear reaction/note if un-ticking
+          reaction: becomingDone ? a.reaction : undefined,
+          note: becomingDone ? a.note : undefined,
+        }
+      : a
+    ));
+    if (becomingDone) {
+      setReflectingId(id);
+      setReflectionNote('');
+    } else if (reflectingId === id) {
+      setReflectingId(null);
+    }
+  };
+
+  const saveReflection = (id: string, reaction: ActionReaction) => {
+    saveActions(actions.map(a => a.id === id
+      ? { ...a, reaction, note: reflectionNote.trim() || undefined }
+      : a
+    ));
+    setReflectingId(null);
+    setReflectionNote('');
+  };
+
+  const skipReflection = () => {
+    setReflectingId(null);
+    setReflectionNote('');
+  };
+
   const deleteAction = (id: string) => saveActions(actions.filter(a => a.id !== id));
+
+  // ── Momentum stats — calm facts, no gamification ──────────────────
+  const momentumStats = useMemo(() => {
+    const completed = actions.filter(a => a.done && a.completedAt);
+    const totalDone = completed.length;
+
+    const now = Date.now();
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    const dayMs = 24 * 60 * 60 * 1000;
+
+    const thisWeek = completed.filter(a => (a.completedAt ?? 0) > now - weekMs).length;
+
+    let firstStepDays = 0;
+    if (completed.length > 0) {
+      const firstTs = Math.min(...completed.map(a => a.completedAt ?? now));
+      firstStepDays = Math.floor((now - firstTs) / dayMs);
+    }
+
+    // 12-week dot strip — one bucket per week, oldest first (left), newest right
+    const weeks = Array.from({ length: 12 }, (_, i) => {
+      const weekIdx = 11 - i; // 0 = oldest, 11 = current
+      const weekStart = now - (weekIdx + 1) * weekMs;
+      const weekEnd = now - weekIdx * weekMs;
+      const count = completed.filter(a => {
+        const ts = a.completedAt ?? 0;
+        return ts >= weekStart && ts < weekEnd;
+      }).length;
+      return { count, isCurrent: weekIdx === 0 };
+    });
+
+    return { totalDone, thisWeek, firstStepDays, weeks };
+  }, [actions]);
+
+  // Action type metadata — keep small + consistent
+  const ACTION_TYPES: { id: ActionType; label: string; emoji: string; tone: string }[] = [
+    { id: 'research', label: 'Research', emoji: '🔍', tone: 'text-blue-400' },
+    { id: 'reach',    label: 'Reach out', emoji: '💬', tone: 'text-emerald-400' },
+    { id: 'do',       label: 'Do',       emoji: '✋', tone: 'text-amber-400' },
+    { id: 'learn',    label: 'Learn',    emoji: '📚', tone: 'text-violet-400' },
+    { id: 'reflect',  label: 'Reflect',  emoji: '🤔', tone: 'text-rose-400' },
+  ];
+  const typeMeta = (t?: ActionType) => ACTION_TYPES.find(x => x.id === t) ?? ACTION_TYPES[0];
+
+  // Cycle through action types when the picker is clicked
+  const cycleNewActionType = () => {
+    const idx = ACTION_TYPES.findIndex(t => t.id === newActionType);
+    setNewActionType(ACTION_TYPES[(idx + 1) % ACTION_TYPES.length].id);
+  };
+
+  // Reaction display metadata
+  const REACTIONS: { id: ActionReaction; emoji: string; label: string; tone: string }[] = [
+    { id: 'confirmed', emoji: '🔥', label: 'Confirmed it', tone: 'text-orange-400' },
+    { id: 'unsure',    emoji: '🤔', label: 'Less sure now', tone: 'text-amber-400' },
+    { id: 'mixed',     emoji: '⚖️', label: 'Mixed',         tone: 'text-slate-400' },
+  ];
+  const reactionMeta = (r?: ActionReaction) => REACTIONS.find(x => x.id === r);
 
   return (
     <div className="space-y-5">
@@ -1257,101 +1374,234 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         })()}
       </SectionCard>
 
-      {/* 2. My Actions */}
-      <SectionCard>
-        <div className="px-4 py-3 border-b border-border/20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-teal-400" />
-            <h3 className="text-sm font-semibold text-foreground/90">My Actions</h3>
-          </div>
-          {actions.length > 0 && (() => {
-            const doneCount = actions.filter(a => a.done).length;
-            const total = actions.length;
-            const pct = Math.round((doneCount / total) * 100);
-            return (
-              <div className="flex items-center gap-2">
-                <div className="h-1.5 w-16 rounded-full bg-foreground/5 overflow-hidden">
-                  <div className="h-full rounded-full bg-emerald-500 transition-all duration-300" style={{ width: `${pct}%` }} />
-                </div>
-                <span className="text-[10px] text-muted-foreground/40">{doneCount}/{total}</span>
+      {/* 2. Momentum (formerly "My Actions") — the journey anchor */}
+      <SectionCard className="border-teal-500/25" style={{ boxShadow: '0 0 25px rgba(20,184,166,0.10)' }}>
+        <div className="px-5 py-3.5 border-b border-border/30">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2.5">
+              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-teal-500/25 to-teal-500/5 flex items-center justify-center border border-teal-500/30">
+                <Zap className="h-3.5 w-3.5 text-teal-400" />
               </div>
-            );
-          })()}
-        </div>
-        <div className="px-4 py-3 space-y-3">
-          {/* Empty state — suggestions */}
-          {actions.length === 0 && (
-            <div className="space-y-2.5">
-              <p className="text-[10px] text-muted-foreground/40">
-                Track what you need to do next. Here are some ideas:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                {[
-                  `Research ${career.educationPath.split('+')[0].trim()} programmes`,
-                  `Find 3 ${career.title}s on LinkedIn`,
-                  `Attend a career event or open day`,
-                  `Talk to someone in this field`,
-                ].map((suggestion) => (
-                  <button key={suggestion} onClick={() => { saveActions([...actions, { id: Date.now().toString() + suggestion.slice(0, 4), text: suggestion, done: false }]); }}
-                    className="flex items-center gap-2 rounded-lg border border-border/15 bg-muted/5 px-3 py-2 text-[11px] text-muted-foreground/50 hover:text-foreground/70 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all text-left"
-                  >
-                    <Plus className="h-3 w-3 shrink-0 text-teal-500/40" />
-                    <span>{suggestion}</span>
-                  </button>
-                ))}
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Momentum</h3>
+                <p className="text-[10px] text-muted-foreground/70">Every step counts. Here&apos;s your path so far.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Calm header stats — facts, not achievements */}
+          {momentumStats.totalDone > 0 && (
+            <div className="grid grid-cols-3 gap-2 mt-3">
+              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Steps taken</p>
+                <p className="text-base font-semibold text-foreground tabular-nums">{momentumStats.totalDone}</p>
+              </div>
+              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">This week</p>
+                <p className="text-base font-semibold text-teal-400 tabular-nums">{momentumStats.thisWeek}</p>
+              </div>
+              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Started</p>
+                <p className="text-base font-semibold text-foreground tabular-nums">
+                  {momentumStats.firstStepDays === 0 ? 'today' : `${momentumStats.firstStepDays}d ago`}
+                </p>
               </div>
             </div>
           )}
+
+          {/* The 12-week momentum strip — visual proof of consistency */}
+          {momentumStats.totalDone > 0 && (
+            <div className="mt-3">
+              <div className="flex items-center justify-between mb-1.5">
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Last 12 weeks</p>
+                <div className="flex items-center gap-2 text-[9px] text-muted-foreground/50">
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500/30" />
+                    1+
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500" />
+                    3+
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                {momentumStats.weeks.map((w, i) => {
+                  const fill =
+                    w.count >= 3 ? 'bg-teal-500 shadow-[0_0_6px_rgba(45,212,191,0.6)]'
+                    : w.count >= 1 ? 'bg-teal-500/35'
+                    : 'bg-foreground/8';
+                  return (
+                    <div
+                      key={i}
+                      title={w.count === 0 ? 'No actions this week' : `${w.count} action${w.count === 1 ? '' : 's'}`}
+                      className={cn(
+                        'flex-1 h-2 rounded-full transition-all',
+                        fill,
+                        w.isCurrent && 'ring-1 ring-teal-400/60 ring-offset-1 ring-offset-background'
+                      )}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="px-5 py-4 space-y-3">
+          {/* Empty state — stage-aware suggestions tailored to the journey */}
+          {actions.length === 0 && (
+            <div className="space-y-3">
+              <div className="rounded-lg border border-teal-500/20 bg-teal-500/[0.04] p-3.5">
+                <p className="text-[11px] font-medium text-foreground/85 mb-1">Start your journey</p>
+                <p className="text-[10px] text-muted-foreground/70 leading-relaxed">
+                  Pick one. Small actions build the path. Each one teaches you something — even the ones that don&apos;t go to plan.
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                {([
+                  { type: 'research' as ActionType, text: `Watch a "day in the life" of a ${career.title}` },
+                  { type: 'research' as ActionType, text: `Find 3 ${career.title}s on LinkedIn and read their journey` },
+                  { type: 'reach' as ActionType,    text: `Message 1 person in this field — ask one honest question` },
+                  { type: 'do' as ActionType,       text: `Visit a workplace, open day, or career event` },
+                  { type: 'learn' as ActionType,    text: `Sign up for an introductory course or workshop` },
+                ]).map((s, i) => {
+                  const t = typeMeta(s.type);
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.text, done: false, type: s.type }])}
+                      className="group w-full flex items-center gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
+                    >
+                      <span className="text-base shrink-0">{t.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">{t.label}</p>
+                        <p className="text-[12px] text-foreground/80 group-hover:text-foreground leading-snug">{s.text}</p>
+                      </div>
+                      <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Action list */}
           {actions.length > 0 && (() => {
             const pending = actions.filter(a => !a.done);
-            const completed = actions.filter(a => a.done);
+            const completed = actions.filter(a => a.done).sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
             return (
               <div className="space-y-1">
-                {pending.map((action) => (
-                  <div key={action.id} className="group flex items-center gap-2.5 rounded-lg px-2.5 py-2 -mx-1 hover:bg-muted/5 transition-colors">
-                    <button onClick={() => toggleAction(action.id)}
-                      className="flex h-[18px] w-[18px] items-center justify-center rounded-md border border-muted-foreground/20 shrink-0 transition-all hover:border-teal-400 hover:bg-teal-500/5"
-                    />
-                    <span className="text-[13px] flex-1 text-foreground/75 leading-snug">{action.text}</span>
-                    <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/10 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
+                {pending.map((action) => {
+                  const t = typeMeta(action.type);
+                  return (
+                    <div key={action.id} className="group flex items-center gap-3 rounded-lg px-2.5 py-2 -mx-1 hover:bg-muted/5 transition-colors">
+                      <button onClick={() => toggleAction(action.id)}
+                        className="flex h-[20px] w-[20px] items-center justify-center rounded-md border border-muted-foreground/30 shrink-0 transition-all hover:border-teal-400 hover:bg-teal-500/10"
+                        aria-label="Mark complete"
+                      />
+                      <span className="text-base leading-none shrink-0" title={t.label}>{t.emoji}</span>
+                      <span className="text-[13px] flex-1 text-foreground/85 leading-snug">{action.text}</span>
+                      <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  );
+                })}
                 {completed.length > 0 && (
                   <>
-                    {pending.length > 0 && <div className="border-t border-border/10 my-1.5" />}
-                    {completed.map((action) => (
-                      <div key={action.id} className="group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 -mx-1 transition-colors">
-                        <button onClick={() => toggleAction(action.id)}
-                          className="flex h-[18px] w-[18px] items-center justify-center rounded-md bg-emerald-500/15 border border-emerald-500/30 shrink-0 transition-all hover:bg-emerald-500/25"
-                        >
-                          <Check className="h-2.5 w-2.5 text-emerald-500" />
-                        </button>
-                        <span className="text-[13px] flex-1 text-muted-foreground/35 line-through leading-snug">{action.text}</span>
-                        <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/10 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
+                    {pending.length > 0 && <div className="border-t border-border/15 my-2" />}
+                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/50 font-medium px-2.5 mb-1">Done</p>
+                    {completed.map((action) => {
+                      const t = typeMeta(action.type);
+                      const r = reactionMeta(action.reaction);
+                      const isReflecting = reflectingId === action.id;
+                      return (
+                        <div key={action.id} className="space-y-1">
+                          <div className="group flex items-start gap-3 rounded-lg px-2.5 py-1.5 -mx-1 transition-colors">
+                            <button onClick={() => toggleAction(action.id)}
+                              className="flex h-[20px] w-[20px] items-center justify-center rounded-md bg-teal-500/20 border border-teal-500/40 shrink-0 transition-all hover:bg-teal-500/30 mt-px"
+                              aria-label="Mark incomplete"
+                            >
+                              <Check className="h-3 w-3 text-teal-400" />
+                            </button>
+                            <span className="text-base leading-none shrink-0 opacity-50 mt-px" title={t.label}>{t.emoji}</span>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[13px] text-muted-foreground/55 leading-snug line-through">{action.text}</p>
+                              {action.note && (
+                                <p className="text-[11px] text-foreground/60 mt-0.5 italic">&ldquo;{action.note}&rdquo;</p>
+                              )}
+                            </div>
+                            {r && (
+                              <span title={r.label} className="text-sm shrink-0">{r.emoji}</span>
+                            )}
+                            <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+
+                          {/* Reflection panel — appears immediately after ticking */}
+                          {isReflecting && (
+                            <div className="ml-9 mr-2 rounded-lg border border-teal-500/30 bg-teal-500/[0.05] p-3 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                              <p className="text-[11px] font-medium text-foreground/85">How did that go?</p>
+                              <div className="flex gap-1.5 flex-wrap">
+                                {REACTIONS.map(r => (
+                                  <button
+                                    key={r.id}
+                                    onClick={() => saveReflection(action.id, r.id)}
+                                    className="flex items-center gap-1.5 rounded-md border border-border/40 bg-background/50 px-2.5 py-1 text-[11px] text-foreground/75 hover:border-teal-500/40 hover:bg-teal-500/10 hover:text-foreground transition-all"
+                                  >
+                                    <span>{r.emoji}</span>
+                                    <span>{r.label}</span>
+                                  </button>
+                                ))}
+                              </div>
+                              <input
+                                value={reflectionNote}
+                                onChange={(e) => setReflectionNote(e.target.value)}
+                                placeholder="Optional: one thing you learned…"
+                                className="w-full bg-background/40 border border-border/40 rounded-md px-2.5 py-1.5 text-[11px] text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none focus:border-teal-500/40"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') saveReflection(action.id, action.reaction ?? 'mixed');
+                                }}
+                              />
+                              <button
+                                onClick={skipReflection}
+                                className="text-[10px] text-muted-foreground/60 hover:text-foreground/80 transition-colors"
+                              >
+                                Skip for now
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </>
                 )}
               </div>
             );
           })()}
-          {/* Add input */}
-          <div className="flex items-center gap-2 rounded-lg border border-border/15 bg-muted/5 px-3 py-2 focus-within:border-teal-500/30 focus-within:bg-teal-500/[0.02] transition-colors">
-            <Plus className="h-3 w-3 shrink-0 text-muted-foreground/20" />
+
+          {/* Add input — type picker + text + add */}
+          <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-background/40 px-2.5 py-2 focus-within:border-teal-500/40 focus-within:bg-teal-500/[0.03] transition-colors">
+            <button
+              type="button"
+              onClick={cycleNewActionType}
+              className="shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-muted/30 transition-colors"
+              title={`Type: ${typeMeta(newActionType).label} — click to change`}
+            >
+              <span className="text-base">{typeMeta(newActionType).emoji}</span>
+              <span className="text-[9px] text-muted-foreground/70 uppercase tracking-wider">{typeMeta(newActionType).label}</span>
+            </button>
             <input
               value={newAction}
               onChange={(e) => setNewAction(e.target.value)}
-              placeholder="Add an action..."
-              className="flex-1 bg-transparent text-[13px] text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none"
+              placeholder="Add the next step…"
+              className="flex-1 bg-transparent text-[13px] text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none"
               onKeyDown={(e) => { if (e.key === 'Enter' && newAction.trim()) addAction(); }}
             />
             {newAction.trim() && (
-              <button onClick={addAction} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-medium bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 transition-colors">
+              <button onClick={addAction} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-semibold bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 transition-colors">
                 Add
               </button>
             )}
