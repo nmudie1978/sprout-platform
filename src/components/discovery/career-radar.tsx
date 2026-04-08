@@ -514,17 +514,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   strokeWidth={1.25}
                 />
               )}
-              {/* Entry-level marker: outer ring around the marker */}
-              {d.career.entryLevel && (
-                <circle
-                  cx={d.cx}
-                  cy={d.cy}
-                  r={viewMode === "emoji" ? 11 : 9}
-                  fill="none"
-                  className="stroke-amber-400"
-                  strokeWidth={1.5}
-                />
-              )}
               {viewMode === "dots" && (
                 <circle
                   cx={d.cx}
@@ -626,10 +615,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="flex items-center gap-1">
             <span className="inline-block w-2 h-2 rounded-full bg-teal-500" />
             Career
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-full border-2 border-amber-400" />
-            No degree needed
           </span>
         </div>
         <span>Inner ring = strongest match</span>
@@ -767,12 +752,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                           <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
                             Top
                           </span>
-                        )}
-                        {d.career.entryLevel && (
-                          <span
-                            className="inline-block w-1.5 h-1.5 rounded-full border border-amber-400 shrink-0"
-                            title="No degree needed"
-                          />
                         )}
                       </button>
                     ))}
