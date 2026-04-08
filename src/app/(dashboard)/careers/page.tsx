@@ -285,36 +285,6 @@ function CareersPageContent() {
         )}
       </div>
 
-      {/* My Career Radar entry-point — links to /careers/radar sub-page */}
-      {isYouth && (
-        <Link
-          href="/careers/radar"
-          className="block mt-4 mb-5 group"
-        >
-          <div className="rounded-xl border bg-gradient-to-r from-teal-500/10 via-card to-pink-500/5 hover:border-teal-500/40 transition-colors p-3 sm:p-4 flex items-center gap-3">
-            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0">
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-teal-500" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold flex items-center gap-1.5">
-                My Career Radar
-                {discoveryPreferences && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/15 text-teal-600 dark:text-teal-400 font-medium">
-                    Set up
-                  </span>
-                )}
-              </p>
-              <p className="text-[11px] text-muted-foreground line-clamp-1">
-                {discoveryPreferences
-                  ? "See careers mapped to your subjects and work style."
-                  : "Tell us what you like and we'll map careers across every path."}
-              </p>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-teal-500 group-hover:translate-x-0.5 transition-all shrink-0" />
-          </div>
-        </Link>
-      )}
-
       {/* Primary Filters Bar */}
       <CareerFilterBar
         filters={filters}
