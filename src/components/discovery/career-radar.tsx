@@ -555,7 +555,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     "transition-all duration-150 radar-dot-circle",
                     d.topMatch
                       ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                      : "fill-teal-500 group-hover:fill-teal-400"
+                      : d.ring === 0
+                      ? "fill-teal-500 group-hover:fill-teal-400"
+                      : d.ring === 1
+                      ? "fill-teal-500/70 group-hover:fill-teal-400"
+                      : "fill-teal-500/40 group-hover:fill-teal-400"
                   )}
                 />
               )}
@@ -570,7 +574,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     "transition-all duration-150 radar-dot-circle",
                     d.topMatch
                       ? "stroke-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                      : "stroke-teal-500 group-hover:stroke-teal-400"
+                      : d.ring === 0
+                      ? "stroke-teal-500 group-hover:stroke-teal-400"
+                      : d.ring === 1
+                      ? "stroke-teal-500/70 group-hover:stroke-teal-400"
+                      : "stroke-teal-500/40 group-hover:stroke-teal-400"
                   )}
                 />
               )}
@@ -637,7 +645,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         )}
       </div>
 
-      {/* Legend */}
+      {/* Legend — mirrors the bands used by the Matches Report below
+          (Top match → halo'd dots, Strong → inner ring, Good → middle ring,
+          Worth a look → outer ring). Keeps both views speaking the same
+          language so users can map a dot back to its band at a glance. */}
       <div className="px-4 py-2 border-t flex items-center justify-between flex-wrap gap-2 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="flex items-center gap-1">
@@ -646,7 +657,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-2 h-2 rounded-full bg-teal-500" />
-            Career
+            Strong
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2 h-2 rounded-full bg-teal-500/70" />
+            Good
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-2 h-2 rounded-full bg-teal-500/40" />
+            Worth a look
           </span>
         </div>
         <span>Inner ring = strongest match</span>
