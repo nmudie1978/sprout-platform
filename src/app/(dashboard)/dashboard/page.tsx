@@ -34,7 +34,7 @@ import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
@@ -370,6 +370,16 @@ export default function DashboardPage() {
     };
   }, [isFirstLogin, dismissOnboarding]);
 
+  // Auto-open the radar onboarding wizard the FIRST time a brand-new user
+  // lands on the dashboard. They came straight from signup with no
+  // discovery preferences yet, and the wizard is the bridge that gets
+  // them into the radar without making them hunt for it.
+  useEffect(() => {
+    if (isFirstLogin && !dismissedRef.current) {
+      setShowOnboardingWizard(true);
+    }
+  }, [isFirstLogin]);
+
   const { data: goalsData } = useQuery<GoalsResponse>({
     queryKey: ["goals"],
     queryFn: async () => {
@@ -561,8 +571,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[100vh] bg-background text-foreground">
-      {/* Onboarding wizard — only opened from inline card */}
-      <OnboardingWizard
+      {/* 3-question Radar onboarding wizard — replaces the old 4-step modal */}
+      <RadarOnboardingWizard
         open={showOnboardingWizard}
         onComplete={() => {
           dismissedRef.current = true;
