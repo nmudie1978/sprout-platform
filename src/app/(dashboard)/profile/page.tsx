@@ -698,10 +698,9 @@ export default function ProfilePage() {
         // Recommended fields
         if (!profile.bio) missingRecommended.push("About Me (bio)");
         if (!profile.availability) missingRecommended.push("Availability");
-        if (!profile.interests || profile.interests.length === 0) missingRecommended.push("Interests");
         if (!goalsData?.primaryGoal) missingRecommended.push("Career Goal");
 
-        const totalFields = 8; // 4 required + 4 recommended
+        const totalFields = 7; // 4 required + 3 recommended
         const completedFields = totalFields - missingRequired.length - missingRecommended.length;
         const percent = Math.round((completedFields / totalFields) * 100);
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
@@ -1071,31 +1070,14 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Interests — chip selector */}
-              <div>
-                <Label className="text-xs font-medium text-muted-foreground/70">Interests</Label>
-                <div className="flex flex-wrap gap-1.5 mt-1">
-                  {INTEREST_OPTIONS.map((interest) => (
-                    <Badge
-                      key={interest}
-                      variant={formData.interests.includes(interest) ? "default" : "outline"}
-                      className="cursor-pointer text-[10px] px-2 py-0.5"
-                      onClick={() => toggleInterest(interest)}
-                    >
-                      {interest}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {/* Discovery Preferences — powers the Career Radar */}
-              <div className="rounded-lg border bg-muted/20 p-3">
+              {/* Discovery Interests — powers the Career Radar */}
+              <div className="rounded-lg border border-teal-500/30 bg-teal-500/[0.04] p-3">
                 <div className="flex items-start gap-2 mb-2">
-                  <Compass className="h-3.5 w-3.5 text-teal-500 mt-0.5 shrink-0" />
+                  <Compass className="h-4 w-4 text-teal-500 mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">Discovery Preferences</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      Powers your Career Radar. Change anytime.
+                    <p className="text-sm font-semibold">Discovery Interests</p>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+                      The subjects you enjoy, how you like to work, and who you like to work with — this is what drives <span className="font-medium text-teal-600 dark:text-teal-400">My Career Radar</span> and surfaces career matches for you. Change anytime.
                     </p>
                   </div>
                 </div>
