@@ -581,7 +581,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-full border-2 border-amber-400" />
-            Entry-level path
+            No degree needed
           </span>
         </div>
         <span>Inner ring = strongest match</span>
@@ -723,7 +723,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         {d.career.entryLevel && (
                           <span
                             className="inline-block w-1.5 h-1.5 rounded-full border border-amber-400 shrink-0"
-                            title="Entry-level path"
+                            title="No degree needed"
                           />
                         )}
                       </button>
