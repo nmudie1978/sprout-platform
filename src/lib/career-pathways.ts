@@ -5510,6 +5510,78 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
 // Prevents 0-relevance careers from sneaking in via the entry-level interleave.
 const RADAR_SCORE_FLOOR = 1;
 
+// Human-readable labels — kept here so getMatchReasons can name things
+// without forcing every caller to maintain its own label map.
+const SUBJECT_DISPLAY_LABEL: Record<string, string> = {
+  biology: "Biology", chemistry: "Chemistry", physics: "Physics",
+  math: "Math", computing: "Computing", english: "English",
+  history: "History", geography: "Geography", art: "Art",
+  music: "Music", pe: "PE", business: "Business",
+  languages: "Languages", psychology: "Psychology",
+  "design-tech": "Design & Tech", "health-social": "Health & Social",
+  drama: "Drama", "food-tech": "Food Tech", "media-studies": "Media Studies",
+};
+
+const WORK_STYLE_DISPLAY_LABEL: Record<string, string> = {
+  "hands-on": "Hands-on", desk: "At a desk", outdoors: "Outdoors",
+  creative: "Creative", mixed: "A mix",
+};
+
+const PEOPLE_DISPLAY_LABEL: Record<string, string> = {
+  "with-people": "With people", mixed: "A bit of both", "mostly-alone": "Mostly alone",
+};
+
+/**
+ * Explain why a career landed on the radar for these preferences.
+ *
+ * Returns a small list of human-readable reasons — subjects that pointed
+ * at this career's category, the work style match, and the people-pref
+ * match. Used by the radar tooltip ("Why this match?") to close the loop
+ * between the user's discovery answers and what they see.
+ */
+export function getMatchReasons(
+  career: Career,
+  prefs: DiscoveryPreferences | null | undefined,
+): string[] {
+  if (!prefs) return [];
+  const reasons: string[] = [];
+  const cat = findCareerCategory(career.id);
+
+  // Subjects: pick subjects whose weights mention this career's category
+  if (cat && prefs.subjects?.length) {
+    for (const subj of prefs.subjects) {
+      const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
+      if (weights && (weights[cat] ?? 0) > 0) {
+        reasons.push(SUBJECT_DISPLAY_LABEL[subj] || subj);
+      }
+    }
+  }
+
+  // Work style: include the chosen styles that match this career's setting
+  if (prefs.workStyles?.length) {
+    const setting = getCareerWorkSetting(career);
+    for (const style of prefs.workStyles) {
+      if (style === "mixed" || setting === "mixed" || style === setting) {
+        reasons.push(WORK_STYLE_DISPLAY_LABEL[style] || style);
+      }
+    }
+  }
+
+  // People preference
+  if (prefs.peoplePref) {
+    const intensity = getCareerPeopleIntensity(career);
+    const matches =
+      prefs.peoplePref === "mixed" ||
+      (prefs.peoplePref === "with-people" && (intensity === "high" || intensity === "medium")) ||
+      (prefs.peoplePref === "mostly-alone" && (intensity === "low" || intensity === "medium"));
+    if (matches) {
+      reasons.push(PEOPLE_DISPLAY_LABEL[prefs.peoplePref] || prefs.peoplePref);
+    }
+  }
+
+  return reasons;
+}
+
 /**
  * Does a career's work setting satisfy the user's chosen work styles?
  * Hard filter — if the user picked styles, the career must match at least one.

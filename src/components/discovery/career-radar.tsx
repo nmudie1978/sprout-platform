@@ -1,16 +1,18 @@
 "use client";
 
 import { useMemo, useRef, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   CAREER_PATHWAYS,
   findCareerCategory,
   getAllCareers,
   getCareersFromDiscovery,
+  getMatchReasons,
   type Career,
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -51,44 +53,6 @@ const CATEGORY_ORDER: CareerCategory[] = [
   "TELECOMMUNICATIONS",
 ];
 
-// Human-readable labels for the discovery preference IDs (which are stored
-// as kebab-case keys). Keep in sync with discovery-quiz-dialog.tsx.
-const SUBJECT_LABELS: Record<string, string> = {
-  biology: "Biology",
-  chemistry: "Chemistry",
-  physics: "Physics",
-  math: "Math",
-  computing: "Computing",
-  english: "English",
-  history: "History",
-  geography: "Geography",
-  art: "Art",
-  music: "Music",
-  pe: "PE",
-  business: "Business",
-  languages: "Languages",
-  psychology: "Psychology",
-  "design-tech": "Design & Tech",
-  "health-social": "Health & Social",
-  drama: "Drama",
-  "food-tech": "Food Tech",
-  "media-studies": "Media Studies",
-};
-
-const WORK_STYLE_LABELS: Record<string, string> = {
-  "hands-on": "Hands-on",
-  desk: "At a desk",
-  outdoors: "Outdoors",
-  creative: "Creative",
-  mixed: "A mix",
-};
-
-const PEOPLE_LABELS: Record<string, string> = {
-  "with-people": "With people",
-  mixed: "A bit of both",
-  "mostly-alone": "Mostly alone",
-};
-
 const CATEGORY_LABEL: Record<CareerCategory, string> = {
   HEALTHCARE_LIFE_SCIENCES: "Health",
   EDUCATION_TRAINING: "Education",
@@ -111,6 +75,7 @@ interface PlacedDot {
   cx: number;
   cy: number;
   topMatch?: boolean; // First few overall matches — highlighted distinctly
+  isActiveGoal?: boolean; // True when this dot is the user's current primary goal
 }
 
 const TOP_MATCH_COUNT = 3;
@@ -135,7 +100,7 @@ const ZOOM_STEP = 0.25;
 const STRONG_BAND_SIZE = 10;
 const GOOD_BAND_SIZE = 20;
 
-function placeDots(careers: Career[]): PlacedDot[] {
+function placeDots(careers: Career[], activeGoalCareerId?: string | null): PlacedDot[] {
   if (careers.length === 0) return [];
 
   // Bucket into 3 relevance rings by absolute rank position.
@@ -199,6 +164,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
         cx: CENTER + r * Math.cos(angleRad),
         cy: CENTER + r * Math.sin(angleRad),
         topMatch: p.idx < TOP_MATCH_COUNT,
+        isActiveGoal: !!activeGoalCareerId && p.career.id === activeGoalCareerId,
       });
     });
   }
@@ -214,6 +180,29 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
 
+  // Active goal — used to highlight the matching dot on the radar so the user
+  // can see at a glance how their current journey relates to their wider
+  // discovery preferences. Goals are stored by `title`, so we resolve to a
+  // career id by case-insensitive title match against CAREER_PATHWAYS.
+  const { data: goalsData } = useQuery<{ primaryGoal: { title?: string | null } | null }>({
+    queryKey: ["goals"],
+    queryFn: async () => {
+      const res = await fetch("/api/goals");
+      if (!res.ok) return { primaryGoal: null };
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const activeGoalCareerId = useMemo(() => {
+    const title = goalsData?.primaryGoal?.title?.trim().toLowerCase();
+    if (!title) return null;
+    for (const list of Object.values(CAREER_PATHWAYS)) {
+      const hit = list.find((c) => c.title.toLowerCase() === title);
+      if (hit) return hit.id;
+    }
+    return null;
+  }, [goalsData?.primaryGoal?.title]);
+
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
   const zoomReset = () => setZoom(1);
@@ -227,7 +216,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     return getCareersFromDiscovery(preferences, 60);
   }, [preferences]);
 
-  const dots = useMemo(() => placeDots(matched), [matched]);
+  const dots = useMemo(() => placeDots(matched, activeGoalCareerId), [matched, activeGoalCareerId]);
 
   // Filter applied to both the radar dots and the matches report list.
   // "top only" mode also re-spaces the dots so they don't bunch on top of
@@ -426,46 +415,14 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </div>
       </div>
 
-      {/* "Based on" strip — shows the discovery inputs that produced this radar */}
-      {preferences && (
-        <div className="px-4 py-2 border-b bg-muted/20 flex items-start gap-2 flex-wrap">
-          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mt-0.5 shrink-0">
-            Based on
-          </span>
-          <div className="flex flex-wrap gap-1 flex-1 min-w-0">
-            {(preferences.subjects || []).map((s) => (
-              <span
-                key={`s-${s}`}
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
-              >
-                {SUBJECT_LABELS[s] || s}
-              </span>
-            ))}
-            {(preferences.workStyles || []).map((w) => (
-              <span
-                key={`w-${w}`}
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
-              >
-                {WORK_STYLE_LABELS[w] || w}
-              </span>
-            ))}
-            {preferences.peoplePref && (
-              <span
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
-              >
-                {PEOPLE_LABELS[preferences.peoplePref] || preferences.peoplePref}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="relative flex justify-center p-4 overflow-auto">
+      <div className="relative flex justify-center p-2 sm:p-4 overflow-hidden">
         <svg
-          width={(SIZE + VIEWBOX_PAD * 2) * zoom}
-          height={(SIZE + VIEWBOX_PAD * 2) * zoom}
+          // Responsive: scale to container width on mobile, fall back to the
+          // intrinsic 440px size on desktop. Zoom multiplies max-width so the
+          // zoom buttons still work without overflowing on small screens.
           viewBox={`${-VIEWBOX_PAD} ${-VIEWBOX_PAD} ${SIZE + VIEWBOX_PAD * 2} ${SIZE + VIEWBOX_PAD * 2}`}
-          className="max-w-full h-auto transition-[width,height] duration-200"
+          style={{ maxWidth: `${(SIZE + VIEWBOX_PAD * 2) * zoom}px` }}
+          className="w-full h-auto transition-[max-width] duration-200"
           role="img"
           aria-label="Career radar visualisation"
         >
@@ -610,6 +567,31 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   strokeWidth={1.25}
                 />
               )}
+              {/* Active goal halo + star — distinct gold ring so the user
+                  can see at a glance which dot is their current journey
+                  target. Sits above the top-match halo if both apply. */}
+              {d.isActiveGoal && (
+                <>
+                  <circle
+                    cx={d.cx}
+                    cy={d.cy}
+                    r={15}
+                    fill="none"
+                    className="stroke-amber-400 pointer-events-none drop-shadow-[0_0_6px_rgba(251,191,36,0.7)]"
+                    strokeWidth={1.75}
+                  />
+                  <text
+                    x={d.cx + 11}
+                    y={d.cy - 10}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    style={{ fontSize: 9 }}
+                    className="fill-amber-400 pointer-events-none select-none font-bold"
+                  >
+                    ★
+                  </text>
+                </>
+              )}
               {viewMode === "dots" && (
                 <circle
                   cx={d.cx}
@@ -693,20 +675,41 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           }
         `}</style>
 
-        {/* Hover tooltip */}
-        {hovered && (
-          <div
-            className="absolute pointer-events-none px-2 py-1 rounded-md bg-popover border shadow-md text-[11px] font-medium"
-            style={{
-              left: `calc(50% + ${hovered.cx - CENTER}px)`,
-              top: `calc(50% + ${hovered.cy - CENTER + 14}px)`,
-              transform: "translate(-50%, 0)",
-            }}
-          >
-            <span className="mr-1">{hovered.career.emoji}</span>
-            {hovered.career.title}
-          </div>
-        )}
+        {/* Hover tooltip — career name + "matched on" reasons so the user
+            understands why this dot landed where it did. Closes the loop
+            between the discovery quiz answers and the visual. */}
+        {hovered && (() => {
+          const reasons = getMatchReasons(hovered.career, preferences ?? null).slice(0, 4);
+          return (
+            <div
+              className="absolute pointer-events-none px-2.5 py-1.5 rounded-md bg-popover border shadow-md text-[11px] max-w-[220px]"
+              style={{
+                left: `calc(50% + ${hovered.cx - CENTER}px)`,
+                top: `calc(50% + ${hovered.cy - CENTER + 16}px)`,
+                transform: "translate(-50%, 0)",
+              }}
+            >
+              <div className="font-medium flex items-center gap-1">
+                <span>{hovered.career.emoji}</span>
+                <span>{hovered.career.title}</span>
+                {hovered.isActiveGoal && (
+                  <Star className="h-2.5 w-2.5 text-amber-400 fill-amber-400 shrink-0" />
+                )}
+              </div>
+              {reasons.length > 0 && (
+                <div className="mt-1 pt-1 border-t border-border/60 text-[10px] text-muted-foreground">
+                  <span className="text-foreground/70">Matched on:</span>{" "}
+                  {reasons.join(" · ")}
+                </div>
+              )}
+              {hovered.isActiveGoal && (
+                <div className="mt-1 text-[10px] text-amber-500 font-medium">
+                  Your current goal
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Legend — mirrors the bands used by the Matches Report below
