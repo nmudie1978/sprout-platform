@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-types';
 import { classifyStepType } from '@/lib/education/alignment';
 import { STEP_TYPE_CONFIG } from '@/lib/education/types';
@@ -75,7 +76,7 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   }
 
   // "You are here" position — first non-done step (or foundation if nothing done)
-  const youAreHereIndex = useMemo(() => {
+  const derivedYouAreHereIndex = useMemo(() => {
     // Check foundation first
     const foundationDone = cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done';
     if (!foundationDone) return -1; // -1 = foundation
@@ -86,6 +87,17 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
     }
     return items.length - 1; // all done — show at last
   }, [cardDataMap, items]);
+
+  // User can manually re-anchor "You are here" backward; forward only when current is done.
+  const [manualYouAreHereIndex, setManualYouAreHereIndex] = useState<number | null>(null);
+  const youAreHereIndex = manualYouAreHereIndex ?? derivedYouAreHereIndex;
+  const youAreHereStatus = youAreHereIndex === -1
+    ? cardDataMap?.[FOUNDATION_ITEM_ID]?.status
+    : cardDataMap?.[items[youAreHereIndex]?.id]?.status;
+  const canGoBack = youAreHereIndex > -1;
+  const canGoForward = youAreHereStatus === 'done' && youAreHereIndex < items.length - 1;
+  const handleYouAreHereBack = () => setManualYouAreHereIndex(youAreHereIndex - 1);
+  const handleYouAreHereForward = () => setManualYouAreHereIndex(youAreHereIndex + 1);
 
   // School node offset — adds space before the first real item
   const schoolNodeOffset = SCHOOL_NODE_WIDTH + 40;
@@ -198,6 +210,16 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               </span>
             </div>
           )}
+          {/* Status pills — outside/above the card */}
+          {youAreHereIndex === -1 && (
+            <YouAreHerePill
+              canGoBack={false}
+              canGoForward={canGoForward}
+              onBack={handleYouAreHereBack}
+              onForward={handleYouAreHereForward}
+            />
+          )}
+          {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && <CompletePill />}
           <button
             onClick={() => {
               const foundationItem: JourneyItem = {
@@ -320,13 +342,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                 Tap to add your school &amp; subjects
               </p>
             )}
-            {/* "You are here" tag — shown on foundation when it's the current position */}
-            {youAreHereIndex === -1 && (
-              <div className="mt-2 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-                <span className="text-[8px] font-medium text-teal-400/70 uppercase tracking-wider">You are here</span>
-              </div>
-            )}
           </button>
         </div>
 
@@ -387,6 +402,10 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
                     isYouAreHere={youAreHereIndex === i}
+                    canGoBack={canGoBack}
+                    canGoForward={canGoForward}
+                    onYouAreHereBack={handleYouAreHereBack}
+                    onYouAreHereForward={handleYouAreHereForward}
                   />
                 )}
                 <SharedNode
@@ -406,6 +425,10 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
                     isYouAreHere={youAreHereIndex === i}
+                    canGoBack={canGoBack}
+                    canGoForward={canGoForward}
+                    onYouAreHereBack={handleYouAreHereBack}
+                    onYouAreHereForward={handleYouAreHereForward}
                   />
                 )}
                 {/* Age marker below card for low positions */}
@@ -442,6 +465,66 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   );
 }
 
+function YouAreHerePill({
+  canGoBack,
+  canGoForward,
+  onBack,
+  onForward,
+}: {
+  canGoBack: boolean;
+  canGoForward: boolean;
+  onBack: () => void;
+  onForward: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-1 mb-1.5">
+      {canGoBack ? (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onBack();
+          }}
+          aria-label="Move back to previous step"
+          className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-teal-500/15 text-teal-400 ring-1 ring-teal-500/40 hover:bg-teal-500/25 transition"
+        >
+          <ChevronLeft className="h-3 w-3" />
+        </button>
+      ) : (
+        <span className="h-4 w-4" />
+      )}
+      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-teal-500/15 ring-1 ring-teal-500/40">
+        <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
+        <span className="text-[9px] font-semibold text-teal-300 uppercase tracking-wider">You are here</span>
+      </span>
+      {canGoForward ? (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onForward();
+          }}
+          aria-label="Move forward to next step"
+          className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-teal-500/15 text-teal-400 ring-1 ring-teal-500/40 hover:bg-teal-500/25 transition"
+        >
+          <ChevronRight className="h-3 w-3" />
+        </button>
+      ) : (
+        <span className="h-4 w-4" />
+      )}
+    </div>
+  );
+}
+
+function CompletePill() {
+  return (
+    <div className="flex justify-center mb-1.5">
+      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-emerald-500/20 ring-1 ring-emerald-500/50">
+        <Check className="h-2.5 w-2.5 text-emerald-400" strokeWidth={3} />
+        <span className="text-[9px] font-semibold text-emerald-300 uppercase tracking-wider">Complete</span>
+      </span>
+    </div>
+  );
+}
+
 function ZigzagCard({
   item,
   onClick,
@@ -450,6 +533,10 @@ function ZigzagCard({
   isCurrent,
   cardData,
   isYouAreHere,
+  canGoBack,
+  canGoForward,
+  onYouAreHereBack,
+  onYouAreHereForward,
 }: {
   item: JourneyItem;
   onClick: () => void;
@@ -458,6 +545,10 @@ function ZigzagCard({
   isCurrent?: boolean;
   cardData?: CardDataSummary;
   isYouAreHere?: boolean;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
+  onYouAreHereBack?: () => void;
+  onYouAreHereForward?: () => void;
 }) {
   const stage = STAGE_CONFIG[item.stage];
   const stepType = classifyStepType(item);
@@ -474,11 +565,22 @@ function ZigzagCard({
       ? 'bg-amber-500'
       : null;
 
+  const isDone = cardData?.status === 'done';
   const card = (
+    <div className="w-full my-2">
+      {isYouAreHere && (
+        <YouAreHerePill
+          canGoBack={!!canGoBack}
+          canGoForward={!!canGoForward}
+          onBack={onYouAreHereBack ?? (() => {})}
+          onForward={onYouAreHereForward ?? (() => {})}
+        />
+      )}
+      {isDone && <CompletePill />}
     <button
       onClick={onClick}
       className={cn(
-        'w-full text-left rounded-lg border backdrop-blur-sm p-2 my-2 transition-all',
+        'w-full text-left rounded-lg border backdrop-blur-sm p-2 transition-all',
         'hover:shadow-md hover:-translate-y-0.5',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         'cursor-pointer',
@@ -513,15 +615,10 @@ function ZigzagCard({
               {item.subtitle}
             </p>
           )}
-          {isYouAreHere && (
-            <div className="flex items-center gap-1 mt-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-              <span className="text-[8px] font-medium text-teal-400/70 uppercase tracking-wider">You are here</span>
-            </div>
-          )}
         </div>
       </div>
     </button>
+    </div>
   );
 
   if (!hasTooltip) return card;
