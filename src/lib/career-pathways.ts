@@ -16,6 +16,9 @@ export type CareerCategory =
   | "HOSPITALITY_TOURISM"
   | "TELECOMMUNICATIONS";
 
+export type WorkSetting = "hands-on" | "desk" | "outdoors" | "creative" | "mixed";
+export type PeopleIntensity = "high" | "medium" | "low";
+
 export interface Career {
   id: string;
   title: string;
@@ -27,6 +30,10 @@ export interface Career {
   dailyTasks: string[];
   growthOutlook: "high" | "medium" | "stable";
   entryLevel?: boolean; // True if accessible without higher education
+  // Optional explicit tags. If absent, the Career Radar falls back to
+  // category defaults + per-id overrides (see WORK_SETTING_DEFAULTS etc.)
+  workSetting?: WorkSetting;
+  peopleIntensity?: PeopleIntensity;
 }
 
 export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
@@ -4894,6 +4901,93 @@ export interface DiscoveryPreferences {
   interests?: string[];  // Free-form interest tags
 }
 
+// Category-level defaults for the work setting most careers in that
+// category gravitate towards. Per-career overrides below catch the obvious
+// exceptions. This is intentionally pragmatic, not exhaustive.
+const WORK_SETTING_DEFAULTS: Record<CareerCategory, WorkSetting> = {
+  HEALTHCARE_LIFE_SCIENCES: "hands-on",
+  EDUCATION_TRAINING: "hands-on",
+  TECHNOLOGY_IT: "desk",
+  BUSINESS_MANAGEMENT: "desk",
+  FINANCE_BANKING: "desk",
+  SALES_MARKETING: "desk",
+  MANUFACTURING_ENGINEERING: "hands-on",
+  LOGISTICS_TRANSPORT: "hands-on",
+  HOSPITALITY_TOURISM: "hands-on",
+  TELECOMMUNICATIONS: "mixed",
+};
+
+const PEOPLE_INTENSITY_DEFAULTS: Record<CareerCategory, PeopleIntensity> = {
+  HEALTHCARE_LIFE_SCIENCES: "high",
+  EDUCATION_TRAINING: "high",
+  TECHNOLOGY_IT: "medium",
+  BUSINESS_MANAGEMENT: "high",
+  FINANCE_BANKING: "medium",
+  SALES_MARKETING: "high",
+  MANUFACTURING_ENGINEERING: "medium",
+  LOGISTICS_TRANSPORT: "medium",
+  HOSPITALITY_TOURISM: "high",
+  TELECOMMUNICATIONS: "medium",
+};
+
+// Per-career overrides where the category default is wrong.
+// Keep this list small and only add entries that the radar visibly mis-handles.
+const WORK_SETTING_OVERRIDES: Record<string, WorkSetting> = {
+  // Tech that is genuinely creative
+  "ux-designer": "creative",
+  "frontend-developer": "creative",
+  "game-developer": "creative",
+  // Marketing that is creative not desk
+  "graphic-designer": "creative",
+  // Engineering / labs that are mostly desk-bound
+  "data-scientist": "desk",
+  "quantitative-analyst": "desk",
+  "quant-developer": "desk",
+  // Outdoors-heavy
+  "park-ranger": "outdoors",
+  "marine-biologist": "outdoors",
+  "construction-worker": "outdoors",
+  "farmer": "outdoors",
+  "geologist": "outdoors",
+  // Healthcare research that's lab/desk-leaning
+  "biomedical-scientist": "mixed",
+  "epidemiologist": "desk",
+  "researcher": "desk",
+};
+
+const PEOPLE_INTENSITY_OVERRIDES: Record<string, PeopleIntensity> = {
+  // Solo/low-people tech roles
+  "machine-learning-engineer": "low",
+  "data-scientist": "low",
+  "backend-developer": "low",
+  "quantitative-analyst": "low",
+  "quant-developer": "low",
+  "researcher": "low",
+  // High-people tech roles
+  "scrum-master": "high",
+  "product-manager-tech": "high",
+  "agile-coach": "high",
+  "ai-product-manager": "high",
+  "it-support": "high",
+  // Solo creative
+  "writer": "low",
+  "translator": "low",
+};
+
+export function getCareerWorkSetting(career: Career): WorkSetting {
+  if (career.workSetting) return career.workSetting;
+  if (WORK_SETTING_OVERRIDES[career.id]) return WORK_SETTING_OVERRIDES[career.id];
+  const cat = findCareerCategory(career.id);
+  return cat ? WORK_SETTING_DEFAULTS[cat] : "mixed";
+}
+
+export function getCareerPeopleIntensity(career: Career): PeopleIntensity {
+  if (career.peopleIntensity) return career.peopleIntensity;
+  if (PEOPLE_INTENSITY_OVERRIDES[career.id]) return PEOPLE_INTENSITY_OVERRIDES[career.id];
+  const cat = findCareerCategory(career.id);
+  return cat ? PEOPLE_INTENSITY_DEFAULTS[cat] : "medium";
+}
+
 // Subject -> career category weights. Hand-curated, deterministic.
 const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, number>>> = {
   biology:      { HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 1 },
@@ -4912,20 +5006,52 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   psychology:   { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2 },
 };
 
-const WORK_STYLE_KEYWORDS: Record<string, string[]> = {
-  "hands-on":  ["hands-on", "manual", "physical", "practical", "build", "repair", "patient care"],
-  "desk":      ["analytical", "writing", "research", "programming", "design", "communication"],
-  "outdoors":  ["physical", "outdoor", "stamina", "manual"],
-  "creative":  ["design", "creativity", "writing", "communication", "visual"],
-  "mixed":     [],
-};
+// Minimum subject-score a career needs to make it onto the radar.
+// Prevents 0-relevance careers from sneaking in via the entry-level interleave.
+const RADAR_SCORE_FLOOR = 1;
+
+/**
+ * Does a career's work setting satisfy the user's chosen work styles?
+ * Hard filter — if the user picked styles, the career must match at least one.
+ * "mixed" on either side acts as a wildcard.
+ */
+function passesWorkStyleFilter(career: Career, chosenStyles: string[]): boolean {
+  if (chosenStyles.length === 0) return true;
+  if (chosenStyles.includes("mixed")) return true;
+  const careerSetting = getCareerWorkSetting(career);
+  if (careerSetting === "mixed") return true;
+  return chosenStyles.includes(careerSetting);
+}
+
+/**
+ * Does a career's people-intensity satisfy the user's people preference?
+ * Hard filter:
+ *   "with-people" → require high or medium
+ *   "mostly-alone" → require low or medium
+ *   "mixed" or unset → no filter
+ */
+function passesPeopleFilter(career: Career, peoplePref?: string): boolean {
+  if (!peoplePref || peoplePref === "mixed") return true;
+  const intensity = getCareerPeopleIntensity(career);
+  if (peoplePref === "with-people") return intensity === "high" || intensity === "medium";
+  if (peoplePref === "mostly-alone") return intensity === "low" || intensity === "medium";
+  return true;
+}
 
 /**
  * Get careers that match a user's discovery preferences.
  *
- * Returns a deliberately mixed list spanning prestige tiers — entry-level
- * and university-track roles sit side by side, not stacked. The goal is
- * surfacing paths the user has never heard of, not ranking them.
+ * Two-stage pipeline:
+ *   1. HARD FILTERS — work setting and people preference exclude careers
+ *      that don't physically match the user's reality (e.g. a Crane Operator
+ *      cannot appear when the user picked "At a desk").
+ *   2. SOFT SCORING — subject choices score the surviving careers by
+ *      mapping subjects to category weights. Substring matching against
+ *      descriptions has been removed because it was the source of most
+ *      false positives.
+ *
+ * Returns a deliberately interleaved list — entry-level and university-track
+ * roles sit side by side, not stacked, so vocational paths are not buried.
  */
 export function getCareersFromDiscovery(
   prefs: DiscoveryPreferences,
@@ -4934,6 +5060,17 @@ export function getCareersFromDiscovery(
   const all = getAllCareers();
   if (!all.length) return [];
 
+  // Stage 1: hard filters
+  const chosenStyles = prefs.workStyles || [];
+  const filtered = all.filter(
+    (c) =>
+      passesWorkStyleFilter(c, chosenStyles) &&
+      passesPeopleFilter(c, prefs.peoplePref)
+  );
+
+  if (filtered.length === 0) return [];
+
+  // Stage 2: soft scoring on subjects (and free-form interests, if present)
   const subjectCategoryScores: Partial<Record<CareerCategory, number>> = {};
   for (const subj of prefs.subjects || []) {
     const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
@@ -4943,30 +5080,17 @@ export function getCareersFromDiscovery(
     }
   }
 
-  const styleKeywords = (prefs.workStyles || []).flatMap(
-    (s) => WORK_STYLE_KEYWORDS[s] || []
-  );
-
-  const scored = all.map((career) => {
+  const scored = filtered.map((career) => {
     const cat = findCareerCategory(career.id);
     let score = cat ? subjectCategoryScores[cat] || 0 : 0;
 
-    // Work style: skill/task keyword overlap
-    const haystack = (
-      career.keySkills.join(" ") +
-      " " +
-      career.dailyTasks.join(" ") +
-      " " +
-      career.description
-    ).toLowerCase();
-    for (const kw of styleKeywords) {
-      if (haystack.includes(kw)) score += 1;
-    }
-
-    // Free-form interests: simple substring match
+    // Free-form interests: title/skills match (kept narrow, no description scan)
     for (const interest of prefs.interests || []) {
       const i = interest.toLowerCase();
-      if (haystack.includes(i) || career.title.toLowerCase().includes(i)) {
+      if (
+        career.title.toLowerCase().includes(i) ||
+        career.keySkills.some((s) => s.toLowerCase().includes(i))
+      ) {
         score += 1;
       }
     }
@@ -4974,11 +5098,19 @@ export function getCareersFromDiscovery(
     return { career, score };
   });
 
-  const matched = scored.filter((s) => s.score > 0).sort((a, b) => b.score - a.score);
+  // If the user picked subjects/interests, require a meaningful score.
+  // If they picked nothing scoreable, the hard filters alone produce the radar.
+  const hasScoreableInputs =
+    (prefs.subjects && prefs.subjects.length > 0) ||
+    (prefs.interests && prefs.interests.length > 0);
+
+  const matched = scored
+    .filter((s) => (hasScoreableInputs ? s.score >= RADAR_SCORE_FLOOR : true))
+    .sort((a, b) => b.score - a.score);
+
   if (matched.length === 0) return [];
 
-  // Rebalance: deliberately interleave entry-level and non-entry results so
-  // vocational paths are not buried beneath prestige tracks.
+  // Interleave entry-level and non-entry to keep vocational paths visible.
   const entry = matched.filter((m) => m.career.entryLevel).map((m) => m.career);
   const rest = matched.filter((m) => !m.career.entryLevel).map((m) => m.career);
   const interleaved: Career[] = [];
