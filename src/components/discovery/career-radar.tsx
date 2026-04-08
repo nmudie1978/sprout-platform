@@ -374,8 +374,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             );
           })}
 
-          {/* Dots */}
-          {dots.map((d) => (
+          {/* Dots — staggered fade/scale-in from centre */}
+          {dots.map((d, idx) => (
             <g
               key={d.career.id}
               onMouseEnter={() => setHovered(d)}
@@ -385,7 +385,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   new CustomEvent("open-career-detail", { detail: d.career })
                 );
               }}
-              className="cursor-pointer"
+              className="cursor-pointer radar-dot"
+              style={{
+                transformOrigin: `${d.cx}px ${d.cy}px`,
+                animationDelay: `${d.ring * 120 + idx * 22}ms`,
+              }}
             >
               {/* Entry-level marker: outer ring around the dot, NOT a size change */}
               {d.career.entryLevel && (
@@ -402,11 +406,29 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 cx={d.cx}
                 cy={d.cy}
                 r={6}
-                className="fill-teal-500 hover:fill-teal-400 transition-colors"
+                className="fill-teal-500 transition-all duration-150 group-hover:fill-teal-400 radar-dot-circle"
               />
             </g>
           ))}
         </svg>
+
+        <style>{`
+          @keyframes radar-dot-pop {
+            0%   { opacity: 0; transform: scale(0); }
+            70%  { opacity: 1; transform: scale(1.25); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+          .radar-dot {
+            animation: radar-dot-pop 0.45s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+          }
+          .radar-dot:hover .radar-dot-circle {
+            r: 8;
+            filter: drop-shadow(0 0 6px rgb(20 184 166 / 0.6));
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .radar-dot { animation: none; }
+          }
+        `}</style>
 
         {/* Hover tooltip */}
         {hovered && (
@@ -437,6 +459,80 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
         </div>
         <span>Inner ring = strongest match</span>
+      </div>
+
+      {/* List view of matched careers, grouped by relevance band */}
+      <div className="border-t bg-muted/10">
+        <div className="px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+            All matches
+          </p>
+          <div className="space-y-3">
+            {([0, 1, 2] as const).map((ring) => {
+              const ringDots = dots.filter((d) => d.ring === ring);
+              if (ringDots.length === 0) return null;
+              const label =
+                ring === 0
+                  ? "Strong match"
+                  : ring === 1
+                  ? "Good match"
+                  : "Worth a look";
+              const accent =
+                ring === 0
+                  ? "text-teal-600 dark:text-teal-400"
+                  : ring === 1
+                  ? "text-teal-500/80"
+                  : "text-muted-foreground";
+              return (
+                <div key={ring}>
+                  <p className={`text-[10px] font-medium mb-1 ${accent}`}>
+                    {label} · {ringDots.length}
+                  </p>
+                  <div className="rounded-lg border bg-card overflow-hidden">
+                    {ringDots.map((d, idx) => {
+                      const cat = findCareerCategory(d.career.id);
+                      const catLabel = cat ? CATEGORY_LABEL[cat] : "";
+                      return (
+                        <button
+                          key={d.career.id}
+                          type="button"
+                          onClick={() => {
+                            window.dispatchEvent(
+                              new CustomEvent("open-career-detail", {
+                                detail: d.career,
+                              })
+                            );
+                          }}
+                          className={`w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors ${
+                            idx > 0 ? "border-t" : ""
+                          }`}
+                        >
+                          <span className="text-base shrink-0">{d.career.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-medium truncate">
+                                {d.career.title}
+                              </span>
+                              {d.career.entryLevel && (
+                                <span className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0" />
+                              )}
+                            </div>
+                            <p className="text-[10px] text-muted-foreground truncate">
+                              {catLabel} · {d.career.avgSalary?.split(" ")[0]}
+                            </p>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground shrink-0">
+                            Open →
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
