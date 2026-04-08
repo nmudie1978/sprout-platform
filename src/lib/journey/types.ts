@@ -6,9 +6,9 @@
  * NEW PHILOSOPHY: DISCOVER · UNDERSTAND · GROW
  *
  * This represents the user's guided path to career clarity:
- * - DISCOVER: Know yourself - reflect on strengths, explore careers, deep dive into a role
- * - UNDERSTAND: Know the world - research industry, career shadow, build a plan
- * - GROW: Take action and grow - complete meaningful actions, reflect on outcomes
+ * - DISCOVER: Explore the career — high-level view, day-in-the-life, salary, outlook
+ * - UNDERSTAND: Know the reality — daily work, qualifications, the hard parts
+ * - GROW: Build your roadmap — track progress, set next steps, build momentum
  *
  * Small jobs are NOT foundational. They are ONE option among many aligned actions.
  */
@@ -90,7 +90,7 @@ export interface StateConfig {
 
 export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
   // ==========================================
-  // DISCOVER LENS - Know yourself
+  // DISCOVER LENS — Explore the career
   // ==========================================
 
   // DISCOVER → SELF_AWARENESS
@@ -128,7 +128,7 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
   },
 
   // ==========================================
-  // UNDERSTAND LENS - Know the world
+  // UNDERSTAND LENS — Know the reality
   // ==========================================
 
   // UNDERSTAND → REALITY
@@ -221,18 +221,18 @@ export const JOURNEY_STATE_CONFIG: Record<JourneyStateId, StateConfig> = {
 export const LENS_DESCRIPTIONS: Record<JourneyLens, { title: string; subtitle: string; fullDescription: string }> = {
   DISCOVER: {
     title: 'Discover',
-    subtitle: 'Know yourself',
-    fullDescription: 'Reflect on your strengths, explore career possibilities, and choose a direction that fits who you are.',
+    subtitle: 'Explore the career',
+    fullDescription: 'Get a high-level view of any career — what it is, who does it, salary range, growth outlook, and whether it\'s worth a closer look.',
   },
   UNDERSTAND: {
     title: 'Understand',
-    subtitle: 'Know the world',
-    fullDescription: 'Research the real requirements, industry trends, and pathways for your chosen goal. Build a concrete plan.',
+    subtitle: 'Know the reality',
+    fullDescription: 'Go deeper into what the role actually involves day to day — the qualifications, the hard parts, the typical week, and what it really takes to qualify.',
   },
   ACT: {
     title: 'Grow',
-    subtitle: 'Take action and grow',
-    fullDescription: 'Put your plan into motion. Complete meaningful actions—jobs, shadows, projects, or courses—and reflect on your growth.',
+    subtitle: 'Build your roadmap',
+    fullDescription: 'Map your path toward this career, set concrete next steps, track your progress over time, and build momentum.',
   },
 };
 

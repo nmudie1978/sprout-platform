@@ -31,7 +31,7 @@ export interface Milestone {
 
 export const MILESTONES: Milestone[] = [
   // ==========================================
-  // DISCOVER LENS - Know yourself
+  // DISCOVER LENS — Explore the career
   // ==========================================
   {
     id: 'REFLECT_ON_STRENGTHS',
@@ -65,7 +65,7 @@ export const MILESTONES: Milestone[] = [
   },
 
   // ==========================================
-  // UNDERSTAND LENS - Know the world
+  // UNDERSTAND LENS — Know the reality
   // ==========================================
   {
     id: 'REVIEW_INDUSTRY_OUTLOOK',

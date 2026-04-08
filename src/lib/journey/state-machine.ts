@@ -3,15 +3,15 @@
  *
  * Architecture: MY JOURNEY = DISCOVER · UNDERSTAND · ACT
  *
- * DISCOVER (Know yourself)
+ * DISCOVER (Explore the career)
  *   - SELF_AWARENESS: REFLECT_ON_STRENGTHS
  *   - EXPLORATION: EXPLORE_CAREERS, ROLE_DEEP_DIVE
  *
- * UNDERSTAND (Know the world)
+ * UNDERSTAND (Know the reality)
  *   - REALITY: REVIEW_INDUSTRY_OUTLOOK, CAREER_SHADOW
  *   - STRATEGY: CREATE_ACTION_PLAN
  *
- * ACT (Take aligned action)
+ * ACT / GROW (Build your roadmap)
  *   - ALIGNED_ACTION: COMPLETE_ALIGNED_ACTION
  *   - REFLECTION: SUBMIT_ACTION_REFLECTION, UPDATE_PLAN (optional), EXTERNAL_FEEDBACK (optional)
  */

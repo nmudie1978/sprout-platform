@@ -234,45 +234,53 @@ Understand typically includes:
 
 ---
 
-## 3. Grow (Your Roadmap & Next Steps)
+## 3. Grow (Build your roadmap)
 
 ### Purpose
 
-Grow introduces early action and direction for the user.
+Grow is where curiosity becomes a plan. The user maps their path toward a
+chosen career, sets concrete next steps, tracks their progress over time,
+and builds momentum.
 
 It helps answer:
-- What should I do next if I want to pursue this career?
-- What does the path forward look like?
+- What does my path to this career look like, year by year?
+- What concrete things can I do next?
+- How am I progressing toward becoming this?
 
 ### Content & Features
 
-Grow currently includes:
+Grow includes:
 
-1. Recommended Next Steps
-   - Example actions:
-     - Research degree programmes
-     - Watch more videos
-     - Talk to someone in the role
-   - These are static suggestions
+1. Personal Career Roadmap
+   - Visual roadmap mapped to the user's age and current education stage
+   - Timeline-based progression toward the chosen career
+   - Multiple visual formats (Zigzag, Rail, Steps) for different
+     learning styles
+   - "Your Foundation" anchor showing where the user is today
+   - "You are here" marker that moves as the user progresses
 
-2. Career Roadmap
-   - Visual roadmap (e.g. age 18–22 university track)
-   - Timeline-based progression
-   - Can be viewed in different formats (e.g. Zigzag, Rail, Steps)
+2. Concrete Next Steps
+   - Actionable suggestions tied to the user's chosen career
+   - Things the user can realistically do this week, month, term
+
+3. Progress Tracking
+   - Per-step status (todo / in progress / done)
+   - Persistent across sessions
+   - Reinforces the user's own sense of momentum (never public,
+     never gamified, never compared to others)
 
 ### UX Characteristics
 
-- Light action orientation
-- Static and generic recommendations
-- No strong personalization or intelligence
-- Roadmap is a key visual element
+- Action-oriented but calm — no streaks, no badges, no leaderboards
+- Roadmap is the central visual anchor
+- Progress is visible but private
+- Users can re-anchor "You are here" as their situation changes
 
-### Notes
+### Important: Grow ≠ entry-level positions
 
-- Grow is currently the weakest of the three sections
-- It lacks dynamic behavior and contextual guidance
-- It does not yet adapt to user behavior or progress
-- It introduces action but does not strongly drive momentum
+Grow is about long-term direction and momentum toward a *full career*.
+Entry-level job positions and short-term work belong elsewhere in the app
+(My Jobs, Browse Jobs). Don't conflate them.
 
 ---
 
@@ -286,25 +294,16 @@ Grow currently includes:
 
 ---
 
-## Known Limitations
-
-- Grow lacks intelligence and personalization
-- Recommended steps are generic and static
-- No concept of momentum or progression tracking
-- Limited feedback loop from user behavior
-- No dynamic “next best action” system
-
----
-
 ## Summary
 
-The current model follows a clear progression:
+The model follows a clear progression:
 
-Discover → “This looks interesting”
-Understand → “I understand what this involves”
-Grow → “Here are some initial steps”
+Discover → "This looks interesting"
+Understand → "I understand what this actually involves"
+Grow → "Here is my roadmap and my next move"
 
-However, Grow does not yet fully deliver on action, guidance, or personalization and is a key area for future enhancement. 
+Each stage builds on the last. Curiosity becomes clarity; clarity becomes
+direction. The user moves at their own pace, on their own terms.
 </journey_logic>
 
 

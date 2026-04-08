@@ -235,9 +235,8 @@ export default function LandingPage() {
               <span className="text-emerald-400">One journey.</span>
             </h2>
             <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-              Each step builds on the last. You can't skip ahead — because
-              understanding yourself comes before understanding the world, and
-              both come before taking action.
+              Each step builds on the last. Curiosity becomes clarity, clarity
+              becomes direction — at your own pace, on your own terms.
             </p>
           </div>
 
@@ -247,24 +246,24 @@ export default function LandingPage() {
               {
                 step: "1",
                 title: "Discover",
-                subtitle: "Know yourself",
-                description: "Reflect on your strengths. Explore careers that interest you. Research what roles actually involve day to day.",
+                subtitle: "Explore the career",
+                description: "Get a high-level view of any career — what it is, who does it, salary range, and whether it's worth a closer look.",
                 subtitleClass: "text-teal-400",
                 accent: "from-teal-500 to-teal-600",
               },
               {
                 step: "2",
                 title: "Understand",
-                subtitle: "Know the world",
-                description: "Research your chosen career, understand the path and requirements, and validate your understanding with a plan.",
+                subtitle: "Know the reality",
+                description: "Go deeper into what the role actually involves day to day — the qualifications, the hard parts, and what it takes to qualify.",
                 subtitleClass: "text-emerald-400",
                 accent: "from-emerald-500 to-teal-600",
               },
               {
                 step: "3",
                 title: "Grow",
-                subtitle: "Take action and grow",
-                description: "Take a meaningful step — a job, a course, a project. Then reflect on what you learned and shape your next move.",
+                subtitle: "Build your roadmap",
+                description: "Map your path toward this career, set concrete next steps, track your progress, and build momentum over time.",
                 subtitleClass: "text-amber-400",
                 accent: "from-amber-500 to-orange-600",
               },

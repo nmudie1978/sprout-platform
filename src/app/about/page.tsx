@@ -107,40 +107,40 @@ export default function AboutPage() {
             <div className="p-4 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold">1</span>
-                <h3 className="font-semibold text-foreground">Discover — Know yourself</h3>
+                <h3 className="font-semibold text-foreground">Discover — Explore the career</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
-                Before you can make good decisions, it helps to know what you&apos;re good at and what interests you.
-                This lens guides you to reflect on your strengths, explore different careers, and research what roles actually involve.
+                Get a high-level view of any career — what it is, who does it, the salary range, and whether it&apos;s
+                worth a closer look. No commitment, just curiosity.
               </p>
             </div>
 
             <div className="p-4 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold">2</span>
-                <h3 className="font-semibold text-foreground">Understand — Know the world</h3>
+                <h3 className="font-semibold text-foreground">Understand — Know the reality</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
-                Once you have a direction, you need to understand the reality of that path. Research the role,
-                understand the qualifications and skills needed, and validate your understanding with a plan.
+                Go deeper into what the role actually involves day to day — the qualifications, the hard parts, the
+                typical week, and what it really takes to qualify.
               </p>
             </div>
 
             <div className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">3</span>
-                <h3 className="font-semibold text-foreground">Grow — Take action and grow</h3>
+                <h3 className="font-semibold text-foreground">Grow — Build your roadmap</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
-                Now you&apos;re ready to do something real — take on a job, start a course, build a project.
-                Then reflect on what you learned, update your plan, and keep going.
+                Map your path toward this career, set concrete next steps, track your progress over time, and build
+                momentum — turning curiosity into a plan you can actually follow.
               </p>
             </div>
           </div>
 
           <p className="text-muted-foreground leading-relaxed">
-            You can&apos;t skip ahead. That&apos;s deliberate — understanding yourself before understanding the world,
-            and understanding the world before taking action, leads to decisions that are aligned with who you actually are.
+            Each step builds on the last. Curiosity becomes clarity, clarity becomes direction — at your own pace,
+            on your own terms.
           </p>
         </div>
 
