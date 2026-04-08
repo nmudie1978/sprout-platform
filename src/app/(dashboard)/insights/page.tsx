@@ -336,10 +336,10 @@ export default function IndustryInsightsPage() {
             transition={{ duration: 0.4, delay: 0.55 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8"
           >
-            <div className="lg:col-span-6">
+            <div id="jobs-on-the-rise" className="lg:col-span-6 scroll-mt-20">
               <InsightSection sectionKey="jobs-on-the-rise" delay={0.25} compact contained defaultViewMode="list" />
             </div>
-            <div className="lg:col-span-6">
+            <div id="skills-that-matter" className="lg:col-span-6 scroll-mt-20">
               <InsightSection sectionKey="skills-that-matter" delay={0.3} compact contained defaultViewMode="list" />
             </div>
           </motion.div>

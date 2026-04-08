@@ -30,7 +30,9 @@ import {
   ChevronRight,
   User,
   PlayCircle,
+  Heart,
 } from "lucide-react";
+import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
 import type { JourneyUIState } from "@/lib/journey/types";
 import Link from "next/link";
@@ -332,6 +334,17 @@ export default function DashboardPage() {
   // Onboarding: inline card on first login only
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
   const dismissedRef = useRef(false);
+  const [careerMatchesCardDismissed, setCareerMatchesCardDismissed] = useState(true);
+  useEffect(() => {
+    setCareerMatchesCardDismissed(
+      typeof window !== "undefined" &&
+        window.localStorage.getItem("careerMatchesCardDismissed") === "1"
+    );
+  }, []);
+  const dismissCareerMatchesCard = useCallback(() => {
+    try { window.localStorage.setItem("careerMatchesCardDismissed", "1"); } catch {}
+    setCareerMatchesCardDismissed(true);
+  }, []);
 
   const { data: onboardingStatus, refetch: refetchOnboarding } = useQuery({
     queryKey: ["onboarding-status"],
@@ -543,6 +556,15 @@ export default function DashboardPage() {
   };
   const savedItemsList = dashboardStats?.savedItemsList ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
+  const { curiosities: savedCareers } = useCuriositySaves();
+  const [savedCareersPage, setSavedCareersPage] = useState(0);
+  const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
+  const savedCareersPerPage = 3;
+  const savedCareersPageCount = Math.max(1, Math.ceil(savedCareers.length / savedCareersPerPage));
+  const savedCareersVisible = savedCareers.slice(
+    savedCareersPage * savedCareersPerPage,
+    savedCareersPage * savedCareersPerPage + savedCareersPerPage
+  );
 
   // Application stats
   const appStats = dashboardStats?.appStats ?? {
@@ -704,9 +726,9 @@ export default function DashboardPage() {
           }
 
           // State 2 & 3: completed onboarding but no goal yet → open radar
-          if (!hasGoal) {
+          if (!hasGoal && !careerMatchesCardDismissed) {
             return (
-              <Link href="/careers/radar" className="block mb-6">
+              <Link href="/careers/radar" onClick={dismissCareerMatchesCard} className="block mb-6">
                 <GlassCard
                   className="relative overflow-hidden border-pink-500/30 bg-gradient-to-br from-pink-500/[0.08] via-card/80 to-card/80 hover:border-pink-500/50 transition-colors"
                   style={{
@@ -774,7 +796,7 @@ export default function DashboardPage() {
               hint: "Pick one to explore in depth in My Journey.",
             },
             {
-              href: "/insights#dig-deeper",
+              href: "/insights#jobs-on-the-rise",
               icon: TrendingUp,
               label: "Jobs & roles on the rise",
               hint: "See which careers are growing and the skills they need.",
@@ -815,8 +837,9 @@ export default function DashboardPage() {
         })()}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
-        <Link href="/my-journey" className="block mb-6 group">
-          <GlassCard className="p-5 sm:p-6 border-teal-500/40 hover:border-teal-400/60 transition-all duration-300 ring-1 ring-teal-500/20" style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.25), 0 0 40px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.10)' }}>
+        {(() => {
+          const journeyCard = (
+          <GlassCard className={cn("p-5 sm:p-6 border-teal-500/40 transition-all duration-300 ring-1 ring-teal-500/20", goalTitle && "hover:border-teal-400/60")} style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.25), 0 0 40px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.10)' }}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-teal-500/10">
                 <TrendingUp className="h-4 w-4 text-teal-500" />
@@ -891,7 +914,13 @@ export default function DashboardPage() {
               </div>
             </div>
           </GlassCard>
-        </Link>
+          );
+          return goalTitle ? (
+            <Link href="/my-journey" className="block mb-6 group">{journeyCard}</Link>
+          ) : (
+            <div className="block mb-6">{journeyCard}</div>
+          );
+        })()}
 
         {/* ── 2. Who Am I ────────────────────────────────────── */}
         {discoverData?.hasProfile && discoverData.summary && (
@@ -965,17 +994,15 @@ export default function DashboardPage() {
               </div>
             </GlassCard>
           ) : (
-            <Link href="/my-journey" className="block group">
-              <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
-                <div className="flex items-center gap-2 mb-2">
-                  <Search className="h-3.5 w-3.5 text-teal-500" />
-                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
-                </div>
-                <p className="text-sm text-muted-foreground/40">
-                  Set a goal to see career info
-                </p>
-              </GlassCard>
-            </Link>
+            <GlassCard className="p-4 h-full">
+              <div className="flex items-center gap-2 mb-2">
+                <Search className="h-3.5 w-3.5 text-teal-500" />
+                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
+              </div>
+              <p className="text-sm text-muted-foreground/40">
+                Set a goal to see career info
+              </p>
+            </GlassCard>
           )}
 
           {/* My Explored Journeys */}
@@ -984,17 +1011,15 @@ export default function DashboardPage() {
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
-                <Link href="/my-journey" className="block group">
-                  <GlassCard className="p-4 hover:border-border/60 transition-all h-full">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Target className="h-3.5 w-3.5 text-violet-500" />
-                      <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career you've explored is saved here. Compare paths, track your progress, and see how far you've come." /></h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground/40">
-                      Explore careers to build your journey list
-                    </p>
-                  </GlassCard>
-                </Link>
+                <GlassCard className="p-4 h-full">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="h-3.5 w-3.5 text-violet-500" />
+                    <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career you've explored is saved here. Compare paths, track your progress, and see how far you've come." /></h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground/40">
+                    Explore careers to build your journey list
+                  </p>
+                </GlassCard>
               );
             }
             // Active goal first, then rest by most recent
@@ -1086,34 +1111,41 @@ export default function DashboardPage() {
           <LibraryCard items={savedItemsList} total={savedSummary.total} />
 
           {/* My Jobs */}
-          <Link href="/applications" className="block group">
-            <GlassCard className="p-4 hover:border-border/60 transition-all">
-              <div className="flex items-center gap-2 mb-4">
-                <Briefcase className="h-4 w-4 text-emerald-500" />
-                <h3 className="text-sm font-semibold flex items-center gap-1.5">My Jobs <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." /></h3>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { label: "Applied", value: appStats.applied },
-                  { label: "Waiting", value: appStats.waiting },
-                  { label: "Accepted", value: appStats.accepted },
-                  { label: "Done", value: appStats.done },
-                ].map((stat) => (
-                  <div key={stat.label} className="text-center">
-                    <p className="text-lg font-bold text-foreground">
-                      {stat.value}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground/50">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </GlassCard>
-          </Link>
+          {(() => {
+            const hasJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done > 0;
+            const inner = (
+              <GlassCard className={cn("p-4", hasJobs && "hover:border-border/60 transition-all")}>
+                <div className="flex items-center gap-2 mb-4">
+                  <Briefcase className="h-4 w-4 text-emerald-500" />
+                  <h3 className="text-sm font-semibold flex items-center gap-1.5">My Jobs <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." /></h3>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { label: "Applied", value: appStats.applied },
+                    { label: "Waiting", value: appStats.waiting },
+                    { label: "Accepted", value: appStats.accepted },
+                    { label: "Done", value: appStats.done },
+                  ].map((stat) => (
+                    <div key={stat.label} className="text-center">
+                      <p className="text-lg font-bold text-foreground">
+                        {stat.value}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground/50">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            );
+            return hasJobs ? (
+              <Link href="/applications" className="block group">{inner}</Link>
+            ) : inner;
+          })()}
         </div>
 
-        {/* ── 4. Activity ────────────────────────────────────── */}
+        {/* ── 4. Activity + Saved Careers ────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <GlassCard className="p-3">
           <div className="flex items-center gap-2 mb-1.5">
             <FileText className="h-3.5 w-3.5 text-amber-500" />
@@ -1148,6 +1180,72 @@ export default function DashboardPage() {
             </p>
           )}
         </GlassCard>
+
+        <GlassCard className="p-3">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Heart className="h-3.5 w-3.5 text-pink-500" />
+            <h3 className="text-xs font-semibold flex items-center gap-1.5">Saved careers <SectionWhy why="Careers you've saved from Explore Careers. Tap to revisit and dig deeper." /></h3>
+          </div>
+          {savedCareers.length > 0 ? (
+            <>
+              <div className="space-y-1">
+                {savedCareersVisible.map((c) => (
+                  <button
+                    key={c.careerId}
+                    type="button"
+                    onClick={() => {
+                      const found = getAllCareers().find((x) => x.id === c.careerId);
+                      if (found) setSavedCareerDetail(found);
+                    }}
+                    className="w-full flex items-center gap-2 text-[11px] hover:text-foreground transition-colors text-left"
+                  >
+                    <span className="shrink-0">{c.careerEmoji}</span>
+                    <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
+                    <span className="text-[9px] text-muted-foreground/30 shrink-0">
+                      {(() => {
+                        const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
+                        if (s < 60) return 'now';
+                        if (s < 3600) return `${Math.floor(s / 60)}m`;
+                        if (s < 86400) return `${Math.floor(s / 3600)}h`;
+                        return `${Math.floor(s / 86400)}d`;
+                      })()}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {savedCareersPageCount > 1 && (
+                <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-border/30">
+                  <button
+                    type="button"
+                    onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
+                    disabled={savedCareersPage === 0}
+                    className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="h-3 w-3" />
+                  </button>
+                  <span className="text-[9px] text-muted-foreground/40 tabular-nums">
+                    {savedCareersPage + 1} / {savedCareersPageCount}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
+                    disabled={savedCareersPage >= savedCareersPageCount - 1}
+                    className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
+              No saved careers yet
+            </p>
+          )}
+        </GlassCard>
+        </div>
       </div>
 
       {/* ── 5. Industry Insights Ticker ─────────────────────── */}
@@ -1157,6 +1255,11 @@ export default function DashboardPage() {
       <CareerDetailSheet
         career={showGoalDetail ? goalCareer : null}
         onClose={() => setShowGoalDetail(false)}
+      />
+
+      <CareerDetailSheet
+        career={savedCareerDetail}
+        onClose={() => setSavedCareerDetail(null)}
       />
 
       {/* Goal Selection Sheet */}
