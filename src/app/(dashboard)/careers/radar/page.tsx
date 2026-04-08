@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
 import { CareerRadar } from "@/components/discovery/career-radar";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
@@ -46,19 +44,14 @@ export default function CareerRadarPage() {
     <div className="container mx-auto px-4 py-6 relative">
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
-      <Button asChild variant="ghost" size="sm" className="mb-3 -ml-2">
-        <Link href="/careers">
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back to Explore Careers
-        </Link>
-      </Button>
-
-      <PageHeader
-        title="My"
-        gradientText="Career Radar"
-        description="Careers mapped to what you like — including ones you've probably never heard of."
-        icon={Sparkles}
-      />
+      <div className="max-w-3xl mx-auto">
+        <PageHeader
+          title="My"
+          gradientText="Career Radar"
+          description="Careers mapped to what you like — including ones you've probably never heard of."
+          icon={Sparkles}
+        />
+      </div>
 
       {isYouth ? (
         <div className="mt-4 max-w-3xl mx-auto">

@@ -711,12 +711,12 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                           );
                         }}
                         className={cn(
-                          "w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors",
+                          "w-full flex items-center gap-2 px-3 py-1 text-left hover:bg-muted/50 transition-colors",
                           d.topMatch && "bg-pink-500/5"
                         )}
                       >
-                        <span className="text-xl shrink-0">{d.career.emoji}</span>
-                        <span className="text-sm truncate flex-1">{d.career.title}</span>
+                        <span className="text-[11px] leading-none shrink-0 opacity-60">{d.career.emoji}</span>
+                        <span className="text-[12px] truncate flex-1">{d.career.title}</span>
                         {d.topMatch && (
                           <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
                             Top
@@ -724,7 +724,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         )}
                         {d.career.entryLevel && (
                           <span
-                            className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0"
+                            className="inline-block w-1.5 h-1.5 rounded-full border border-amber-400 shrink-0"
                             title="Entry-level path"
                           />
                         )}
