@@ -49,6 +49,7 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
   const salaryShort = career.avgSalary.split(" ")[0];
+  const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
 
   return (
     <button
@@ -56,18 +57,27 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
       onClick={onLearnMore}
       className="w-full grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
     >
-      {/* Left: emoji + title */}
+      {/* Left: emoji + title + daily preview */}
       <span className="flex items-center gap-3 min-w-0">
         <span className="text-lg flex-shrink-0">{career.emoji}</span>
-        <span className="text-sm font-medium truncate">{career.title}</span>
-        {career.entryLevel && (
-          <Badge
-            variant="secondary"
-            className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-          >
-            Entry
-          </Badge>
-        )}
+        <span className="flex flex-col min-w-0">
+          <span className="flex items-center gap-1.5">
+            <span className="text-sm font-medium truncate">{career.title}</span>
+            {career.entryLevel && (
+              <Badge
+                variant="secondary"
+                className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+              >
+                Entry
+              </Badge>
+            )}
+          </span>
+          {dailyPreview && (
+            <span className="text-[10px] text-muted-foreground truncate mt-0.5">
+              {dailyPreview}
+            </span>
+          )}
+        </span>
       </span>
 
       {/* Center: learn more */}
@@ -109,6 +119,7 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
   const salaryShort = career.avgSalary.split(" ")[0];
   const visibleSkills = career.keySkills.slice(0, 2);
   const extraSkills = career.keySkills.length - 2;
+  const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
 
   return (
     <button
@@ -132,9 +143,11 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
                   </Badge>
                 )}
               </div>
-              <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
-                {career.description}
-              </p>
+              {dailyPreview && (
+                <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
+                  {dailyPreview}
+                </p>
+              )}
             </div>
             {matchScore !== undefined && (
               <div className="flex flex-col items-center flex-shrink-0">
@@ -196,6 +209,7 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
   const GrowthIcon = growth.icon;
   const visibleSkills = career.keySkills.slice(0, 4);
   const extraSkills = career.keySkills.length - 4;
+  const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
 
   return (
     <button
@@ -222,6 +236,12 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
               <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                 {career.description}
               </p>
+              {dailyPreview && (
+                <p className="text-[10px] text-muted-foreground/70 line-clamp-1 mt-1">
+                  <span className="font-medium uppercase tracking-wider text-[9px] mr-1">Day-to-day</span>
+                  {dailyPreview}
+                </p>
+              )}
             </div>
             {matchScore !== undefined && (
               <div className="flex flex-col items-center flex-shrink-0">
