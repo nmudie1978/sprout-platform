@@ -37,8 +37,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar } from "@/components/avatar";
-import { LifeSkillsSettings } from "@/components/life-skills-settings";
-import { SavedLifeSkills } from "@/components/saved-life-skills";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useClearGoal } from "@/hooks/use-goals";
 import Link from "next/link";
@@ -1335,16 +1333,9 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                {/* Life Skills Tips Toggle */}
-                <div className="border-t pt-4 mt-4">
-                  <LifeSkillsSettings />
-                </div>
               </CardContent>
             </Card>
           )}
-
-          {/* Saved Life Skills */}
-          {profile && <SavedLifeSkills />}
 
           {/* Career Goal moved to top of page */}
 

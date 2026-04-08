@@ -376,6 +376,10 @@ Seed:
    - Add public follower counts.
    - Add likes-based ranking.
    - Add engagement metrics for youth comparison.
+   - Re-introduce the "Work tips" toggle or "Saved Tips" / Life Skills
+     section anywhere in /profile. These were removed and should stay
+     removed — do not import LifeSkillsSettings or SavedLifeSkills into
+     the profile page under any circumstances.
 
 3. Any new feature must pass:
    - Safety check
