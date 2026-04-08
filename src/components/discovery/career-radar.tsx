@@ -44,6 +44,39 @@ const CATEGORY_ORDER: CareerCategory[] = [
   "TELECOMMUNICATIONS",
 ];
 
+// Human-readable labels for the discovery preference IDs (which are stored
+// as kebab-case keys). Keep in sync with discovery-quiz-dialog.tsx.
+const SUBJECT_LABELS: Record<string, string> = {
+  biology: "Biology",
+  chemistry: "Chemistry",
+  physics: "Physics",
+  math: "Math",
+  computing: "Computing",
+  english: "English",
+  history: "History",
+  geography: "Geography",
+  art: "Art",
+  music: "Music",
+  pe: "PE",
+  business: "Business",
+  languages: "Languages",
+  psychology: "Psychology",
+};
+
+const WORK_STYLE_LABELS: Record<string, string> = {
+  "hands-on": "Hands-on",
+  desk: "At a desk",
+  outdoors: "Outdoors",
+  creative: "Creative",
+  mixed: "A mix",
+};
+
+const PEOPLE_LABELS: Record<string, string> = {
+  "with-people": "With people",
+  mixed: "A bit of both",
+  "mostly-alone": "Mostly alone",
+};
+
 const CATEGORY_LABEL: Record<CareerCategory, string> = {
   HEALTHCARE_LIFE_SCIENCES: "Health",
   EDUCATION_TRAINING: "Education",
@@ -237,6 +270,40 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </Button>
         </div>
       </div>
+
+      {/* "Based on" strip — shows the discovery inputs that produced this radar */}
+      {preferences && (
+        <div className="px-4 py-2 border-b bg-muted/20 flex items-start gap-2 flex-wrap">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mt-0.5 shrink-0">
+            Based on
+          </span>
+          <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+            {(preferences.subjects || []).map((s) => (
+              <span
+                key={`s-${s}`}
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20"
+              >
+                {SUBJECT_LABELS[s] || s}
+              </span>
+            ))}
+            {(preferences.workStyles || []).map((w) => (
+              <span
+                key={`w-${w}`}
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-pink-500/10 text-pink-700 dark:text-pink-300 border border-pink-500/20"
+              >
+                {WORK_STYLE_LABELS[w] || w}
+              </span>
+            ))}
+            {preferences.peoplePref && (
+              <span
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20"
+              >
+                {PEOPLE_LABELS[preferences.peoplePref] || preferences.peoplePref}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="relative flex justify-center p-4 overflow-auto">
         <svg
