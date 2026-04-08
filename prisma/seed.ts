@@ -1,5 +1,6 @@
 import { PrismaClient, JobCategory, PayType, MessageTemplateDirection, LifeSkillAudience, SkillCategory, TrustSignalType, TrustSignalSource, ResponsibilityLevel, SupervisionLevel, JobCompletionOutcome } from '@prisma/client';
 import { seedYouthCareers } from './seed-youth-careers';
+import { seedHospitalityCareers } from './seed-hospitality-careers';
 import { seedExecutiveCareers } from './seed-executive-careers';
 import { seedJobCategories } from './seed-job-categories';
 import { seedCareerEvents } from './seed-career-events';
@@ -2523,6 +2524,7 @@ async function main() {
 
   // Seed youth-specific entry-level career cards
   await seedYouthCareers(prisma);
+  await seedHospitalityCareers(prisma);
   console.log('✅ Created youth career cards');
 
   // Seed executive & leadership career cards

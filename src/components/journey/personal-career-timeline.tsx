@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
-import { generateFallbackTimeline } from '@/lib/journey/generate-fallback-timeline';
+import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import type { CardDataSummary } from './renderers/types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/zigzag-renderer';
@@ -78,10 +78,62 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     }, 2000);
   }, []);
 
+  // Education stage drives roadmap branching — read it from the saved
+  // education context so the whole timeline (foundation + downstream
+  // steps) stays in sync with what the user has told us about where
+  // they actually are.
+  const { data: educationContextData } = useQuery<{
+    educationContext: { stage?: EducationStage } | null;
+  }>({
+    queryKey: ['education-context'],
+    queryFn: async () => {
+      const res = await fetch('/api/journey/education-context');
+      if (!res.ok) return { educationContext: null };
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const educationStage: EducationStage | undefined =
+    educationContextData?.educationContext?.stage;
+
+  // The user's age — needed by the client-side fallback so it renders
+  // an accurate placeholder roadmap while the AI version loads. Without
+  // this, the placeholder defaults to age 16 and an 18-year-old briefly
+  // sees a roadmap labelled "Age 16" before it snaps to the real one.
+  const { data: profileData } = useQuery<{
+    user?: { dateOfBirth?: string | null } | null;
+  }>({
+    queryKey: ['profile-dob'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 30 * 60 * 1000,
+  });
+  const userAge: number | undefined = useMemo(() => {
+    const dob = profileData?.user?.dateOfBirth;
+    if (!dob) return undefined;
+    const birth = new Date(dob);
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    const m = now.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+    return age;
+  }, [profileData]);
+
+  // Foundation completion status — drives whether we drop the leading
+  // education steps. Recomputes on every saveVersion bump so toggling
+  // Complete on the Foundation card cleanly re-renders the roadmap.
+  const foundationComplete = useMemo(() => {
+    return loadCardData(FOUNDATION_ITEM_ID).status === 'done';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saveVersion]);
+
   // Generate a client-side fallback so the roadmap renders instantly
   const fallbackJourney = useMemo(
-    () => primaryGoalTitle ? generateFallbackTimeline(primaryGoalTitle) : null,
-    [primaryGoalTitle]
+    () => primaryGoalTitle ? generateFallbackTimeline(primaryGoalTitle, userAge, educationStage, foundationComplete) : null,
+    [primaryGoalTitle, userAge, educationStage, foundationComplete]
   );
 
   const {
@@ -91,12 +143,17 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     isError,
     error,
   } = useQuery<{ journey: Journey; cached: boolean }>({
-    queryKey: ['personal-career-timeline', primaryGoalTitle],
+    // Stage + foundation completion are part of the key so changing
+    // either cleanly invalidates the previous timeline rather than
+    // showing a stale "Complete Videregående" step to a university
+    // graduate (or "Continue studying" to someone who marked their
+    // Foundation as Complete).
+    queryKey: ['personal-career-timeline', primaryGoalTitle, educationStage ?? 'default', foundationComplete ? 'done' : 'open'],
     queryFn: async () => {
       const res = await fetch('/api/journey/generate-timeline', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ career: primaryGoalTitle }),
+        body: JSON.stringify({ career: primaryGoalTitle, educationStage, foundationComplete }),
       });
 
       if (!res.ok) {
@@ -232,7 +289,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
           <span className="text-foreground/75">Your Path to </span>
           <span className="font-semibold text-foreground">{journey.career}</span>
           {spanYears > 0 && (
-            <span className="text-foreground/65 ml-2">
+            <span className="block text-[10px] text-muted-foreground/50 font-normal mt-0.5">
               ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
               {eduStages.length > 0 && <> · {eduLabel} track</>}
             </span>

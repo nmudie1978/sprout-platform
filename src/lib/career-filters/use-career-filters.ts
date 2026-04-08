@@ -53,6 +53,9 @@ const categoryLabels: Record<string, string> = {
   LOGISTICS_TRANSPORT: "Logistics",
   HOSPITALITY_TOURISM: "Hospitality",
   TELECOMMUNICATIONS: "Telecom",
+  REAL_ESTATE_PROPERTY: "Property",
+  SOCIAL_CARE_COMMUNITY: "Social Care",
+  CONSTRUCTION_TRADES: "Construction",
 };
 
 const growthLabels: Record<string, string> = {

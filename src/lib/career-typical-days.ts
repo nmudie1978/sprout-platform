@@ -1519,7 +1519,7 @@ const careerDetailsMap: Record<string, CareerDetails> = {
         "Remove organisational impediments",
         "Prepare coaching materials",
       ],
-      tools: ["Agile management tools", "Facilitation materials", "Metrics dashboards", "Collaboration platforms"],
+      tools: ["Jira", "Confluence", "Miro", "PowerPoint", "Outlook"],
       environment: "Office with multiple teams, may travel between locations",
     },
     whatYouActuallyDo: [

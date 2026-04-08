@@ -47,6 +47,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { SectionWhy } from "@/components/ui/section-why";
+import { GuidanceCallout } from "@/components/guidance/guidance-callout";
 import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 
@@ -214,9 +215,14 @@ function LibraryCard({
           </div>
         )
       ) : (
-        <p className="text-xs text-muted-foreground/40 py-4 text-center">
-          Save articles & videos from Insights
-        </p>
+        <GuidanceCallout
+          id="library-empty"
+          category="direction"
+          variant="hint"
+          message="Your library is empty."
+          submessage="Save articles and videos from Insights — they'll show up here so you can come back to them later."
+          dismissible={false}
+        />
       )}
     </GlassCard>
   );
@@ -1029,9 +1035,14 @@ export default function DashboardPage() {
                     <Target className="h-3.5 w-3.5 text-violet-500" />
                     <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   </div>
-                  <p className="text-sm text-muted-foreground/40">
-                    Explore careers to build your journey list
-                  </p>
+                  <GuidanceCallout
+                    id="explored-journeys-empty"
+                    category="direction"
+                    variant="hint"
+                    message="No journeys yet."
+                    submessage="Pick a career from Explore Careers to start your first journey — every one you open is saved here."
+                    dismissible={false}
+                  />
                 </GlassCard>
               );
             }
@@ -1184,9 +1195,14 @@ export default function DashboardPage() {
                 )}
               </>
             ) : (
-              <p className="text-[11px] text-muted-foreground/30 py-2 text-center">
-                No saved careers yet
-              </p>
+              <GuidanceCallout
+                id="saved-careers-empty"
+                category="direction"
+                variant="hint"
+                message="No saved careers yet."
+                submessage="Tap the heart on any career in Explore Careers to bookmark it for later."
+                dismissible={false}
+              />
             )}
           </GlassCard>
         </div>

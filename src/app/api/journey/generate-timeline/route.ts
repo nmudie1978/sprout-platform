@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
-import { generateFallbackTimeline } from '@/lib/journey/generate-fallback-timeline';
+import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import type { Journey } from '@/lib/journey/career-journey-types';
 
 // ============================================
@@ -85,7 +85,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Career must be between 2 and 100 characters' }, { status: 400 });
     }
 
-    // Parallel: fetch user age + cached timeline + rate limit check
+    // Parallel: fetch user age + cached timeline + education context
+    // + foundation card data + rate limit check
     const [userData, profile, rateLimit] = await Promise.all([
       prisma.user.findUnique({
         where: { id: session.user.id },
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
       }),
       prisma.youthProfile.findUnique({
         where: { userId: session.user.id },
-        select: { generatedTimeline: true },
+        select: { generatedTimeline: true, journeySummary: true, foundationCardData: true },
       }),
       checkRateLimitAsync(`timeline:${session.user.id}`, RateLimits.TIMELINE_GENERATION),
     ]);
@@ -102,16 +103,52 @@ export async function POST(req: NextRequest) {
       ? Math.floor((Date.now() - new Date(userData.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
       : 16;
 
-    // Check per-user cache first
+    // Education stage drives which steps get generated. Pull it from
+    // the saved education context (set via the Foundation card). The
+    // request body can override it for explicit regeneration.
+    const summary = (profile?.journeySummary as Record<string, unknown> | null) || null;
+    const ctx = summary?.educationContext as { stage?: string } | undefined;
+    const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
+    const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
+    const educationStage: EducationStage | undefined =
+      (bodyStage && validStages.includes(bodyStage as EducationStage))
+        ? (bodyStage as EducationStage)
+        : (ctx?.stage && validStages.includes(ctx.stage as EducationStage))
+          ? (ctx.stage as EducationStage)
+          : undefined;
+
+    // Foundation completion drives whether we drop the leading
+    // education steps. Body wins over DB so toggling Complete in the
+    // UI gives an instant fresh roadmap.
+    const foundationData = (profile?.foundationCardData as { status?: string } | null) || null;
+    const foundationCompleteFromBody = typeof body.foundationComplete === 'boolean'
+      ? body.foundationComplete
+      : undefined;
+    const foundationComplete = foundationCompleteFromBody ?? (foundationData?.status === 'done');
+
+    // The strings we use to namespace caches — undefined stage falls
+    // back to "default" so legacy users keep their existing cache key.
+    const stageKey = educationStage ?? 'default';
+    const completeKey = foundationComplete ? 'done' : 'open';
+
+    // Check per-user cache first — must match career, age, stage AND
+    // foundation completion, otherwise toggling Complete on the
+    // Foundation card wouldn't visibly change the roadmap.
     if (profile?.generatedTimeline) {
-      const cached = profile.generatedTimeline as { career?: string; journey?: Journey };
-      if (cached.career?.toLowerCase() === career.toLowerCase() && cached.journey && cached.journey.startAge === userAge) {
+      const cached = profile.generatedTimeline as { career?: string; stage?: string; complete?: string; journey?: Journey };
+      if (
+        cached.career?.toLowerCase() === career.toLowerCase() &&
+        cached.journey &&
+        cached.journey.startAge === userAge &&
+        (cached.stage ?? 'default') === stageKey &&
+        (cached.complete ?? 'open') === completeKey
+      ) {
         return NextResponse.json({ journey: cached.journey, cached: true });
       }
     }
 
-    // Check global cache — same career + age = same timeline for all users
-    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}`;
+    // Check global cache — same career + age + stage + completion = same timeline for all users
+    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}`;
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
@@ -140,13 +177,37 @@ export async function POST(req: NextRequest) {
     let journey: Journey;
     const openai = getOpenAIClient();
 
+    // Stage-specific instruction we append to the user prompt so the AI
+    // knows where the user is starting from. The system prompt covers
+    // the school case implicitly; these notes correct it for everyone else.
+    const stageInstruction = educationStage === 'university'
+      ? ' The user is ALREADY at university — DO NOT include "Complete Videregående". Start the timeline at their current university studies and graduate roughly 3 years from their current age.'
+      : educationStage === 'college'
+        ? ' The user is ALREADY in vocational/college (fagskole) training — DO NOT include "Complete Videregående". Start at their current programme. Use vocational language (fagbrev, apprenticeship) rather than degree language.'
+        : educationStage === 'other'
+          ? ' The user is NOT currently in formal education (gap year, self-taught, working, or undeclared). DO NOT include school or university completion steps. Start the timeline at the experience phase — entry-level work, portfolio building, and any qualifications they\'ll pick up along the way.'
+          : '';
+
+    // Foundation-complete instruction — tells the AI the user has
+    // already finished their current education stage, so any
+    // "in-progress" or "graduate" step for that stage must be skipped.
+    const completeInstruction = foundationComplete
+      ? educationStage === 'university'
+        ? ' The user has ALREADY GRADUATED from university — DO NOT include "Continue studying" or "Graduate". Start the timeline at their first entry-level job, anchored to their current age.'
+        : educationStage === 'college'
+          ? ' The user has ALREADY COMPLETED their vocational training (fagbrev/diploma earned) — DO NOT include in-progress training or qualification steps. Start the timeline at their first entry-level role, anchored to their current age.'
+          : educationStage === 'school'
+            ? ' The user has ALREADY COMPLETED Videregående — DO NOT include "Complete Videregående". Start the timeline at the next education or work step, anchored to their current age.'
+            : ' The user has marked their foundation as complete — assume they are ready to enter the workforce immediately. Start the timeline at the experience phase, anchored to their current age.'
+      : '';
+
     if (openai) {
       try {
         const completion = await openai.chat.completions.create({
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.` },
+            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${stageInstruction}${completeInstruction}` },
           ],
           temperature: 0.7,
           max_tokens: 1200,
@@ -186,14 +247,15 @@ export async function POST(req: NextRequest) {
         };
       } catch (aiError) {
         console.error('[Timeline] OpenAI failed, using fallback:', aiError);
-        journey = generateFallbackTimeline(career, userAge);
+        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete);
       }
     } else {
-      journey = generateFallbackTimeline(career, userAge);
+      journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete);
     }
 
-    // Cache result (non-blocking)
-    const cacheData = JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey }));
+    // Cache result (non-blocking) — stamp the stage AND completion so
+    // future requests cleanly miss the cache when either changes.
+    const cacheData = JSON.parse(JSON.stringify({ career, stage: stageKey, complete: completeKey, generatedAt: new Date().toISOString(), journey }));
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },

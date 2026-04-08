@@ -282,12 +282,6 @@ export default function ExplorePage() {
               You've explored all available careers.
             </p>
             <div className="flex flex-col items-center gap-3">
-              <Button asChild>
-                <Link href="/explore/saved">
-                  View Saved Careers
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -305,17 +299,6 @@ export default function ExplorePage() {
         </Card>
       )}
 
-      {/* Link to Saved */}
-      {currentCard && (
-        <div className="mt-6 text-center">
-          <Link
-            href="/explore/saved"
-            className="text-sm text-muted-foreground hover:text-foreground hover:underline"
-          >
-            View your saved careers →
-          </Link>
-        </div>
-      )}
 
       {/* Career Detail Modal */}
       {selectedCard && (

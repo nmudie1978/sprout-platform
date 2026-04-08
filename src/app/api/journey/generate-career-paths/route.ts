@@ -35,7 +35,7 @@ Rules:
 - Use Norwegian companies and organisations
 - First step should be videregående at age 16
 - Career progression must be realistic — proper education duration, entry-level before senior
-- Each path should have 5-7 steps
+- Each path should have exactly 5 steps (keep labels concise, max ~10 words each)
 - The two examples should show genuinely different routes (e.g. different universities, different specialisations, academic vs vocational)
 - Names should be typical Norwegian first names with last initial
 - Ages should be realistic for the career stage`;
@@ -90,8 +90,8 @@ export async function POST(req: NextRequest) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: `Career: ${career}` },
       ],
-      temperature: 0.7,
-      max_tokens: 800,
+      temperature: 0.6,
+      max_tokens: 400,
       response_format: { type: 'json_object' },
     });
 

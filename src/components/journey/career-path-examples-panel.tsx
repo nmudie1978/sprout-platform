@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { getCareerPathExamples, type CareerPathExample } from '@/lib/education/career-path-examples';
 
 interface CareerPathExamplesPanelProps {
@@ -9,44 +9,30 @@ interface CareerPathExamplesPanelProps {
 }
 
 export function CareerPathExamplesPanel({ careerId, careerTitle }: CareerPathExamplesPanelProps) {
-  const [paths, setPaths] = useState<CareerPathExample[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [tried, setTried] = useState(false);
+  const hardcoded = getCareerPathExamples(careerId, careerTitle);
+  const useAI = hardcoded.length === 0;
 
-  const loadPaths = useCallback(async () => {
-    // Try hardcoded first
-    const hardcoded = getCareerPathExamples(careerId, careerTitle);
-    if (hardcoded.length > 0) {
-      setPaths(hardcoded);
-      setTried(true);
-      return;
-    }
-
-    // Fall back to AI-generated
-    setLoading(true);
-    try {
+  const { data: aiPaths, isLoading } = useQuery<CareerPathExample[]>({
+    queryKey: ['career-paths', careerTitle.toLowerCase()],
+    queryFn: async () => {
       const res = await fetch('/api/journey/generate-career-paths', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ career: careerTitle }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.examples?.length) {
-          setPaths(data.examples);
-        }
-      }
-    } catch {
-      // silent fail — we'll show the empty state
-    } finally {
-      setLoading(false);
-      setTried(true);
-    }
-  }, [careerId, careerTitle]);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.examples ?? [];
+    },
+    enabled: useAI,
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+    retry: false,
+  });
 
-  useEffect(() => {
-    loadPaths();
-  }, [loadPaths]);
+  const paths = useAI ? (aiPaths ?? []) : hardcoded;
+  const loading = useAI && isLoading;
+  const tried = !useAI || !isLoading;
 
   if (loading) {
     return (

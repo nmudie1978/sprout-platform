@@ -18,6 +18,7 @@ import {
   ArrowRight,
   Filter,
   Download,
+  Bookmark,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo, useCallback, memo } from "react";
@@ -34,7 +35,7 @@ const categoryEmojis: Record<string, string> = {
   OTHER: "\u2728",
 };
 
-type FilterType = "all" | "pending" | "accepted" | "in_progress" | "completed" | "rejected";
+type FilterType = "all" | "pending" | "accepted" | "in_progress" | "completed" | "rejected" | "saved";
 
 const APP_GRID = "grid-cols-[2.5fr_1fr_1fr_auto_auto_auto]";
 
@@ -280,6 +281,18 @@ export default function ApplicationsPage() {
     { all: 0, pending: 0, accepted: 0, in_progress: 0, completed: 0, rejected: 0 }
   );
 
+  // Saved jobs (separate from applications)
+  const { data: savedData } = useQuery({
+    queryKey: ["saved-jobs"],
+    queryFn: async () => {
+      const r = await fetch("/api/jobs/saved");
+      if (!r.ok) return { saved: [] };
+      return r.json();
+    },
+  });
+  const savedJobs: { id: string; savedAt: string; job: any }[] = savedData?.saved ?? [];
+  const savedCount = savedJobs.length;
+
   const filterButtons: { key: FilterType; label: string; color: string }[] = [
     { key: "all", label: "All", color: "bg-slate-500" },
     { key: "pending", label: "Pending", color: "bg-blue-500" },
@@ -287,7 +300,10 @@ export default function ApplicationsPage() {
     { key: "in_progress", label: "Active", color: "bg-teal-500" },
     { key: "completed", label: "Done", color: "bg-green-600" },
     { key: "rejected", label: "Declined", color: "bg-red-500" },
+    { key: "saved", label: "Saved", color: "bg-amber-500" },
   ];
+
+  const countsWithSaved: Record<FilterType, number> = { ...(counts as Record<Exclude<FilterType, "saved">, number>), saved: savedCount };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-cyan-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30">
@@ -360,7 +376,7 @@ export default function ApplicationsPage() {
             >
               {btn.label}
               <Badge variant="secondary" className={`ml-2 text-xs ${filter === btn.key ? "bg-white/20 text-white" : ""}`}>
-                {counts[btn.key]}
+                {countsWithSaved[btn.key]}
               </Badge>
             </Button>
           ))}
@@ -368,7 +384,38 @@ export default function ApplicationsPage() {
 
         {/* List */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          {filteredApplications.length > 0 ? (
+          {filter === "saved" ? (
+            savedJobs.length > 0 ? (
+              <div className="border rounded-xl overflow-hidden bg-card divide-y">
+                {savedJobs.map((s) => (
+                  <Link
+                    key={s.id}
+                    href={`/jobs/${s.job.id}`}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40 transition-colors"
+                  >
+                    <Bookmark className="h-4 w-4 text-amber-500 fill-amber-500 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{s.job.title}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        {s.job.location ?? "Location TBC"} · Saved {formatTimeAgo(s.savedAt)}
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold text-muted-foreground shrink-0">
+                      {formatCurrency(s.job.payAmount)}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <Bookmark className="h-8 w-8 mx-auto mb-3 text-muted-foreground/30" />
+                  <p className="text-sm text-muted-foreground mb-4">No saved jobs yet</p>
+                  <Button asChild><Link href="/jobs">Browse Small Jobs</Link></Button>
+                </CardContent>
+              </Card>
+            )
+          ) : filteredApplications.length > 0 ? (
             <div className="border rounded-xl overflow-hidden bg-card">
               <ApplicationListHeader />
               {filteredApplications.map((app: any) => (

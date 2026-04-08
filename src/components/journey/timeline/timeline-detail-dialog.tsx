@@ -21,6 +21,7 @@ import {
   Save,
   Plus,
   X,
+  ExternalLink,
 } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
@@ -107,6 +108,10 @@ export function TimelineDetailDialog({
   const [subjects, setSubjects] = useState<string[]>([]);
   const [newSubject, setNewSubject] = useState('');
   const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
+  // User's age — drives both the default education stage and how we
+  // arrange the picker (under-18 sees School first, 18+ sees it last
+  // with a Vg3-only subtitle so it doesn't read as the assumed answer).
+  const [userAge, setUserAge] = useState<number | null>(null);
 
   const isFoundation = item?.id === FOUNDATION_ITEM_ID;
 
@@ -120,35 +125,58 @@ export function TimelineDetailDialog({
 
       // Load education context for foundation
       if (isFoundation) {
-        fetch('/api/journey/education-context')
+        // Fetch the user's age once on dialog open. We need it for two
+        // independent reasons: (1) defaulting the picker to a sensible
+        // stage when no saved context exists, and (2) re-ordering the
+        // picker tabs so 18+ users don't see "School" front-and-centre.
+        const agePromise = fetch('/api/profile')
           .then(r => r.ok ? r.json() : null)
-          .then(d => {
-            const ctx = d?.educationContext;
-            if (ctx) {
-              setEduStage(ctx.stage || 'school');
-              setSchoolName(ctx.schoolName || '');
-              setStudyProgram(ctx.studyProgram || '');
-              setExpectedCompletion(ctx.expectedCompletion || '');
-              setSubjects(ctx.currentSubjects || []);
-            } else {
-              setEduStage('school');
-              setSchoolName('');
-              setStudyProgram('');
-              setExpectedCompletion('');
-              setSubjects([]);
-            }
+          .then(profile => {
+            const dob = profile?.user?.dateOfBirth;
+            if (!dob) return null;
+            const birth = new Date(dob);
+            const now = new Date();
+            let age = now.getFullYear() - birth.getFullYear();
+            const m = now.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+            return age;
           })
-          .catch(() => {});
+          .catch(() => null);
+
+        Promise.all([
+          fetch('/api/journey/education-context').then(r => r.ok ? r.json() : null).catch(() => null),
+          agePromise,
+        ]).then(([d, age]) => {
+          if (typeof age === 'number') setUserAge(age);
+
+          const ctx = d?.educationContext;
+          if (ctx) {
+            setEduStage(ctx.stage || 'school');
+            setSchoolName(ctx.schoolName || '');
+            setStudyProgram(ctx.studyProgram || '');
+            setExpectedCompletion(ctx.expectedCompletion || '');
+            setSubjects(ctx.currentSubjects || []);
+            return;
+          }
+
+          // No saved context yet — pick a sensible default based on age.
+          // Under 18: almost certainly still in school (Videregående).
+          // 18 and over: it's a coin flip — they could be in Vg3, at
+          // university, in a vocational programme, or working — so we
+          // default to "university" because that's the most common
+          // outcome for an Endeavrly user who has actively set a goal,
+          // and the picker is clearly editable if we guessed wrong.
+          const defaultStage: 'school' | 'college' | 'university' | 'other' =
+            (typeof age === 'number' && age >= 18) ? 'university' : 'school';
+          setEduStage(defaultStage);
+          setSchoolName('');
+          setStudyProgram('');
+          setExpectedCompletion('');
+          setSubjects([]);
+        });
       }
     }
   }, [item?.id, open, isFoundation]);
-
-  const toggleMicroAction = useCallback((index: number) => {
-    setCompletedActions((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
-    setDirty(true);
-  }, []);
 
   const addSubject = () => {
     const trimmed = newSubject.trim();
@@ -186,8 +214,13 @@ export function TimelineDetailDialog({
             currentSubjects: subjects,
           }),
         });
-        // Invalidate so the roadmap foundation node picks up the new data
+        // Invalidate so the roadmap foundation node picks up the new data.
+        // Also invalidate the personal career timeline — it's keyed on
+        // education stage, so a stage change must trigger a refetch
+        // that regenerates the downstream steps (e.g. drop "Complete
+        // Videregående" once the user marks themselves as University).
         queryClient.invalidateQueries({ queryKey: ['education-context'] });
+        queryClient.invalidateQueries({ queryKey: ['personal-career-timeline'] });
       } catch { /* silent */ }
     }
 
@@ -205,10 +238,6 @@ export function TimelineDetailDialog({
     : `Age ${item.startAge}`;
   const stepType = classifyStepType(item);
   const hasMicroActions = item.microActions && item.microActions.length > 0;
-  const microActionsDone = hasMicroActions
-    ? completedActions.filter((i) => i < item.microActions!.length).length
-    : 0;
-  const microActionsTotal = item.microActions?.length ?? 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -232,23 +261,49 @@ export function TimelineDetailDialog({
             <div className="space-y-3">
               <p className="text-[11px] text-muted-foreground/50">Tell us about your current education</p>
 
-              {/* Stage selector */}
-              <div className="flex gap-1.5">
-                {STAGE_OPTIONS.map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => { setEduStage(opt.value); setDirty(true); }}
-                    className={cn(
-                      'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border',
-                      eduStage === opt.value
-                        ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
-                        : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
+              {/* Stage selector — for 18+ users we move "School" to the
+                  end and label it as a Vg3-only option, so the picker
+                  doesn't visually imply that school is the assumed
+                  answer for an adult user. Under-18s see the original
+                  School-first order. */}
+              {(() => {
+                const isAdult = typeof userAge === 'number' && userAge >= 18;
+                const orderedOptions = isAdult
+                  ? [
+                      { value: 'university' as const, label: 'University' },
+                      { value: 'college' as const, label: 'College' },
+                      { value: 'other' as const, label: 'Other' },
+                      { value: 'school' as const, label: 'School' },
+                    ]
+                  : STAGE_OPTIONS;
+                return (
+                  <div className="flex gap-1.5">
+                    {orderedOptions.map(opt => {
+                      const isSchoolForAdult = isAdult && opt.value === 'school';
+                      return (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setEduStage(opt.value); setDirty(true); }}
+                          title={isSchoolForAdult ? 'Only if you\'re still in Vg3' : undefined}
+                          className={cn(
+                            'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border flex flex-col items-center justify-center leading-tight',
+                            eduStage === opt.value
+                              ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
+                              : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
+                          )}
+                        >
+                          <span>{opt.label}</span>
+                          {isSchoolForAdult && (
+                            <span className="text-[8px] text-muted-foreground/40 font-normal mt-0.5">
+                              if you&apos;re still in Vg3
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
 
               {/* School/University name */}
               <div>
@@ -409,56 +464,57 @@ export function TimelineDetailDialog({
             })}
           </div>
 
-          {/* Action checklist */}
-          {hasMicroActions && (
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-medium text-foreground/70">Actions</p>
-                <span className="text-[10px] text-muted-foreground/40">
-                  {microActionsDone}/{microActionsTotal}
-                </span>
-              </div>
-              {microActionsTotal > 0 && (
-                <div className="h-1 w-full rounded-full bg-foreground/5 mb-2.5 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-emerald-500 transition-all duration-300"
-                    style={{ width: `${(microActionsDone / microActionsTotal) * 100}%` }}
-                  />
-                </div>
-              )}
-              <ul className="space-y-1">
-                {item.microActions!.map((action, i) => {
-                  const isDone = completedActions.includes(i);
-                  return (
-                    <li key={i}>
-                      <button
-                        onClick={() => toggleMicroAction(i)}
-                        className={cn(
-                          'w-full flex items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors',
-                          isDone ? 'bg-emerald-500/5' : 'hover:bg-muted/30'
+          {/* Suggested actions — informational only, not measured.
+              Actions that mention applying for entry-level / graduate
+              positions become LinkedIn job-search links pre-filtered
+              to entry-level roles for this career, so the user can
+              act on the suggestion in one click instead of opening a
+              new tab and re-typing the search themselves. */}
+          {hasMicroActions && (() => {
+            // Pull the career name out of the item title — items in the
+            // generated timeline are titled like "Entry-level <career> role"
+            // so we can recover the keyword by stripping the prefix/suffix.
+            // Falls back to the full item title for non-experience steps.
+            const careerKeyword = item.title
+              .replace(/^Entry[-\s]?level\s+/i, '')
+              .replace(/^Senior\s+/i, '')
+              .replace(/\s+role$/i, '')
+              .trim();
+            // f_E=2 = "Entry level" filter in LinkedIn job search
+            const linkedInUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(careerKeyword)}&f_E=2`;
+            const isJobSearchAction = (text: string) =>
+              /entry[-\s]?level\s+positions?|graduate.*positions?|apply.*positions?|first\s+job/i.test(text);
+
+            return (
+              <div>
+                <p className="text-xs font-medium text-foreground/70 mb-2">Suggested actions</p>
+                <ul className="space-y-1.5">
+                  {item.microActions!.map((action, i) => {
+                    const linkable = isJobSearchAction(action);
+                    return (
+                      <li key={i} className="flex items-start gap-2.5 px-2.5 py-1.5">
+                        <span className="mt-1.5 h-1 w-1 rounded-full bg-muted-foreground/40 shrink-0" />
+                        {linkable ? (
+                          <a
+                            href={linkedInUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[13px] leading-snug text-teal-400 hover:text-teal-300 underline-offset-2 hover:underline inline-flex items-center gap-1.5 group"
+                          >
+                            <span>{action}</span>
+                            <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity shrink-0" />
+                            <span className="text-[10px] text-muted-foreground/50 ml-0.5">on LinkedIn</span>
+                          </a>
+                        ) : (
+                          <span className="text-[13px] leading-snug text-foreground/75">{action}</span>
                         )}
-                      >
-                        <div className={cn(
-                          'flex h-4 w-4 items-center justify-center rounded border mt-0.5 shrink-0 transition-colors',
-                          isDone
-                            ? 'bg-emerald-500 border-emerald-500'
-                            : 'border-muted-foreground/30'
-                        )}>
-                          {isDone && <Check className="h-2.5 w-2.5 text-white" />}
-                        </div>
-                        <span className={cn(
-                          'text-[13px] leading-snug',
-                          isDone ? 'text-muted-foreground/40 line-through' : 'text-foreground/75'
-                        )}>
-                          {action}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })()}
 
           {/* Save button */}
           <button

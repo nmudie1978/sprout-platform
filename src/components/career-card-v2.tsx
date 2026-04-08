@@ -49,62 +49,52 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
   const growth = growthConfig[career.growthOutlook];
   const GrowthIcon = growth.icon;
   const salaryShort = career.avgSalary.split(" ")[0];
-  const dailyPreview = career.dailyTasks.slice(0, 2).join(" · ");
 
   return (
     <button
       type="button"
       onClick={onLearnMore}
-      className="w-full grid grid-cols-[1fr_auto_1fr] items-center px-3 py-2 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
+      className="w-full grid grid-cols-[minmax(0,18rem)_5rem_3rem_auto] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
     >
-      {/* Left: emoji + title + daily preview */}
-      <span className="flex items-center gap-3 min-w-0">
-        <span className="text-lg flex-shrink-0">{career.emoji}</span>
-        <span className="flex flex-col min-w-0">
-          <span className="flex items-center gap-1.5">
-            <span className="text-sm font-medium truncate">{career.title}</span>
-            {career.entryLevel && (
-              <Badge
-                variant="secondary"
-                className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-              >
-                Entry
-              </Badge>
-            )}
-          </span>
-          {dailyPreview && (
-            <span className="text-[10px] text-muted-foreground truncate mt-0.5">
-              {dailyPreview}
-            </span>
-          )}
-        </span>
+      {/* Title */}
+      <span className="flex items-center gap-2 min-w-0">
+        <span className="text-sm flex-shrink-0 leading-none">{career.emoji}</span>
+        <span className="text-xs font-medium truncate">{career.title}</span>
+        {career.entryLevel && (
+          <Badge
+            variant="secondary"
+            className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+          >
+            Entry
+          </Badge>
+        )}
       </span>
 
-      {/* Center: learn more */}
-      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5 px-4">
-        Learn more
-        <ChevronRight className="h-3 w-3" />
+      {/* Salary */}
+      <span className="text-xs text-muted-foreground tabular-nums text-right">
+        {salaryShort}
       </span>
 
-      {/* Right: stats */}
-      <span className="flex items-center justify-end gap-3">
+      {/* Growth */}
+      <Badge
+        variant="outline"
+        className={`text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-10 justify-center`}
+      >
+        <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
+      </Badge>
+
+      {/* Learn more (last column) */}
+      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
         {matchScore !== undefined && (
           <Badge
             variant="secondary"
-            className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
+            className="text-[10px] px-1.5 py-0 mr-2 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
           >
             {matchScore}%
           </Badge>
         )}
-        <span className="text-xs text-muted-foreground w-16 text-right flex-shrink-0">
-          {salaryShort}
-        </span>
-        <Badge
-          variant="outline"
-          className={`text-[10px] px-1.5 py-0 ${growth.bg} border-0 flex-shrink-0 w-12 justify-center`}
-        >
-          <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
-        </Badge>
+        Learn more
+        <ChevronRight className="h-3 w-3" />
       </span>
     </button>
   );

@@ -42,6 +42,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   MANUFACTURING_ENGINEERING: 'Engineering & Manufacturing',
   LOGISTICS_TRANSPORT: 'Logistics & Transport',
   HOSPITALITY_TOURISM: 'Hospitality & Tourism',
+  REAL_ESTATE_PROPERTY: 'Real Estate & Property',
+  SOCIAL_CARE_COMMUNITY: 'Social Care & Community',
+  CONSTRUCTION_TRADES: 'Construction & Trades',
 };
 
 interface DiscoverTabProps {

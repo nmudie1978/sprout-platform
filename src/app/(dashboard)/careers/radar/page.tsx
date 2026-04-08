@@ -17,7 +17,7 @@ function CareerRadarPageContent() {
 
   const isYouth = session?.user?.role === "YOUTH";
 
-  const { data: profileData } = useQuery({
+  const { data: profileData, isLoading: profileLoading } = useQuery({
     queryKey: ["my-profile"],
     queryFn: async () => {
       const response = await fetch("/api/profile");
@@ -25,6 +25,7 @@ function CareerRadarPageContent() {
       return response.json();
     },
     enabled: !!session?.user?.id && isYouth,
+    staleTime: 5 * 60 * 1000,
   });
 
   const discoveryPreferences: DiscoveryPreferences | null =
@@ -55,10 +56,16 @@ function CareerRadarPageContent() {
 
       {isYouth ? (
         <div className="mt-4 max-w-3xl mx-auto">
-          <CareerRadar
-            preferences={discoveryPreferences}
-            onEditPreferences={() => setShowDiscoveryQuiz(true)}
-          />
+          {profileLoading ? (
+            <div className="rounded-2xl border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
+              Loading your radar…
+            </div>
+          ) : (
+            <CareerRadar
+              preferences={discoveryPreferences}
+              onEditPreferences={() => setShowDiscoveryQuiz(true)}
+            />
+          )}
         </div>
       ) : (
         <p className="mt-4 text-sm text-muted-foreground">

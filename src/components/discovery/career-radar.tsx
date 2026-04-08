@@ -51,6 +51,9 @@ const CATEGORY_ORDER: CareerCategory[] = [
   "LOGISTICS_TRANSPORT",
   "HOSPITALITY_TOURISM",
   "TELECOMMUNICATIONS",
+  "REAL_ESTATE_PROPERTY",
+  "SOCIAL_CARE_COMMUNITY",
+  "CONSTRUCTION_TRADES",
 ];
 
 const CATEGORY_LABEL: Record<CareerCategory, string> = {
@@ -67,6 +70,9 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   CREATIVE_MEDIA: "Creative",
   PUBLIC_SERVICE_SAFETY: "Public",
   SPORT_FITNESS: "Sport",
+  REAL_ESTATE_PROPERTY: "Property",
+  SOCIAL_CARE_COMMUNITY: "Social Care",
+  CONSTRUCTION_TRADES: "Construction",
 };
 
 interface PlacedDot {

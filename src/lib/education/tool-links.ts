@@ -118,9 +118,12 @@ export function getToolInfo(toolName: string): ToolInfo | null {
   const lower = toolName.toLowerCase();
   if (TOOL_MAP[lower]) return TOOL_MAP[lower];
 
-  // Partial match — check if any key is contained in the tool name
+  // Partial match — only for keys 4+ chars, on word boundaries, to avoid
+  // false positives like the key 'r' matching any tool with the letter "r".
   for (const [key, info] of Object.entries(TOOL_MAP)) {
-    if (lower.includes(key) || key.includes(lower)) return info;
+    if (key.length < 4) continue;
+    const wordBoundary = new RegExp(`\\b${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+    if (wordBoundary.test(lower)) return info;
   }
 
   return null;

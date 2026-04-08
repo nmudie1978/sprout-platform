@@ -1449,42 +1449,57 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </div>
 
         <div className="px-5 py-4 space-y-3">
-          {/* Empty state — stage-aware suggestions tailored to the journey */}
-          {actions.length === 0 && (
-            <div className="space-y-3">
-              <div className="rounded-lg border border-teal-500/20 bg-teal-500/[0.04] p-3.5">
-                <p className="text-[11px] font-medium text-foreground/85 mb-1">Start your journey</p>
-                <p className="text-[10px] text-muted-foreground/70 leading-relaxed">
-                  Pick one. Small actions build the path. Each one teaches you something — even the ones that don&apos;t go to plan.
-                </p>
+          {/* Suggested momentum actions — always visible, richer than the
+              old empty-state list. Each suggestion is a starter move: title
+              + a one-line "how" so the user knows where to begin. Tapping
+              one adds it to their list. Already-added titles are filtered
+              out so a suggestion never duplicates an existing row. */}
+          {(() => {
+            const suggestions: { title: string; how: string; type: ActionType }[] = [
+              {
+                title: 'Build a starter skill stack',
+                how: `Pick 2–3 core skills a ${career.title} actually uses and start learning them this week — a free YouTube series or short online course is enough to begin.`,
+                type: 'learn',
+              },
+              {
+                title: 'Talk to someone in this career',
+                how: `Find a ${career.title} on LinkedIn, through your school's alumni network, or at a careers fair. Send one short polite message asking one honest question about their day.`,
+                type: 'reach',
+              },
+              {
+                title: 'Try the work in miniature',
+                how: `Build a tiny project, shadow for a day, or take an intro course — test what the work actually feels like before committing years to it.`,
+                type: 'do',
+              },
+            ];
+            const taken = new Set(actions.map(a => a.text.toLowerCase()));
+            const available = suggestions.filter(s => !taken.has(s.title.toLowerCase()));
+            if (available.length === 0) return null;
+            return (
+              <div>
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-medium mb-2">Suggested momentum</p>
+                <div className="space-y-1.5">
+                  {available.map((s, i) => {
+                    const t = typeMeta(s.type);
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
+                        className="group w-full flex items-start gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
+                      >
+                        <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
+                          <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
+                        </div>
+                        <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="space-y-1.5">
-                {([
-                  { type: 'research' as ActionType, text: `Watch a "day in the life" of a ${career.title}` },
-                  { type: 'research' as ActionType, text: `Find 3 ${career.title}s on LinkedIn and read their journey` },
-                  { type: 'reach' as ActionType,    text: `Message 1 person in this field — ask one honest question` },
-                  { type: 'do' as ActionType,       text: `Visit a workplace, open day, or career event` },
-                  { type: 'learn' as ActionType,    text: `Sign up for an introductory course or workshop` },
-                ]).map((s, i) => {
-                  const t = typeMeta(s.type);
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.text, done: false, type: s.type }])}
-                      className="group w-full flex items-center gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
-                    >
-                      <span className="text-base shrink-0">{t.emoji}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">{t.label}</p>
-                        <p className="text-[12px] text-foreground/80 group-hover:text-foreground leading-snug">{s.text}</p>
-                      </div>
-                      <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0" />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Action list */}
           {actions.length > 0 && (() => {

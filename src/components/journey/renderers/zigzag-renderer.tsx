@@ -146,9 +146,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
   return (
     <TooltipProvider delayDuration={300}>
     <div className="overflow-x-auto pb-4 -mx-2 px-2">
-      <p className="text-[10px] text-muted-foreground/30 mb-2 px-1">
-        Tap any step to explore details and add notes
-      </p>
 
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
         {/* SVG polyline connector */}
@@ -210,16 +207,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               </span>
             </div>
           )}
-          {/* Status pills — outside/above the card */}
-          {youAreHereIndex === -1 && (
-            <YouAreHerePill
-              canGoBack={false}
-              canGoForward={canGoForward}
-              onBack={handleYouAreHereBack}
-              onForward={handleYouAreHereForward}
-            />
-          )}
-          {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && <CompletePill />}
           <button
             onClick={() => {
               const foundationItem: JourneyItem = {
@@ -343,6 +330,16 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
               </p>
             )}
           </button>
+          {/* Status pills — always below the card so "You are here" never sits above it */}
+          {youAreHereIndex === -1 && (
+            <YouAreHerePill
+              canGoBack={false}
+              canGoForward={canGoForward}
+              onBack={handleYouAreHereBack}
+              onForward={handleYouAreHereForward}
+            />
+          )}
+          {cardDataMap?.[FOUNDATION_ITEM_ID]?.status === 'done' && youAreHereIndex !== -1 && <CompletePill />}
         </div>
 
         {/* Positioned nodes + cards + age markers */}
@@ -401,11 +398,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
-                    isYouAreHere={youAreHereIndex === i}
-                    canGoBack={canGoBack}
-                    canGoForward={canGoForward}
-                    onYouAreHereBack={handleYouAreHereBack}
-                    onYouAreHereForward={handleYouAreHereForward}
                   />
                 )}
                 <SharedNode
@@ -424,11 +416,6 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                     activeLayers={activeLayers}
                     isCurrent={isCurrent}
                     cardData={cardDataMap?.[item.id]}
-                    isYouAreHere={youAreHereIndex === i}
-                    canGoBack={canGoBack}
-                    canGoForward={canGoForward}
-                    onYouAreHereBack={handleYouAreHereBack}
-                    onYouAreHereForward={handleYouAreHereForward}
                   />
                 )}
                 {/* Age marker below card for low positions */}
@@ -454,6 +441,20 @@ export function ZigzagRenderer({ journey, onItemClick, overlayData, activeLayers
                       {ageLabel}
                     </span>
                   </div>
+                )}
+                {/* Status pill — always rendered as the bottom-most element of
+                    the column so it never appears above the card or node,
+                    regardless of whether the card sits high or low. */}
+                {youAreHereIndex === i && (
+                  <YouAreHerePill
+                    canGoBack={canGoBack}
+                    canGoForward={canGoForward}
+                    onBack={handleYouAreHereBack}
+                    onForward={handleYouAreHereForward}
+                  />
+                )}
+                {cardDataMap?.[item.id]?.status === 'done' && youAreHereIndex !== i && (
+                  <CompletePill />
                 )}
               </div>
             </div>
@@ -539,11 +540,6 @@ function ZigzagCard({
   activeLayers,
   isCurrent,
   cardData,
-  isYouAreHere,
-  canGoBack,
-  canGoForward,
-  onYouAreHereBack,
-  onYouAreHereForward,
 }: {
   item: JourneyItem;
   onClick: () => void;
@@ -551,11 +547,6 @@ function ZigzagCard({
   activeLayers?: Record<OverlayLayerId, boolean>;
   isCurrent?: boolean;
   cardData?: CardDataSummary;
-  isYouAreHere?: boolean;
-  canGoBack?: boolean;
-  canGoForward?: boolean;
-  onYouAreHereBack?: () => void;
-  onYouAreHereForward?: () => void;
 }) {
   const stage = STAGE_CONFIG[item.stage];
   const stepType = classifyStepType(item);
@@ -572,7 +563,6 @@ function ZigzagCard({
       ? 'bg-amber-500'
       : null;
 
-  const isDone = cardData?.status === 'done';
   const card = (
     <div className="w-full my-2">
     <button
@@ -616,17 +606,6 @@ function ZigzagCard({
         </div>
       </div>
     </button>
-    {/* Status pills sit BELOW the card so they always read as the
-        bottom-most element of the step — never confused with the title. */}
-    {isYouAreHere && (
-      <YouAreHerePill
-        canGoBack={!!canGoBack}
-        canGoForward={!!canGoForward}
-        onBack={onYouAreHereBack ?? (() => {})}
-        onForward={onYouAreHereForward ?? (() => {})}
-      />
-    )}
-    {isDone && !isYouAreHere && <CompletePill />}
     </div>
   );
 

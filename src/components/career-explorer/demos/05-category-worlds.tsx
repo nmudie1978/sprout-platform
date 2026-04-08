@@ -57,6 +57,9 @@ const WORLDS: World[] = [
   { key: "LOGISTICS_TRANSPORT", name: "Logistics", emoji: "🚛", description: "Keep the world moving", accent: "border-amber-200", accentBg: "bg-amber-50", accentText: "text-amber-700" },
   { key: "HOSPITALITY_TOURISM", name: "Hospitality", emoji: "🏨", description: "Create great experiences", accent: "border-pink-200", accentBg: "bg-pink-50", accentText: "text-pink-700" },
   { key: "TELECOMMUNICATIONS", name: "Telecom", emoji: "📡", description: "Connect people everywhere", accent: "border-teal-200", accentBg: "bg-teal-50", accentText: "text-teal-700" },
+  { key: "REAL_ESTATE_PROPERTY", name: "Property", emoji: "🏡", description: "Help people find homes and spaces", accent: "border-yellow-200", accentBg: "bg-yellow-50", accentText: "text-yellow-700" },
+  { key: "SOCIAL_CARE_COMMUNITY", name: "Social Care", emoji: "🤝", description: "Support people and strengthen communities", accent: "border-purple-200", accentBg: "bg-purple-50", accentText: "text-purple-700" },
+  { key: "CONSTRUCTION_TRADES", name: "Construction", emoji: "🏗️", description: "Build the places we live and work", accent: "border-stone-300", accentBg: "bg-stone-50", accentText: "text-stone-700" },
 ];
 
 export default function CategoryWorlds({ careers }: DemoProps) {

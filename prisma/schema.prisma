@@ -324,6 +324,9 @@ model User {
   // Goal-scoped journey data
   journeyGoalData JourneyGoalData[]
 
+  // Saved jobs (bookmarks — separate from Application)
+  savedJobs SavedJob[]
+
   @@index([email])
   @@index([role])
   @@index([accountStatus])
@@ -393,8 +396,8 @@ model YouthProfile {
   city    String? // City name for job matching (e.g., "Oslo", "Fjellhamar")
   region  String? // Region/county (e.g., "Viken", "Oslo")
   country String? @default("Norway") // Country (default Norway)
-  lat     Float?  // Latitude for distance calculations
-  lng     Float?  // Longitude for distance calculations
+  lat     Float? // Latitude for distance calculations
+  lng     Float? // Longitude for distance calculations
   address String? // Full address (optional, more specific)
 
   // My Path personalization fields
@@ -412,8 +415,8 @@ model YouthProfile {
   discoveryPreferences Json?
 
   // Structured Career Goals (Primary + Secondary)
-  primaryGoal   Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
-  secondaryGoal Json? // Same structure, optional
+  primaryGoal        Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
+  secondaryGoal      Json? // Same structure, optional
   generatedTimeline  Json? // Cached AI-generated career timeline
   foundationCardData Json? // User-editable "Your Foundation" step — persists across goal changes
 
@@ -422,14 +425,14 @@ model YouthProfile {
   // ============================================
   journeyState          String    @default("BASELINE_PROFILE") // Current journey state
   journeyCompletedSteps String[]  @default([]) // Array of completed step IDs
-  journeySkippedSteps   Json?     // Map of skipped step IDs to skip reasons
+  journeySkippedSteps   Json? // Map of skipped step IDs to skip reasons
   journeyLastUpdated    DateTime? // Last journey state update
   journeySummary        Json? // Aggregated journey summary object
 
   // Relations for new journey features
-  savedItems        SavedItem[]
-  reflections       JourneyReflection[]
-  journeyNotes      JourneyNote[]
+  savedItems          SavedItem[]
+  reflections         JourneyReflection[]
+  journeyNotes        JourneyNote[]
   traitObservations   TraitObservation[]
   journeySnapshots    JourneySnapshot[]
   contentInteractions ContentInteraction[]
@@ -587,6 +590,7 @@ model MicroJob {
   conversations   Conversation[]
   jobCompletions  JobCompletion[]
   vaultItems      VaultItem[]
+  savedBy         SavedJob[]
 
   @@index([postedById])
   @@index([category])
@@ -628,6 +632,22 @@ model Application {
   // Compound indexes for optimized queries
   @@index([youthId, displayOrder, createdAt]) // Main applications list query
   @@index([youthId, status]) // Status filtering
+}
+
+// Bookmarked jobs — distinct from Application. A youth can save a job to
+// revisit later without applying. Removing the row "unsaves" it.
+model SavedJob {
+  id        String   @id @default(cuid())
+  jobId     String
+  youthId   String
+  createdAt DateTime @default(now())
+
+  job   MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  youth User     @relation(fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, youthId])
+  @@index([youthId, createdAt])
+  @@index([jobId])
 }
 
 model Review {
@@ -2227,7 +2247,7 @@ model GuardianProfile {
 model WorkerGuardianLink {
   id              String             @id @default(uuid())
   workerId        String
-  guardianId      String?            // Optional for invite-based flow (set when claimed)
+  guardianId      String? // Optional for invite-based flow (set when claimed)
   status          GuardianLinkStatus @default(PENDING)
   inviteCode      String?            @unique
   inviteExpiresAt DateTime?
@@ -2331,7 +2351,6 @@ model AgeEligibilityAuditLog {
   @@index([workerId, jobId]) // For checking if a specific apply was logged
 }
 
-
 // ============================================
 // INTERVIEW PREP SYSTEM
 // ============================================
@@ -2339,8 +2358,8 @@ model AgeEligibilityAuditLog {
 // Interview questions - can be seeded or generated
 model InterviewQuestion {
   id           String   @id @default(cuid())
-  category     String   // General, Tech, Healthcare, Green, Creative
-  difficulty   String   // Easy, Medium, Hard
+  category     String // General, Tech, Healthcare, Green, Creative
+  difficulty   String // Easy, Medium, Hard
   questionText String   @db.Text
   tip          String?  @db.Text
   answerHint   String?  @db.Text
@@ -2348,8 +2367,8 @@ model InterviewQuestion {
   isGenerated  Boolean  @default(false) // AI-generated vs seeded
   createdAt    DateTime @default(now())
 
-  userStates         UserQuestionState[]
-  generatedSetItems  GeneratedSetQuestion[]
+  userStates        UserQuestionState[]
+  generatedSetItems GeneratedSetQuestion[]
 
   @@index([category])
   @@index([difficulty])
@@ -2360,9 +2379,9 @@ model InterviewQuestion {
 model GeneratedQuestionSet {
   id            String   @id @default(cuid())
   userId        String
-  roleTarget    String?  // e.g., "Software Engineer"
-  category      String   // Category filter used
-  difficultyMix Json     // { easy: 2, medium: 3, hard: 1 }
+  roleTarget    String? // e.g., "Software Engineer"
+  category      String // Category filter used
+  difficultyMix Json // { easy: 2, medium: 3, hard: 1 }
   focusAreas    String[] // Optional focus areas
   generatorType String   @default("MOCK") // MOCK or AI
   createdAt     DateTime @default(now())
@@ -2397,7 +2416,7 @@ model UserQuestionState {
   saved           Boolean   @default(false)
   practicedCount  Int       @default(0)
   lastPracticedAt DateTime?
-  confidence      Int?      // 1-5 rating
+  confidence      Int? // 1-5 rating
   notes           String?   @db.Text
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -2438,23 +2457,23 @@ model CareerEvent {
   organizer   String
 
   // Date and time
-  startDate   DateTime
-  endDate     DateTime? // Optional for single-day events
-  time        String    // Display time range e.g., "09:00 - 17:00"
+  startDate DateTime
+  endDate   DateTime? // Optional for single-day events
+  time      String // Display time range e.g., "09:00 - 17:00"
 
   // Location
   locationMode LocationMode
-  city         String?  // City for in-person events
-  region       String?  // Region/county
-  country      String?  // Country
-  venue        String?  // Specific venue name/address
-  lat          Float?   // Latitude for distance calculations
-  lng          Float?   // Longitude for distance calculations
-  onlineUrl    String?  // URL for online events
+  city         String? // City for in-person events
+  region       String? // Region/county
+  country      String? // Country
+  venue        String? // Specific venue name/address
+  lat          Float? // Latitude for distance calculations
+  lng          Float? // Longitude for distance calculations
+  onlineUrl    String? // URL for online events
 
   // Registration
   registrationUrl String
-  spots           Int?   // Optional capacity limit
+  spots           Int? // Optional capacity limit
 
   // Youth targeting
   isYouthFocused Boolean  @default(false) // Explicitly targets 15-23 age group
@@ -2602,12 +2621,12 @@ model ShadowRequest {
   flexibleSchedule  Boolean   @default(true) // Youth is flexible on timing
 
   // STEP 6: What Youth Brings (commitments)
-  commitsPunctuality   Boolean @default(true)
-  commitsCuriosity     Boolean @default(true)
-  commitsRespect       Boolean @default(true)
-  commitsFollowRules   Boolean @default(true)
-  acceptsNda           Boolean @default(false) // Optional NDA acceptance
-  acceptsSafeguarding  Boolean @default(false) // Accepted safeguarding rules
+  commitsPunctuality  Boolean @default(true)
+  commitsCuriosity    Boolean @default(true)
+  commitsRespect      Boolean @default(true)
+  commitsFollowRules  Boolean @default(true)
+  acceptsNda          Boolean @default(false) // Optional NDA acceptance
+  acceptsSafeguarding Boolean @default(false) // Accepted safeguarding rules
 
   // STEP 7: Request Message
   message         String  @db.Text // Youth's message to host
@@ -2615,15 +2634,15 @@ model ShadowRequest {
 
   // Scheduled details (set after approval)
   scheduledDate      DateTime? // Confirmed shadow date
-  scheduledStartTime String?   // e.g., "09:00"
-  scheduledEndTime   String?   // e.g., "12:00"
-  locationName       String?   // Workplace name
-  locationAddress    String?   // Workplace address
+  scheduledStartTime String? // e.g., "09:00"
+  scheduledEndTime   String? // e.g., "12:00"
+  locationName       String? // Workplace name
+  locationAddress    String? // Workplace address
 
   // Host response
-  hostResponseAt   DateTime?
-  hostMessage      String?   @db.Text // Optional message from host
-  declineReason    String?   @db.VarChar(200) // If declined
+  hostResponseAt DateTime?
+  hostMessage    String?   @db.Text // Optional message from host
+  declineReason  String?   @db.VarChar(200) // If declined
 
   // Guardian consent (required for under 16)
   requiresGuardianConsent Boolean   @default(false)
@@ -2631,16 +2650,16 @@ model ShadowRequest {
   guardianConsentAt       DateTime?
 
   // Safety & Trust
-  hostVerified         Boolean @default(false) // Host has verification badge
-  publicWorkplace      Boolean @default(true) // Workplace is public/registered
-  noPrivateTransport   Boolean @default(true) // No private transport offered
-  noIsolatedScenarios  Boolean @default(true) // Avoids 1:1 isolated scenarios
-  emergencyContact     String? @db.VarChar(100) // Youth's emergency contact
+  hostVerified          Boolean @default(false) // Host has verification badge
+  publicWorkplace       Boolean @default(true) // Workplace is public/registered
+  noPrivateTransport    Boolean @default(true) // No private transport offered
+  noIsolatedScenarios   Boolean @default(true) // Avoids 1:1 isolated scenarios
+  emergencyContact      String? @db.VarChar(100) // Youth's emergency contact
   emergencyContactPhone String? @db.VarChar(20)
 
   // Completion tracking
-  completedAt    DateTime?
-  youthAttended  Boolean?
+  completedAt     DateTime?
+  youthAttended   Boolean?
   durationMinutes Int? // Actual duration
 
   // Reports
@@ -2675,12 +2694,12 @@ model ShadowReflection {
   youth   User   @relation("YouthShadowReflections", fields: [youthId], references: [id], onDelete: Cascade)
 
   // Reflection questions
-  whatSurprised       String? @db.Text // What surprised you?
-  whatLiked           String? @db.Text // What did you like?
-  whatDisliked        String? @db.Text // What didn't you like?
-  skillsNoticed       String[] // Skills you noticed being used
-  wouldExplore        Boolean? // Would you want to explore this further?
-  wouldExploreReason  String?  @db.Text // Why or why not?
+  whatSurprised      String?  @db.Text // What surprised you?
+  whatLiked          String?  @db.Text // What did you like?
+  whatDisliked       String?  @db.Text // What didn't you like?
+  skillsNoticed      String[] // Skills you noticed being used
+  wouldExplore       Boolean? // Would you want to explore this further?
+  wouldExploreReason String?  @db.Text // Why or why not?
 
   // Additional insights
   keyTakeaways    String[] // Up to 3 key takeaways
@@ -2692,9 +2711,9 @@ model ShadowReflection {
   hostHelpfulness   Int? // 1-5 scale
 
   // Journey integration flags
-  addedToTimeline    Boolean @default(false)
-  strengthsUpdated   Boolean @default(false)
-  goalStackUpdated   Boolean @default(false)
+  addedToTimeline  Boolean @default(false)
+  strengthsUpdated Boolean @default(false)
+  goalStackUpdated Boolean @default(false)
 
   @@index([youthId])
   @@index([createdAt])
@@ -2718,23 +2737,23 @@ enum CareerClipVerifiedStatus {
 }
 
 model CareerClip {
-  id            String                   @id @default(cuid())
-  careerSlug    String                   @db.VarChar(100) // e.g., "doctor", "electrician"
-  categorySlug  String                   @db.VarChar(100) // e.g., "healthcare", "technology"
-  title         String                   @db.VarChar(200)
-  platform      CareerClipPlatform
-  url           String                   @db.VarChar(500)
-  thumbnailUrl  String?                  @db.VarChar(500)
-  durationSecs  Int? // Duration in seconds, if known
+  id           String             @id @default(cuid())
+  careerSlug   String             @db.VarChar(100) // e.g., "doctor", "electrician"
+  categorySlug String             @db.VarChar(100) // e.g., "healthcare", "technology"
+  title        String             @db.VarChar(200)
+  platform     CareerClipPlatform
+  url          String             @db.VarChar(500)
+  thumbnailUrl String?            @db.VarChar(500)
+  durationSecs Int? // Duration in seconds, if known
 
   // Verification status - ONLY valid clips are displayed
-  verifiedStatus   CareerClipVerifiedStatus @default(PENDING)
-  lastCheckedAt    DateTime?
-  checkFailReason  String?                  @db.VarChar(500)
+  verifiedStatus  CareerClipVerifiedStatus @default(PENDING)
+  lastCheckedAt   DateTime?
+  checkFailReason String?                  @db.VarChar(500)
 
   // Metadata
-  sourceLabel   String                   @default("") @db.VarChar(100) // e.g., "TikTok (verified link)"
-  displayOrder  Int                      @default(0) // For manual ordering within category
+  sourceLabel  String @default("") @db.VarChar(100) // e.g., "TikTok (verified link)"
+  displayOrder Int    @default(0) // For manual ordering within category
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2867,15 +2886,15 @@ model TimelineEvent {
 // ============================================
 
 model JourneyNote {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   profileId String
-  title     String?  @db.VarChar(200) // Optional title
-  content   String   @db.Text // The note content
-  color     String?  @db.VarChar(20) // Optional color tag (yellow, blue, green, etc.)
-  pinned    Boolean  @default(false) // Pin important notes to top
-  groupName String?  @db.VarChar(100) // Optional named group
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  title     String?   @db.VarChar(200) // Optional title
+  content   String    @db.Text // The note content
+  color     String?   @db.VarChar(20) // Optional color tag (yellow, blue, green, etc.)
+  pinned    Boolean   @default(false) // Pin important notes to top
+  groupName String?   @db.VarChar(100) // Optional named group
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime? // null = active, set = soft-deleted
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -2888,14 +2907,14 @@ model JourneyNote {
 }
 
 model TraitObservation {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   profileId   String
-  traitId     String   @db.VarChar(50)
-  observation String   @db.VarChar(20) // "noticed" | "unsure" | "not_me"
-  contextType String?  @db.VarChar(50)
-  contextId   String?  @db.VarChar(100)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  traitId     String    @db.VarChar(50)
+  observation String    @db.VarChar(20) // "noticed" | "unsure" | "not_me"
+  contextType String?   @db.VarChar(50)
+  contextId   String?   @db.VarChar(100)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   deletedAt   DateTime? // null = active, set = soft-deleted
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -2916,7 +2935,7 @@ model JourneySnapshot {
   profileId String
   trigger   String   @db.VarChar(50) // "manual" | "pre_import" | "pre_bulk_delete" | "pre_restore"
   label     String?  @db.VarChar(200)
-  data      Json     // Full journey export envelope
+  data      Json // Full journey export envelope
   createdAt DateTime @default(now())
 
   profile YouthProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -2944,7 +2963,7 @@ model ContentInteraction {
 
 model TranslationCache {
   id           String   @id @default(cuid())
-  contentHash  String   // SHA-256 of source text
+  contentHash  String // SHA-256 of source text
   sourceLocale String   @db.VarChar(5)
   targetLocale String   @db.VarChar(5)
   sourceText   String   @db.Text
@@ -2967,10 +2986,10 @@ model TranslationCache {
 // and can be loaded back when they return to that goal.
 
 model JourneyGoalData {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   userId    String
-  goalId    String   // Slugified goal title (e.g., "physiotherapist-fysioterapeut")
-  goalTitle String   // Human-readable goal title
+  goalId    String // Slugified goal title (e.g., "physiotherapist-fysioterapeut")
+  goalTitle String // Human-readable goal title
 
   // Journey state for this goal
   journeyState          String   @default("REFLECT_ON_STRENGTHS")
@@ -3004,35 +3023,35 @@ model JourneyGoalData {
 // ============================================
 
 model CareerStory {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
   // Video
-  videoUrl    String   // YouTube URL (e.g. https://youtube.com/watch?v=xxx or youtu.be/xxx)
-  videoId     String   // Extracted YouTube video ID for embedding
-  duration    String?  // e.g. "3:45"
+  videoUrl String // YouTube URL (e.g. https://youtube.com/watch?v=xxx or youtu.be/xxx)
+  videoId  String // Extracted YouTube video ID for embedding
+  duration String? // e.g. "3:45"
 
   // Person
-  name        String   // e.g. "Nicky M."
-  jobTitle    String   // e.g. "Programme Manager"
-  company     String?  // e.g. "Telenor" (optional, can be anonymised)
-  location    String?  // e.g. "Oslo"
-  yearsInRole Int?     // e.g. 15
+  name        String // e.g. "Nicky M."
+  jobTitle    String // e.g. "Programme Manager"
+  company     String? // e.g. "Telenor" (optional, can be anonymised)
+  location    String? // e.g. "Oslo"
+  yearsInRole Int? // e.g. 15
 
   // Tagging — links story to careers
-  careerTags  String[] // e.g. ["it-project-manager", "programme-manager"]
-  industry    String?  // e.g. "Telecommunications"
+  careerTags String[] // e.g. ["it-project-manager", "programme-manager"]
+  industry   String? // e.g. "Telecommunications"
 
   // Content
-  headline    String   // e.g. "From junior dev to running a €50M programme"
-  takeaways   String[] // 2-3 key points, e.g. ["Started as a developer", "Moved into management after 8 years"]
+  headline  String // e.g. "From junior dev to running a €50M programme"
+  takeaways String[] // 2-3 key points, e.g. ["Started as a developer", "Moved into management after 8 years"]
 
   // Admin
-  featured    Boolean  @default(false)
-  published   Boolean  @default(false)
-  uploadedBy  String?  // Admin user ID who uploaded
+  featured   Boolean @default(false)
+  published  Boolean @default(false)
+  uploadedBy String? // Admin user ID who uploaded
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([published])
   @@index([careerTags])
@@ -3044,9 +3063,9 @@ model CareerStory {
 
 model VideoCache {
   id        String   @id @default(cuid())
-  cacheKey  String   @unique  // e.g. "career-videos:doctor" or "ditl:nurse"
-  data      Json               // cached API response
-  expiresAt DateTime           // when to refresh (e.g. 7 days)
+  cacheKey  String   @unique // e.g. "career-videos:doctor" or "ditl:nurse"
+  data      Json // cached API response
+  expiresAt DateTime // when to refresh (e.g. 7 days)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

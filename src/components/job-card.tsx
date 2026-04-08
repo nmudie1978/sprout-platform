@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { MapPin, Clock, Calendar, AlertCircle, CheckCircle2, ChevronRight } from "lucide-react";
 import { RoleThumbnailSquare } from "@/components/role-thumbnail";
+import { SaveJobButton } from "@/components/save-job-button";
 
 // Category configuration
 const categoryConfig: Record<string, { emoji: string; label: string }> = {
@@ -313,10 +314,13 @@ export const JobCard = memo(function JobCard({ job, variant = "default", showDea
               {category.label}
             </Badge>
           )}
-          <span className="text-xs text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
-            View details
-            <ChevronRight className="h-4 w-4" />
-          </span>
+          <div className="flex items-center gap-1">
+            <SaveJobButton jobId={job.id} variant="label" />
+            <span className="text-xs text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+              View details
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          </div>
         </div>
       </Card>
     </Link>

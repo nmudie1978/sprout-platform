@@ -280,6 +280,9 @@ const CAREER_OPTIONS = [
   { value: 'MANUFACTURING_ENGINEERING', label: 'Engineering & Manufacturing' },
   { value: 'LOGISTICS_TRANSPORT', label: 'Logistics & Transport' },
   { value: 'HOSPITALITY_TOURISM', label: 'Hospitality & Tourism' },
+  { value: 'REAL_ESTATE_PROPERTY', label: 'Real Estate & Property' },
+  { value: 'SOCIAL_CARE_COMMUNITY', label: 'Social Care & Community' },
+  { value: 'CONSTRUCTION_TRADES', label: 'Construction & Trades' },
 ];
 
 function CareerDiscoveryContent({
