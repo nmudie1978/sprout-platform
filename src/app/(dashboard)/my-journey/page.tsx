@@ -25,7 +25,7 @@ import {
   ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
-  Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
+  Heart, Wrench, Check, CheckCircle2, CircleDot, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -1203,15 +1203,24 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   // journey log they can scroll back through.
   type ActionType = 'research' | 'reach' | 'do' | 'learn' | 'reflect';
   type ActionReaction = 'confirmed' | 'unsure' | 'mixed';
+  // Three-state status replaces the original boolean `done`. We keep
+  // `done` for backwards-compat with existing localStorage entries
+  // (older items have only `done` and no `status` — derived below).
+  type ActionStatus = 'not_started' | 'in_progress' | 'done';
   type Action = {
     id: string;
     text: string;
     done: boolean;
+    status?: ActionStatus;
     type?: ActionType;
     completedAt?: number;
     reaction?: ActionReaction;
     note?: string;
   };
+  // Derive a status from an action — old localStorage entries
+  // pre-date the `status` field so we infer from `done`.
+  const statusOf = (a: Action): ActionStatus =>
+    a.status ?? (a.done ? 'done' : 'not_started');
 
   const actionsKey = `journey-actions-${career.id}`;
   const [actions, setActions] = useState<Action[]>([]);
@@ -1236,23 +1245,35 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       id: Date.now().toString(),
       text: newAction.trim(),
       done: false,
+      status: 'not_started',
       type: newActionType,
     }]);
     setNewAction('');
   };
 
-  const toggleAction = (id: string) => {
+  // Cycle the action status: not_started → in_progress → done → not_started.
+  // Tapping the status indicator advances one state. When an action becomes
+  // done we open the reflection prompt; un-ticking a done item rolls back
+  // to "in progress" so the user can mark "no actually still working on it".
+  const cycleActionStatus = (id: string) => {
     const target = actions.find(a => a.id === id);
     if (!target) return;
-    const becomingDone = !target.done;
+    const current = statusOf(target);
+    const next: ActionStatus =
+      current === 'not_started' ? 'in_progress'
+        : current === 'in_progress' ? 'done'
+          : 'not_started';
+    const becomingDone = next === 'done';
+    const leavingDone = current === 'done';
     saveActions(actions.map(a => a.id === id
       ? {
           ...a,
+          status: next,
           done: becomingDone,
           completedAt: becomingDone ? Date.now() : undefined,
-          // Clear reaction/note if un-ticking
-          reaction: becomingDone ? a.reaction : undefined,
-          note: becomingDone ? a.note : undefined,
+          // Clear reflection if leaving the done state
+          reaction: leavingDone ? undefined : a.reaction,
+          note: leavingDone ? undefined : a.note,
         }
       : a
     ));
@@ -1263,6 +1284,8 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       setReflectingId(null);
     }
   };
+  // Backwards-compat alias — older code paths still call toggleAction.
+  const toggleAction = cycleActionStatus;
 
   const saveReflection = (id: string, reaction: ActionReaction) => {
     saveActions(actions.map(a => a.id === id
@@ -1455,11 +1478,25 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               one adds it to their list. Already-added titles are filtered
               out so a suggestion never duplicates an existing row. */}
           {(() => {
-            const suggestions: { title: string; how: string; type: ActionType }[] = [
+            // Course-platform deep links — scoped to the user's career so a
+            // "Try a course" suggestion lands directly on a relevant search
+            // result rather than dumping the user on a homepage to type it
+            // in themselves. We render these as separate chips outside the
+            // suggestion's "add to actions" button, because nesting an <a>
+            // with a click handler inside a <button> is invalid HTML.
+            const courseQuery = encodeURIComponent(career.title);
+            const courseLinks = [
+              { label: 'Coursera', url: `https://www.coursera.org/search?query=${courseQuery}` },
+              { label: 'edX', url: `https://www.edx.org/search?q=${courseQuery}` },
+              { label: 'YouTube', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${career.title} tutorial`)}` },
+            ];
+
+            const suggestions: { title: string; how: string; type: ActionType; showCourses?: boolean }[] = [
               {
                 title: 'Build a starter skill stack',
                 how: `Pick 2–3 core skills a ${career.title} actually uses and start learning them this week — a free YouTube series or short online course is enough to begin.`,
                 type: 'learn',
+                showCourses: true,
               },
               {
                 title: 'Talk to someone in this career',
@@ -1470,6 +1507,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                 title: 'Try the work in miniature',
                 how: `Build a tiny project, shadow for a day, or take an intro course — test what the work actually feels like before committing years to it.`,
                 type: 'do',
+                showCourses: true,
               },
             ];
             const taken = new Set(actions.map(a => a.text.toLowerCase()));
@@ -1482,18 +1520,36 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   {available.map((s, i) => {
                     const t = typeMeta(s.type);
                     return (
-                      <button
-                        key={i}
-                        onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
-                        className="group w-full flex items-start gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
-                      >
-                        <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
-                          <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
-                        </div>
-                        <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
-                      </button>
+                      <div key={i} className="rounded-lg border border-border/30 bg-background/30 hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all">
+                        <button
+                          onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
+                          className="group w-full flex items-start gap-3 px-3 py-2.5 text-left"
+                        >
+                          <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
+                            <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
+                          </div>
+                          <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
+                        </button>
+                        {s.showCourses && (
+                          <div className="px-3 pb-2.5 -mt-0.5 flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] text-muted-foreground/50">Try a course on:</span>
+                            {courseLinks.map((c) => (
+                              <a
+                                key={c.label}
+                                href={c.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
+                              >
+                                {c.label}
+                                <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -1501,22 +1557,48 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             );
           })()}
 
-          {/* Action list */}
+          {/* Action list — three states: not started, in progress, done.
+              Tapping the status indicator on the left cycles through them
+              so the user can mark "I'm working on this" without having to
+              tick it as done prematurely. */}
           {actions.length > 0 && (() => {
-            const pending = actions.filter(a => !a.done);
-            const completed = actions.filter(a => a.done).sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
+            const pending = actions.filter(a => statusOf(a) !== 'done');
+            const completed = actions.filter(a => statusOf(a) === 'done').sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
             return (
               <div className="space-y-1">
                 {pending.map((action) => {
                   const t = typeMeta(action.type);
+                  const st = statusOf(action);
+                  const inProgress = st === 'in_progress';
                   return (
                     <div key={action.id} className="group flex items-center gap-3 rounded-lg px-2.5 py-2 -mx-1 hover:bg-muted/5 transition-colors">
-                      <button onClick={() => toggleAction(action.id)}
-                        className="flex h-[20px] w-[20px] items-center justify-center rounded-md border border-muted-foreground/30 shrink-0 transition-all hover:border-teal-400 hover:bg-teal-500/10"
-                        aria-label="Mark complete"
-                      />
+                      <button
+                        onClick={() => cycleActionStatus(action.id)}
+                        className={cn(
+                          'flex h-[20px] w-[20px] items-center justify-center rounded-md shrink-0 transition-all',
+                          inProgress
+                            ? 'bg-amber-500/20 border border-amber-500/50 hover:bg-amber-500/30'
+                            : 'border border-muted-foreground/30 hover:border-teal-400 hover:bg-teal-500/10'
+                        )}
+                        title={inProgress ? 'In progress — tap to mark done' : 'Not started — tap to mark in progress'}
+                        aria-label={inProgress ? 'Mark complete' : 'Mark in progress'}
+                      >
+                        {inProgress && (
+                          <CircleDot className="h-3 w-3 text-amber-400" />
+                        )}
+                      </button>
                       <span className="text-base leading-none shrink-0" title={t.label}>{t.emoji}</span>
-                      <span className="text-[13px] flex-1 text-foreground/85 leading-snug">{action.text}</span>
+                      <span className={cn(
+                        'text-[13px] flex-1 leading-snug',
+                        inProgress ? 'text-foreground/95 font-medium' : 'text-foreground/85'
+                      )}>
+                        {action.text}
+                      </span>
+                      {inProgress && (
+                        <span className="text-[9px] uppercase tracking-wider font-semibold text-amber-400/80 shrink-0">
+                          In progress
+                        </span>
+                      )}
                       <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
                         <Trash2 className="h-3 w-3" />
                       </button>
