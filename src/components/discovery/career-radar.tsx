@@ -186,10 +186,58 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   const dots = useMemo(() => placeDots(matched), [matched]);
 
-  // Filter applied to both the radar dots and the matches report list
+  // Filter applied to both the radar dots and the matches report list.
+  // "top only" mode also re-spaces the dots so they don't bunch on top of
+  // each other, since with only ~3 dots there's plenty of empty radar.
   const visibleDots = useMemo(() => {
-    if (filterMode === "top") return dots.filter((d) => d.topMatch);
     if (filterMode === "strong") return dots.filter((d) => d.ring === 0);
+    if (filterMode === "top") {
+      const topDots = dots.filter((d) => d.topMatch);
+      if (topDots.length === 0) return topDots;
+
+      // Recover each top dot's original angle from its (cx,cy), then enforce
+      // a minimum angular separation so overlapping dots get pushed apart.
+      // Push them outward to a roomier radius since the rest of the radar
+      // is empty in this mode.
+      const TOP_RADIUS = 95;
+      const MIN_SEP_DEG = 35;
+
+      const withAngle = topDots.map((d) => {
+        const dx = d.cx - CENTER;
+        const dy = d.cy - CENTER;
+        let deg = Math.atan2(dy, dx) * (180 / Math.PI);
+        if (deg < 0) deg += 360;
+        return { dot: d, deg };
+      });
+
+      // Sort by angle, then walk through pushing each dot at least MIN_SEP_DEG
+      // away from the previous one.
+      withAngle.sort((a, b) => a.deg - b.deg);
+      for (let i = 1; i < withAngle.length; i++) {
+        const gap = withAngle[i].deg - withAngle[i - 1].deg;
+        if (gap < MIN_SEP_DEG) {
+          withAngle[i].deg = withAngle[i - 1].deg + MIN_SEP_DEG;
+        }
+      }
+      // Also enforce wrap-around separation between last and first
+      if (withAngle.length > 1) {
+        const wrapGap = 360 - withAngle[withAngle.length - 1].deg + withAngle[0].deg;
+        if (wrapGap < MIN_SEP_DEG) {
+          // Shift everything backward by half the deficit
+          const shift = (MIN_SEP_DEG - wrapGap) / 2;
+          for (const w of withAngle) w.deg = (w.deg - shift + 360) % 360;
+        }
+      }
+
+      return withAngle.map(({ dot, deg }) => {
+        const rad = deg * (Math.PI / 180);
+        return {
+          ...dot,
+          cx: CENTER + TOP_RADIUS * Math.cos(rad),
+          cy: CENTER + TOP_RADIUS * Math.sin(rad),
+        };
+      });
+    }
     return dots;
   }, [dots, filterMode]);
 
