@@ -243,10 +243,15 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "relative space-y-0.5 rounded-xl border border-teal-500/20 bg-gradient-to-b from-teal-500/[0.07] to-teal-500/[0.02] overflow-hidden",
+            "relative space-y-0.5 rounded-xl border border-slate-700/60 bg-slate-900/40 overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
+          {/* Top edge teal highlight — thin gradient line that fades to the sides */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/60 to-transparent"
+          />
           {/* Ambient outer glow — soft, slow breathing pulse on the border */}
           <div
             aria-hidden
