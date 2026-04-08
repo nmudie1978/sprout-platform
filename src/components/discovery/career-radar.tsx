@@ -780,32 +780,86 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             >
               {bands.map((band) => (
                 <div key={band.ring} className="snap-start shrink-0 w-full px-4 pb-3">
-                  <div className="rounded-lg border bg-background overflow-hidden divide-y">
-                    {band.dots.map((d) => (
-                      <button
-                        key={d.career.id}
-                        type="button"
-                        onClick={() => {
-                          window.dispatchEvent(
-                            new CustomEvent("open-career-detail", {
-                              detail: d.career,
-                            })
+                  <div className="rounded-lg border bg-background overflow-hidden">
+                    <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr className="border-b border-border/40 bg-muted/20">
+                          <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
+                          <th className="hidden sm:table-cell text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
+                          <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
+                          <th className="hidden md:table-cell text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/30">
+                        {band.dots.map((d) => {
+                          const growth = d.career.growthOutlook;
+                          const growthClass =
+                            growth === "high"
+                              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"
+                              : growth === "medium"
+                              ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25"
+                              : "bg-slate-500/15 text-slate-500 dark:text-slate-400 border-slate-500/25";
+                          return (
+                            <tr
+                              key={d.career.id}
+                              onClick={() => {
+                                window.dispatchEvent(
+                                  new CustomEvent("open-career-detail", {
+                                    detail: d.career,
+                                  })
+                                );
+                              }}
+                              className={cn(
+                                "cursor-pointer hover:bg-muted/30 transition-colors",
+                                d.topMatch && "bg-pink-500/[0.06]"
+                              )}
+                            >
+                              <td className="px-3 py-2 align-top">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="text-sm leading-none shrink-0">{d.career.emoji}</span>
+                                  <span className="text-foreground font-medium truncate">{d.career.title}</span>
+                                  {d.topMatch && (
+                                    <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
+                                      Top
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="hidden sm:table-cell px-3 py-2 align-top text-foreground/70 whitespace-nowrap">
+                                {d.career.avgSalary?.split(" ")[0] ?? "—"}
+                              </td>
+                              <td className="px-3 py-2 align-top">
+                                <span
+                                  className={cn(
+                                    "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize",
+                                    growthClass
+                                  )}
+                                  title={`Growth outlook: ${growth}`}
+                                >
+                                  <span
+                                    className={cn(
+                                      "inline-block w-1.5 h-1.5 rounded-full",
+                                      growth === "high"
+                                        ? "bg-emerald-500"
+                                        : growth === "medium"
+                                        ? "bg-amber-500"
+                                        : "bg-slate-400"
+                                    )}
+                                  />
+                                  {growth}
+                                </span>
+                              </td>
+                              <td
+                                className="hidden md:table-cell px-3 py-2 align-top text-foreground/65 max-w-[280px] truncate"
+                                title={d.career.educationPath}
+                              >
+                                {d.career.educationPath}
+                              </td>
+                            </tr>
                           );
-                        }}
-                        className={cn(
-                          "w-full flex items-center gap-2 px-3 py-1 text-left hover:bg-muted/50 transition-colors",
-                          d.topMatch && "bg-pink-500/5"
-                        )}
-                      >
-                        <span className="text-[11px] leading-none shrink-0 opacity-60">{d.career.emoji}</span>
-                        <span className="text-[12px] truncate flex-1">{d.career.title}</span>
-                        {d.topMatch && (
-                          <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
-                            Top
-                          </span>
-                        )}
-                      </button>
-                    ))}
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}
