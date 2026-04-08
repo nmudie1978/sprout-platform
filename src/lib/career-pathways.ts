@@ -346,6 +346,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["programming", "problem-solving", "logical thinking", "teamwork", "continuous learning"],
       dailyTasks: ["Write code", "Debug issues", "Review code", "Plan features", "Collaborate with team"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "data-scientist",
@@ -379,6 +380,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["design thinking", "user research", "prototyping", "visual design", "communication"],
       dailyTasks: ["Research users", "Create wireframes", "Design interfaces", "Test with users", "Collaborate with developers"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "cloud-engineer",
@@ -497,10 +499,11 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       emoji: "🧪",
       description: "Ensure software quality through testing strategies, test automation, and defect prevention.",
       avgSalary: "500,000 - 750,000 kr/year",
-      educationPath: "Bachelor's in CS/IT + ISTQB certification",
+      educationPath: "Bachelor's in CS/IT or self-taught + ISTQB certification",
       keySkills: ["test automation", "manual testing", "programming", "attention to detail", "analytical thinking"],
       dailyTasks: ["Write test cases", "Automate tests", "Report bugs", "Review requirements", "Validate releases"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "scrum-master",
@@ -579,6 +582,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["JavaScript/TypeScript", "React/Vue/Angular", "CSS", "responsive design", "accessibility"],
       dailyTasks: ["Build UI components", "Implement designs", "Optimise performance", "Write tests", "Review code"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "backend-developer",
@@ -590,6 +594,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["server-side languages", "databases", "API design", "security", "system design"],
       dailyTasks: ["Design APIs", "Write server code", "Optimise queries", "Handle integrations", "Ensure security"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "mobile-developer",
@@ -601,6 +606,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["Swift/Kotlin", "React Native/Flutter", "mobile UX", "app store guidelines", "performance optimisation"],
       dailyTasks: ["Develop mobile features", "Test on devices", "Optimise battery/performance", "Submit to app stores", "Fix bugs"],
       growthOutlook: "high",
+      entryLevel: true,
     },
     {
       id: "game-developer",
@@ -612,6 +618,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["game engines", "C++/C#", "3D mathematics", "game design", "performance optimisation"],
       dailyTasks: ["Implement game features", "Optimise performance", "Debug gameplay", "Collaborate with artists", "Playtest"],
       growthOutlook: "medium",
+      entryLevel: true,
     },
     {
       id: "sre",
