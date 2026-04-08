@@ -346,7 +346,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             {(preferences.subjects || []).map((s) => (
               <span
                 key={`s-${s}`}
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20"
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
               >
                 {SUBJECT_LABELS[s] || s}
               </span>
@@ -354,14 +354,14 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             {(preferences.workStyles || []).map((w) => (
               <span
                 key={`w-${w}`}
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-pink-500/10 text-pink-700 dark:text-pink-300 border border-pink-500/20"
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
               >
                 {WORK_STYLE_LABELS[w] || w}
               </span>
             ))}
             {preferences.peoplePref && (
               <span
-                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20"
+                className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground border border-border"
               >
                 {PEOPLE_LABELS[preferences.peoplePref] || preferences.peoplePref}
               </span>
