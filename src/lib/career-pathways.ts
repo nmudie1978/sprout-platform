@@ -5610,9 +5610,25 @@ export function getCareersFromDiscovery(
 
   if (matched.length === 0) return [];
 
+  // Per-category cap so a single high-scoring category (e.g. Tech for a
+  // Math+Computing user) cannot flood one slice with 25+ dots while other
+  // slices sit empty. With 13 categories × 5 careers = 65 max, which
+  // dovetails nicely with the overall limit.
+  const PER_CATEGORY_CAP = 5;
+  const perCategoryCount = new Map<CareerCategory, number>();
+  const cappedByCategory: { career: Career; score: number }[] = [];
+  for (const item of matched) {
+    const cat = findCareerCategory(item.career.id);
+    if (!cat) continue;
+    const count = perCategoryCount.get(cat) || 0;
+    if (count >= PER_CATEGORY_CAP) continue;
+    perCategoryCount.set(cat, count + 1);
+    cappedByCategory.push(item);
+  }
+
   // Interleave entry-level and non-entry to keep vocational paths visible.
-  const entry = matched.filter((m) => m.career.entryLevel).map((m) => m.career);
-  const rest = matched.filter((m) => !m.career.entryLevel).map((m) => m.career);
+  const entry = cappedByCategory.filter((m) => m.career.entryLevel).map((m) => m.career);
+  const rest = cappedByCategory.filter((m) => !m.career.entryLevel).map((m) => m.career);
   const interleaved: Career[] = [];
   while (interleaved.length < limit && (entry.length || rest.length)) {
     if (entry.length) interleaved.push(entry.shift()!);
