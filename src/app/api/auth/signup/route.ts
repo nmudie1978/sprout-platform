@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AccountStatus, AuditAction } from "@prisma/client";
 import {
+  generateGuardianToken,
   logAuditAction,
   MIN_EMPLOYER_AGE,
   validateAgeBracket,
@@ -18,7 +19,7 @@ import {
 
 export async function POST(req: NextRequest) {
   try {
-    const { firstName, lastName, email, password, role, ageBracket, dateOfBirth, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, email, password, role, ageBracket, dateOfBirth, guardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Validate legal acceptance
     if (!acceptedTerms || !acceptedPrivacy) {
@@ -166,13 +167,38 @@ export async function POST(req: NextRequest) {
 
     // Create role-specific profiles
     if (role === "YOUTH") {
+      // Under-18 users supply a guardian email at signup so the consent
+      // flow can kick off immediately. Generate a token now so the parent
+      // can be emailed without an extra round-trip.
+      const needsGuardianConsent = age !== null && age < 18;
+      const guardianToken = needsGuardianConsent ? generateGuardianToken() : null;
+      const trimmedGuardianEmail =
+        needsGuardianConsent && typeof guardianEmail === "string"
+          ? guardianEmail.trim()
+          : null;
+
       await prisma.youthProfile.create({
         data: {
           userId: newUser.id,
           displayName: trimmedFirst,
-          guardianConsent: age !== null && age >= 18,
+          guardianConsent: !needsGuardianConsent,
+          guardianEmail: trimmedGuardianEmail,
+          guardianToken: guardianToken,
         },
       });
+
+      // Log the consent request so the audit trail exists from day one.
+      // The actual outbound email integration is wired up separately —
+      // for now this puts the data in place so the parent flow can run.
+      if (needsGuardianConsent && trimmedGuardianEmail) {
+        await logAuditAction({
+          userId: newUser.id,
+          action: AuditAction.GUARDIAN_CONSENT_REQUESTED,
+          metadata: { guardianEmail: trimmedGuardianEmail, atSignup: true },
+          ipAddress: req.headers.get("x-forwarded-for") || undefined,
+          userAgent: req.headers.get("user-agent") || undefined,
+        });
+      }
     } else if (role === "EMPLOYER") {
       await prisma.employerProfile.create({
         data: {

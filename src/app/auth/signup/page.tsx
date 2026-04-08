@@ -5,34 +5,49 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Star, AlertCircle, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, ArrowLeft, ArrowRight, ShieldCheck, Heart } from "lucide-react";
 
+/**
+ * Sign-up — DOB-first stepped flow.
+ *
+ * Step 1: ask for date of birth ONLY. The age determines which path the
+ * user takes. Under-15 hits a calm rejection. 16-17 sees a friendly note
+ * about needing a parent. 18+ goes straight to the basic form.
+ *
+ * Step 2: collect the rest of the details (email, password, first name,
+ * parent email if under 18, terms). Auto-login on success and route to
+ * the dashboard where onboarding picks up.
+ */
 function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const isEmployer = searchParams.get("role") === "employer";
 
+  // ── Step state ────────────────────────────────────────────────────
+  type Step = "dob" | "details";
+  const [step, setStep] = useState<Step>("dob");
+
+  // ── Form state ────────────────────────────────────────────────────
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState(isEmployer ? "EMPLOYER" : "YOUTH");
+  const [guardianEmail, setGuardianEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [acceptedAll, setAcceptedAll] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Calculate age and bracket from date of birth
-  // SAFETY INVARIANT: Platform is for ages 15-23. Under-15 is HARD BLOCKED.
+  // Employer flow uses a different role; we ignore most of this if so.
+  const role = isEmployer ? "EMPLOYER" : "YOUTH";
+
+  // ── Age computation ───────────────────────────────────────────────
   const calculateAgeInfo = (dob: string) => {
-    if (!dob) return { age: null, bracket: null, ageBand: null };
+    if (!dob) return { age: null as number | null, bracket: null as string | null };
     const today = new Date();
     const birthDate = new Date(dob);
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -40,81 +55,58 @@ function SignUpForm() {
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    // Age bands: UNDER_SIXTEEN (blocked), SIXTEEN_SEVENTEEN (minor), EIGHTEEN_TWENTY (adult)
-    let bracket = null;
-    let ageBand = null;
-    if (age >= 15 && age <= 17) {
-      bracket = "SIXTEEN_SEVENTEEN";
-      ageBand = "AGE_15_17";
-    } else if (age >= 18 && age <= 23) {
-      bracket = "EIGHTEEN_TWENTY";
-      ageBand = "AGE_18_23";
-    } else if (age < 15) {
-      ageBand = "UNDER_15";
-    } else if (age > 23) {
-      ageBand = "OVER_23";
-    }
-    return { age, bracket, ageBand };
+    let bracket: string | null = null;
+    if (age >= 15 && age <= 17) bracket = "SIXTEEN_SEVENTEEN";
+    else if (age >= 18 && age <= 23) bracket = "EIGHTEEN_TWENTY";
+    return { age, bracket };
   };
 
   const ageInfo = calculateAgeInfo(dateOfBirth);
+  const isUnder18 = ageInfo.age !== null && ageInfo.age < 18;
+  const isUnder15 = ageInfo.age !== null && ageInfo.age < 15;
+  const isOver23 = ageInfo.age !== null && ageInfo.age > 23;
+  const isEligible =
+    ageInfo.age !== null && ageInfo.age >= 15 && ageInfo.age <= 23;
 
+  // ── Submit ────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Validate terms acceptance
-      if (!acceptedTerms || !acceptedPrivacy) {
-        throw new Error("You must accept the Terms of Service and Privacy Policy to create an account");
+      if (!acceptedAll) {
+        throw new Error("Please accept the Terms and Privacy Policy to continue.");
       }
-
-      // Validate name
-      if (!firstName.trim() || !lastName.trim()) {
-        throw new Error("First name and last name are required");
+      if (!firstName.trim()) {
+        throw new Error("Tell us your first name.");
       }
-
-      // Validate password match
-      if (password !== confirmPassword) {
-        throw new Error("Passwords do not match");
-      }
-
-      // Validate password strength
       if (password.length < 8) {
-        throw new Error("Password must be at least 8 characters");
+        throw new Error("Password needs to be at least 8 characters.");
       }
-
-      // Validate date of birth for youth
-      // SAFETY INVARIANT: Hard-block under-16
       if (role === "YOUTH") {
-        if (!dateOfBirth) {
-          throw new Error("Date of birth is required");
+        if (!isEligible) {
+          throw new Error("Endeavrly is for ages 15–23.");
         }
-        if (ageInfo.age === null) {
-          throw new Error("Invalid date of birth");
-        }
-        if (ageInfo.age < 16) {
-          throw new Error("Endeavrly is for users aged 15-23. You must be at least 15 to create an account.");
-        }
-        if (ageInfo.age > 20) {
-          throw new Error("Youth workers must be 20 or younger. Consider registering as a job poster.");
+        if (isUnder18 && !guardianEmail.trim()) {
+          throw new Error("We need a parent or guardian email so they can confirm.");
         }
       }
 
-      // Create the user account with password
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           firstName: firstName.trim(),
-          lastName: lastName.trim(),
+          // lastName is collected later in profile setup if needed
+          lastName: firstName.trim(),
           email,
           password,
           role,
           dateOfBirth: role === "YOUTH" ? dateOfBirth : undefined,
           ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
-          acceptedTerms,
-          acceptedPrivacy,
+          guardianEmail: role === "YOUTH" && isUnder18 ? guardianEmail.trim() : undefined,
+          acceptedTerms: acceptedAll,
+          acceptedPrivacy: acceptedAll,
         }),
       });
 
@@ -123,8 +115,7 @@ function SignUpForm() {
         throw new Error(errorData.error || "Signup failed");
       }
 
-      // Auto-login: drop the bounce-back-to-signin friction. The user just
-      // told us their credentials a second ago — sign them in immediately.
+      // Auto-login immediately
       const signInResult = await signIn("credentials", {
         email,
         password,
@@ -132,8 +123,6 @@ function SignUpForm() {
       });
 
       if (signInResult?.error) {
-        // Auto-login failed — fall back to the manual signin page so the
-        // user isn't stranded. This should be rare.
         toast({
           title: "Account created",
           description: "Please sign in to continue.",
@@ -144,15 +133,15 @@ function SignUpForm() {
 
       toast({
         title: "Welcome to Endeavrly",
-        description: "Let's get you set up.",
+        description: isUnder18
+          ? "We've notified your parent. You can start exploring now."
+          : "Let's get you set up.",
       });
 
-      // Land directly on the dashboard. Onboarding wizard + first-action
-      // card live there and will pick up automatically.
       router.push("/dashboard");
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Hold on",
         description: error.message || "Something went wrong. Please try again.",
         variant: "destructive",
       });
@@ -161,241 +150,236 @@ function SignUpForm() {
     }
   };
 
+  // ── Render ────────────────────────────────────────────────────────
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-blue-500/5" />
-      {/* Blobs hidden on mobile for performance */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-background to-teal-500/5" />
       <div className="hidden sm:block absolute top-20 -left-4 w-72 h-72 bg-teal-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-      <div className="hidden sm:block absolute top-20 -right-4 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+      <div className="hidden sm:block absolute top-20 -right-4 w-72 h-72 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
 
       <Card className="w-full max-w-md shadow-2xl border-2 sm:hover-lift">
-        <CardHeader className="space-y-2">
-          <div className="flex justify-center mb-2">
-            <Star className="h-10 w-10 text-green-600" />
-          </div>
-          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
-          <CardDescription className="text-base text-center">
-            Join Endeavrly to gain practical experience and build your future
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* VIPPS Sign Up Button - Only shown when VIPPS is enabled */}
-          {process.env.NEXT_PUBLIC_VIPPS_ENABLED === "true" && (
-            <div className="space-y-4 mb-6">
-              <Button
-                type="button"
-                className="w-full h-12 sm:h-11 bg-[#ff5b24] hover:bg-[#e54d1c] text-white font-semibold"
-                onClick={() => signIn("vipps", { callbackUrl: "/auth/complete-profile" })}
-              >
-                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/>
-                </svg>
-                Sign up with Vipps
-              </Button>
-              <p className="text-xs text-center text-muted-foreground">
-                Quickest way to sign up. Your age will be verified automatically.
-              </p>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
+        <CardContent className="p-6 sm:p-8">
+          {/* ── Step 1: Date of Birth ─────────────────────────────── */}
+          {step === "dob" && (
+            <div className="space-y-5">
+              <div className="text-center">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/15 mb-3">
+                  <Sparkles className="h-5 w-5 text-teal-500" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or sign up with email
-                  </span>
-                </div>
+                <h1 className="text-2xl font-bold tracking-tight">First, when were you born?</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Endeavrly is built for 15&ndash;23 year olds. We just need this so we can set things up properly.
+                </p>
               </div>
-            </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="dob" className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Date of birth
+                </Label>
                 <Input
-                  id="firstName"
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="First name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  maxLength={50}
-                  className="h-11 sm:h-10"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  autoComplete="family-name"
-                  placeholder="Last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  maxLength={50}
-                  className="h-11 sm:h-10"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="h-11 sm:h-10"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="new-password"
-                placeholder="At least 8 characters"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                className="h-11 sm:h-10"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                placeholder="Re-enter your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={8}
-                className="h-11 sm:h-10"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">I am a...</Label>
-              <select
-                id="role"
-                className="flex h-11 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                <option value="YOUTH">Youth (16-23)</option>
-                <option value="EMPLOYER">Job Poster (posting tasks)</option>
-              </select>
-            </div>
-
-            {role === "YOUTH" && (
-              <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                <Input
-                  id="dateOfBirth"
+                  id="dob"
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   max={new Date().toISOString().split("T")[0]}
-                  required
-                  className="h-11 sm:h-10"
+                  className="h-12 text-base"
+                  autoFocus
                 />
+                {/* Live age feedback */}
                 {dateOfBirth && ageInfo.age !== null && (
-                  <p className={`text-xs ${ageInfo.age >= 16 && ageInfo.age <= 20 ? "text-green-600" : "text-red-500"}`}>
-                    {ageInfo.age >= 16 && ageInfo.age <= 20
-                      ? `You are ${ageInfo.age} years old - eligible to join!`
-                      : ageInfo.age < 16
-                        ? "Endeavrly is for ages 15-23. You must be at least 15 to register."
-                        : "Youth workers must be 20 or younger. Consider registering as a job poster."}
-                  </p>
+                  <div className="pt-1">
+                    {isUnder15 && (
+                      <p className="text-xs text-rose-500 leading-relaxed">
+                        Endeavrly is for ages 15 and up. We hope to see you when you&rsquo;re a bit older.
+                      </p>
+                    )}
+                    {isOver23 && (
+                      <p className="text-xs text-rose-500 leading-relaxed">
+                        Endeavrly is for 15&ndash;23 year olds. If you&rsquo;re posting jobs,{" "}
+                        <Link
+                          href="/auth/signup?role=employer"
+                          className="text-teal-500 hover:underline"
+                        >
+                          sign up as a job poster
+                        </Link>
+                        .
+                      </p>
+                    )}
+                    {isEligible && !isUnder18 && (
+                      <p className="text-xs text-teal-500 leading-relaxed">
+                        Perfect &mdash; you&rsquo;re {ageInfo.age}. You&rsquo;re all set to continue.
+                      </p>
+                    )}
+                    {isEligible && isUnder18 && (
+                      <div className="flex items-start gap-2 p-3 rounded-lg bg-teal-500/[0.06] border border-teal-500/20 mt-1">
+                        <ShieldCheck className="h-4 w-4 text-teal-500 mt-0.5 shrink-0" />
+                        <p className="text-xs text-foreground/80 leading-relaxed">
+                          You&rsquo;re {ageInfo.age}. Because you&rsquo;re under 18, we&rsquo;ll need to send a quick note to a parent or guardian. Nothing complicated &mdash; they just tap a link to confirm.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
 
-            {/* Terms & Privacy - Combined Checkbox */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start space-x-3">
-                <Checkbox
-                  id="terms-privacy"
-                  checked={acceptedTerms && acceptedPrivacy}
-                  onCheckedChange={(checked) => {
-                    const isChecked = checked === true;
-                    setAcceptedTerms(isChecked);
-                    setAcceptedPrivacy(isChecked);
-                  }}
-                  className="mt-0.5"
-                />
-                <label
-                  htmlFor="terms-privacy"
-                  className="text-sm leading-relaxed cursor-pointer"
-                >
-                  I agree to the{" "}
-                  <Link href="/legal/terms" className="text-primary hover:underline font-medium" target="_blank">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/legal/privacy" className="text-primary hover:underline font-medium" target="_blank">
-                    Privacy Policy
-                  </Link>
-                </label>
+              <Button
+                type="button"
+                className="w-full h-12 text-base"
+                disabled={!isEligible}
+                onClick={() => setStep("details")}
+              >
+                Continue
+                <ArrowRight className="h-4 w-4 ml-1.5" />
+              </Button>
+
+              <div className="text-center text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <Link href="/auth/signin" className="text-teal-500 hover:underline font-medium">
+                  Sign in
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 2: Details ───────────────────────────────────── */}
+          {step === "details" && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <button
+                type="button"
+                onClick={() => setStep("dob")}
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors -ml-1"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Back
+              </button>
+
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">
+                  {isUnder18 ? "Almost there" : "Let's get you set up"}
+                </h1>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {isUnder18
+                    ? "Just a few details and a parent email so we can let them know."
+                    : "Just a few details and you're in."}
+                </p>
               </div>
 
-              <p className="text-xs text-muted-foreground pl-7">
-                Also see our{" "}
-                <Link href="/legal/safety" className="text-primary hover:underline" target="_blank">
-                  Safety Guidelines
-                </Link>
-                ,{" "}
-                <Link href="/legal/eligibility" className="text-primary hover:underline" target="_blank">
-                  Age & Eligibility
-                </Link>
-                , and{" "}
-                <Link href="/legal/disclaimer" className="text-primary hover:underline" target="_blank">
-                  Disclaimer
-                </Link>
-              </p>
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-muted-foreground">
+                  First name
+                </Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  autoComplete="given-name"
+                  placeholder="What should we call you?"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  maxLength={50}
+                  className="h-11"
+                  autoFocus
+                />
+              </div>
 
-              {role === "YOUTH" && ageInfo.age !== null && ageInfo.age < 18 && (
-                <div className="flex items-start space-x-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                  <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-                  <p className="text-xs text-amber-700 dark:text-amber-400">
-                    <strong>Guardian consent required.</strong> Since you're under 18, a parent or guardian will need to approve your account before you can apply for jobs.
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Your email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="you@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-11"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                  className="h-11"
+                />
+              </div>
+
+              {isUnder18 && (
+                <div className="space-y-2 p-3 rounded-lg bg-teal-500/[0.04] border border-teal-500/20">
+                  <Label
+                    htmlFor="guardianEmail"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300"
+                  >
+                    <Heart className="h-3 w-3" />
+                    Parent or guardian email
+                  </Label>
+                  <Input
+                    id="guardianEmail"
+                    type="email"
+                    inputMode="email"
+                    placeholder="parent@email.com"
+                    value={guardianEmail}
+                    onChange={(e) => setGuardianEmail(e.target.value)}
+                    required
+                    className="h-11 bg-background"
+                  />
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    We&rsquo;ll send them a link to confirm. You can start exploring straight away &mdash; some things will unlock once they confirm.
                   </p>
                 </div>
               )}
-            </div>
 
-            <Button
-              type="submit"
-              className="w-full h-11 sm:h-10"
-              disabled={loading || !acceptedTerms || !acceptedPrivacy}
-            >
-              {loading ? "Creating Account..." : "Create Account"}
-            </Button>
-          </form>
+              <div className="flex items-start gap-3 pt-1">
+                <Checkbox
+                  id="accept"
+                  checked={acceptedAll}
+                  onCheckedChange={(checked) => setAcceptedAll(checked === true)}
+                  className="mt-0.5"
+                />
+                <label htmlFor="accept" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                  I agree to the{" "}
+                  <Link href="/legal/terms" className="text-teal-500 hover:underline" target="_blank">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/legal/privacy" className="text-teal-500 hover:underline" target="_blank">
+                    Privacy Policy
+                  </Link>
+                  .
+                </label>
+              </div>
 
-          <div className="mt-4 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/auth/signin" className="text-primary hover:underline">
-              Sign in
-            </Link>
-          </div>
-
-          <p className="mt-6 text-center text-[11px] text-muted-foreground/70">
-            Vipps and BankID login coming in production
-          </p>
+              <Button
+                type="submit"
+                className="w-full h-12 text-base"
+                disabled={loading || !acceptedAll}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Creating your account&hellip;
+                  </>
+                ) : (
+                  <>
+                    Create account
+                    <ArrowRight className="h-4 w-4 ml-1.5" />
+                  </>
+                )}
+              </Button>
+            </form>
+          )}
         </CardContent>
       </Card>
     </div>
