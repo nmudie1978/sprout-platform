@@ -728,7 +728,7 @@ export default function DashboardPage() {
                         </h2>
                         <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
                           {hasDiscoveryPrefs
-                            ? "We mapped careers to what you said you like. Tap any one to find out what the role actually involves."
+                            ? "Based on what you told us during sign-up, we've mapped careers to your interests. Tap any one to find out what the role actually involves."
                             : "Tell us what you like and we'll show you careers across every path."}
                         </p>
                         <span className="inline-flex items-center gap-1.5 text-sm font-medium text-pink-400">

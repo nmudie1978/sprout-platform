@@ -13,10 +13,18 @@ interface SectionWhyProps {
 export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
   return (
     <Popover>
-      {/* Wrap in a span that stops click propagation to prevent parent Link navigation */}
-      <span onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
       <PopoverTrigger asChild>
         <button
+          type="button"
+          // Stop both bubbling AND default action so parent Links don't fire
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onMouseDown={(e) => {
+            // Some parent navigations fire on mousedown — kill it here too
+            e.stopPropagation();
+          }}
           className="inline-flex items-center justify-center rounded-full p-0.5 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           aria-label="Why this matters"
         >
@@ -26,11 +34,11 @@ export function SectionWhy({ why, align = "center" }: SectionWhyProps) {
       <PopoverContent
         align={align}
         side="top"
+        onClick={(e) => e.stopPropagation()}
         className="w-64 p-3 text-xs leading-relaxed text-muted-foreground/80 border-border/60"
       >
         {why}
       </PopoverContent>
-      </span>
     </Popover>
   );
 }
