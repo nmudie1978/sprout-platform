@@ -1187,7 +1187,7 @@ export default function ProfilePage() {
           {profile && (
             <Card className="border shadow-sm relative z-10">
               <CardContent className="p-3 space-y-1.5">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Availability</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Job Availability</p>
                 {(["AVAILABLE", "BUSY", "NOT_LOOKING"] as const).map((status) => {
                   const isActive = profile.availabilityStatus === status;
                   const config = {
