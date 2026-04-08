@@ -90,7 +90,7 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   BUSINESS_MANAGEMENT: "Business",
   FINANCE_BANKING: "Finance",
   SALES_MARKETING: "Marketing",
-  MANUFACTURING_ENGINEERING: "Engineering",
+  MANUFACTURING_ENGINEERING: "Trade",
   LOGISTICS_TRANSPORT: "Logistics",
   HOSPITALITY_TOURISM: "Hospitality",
   TELECOMMUNICATIONS: "Telecom",
