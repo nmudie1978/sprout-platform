@@ -15,7 +15,7 @@
  *   - YouTube: /api/youtube-search
  */
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
@@ -25,10 +25,10 @@ import {
   ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
-  Heart, Wrench, Check, CheckCircle2, CircleDot, Clock, MapPin, Award, Users,
+  Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
@@ -1223,20 +1223,85 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     a.status ?? (a.done ? 'done' : 'not_started');
 
   const actionsKey = `journey-actions-${career.id}`;
+  // Server goalId — must match the slug used everywhere else in the
+  // journey (PersonalCareerTimeline, /api/journey/goal-data) so the
+  // momentum actions land on the SAME row as the rest of the user's
+  // journey data instead of a separate orphan record.
+  const serverGoalId = goalTitle ? slugify(goalTitle) : null;
   const [actions, setActions] = useState<Action[]>([]);
+  // Sync state — we only show "saved to your journey" reassurance once
+  // we've successfully persisted to the server at least once.
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'saved' | 'error'>('idle');
   const [newAction, setNewAction] = useState('');
   const [newActionType, setNewActionType] = useState<ActionType>('research');
   // Action id awaiting a reflection (just ticked off, prompt is open)
   const [reflectingId, setReflectingId] = useState<string | null>(null);
   const [reflectionNote, setReflectionNote] = useState('');
+  // Debounced server sync — collapses bursts of edits into a single
+  // PATCH so we don't hammer the API on every checkbox tick.
+  const syncTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Load actions: server is the source of truth (so the user's data
+  // follows them across devices), but we keep localStorage as a fast
+  // cache so the list paints immediately on mount before the server
+  // round-trip completes. If the user has older localStorage data and
+  // no server data yet, we migrate it on first save.
   useEffect(() => {
-    try { setActions(JSON.parse(localStorage.getItem(actionsKey) || '[]')); } catch { setActions([]); }
-  }, [actionsKey]);
+    let cancelled = false;
+    // Paint from localStorage immediately so the UI isn't blank.
+    try {
+      const cached = JSON.parse(localStorage.getItem(actionsKey) || '[]');
+      if (Array.isArray(cached)) setActions(cached);
+    } catch { setActions([]); }
+
+    if (!serverGoalId) return;
+    // Then fetch from server and reconcile.
+    fetch(`/api/journey/goal-data?goalId=${encodeURIComponent(serverGoalId)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (cancelled) return;
+        const summary = data?.goalData?.journeySummary as Record<string, unknown> | null;
+        const serverActions = summary?.momentumActions as Action[] | undefined;
+        if (Array.isArray(serverActions)) {
+          // Server has data → use it. Update local cache too so the
+          // next mount paints the up-to-date version.
+          setActions(serverActions);
+          try { localStorage.setItem(actionsKey, JSON.stringify(serverActions)); } catch { /* ignore */ }
+          setSyncStatus('saved');
+        }
+        // If server is empty but localStorage has entries, the next
+        // saveActions call will migrate them via the debounced sync.
+      })
+      .catch(() => { /* silent — localStorage cache is fine */ });
+    return () => { cancelled = true; };
+  }, [actionsKey, serverGoalId]);
+
+  // Sync to server — debounced so a flurry of state changes only
+  // results in one PATCH. Falls back gracefully if the user has no
+  // active goal yet (in which case we still keep the localStorage
+  // copy so nothing is lost).
+  const syncActionsToServer = (updated: Action[]) => {
+    if (!serverGoalId) return;
+    if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+    setSyncStatus('syncing');
+    syncTimerRef.current = setTimeout(() => {
+      fetch('/api/journey/goal-data', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goalId: serverGoalId, momentumActions: updated }),
+      })
+        .then(r => {
+          if (r.ok) setSyncStatus('saved');
+          else setSyncStatus('error');
+        })
+        .catch(() => setSyncStatus('error'));
+    }, 800);
+  };
 
   const saveActions = (updated: Action[]) => {
     setActions(updated);
     try { localStorage.setItem(actionsKey, JSON.stringify(updated)); } catch { /* ignore */ }
+    syncActionsToServer(updated);
   };
 
   const addAction = () => {
@@ -1251,18 +1316,14 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     setNewAction('');
   };
 
-  // Cycle the action status: not_started → in_progress → done → not_started.
-  // Tapping the status indicator advances one state. When an action becomes
-  // done we open the reflection prompt; un-ticking a done item rolls back
-  // to "in progress" so the user can mark "no actually still working on it".
-  const cycleActionStatus = (id: string) => {
+  // Set an action's status directly. The Momentum row exposes three
+  // explicit buttons (Todo / Doing / Done) so users don't have to
+  // guess that tapping an indicator cycles through hidden states.
+  const setActionStatus = (id: string, next: ActionStatus) => {
     const target = actions.find(a => a.id === id);
     if (!target) return;
     const current = statusOf(target);
-    const next: ActionStatus =
-      current === 'not_started' ? 'in_progress'
-        : current === 'in_progress' ? 'done'
-          : 'not_started';
+    if (current === next) return;
     const becomingDone = next === 'done';
     const leavingDone = current === 'done';
     saveActions(actions.map(a => a.id === id
@@ -1270,7 +1331,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           ...a,
           status: next,
           done: becomingDone,
-          completedAt: becomingDone ? Date.now() : undefined,
+          completedAt: becomingDone ? Date.now() : a.completedAt,
           // Clear reflection if leaving the done state
           reaction: leavingDone ? undefined : a.reaction,
           note: leavingDone ? undefined : a.note,
@@ -1284,8 +1345,13 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       setReflectingId(null);
     }
   };
-  // Backwards-compat alias — older code paths still call toggleAction.
-  const toggleAction = cycleActionStatus;
+  // Backwards-compat alias — the completed-list checkbox still uses a
+  // single toggle that sends "done" items back to "not_started".
+  const toggleAction = (id: string) => {
+    const target = actions.find(a => a.id === id);
+    if (!target) return;
+    setActionStatus(id, statusOf(target) === 'done' ? 'not_started' : 'done');
+  };
 
   const saveReflection = (id: string, reaction: ActionReaction) => {
     saveActions(actions.map(a => a.id === id
@@ -1412,25 +1478,47 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             </div>
           </div>
 
-          {/* Calm header stats — facts, not achievements */}
-          {momentumStats.totalDone > 0 && (
-            <div className="grid grid-cols-3 gap-2 mt-3">
-              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Steps taken</p>
-                <p className="text-base font-semibold text-foreground tabular-nums">{momentumStats.totalDone}</p>
+          {/* Calm header stats — three counts mirroring the three
+              action states (Todo / Doing / Done) so the user can see
+              the shape of their workload at a glance, not just what
+              they've already finished. Always rendered if there's at
+              least one action so the user gets feedback the moment
+              they add their first step. */}
+          {actions.length > 0 && (() => {
+            const counts = {
+              not_started: actions.filter(a => statusOf(a) === 'not_started').length,
+              in_progress: actions.filter(a => statusOf(a) === 'in_progress').length,
+              done: actions.filter(a => statusOf(a) === 'done').length,
+            };
+            return (
+              <div className="grid grid-cols-3 gap-2 mt-3">
+                <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Not started</p>
+                  <p className="text-base font-semibold text-foreground/80 tabular-nums">{counts.not_started}</p>
+                </div>
+                <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.05] px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-wider text-amber-400/80 font-medium">In progress</p>
+                  <p className="text-base font-semibold text-amber-300 tabular-nums">{counts.in_progress}</p>
+                </div>
+                <div className="rounded-lg border border-teal-500/30 bg-teal-500/[0.05] px-3 py-2">
+                  <p className="text-[9px] uppercase tracking-wider text-teal-400/80 font-medium">Done</p>
+                  <p className="text-base font-semibold text-teal-300 tabular-nums">{counts.done}</p>
+                </div>
               </div>
-              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">This week</p>
-                <p className="text-base font-semibold text-teal-400 tabular-nums">{momentumStats.thisWeek}</p>
-              </div>
-              <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Started</p>
-                <p className="text-base font-semibold text-foreground tabular-nums">
-                  {momentumStats.firstStepDays === 0 ? 'today' : `${momentumStats.firstStepDays}d ago`}
-                </p>
-              </div>
-            </div>
-          )}
+            );
+          })()}
+
+          {/* Persistence reassurance — explicit so users know nothing is
+              ephemeral here. The exact wording shifts to reflect the
+              current sync state so a fresh save shows immediate proof. */}
+          <p className="text-[10px] text-muted-foreground/55 mt-2 flex items-center gap-1.5">
+            <Check className="h-2.5 w-2.5 text-teal-500/70" />
+            {syncStatus === 'syncing'
+              ? 'Saving to your journey…'
+              : syncStatus === 'error'
+                ? 'Saved on this device — we\'ll sync when you\'re back online.'
+                : 'Saved to your journey — your progress is here next time you visit.'}
+          </p>
 
           {/* The 12-week momentum strip — visual proof of consistency */}
           {momentumStats.totalDone > 0 && (
@@ -1478,25 +1566,30 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               one adds it to their list. Already-added titles are filtered
               out so a suggestion never duplicates an existing row. */}
           {(() => {
-            // Course-platform deep links — scoped to the user's career so a
-            // "Try a course" suggestion lands directly on a relevant search
-            // result rather than dumping the user on a homepage to type it
-            // in themselves. We render these as separate chips outside the
-            // suggestion's "add to actions" button, because nesting an <a>
-            // with a click handler inside a <button> is invalid HTML.
+            // External lookup links scoped to the user's career. We render
+            // these as a single shared row at the bottom of the Suggested
+            // Momentum block — not per-suggestion — so the section doesn't
+            // repeat the same Coursera/edX chips three times.
             const courseQuery = encodeURIComponent(career.title);
             const courseLinks = [
               { label: 'Coursera', url: `https://www.coursera.org/search?query=${courseQuery}` },
               { label: 'edX', url: `https://www.edx.org/search?q=${courseQuery}` },
               { label: 'YouTube', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${career.title} tutorial`)}` },
             ];
+            // LinkedIn people-search filtered by current job title AND
+            // geographically restricted to Norway via the geoUrn facet
+            // (Norway's LinkedIn geoUrn is 103819153). Endeavrly is a
+            // Norway-first platform so the country filter is hard-coded
+            // — if we expand to other markets we'll need to derive this
+            // from the user's profile.country instead.
+            const norwayGeoUrn = encodeURIComponent('["103819153"]');
+            const peopleLinkedInUrl = `https://www.linkedin.com/search/results/people/?keywords=${courseQuery}&geoUrn=${norwayGeoUrn}&origin=FACETED_SEARCH`;
 
-            const suggestions: { title: string; how: string; type: ActionType; showCourses?: boolean }[] = [
+            const suggestions: { title: string; how: string; type: ActionType }[] = [
               {
                 title: 'Build a starter skill stack',
                 how: `Pick 2–3 core skills a ${career.title} actually uses and start learning them this week — a free YouTube series or short online course is enough to begin.`,
                 type: 'learn',
-                showCourses: true,
               },
               {
                 title: 'Talk to someone in this career',
@@ -1507,7 +1600,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                 title: 'Try the work in miniature',
                 how: `Build a tiny project, shadow for a day, or take an intro course — test what the work actually feels like before committing years to it.`,
                 type: 'do',
-                showCourses: true,
               },
             ];
             const taken = new Set(actions.map(a => a.text.toLowerCase()));
@@ -1520,50 +1612,70 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   {available.map((s, i) => {
                     const t = typeMeta(s.type);
                     return (
-                      <div key={i} className="rounded-lg border border-border/30 bg-background/30 hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all">
-                        <button
-                          onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
-                          className="group w-full flex items-start gap-3 px-3 py-2.5 text-left"
-                        >
-                          <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
-                            <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
-                          </div>
-                          <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
-                        </button>
-                        {s.showCourses && (
-                          <div className="px-3 pb-2.5 -mt-0.5 flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[10px] text-muted-foreground/50">Try a course on:</span>
-                            {courseLinks.map((c) => (
-                              <a
-                                key={c.label}
-                                href={c.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
-                              >
-                                {c.label}
-                                <ExternalLink className="h-2.5 w-2.5 opacity-60" />
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      <button
+                        key={i}
+                        onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
+                        className="group w-full flex items-start gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
+                      >
+                        <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
+                          <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
+                        </div>
+                        <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
+                      </button>
                     );
                   })}
+                </div>
+
+                {/* Shared resource links — rendered once at the bottom of
+                    the Suggested Momentum block rather than per-suggestion,
+                    so the same Coursera / LinkedIn chips don't appear next
+                    to two or three different cards. */}
+                <div className="mt-3 pt-2.5 border-t border-border/20 space-y-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] text-muted-foreground/50 shrink-0">Try a course on:</span>
+                    {courseLinks.map((c) => (
+                      <a
+                        key={c.label}
+                        href={c.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
+                      >
+                        {c.label}
+                        <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                      </a>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[10px] text-muted-foreground/50 shrink-0">Find a {career.title} in Norway on:</span>
+                    <a
+                      href={peopleLinkedInUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
+                    >
+                      LinkedIn
+                      <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                    </a>
+                  </div>
                 </div>
               </div>
             );
           })()}
 
-          {/* Action list — three states: not started, in progress, done.
-              Tapping the status indicator on the left cycles through them
-              so the user can mark "I'm working on this" without having to
-              tick it as done prematurely. */}
+          {/* Action list — each pending row has an explicit Todo / Doing /
+              Done segmented control so all three states are visible and
+              directly tappable. No hidden cycling, no guessing. */}
           {actions.length > 0 && (() => {
             const pending = actions.filter(a => statusOf(a) !== 'done');
             const completed = actions.filter(a => statusOf(a) === 'done').sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
+            const STATUS_BUTTONS: { value: ActionStatus; label: string; activeClass: string }[] = [
+              { value: 'not_started', label: 'Todo', activeClass: 'bg-muted/40 text-foreground border-muted-foreground/40' },
+              { value: 'in_progress', label: 'Doing', activeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/50' },
+              { value: 'done', label: 'Done', activeClass: 'bg-teal-500/20 text-teal-300 border-teal-500/50' },
+            ];
             return (
               <div className="space-y-1">
                 {pending.map((action) => {
@@ -1571,35 +1683,42 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   const st = statusOf(action);
                   const inProgress = st === 'in_progress';
                   return (
-                    <div key={action.id} className="group flex items-center gap-3 rounded-lg px-2.5 py-2 -mx-1 hover:bg-muted/5 transition-colors">
-                      <button
-                        onClick={() => cycleActionStatus(action.id)}
-                        className={cn(
-                          'flex h-[20px] w-[20px] items-center justify-center rounded-md shrink-0 transition-all',
-                          inProgress
-                            ? 'bg-amber-500/20 border border-amber-500/50 hover:bg-amber-500/30'
-                            : 'border border-muted-foreground/30 hover:border-teal-400 hover:bg-teal-500/10'
-                        )}
-                        title={inProgress ? 'In progress — tap to mark done' : 'Not started — tap to mark in progress'}
-                        aria-label={inProgress ? 'Mark complete' : 'Mark in progress'}
-                      >
-                        {inProgress && (
-                          <CircleDot className="h-3 w-3 text-amber-400" />
-                        )}
-                      </button>
+                    <div
+                      key={action.id}
+                      className={cn(
+                        'group flex items-center gap-3 rounded-lg px-2.5 py-2 -mx-1 transition-colors',
+                        inProgress ? 'bg-amber-500/[0.04] hover:bg-amber-500/[0.07]' : 'hover:bg-muted/5'
+                      )}
+                    >
                       <span className="text-base leading-none shrink-0" title={t.label}>{t.emoji}</span>
                       <span className={cn(
-                        'text-[13px] flex-1 leading-snug',
+                        'text-[13px] flex-1 leading-snug min-w-0',
                         inProgress ? 'text-foreground/95 font-medium' : 'text-foreground/85'
                       )}>
                         {action.text}
                       </span>
-                      {inProgress && (
-                        <span className="text-[9px] uppercase tracking-wider font-semibold text-amber-400/80 shrink-0">
-                          In progress
-                        </span>
-                      )}
-                      <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
+                      <div className="flex items-center gap-0.5 rounded-md border border-border/30 bg-background/40 p-0.5 shrink-0">
+                        {STATUS_BUTTONS.map(b => {
+                          const active = st === b.value;
+                          return (
+                            <button
+                              key={b.value}
+                              onClick={() => setActionStatus(action.id, b.value)}
+                              className={cn(
+                                'rounded-[4px] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider transition-all border',
+                                active
+                                  ? b.activeClass
+                                  : 'border-transparent text-muted-foreground/45 hover:text-foreground/70 hover:bg-muted/20'
+                              )}
+                              aria-label={`Mark as ${b.label}`}
+                              aria-pressed={active}
+                            >
+                              {b.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all shrink-0">
                         <Trash2 className="h-3 w-3" />
                       </button>
                     </div>

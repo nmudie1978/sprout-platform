@@ -117,8 +117,13 @@ export async function POST(req: NextRequest) {
 /**
  * PATCH /api/journey/goal-data
  *
- * Update just the roadmap card data for the active goal.
- * Used by the roadmap card dialog to persist card annotations.
+ * Partial update for the active goal. Currently supports two
+ * independent fields:
+ *   - roadmapCardData: replaces the per-step roadmap annotations blob.
+ *   - momentumActions: merged into journeySummary so the Momentum
+ *     section's actions persist as part of My Journey rather than
+ *     being trapped in localStorage. We read-merge-write the existing
+ *     summary blob so other keys (e.g. educationContext) are preserved.
  */
 export async function PATCH(req: NextRequest) {
   try {
@@ -128,10 +133,35 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { goalId, roadmapCardData } = body;
+    const { goalId, roadmapCardData, momentumActions } = body;
 
     if (!goalId) {
       return NextResponse.json({ error: 'goalId is required' }, { status: 400 });
+    }
+
+    // Build the update object incrementally so we only touch the
+    // fields the caller actually sent.
+    const data: Record<string, unknown> = { updatedAt: new Date() };
+
+    if (roadmapCardData !== undefined) {
+      data.roadmapCardData = roadmapCardData ? JSON.parse(JSON.stringify(roadmapCardData)) : null;
+    }
+
+    if (momentumActions !== undefined) {
+      // Sanity-cap the array — momentum is per-user, but we don't
+      // want a runaway client to store 100k entries.
+      const sanitised = Array.isArray(momentumActions) ? momentumActions.slice(0, 500) : [];
+      // Merge into the existing journeySummary so we don't trample
+      // other keys (educationContext, exploredRoles, etc.).
+      const existing = await prisma.journeyGoalData.findUnique({
+        where: {
+          userId_goalId: { userId: session.user.id, goalId },
+        },
+        select: { journeySummary: true },
+      });
+      const currentSummary = (existing?.journeySummary as Record<string, unknown> | null) || {};
+      const mergedSummary = { ...currentSummary, momentumActions: sanitised };
+      data.journeySummary = JSON.parse(JSON.stringify(mergedSummary));
     }
 
     await prisma.journeyGoalData.update({
@@ -141,15 +171,12 @@ export async function PATCH(req: NextRequest) {
           goalId,
         },
       },
-      data: {
-        roadmapCardData: roadmapCardData ? JSON.parse(JSON.stringify(roadmapCardData)) : null,
-        updatedAt: new Date(),
-      },
+      data,
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Failed to update roadmap card data:', error);
-    return NextResponse.json({ error: 'Failed to update roadmap card data' }, { status: 500 });
+    console.error('Failed to update goal data:', error);
+    return NextResponse.json({ error: 'Failed to update goal data' }, { status: 500 });
   }
 }

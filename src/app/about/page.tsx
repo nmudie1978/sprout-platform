@@ -1,4 +1,4 @@
-import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield } from "lucide-react";
+import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
@@ -91,6 +91,20 @@ export default function AboutPage() {
             Endeavrly gives them a place to explore, try things, and learn about themselves — before
             the pressure of choosing a path kicks in.
           </p>
+
+          {/* One-page summary download — for parents, teachers, and partners
+              who want the elevator-pitch version of Endeavrly without
+              having to read the whole page. */}
+          <a
+            href="/Endeavrly-Summary.pdf"
+            download="Endeavrly-Summary.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg border border-teal-500/40 bg-teal-500/10 px-4 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-500/15 hover:border-teal-500/60 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Download the Endeavrly summary (PDF)
+          </a>
         </div>
 
         {/* The Framework */}
