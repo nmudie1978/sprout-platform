@@ -1027,7 +1027,7 @@ export default function DashboardPage() {
                 <GlassCard className="p-4 h-full">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="h-3.5 w-3.5 text-violet-500" />
-                    <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career you've explored is saved here. Compare paths, track your progress, and see how far you've come." /></h3>
+                    <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   </div>
                   <p className="text-sm text-muted-foreground/40">
                     Explore careers to build your journey list
@@ -1338,7 +1338,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{switchConfirm.emoji}</span>
               <div>
-                <h3 className="text-sm font-semibold">Switch to {switchConfirm.goalTitle}?</h3>
+                <h3 className="text-sm font-semibold">Switch journey to {switchConfirm.goalTitle}?</h3>
                 <p className="text-[11px] text-muted-foreground/60">
                   Your current progress will be saved.
                 </p>
