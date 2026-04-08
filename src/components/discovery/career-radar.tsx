@@ -734,6 +734,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <span className="inline-block w-2 h-2 rounded-full bg-teal-500/40" />
             Worth a look
           </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 rounded-full border-[1.5px] border-amber-400" />
+            Active goal
+          </span>
         </div>
         <span>Inner ring = strongest match</span>
       </div>
