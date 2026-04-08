@@ -115,18 +115,13 @@ const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.25;
 
-// Tight inner cluster radius for the top matches — sits visibly detached
-// from the outer rings so the most important careers feel pulled toward "you".
-const TOP_MATCH_RADIUS = 22;
-
 function placeDots(careers: Career[]): PlacedDot[] {
   if (careers.length === 0) return [];
 
-  // Bucket non-top matches into 3 relevance rings by rank position.
-  // Top matches get their own inner cluster, so exclude them from the bucketing.
-  const nonTopCount = Math.max(0, careers.length - TOP_MATCH_COUNT);
-  const ringFor = (nonTopIdx: number): 0 | 1 | 2 => {
-    const ratio = nonTopIdx / Math.max(1, nonTopCount);
+  // Bucket into 3 relevance rings by rank position.
+  const total = careers.length;
+  const ringFor = (idx: number): 0 | 1 | 2 => {
+    const ratio = idx / Math.max(1, total);
     if (ratio < 0.33) return 0;
     if (ratio < 0.66) return 1;
     return 2;
@@ -137,28 +132,12 @@ function placeDots(careers: Career[]): PlacedDot[] {
 
   const placed: PlacedDot[] = [];
   careers.forEach((career, idx) => {
-    const isTop = idx < TOP_MATCH_COUNT;
-
-    // Top matches: tight inner cluster, equally spaced around the centre.
-    if (isTop) {
-      const angleDeg = (idx / TOP_MATCH_COUNT) * 360 - 90;
-      const angleRad = (angleDeg) * (Math.PI / 180);
-      placed.push({
-        career,
-        ring: 0,
-        cx: CENTER + TOP_MATCH_RADIUS * Math.cos(angleRad),
-        cy: CENTER + TOP_MATCH_RADIUS * Math.sin(angleRad),
-        topMatch: true,
-      });
-      return;
-    }
-
     const cat = findCareerCategory(career.id);
     if (!cat) return;
     const sliceIdx = CATEGORY_ORDER.indexOf(cat);
     if (sliceIdx < 0) return;
 
-    const ring = ringFor(idx - TOP_MATCH_COUNT);
+    const ring = ringFor(idx);
     const sliceKey = `${ring}-${cat}`;
     const within = sliceCounts.get(sliceKey) || 0;
     sliceCounts.set(sliceKey, within + 1);
@@ -181,6 +160,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
       ring,
       cx: CENTER + r * Math.cos(angleRad),
       cy: CENTER + r * Math.sin(angleRad),
+      topMatch: idx < TOP_MATCH_COUNT,
     });
   });
 
@@ -190,6 +170,7 @@ function placeDots(careers: Career[]): PlacedDot[] {
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [viewMode, setViewMode] = useState<"dots" | "rings" | "emoji">("dots");
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
 
@@ -251,11 +232,33 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   }
 
   return (
+    <>
     <div className="rounded-2xl border bg-card overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b">
-        <span className="text-[11px] text-muted-foreground">
-          {dots.length} match{dots.length !== 1 ? "es" : ""}
-        </span>
+      <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] text-muted-foreground">
+            {dots.length} match{dots.length !== 1 ? "es" : ""}
+          </span>
+          {/* View mode toggle */}
+          <div className="flex items-center rounded-md border bg-background text-[10px]">
+            {(["dots", "rings", "emoji"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setViewMode(m)}
+                className={cn(
+                  "h-7 px-2 capitalize transition-colors first:rounded-l-md last:rounded-r-md",
+                  viewMode === m
+                    ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
+                    : "hover:bg-muted text-muted-foreground"
+                )}
+                aria-pressed={viewMode === m}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center gap-1">
           {/* Zoom controls */}
           <div className="flex items-center rounded-md border bg-background">
@@ -418,39 +421,71 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 animationDelay: `${d.ring * 120 + idx * 22}ms`,
               }}
             >
-              {/* Top match halo: faint pulsing ring behind top dots */}
+              {/* Top match halo: faint pulsing ring behind top markers */}
               {d.topMatch && (
                 <circle
                   cx={d.cx}
                   cy={d.cy}
-                  r={11}
+                  r={viewMode === "emoji" ? 13 : 11}
                   fill="none"
                   className="stroke-pink-400/70 radar-top-halo"
                   strokeWidth={1.25}
                 />
               )}
-              {/* Entry-level marker: outer ring around the dot, NOT a size change */}
+              {/* Entry-level marker: outer ring around the marker */}
               {d.career.entryLevel && (
                 <circle
                   cx={d.cx}
                   cy={d.cy}
-                  r={9}
+                  r={viewMode === "emoji" ? 11 : 9}
                   fill="none"
                   className="stroke-amber-400"
                   strokeWidth={1.5}
                 />
               )}
-              <circle
-                cx={d.cx}
-                cy={d.cy}
-                r={6}
-                className={cn(
-                  "transition-all duration-150 radar-dot-circle",
-                  d.topMatch
-                    ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                    : "fill-teal-500 group-hover:fill-teal-400"
-                )}
-              />
+              {viewMode === "dots" && (
+                <circle
+                  cx={d.cx}
+                  cy={d.cy}
+                  r={6}
+                  className={cn(
+                    "transition-all duration-150 radar-dot-circle",
+                    d.topMatch
+                      ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
+                      : "fill-teal-500 group-hover:fill-teal-400"
+                  )}
+                />
+              )}
+              {viewMode === "rings" && (
+                <circle
+                  cx={d.cx}
+                  cy={d.cy}
+                  r={6}
+                  fill="none"
+                  strokeWidth={2}
+                  className={cn(
+                    "transition-all duration-150 radar-dot-circle",
+                    d.topMatch
+                      ? "stroke-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
+                      : "stroke-teal-500 group-hover:stroke-teal-400"
+                  )}
+                />
+              )}
+              {viewMode === "emoji" && (
+                <text
+                  x={d.cx}
+                  y={d.cy}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  style={{ fontSize: 12 }}
+                  className={cn(
+                    "transition-all duration-150 radar-dot-circle select-none",
+                    d.topMatch && "drop-shadow-[0_0_4px_rgba(244,114,182,0.8)]"
+                  )}
+                >
+                  {d.career.emoji}
+                </text>
+              )}
             </g>
           ))}
         </svg>
@@ -518,162 +553,96 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <span>Inner ring = strongest match</span>
       </div>
 
-      {/* Carousel of matched careers, one slide per relevance band */}
-      {(() => {
-        const bands = ([0, 1, 2] as const)
-          .map((ring) => {
-            const ringDots = dots.filter((d) => d.ring === ring);
-            if (ringDots.length === 0) return null;
-            return {
-              ring,
-              label:
-                ring === 0
-                  ? "Strong match"
-                  : ring === 1
-                  ? "Good match"
-                  : "Worth a look",
-              dots: ringDots,
-            };
-          })
-          .filter((b): b is NonNullable<typeof b> => b !== null);
+    </div>
 
-        if (bands.length === 0) return null;
-
-        const goTo = (i: number) => {
-          const el = carouselRef.current;
-          if (!el) return;
-          const slide = el.children[i] as HTMLElement | undefined;
-          if (slide) {
-            el.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
-            setCarouselIdx(i);
-          }
-        };
-
-        const handleScroll = () => {
-          const el = carouselRef.current;
-          if (!el) return;
-          const slideWidth = el.clientWidth;
-          const idx = Math.round(el.scrollLeft / slideWidth);
-          if (idx !== carouselIdx) setCarouselIdx(idx);
-        };
-
-        return (
-          <div className="border-t bg-muted/10">
-            {/* Carousel header */}
-            <div className="flex items-center justify-between px-4 pt-3 pb-2">
-              <div className="flex items-center gap-2">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  All matches
+    {/* ─── Matches Report — separate card, sits below the radar with a gap ─── */}
+    <div className="mt-4 rounded-2xl border bg-card overflow-hidden">
+      <div className="px-4 py-3 border-b">
+        <h3 className="text-sm font-semibold">Matches Report</h3>
+        <p className="text-[11px] text-muted-foreground">
+          Every career on your radar, grouped by relevance.
+        </p>
+      </div>
+      <div className="divide-y">
+        {([0, 1, 2] as const).map((ring) => {
+          const ringDots = dots.filter((d) => d.ring === ring);
+          if (ringDots.length === 0) return null;
+          const label =
+            ring === 0
+              ? "Strong match"
+              : ring === 1
+              ? "Good match"
+              : "Worth a look";
+          const accent =
+            ring === 0
+              ? "text-teal-600 dark:text-teal-400"
+              : ring === 1
+              ? "text-teal-500/80"
+              : "text-muted-foreground";
+          return (
+            <div key={ring}>
+              <div className="px-4 pt-3 pb-1 flex items-baseline gap-2 bg-muted/20">
+                <p className={cn("text-[11px] font-semibold uppercase tracking-wide", accent)}>
+                  {label}
                 </p>
-                <span className="text-[10px] text-teal-500 font-medium">
-                  · {bands[carouselIdx]?.label} · {bands[carouselIdx]?.dots.length}
+                <span className="text-[10px] text-muted-foreground">
+                  {ringDots.length} {ringDots.length === 1 ? "career" : "careers"}
                 </span>
               </div>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => goTo(Math.max(0, carouselIdx - 1))}
-                  disabled={carouselIdx === 0}
-                  className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Previous band"
-                >
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => goTo(Math.min(bands.length - 1, carouselIdx + 1))}
-                  disabled={carouselIdx >= bands.length - 1}
-                  className="h-6 w-6 flex items-center justify-center rounded-md border bg-background hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Next band"
-                >
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </button>
+              <div className="divide-y">
+                {ringDots.map((d) => {
+                  const cat = findCareerCategory(d.career.id);
+                  const catLabel = cat ? CATEGORY_LABEL[cat] : "";
+                  return (
+                    <button
+                      key={d.career.id}
+                      type="button"
+                      onClick={() => {
+                        window.dispatchEvent(
+                          new CustomEvent("open-career-detail", {
+                            detail: d.career,
+                          })
+                        );
+                      }}
+                      className={cn(
+                        "w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-muted/50 transition-colors",
+                        d.topMatch && "bg-pink-500/5"
+                      )}
+                    >
+                      <span className="text-lg shrink-0">{d.career.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-medium truncate">
+                            {d.career.title}
+                          </span>
+                          {d.topMatch && (
+                            <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
+                              Top
+                            </span>
+                          )}
+                          {d.career.entryLevel && (
+                            <span
+                              className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0"
+                              title="Entry-level path"
+                            />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {catLabel} · {d.career.avgSalary?.split(" ")[0]}
+                        </p>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground shrink-0">
+                        Open →
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
-
-            {/* Scroll-snap carousel */}
-            <div
-              ref={carouselRef}
-              onScroll={handleScroll}
-              className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3"
-              style={{ scrollbarWidth: "none" }}
-            >
-              {bands.map((band) => (
-                <div
-                  key={band.ring}
-                  className="snap-start shrink-0 w-full px-4"
-                >
-                  <div className="rounded-lg border bg-card overflow-hidden">
-                    {band.dots.map((d, idx) => {
-                      const cat = findCareerCategory(d.career.id);
-                      const catLabel = cat ? CATEGORY_LABEL[cat] : "";
-                      return (
-                        <button
-                          key={d.career.id}
-                          type="button"
-                          onClick={() => {
-                            window.dispatchEvent(
-                              new CustomEvent("open-career-detail", {
-                                detail: d.career,
-                              })
-                            );
-                          }}
-                          className={cn(
-                            "w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors",
-                            idx > 0 && "border-t",
-                            d.topMatch && "bg-pink-500/5"
-                          )}
-                        >
-                          <span className="text-base shrink-0">{d.career.emoji}</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-xs font-medium truncate">
-                                {d.career.title}
-                              </span>
-                              {d.topMatch && (
-                                <span className="text-[8px] font-bold uppercase tracking-wide text-pink-500 shrink-0">
-                                  Top
-                                </span>
-                              )}
-                              {d.career.entryLevel && (
-                                <span className="inline-block w-2 h-2 rounded-full border-2 border-amber-400 shrink-0" />
-                              )}
-                            </div>
-                            <p className="text-[10px] text-muted-foreground truncate">
-                              {catLabel} · {d.career.avgSalary?.split(" ")[0]}
-                            </p>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground shrink-0">
-                            Open →
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Dot indicators */}
-            <div className="flex items-center justify-center gap-1.5 pb-3">
-              {bands.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all",
-                    i === carouselIdx
-                      ? "w-6 bg-teal-500"
-                      : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                  )}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        );
-      })()}
+          );
+        })}
+      </div>
     </div>
+  </>
   );
 }
