@@ -43,7 +43,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   HEALTHCARE_LIFE_SCIENCES: [
     {
       id: "doctor",
-      title: "Doctor / Physician",
+      title: "Doctor",
       emoji: "👨‍⚕️",
       description: "Diagnose and treat illnesses, prescribe medications, and provide preventive care to patients.",
       avgSalary: "700,000 - 1,400,000 kr/year",
@@ -54,7 +54,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "nurse",
-      title: "Nurse (Sykepleier)",
+      title: "Nurse",
       emoji: "👩‍⚕️",
       description: "Provide patient care, administer medications, and support doctors in hospitals and clinics.",
       avgSalary: "450,000 - 650,000 kr/year",
@@ -65,7 +65,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "healthcare-worker",
-      title: "Healthcare Worker (Helsefagarbeider)",
+      title: "Healthcare Worker",
       emoji: "🏥",
       description: "Assist patients with daily activities and basic medical care in nursing homes and hospitals.",
       avgSalary: "350,000 - 450,000 kr/year",
@@ -77,7 +77,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dentist",
-      title: "Dentist (Tannlege)",
+      title: "Dentist",
       emoji: "🦷",
       description: "Diagnose and treat dental issues, perform procedures, and promote oral health.",
       avgSalary: "650,000 - 1,200,000 kr/year",
@@ -88,7 +88,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "pharmacist",
-      title: "Pharmacist (Farmasøyt)",
+      title: "Pharmacist",
       emoji: "💊",
       description: "Dispense medications, advise patients on drug use, and ensure medication safety.",
       avgSalary: "550,000 - 750,000 kr/year",
@@ -99,7 +99,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "physiotherapist",
-      title: "Physiotherapist (Fysioterapeut)",
+      title: "Physiotherapist",
       emoji: "🏃",
       description: "Help patients recover from injuries and improve physical function through exercise and therapy.",
       avgSalary: "480,000 - 650,000 kr/year",
@@ -132,7 +132,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "paramedic",
-      title: "Paramedic (Ambulansearbeider)",
+      title: "Paramedic",
       emoji: "🚑",
       description: "Provide emergency medical care and transport patients in ambulances.",
       avgSalary: "400,000 - 550,000 kr/year",
@@ -144,7 +144,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "veterinarian",
-      title: "Veterinarian (Veterinær)",
+      title: "Veterinarian",
       emoji: "🐾",
       description: "Diagnose and treat animals, perform surgeries, and advise pet owners on animal health.",
       avgSalary: "550,000 - 850,000 kr/year",
@@ -155,7 +155,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "veterinary-assistant",
-      title: "Veterinary Assistant (Dyrepleier)",
+      title: "Veterinary Assistant",
       emoji: "🐕",
       description: "Assist veterinarians with animal care, restraint, and clinic operations.",
       avgSalary: "350,000 - 450,000 kr/year",
@@ -167,7 +167,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "dental-hygienist",
-      title: "Dental Hygienist (Tannpleier)",
+      title: "Dental Hygienist",
       emoji: "🦷",
       description: "Clean teeth, take X-rays, and educate patients on oral health prevention.",
       avgSalary: "450,000 - 600,000 kr/year",
@@ -178,7 +178,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "optician",
-      title: "Optician (Optiker)",
+      title: "Optician",
       emoji: "👓",
       description: "Fit and dispense eyeglasses and contact lenses based on prescriptions.",
       avgSalary: "420,000 - 580,000 kr/year",
@@ -189,7 +189,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "lab-technician",
-      title: "Lab Technician (Bioingeniør)",
+      title: "Lab Technician",
       emoji: "🧫",
       description: "Perform laboratory tests and analyses on blood, tissue, and other samples for medical diagnosis.",
       avgSalary: "450,000 - 600,000 kr/year",
@@ -261,7 +261,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   EDUCATION_TRAINING: [
     {
       id: "primary-teacher",
-      title: "Primary School Teacher (Grunnskolelærer)",
+      title: "Primary School Teacher",
       emoji: "📚",
       description: "Educate children in elementary school, teaching foundational subjects and life skills.",
       avgSalary: "450,000 - 600,000 kr/year",
@@ -272,7 +272,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "secondary-teacher",
-      title: "Secondary School Teacher (Videregående lærer)",
+      title: "Secondary School Teacher",
       emoji: "🎓",
       description: "Teach specialised subjects to teenagers in upper secondary school.",
       avgSalary: "480,000 - 650,000 kr/year",
@@ -283,7 +283,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "kindergarten-teacher",
-      title: "Kindergarten Teacher (Barnehagelærer)",
+      title: "Kindergarten Teacher",
       emoji: "🧒",
       description: "Nurture young children's development through play-based learning in kindergartens.",
       avgSalary: "420,000 - 550,000 kr/year",
@@ -294,7 +294,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "special-needs-educator",
-      title: "Special Needs Educator (Spesialpedagog)",
+      title: "Special Needs Educator",
       emoji: "💙",
       description: "Support students with learning disabilities and special needs in educational settings.",
       avgSalary: "480,000 - 620,000 kr/year",
@@ -327,7 +327,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "childcare-assistant",
-      title: "Childcare Assistant (Barne- og ungdomsarbeider)",
+      title: "Childcare Assistant",
       emoji: "👶",
       description: "Support children's care and development in kindergartens and after-school programs.",
       avgSalary: "320,000 - 420,000 kr/year",
@@ -379,7 +379,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ux-designer",
-      title: "UX/UI Designer",
+      title: "UX Designer",
       emoji: "🎨",
       description: "Design user interfaces and experiences for websites and apps that are intuitive and beautiful.",
       avgSalary: "500,000 - 750,000 kr/year",
@@ -425,7 +425,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "ai-engineer",
-      title: "AI/ML Engineer",
+      title: "AI Engineer",
       emoji: "🤖",
       description: "Build and deploy artificial intelligence and machine learning systems.",
       avgSalary: "650,000 - 1,100,000 kr/year",
@@ -447,7 +447,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "cio",
-      title: "Chief Information Officer (CIO)",
+      title: "Chief Information Officer",
       emoji: "👔",
       description: "Executive responsible for IT strategy, infrastructure, and aligning technology with business goals.",
       avgSalary: "1,200,000 - 2,500,000 kr/year",
@@ -491,7 +491,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "database-administrator",
-      title: "Database Administrator (DBA)",
+      title: "Database Administrator",
       emoji: "🗄️",
       description: "Manage, optimise, and secure databases to ensure data availability and performance.",
       avgSalary: "550,000 - 800,000 kr/year",
@@ -502,7 +502,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "qa-engineer",
-      title: "QA Engineer / Test Engineer",
+      title: "QA Engineer",
       emoji: "🧪",
       description: "Ensure software quality through testing strategies, test automation, and defect prevention.",
       avgSalary: "500,000 - 750,000 kr/year",
@@ -548,7 +548,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "rte",
-      title: "Release Train Engineer (RTE)",
+      title: "Release Train Engineer",
       emoji: "🚂",
       description: "Facilitate Agile Release Trains in SAFe, coordinating multiple teams to deliver value at scale.",
       avgSalary: "750,000 - 1,100,000 kr/year",
@@ -629,7 +629,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "sre",
-      title: "Site Reliability Engineer (SRE)",
+      title: "Site Reliability Engineer",
       emoji: "🔧",
       description: "Ensure systems are reliable, scalable, and performant through automation and engineering practices.",
       avgSalary: "650,000 - 1,000,000 kr/year",
@@ -871,7 +871,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-sre",
-      title: "Site Reliability Engineer (Senior)",
+      title: "Senior Site Reliability Engineer",
       emoji: "🔧",
       description: "Lead reliability engineering efforts defining SLO frameworks, incident management processes, and driving reliability culture across the organisation.",
       avgSalary: "750,000 - 1,150,000 kr/year",
@@ -882,7 +882,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-devops-engineer",
-      title: "DevOps Engineer (Senior)",
+      title: "Senior DevOps Engineer",
       emoji: "⚙️",
       description: "Lead DevOps practices and CI/CD strategy, designing deployment pipelines and infrastructure automation at scale.",
       avgSalary: "700,000 - 1,050,000 kr/year",
@@ -926,7 +926,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "senior-network-architect",
-      title: "Network Architect (Senior)",
+      title: "Senior Network Architect",
       emoji: "🌐",
       description: "Design large-scale enterprise network architectures spanning campus, WAN, cloud connectivity, and security segmentation.",
       avgSalary: "750,000 - 1,150,000 kr/year",
@@ -1322,7 +1322,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     {
       id: "site-reliability-engineer",
-      title: "Site Reliability Engineer (SRE)",
+      title: "Production Engineer",
       emoji: "🔧",
       description: "Ensure large-scale systems are reliable, scalable, and efficient by combining software engineering with operations expertise.",
       avgSalary: "650,000 - 1,000,000 kr/year",

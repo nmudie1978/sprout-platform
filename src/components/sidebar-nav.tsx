@@ -234,7 +234,7 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
       <div className="mb-5">
         {!collapsed && (
           <div className="flex items-center gap-1.5 px-3 mb-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.8)]" />
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.8)] motion-safe:animate-[yours-pulse_3.2s_ease-in-out_infinite]" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-teal-300">
               {title}
             </p>
@@ -243,11 +243,30 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "space-y-0.5 rounded-xl border border-teal-500/20 bg-gradient-to-b from-teal-500/[0.07] to-teal-500/[0.02]",
+            "relative space-y-0.5 rounded-xl border border-teal-500/20 bg-gradient-to-b from-teal-500/[0.07] to-teal-500/[0.02] overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
-          {children}
+          {/* Ambient outer glow — soft, slow pulse */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_5s_ease-in-out_infinite]"
+            style={{
+              boxShadow:
+                "0 0 18px 0 rgba(45,212,191,0.10), inset 0 0 24px 0 rgba(20,184,166,0.06)",
+            }}
+          />
+          {/* Slow drifting sheen across the panel */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 motion-safe:animate-[yours-sheen_9s_linear_infinite]"
+            style={{
+              background:
+                "linear-gradient(115deg, transparent 35%, rgba(45,212,191,0.08) 50%, transparent 65%)",
+              backgroundSize: "250% 100%",
+            }}
+          />
+          <div className="relative">{children}</div>
         </div>
       </div>
     );

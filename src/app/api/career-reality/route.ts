@@ -37,13 +37,39 @@ interface RawVideo {
   score: number;
 }
 
+/**
+ * Normalize a career label into clean, query-friendly forms.
+ *
+ * Career titles in our data often look like:
+ *   "Beautician / Makeup Artist (Kosmetolog)"
+ *   "Nurse (Sykepleier)"
+ *   "Doctor / Physician"
+ *
+ * For YouTube queries we want a single short English term ("beautician").
+ * For title matching we want to accept ANY of the alternate labels
+ * (so "Beautician" alone can match, even though the full string also
+ * mentions "Makeup Artist").
+ */
+function normalizeCareer(career: string): { primary: string; alternates: string[] } {
+  // Strip parenthetical translations: "Nurse (Sykepleier)" -> "Nurse"
+  const withoutParens = career.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+  // Split on "/" or " or " into alternate labels
+  const alternates = withoutParens
+    .split(/\s*(?:\/|\bor\b)\s*/i)
+    .map(s => s.trim())
+    .filter(Boolean);
+  const primary = alternates[0] ?? career.trim();
+  return { primary, alternates };
+}
+
 function buildQueries(career: string): string[] {
+  const { primary } = normalizeCareer(career);
   return [
-    `the harsh reality of being a ${career}`,
-    `what they don't tell you about being a ${career}`,
-    `the worst part of being a ${career} honest`,
-    `struggles of being a ${career}`,
-    `I regret becoming a ${career}`,
+    `the harsh reality of being a ${primary}`,
+    `what they don't tell you about being a ${primary}`,
+    `the worst part of being a ${primary} honest`,
+    `struggles of being a ${primary}`,
+    `I regret becoming a ${primary}`,
   ];
 }
 
@@ -111,11 +137,19 @@ const MEDIUM_SIGNALS: [RegExp, string][] = [
 
 function scoreVideo(title: string, career: string): { score: number; whySelected: string; videoType: RealityVideoType } {
   const t = title.toLowerCase();
-  const careerWords = career.toLowerCase().split(/[\s/()\\-]+/).filter(w => w.length > 3);
-  // For multi-word careers, require majority of words to match (prevents "Interior Designer" matching "Graphic Designer")
-  const matchCount = careerWords.filter(w => t.includes(w)).length;
-  const threshold = careerWords.length > 1 ? Math.ceil(careerWords.length * 0.6) : 1;
-  if (matchCount < threshold) return { score: -1, whySelected: '', videoType: 'balanced' };
+  // Accept the title if ANY one of the career's alternate labels has 60% of its
+  // words present. This still blocks "Interior Designer" matching "Graphic Designer"
+  // (because "interior" must appear) while allowing "Beautician" to match the
+  // career "Beautician / Makeup Artist (Kosmetolog)" via its first label.
+  const { alternates } = normalizeCareer(career);
+  const labelMatches = (label: string): boolean => {
+    const words = label.toLowerCase().split(/[\s\\-]+/).filter(w => w.length > 3);
+    if (words.length === 0) return false;
+    const matchCount = words.filter(w => t.includes(w)).length;
+    const threshold = words.length > 1 ? Math.ceil(words.length * 0.6) : 1;
+    return matchCount >= threshold;
+  };
+  if (!alternates.some(labelMatches)) return { score: -1, whySelected: '', videoType: 'balanced' };
   if (REJECT_PATTERNS.some(p => p.test(title))) return { score: -1, whySelected: '', videoType: 'balanced' };
 
   let score = 0;

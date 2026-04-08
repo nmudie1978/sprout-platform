@@ -215,6 +215,36 @@
     }
   }
 
+  /* "Yours" sidebar section — soft ambient glow + slow sheen */
+  @keyframes yours-glow {
+    0%, 100% {
+      opacity: 0.55;
+      box-shadow:
+        0 0 14px 0 rgba(45, 212, 191, 0.08),
+        inset 0 0 18px 0 rgba(20, 184, 166, 0.05);
+    }
+    50% {
+      opacity: 1;
+      box-shadow:
+        0 0 26px 2px rgba(45, 212, 191, 0.16),
+        inset 0 0 30px 0 rgba(20, 184, 166, 0.09);
+    }
+  }
+  @keyframes yours-sheen {
+    0% { background-position: 200% 0; }
+    100% { background-position: -100% 0; }
+  }
+  @keyframes yours-pulse {
+    0%, 100% {
+      opacity: 0.85;
+      box-shadow: 0 0 4px rgba(45, 212, 191, 0.5);
+    }
+    50% {
+      opacity: 1;
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.9);
+    }
+  }
+
   @keyframes float-medium {
     0%, 100% {
       transform: translateY(0px) rotate(0deg);
