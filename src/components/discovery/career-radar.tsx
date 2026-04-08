@@ -10,7 +10,7 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2 } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -67,6 +67,11 @@ interface PlacedDot {
 const SIZE = 320;
 const CENTER = SIZE / 2;
 const RING_RADII = [60, 110, 150]; // outer edge of each ring band
+// Padding around the SVG so category labels around the outer ring aren't clipped
+const VIEWBOX_PAD = 40;
+const ZOOM_MIN = 0.6;
+const ZOOM_MAX = 2.5;
+const ZOOM_STEP = 0.25;
 
 function placeDots(careers: Career[]): PlacedDot[] {
   if (careers.length === 0) return [];
@@ -121,6 +126,11 @@ function placeDots(careers: Career[]): PlacedDot[] {
 
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
+  const [zoom, setZoom] = useState(1);
+
+  const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
+  const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
+  const zoomReset = () => setZoom(1);
 
   const matched = useMemo(() => {
     if (!preferences) return [];
@@ -185,23 +195,55 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             {dots.length} match{dots.length !== 1 ? "es" : ""}
           </span>
         </div>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-7 text-[11px]"
-          onClick={onEditPreferences}
-        >
-          <Settings2 className="h-3 w-3 mr-1" />
-          Edit
-        </Button>
+        <div className="flex items-center gap-1">
+          {/* Zoom controls */}
+          <div className="flex items-center rounded-md border bg-background">
+            <button
+              type="button"
+              onClick={zoomOut}
+              disabled={zoom <= ZOOM_MIN}
+              className="h-7 w-7 flex items-center justify-center hover:bg-muted rounded-l-md disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Zoom out"
+            >
+              <ZoomOut className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={zoomReset}
+              className="h-7 px-1.5 text-[10px] tabular-nums hover:bg-muted border-x"
+              aria-label="Reset zoom"
+              title="Reset zoom"
+            >
+              {Math.round(zoom * 100)}%
+            </button>
+            <button
+              type="button"
+              onClick={zoomIn}
+              disabled={zoom >= ZOOM_MAX}
+              className="h-7 w-7 flex items-center justify-center hover:bg-muted rounded-r-md disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Zoom in"
+            >
+              <ZoomIn className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-[11px]"
+            onClick={onEditPreferences}
+          >
+            <Settings2 className="h-3 w-3 mr-1" />
+            Edit
+          </Button>
+        </div>
       </div>
 
-      <div className="relative flex justify-center p-4">
+      <div className="relative flex justify-center p-4 overflow-auto">
         <svg
-          width={SIZE}
-          height={SIZE}
-          viewBox={`0 0 ${SIZE} ${SIZE}`}
-          className="max-w-full h-auto"
+          width={(SIZE + VIEWBOX_PAD * 2) * zoom}
+          height={(SIZE + VIEWBOX_PAD * 2) * zoom}
+          viewBox={`${-VIEWBOX_PAD} ${-VIEWBOX_PAD} ${SIZE + VIEWBOX_PAD * 2} ${SIZE + VIEWBOX_PAD * 2}`}
+          className="max-w-full h-auto transition-[width,height] duration-200"
           role="img"
           aria-label="Career radar visualisation"
         >
@@ -237,23 +279,27 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             );
           })}
 
-          {/* Category labels around the outer ring */}
+          {/* Category labels around the outer ring — anchor per side so they don't clip */}
           {CATEGORY_ORDER.map((cat, i) => {
             const sliceWidth = 360 / CATEGORY_ORDER.length;
             const angleDeg = i * sliceWidth + sliceWidth / 2 - 90;
             const angle = angleDeg * (Math.PI / 180);
-            const labelR = RING_RADII[RING_RADII.length - 1] + 12;
+            const labelR = RING_RADII[RING_RADII.length - 1] + 14;
             const x = CENTER + labelR * Math.cos(angle);
             const y = CENTER + labelR * Math.sin(angle);
+            // Pick text-anchor based on horizontal position so labels grow
+            // outward from the radar instead of being centred (which clips at edges).
+            const dx = x - CENTER;
+            const anchor = Math.abs(dx) < 8 ? "middle" : dx > 0 ? "start" : "end";
             return (
               <text
                 key={cat}
                 x={x}
                 y={y}
-                textAnchor="middle"
+                textAnchor={anchor}
                 dominantBaseline="middle"
                 className="fill-muted-foreground"
-                style={{ fontSize: 8 }}
+                style={{ fontSize: 9 }}
               >
                 {CATEGORY_LABEL[cat]}
               </text>
