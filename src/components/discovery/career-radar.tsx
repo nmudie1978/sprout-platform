@@ -195,48 +195,47 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       const topDots = dots.filter((d) => d.topMatch);
       if (topDots.length === 0) return topDots;
 
-      // Recover each top dot's original angle from its (cx,cy), then enforce
-      // a minimum angular separation so overlapping dots get pushed apart.
-      // Push them outward to a roomier radius since the rest of the radar
-      // is empty in this mode.
-      const TOP_RADIUS = 95;
-      const MIN_SEP_DEG = 35;
+      // Spread top dots within their OWN category slice — never push them
+      // across slice boundaries. Each slice is 36° wide; we leave a small
+      // padding from the edges so dots don't sit right on the divider line.
+      // Two radii (inner / outer) are used so even when 2+ dots share the
+      // same slice they get a tiny radial offset for extra clarity.
+      const TOP_RADIUS_INNER = 80;
+      const TOP_RADIUS_OUTER = 110;
+      const SLICE_WIDTH = 360 / CATEGORY_ORDER.length;
+      const SLICE_PADDING = 6; // degrees of margin from each slice edge
 
-      const withAngle = topDots.map((d) => {
-        const dx = d.cx - CENTER;
-        const dy = d.cy - CENTER;
-        let deg = Math.atan2(dy, dx) * (180 / Math.PI);
-        if (deg < 0) deg += 360;
-        return { dot: d, deg };
-      });
-
-      // Sort by angle, then walk through pushing each dot at least MIN_SEP_DEG
-      // away from the previous one.
-      withAngle.sort((a, b) => a.deg - b.deg);
-      for (let i = 1; i < withAngle.length; i++) {
-        const gap = withAngle[i].deg - withAngle[i - 1].deg;
-        if (gap < MIN_SEP_DEG) {
-          withAngle[i].deg = withAngle[i - 1].deg + MIN_SEP_DEG;
-        }
-      }
-      // Also enforce wrap-around separation between last and first
-      if (withAngle.length > 1) {
-        const wrapGap = 360 - withAngle[withAngle.length - 1].deg + withAngle[0].deg;
-        if (wrapGap < MIN_SEP_DEG) {
-          // Shift everything backward by half the deficit
-          const shift = (MIN_SEP_DEG - wrapGap) / 2;
-          for (const w of withAngle) w.deg = (w.deg - shift + 360) % 360;
-        }
+      // Bucket top dots by category
+      const byCategory = new Map<CareerCategory, PlacedDot[]>();
+      for (const d of topDots) {
+        const cat = findCareerCategory(d.career.id);
+        if (!cat) continue;
+        if (!byCategory.has(cat)) byCategory.set(cat, []);
+        byCategory.get(cat)!.push(d);
       }
 
-      return withAngle.map(({ dot, deg }) => {
-        const rad = deg * (Math.PI / 180);
-        return {
-          ...dot,
-          cx: CENTER + TOP_RADIUS * Math.cos(rad),
-          cy: CENTER + TOP_RADIUS * Math.sin(rad),
-        };
-      });
+      const result: PlacedDot[] = [];
+      for (const [cat, ringDots] of byCategory.entries()) {
+        const sliceIdx = CATEGORY_ORDER.indexOf(cat);
+        if (sliceIdx < 0) continue;
+        const sliceStart = sliceIdx * SLICE_WIDTH + SLICE_PADDING;
+        const sliceUsable = SLICE_WIDTH - SLICE_PADDING * 2;
+
+        ringDots.forEach((d, i) => {
+          // Distribute angles evenly across the usable slice width
+          const t = ringDots.length === 1 ? 0.5 : i / (ringDots.length - 1);
+          const angleDeg = sliceStart + sliceUsable * t - 90; // -90 so 0 is top
+          const rad = angleDeg * (Math.PI / 180);
+          // Alternate inner / outer radius so adjacent dots have visual gap
+          const r = i % 2 === 0 ? TOP_RADIUS_INNER : TOP_RADIUS_OUTER;
+          result.push({
+            ...d,
+            cx: CENTER + r * Math.cos(rad),
+            cy: CENTER + r * Math.sin(rad),
+          });
+        });
+      }
+      return result;
     }
     return dots;
   }, [dots, filterMode]);

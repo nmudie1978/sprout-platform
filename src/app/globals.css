@@ -215,21 +215,99 @@
     }
   }
 
-  /* "Yours" sidebar section — soft ambient breathing glow on the border */
+  /* "Yours" sidebar section — irregular ambient glow that flickers and
+     swells unpredictably so it never feels like a regular pulse */
   @keyframes yours-glow {
-    0%, 100% {
-      opacity: 0.6;
+    0% {
+      opacity: 0.55;
+      box-shadow:
+        0 0 10px 0 rgba(45, 212, 191, 0.08),
+        0 0 22px 0 rgba(45, 212, 191, 0.03),
+        inset 0 0 14px 0 rgba(20, 184, 166, 0.04);
+    }
+    11% {
+      opacity: 0.92;
+      box-shadow:
+        0 0 24px 1px rgba(45, 212, 191, 0.20),
+        0 0 38px 3px rgba(45, 212, 191, 0.07),
+        inset 0 0 26px 0 rgba(20, 184, 166, 0.07);
+    }
+    18% {
+      opacity: 0.62;
       box-shadow:
         0 0 12px 0 rgba(45, 212, 191, 0.10),
-        0 0 24px 0 rgba(45, 212, 191, 0.04),
+        0 0 26px 0 rgba(45, 212, 191, 0.04),
         inset 0 0 16px 0 rgba(20, 184, 166, 0.04);
     }
-    50% {
+    27% {
+      opacity: 0.7;
+      box-shadow:
+        0 0 16px 0 rgba(45, 212, 191, 0.13),
+        0 0 30px 1px rgba(45, 212, 191, 0.05),
+        inset 0 0 18px 0 rgba(20, 184, 166, 0.05);
+    }
+    34% {
       opacity: 1;
       box-shadow:
-        0 0 22px 1px rgba(45, 212, 191, 0.22),
-        0 0 40px 4px rgba(45, 212, 191, 0.08),
+        0 0 30px 2px rgba(45, 212, 191, 0.28),
+        0 0 50px 6px rgba(45, 212, 191, 0.10),
+        inset 0 0 34px 0 rgba(20, 184, 166, 0.10);
+    }
+    41% {
+      opacity: 0.6;
+      box-shadow:
+        0 0 11px 0 rgba(45, 212, 191, 0.09),
+        0 0 24px 0 rgba(45, 212, 191, 0.03),
+        inset 0 0 15px 0 rgba(20, 184, 166, 0.04);
+    }
+    52% {
+      opacity: 0.8;
+      box-shadow:
+        0 0 18px 0 rgba(45, 212, 191, 0.15),
+        0 0 32px 2px rgba(45, 212, 191, 0.06),
+        inset 0 0 20px 0 rgba(20, 184, 166, 0.06);
+    }
+    58% {
+      opacity: 0.55;
+      box-shadow:
+        0 0 10px 0 rgba(45, 212, 191, 0.07),
+        0 0 22px 0 rgba(45, 212, 191, 0.03),
+        inset 0 0 14px 0 rgba(20, 184, 166, 0.03);
+    }
+    66% {
+      opacity: 0.95;
+      box-shadow:
+        0 0 26px 1px rgba(45, 212, 191, 0.23),
+        0 0 42px 4px rgba(45, 212, 191, 0.08),
         inset 0 0 28px 0 rgba(20, 184, 166, 0.08);
+    }
+    74% {
+      opacity: 0.68;
+      box-shadow:
+        0 0 14px 0 rgba(45, 212, 191, 0.11),
+        0 0 28px 1px rgba(45, 212, 191, 0.04),
+        inset 0 0 17px 0 rgba(20, 184, 166, 0.05);
+    }
+    83% {
+      opacity: 0.88;
+      box-shadow:
+        0 0 22px 1px rgba(45, 212, 191, 0.19),
+        0 0 36px 3px rgba(45, 212, 191, 0.07),
+        inset 0 0 24px 0 rgba(20, 184, 166, 0.07);
+    }
+    91% {
+      opacity: 0.58;
+      box-shadow:
+        0 0 11px 0 rgba(45, 212, 191, 0.09),
+        0 0 24px 0 rgba(45, 212, 191, 0.03),
+        inset 0 0 15px 0 rgba(20, 184, 166, 0.04);
+    }
+    100% {
+      opacity: 0.55;
+      box-shadow:
+        0 0 10px 0 rgba(45, 212, 191, 0.08),
+        0 0 22px 0 rgba(45, 212, 191, 0.03),
+        inset 0 0 14px 0 rgba(20, 184, 166, 0.04);
     }
   }
   @keyframes yours-sheen {
