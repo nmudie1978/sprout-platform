@@ -127,42 +127,60 @@ function placeDots(careers: Career[]): PlacedDot[] {
     return 2;
   };
 
-  // Track per-(ring, category) count so we can spread dots within a slice.
-  const sliceCounts = new Map<string, number>();
-
-  const placed: PlacedDot[] = [];
+  // Pass 1: bucket by (ring, category) so we know how many dots will share
+  // each slice cell before placing any of them.
+  type Pre = { career: Career; ring: 0 | 1 | 2; idx: number };
+  const buckets = new Map<string, Pre[]>();
   careers.forEach((career, idx) => {
     const cat = findCareerCategory(career.id);
     if (!cat) return;
-    const sliceIdx = CATEGORY_ORDER.indexOf(cat);
-    if (sliceIdx < 0) return;
-
     const ring = ringFor(idx);
-    const sliceKey = `${ring}-${cat}`;
-    const within = sliceCounts.get(sliceKey) || 0;
-    sliceCounts.set(sliceKey, within + 1);
-
-    // Each slice is 360 / 10 = 36 degrees wide.
-    const sliceWidth = 360 / CATEGORY_ORDER.length;
-    const sliceStart = sliceIdx * sliceWidth;
-    // Spread dots inside the slice deterministically: first dot near centre,
-    // subsequent dots fan out alternately left/right.
-    const offset = ((within + 1) / 2) * (within % 2 === 0 ? -1 : 1);
-    const angleDeg = sliceStart + sliceWidth / 2 + offset * (sliceWidth / 4);
-    const angleRad = (angleDeg - 90) * (Math.PI / 180); // -90 so 0deg is top
-
-    // Place near outer edge of the ring band, with slight inward jitter.
-    const baseR = ring === 0 ? RING_RADII[0] - 18 : ring === 1 ? RING_RADII[1] - 18 : RING_RADII[2] - 14;
-    const r = baseR;
-
-    placed.push({
-      career,
-      ring,
-      cx: CENTER + r * Math.cos(angleRad),
-      cy: CENTER + r * Math.sin(angleRad),
-      topMatch: idx < TOP_MATCH_COUNT,
-    });
+    const key = `${ring}|${cat}`;
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key)!.push({ career, ring, idx });
   });
+
+  // Pass 2: distribute dots EVENLY across the usable width of their slice.
+  // The previous fan-out math grew unbounded with bucket size and spilled
+  // into adjacent slices (e.g. 5 Tech dots fanning to ±27° instead of ±14°).
+  // Even distribution + a small slice-edge padding keeps every dot inside
+  // its own category visually.
+  const SLICE_WIDTH = 360 / CATEGORY_ORDER.length; // 36°
+  const SLICE_PADDING = 4; // degrees of margin from each edge
+  const placed: PlacedDot[] = [];
+
+  for (const [key, group] of buckets.entries()) {
+    const [ringStr, catStr] = key.split("|");
+    const ring = parseInt(ringStr, 10) as 0 | 1 | 2;
+    const sliceIdx = CATEGORY_ORDER.indexOf(catStr as CareerCategory);
+    if (sliceIdx < 0) continue;
+    const sliceStart = sliceIdx * SLICE_WIDTH + SLICE_PADDING;
+    const sliceUsable = SLICE_WIDTH - SLICE_PADDING * 2;
+    const baseR =
+      ring === 0
+        ? RING_RADII[0] - 18
+        : ring === 1
+        ? RING_RADII[1] - 18
+        : RING_RADII[2] - 14;
+
+    group.forEach((p, i) => {
+      // Even distribution: single dot sits dead-centre; multiple dots span
+      // the usable slice from start to end.
+      const t = group.length === 1 ? 0.5 : i / (group.length - 1);
+      const angleDeg = sliceStart + sliceUsable * t - 90;
+      const angleRad = angleDeg * (Math.PI / 180);
+      // For crowded slices, alternate a small radial offset so dots don't
+      // collide visually even when angular spacing is tight.
+      const r = group.length > 4 ? baseR + (i % 2 === 0 ? -4 : 4) : baseR;
+      placed.push({
+        career: p.career,
+        ring,
+        cx: CENTER + r * Math.cos(angleRad),
+        cy: CENTER + r * Math.sin(angleRad),
+        topMatch: p.idx < TOP_MATCH_COUNT,
+      });
+    });
+  }
 
   return placed;
 }

@@ -257,16 +257,6 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
             aria-hidden
             className="pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_8s_ease-in-out_infinite]"
           />
-          {/* Slow drifting sheen across the panel */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 motion-safe:animate-[yours-sheen_9s_linear_infinite]"
-            style={{
-              background:
-                "linear-gradient(115deg, transparent 35%, rgba(45,212,191,0.08) 50%, transparent 65%)",
-              backgroundSize: "250% 100%",
-            }}
-          />
           <div className="relative">{children}</div>
         </div>
       </div>
