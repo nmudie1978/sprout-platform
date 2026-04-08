@@ -123,13 +123,33 @@ function SignUpForm() {
         throw new Error(errorData.error || "Signup failed");
       }
 
-      toast({
-        title: "Account created!",
-        description: "You can now sign in with your email and password.",
+      // Auto-login: drop the bounce-back-to-signin friction. The user just
+      // told us their credentials a second ago — sign them in immediately.
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      // Redirect to signin page
-      router.push("/auth/signin");
+      if (signInResult?.error) {
+        // Auto-login failed — fall back to the manual signin page so the
+        // user isn't stranded. This should be rare.
+        toast({
+          title: "Account created",
+          description: "Please sign in to continue.",
+        });
+        router.push("/auth/signin");
+        return;
+      }
+
+      toast({
+        title: "Welcome to Endeavrly",
+        description: "Let's get you set up.",
+      });
+
+      // Land directly on the dashboard. Onboarding wizard + first-action
+      // card live there and will pick up automatically.
+      router.push("/dashboard");
     } catch (error: any) {
       toast({
         title: "Error",
