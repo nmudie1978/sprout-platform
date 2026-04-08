@@ -60,6 +60,14 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
       <span className="flex items-center gap-3 min-w-0">
         <span className="text-lg flex-shrink-0">{career.emoji}</span>
         <span className="text-sm font-medium truncate">{career.title}</span>
+        {career.entryLevel && (
+          <Badge
+            variant="secondary"
+            className="text-[9px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+          >
+            Entry
+          </Badge>
+        )}
       </span>
 
       {/* Center: learn more */}
@@ -113,7 +121,17 @@ function SmallCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
           <div className="flex items-start gap-2 mb-2">
             <span className="text-xl flex-shrink-0">{career.emoji}</span>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm truncate">{career.title}</h4>
+              <div className="flex items-center gap-1.5">
+                <h4 className="font-medium text-sm truncate">{career.title}</h4>
+                {career.entryLevel && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[9px] px-1 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+                  >
+                    Entry
+                  </Badge>
+                )}
+              </div>
               <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
                 {career.description}
               </p>
@@ -190,7 +208,17 @@ function LargeCard({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, 
           <div className="flex items-start gap-3 mb-3">
             <span className="text-2xl flex-shrink-0">{career.emoji}</span>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-base">{career.title}</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-semibold text-base">{career.title}</h3>
+                {career.entryLevel && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] px-1.5 py-0 shrink-0 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+                  >
+                    Entry Level
+                  </Badge>
+                )}
+              </div>
               <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                 {career.description}
               </p>

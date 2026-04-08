@@ -966,6 +966,61 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "high",
     },
     {
+      id: "ai-network-engineer",
+      title: "AI Infrastructure Network Engineer",
+      emoji: "🛰️",
+      description: "Design and scale high-performance networks for AI training and inference clusters, working with NVIDIA GPUs, InfiniBand, and RDMA fabrics.",
+      avgSalary: "750,000 - 1,200,000 kr/year",
+      educationPath: "Bachelor's/Master's in CS or Network Engineering + GPU/HPC experience",
+      keySkills: ["NVIDIA GPU networking", "InfiniBand/RoCE", "NCCL", "data centre fabrics", "low-latency networking"],
+      dailyTasks: ["Design GPU cluster topologies", "Tune InfiniBand and RDMA fabrics", "Optimise NCCL collective performance", "Troubleshoot multi-node training", "Plan capacity for AI workloads"],
+      growthOutlook: "high",
+    },
+    {
+      id: "computer-vision-engineer",
+      title: "Computer Vision Engineer",
+      emoji: "👁️",
+      description: "Build AI systems that interpret images and video for applications like medical imaging, autonomous vehicles, and industrial inspection.",
+      avgSalary: "700,000 - 1,150,000 kr/year",
+      educationPath: "Master's in CS/AI + Computer vision specialisation",
+      keySkills: ["deep learning", "OpenCV", "PyTorch", "image processing", "model optimisation"],
+      dailyTasks: ["Train vision models", "Annotate datasets", "Optimise inference on edge devices", "Evaluate model accuracy", "Integrate with hardware"],
+      growthOutlook: "high",
+    },
+    {
+      id: "nlp-engineer",
+      title: "NLP Engineer",
+      emoji: "💬",
+      description: "Build natural language processing systems for translation, search, summarisation, and conversational AI using modern language models.",
+      avgSalary: "700,000 - 1,150,000 kr/year",
+      educationPath: "Master's in CS/Computational Linguistics + NLP experience",
+      keySkills: ["transformers", "tokenisation", "fine-tuning LLMs", "Python", "evaluation metrics"],
+      dailyTasks: ["Fine-tune language models", "Build text pipelines", "Evaluate NLP outputs", "Curate training data", "Ship multilingual features"],
+      growthOutlook: "high",
+    },
+    {
+      id: "ai-product-manager",
+      title: "AI Product Manager",
+      emoji: "🧭",
+      description: "Define and ship AI-powered products, balancing technical feasibility, user value, and responsible AI considerations.",
+      avgSalary: "750,000 - 1,200,000 kr/year",
+      educationPath: "Bachelor's in CS/Business + Product management + AI literacy",
+      keySkills: ["product strategy", "ML fundamentals", "user research", "evaluation design", "stakeholder communication"],
+      dailyTasks: ["Define AI product roadmap", "Scope model requirements", "Run user research", "Coordinate with ML teams", "Track quality metrics"],
+      growthOutlook: "high",
+    },
+    {
+      id: "ai-safety-researcher",
+      title: "AI Safety & Ethics Researcher",
+      emoji: "🛡️",
+      description: "Research and mitigate risks from AI systems, working on alignment, fairness, evaluation, and responsible deployment.",
+      avgSalary: "800,000 - 1,300,000 kr/year",
+      educationPath: "Master's/PhD in CS, ML, or Ethics + Research experience",
+      keySkills: ["ML research", "red-teaming", "evaluation design", "policy awareness", "scientific writing"],
+      dailyTasks: ["Run model evaluations", "Design red-team tests", "Publish research", "Advise product teams on risks", "Develop safety guidelines"],
+      growthOutlook: "high",
+    },
+    {
       id: "senior-data-scientist",
       title: "Senior Data Scientist",
       emoji: "📊",
@@ -4755,6 +4810,177 @@ export function getRecommendationsFromAspiration(
   }
 
   return recommendations.sort((a, b) => b.matchScore - a.matchScore);
+}
+
+/**
+ * Parse a salary string like "350,000 - 450,000 kr/year" into a midpoint number.
+ * Returns 0 if it can't be parsed.
+ */
+function parseSalaryMidpoint(salary: string): number {
+  const numbers = salary.match(/[\d,]+/g);
+  if (!numbers || numbers.length === 0) return 0;
+  const parsed = numbers.slice(0, 2).map((n) => parseInt(n.replace(/,/g, ""), 10));
+  if (parsed.length === 0) return 0;
+  if (parsed.length === 1) return parsed[0];
+  return (parsed[0] + parsed[1]) / 2;
+}
+
+/**
+ * Find the CareerCategory a given career belongs to.
+ */
+export function findCareerCategory(careerId: string): CareerCategory | null {
+  for (const [category, careers] of Object.entries(CAREER_PATHWAYS) as [
+    CareerCategory,
+    Career[]
+  ][]) {
+    if (careers.some((c) => c.id === careerId)) return category;
+  }
+  return null;
+}
+
+/**
+ * Get niche-but-accessible careers related to a given career.
+ *
+ * Surfaces overlooked roles in the same field by:
+ * - sharing at least one keySkill with the source career
+ * - boosting entry-level careers (vocational paths)
+ * - boosting careers with lower salary midpoints (less prestige bias)
+ *
+ * Used to fight prestige bias on every career page: a kid looking at "Doctor"
+ * sees Paramedic, Helsefagarbeider, etc. as legitimate adjacent paths.
+ */
+export function getRelatedNicheCareers(career: Career, limit = 3): Career[] {
+  const category = findCareerCategory(career.id);
+  if (!category) return [];
+
+  const sourceMid = parseSalaryMidpoint(career.avgSalary);
+  const sourceSkills = new Set(career.keySkills.map((s) => s.toLowerCase()));
+
+  const candidates = (CAREER_PATHWAYS[category] || [])
+    .filter((c) => c.id !== career.id)
+    .map((c) => {
+      const overlap = c.keySkills.filter((s) =>
+        sourceSkills.has(s.toLowerCase())
+      ).length;
+      const candidateMid = parseSalaryMidpoint(c.avgSalary);
+      // Lower-paid candidates score higher (anti-prestige weighting)
+      const salaryBonus = sourceMid > 0 && candidateMid > 0 && candidateMid < sourceMid ? 1.5 : 1;
+      const entryBonus = c.entryLevel ? 2 : 1;
+      const score = (overlap + 0.5) * entryBonus * salaryBonus;
+      return { career: c, score, overlap };
+    })
+    // Require either skill overlap OR entry-level status — keeps it relevant
+    .filter((x) => x.overlap > 0 || x.career.entryLevel)
+    .sort((a, b) => b.score - a.score);
+
+  return candidates.slice(0, limit).map((x) => x.career);
+}
+
+/**
+ * Discovery preferences captured during onboarding/profile.
+ * All fields optional — the user can fill in as much or as little as they want.
+ */
+export interface DiscoveryPreferences {
+  subjects?: string[];   // School subjects they enjoy
+  workStyles?: string[]; // hands-on, desk, outdoors, mixed, creative
+  peoplePref?: string;   // with-people, mixed, mostly-alone
+  interests?: string[];  // Free-form interest tags
+}
+
+// Subject -> career category weights. Hand-curated, deterministic.
+const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, number>>> = {
+  biology:      { HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 1 },
+  chemistry:    { HEALTHCARE_LIFE_SCIENCES: 2, MANUFACTURING_ENGINEERING: 2 },
+  physics:      { MANUFACTURING_ENGINEERING: 3, TECHNOLOGY_IT: 2, TELECOMMUNICATIONS: 2 },
+  math:         { TECHNOLOGY_IT: 2, FINANCE_BANKING: 3, MANUFACTURING_ENGINEERING: 2 },
+  computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2 },
+  english:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, SALES_MARKETING: 2 },
+  history:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1 },
+  geography:    { LOGISTICS_TRANSPORT: 2, HOSPITALITY_TOURISM: 2 },
+  art:          { SALES_MARKETING: 2, HOSPITALITY_TOURISM: 1 },
+  music:        { EDUCATION_TRAINING: 1, HOSPITALITY_TOURISM: 1 },
+  pe:           { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 1 },
+  business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 2, SALES_MARKETING: 2 },
+  languages:    { HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1 },
+  psychology:   { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2 },
+};
+
+const WORK_STYLE_KEYWORDS: Record<string, string[]> = {
+  "hands-on":  ["hands-on", "manual", "physical", "practical", "build", "repair", "patient care"],
+  "desk":      ["analytical", "writing", "research", "programming", "design", "communication"],
+  "outdoors":  ["physical", "outdoor", "stamina", "manual"],
+  "creative":  ["design", "creativity", "writing", "communication", "visual"],
+  "mixed":     [],
+};
+
+/**
+ * Get careers that match a user's discovery preferences.
+ *
+ * Returns a deliberately mixed list spanning prestige tiers — entry-level
+ * and university-track roles sit side by side, not stacked. The goal is
+ * surfacing paths the user has never heard of, not ranking them.
+ */
+export function getCareersFromDiscovery(
+  prefs: DiscoveryPreferences,
+  limit = 12
+): Career[] {
+  const all = getAllCareers();
+  if (!all.length) return [];
+
+  const subjectCategoryScores: Partial<Record<CareerCategory, number>> = {};
+  for (const subj of prefs.subjects || []) {
+    const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
+    if (!weights) continue;
+    for (const [cat, w] of Object.entries(weights) as [CareerCategory, number][]) {
+      subjectCategoryScores[cat] = (subjectCategoryScores[cat] || 0) + w;
+    }
+  }
+
+  const styleKeywords = (prefs.workStyles || []).flatMap(
+    (s) => WORK_STYLE_KEYWORDS[s] || []
+  );
+
+  const scored = all.map((career) => {
+    const cat = findCareerCategory(career.id);
+    let score = cat ? subjectCategoryScores[cat] || 0 : 0;
+
+    // Work style: skill/task keyword overlap
+    const haystack = (
+      career.keySkills.join(" ") +
+      " " +
+      career.dailyTasks.join(" ") +
+      " " +
+      career.description
+    ).toLowerCase();
+    for (const kw of styleKeywords) {
+      if (haystack.includes(kw)) score += 1;
+    }
+
+    // Free-form interests: simple substring match
+    for (const interest of prefs.interests || []) {
+      const i = interest.toLowerCase();
+      if (haystack.includes(i) || career.title.toLowerCase().includes(i)) {
+        score += 1;
+      }
+    }
+
+    return { career, score };
+  });
+
+  const matched = scored.filter((s) => s.score > 0).sort((a, b) => b.score - a.score);
+  if (matched.length === 0) return [];
+
+  // Rebalance: deliberately interleave entry-level and non-entry results so
+  // vocational paths are not buried beneath prestige tracks.
+  const entry = matched.filter((m) => m.career.entryLevel).map((m) => m.career);
+  const rest = matched.filter((m) => !m.career.entryLevel).map((m) => m.career);
+  const interleaved: Career[] = [];
+  while (interleaved.length < limit && (entry.length || rest.length)) {
+    if (entry.length) interleaved.push(entry.shift()!);
+    if (interleaved.length >= limit) break;
+    if (rest.length) interleaved.push(rest.shift()!);
+  }
+  return interleaved;
 }
 
 /**

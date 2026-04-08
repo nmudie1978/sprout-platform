@@ -406,6 +406,11 @@ model YouthProfile {
   locationBase        String? // City/area for job matching (legacy, prefer city field)
   pathUpdatedAt       DateTime? // Last time path preferences were updated
 
+  // Discovery preferences captured during onboarding/profile.
+  // Shape: { subjects: string[], workStyles: string[], peoplePref?: string, interests?: string[] }
+  // Used by Career Radar to surface aligned roles across prestige tiers.
+  discoveryPreferences Json?
+
   // Structured Career Goals (Primary + Secondary)
   primaryGoal   Json? // {title, status, confidence, timeframe, why, nextSteps[], skills[]}
   secondaryGoal Json? // Same structure, optional

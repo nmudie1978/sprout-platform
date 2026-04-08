@@ -236,6 +236,44 @@ export async function PATCH(req: NextRequest) {
       return response;
     }
 
+    // Handle discovery preferences update separately
+    // Shape: { subjects?: string[], workStyles?: string[], peoplePref?: string, interests?: string[] }
+    if ("discoveryPreferences" in body && Object.keys(body).length === 1) {
+      const dp = body.discoveryPreferences;
+
+      // Allow null to clear preferences
+      if (dp !== null && (typeof dp !== "object" || Array.isArray(dp))) {
+        return NextResponse.json(
+          { error: "discoveryPreferences must be an object or null" },
+          { status: 400 }
+        );
+      }
+
+      // Light validation — strip unknown fields, cap array sizes
+      const sanitized = dp
+        ? {
+            subjects: Array.isArray(dp.subjects) ? dp.subjects.slice(0, 20).map(String) : [],
+            workStyles: Array.isArray(dp.workStyles) ? dp.workStyles.slice(0, 10).map(String) : [],
+            peoplePref: typeof dp.peoplePref === "string" ? dp.peoplePref.slice(0, 50) : undefined,
+            interests: Array.isArray(dp.interests) ? dp.interests.slice(0, 30).map(String) : [],
+          }
+        : null;
+
+      const profile = await prisma.youthProfile.upsert({
+        where: { userId: session.user.id },
+        update: { discoveryPreferences: sanitized as any },
+        create: {
+          userId: session.user.id,
+          displayName: session.user.email?.split("@")[0] || "User",
+          publicProfileSlug: `user-${session.user.id.slice(0, 8)}`,
+          profileVisibility: false,
+          discoveryPreferences: sanitized as any,
+        },
+      });
+
+      return NextResponse.json(profile);
+    }
+
     // Handle career aspiration update separately
     if ("careerAspiration" in body && Object.keys(body).length === 1) {
       const aspirationData = careerAspirationSchema.parse(body);

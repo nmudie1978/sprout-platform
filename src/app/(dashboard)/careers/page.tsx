@@ -25,6 +25,9 @@ import {
 import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
+import { CareerRadar } from "@/components/discovery/career-radar";
+import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
+import type { DiscoveryPreferences } from "@/lib/career-pathways";
 
 // Pagination constants
 const PAGE_SIZE = 7;
@@ -37,6 +40,20 @@ function CareersPageContent() {
   const isMobile = useIsMobile();
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showDiscoveryQuiz, setShowDiscoveryQuiz] = useState(false);
+
+  // Pull profile to get discoveryPreferences for the Career Radar.
+  const { data: profileData } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: async () => {
+      const response = await fetch("/api/profile");
+      if (!response.ok) return null;
+      return response.json();
+    },
+    enabled: !!session?.user?.id && session?.user?.role === "YOUTH",
+  });
+  const discoveryPreferences: DiscoveryPreferences | null =
+    (profileData?.discoveryPreferences as DiscoveryPreferences) || null;
 
   // Get current page from URL (default to 1)
   const currentPage = useMemo(() => {
@@ -159,6 +176,16 @@ function CareersPageContent() {
       updateFilter("category", categoryParam);
     }
   }, [searchParams, updateFilter]);
+
+  // Listen for cross-component career-detail open requests (e.g. from related-niche links)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const c = (e as CustomEvent<Career>).detail;
+      if (c) setSelectedCareer(c);
+    };
+    window.addEventListener("open-career-detail", handler);
+    return () => window.removeEventListener("open-career-detail", handler);
+  }, []);
 
   // Memoize all skills and salary bounds from all careers
   const allCareers = useMemo(() => getAllCareers(), []);
@@ -301,6 +328,16 @@ function CareersPageContent() {
             chips={activeChips}
             onRemove={removeFilter}
             onClearAll={clearAllFilters}
+          />
+        </div>
+      )}
+
+      {/* Career Radar — discovery surface */}
+      {isYouth && (
+        <div className="mt-6">
+          <CareerRadar
+            preferences={discoveryPreferences}
+            onEditPreferences={() => setShowDiscoveryQuiz(true)}
           />
         </div>
       )}
@@ -463,6 +500,15 @@ function CareersPageContent() {
         career={selectedCareer}
         onClose={() => setSelectedCareer(null)}
       />
+
+      {/* Discovery Quiz Dialog */}
+      {isYouth && (
+        <DiscoveryQuizDialog
+          open={showDiscoveryQuiz}
+          onClose={() => setShowDiscoveryQuiz(false)}
+          initialValue={discoveryPreferences}
+        />
+      )}
     </div>
   );
 }

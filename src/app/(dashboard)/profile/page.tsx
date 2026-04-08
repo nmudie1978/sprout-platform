@@ -12,7 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
+import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
+import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
@@ -159,6 +161,9 @@ export default function ProfilePage() {
   const [goalSheetTargetSlot, setGoalSheetTargetSlot] = useState<GoalSlot | null>(null);
   const [showGoalChangeWarning, setShowGoalChangeWarning] = useState(false);
   const clearGoal = useClearGoal();
+
+  // Discovery quiz dialog
+  const [showDiscoveryQuiz, setShowDiscoveryQuiz] = useState(false);
 
   // Two-step account deletion state
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
@@ -1083,6 +1088,65 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {/* Discovery Preferences — powers the Career Radar */}
+              <div className="rounded-lg border bg-muted/20 p-3">
+                <div className="flex items-start gap-2 mb-2">
+                  <Compass className="h-3.5 w-3.5 text-teal-500 mt-0.5 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">Discovery Preferences</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      Powers your Career Radar. Change anytime.
+                    </p>
+                  </div>
+                </div>
+                {(() => {
+                  const dp: DiscoveryPreferences | null =
+                    (profile?.discoveryPreferences as DiscoveryPreferences) || null;
+                  const has =
+                    !!dp &&
+                    ((dp.subjects && dp.subjects.length > 0) ||
+                      (dp.workStyles && dp.workStyles.length > 0) ||
+                      !!dp.peoplePref);
+                  if (!has) {
+                    return (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full h-8 text-xs"
+                        onClick={() => setShowDiscoveryQuiz(true)}
+                      >
+                        <Sparkles className="h-3 w-3 mr-1" />
+                        Set up discovery
+                      </Button>
+                    );
+                  }
+                  return (
+                    <>
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {(dp!.subjects || []).slice(0, 6).map((s) => (
+                          <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 capitalize">
+                            {s}
+                          </Badge>
+                        ))}
+                        {(dp!.workStyles || []).map((w) => (
+                          <Badge key={w} variant="outline" className="text-[9px] px-1.5 py-0 capitalize">
+                            {w}
+                          </Badge>
+                        ))}
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="w-full h-7 text-[11px]"
+                        onClick={() => setShowDiscoveryQuiz(true)}
+                      >
+                        Edit preferences
+                      </Button>
+                    </>
+                  );
+                })()}
+              </div>
+
               {/* Guardian Email — only for 16-17 */}
               {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
                 <div>
@@ -1333,6 +1397,13 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
+
+          {/* Discovery Quiz Dialog */}
+          <DiscoveryQuizDialog
+            open={showDiscoveryQuiz}
+            onClose={() => setShowDiscoveryQuiz(false)}
+            initialValue={(profile?.discoveryPreferences as DiscoveryPreferences) || null}
+          />
 
           {/* Goal Selection Sheet (overlay, stays on /profile) */}
           <GoalSelectionSheet
