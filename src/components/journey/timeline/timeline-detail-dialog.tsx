@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
+import { RealWorldSection } from './real-world-section';
 
 interface TimelineDetailDialogProps {
   item: JourneyItem | null;
@@ -32,6 +33,7 @@ interface TimelineDetailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void;
+  careerTitle?: string | null;
 }
 
 interface CardData {
@@ -74,6 +76,59 @@ export function cycleProgress(itemId: string): CardData['status'] {
   return next;
 }
 
+/**
+ * Sequential gating: a step is only unlocked once every previous step
+ * (and the Foundation anchor) is marked done. The Foundation card itself
+ * is always unlocked — it's the starting point.
+ */
+export function isStepUnlocked(
+  itemId: string,
+  orderedItemIds: string[],
+): boolean {
+  if (itemId === FOUNDATION_ITEM_ID) return true;
+  if (loadCardData(FOUNDATION_ITEM_ID).status !== 'done') return false;
+  const idx = orderedItemIds.indexOf(itemId);
+  if (idx <= 0) return true;
+  for (let i = 0; i < idx; i++) {
+    if (loadCardData(orderedItemIds[i]).status !== 'done') return false;
+  }
+  return true;
+}
+
+/**
+ * Cascade-fix the progress chain so it can never be inconsistent. Walks
+ * the ordered ids in order; the moment we see a step that isn't `done`,
+ * every later step that's still marked `done` is reset to `not_started`.
+ *
+ * Call this after any progress mutation (cycleProgress, dialog save,
+ * Foundation Done toggle) so the chain stays valid: a later step can
+ * never be done while an earlier step is unfinished.
+ *
+ * Returns true if anything was changed.
+ */
+export function enforceProgressChain(orderedItemIds: string[]): boolean {
+  // Foundation is the implicit step 0.
+  const ids = [FOUNDATION_ITEM_ID, ...orderedItemIds];
+  let chainBroken = false;
+  let mutated = false;
+  for (const id of ids) {
+    const data = loadCardData(id);
+    if (chainBroken) {
+      if (data.status === 'done' || data.status === 'in_progress') {
+        try {
+          const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
+          all[id] = { ...data, status: 'not_started' };
+          localStorage.setItem('roadmap-card-data', JSON.stringify(all));
+          mutated = true;
+        } catch { /* silent */ }
+      }
+    } else if (data.status !== 'done') {
+      chainBroken = true;
+    }
+  }
+  return mutated;
+}
+
 const STATUS_OPTIONS = [
   { value: 'not_started' as const, label: 'Not started', icon: Circle, color: 'text-muted-foreground/50' },
   { value: 'in_progress' as const, label: 'In progress', icon: CircleDot, color: 'text-amber-500' },
@@ -87,12 +142,20 @@ const STAGE_OPTIONS = [
   { value: 'other' as const, label: 'Other' },
 ];
 
+const EDUCATION_STAGE_LABEL: Record<'school' | 'college' | 'university' | 'other', string> = {
+  school: 'school',
+  college: 'college',
+  university: 'university',
+  other: 'current',
+};
+
 export function TimelineDetailDialog({
   item,
   allItems,
   open,
   onOpenChange,
   onSaved,
+  careerTitle,
 }: TimelineDetailDialogProps) {
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<CardData['status']>('not_started');
@@ -114,6 +177,8 @@ export function TimelineDetailDialog({
   const [userAge, setUserAge] = useState<number | null>(null);
 
   const isFoundation = item?.id === FOUNDATION_ITEM_ID;
+  const orderedIds = (allItems ?? []).map(it => it.id);
+  const unlocked = item ? isStepUnlocked(item.id, orderedIds) : true;
 
   // Load saved data when item changes
   useEffect(() => {
@@ -199,6 +264,11 @@ export function TimelineDetailDialog({
     // Save card data (status + micro-actions)
     const existing = loadCardData(item.id);
     saveCardData(item.id, { ...existing, status, completedMicroActions: completedActions });
+    // Cascade-fix the chain so a later step can never stay done while
+    // an earlier one is incomplete.
+    if (allItems && allItems.length > 0) {
+      enforceProgressChain(allItems.map((i) => i.id));
+    }
 
     // Save education context for foundation
     if (isFoundation) {
@@ -261,11 +331,12 @@ export function TimelineDetailDialog({
             <div className="space-y-3">
               <p className="text-[11px] text-muted-foreground/50">Tell us about your current education</p>
 
-              {/* Stage selector — for 18+ users we move "School" to the
-                  end and label it as a Vg3-only option, so the picker
-                  doesn't visually imply that school is the assumed
-                  answer for an adult user. Under-18s see the original
-                  School-first order. */}
+              {/* Stage selector — once the user has filled in details for
+                  their current stage (school name, programme, completion
+                  date, or any subjects) we lock the *other* stages so
+                  they can't accidentally switch and contradict
+                  themselves. They have to clear school details first to
+                  re-pick a stage. */}
               {(() => {
                 const isAdult = typeof userAge === 'number' && userAge >= 18;
                 const orderedOptions = isAdult
@@ -276,32 +347,58 @@ export function TimelineDetailDialog({
                       { value: 'school' as const, label: 'School' },
                     ]
                   : STAGE_OPTIONS;
+                const hasDetails =
+                  schoolName.trim().length > 0 ||
+                  studyProgram.trim().length > 0 ||
+                  expectedCompletion.trim().length > 0 ||
+                  subjects.length > 0;
                 return (
-                  <div className="flex gap-1.5">
-                    {orderedOptions.map(opt => {
-                      const isSchoolForAdult = isAdult && opt.value === 'school';
-                      return (
-                        <button
-                          key={opt.value}
-                          onClick={() => { setEduStage(opt.value); setDirty(true); }}
-                          title={isSchoolForAdult ? 'Only if you\'re still in Vg3' : undefined}
-                          className={cn(
-                            'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border flex flex-col items-center justify-center leading-tight',
-                            eduStage === opt.value
-                              ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
-                              : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
-                          )}
-                        >
-                          <span>{opt.label}</span>
-                          {isSchoolForAdult && (
-                            <span className="text-[8px] text-muted-foreground/40 font-normal mt-0.5">
-                              if you&apos;re still in Vg3
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <>
+                    <div className="flex gap-1.5">
+                      {orderedOptions.map(opt => {
+                        const isSchoolForAdult = isAdult && opt.value === 'school';
+                        const isLocked = hasDetails && opt.value !== eduStage;
+                        return (
+                          <button
+                            key={opt.value}
+                            onClick={() => {
+                              if (isLocked) return;
+                              setEduStage(opt.value);
+                              setDirty(true);
+                            }}
+                            disabled={isLocked}
+                            title={
+                              isLocked
+                                ? 'Clear your current education details first to switch stage'
+                                : isSchoolForAdult
+                                  ? "Only if you're still in Vg3"
+                                  : undefined
+                            }
+                            className={cn(
+                              'flex-1 rounded-lg px-2 py-2 text-[11px] font-medium transition-all border flex flex-col items-center justify-center leading-tight',
+                              eduStage === opt.value
+                                ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
+                                : isLocked
+                                  ? 'border-transparent bg-muted/10 text-muted-foreground/25 cursor-not-allowed'
+                                  : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
+                            )}
+                          >
+                            <span>{opt.label}</span>
+                            {isSchoolForAdult && !isLocked && (
+                              <span className="text-[8px] text-muted-foreground/40 font-normal mt-0.5">
+                                if you&apos;re still in Vg3
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {hasDetails && (
+                      <p className="text-[9px] text-muted-foreground/50 mt-1 leading-snug">
+                        Other stages are locked while your {EDUCATION_STAGE_LABEL[eduStage]} details are filled in. Clear them to switch.
+                      </p>
+                    )}
+                  </>
                 );
               })()}
 
@@ -443,18 +540,26 @@ export function TimelineDetailDialog({
           )}
 
           {/* Progress */}
+          {!unlocked && (
+            <p className="text-[11px] text-amber-400/80">
+              Complete the previous step before starting this one.
+            </p>
+          )}
           <div className="flex gap-1.5">
             {STATUS_OPTIONS.map((opt) => {
               const Icon = opt.icon;
+              const disabled = !unlocked && opt.value !== 'not_started';
               return (
                 <button
                   key={opt.value}
-                  onClick={() => { setStatus(opt.value); setDirty(true); }}
+                  disabled={disabled}
+                  onClick={() => { if (disabled) return; setStatus(opt.value); setDirty(true); }}
                   className={cn(
                     'flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-[11px] font-medium transition-all border',
                     status === opt.value
                       ? 'border-foreground/20 bg-foreground/5'
-                      : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
+                      : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40',
+                    disabled && 'opacity-30 cursor-not-allowed hover:bg-muted/20'
                   )}
                 >
                   <Icon className={cn('h-3.5 w-3.5', status === opt.value ? opt.color : '')} />
@@ -515,6 +620,14 @@ export function TimelineDetailDialog({
               </div>
             );
           })()}
+
+          {/* Real-world connections — concrete external opportunities
+              tied to this step's type and the user's chosen career.
+              Skipped for the Foundation anchor since it represents
+              "where you are today" rather than an actionable step. */}
+          {!isFoundation && (
+            <RealWorldSection item={item} career={careerTitle} />
+          )}
 
           {/* Save button */}
           <button

@@ -22,9 +22,14 @@ export async function GET(
   // Get category
   const category = getCategoryForCareer(careerId);
 
-  // Get detailed content (typical day) - this is the large data
+  // Get detailed content (typical day). `getCareerDetails` always
+  // returns at least the generic `defaultDetails` template, so the
+  // Understand tab is never stuck on a "Loading…" placeholder for a
+  // career that hasn't been hand-curated yet. `hasDetails` still
+  // reports whether the entry was curated, so the UI can show a
+  // quiet "generic content" hint if it wants to.
   const hasDetails = hasDetailedContent(careerId);
-  const details = hasDetails ? getCareerDetails(careerId) : null;
+  const details = getCareerDetails(careerId);
 
   // Get progression data
   const progression = getCareerProgression(careerId);

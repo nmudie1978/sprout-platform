@@ -20,13 +20,6 @@ import type { YouthEventsResponse } from "@/lib/events/types";
 function usePersonalisationContext(): PersonalisationContext | null {
   const { data: session } = useSession();
 
-  const { data: journeyData } = useQuery<{ journey: { currentLens: string; summary: Record<string, unknown> } }>({
-    queryKey: ["journey-state"],
-    queryFn: async () => { const r = await fetch("/api/journey"); return r.ok ? r.json() : null; },
-    enabled: !!session,
-    staleTime: 60_000,
-  });
-
   const { data: goalsData } = useQuery<{ primaryGoal: { title: string } | null }>({
     queryKey: ["goals"],
     queryFn: async () => { const r = await fetch("/api/goals"); return r.ok ? r.json() : { primaryGoal: null }; },
@@ -42,31 +35,27 @@ function usePersonalisationContext(): PersonalisationContext | null {
   });
 
   return useMemo(() => {
-    const summary = journeyData?.journey?.summary as Record<string, unknown> | undefined;
     const profile = profileData as Record<string, unknown> | undefined;
     const city = (profile?.city as string) ?? null;
     const goalTitle = goalsData?.primaryGoal?.title ?? null;
-    const strengths = (summary?.strengths as string[]) ?? [];
     const interests = (profile?.interests as string[]) ?? [];
-    const exploredRoles = ((summary?.exploredRoles as { title: string }[]) ?? []).map((r) => r.title);
-    const lens = journeyData?.journey?.currentLens?.toLowerCase() as 'discover' | 'understand' | 'act' | undefined;
 
     // Only personalise if we have at least one meaningful signal
-    if (!city && !goalTitle && interests.length === 0 && exploredRoles.length === 0) return null;
+    if (!city && !goalTitle && interests.length === 0) return null;
 
     return {
       city,
       age: null,
       goalTitle,
-      strengths,
+      strengths: [],
       interests,
       motivations: [],
       workStyle: [],
-      exploredRoles,
-      journeyStage: lens ?? null,
+      exploredRoles: [],
+      journeyStage: null,
       completedJobsCount: (profile?.completedJobsCount as number) ?? 0,
     };
-  }, [journeyData, goalsData, profileData]);
+  }, [goalsData, profileData]);
 }
 
 export default function CareerEventsPage() {

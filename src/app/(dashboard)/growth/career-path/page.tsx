@@ -242,7 +242,7 @@ export default function CareerPathPage() {
               <p className="font-medium text-blue-900 dark:text-blue-100">{educationPath}</p>
             </div>
 
-            {/* Now / Next / Later Steps */}
+            {/* Progression steps */}
             <div className="mt-6 space-y-4">
               <h4 className="font-medium text-sm text-muted-foreground">Your progression</h4>
 
@@ -256,7 +256,6 @@ export default function CareerPathPage() {
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 mb-2">Now</Badge>
                     <p className="text-sm">Build foundational skills through small jobs and gain real-world experience.</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {journey.completedJobsCount} jobs completed • {formatCurrency(journey.totalEarnings)} earned
@@ -270,7 +269,6 @@ export default function CareerPathPage() {
                     <Circle className="h-4 w-4 text-blue-600" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 mb-2">Next</Badge>
                     <p className="text-sm">Focus on education requirements and build career-specific skills.</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {skillsToGain.length > 0 ? `Skills to build: ${skillsToGain.slice(0, 3).join(", ")}` : "Continue building your experience"}

@@ -23,7 +23,6 @@ export async function GET() {
         goalId: true,
         goalTitle: true,
         isActive: true,
-        journeyCompletedSteps: true,
         createdAt: true,
         updatedAt: true,
       },

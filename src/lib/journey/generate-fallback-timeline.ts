@@ -29,10 +29,21 @@ export function generateFallbackTimeline(
   userAge = 16,
   educationStage?: EducationStage,
   foundationComplete = false,
+  expectedCompletion?: string,
 ): Journey {
   const currentYear = new Date().getFullYear();
   const a = Math.max(userAge, 16);
   const stage: EducationStage = educationStage ?? 'school';
+
+  // Try to extract a 4-digit year from the user's expected-completion
+  // string ("June 2027", "2027", "Spring 2027" all work). If we have one,
+  // we'll use it later to shift the first post-foundation step so it
+  // anchors to the year *after* the user actually finishes their current
+  // stage rather than a hard-coded age guess.
+  const finishYearMatch = expectedCompletion?.match(/(20\d{2})/);
+  const ageAtFinish = finishYearMatch
+    ? a + (parseInt(finishYearMatch[1], 10) - currentYear)
+    : null;
 
   // ── Build the stage-specific item list ──────────────────────────
   // Each branch returns the items in age order, anchored to the
@@ -61,7 +72,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: `Study towards ${career}`,
+        title: `Begin university studies`,
         subtitle: 'University or vocational training',
         startAge: Math.max(a + 3, 19),
         endAge: Math.max(a + 6, 22),
@@ -77,7 +88,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: 'Graduate',
+        title: 'Complete graduation',
         subtitle: 'Complete your education',
         startAge: Math.max(a + 6, 22),
         isMilestone: true,
@@ -92,7 +103,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Apply for entry-level ${career} roles`,
+        title: `Apply for entry-level roles`,
         subtitle: 'Find your first job',
         startAge: Math.max(a + 6, 22),
         isMilestone: true,
@@ -107,7 +118,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Entry-level ${career} role`,
+        title: `Accept your first entry-level role`,
         subtitle: 'Your first professional position',
         startAge: Math.max(a + 6, 22),
         endAge: Math.max(a + 9, 25),
@@ -123,7 +134,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: 'Professional certifications',
+        title: 'Gain professional certifications',
         subtitle: 'Strengthen your credentials',
         startAge: Math.max(a + 9, 25),
         endAge: Math.max(a + 10, 27),
@@ -139,7 +150,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'career' as JourneyStage,
-        title: `Senior ${career}`,
+        title: `Step up to a senior role`,
         subtitle: 'Established professional',
         startAge: Math.max(a + 11, 27),
         isMilestone: true,
@@ -162,7 +173,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: `Continue studying towards ${career}`,
+        title: `Continue your university studies`,
         subtitle: 'University years',
         startAge: a,
         endAge: gradAge,
@@ -178,7 +189,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: 'Graduate',
+        title: 'Complete graduation',
         subtitle: 'Complete your degree',
         startAge: gradAge,
         isMilestone: true,
@@ -193,7 +204,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Apply for entry-level ${career} roles`,
+        title: `Apply for entry-level roles`,
         subtitle: 'Find your first job',
         startAge: gradAge,
         isMilestone: true,
@@ -208,7 +219,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Entry-level ${career} role`,
+        title: `Accept your first entry-level role`,
         subtitle: 'Your first professional position',
         startAge: gradAge,
         endAge: entryEndAge,
@@ -224,7 +235,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: 'Professional certifications',
+        title: 'Gain professional certifications',
         subtitle: 'Strengthen your credentials',
         startAge: entryEndAge,
         endAge: entryEndAge + 2,
@@ -240,7 +251,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'career' as JourneyStage,
-        title: `Senior ${career}`,
+        title: `Step up to a senior role`,
         subtitle: 'Established professional',
         startAge: entryEndAge + 4,
         isMilestone: true,
@@ -261,7 +272,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: `Continue your vocational training for ${career}`,
+        title: `Complete vocational training`,
         subtitle: 'College / fagskole years',
         startAge: a,
         endAge: gradAge,
@@ -277,7 +288,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'education' as JourneyStage,
-        title: 'Complete your qualification',
+        title: 'Earn vocational qualification',
         subtitle: 'Fagbrev / vocational diploma',
         startAge: gradAge,
         isMilestone: true,
@@ -292,7 +303,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Apply for entry-level ${career} roles`,
+        title: `Apply for entry-level roles`,
         subtitle: 'Find your first job',
         startAge: gradAge,
         isMilestone: true,
@@ -307,7 +318,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Entry-level ${career} role`,
+        title: `Accept your first entry-level role`,
         subtitle: 'Your first professional position',
         startAge: gradAge,
         endAge: entryEndAge,
@@ -323,7 +334,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: 'Specialist certifications',
+        title: 'Earn specialist certifications',
         subtitle: 'Strengthen your credentials',
         startAge: entryEndAge,
         endAge: entryEndAge + 2,
@@ -339,7 +350,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'career' as JourneyStage,
-        title: `Senior ${career}`,
+        title: `Step up to a senior role`,
         subtitle: 'Established professional',
         startAge: entryEndAge + 4,
         isMilestone: true,
@@ -359,7 +370,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Get into ${career}`,
+        title: `Find your way in`,
         subtitle: 'Find your way in',
         startAge: a,
         endAge: a + 2,
@@ -375,7 +386,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Apply for entry-level ${career} roles`,
+        title: `Apply for entry-level roles`,
         subtitle: 'Find your first job',
         startAge: a + 2,
         isMilestone: true,
@@ -390,7 +401,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: `Entry-level ${career} role`,
+        title: `Accept your first entry-level role`,
         subtitle: 'Your first professional position',
         startAge: a + 2,
         endAge: a + 5,
@@ -406,7 +417,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'experience' as JourneyStage,
-        title: 'Professional certifications',
+        title: 'Gain professional certifications',
         subtitle: 'Strengthen your credentials',
         startAge: a + 5,
         endAge: a + 7,
@@ -422,7 +433,7 @@ export function generateFallbackTimeline(
       {
         id: id(),
         stage: 'career' as JourneyStage,
-        title: `Senior ${career}`,
+        title: `Step up to a senior role`,
         subtitle: 'Established professional',
         startAge: a + 9,
         isMilestone: true,
@@ -437,20 +448,30 @@ export function generateFallbackTimeline(
     ];
   }
 
-  // If the user has marked their Foundation as Complete, they're
-  // telling us their *current* education stage is finished. Drop the
-  // leading items that represent that stage, then shift everything
-  // that's left back so the new first step starts at the user's
-  // current age. Without this, marking Foundation done would leave
-  // contradictory steps like "Continue studying" sitting next to a
-  // green COMPLETE pill on the Foundation card.
+  // The Foundation card already represents the user's *current*
+  // education stage. Drop the leading roadmap step that just restates
+  // that stage (e.g. "Complete Videregående" for someone in school,
+  // "Continue your university studies" for someone at university).
+  // Without this the roadmap duplicates the foundation: "you are in
+  // school → next step: complete school", which is noise.
+  const baseSkip =
+    stage === 'school' ? 1
+    : stage === 'university' ? 1
+    : stage === 'college' ? 1
+    : 0;
+  if (baseSkip > 0) items = items.slice(baseSkip);
+
+  // If the user has *also* marked their Foundation as Complete, they've
+  // finished their current stage entirely. Drop the graduation /
+  // qualification step too, then shift everything that's left back so
+  // the new first step starts at the user's current age.
   if (foundationComplete && items.length > 0) {
-    const skipCount =
-      stage === 'university' ? 2 // drop "Continue studying" + "Graduate"
-        : stage === 'college' ? 2 // drop vocational training + "Complete qualification"
-          : stage === 'school' ? 1 // drop "Complete Videregående"
-            : 1; // 'other' — drop "Get into X"
-    items = items.slice(skipCount);
+    const extraSkip =
+      stage === 'university' ? 1 // drop "Graduate"
+        : stage === 'college' ? 1 // drop "Earn qualification"
+          : stage === 'school' ? 0 // already dropped above
+            : 1; // 'other' — drop the entry foothold
+    if (extraSkip > 0) items = items.slice(extraSkip);
     if (items.length > 0) {
       const ageShift = a - items[0].startAge;
       if (ageShift !== 0) {
@@ -460,6 +481,27 @@ export function generateFallbackTimeline(
           endAge: it.endAge !== undefined && it.endAge !== null ? it.endAge + ageShift : it.endAge,
         }));
       }
+    }
+  }
+
+  // If the user has told us when they expect to finish their current
+  // stage, anchor the first remaining step to the year *after* that.
+  // Without this, a 16-year-old who says "I finish in 2030" would still
+  // see "Begin university studies" at age 19 (the hard-coded default),
+  // even though they don't actually finish until age 20.
+  if (ageAtFinish !== null && items.length > 0) {
+    // Same year as completion: if school ends in 2027 (age 17), the
+    // next step (e.g. start uni in autumn 2027) also starts at 17.
+    const desiredStartAge = ageAtFinish;
+    const currentStartAge = items[0].startAge;
+    const shift = desiredStartAge - currentStartAge;
+    if (shift !== 0) {
+      items = items.map((it) => ({
+        ...it,
+        startAge: it.startAge + shift,
+        endAge:
+          it.endAge !== undefined && it.endAge !== null ? it.endAge + shift : it.endAge,
+      }));
     }
   }
 

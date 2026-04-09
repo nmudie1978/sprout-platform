@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
-import type { JourneyUIState } from "@/lib/journey/types";
+import { computeLensProgress, isUnderstandConfirmed } from "@/lib/journey/lens-progress";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
@@ -449,20 +449,6 @@ export default function DashboardPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: journeyData } = useQuery<{
-    success: boolean;
-    journey: JourneyUIState;
-  }>({
-    queryKey: ["journey-state"],
-    queryFn: async () => {
-      const response = await fetch("/api/journey");
-      if (!response.ok) throw new Error("Failed to fetch journey state");
-      return response.json();
-    },
-    enabled: session?.user.role === "YOUTH",
-    staleTime: 2 * 60 * 1000,
-  });
-
   // Unified dashboard stats — real-time from DB
   const { data: dashboardStats } = useQuery<{
     appStats: { applied: number; waiting: number; accepted: number; done: number };
@@ -485,7 +471,7 @@ export default function DashboardPage() {
 
   // Explored journeys — all goals the user has saved progress for
   const { data: exploredGoalsData } = useQuery<{
-    goals: { goalId: string; goalTitle: string; isActive: boolean; journeyCompletedSteps: string[]; updatedAt: string }[];
+    goals: { goalId: string; goalTitle: string; isActive: boolean; updatedAt: string }[];
   }>({
     queryKey: ["explored-goals"],
     queryFn: async () => {
@@ -521,7 +507,6 @@ export default function DashboardPage() {
       syncGuidanceGoal(goalTitle);
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
-      queryClient.invalidateQueries({ queryKey: ["journey-state"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
@@ -529,37 +514,38 @@ export default function DashboardPage() {
     },
   });
 
-  const rawName =
-    session?.user?.youthProfile?.displayName ||
-    session?.user?.name ||
-    "";
-  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
-  const journey = journeyData?.journey ?? null;
   const primaryGoal = goalsData?.primaryGoal ?? null;
   const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
-  const goalTitle =
-    primaryGoal?.title ?? journey?.summary?.primaryGoal?.title ?? null;
+  const goalTitle = primaryGoal?.title ?? null;
 
-  // Journey progress
-  const lenses = journey?.summary?.lenses;
+  // ── Journey progress (Discover / Understand / Grow) ─────────────
+  // The legacy state machine in lib/journey/orchestrator.ts is no
+  // longer driven by the refactored /my-journey UI, so its
+  // `lenses` / `currentLens` output stays frozen at 0/3 forever.
+  // We derive completion directly from what the new UI persists:
+  //   • Discover  → primary career goal selected
+  //   • Understand → Foundation card marked done in the roadmap
+  //   • Grow      → ≥1 non-Foundation roadmap step marked done
+  // See lib/journey/lens-progress.ts for the rationale.
+  const [lensProgress, setLensProgress] = useState(() =>
+    computeLensProgress({ hasPrimaryGoal: false }),
+  );
+  useEffect(() => {
+    const recompute = () =>
+      setLensProgress(
+        computeLensProgress({ hasPrimaryGoal: !!goalTitle, careerTitle: goalTitle }),
+      );
+    recompute();
+    window.addEventListener('focus', recompute);
+    window.addEventListener('storage', recompute);
+    return () => {
+      window.removeEventListener('focus', recompute);
+      window.removeEventListener('storage', recompute);
+    };
+  }, [goalTitle]);
 
-  // Current stage
-  const currentLens = journey?.currentLens ?? "DISCOVER";
-  const currentStageLabel =
-    currentLens === "DISCOVER"
-      ? "Discover"
-      : currentLens === "UNDERSTAND"
-        ? "Understand"
-        : "Grow";
-
-  // Client-side completion overrides — if the user has moved past a stage,
-  // it must be complete even if the orchestrator's progress calc lags behind
-  const discoverDone = lenses?.discover?.isComplete || currentLens === 'UNDERSTAND' || currentLens === 'ACT';
-  const understandDone = lenses?.understand?.isComplete || currentLens === 'ACT';
-  const growDone = lenses?.act?.isComplete || false;
-
-  // Completed lens count
-  const completedLensCount = [discoverDone, understandDone, growDone].filter(Boolean).length;
+  const { discoverDone, understandDone, growDone, currentLens, completedCount: completedLensCount } =
+    lensProgress;
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -593,6 +579,16 @@ export default function DashboardPage() {
       return d && d.guardianEmail && !d.guardianConsent ? 15_000 : false;
     },
   });
+
+  // Display name — prefer the live profile query so renaming in
+  // /profile reflects here instantly (the NextAuth session is only
+  // refreshed on sign-in, so the session value alone goes stale).
+  const rawName =
+    profileData?.displayName ||
+    session?.user?.youthProfile?.displayName ||
+    session?.user?.name ||
+    "";
+  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
 
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
@@ -630,8 +626,9 @@ export default function DashboardPage() {
     return all.find((c) => alternates(c.title).includes(target)) || null;
   }, [goalTitle]);
 
-  // Strengths from journey
-  const strengths: string[] = (journey?.summary?.strengths as string[]) ?? [];
+  // Strengths surface elsewhere now (Career Radar / discoveryPreferences).
+  // The dashboard no longer pulls them from the legacy journey summary.
+  const strengths: string[] = [];
 
   // Real-time stats from DB
   const exploredCareers = dashboardStats?.exploredCareers ?? [];
@@ -956,26 +953,27 @@ export default function DashboardPage() {
                     stage: X" line needed (it duplicated the label). */}
                 <div className="flex gap-1 mb-3">
                   {LENS_LABELS.map(({ key, label }) => {
-                    const lens = lenses?.[key as keyof typeof lenses];
-                    const isActive =
-                      currentLens === key.toUpperCase();
-                    // Use client-side completion override
-                    const isLensDone = key === 'discover' ? discoverDone : key === 'understand' ? understandDone : growDone;
+                    // `act` is the legacy key — the new lens-progress
+                    // helper exposes Grow as `grow`.
+                    const lensKey = key === 'act' ? 'grow' : key;
+                    const isActive = currentLens === lensKey;
+                    const isLensDone =
+                      lensKey === 'discover'
+                        ? discoverDone
+                        : lensKey === 'understand'
+                          ? understandDone
+                          : growDone;
                     return (
                       <div key={key} className="flex-1">
                         <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-500",
-                              isLensDone
+                              isLensDone || isActive
                                 ? "bg-teal-500"
-                                : isActive
-                                  ? "bg-teal-500"
-                                  : "bg-transparent"
+                                : "bg-transparent"
                             )}
-                            style={{
-                              width: `${isLensDone ? 100 : (lens?.progress ?? 0)}%`,
-                            }}
+                            style={{ width: isLensDone ? '100%' : isActive ? '40%' : '0%' }}
                           />
                         </div>
                         <p
@@ -1089,7 +1087,19 @@ export default function DashboardPage() {
 
           {/* My Explored Journeys */}
           {(() => {
-            const exploredGoals = exploredGoalsData?.goals ?? [];
+            // A career only counts as "explored" once the user has
+            // passed the Understand phase by clicking YES on the
+            // Understand confirmation card. Until then we hide the
+            // server-side goal entry from this list, even though the
+            // goal record itself exists. The flag lives in
+            // localStorage (`journey-understand-confirmed-{slug}`) so
+            // we filter client-side. The active goal is also kept
+            // visible regardless, so the user always sees what they're
+            // currently on.
+            const allExplored = exploredGoalsData?.goals ?? [];
+            const exploredGoals = allExplored.filter((g) =>
+              isUnderstandConfirmed(g.goalTitle),
+            );
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
@@ -1126,7 +1136,7 @@ export default function DashboardPage() {
               <GlassCard className="p-3 h-full flex flex-col">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold">My Explored Journeys</h3>
+                  <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                   <span className="flex-1" />
                   {totalPages > 1 && (

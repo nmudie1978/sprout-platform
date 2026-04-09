@@ -7,13 +7,15 @@ import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
+import { sanitizeJourney } from '@/lib/journey/roadmap-rules';
 import type { CardDataSummary } from './renderers/types';
 import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/zigzag-renderer';
 import { TimelineStyleSelector } from './timeline-style-selector';
-import { TimelineDetailDialog, loadCardData, cycleProgress } from './timeline';
+import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enforceProgressChain } from './timeline';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
+import { markGrowActive } from '@/lib/journey/lens-progress';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -22,6 +24,13 @@ function slugify(text: string): string {
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
   overrideJourney?: Journey | null;
+  /**
+   * When true, the timeline is rendered in reference mode: no foundation
+   * card, no "You are here", no progress saving. Used for alternate
+   * routes from other users (Markus, Fatima) — they're examples, not
+   * the user's own path, so nothing about them touches user state.
+   */
+  readOnly?: boolean;
 }
 
 const RENDERERS = {
@@ -30,7 +39,7 @@ const RENDERERS = {
   stepping: SteppingRenderer,
 } as const;
 
-export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: PersonalCareerTimelineProps) {
+export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   const { style, setStyle } = useTimelineStyle();
@@ -83,7 +92,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
   // steps) stays in sync with what the user has told us about where
   // they actually are.
   const { data: educationContextData } = useQuery<{
-    educationContext: { stage?: EducationStage } | null;
+    educationContext: { stage?: EducationStage; expectedCompletion?: string } | null;
   }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -95,12 +104,15 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
   });
   const educationStage: EducationStage | undefined =
     educationContextData?.educationContext?.stage;
+  const expectedCompletion: string | undefined =
+    educationContextData?.educationContext?.expectedCompletion;
 
   // The user's age — needed by the client-side fallback so it renders
   // an accurate placeholder roadmap while the AI version loads. Without
   // this, the placeholder defaults to age 16 and an 18-year-old briefly
   // sees a roadmap labelled "Age 16" before it snaps to the real one.
   const { data: profileData } = useQuery<{
+    displayName?: string | null;
     user?: { dateOfBirth?: string | null } | null;
   }>({
     queryKey: ['profile-dob'],
@@ -109,7 +121,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
       if (!res.ok) return {};
       return res.json();
     },
-    staleTime: 30 * 60 * 1000,
+    // Short stale window so renaming in /profile reflects in the
+    // roadmap header on the very next mount / focus, instead of
+    // waiting up to 30 minutes for the cached payload to expire.
+    staleTime: 30 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
   const userAge: number | undefined = useMemo(() => {
     const dob = profileData?.user?.dateOfBirth;
@@ -132,8 +149,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
 
   // Generate a client-side fallback so the roadmap renders instantly
   const fallbackJourney = useMemo(
-    () => primaryGoalTitle ? generateFallbackTimeline(primaryGoalTitle, userAge, educationStage, foundationComplete) : null,
-    [primaryGoalTitle, userAge, educationStage, foundationComplete]
+    () => primaryGoalTitle ? generateFallbackTimeline(primaryGoalTitle, userAge, educationStage, foundationComplete, expectedCompletion) : null,
+    [primaryGoalTitle, userAge, educationStage, foundationComplete, expectedCompletion]
   );
 
   const {
@@ -170,12 +187,25 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
     placeholderData: fallbackJourney ? { journey: fallbackJourney, cached: false } : undefined,
   });
 
-  const journey = overrideJourney ?? data?.journey ?? null;
+  const rawJourney = overrideJourney ?? data?.journey ?? null;
+
+  // Apply the shared roadmap rules engine — strips career name,
+  // duration phrases, restated foundation steps, and forces verb-led
+  // titles in one pass. See src/lib/journey/roadmap-rules.ts.
+  const journey = useMemo<Journey | null>(
+    () => (rawJourney ? sanitizeJourney(rawJourney) : null),
+    [rawJourney]
+  );
+
   const careerName = journey?.career ?? '';
 
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
     if (!journey) return {};
+    // Defensive: repair any inconsistent chain (e.g. step 3 done while
+    // step 2 isn't) before reading. Catches stale state from older
+    // builds and from the manual back-anchor.
+    enforceProgressChain(journey.items.map((i) => i.id));
     const map: Record<string, CardDataSummary> = {};
     for (const item of journey.items) {
       const d = loadCardData(item.id);
@@ -199,12 +229,29 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
   }, [journey, saveVersion]);
 
   const handleProgressCycle = useCallback((itemId: string) => {
+    if (readOnly) return; // reference routes never save user state
+    const orderedIds = (journey?.items ?? []).map(it => it.id);
+    if (!isStepUnlocked(itemId, orderedIds)) {
+      toast.error('Complete the previous step first');
+      return;
+    }
     cycleProgress(itemId);
+    // Whenever the user actively cycles a step we mark Grow as
+    // "active" for the current career — this is the per-career signal
+    // the dashboard reads instead of scanning the global
+    // roadmap-card-data blob (which leaks across goals).
+    if (loadCardData(itemId).status === 'done') {
+      markGrowActive(primaryGoalTitle);
+    }
+    // Cascade-fix: a later step can never stay done while an earlier
+    // one is incomplete. If the user just demoted a step from done,
+    // every later done step gets reset to not_started.
+    enforceProgressChain(orderedIds);
     setSaveVersion((v) => v + 1);
     if (itemId === FOUNDATION_ITEM_ID) {
       syncFoundationToDb();
     }
-  }, [syncFoundationToDb]);
+  }, [syncFoundationToDb, journey, readOnly, primaryGoalTitle]);
 
   // Export as image — must be declared before any early returns
   const handleExport = useCallback(async () => {
@@ -286,7 +333,11 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
       {/* Header row */}
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm">
-          <span className="text-foreground/75">Your Path to </span>
+          <span className="text-foreground/75">
+            {profileData?.displayName
+              ? `${profileData.displayName.charAt(0).toUpperCase()}${profileData.displayName.slice(1)}'s Path to `
+              : 'Your Path to '}
+          </span>
           <span className="font-semibold text-foreground">{journey.career}</span>
           {spanYears > 0 && (
             <span className="block text-[10px] text-muted-foreground/50 font-normal mt-0.5">
@@ -326,6 +377,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
           cardDataMap={cardDataMap}
           onProgressCycle={handleProgressCycle}
           careerTitle={primaryGoalTitle ?? undefined}
+          readOnly={readOnly}
         />
       </div>
 
@@ -333,11 +385,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney }: Pe
       <TimelineDetailDialog
         item={selectedItem}
         allItems={journey.items}
+        careerTitle={primaryGoalTitle ?? undefined}
         open={!!selectedItem}
         onSaved={() => {
           setSaveVersion((v) => v + 1);
           // If saving foundation data, sync to profile-level DB storage
-          if (selectedItem?.id === FOUNDATION_ITEM_ID) {
+          if (!readOnly && selectedItem?.id === FOUNDATION_ITEM_ID) {
             syncFoundationToDb();
           }
         }}

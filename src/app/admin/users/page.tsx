@@ -22,8 +22,6 @@ interface UserData {
     skillTags: string[];
     careerAspiration: string | null;
     primaryGoal: Record<string, unknown> | null;
-    journeyState: string;
-    journeyCompletedSteps: string[];
     onboardingCompletedAt: string | null;
   } | null;
   employerProfile: {
@@ -252,9 +250,6 @@ export default function AdminUsersPage() {
                     "—";
                   const goalTitle =
                     (user.youthProfile?.primaryGoal as Record<string, string>)?.title || "—";
-                  const completedSteps =
-                    user.youthProfile?.journeyCompletedSteps?.length || 0;
-                  const journeyState = user.youthProfile?.journeyState || "—";
 
                   return (
                     <tr
@@ -288,14 +283,7 @@ export default function AdminUsersPage() {
                         </p>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-400">
-                            {completedSteps} steps
-                          </span>
-                          <span className="text-[10px] text-slate-500">
-                            ({journeyState.replace(/_/g, " ").toLowerCase()})
-                          </span>
-                        </div>
+                        <span className="text-xs text-slate-500">—</span>
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-xs text-slate-400">

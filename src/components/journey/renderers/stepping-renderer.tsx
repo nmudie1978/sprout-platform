@@ -1,69 +1,61 @@
 'use client';
 
-import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-types';
-import type { NodeOverlayData, OverlayLayerId } from '@/lib/journey/overlay-types';
+import { useMemo } from 'react';
+import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
-import { SharedNode } from './shared-node';
-import { OverlayBadges } from '../overlays/overlay-badges';
+import { SharedNode, type StepState } from './shared-node';
+import { Check } from 'lucide-react';
 
 const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
 const LINE_X = NODE_SIZE / 2;
 
-export function SteppingRenderer({ journey, onItemClick, overlayData, activeLayers, cardDataMap, onProgressCycle }: RendererProps) {
+export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle }: RendererProps) {
   const items = journey.items;
   const totalHeight = items.length * ROW_HEIGHT + NODE_SIZE;
 
+  const youAreHereIndex = useMemo(() => {
+    for (let i = 0; i < items.length; i++) {
+      if (cardDataMap?.[items[i].id]?.status !== 'done') return i;
+    }
+    return items.length - 1;
+  }, [cardDataMap, items]);
+
+  const stateFor = (i: number): StepState => {
+    const status = cardDataMap?.[items[i].id]?.status;
+    if (status === 'done') return 'completed';
+    if (i === youAreHereIndex) return 'current';
+    if (i === youAreHereIndex + 1) return 'next';
+    return 'future';
+  };
+
   return (
     <div className="relative" style={{ minHeight: totalHeight }}>
-      {/* Vertical connector line */}
       <svg
         className="absolute left-0 top-0 pointer-events-none"
         width={NODE_SIZE}
         height={totalHeight}
       >
-        <defs>
-          <linearGradient id="stepping-grad" x1="0" y1="0" x2="0" y2="1">
-            {items.map((item, i) => (
-              <stop
-                key={i}
-                offset={items.length <= 1 ? '0%' : `${(i / (items.length - 1)) * 100}%`}
-                stopColor={STAGE_CONFIG[item.stage].color}
-              />
-            ))}
-          </linearGradient>
-        </defs>
-        {/* Background track */}
         <line
           x1={LINE_X}
           y1={NODE_SIZE / 2}
           x2={LINE_X}
           y2={totalHeight - NODE_SIZE / 2}
-          stroke="#e5e7eb"
-          strokeWidth={3}
-          strokeLinecap="round"
-        />
-        {/* Gradient track */}
-        <line
-          x1={LINE_X}
-          y1={NODE_SIZE / 2}
-          x2={LINE_X}
-          y2={totalHeight - NODE_SIZE / 2}
-          stroke="url(#stepping-grad)"
-          strokeWidth={3}
+          stroke="currentColor"
+          className="text-slate-200 dark:text-slate-700"
+          strokeWidth={2}
           strokeLinecap="round"
         />
       </svg>
 
-      {/* Rows */}
       {items.map((item, i) => {
         const topOffset = i * ROW_HEIGHT;
-        const ageLabel = item.endAge
-          ? `Age ${item.startAge}–${item.endAge}`
-          : `Age ${item.startAge}`;
-        const stageColor = STAGE_CONFIG[item.stage].color;
-        const isCurrent = i === 0;
+        const ageLabel =
+          item.endAge && item.endAge !== item.startAge
+            ? `Age ${item.startAge}–${item.endAge}`
+            : `Age ${item.startAge}`;
+        const state = stateFor(i);
 
         return (
           <div
@@ -71,26 +63,22 @@ export function SteppingRenderer({ journey, onItemClick, overlayData, activeLaye
             className="absolute flex items-start gap-3"
             style={{ top: topOffset, left: 0, right: 0 }}
           >
-            {/* Node */}
             <div className="flex-shrink-0">
               <SharedNode
                 item={item}
                 onClick={() => onItemClick(item)}
                 size={NODE_SIZE}
+                stepState={state}
                 progressStatus={cardDataMap?.[item.id]?.status}
                 onProgressCycle={onProgressCycle ? () => onProgressCycle(item.id) : undefined}
               />
             </div>
 
-            {/* Card */}
             <SteppingCard
               item={item}
               ageLabel={ageLabel}
-              stageColor={stageColor}
-              isCurrent={isCurrent}
+              state={state}
               onClick={() => onItemClick(item)}
-              overlayNodeData={overlayData?.[item.id]}
-              activeLayers={activeLayers}
             />
           </div>
         );
@@ -102,80 +90,57 @@ export function SteppingRenderer({ journey, onItemClick, overlayData, activeLaye
 function SteppingCard({
   item,
   ageLabel,
-  stageColor,
-  isCurrent,
+  state,
   onClick,
-  overlayNodeData,
-  activeLayers,
 }: {
   item: JourneyItem;
   ageLabel: string;
-  stageColor: string;
-  isCurrent: boolean;
+  state: StepState;
   onClick: () => void;
-  overlayNodeData?: NodeOverlayData;
-  activeLayers?: Record<OverlayLayerId, boolean>;
 }) {
-  const stage = STAGE_CONFIG[item.stage];
+  const stateClasses: Record<StepState, string> = {
+    completed: 'border-emerald-500/40 bg-emerald-500/[0.04]',
+    current: 'border-amber-500/70 bg-card shadow-sm',
+    next: 'border-border bg-card/70',
+    future: 'border-border bg-card/70',
+  };
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'flex-1 text-left rounded-lg border border-border/50 bg-card/80 backdrop-blur-sm p-2.5 shadow-sm transition-all',
-        'hover:shadow-md hover:border-border',
+        'flex-1 text-left rounded-lg border p-2.5 transition-colors cursor-pointer',
+        'hover:border-amber-400',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'cursor-pointer'
+        stateClasses[state]
       )}
     >
       <div className="flex items-center gap-2 mb-0.5">
+        {state === 'completed' ? (
+          <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            <Check className="h-2 w-2" strokeWidth={4} />
+            Done
+          </span>
+        ) : null}
         <span
           className={cn(
-            'inline-block rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider',
-            stage.bgClass,
-            stage.textClass
+            'ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
+            state === 'current'
+              ? 'bg-card text-foreground ring-1 ring-border'
+              : 'bg-muted text-muted-foreground'
           )}
-        >
-          {stage.label}
-        </span>
-        <span
-          className={cn(
-            'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
-            isCurrent ? 'ring-1' : 'bg-muted text-muted-foreground'
-          )}
-          style={
-            isCurrent
-              ? {
-                  backgroundColor: `${stageColor}20`,
-                  color: stageColor,
-                  boxShadow: `0 0 0 1px ${stageColor}40`,
-                }
-              : undefined
-          }
         >
           {ageLabel}
         </span>
-        {item.isMilestone && (
-          <span className="flex items-center gap-1">
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: stage.color }}
-            />
-            <span className="text-[9px] font-medium" style={{ color: stage.color }}>
-              Milestone
-            </span>
-          </span>
-        )}
       </div>
-      <p className="text-sm font-semibold leading-tight text-foreground">{item.title}</p>
-      {item.subtitle && (
-        <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
-          {item.subtitle}
-        </p>
-      )}
-      {activeLayers && (
-        <OverlayBadges nodeData={overlayNodeData} activeLayers={activeLayers} />
-      )}
+      <p
+        className={cn(
+          'text-sm font-semibold leading-tight',
+          state === 'future' ? 'text-muted-foreground' : 'text-foreground'
+        )}
+      >
+        {item.title}
+      </p>
     </button>
   );
 }

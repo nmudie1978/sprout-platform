@@ -4,6 +4,12 @@ import { memo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   TrendingUp,
   TrendingDown,
   Minus,
@@ -54,7 +60,7 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
     <button
       type="button"
       onClick={onLearnMore}
-      className="grid grid-cols-[18rem_6rem_4rem_8rem] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
+      className="grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
     >
       {/* Title */}
       <span className="flex items-center gap-2 min-w-0">
@@ -83,16 +89,37 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
         <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
       </Badge>
 
+      {/* Match — % score from Career Radar's "what I like" answers.
+          Shows "—" if the user hasn't completed Career Radar yet. */}
+      <span className="flex items-center justify-center">
+        {matchScore !== undefined ? (
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge
+                  variant="secondary"
+                  // Stop the row click so tapping the badge doesn't open
+                  // the detail sheet — it should only show the tooltip.
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 cursor-help"
+                >
+                  {matchScore}%
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] text-[11px] leading-snug">
+                Match strength against the &ldquo;what I like&rdquo; answers
+                you gave in Career Radar. Update them there to refine your
+                recommendations.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <span className="text-[10px] text-muted-foreground/40">—</span>
+        )}
+      </span>
+
       {/* Learn more (last column) */}
       <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
-        {matchScore !== undefined && (
-          <Badge
-            variant="secondary"
-            className="text-[10px] px-1.5 py-0 mr-2 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 flex-shrink-0"
-          >
-            {matchScore}%
-          </Badge>
-        )}
         Learn more
         <ChevronRight className="h-3 w-3" />
       </span>

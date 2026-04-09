@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
+import { buildPromptRules } from '@/lib/journey/roadmap-rules';
 import type { Journey } from '@/lib/journey/career-journey-types';
 
 // ============================================
@@ -26,28 +27,20 @@ function getOpenAIClient(): OpenAI | null {
 // COMPACT PROMPT (fewer tokens = faster)
 // ============================================
 
+// Rules section is built from the shared rules engine so the prompt and
+// the client sanitiser stay in sync. See src/lib/journey/roadmap-rules.ts.
 const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY valid JSON.
 
-REALISTIC CAREER PROGRESSION (MANDATORY ORDER):
-1. FOUNDATION (ages 16-19): School subjects — videregående (upper secondary) in Norway. Focus on relevant subjects. NO professional certifications at this stage.
-2. EDUCATION (ages 19-24): University degree or vocational training (fagbrev). The specific programme that leads to this career. Duration must be realistic (3-6 years for degree, 2+2 for fagbrev).
-3. EXPERIENCE (ages 22-28): Always include TWO distinct steps for getting into work — first an "Apply for entry-level X roles" milestone (the job-search phase: CV, applications, interviews), THEN a separate "Entry-level X role" step for the actual job. Never jump from graduation straight into a role without showing the application phase. Then progression to mid-level after 2-3 years.
-4. PROFESSIONAL DEVELOPMENT (ages 25+): Professional certifications (e.g. PRINCE2, PMP, CISSP) ONLY after gaining work experience. Never before age 23. Never during school or university.
-5. CAREER (ages 28+): Senior role, specialist position, or leadership. Only after 5+ years of work experience.
+ROADMAP RULES (all mandatory):
+${buildPromptRules()}
 
-Generate 7-8 items following this exact order + 4 schoolTrack items.
-JSON: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
+JSON SHAPE: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
 
-CRITICAL RULES:
-- The user's current age is provided. ALL items must have startAge >= the user's current age.
-- The first foundation item should start at exactly the user's age.
-- NEVER suggest professional certifications (PRINCE2, PMP, AWS, etc.) before age 23 or before completing university.
-- NEVER suggest courses outside school/university for anyone under 20.
-- School foundation (ages 16-19) should focus ONLY on school subjects relevant to the career.
-- Internships come AFTER university, not during school.
-- Career progression must be realistic — no one becomes a senior engineer at 22 or a CIO at 25.
-- Use Norwegian context: videregående, university names (UiO, NTNU, OsloMet), Norwegian companies.
-- Be encouraging but honest about the time commitment required.`;
+OUTPUT REQUIREMENTS:
+- Generate 7-8 items + 4 schoolTrack items.
+- The first item must have startAge equal to the user's current age.
+- KEEP SUBTITLES TO ONE SHORT LINE OR OMIT THEM. Subtitles must never repeat the career name either.
+- Be encouraging but honest about time commitment.`;
 
 // ============================================
 // VALIDATION
@@ -107,7 +100,8 @@ export async function POST(req: NextRequest) {
     // the saved education context (set via the Foundation card). The
     // request body can override it for explicit regeneration.
     const summary = (profile?.journeySummary as Record<string, unknown> | null) || null;
-    const ctx = summary?.educationContext as { stage?: string } | undefined;
+    const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string } | undefined;
+    const expectedCompletion = typeof ctx?.expectedCompletion === 'string' ? ctx.expectedCompletion.trim() : '';
     const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
     const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
     const educationStage: EducationStage | undefined =
@@ -207,7 +201,7 @@ export async function POST(req: NextRequest) {
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${stageInstruction}${completeInstruction}` },
+            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${expectedCompletion ? ` The user expects to finish their current education stage in ${expectedCompletion} — anchor the first post-foundation step to start in the SAME year (e.g. they finish school in summer 2027 and begin university in autumn 2027, same age).` : ''}${stageInstruction}${completeInstruction}` },
           ],
           temperature: 0.7,
           max_tokens: 1200,
@@ -247,10 +241,10 @@ export async function POST(req: NextRequest) {
         };
       } catch (aiError) {
         console.error('[Timeline] OpenAI failed, using fallback:', aiError);
-        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete);
+        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
       }
     } else {
-      journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete);
+      journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
     }
 
     // Cache result (non-blocking) — stamp the stage AND completion so

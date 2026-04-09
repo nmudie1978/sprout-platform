@@ -73,9 +73,18 @@ function buildQueries(career: string): string[] {
   ];
 }
 
+// Hard country reject — anything explicitly tied to a non-Norway
+// country in the title or channel makes the video useless for a
+// Norwegian youth audience. Norway / Norwegian / Norge / Scandinavia
+// stay allowed. We deliberately keep this list broad rather than
+// trying to be clever — false negatives are far less harmful than
+// recommending an "Indian doctor" video to a Norwegian teen.
+const COUNTRY_REJECT_RE =
+  /\b(india|indian|usa|u\.s\.a\.|america|american|uk|u\.k\.|britain|british|england|english(?!\s+language)|scotland|scottish|wales|welsh|ireland|irish|canada|canadian|australia|australian|new zealand|kiwi|south africa|south african|nigeria|nigerian|kenya|kenyan|ghana|ghanaian|pakistan|pakistani|bangladesh|sri lanka|sri lankan|china|chinese|japan|japanese|korea|korean|taiwan|taiwanese|philippines|filipino|filipina|vietnam|vietnamese|thailand|thai|malaysia|malaysian|indonesia|indonesian|singapore|hong kong|dubai|uae|saudi|qatar|kuwait|iran|iranian|iraq|israel|israeli|turkey|turkish|egypt|egyptian|morocco|moroccan|brazil|brazilian|mexico|mexican|argentina|argentinian|chile|chilean|colombia|colombian|peru|peruvian|venezuela|venezuelan|france|french|germany|german|spain|spanish|italy|italian|portugal|portuguese|netherlands|dutch|holland|belgium|belgian|switzerland|swiss|austria|austrian|poland|polish|russia|russian|ukraine|ukrainian|romania|romanian|greece|greek|hungary|hungarian|czech|slovakia|slovenia|croatia|croatian|serbia|serbian|bulgaria|finland|finnish|sweden|swedish|denmark|danish|iceland|icelandic)\b/i;
+
 const REJECT_PATTERNS = [
   /\bmov(e|ing) to\b/i, /\bmigrat/i, /\bimmigrat/i, /\bvisa\b/i, /\brelocat/i,
-  /\babroad\b/i, /\baustralia\b/i, /\bcanada\b/i, /\bdubai\b/i, /\buk\b.*\bvisa\b/i,
+  /\babroad\b/i, /\bdubai\b/i, /\buk\b.*\bvisa\b/i,
   /\bprank\b/i, /\basmr\b/i, /\bcompilation\b/i, /\bmeme\b/i, /\bshorts?\b/i,
   /\breaction\b/i, /\bchallenge\b/i, /\bunboxing\b/i,
   /\bbuy now\b/i, /\bdiscount\b/i, /\bcoupon\b/i, /salary negotiation/i,
@@ -135,21 +144,43 @@ const MEDIUM_SIGNALS: [RegExp, string][] = [
   [/\bgood and bad\b/i, 'Balanced view of trade-offs'],
 ];
 
+// "Career context" words — we require at least one of these to appear
+// in the title alongside the career label, so a video that just
+// happens to mention "doctor" once in passing (e.g. a film clip) is
+// rejected, while genuine career-reality content passes.
+const CAREER_CONTEXT_RE =
+  /\b(career|job|profession|professional|becoming|being|work(ing)?|life|reality|truth|harsh|honest|day in the life|salary|struggl|burnout|advice|tips|experience|interview|i am a|i'm a|as a|why i|year as)\b/i;
+
 function scoreVideo(title: string, career: string): { score: number; whySelected: string; videoType: RealityVideoType } {
   const t = title.toLowerCase();
-  // Accept the title if ANY one of the career's alternate labels has 60% of its
-  // words present. This still blocks "Interior Designer" matching "Graphic Designer"
-  // (because "interior" must appear) while allowing "Beautician" to match the
-  // career "Beautician / Makeup Artist (Kosmetolog)" via its first label.
+
+  // 1. Country reject — fast path. A title or query that pins the
+  //    video to a non-Norway country is useless for our audience.
+  if (COUNTRY_REJECT_RE.test(title)) return { score: -1, whySelected: '', videoType: 'balanced' };
+
+  // 2. Career label matching. Stricter than before:
+  //    - For multi-word labels (e.g. "Healthcare Worker", "Software
+  //      Developer") we require AT LEAST 2 of the meaningful words to
+  //      appear, so a "Worker" or "Developer" alone never wins.
+  //    - For single-word labels ("Doctor", "Nurse") we require the
+  //      career word AND at least one CAREER_CONTEXT word — that
+  //      blocks unrelated mentions while keeping real content in.
   const { alternates } = normalizeCareer(career);
   const labelMatches = (label: string): boolean => {
-    const words = label.toLowerCase().split(/[\s\\-]+/).filter(w => w.length > 3);
+    const words = label.toLowerCase().split(/[\s\-/]+/).filter(w => w.length > 3);
     if (words.length === 0) return false;
     const matchCount = words.filter(w => t.includes(w)).length;
-    const threshold = words.length > 1 ? Math.ceil(words.length * 0.6) : 1;
-    return matchCount >= threshold;
+    if (words.length === 1) {
+      // Single-word career: require the word + a context signal.
+      return matchCount >= 1 && CAREER_CONTEXT_RE.test(t);
+    }
+    // Multi-word: need at least 2 words present (or all of them if
+    // the label only has 2 — same outcome).
+    return matchCount >= Math.min(2, words.length);
   };
   if (!alternates.some(labelMatches)) return { score: -1, whySelected: '', videoType: 'balanced' };
+
+  // 3. Reject patterns (junk, off-topic, listicles, etc.)
   if (REJECT_PATTERNS.some(p => p.test(title))) return { score: -1, whySelected: '', videoType: 'balanced' };
 
   let score = 0;
@@ -193,6 +224,10 @@ async function searchYouTube(query: string, apiKey: string, career: string): Pro
       const title = item.snippet?.title ?? '';
       const channel = item.snippet?.channelTitle ?? '';
       if (!videoId) continue;
+      // Channel-level country reject — some channels are explicitly
+      // tied to a non-Norway country (e.g. "BeerBiceps" / India,
+      // "Doctor Mike" / USA) even when the title is neutral.
+      if (COUNTRY_REJECT_RE.test(channel)) continue;
       const { score, whySelected, videoType } = scoreVideo(title, career);
       if (score > 0) {
         results.push({ videoId, title, channel, thumbnail: item.snippet?.thumbnails?.medium?.url ?? '', query, score });
@@ -339,7 +374,10 @@ export async function GET(req: NextRequest) {
   const career = new URL(req.url).searchParams.get('career');
   if (!career) return NextResponse.json({ error: 'Missing career parameter' }, { status: 400 });
 
-  const cacheKey = `career-reality:${career.toLowerCase().trim()}`;
+  // v2: stricter filters (country reject, multi-word + context match).
+  // Bumping the version invalidates legacy cached entries that were
+  // produced before these filters existed.
+  const cacheKey = `career-reality:v2:${career.toLowerCase().trim()}`;
 
   // Check DB cache
   try {

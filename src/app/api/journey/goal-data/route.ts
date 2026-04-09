@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { JOURNEY_STATES } from '@/lib/journey/types';
 
 /**
  * GET /api/journey/goal-data?goalId=xxx
@@ -53,23 +52,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { goalId, goalTitle, journeyState, journeyCompletedSteps, journeySummary, roadmapCardData } = body;
+    const { goalId, goalTitle, roadmapCardData } = body;
 
     if (!goalId || !goalTitle) {
       return NextResponse.json({ error: 'goalId and goalTitle are required' }, { status: 400 });
     }
 
-    // Validate journeyState if provided
-    const validatedState = journeyState && JOURNEY_STATES.includes(journeyState)
-      ? journeyState
-      : 'REFLECT_ON_STRENGTHS';
-
-    // Validate journeyCompletedSteps — only allow known state IDs
-    const validatedSteps = Array.isArray(journeyCompletedSteps)
-      ? journeyCompletedSteps.filter((s: string) => (JOURNEY_STATES as readonly string[]).includes(s))
-      : [];
-
-    // Wrap deactivation + upsert in a transaction for atomicity
+    // Wrap deactivation + upsert in a transaction for atomicity. The
+    // legacy `journeyState` / `journeyCompletedSteps` / `journeySummary`
+    // columns are no longer written by the new roadmap-first model —
+    // see CLAUDE.md <journey_logic>.
     const goalData = await prisma.$transaction(async (tx) => {
       // Deactivate all other goals for this user
       await tx.journeyGoalData.updateMany({
@@ -77,7 +69,6 @@ export async function POST(req: NextRequest) {
         data: { isActive: false },
       });
 
-      // Upsert the goal data
       return tx.journeyGoalData.upsert({
         where: {
           userId_goalId: {
@@ -89,17 +80,11 @@ export async function POST(req: NextRequest) {
           userId: session.user.id,
           goalId,
           goalTitle,
-          journeyState: validatedState,
-          journeyCompletedSteps: validatedSteps,
-          journeySummary: journeySummary ? JSON.parse(JSON.stringify(journeySummary)) : null,
           roadmapCardData: roadmapCardData ? JSON.parse(JSON.stringify(roadmapCardData)) : null,
           isActive: true,
         },
         update: {
           goalTitle,
-          ...(journeyState && { journeyState: validatedState }),
-          ...(journeyCompletedSteps && { journeyCompletedSteps: validatedSteps }),
-          ...(journeySummary !== undefined && { journeySummary: journeySummary ? JSON.parse(JSON.stringify(journeySummary)) : null }),
           ...(roadmapCardData !== undefined && { roadmapCardData: roadmapCardData ? JSON.parse(JSON.stringify(roadmapCardData)) : null }),
           isActive: true,
           updatedAt: new Date(),

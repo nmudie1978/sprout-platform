@@ -18,6 +18,12 @@ import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   LayoutDashboard,
   Briefcase,
   Compass,
@@ -71,6 +77,12 @@ interface NavItemProps {
    * a glance which sections belong to them vs. catalogue/exploration ones.
    */
   personal?: boolean;
+  /**
+   * Hover tooltip explaining what this nav item does. Shown on the
+   * right of the link, both when the sidebar is expanded and when
+   * it's collapsed (replacing the native title attribute).
+   */
+  tooltip?: string;
 }
 
 interface NavSectionProps {
@@ -87,14 +99,14 @@ interface NavSectionProps {
 
 // ── Nav Item ─────────────────────────────────────────────────────────
 
-function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed, personal }: NavItemProps) {
+function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed, personal, tooltip }: NavItemProps) {
   const router = useRouter();
   const handleMouseEnter = useCallback(() => {
     router.prefetch(href);
   }, [router, href]);
 
-  return (
-    <Link href={href} prefetch={true} className="block group relative" title={collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
+  const link = (
+    <Link href={href} prefetch={true} className="block group relative" title={tooltip ? undefined : collapsed ? label : undefined} onMouseEnter={handleMouseEnter}>
       {/* Active glow indicator */}
       {active && (
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
@@ -138,6 +150,20 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
         )}
       </div>
     </Link>
+  );
+
+  if (!tooltip) return link;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{link}</TooltipTrigger>
+      <TooltipContent
+        side="right"
+        sideOffset={8}
+        className="max-w-[220px] text-[11px] leading-snug"
+      >
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -380,39 +406,40 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
       {/* Navigation */}
       <nav className="flex-1 px-2 relative">
+        <TooltipProvider delayDuration={250}>
         {userRole === "YOUTH" && (
           <>
             {/* YOURS — personal surfaces, physically separated at the top */}
             <NavSection title="Yours" collapsed={collapsed} accent>
-              <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal />
-              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal />
-              <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal />
-              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal />
-              <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} personal />
+              <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
+              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your career roadmap. Track progress, set milestones, and see your starting point in context." />
+              <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
+              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on." />
+              <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} personal tooltip="Structured conversations with employers and your guardian — safe by design." />
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
-              <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} />
-              <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} />
-              <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} />
-              <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} />
+              <NavItem href="/careers" icon={Compass} label="Explore Careers" active={pathname === "/careers"} collapsed={collapsed} tooltip="Browse hundreds of careers with salary, growth and skills. Filter by what fits you." />
+              <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} tooltip="Workshops, open days and meet-ups for young people exploring careers." />
+              <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} tooltip="What's actually happening in different industries — hiring, pay, and outlook." />
+              <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} tooltip="Ask questions about careers, education and next steps. Honest, calm, and tailored to you." />
             </NavSection>
 
             <NavSection title="Small Jobs" collapsed={collapsed}>
-              <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} />
+              <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
             </NavSection>
 
             <NavSection title="Account" collapsed={collapsed}>
-              <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} />
+              <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your name, school, interests and what you share with employers." />
               {isGuardian && (
-                <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} />
+                <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} tooltip="Guardian dashboard — review and approve activity for the youth in your care." />
               )}
             </NavSection>
 
             <NavSection title="Endeavrly" collapsed={collapsed}>
-              <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} />
-              <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
-              <NavItem href="/reviews" icon={Quote} label="User Reviews" active={isActive("/reviews")} collapsed={collapsed} />
+              <NavItem href="/info" icon={Info} label="About" active={isActive("/info")} collapsed={collapsed} tooltip="Learn what Endeavrly is, how we keep it safe, and who it's for." />
+              <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} tooltip="Get help, report a problem, or share an idea with the team." />
+              <NavItem href="/reviews" icon={Quote} label="User Reviews" active={isActive("/reviews")} collapsed={collapsed} tooltip="Hear what other youth and guardians think of Endeavrly." />
             </NavSection>
           </>
         )}
@@ -452,6 +479,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             </NavSection>
           </>
         )}
+        </TooltipProvider>
       </nav>
 
       {/* Bottom section */}

@@ -21,4 +21,12 @@ export interface RendererProps {
   onProgressCycle?: (itemId: string) => void;
   /** Career title — used for subject alignment on foundation node */
   careerTitle?: string;
+  /**
+   * Read-only mode for alternate routes from other users. When true:
+   * the foundation card is replaced with a neutral "Reference route"
+   * banner, the "You are here" marker is hidden, progress cycling is
+   * disabled, and nothing is persisted. Used for Markus/Fatima style
+   * comparison routes — they're inspiration, not the user's own path.
+   */
+  readOnly?: boolean;
 }

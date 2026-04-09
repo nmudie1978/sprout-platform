@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CareerPreferencesSection } from "@/components/profile/career-preferences-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -212,6 +213,11 @@ export default function ProfilePage() {
         description: "Your profile has been updated successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      // Other surfaces (dashboard greeting, roadmap header) read the
+      // display name via these query keys — invalidate them so the
+      // new name shows up instantly without a refresh.
+      queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
+      queryClient.invalidateQueries({ queryKey: ["profile-dob"] });
     },
     onError: (error: Error) => {
       toast({
@@ -705,9 +711,10 @@ export default function ProfilePage() {
         );
       })()}
 
-      {/* Career Goal — Prominent, top of profile */}
+      {/* Career Direction + Discovery Interests — side by side, top of profile */}
       {profile && (
-        <Card className="mb-6 border border-primary/20 overflow-hidden relative z-10">
+        <div className="mb-6 grid gap-4 lg:grid-cols-2 relative z-10">
+        <Card className="border border-primary/20 overflow-hidden relative z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
           <CardContent className="relative z-10 p-5 sm:p-6">
             {/* Header with tooltip */}
@@ -793,6 +800,101 @@ export default function ProfilePage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Discovery Interests — moved up next to Career Direction */}
+        <Card className="border border-teal-500/20 overflow-hidden relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-transparent to-primary/5 pointer-events-none" />
+          <CardContent className="relative z-10 p-5 sm:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Discovery Interests</h2>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="max-w-[260px] text-xs p-3">
+                      <p className="font-medium mb-1">Why this matters</p>
+                      <p className="text-muted-foreground">The subjects you enjoy, how you like to work, and who you like to work with — this powers <span className="font-medium">My Career Radar</span> and surfaces career matches you might not have considered.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              {(() => {
+                const dp: DiscoveryPreferences | null =
+                  (profile?.discoveryPreferences as DiscoveryPreferences) || null;
+                const has =
+                  !!dp &&
+                  ((dp.subjects && dp.subjects.length > 0) ||
+                    (dp.workStyles && dp.workStyles.length > 0) ||
+                    !!dp.peoplePref);
+                return (
+                  <Button
+                    size="sm"
+                    variant={has ? "ghost" : "default"}
+                    className={has ? "text-xs text-muted-foreground/50 hover:text-muted-foreground" : "text-xs"}
+                    onClick={() => setShowDiscoveryQuiz(true)}
+                  >
+                    <Sparkles className="h-3.5 w-3.5 mr-1" />
+                    {has ? "Edit" : "Set up"}
+                  </Button>
+                );
+              })()}
+            </div>
+
+            {(() => {
+              const dp: DiscoveryPreferences | null =
+                (profile?.discoveryPreferences as DiscoveryPreferences) || null;
+              const has =
+                !!dp &&
+                ((dp.subjects && dp.subjects.length > 0) ||
+                  (dp.workStyles && dp.workStyles.length > 0) ||
+                  !!dp.peoplePref);
+              if (!has) {
+                return (
+                  <div className="rounded-lg border border-dashed border-teal-500/20 p-6 flex flex-col items-center text-center">
+                    <Compass className="h-8 w-8 text-teal-500/30 mb-2" />
+                    <p className="text-sm font-medium text-muted-foreground">No interests set yet</p>
+                    <p className="text-xs text-muted-foreground/60 mt-1">
+                      Your interests power <span className="text-teal-500/70 font-medium">My Career Radar</span> — they surface careers you might not have considered
+                    </p>
+                  </div>
+                );
+              }
+              return (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-lg border border-teal-500/20 bg-teal-500/[0.04] p-3">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-teal-500/70">Subjects</span>
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {(dp!.subjects || []).slice(0, 8).map((s) => (
+                        <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 capitalize">
+                          {s}
+                        </Badge>
+                      ))}
+                      {(!dp!.subjects || dp!.subjects.length === 0) && (
+                        <p className="text-[11px] text-muted-foreground/50">None yet</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-border/50 bg-card/50 p-3">
+                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">Work style</span>
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {(dp!.workStyles || []).map((w) => (
+                        <Badge key={w} variant="outline" className="text-[9px] px-1.5 py-0 capitalize">
+                          {w}
+                        </Badge>
+                      ))}
+                      {(!dp!.workStyles || dp!.workStyles.length === 0) && (
+                        <p className="text-[11px] text-muted-foreground/50">None yet</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </CardContent>
+        </Card>
+        </div>
       )}
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
@@ -954,24 +1056,82 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 relative z-10">
-              {/* Avatar + Name row */}
-              <div className="flex items-center gap-4 pb-3 border-b border-border/30">
-                <Avatar name={formData.displayName || profile?.displayName} size="xl" />
-                <div className="flex-1 min-w-0">
-                  {session?.user?.name && (
-                    <p className="text-xs text-muted-foreground/50 mb-0.5">{session.user.name}</p>
-                  )}
-                  <Input
-                    id="displayName"
-                    placeholder="Display name"
-                    value={formData.displayName}
-                    onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                    className="h-8 text-sm"
-                  />
-                  <p className="mt-1 text-[10px] text-muted-foreground/40">
-                    Display name <span className="text-amber-500">*</span>
-                  </p>
+              {/* Identity block — avatar + name + prominent age tile */}
+              <div className="space-y-3 pb-3 border-b border-border/30">
+                {/* Top row: avatar + display name input */}
+                <div className="flex items-center gap-4">
+                  <Avatar name={formData.displayName || profile?.displayName} size="xl" />
+                  <div className="flex-1 min-w-0">
+                    {session?.user?.email && (
+                      <p
+                        className="text-[11px] text-muted-foreground/60 mb-1 truncate"
+                        title={session.user.email}
+                      >
+                        {session.user.email}
+                      </p>
+                    )}
+                    <Input
+                      id="displayName"
+                      placeholder="Display name"
+                      value={formData.displayName}
+                      onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                      className="h-9 text-sm"
+                    />
+                    <p className="mt-1 text-[10px] text-muted-foreground/40">
+                      Display name <span className="text-amber-500">*</span>
+                    </p>
+                  </div>
                 </div>
+
+                {/* Prominent Age tile — the user's age is the headline fact
+                    here, not a footnote. Large number, DOB underneath. */}
+                {profile?.user?.dateOfBirth ? (
+                  (() => {
+                    const dob = new Date(profile.user.dateOfBirth);
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const m = today.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                    const dobStr = dob.toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    });
+                    return (
+                      <div className="flex items-stretch gap-3 rounded-xl border border-border bg-muted/20 overflow-hidden">
+                        <div className="flex flex-col items-center justify-center px-5 py-3 bg-amber-500/10 border-r border-border min-w-[88px]">
+                          <span className="text-[9px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-300/80">
+                            Age
+                          </span>
+                          <span className="text-3xl font-bold leading-none text-foreground tabular-nums mt-0.5">
+                            {age}
+                          </span>
+                          <span className="text-[9px] text-muted-foreground mt-0.5">
+                            years old
+                          </span>
+                        </div>
+                        <div className="flex-1 flex flex-col justify-center py-3 pr-3">
+                          <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            Born
+                          </span>
+                          <p className="text-sm font-medium text-foreground mt-0.5">{dobStr}</p>
+                          <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                            Date of birth · set at sign-up
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()
+                ) : (
+                  <div className="rounded-xl border border-dashed border-border bg-muted/10 px-4 py-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Age
+                    </span>
+                    <p className="text-sm text-muted-foreground/60 mt-0.5">
+                      Date of birth not set
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* About Me — compact textarea */}
@@ -1019,90 +1179,11 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Date of Birth — read-only, set at signup */}
-              <div>
-                <Label className="text-xs font-medium text-muted-foreground/70">
-                  Date of Birth
-                </Label>
-                {profile?.user?.dateOfBirth ? (
-                  <div className="flex items-center gap-3 mt-1">
-                    <p className="text-sm text-foreground/70">
-                      {new Date(profile.user.dateOfBirth).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </p>
-                    <span className="text-[10px] text-muted-foreground/40">
-                      {(() => {
-                        const dob = new Date(profile.user.dateOfBirth);
-                        const today = new Date();
-                        let age = today.getFullYear() - dob.getFullYear();
-                        const m = today.getMonth() - dob.getMonth();
-                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-                        return `${age} years old`;
-                      })()}
-                    </span>
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground/40 mt-1">Not set</p>
-                )}
-              </div>
+              {/* Date of Birth + Age now live in the prominent age tile
+                  inside the identity block at the top of this card. */}
 
-              {/* Discovery Interests — powers the Career Radar */}
-              <div className="rounded-lg border border-teal-500/30 bg-teal-500/[0.04] p-3">
-                <div className="flex items-start gap-2 mb-2">
-                  <Compass className="h-4 w-4 text-teal-500 mt-0.5 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold">Discovery Interests</p>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
-                      The subjects you enjoy, how you like to work, and who you like to work with — this is what drives <span className="font-medium text-teal-600 dark:text-teal-400">My Career Radar</span> and surfaces career matches for you. Change anytime.
-                    </p>
-                  </div>
-                </div>
-                {(() => {
-                  const dp: DiscoveryPreferences | null =
-                    (profile?.discoveryPreferences as DiscoveryPreferences) || null;
-                  const has =
-                    !!dp &&
-                    ((dp.subjects && dp.subjects.length > 0) ||
-                      (dp.workStyles && dp.workStyles.length > 0) ||
-                      !!dp.peoplePref);
-                  if (!has) {
-                    return (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full h-8 text-xs"
-                        onClick={() => setShowDiscoveryQuiz(true)}
-                      >
-                        <Sparkles className="h-3 w-3 mr-1" />
-                        Set up discovery
-                      </Button>
-                    );
-                  }
-                  return (
-                    <>
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {(dp!.subjects || []).slice(0, 6).map((s) => (
-                          <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 capitalize">
-                            {s}
-                          </Badge>
-                        ))}
-                        {(dp!.workStyles || []).map((w) => (
-                          <Badge key={w} variant="outline" className="text-[9px] px-1.5 py-0 capitalize">
-                            {w}
-                          </Badge>
-                        ))}
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="w-full h-7 text-[11px]"
-                        onClick={() => setShowDiscoveryQuiz(true)}
-                      >
-                        Edit preferences
-                      </Button>
-                    </>
-                  );
-                })()}
-              </div>
+              {/* Discovery Interests has moved to the top of the page,
+                  next to Career Direction. */}
 
               {/* Guardian Email — only for 16-17 */}
               {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
@@ -1131,29 +1212,12 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Job Stats */}
+          {/* Career preferences — same field as Career Radar's onboarding,
+              editable here so users don't have to re-do the wizard. */}
           {profile && (
-            <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
-                <div className="text-xl font-bold text-teal-600 dark:text-teal-400">
-                  {profile.completedJobsCount || 0}
-                </div>
-                <div className="text-[10px] text-muted-foreground">Jobs</div>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
-                <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                  {profile.averageRating ? profile.averageRating.toFixed(1) : "—"}
-                </div>
-                <div className="text-[10px] text-muted-foreground">Rating</div>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-card border shadow-sm">
-                <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                  {profile.reliabilityScore || 0}%
-                </div>
-                <div className="text-[10px] text-muted-foreground">Reliable</div>
-              </div>
-            </div>
+            <CareerPreferencesSection initial={profile.discoveryPreferences as any} />
           )}
+
         </div>
 
         {/* Sidebar */}

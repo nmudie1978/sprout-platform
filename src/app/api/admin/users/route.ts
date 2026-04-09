@@ -34,8 +34,6 @@ export async function GET() {
             skillTags: true,
             careerAspiration: true,
             primaryGoal: true,
-            journeyState: true,
-            journeyCompletedSteps: true,
             onboardingCompletedAt: true,
           },
         },

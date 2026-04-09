@@ -25,9 +25,12 @@ import {
   Gamepad2,
   ChefHat,
   UtensilsCrossed,
+  Check,
+  Lock,
   type LucideIcon,
 } from 'lucide-react';
 import { STAGE_CONFIG, type JourneyItem } from '@/lib/journey/career-journey-types';
+import { cn } from '@/lib/utils';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Shield,
@@ -55,11 +58,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   UtensilsCrossed,
 };
 
-const PROGRESS_RING_COLORS = {
-  not_started: 'transparent',
-  in_progress: '#f59e0b',
-  done: '#22c55e',
-} as const;
+export type StepState = 'completed' | 'current' | 'next' | 'future';
 
 interface SharedNodeProps {
   item: JourneyItem;
@@ -67,46 +66,68 @@ interface SharedNodeProps {
   onProgressCycle?: () => void;
   progressStatus?: 'not_started' | 'in_progress' | 'done';
   size?: number;
+  /** Authoritative visual state. If omitted, falls back to progressStatus. */
+  stepState?: StepState;
+  /** True when an earlier step isn't done — can't mark progress yet. */
+  locked?: boolean;
 }
 
-export const SharedNode = memo(function SharedNode({ item, onClick, onProgressCycle, progressStatus, size = 40 }: SharedNodeProps) {
+/**
+ * Single source of truth for step visual state.
+ * Pure neutrals + one accent (slate=current, emerald=completed).
+ * No gradients, no glow, no stage colours leaking into the node.
+ */
+export const SharedNode = memo(function SharedNode({
+  item,
+  onClick,
+  progressStatus,
+  size = 40,
+  stepState,
+  locked,
+}: SharedNodeProps) {
   const stage = STAGE_CONFIG[item.stage];
   const iconName = item.icon ?? stage.icon;
   const IconComponent = ICON_MAP[iconName] ?? ICON_MAP[stage.icon] ?? Sparkles;
-  const iconSize = Math.round(size * 0.45);
-  const ringColor = progressStatus ? PROGRESS_RING_COLORS[progressStatus] : 'transparent';
-  const showRing = progressStatus && progressStatus !== 'not_started';
+  const iconSize = Math.round(size * 0.42);
+
+  // Resolve effective state. Explicit stepState wins; otherwise fall back to
+  // progress (so callers that haven't migrated still get a reasonable look).
+  const effective: StepState =
+    stepState ??
+    (progressStatus === 'done' ? 'completed' : 'future');
+
+  // State-driven classes — pure neutrals + a single accent per state.
+  // Disciplined palette: emerald = done, neutral = everything else.
+  // Amber lives only on the current step's CARD border + NOW badge —
+  // not on the node circle. The node uses a slightly stronger neutral
+  // border so it still reads as part of the current group, but doesn't
+  // add to the amber footprint.
+  const stateClasses: Record<StepState, string> = {
+    completed: 'bg-emerald-500 border-emerald-500 text-white',
+    current:
+      'bg-card border-slate-400 text-slate-700 dark:border-slate-400 dark:text-slate-200',
+    next:
+      'bg-white border-slate-200 text-slate-400 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-500',
+    future:
+      'bg-white border-slate-200 text-slate-400 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-500',
+  };
+
+  const ContentIcon =
+    effective === 'completed' ? Check : locked ? Lock : IconComponent;
 
   return (
     <div
-      className="relative z-10 flex items-center justify-center rounded-full border-2 border-white shadow-md cursor-pointer"
-      style={{
-        width: size,
-        height: size,
-        background: `linear-gradient(135deg, ${stage.gradientFrom}, ${stage.gradientTo})`,
-        boxShadow: showRing
-          ? `0 0 0 3px ${ringColor}, 0 1px 3px rgba(0,0,0,0.1)`
-          : '0 1px 3px rgba(0,0,0,0.1)',
-        transition: 'box-shadow 0.2s ease',
-      }}
-      onClick={(e) => {
-        if (onProgressCycle) {
-          e.stopPropagation();
-          onProgressCycle();
-        }
-      }}
-      aria-label={`${item.title}${progressStatus ? ` — ${progressStatus.replace('_', ' ')}` : ''}`}
-    >
-      <IconComponent
-        className="text-white"
-        style={{ width: iconSize, height: iconSize }}
-      />
-      {item.isMilestone && (
-        <span
-          className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white"
-          style={{ backgroundColor: stage.color }}
-        />
+      className={cn(
+        'relative z-10 flex items-center justify-center rounded-full border-2 shadow-sm transition-colors pointer-events-none',
+        stateClasses[effective]
       )}
+      style={{ width: size, height: size }}
+      aria-hidden
+    >
+      <ContentIcon
+        style={{ width: iconSize, height: iconSize }}
+        strokeWidth={effective === 'completed' ? 3 : 2}
+      />
     </div>
   );
 });

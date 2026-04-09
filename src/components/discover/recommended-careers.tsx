@@ -63,33 +63,32 @@ export function RecommendedCareers({ className, limit = 4 }: { className?: strin
         <p className="text-xs text-muted-foreground/60 -mt-1">{data.summary}</p>
       )}
 
-      {/* Career cards */}
-      <div className="grid gap-2 sm:grid-cols-2">
+      {/* Career cards — compact (half size). 4 per row on desktop,
+          tighter padding, smaller emoji and type. */}
+      <div className="grid gap-1.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {recs.map((rec) => (
           <Link
             key={rec.careerId}
             href={`/careers?search=${encodeURIComponent(rec.title)}`}
-            className="group rounded-lg border border-border/40 bg-card/50 hover:border-teal-500/30 hover:bg-teal-500/5 p-3 transition-all"
+            className="group rounded-md border border-border/40 bg-card/50 hover:border-teal-500/30 hover:bg-teal-500/5 px-2 py-1.5 transition-all"
           >
-            <div className="flex items-start gap-2.5">
-              <span className="text-lg shrink-0">{rec.emoji}</span>
+            <div className="flex items-start gap-1.5">
+              <span className="text-sm shrink-0 leading-none mt-0.5">{rec.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold group-hover:text-teal-400 transition-colors truncate">
+                <p className="text-[11px] font-semibold group-hover:text-teal-400 transition-colors truncate leading-tight">
                   {rec.title}
                 </p>
                 {rec.reasons.length > 0 && (
-                  <p className="text-[10px] text-teal-500/60 mt-0.5 line-clamp-1">
+                  <p className="text-[9px] text-teal-500/60 mt-0.5 line-clamp-1 leading-tight">
                     {rec.reasons[0]}
                   </p>
                 )}
-                <div className="flex items-center gap-2 mt-1.5">
-                  {rec.growthOutlook === 'high' && (
-                    <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-500/70">
-                      <TrendingUp className="h-2.5 w-2.5" />
-                      High growth
-                    </span>
-                  )}
-                </div>
+                {rec.growthOutlook === 'high' && (
+                  <span className="inline-flex items-center gap-0.5 text-[8px] text-emerald-500/70 mt-0.5">
+                    <TrendingUp className="h-2 w-2" />
+                    High growth
+                  </span>
+                )}
               </div>
             </div>
           </Link>

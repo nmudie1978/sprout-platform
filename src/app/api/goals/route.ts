@@ -104,24 +104,26 @@ export async function PUT(request: Request) {
         ? { primaryGoal: goalWithTimestamp }
         : { secondaryGoal: goalWithTimestamp };
 
-    // If changing the primary goal, save current progress then reset journey
-    // All operations are wrapped in a transaction to prevent data loss on race conditions
+    // If changing the primary goal, save the previous goal's roadmap
+    // snapshot under JourneyGoalData and restore the new goal's snapshot
+    // (if any). The legacy `journeyState` / `journeyCompletedSteps` /
+    // `journeySkippedSteps` fields are no longer touched — see CLAUDE.md
+    // <journey_logic>. We still preserve `journeySummary` since it's a
+    // generic JSON store used by discover-reflections, education-context,
+    // career-interests, etc.
     if (slot === "primary" && goal) {
       const updatedProfile = await prisma.$transaction(async (tx) => {
         const currentProfile = await tx.youthProfile.findUnique({
           where: { userId: session.user.id },
           select: {
             primaryGoal: true,
-            journeyState: true,
-            journeyCompletedSteps: true,
-            journeySkippedSteps: true,
             journeySummary: true,
           },
         });
 
         const currentGoal = currentProfile?.primaryGoal as CareerGoal | null;
 
-        // Save current goal's progress before switching (if there is a current goal)
+        // Save current goal's summary before switching (if there is a current goal)
         if (currentGoal?.title && currentGoal.title !== goal.title) {
           const goalId = slugifyGoal(currentGoal.title);
           await tx.journeyGoalData.upsert({
@@ -130,14 +132,10 @@ export async function PUT(request: Request) {
               userId: session.user.id,
               goalId,
               goalTitle: currentGoal.title,
-              journeyState: currentProfile!.journeyState,
-              journeyCompletedSteps: currentProfile!.journeyCompletedSteps,
               journeySummary: currentProfile!.journeySummary || undefined,
             },
             update: {
               goalTitle: currentGoal.title,
-              journeyState: currentProfile!.journeyState,
-              journeyCompletedSteps: currentProfile!.journeyCompletedSteps,
               journeySummary: currentProfile!.journeySummary || undefined,
             },
           });
@@ -157,28 +155,20 @@ export async function PUT(request: Request) {
             const currentSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
             const restoredSummary = (savedData.journeySummary as Record<string, unknown>) || {};
             journeyUpdate = {
-              journeyState: savedData.journeyState,
-              journeyCompletedSteps: savedData.journeyCompletedSteps,
-              journeySkippedSteps: Prisma.DbNull,
               journeySummary: {
                 ...restoredSummary,
                 educationContext: restoredSummary.educationContext || currentSummary.educationContext || undefined,
               },
-              journeyLastUpdated: new Date(),
             };
           } else {
             const existingSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
             journeyUpdate = {
-              journeyState: "REFLECT_ON_STRENGTHS",
-              journeyCompletedSteps: [],
-              journeySkippedSteps: Prisma.DbNull,
               journeySummary: {
                 strengths: existingSummary.strengths || [],
                 careerInterests: existingSummary.careerInterests || [],
                 discoverReflections: existingSummary.discoverReflections || undefined,
                 educationContext: existingSummary.educationContext || undefined,
               },
-              journeyLastUpdated: new Date(),
             };
           }
         }

@@ -1,40 +1,14 @@
 /**
  * Journey Module Exports
  *
- * Centralized exports for the journey state machine, orchestrator, and services.
+ * Centralised exports for journey services. The legacy state-machine /
+ * orchestrator / progress-calculator have been removed — see
+ * CLAUDE.md <journey_logic>. Tabs are content views; progression lives
+ * in the per-step roadmap, not in a stage machine.
  */
 
 // Types
 export * from './types';
-
-// State Machine
-export {
-  JOURNEY_STATE_DEFINITIONS,
-  canEnterState,
-  hasCompletedState,
-  hasCompletedOrSkippedState,
-  canTransition,
-  canSkipState,
-  getExitCriteriaMessage,
-  getStateOrder,
-  getNextState,
-  getStatesUpTo,
-  determineCurrentState,
-  isOptionalState,
-  isStateSkipped,
-  // Lens utilities
-  getStateLens,
-  getStatePhase,
-  calculateLensProgress,
-} from './state-machine';
-
-// Orchestrator
-export {
-  JourneyOrchestrator,
-  createOrchestrator,
-  validateStepCompletionData,
-  sanitizeStepCompletionData,
-} from './orchestrator';
 
 // Timeline Service
 export {
@@ -91,28 +65,3 @@ export {
   type ReflectionQueryOptions,
 } from './reflections-service';
 
-// Shadow Provider
-export {
-  getShadowProvider,
-  resetShadowProvider,
-  setShadowProvider,
-  DatabaseShadowProvider,
-  MockShadowProvider,
-  type ShadowProvider,
-  type ShadowRequest,
-  type ShadowSummary,
-  type ShadowHost,
-  type ShadowRequestStatus,
-  type ShadowFormat,
-  type CreateShadowRequestInput,
-  type UpdateShadowRequestInput,
-} from './shadow-provider';
-
-// Progress Calculator
-export {
-  calculateDiscoverProgress,
-  calculateUnderstandProgress,
-  calculateActProgress,
-  calculateAllLensProgress,
-  type LensProgressDetails,
-} from './progress-calculator';

@@ -33,13 +33,12 @@ import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
-import type { JourneyUIState } from '@/lib/journey/types';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
 import { getToolInfo } from '@/lib/education/tool-links';
-import { getCareerPathExamples, careerPathToJourney, type CareerPathExample } from '@/lib/education/career-path-examples';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import type { Journey } from '@/lib/journey/career-journey-types';
+import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -230,7 +229,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
             <p className="text-xs text-muted-foreground/50">Your path to {goalTitle}</p>
           </div>
         </div>
-        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
+        <button onClick={onClose} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/30 transition-colors">
           <X className="h-3.5 w-3.5" /> Close
         </button>
       </div>
@@ -454,6 +453,12 @@ function DiscoverTab({
           </div>
         )}
       </div>
+
+      {/* Self-confirmation — drives the dashboard's Discover progress.
+          Picking a goal alone no longer counts; the user has to actively
+          say they've explored the role, so a brand-new career starts at
+          0/3 on the dashboard ring. */}
+      <DiscoverConfirmCard careerTitle={goalTitle} />
 
       {/* Next */}
       <div className="flex justify-end pt-2">
@@ -718,7 +723,7 @@ function UnderstandTab({
                 <div className="space-y-3">
                   <p className="text-xs text-foreground/75 leading-relaxed">{eduData.summary}</p>
                   <div className="rounded-lg border border-border/40 overflow-hidden">
-                    <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
                       <thead><tr className="border-b border-border/30 bg-muted/20">
                         <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Programme</th>
                         <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Institution</th>
@@ -732,12 +737,12 @@ function UnderstandTab({
                             className={cn('group cursor-pointer transition-all duration-200',
                               selectedRow === i
                                 ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
-                                : 'hover:bg-muted/10'
+                                : 'bg-violet-500/[0.04] shadow-[inset_3px_0_0_0_rgba(139,92,246,0.45)] hover:bg-violet-500/[0.08]'
                             )}>
-                            <td className="px-3 py-2 border-r border-border/15"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-violet-300 font-medium">{prog.programme}</a></td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{prog.institution}</td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{prog.city}</td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{prog.duration}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300">{prog.programme}</a></td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.institution}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.city}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.duration}</td>
                             <td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3.5 w-3.5 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/40 group-hover:text-violet-400')} /></a></td>
                           </tr>
                         ))}
@@ -745,7 +750,7 @@ function UnderstandTab({
                     </table>
                   </div>
                   {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
-                    <div className="pt-1 space-y-0.5">{eduData.alternativePaths.map((alt, i) => <p key={i} className="text-xs text-foreground/70 leading-relaxed">· {alt}</p>)}</div>
+                    <div className="pt-1 space-y-0.5">{eduData.alternativePaths.map((alt, i) => <p key={i} className="text-xs text-foreground/75 leading-relaxed">· {alt}</p>)}</div>
                   )}
                 </div>
               );
@@ -756,7 +761,7 @@ function UnderstandTab({
                 <div className="space-y-3">
                   <p className="text-xs text-foreground/75 leading-relaxed">{certPath.summary}</p>
                   <div className="rounded-lg border border-border/40 overflow-hidden">
-                    <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
+                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
                       <thead><tr className="border-b border-border/30 bg-muted/20">
                         <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Certification</th>
                         <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Provider</th>
@@ -770,12 +775,12 @@ function UnderstandTab({
                             className={cn('group cursor-pointer transition-all duration-200',
                               selectedRow === i
                                 ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
-                                : 'hover:bg-muted/10'
+                                : 'bg-violet-500/[0.04] shadow-[inset_3px_0_0_0_rgba(139,92,246,0.45)] hover:bg-violet-500/[0.08]'
                             )}>
-                            <td className="px-3 py-2 border-r border-border/15"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-violet-300 font-medium">{cert.name}</a><p className="text-[10px] text-foreground/55 mt-0.5">{cert.recognised}</p></td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{cert.provider}</td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{cert.duration}</td>
-                            <td className="px-3 py-2 text-foreground/80 border-r border-border/15">{cert.cost}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300">{cert.name}</a><p className="text-[10px] text-foreground/55 mt-0.5">{cert.recognised}</p></td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.provider}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.duration}</td>
+                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.cost}</td>
                             <td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3.5 w-3.5 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/40 group-hover:text-violet-400')} /></a></td>
                           </tr>
                         ))}
@@ -817,11 +822,124 @@ function UnderstandTab({
         </div>
       </div>
 
+      {/* Self-confirmation — drives the dashboard's Understand progress.
+          The Understand tab is read-only deep-dive content, so a deliberate
+          YES is the cleanest completion signal we can capture. */}
+      <UnderstandConfirmCard careerTitle={goalTitle} />
+
       {/* Next */}
       <div className="flex justify-end pt-2">
         <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
           Grow <ArrowRight className="h-4 w-4" />
         </button>
+      </div>
+    </div>
+  );
+}
+
+function DiscoverConfirmCard({ careerTitle }: { careerTitle: string | null }) {
+  const [confirmed, setConfirmed] = useState(false);
+  useEffect(() => {
+    setConfirmed(isDiscoverConfirmed(careerTitle));
+  }, [careerTitle]);
+  if (!careerTitle) return null;
+
+  const choose = (value: boolean) => {
+    setDiscoverConfirmed(careerTitle, value);
+    setConfirmed(value);
+  };
+
+  return (
+    <div className="rounded-xl border border-teal-500/20 bg-teal-500/[0.04] px-5 py-4">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-foreground/85">
+            Have you explored what this role is about?
+          </p>
+          <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+            Your answer marks Discover as complete on your dashboard.
+          </p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => choose(true)}
+            className={cn(
+              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
+              confirmed
+                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-emerald-500/40 hover:text-emerald-300',
+            )}
+            aria-pressed={confirmed}
+          >
+            Yes
+          </button>
+          <button
+            onClick={() => choose(false)}
+            className={cn(
+              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
+              !confirmed
+                ? 'bg-muted/30 border-border/40 text-foreground/60'
+                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-border/60',
+            )}
+            aria-pressed={!confirmed}
+          >
+            Not yet
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UnderstandConfirmCard({ careerTitle }: { careerTitle: string | null }) {
+  const [confirmed, setConfirmed] = useState(false);
+  useEffect(() => {
+    setConfirmed(isUnderstandConfirmed(careerTitle));
+  }, [careerTitle]);
+  if (!careerTitle) return null;
+
+  const choose = (value: boolean) => {
+    setUnderstandConfirmed(careerTitle, value);
+    setConfirmed(value);
+  };
+
+  return (
+    <div className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] px-5 py-4">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-foreground/85">
+            Did you understand the role in more detail?
+          </p>
+          <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+            Your answer marks Understand as complete on your dashboard.
+          </p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => choose(true)}
+            className={cn(
+              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
+              confirmed
+                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-emerald-500/40 hover:text-emerald-300',
+            )}
+            aria-pressed={confirmed}
+          >
+            Yes
+          </button>
+          <button
+            onClick={() => choose(false)}
+            className={cn(
+              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
+              !confirmed
+                ? 'bg-muted/30 border-border/40 text-foreground/60'
+                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-border/60',
+            )}
+            aria-pressed={!confirmed}
+          >
+            Not yet
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1031,57 +1149,6 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
 
 // ─── GROW TAB ────────────────────────────────────────────────────────────────
 
-function RoadmapWithRoutes({ goalTitle, career, altPaths }: { goalTitle: string; career: Career; altPaths: CareerPathExample[] }) {
-  const [activeRoute, setActiveRoute] = useState<'default' | number>('default');
-
-  const altJourney = activeRoute !== 'default' && altPaths[activeRoute]
-    ? careerPathToJourney(altPaths[activeRoute], career.id) as Journey
-    : null;
-
-  return (
-    <div>
-      {/* Route pills */}
-      <div className="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto">
-        <button
-          onClick={() => setActiveRoute('default')}
-          className={cn(
-            'shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all border',
-            activeRoute === 'default'
-              ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
-              : 'border-border/20 text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
-          )}
-        >
-          Default route
-        </button>
-        {altPaths.slice(0, 2).map((path, i) => (
-          <button
-            key={i}
-            onClick={() => setActiveRoute(i)}
-            className={cn(
-              'shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all border',
-              activeRoute === i
-                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-                : 'border-border/20 text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
-            )}
-          >
-            {path.name}&apos;s route
-          </button>
-        ))}
-      </div>
-      {activeRoute !== 'default' && altPaths[activeRoute] && (
-        <p className="px-4 pt-1 pb-0 text-[10px] text-muted-foreground/35">
-          {altPaths[activeRoute].title} · Age {altPaths[activeRoute].currentAge}
-        </p>
-      )}
-      <div className="p-4">
-        <PersonalCareerTimeline
-          primaryGoalTitle={goalTitle}
-          overrideJourney={altJourney}
-        />
-      </div>
-    </div>
-  );
-}
 
 function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
   const { data: detailsData } = useCareerDetails(career?.id ?? null);
@@ -1314,6 +1381,8 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       type: newActionType,
     }]);
     setNewAction('');
+    // Per-career signal for the dashboard's Grow ring.
+    markGrowActive(goalTitle);
   };
 
   // Set an action's status directly. The Momentum row exposes three
@@ -1449,377 +1518,214 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             <h3 className="text-sm font-semibold text-foreground/90">My Roadmap</h3>
           </div>
         </div>
-        {/* Route selector */}
-        {(() => {
-          const altPaths = getCareerPathExamples(career.id, career.title);
-          if (altPaths.length === 0) {
-            return (
-              <div className="p-4">
-                <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-              </div>
-            );
-          }
-          return <RoadmapWithRoutes goalTitle={goalTitle!} career={career} altPaths={altPaths} />;
-        })()}
+        <div className="p-4">
+          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+        </div>
       </SectionCard>
 
-      {/* 2. Momentum (formerly "My Actions") — the journey anchor */}
-      <SectionCard className="border-teal-500/25" style={{ boxShadow: '0 0 25px rgba(20,184,166,0.10)' }}>
-        <div className="px-5 py-3.5 border-b border-border/30">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-teal-500/25 to-teal-500/5 flex items-center justify-center border border-teal-500/30">
-                <Zap className="h-3.5 w-3.5 text-teal-400" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-foreground">Momentum</h3>
-                <p className="text-[10px] text-muted-foreground/70">Every step counts. Here&apos;s your path so far.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Calm header stats — three counts mirroring the three
-              action states (Todo / Doing / Done) so the user can see
-              the shape of their workload at a glance, not just what
-              they've already finished. Always rendered if there's at
-              least one action so the user gets feedback the moment
-              they add their first step. */}
-          {actions.length > 0 && (() => {
-            const counts = {
-              not_started: actions.filter(a => statusOf(a) === 'not_started').length,
-              in_progress: actions.filter(a => statusOf(a) === 'in_progress').length,
-              done: actions.filter(a => statusOf(a) === 'done').length,
-            };
-            return (
-              <div className="grid grid-cols-3 gap-2 mt-3">
-                <div className="rounded-lg border border-border/30 bg-background/40 px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Not started</p>
-                  <p className="text-base font-semibold text-foreground/80 tabular-nums">{counts.not_started}</p>
-                </div>
-                <div className="rounded-lg border border-amber-500/30 bg-amber-500/[0.05] px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-wider text-amber-400/80 font-medium">In progress</p>
-                  <p className="text-base font-semibold text-amber-300 tabular-nums">{counts.in_progress}</p>
-                </div>
-                <div className="rounded-lg border border-teal-500/30 bg-teal-500/[0.05] px-3 py-2">
-                  <p className="text-[9px] uppercase tracking-wider text-teal-400/80 font-medium">Done</p>
-                  <p className="text-base font-semibold text-teal-300 tabular-nums">{counts.done}</p>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Persistence reassurance — explicit so users know nothing is
-              ephemeral here. The exact wording shifts to reflect the
-              current sync state so a fresh save shows immediate proof. */}
-          <p className="text-[10px] text-muted-foreground/55 mt-2 flex items-center gap-1.5">
-            <Check className="h-2.5 w-2.5 text-teal-500/70" />
-            {syncStatus === 'syncing'
-              ? 'Saving to your journey…'
-              : syncStatus === 'error'
-                ? 'Saved on this device — we\'ll sync when you\'re back online.'
-                : 'Saved to your journey — your progress is here next time you visit.'}
-          </p>
-
-          {/* The 12-week momentum strip — visual proof of consistency */}
-          {momentumStats.totalDone > 0 && (
-            <div className="mt-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/70 font-medium">Last 12 weeks</p>
-                <div className="flex items-center gap-2 text-[9px] text-muted-foreground/50">
-                  <span className="flex items-center gap-1">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500/30" />
-                    1+
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500" />
-                    3+
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                {momentumStats.weeks.map((w, i) => {
-                  const fill =
-                    w.count >= 3 ? 'bg-teal-500 shadow-[0_0_6px_rgba(45,212,191,0.6)]'
-                    : w.count >= 1 ? 'bg-teal-500/35'
-                    : 'bg-foreground/8';
-                  return (
-                    <div
-                      key={i}
-                      title={w.count === 0 ? 'No actions this week' : `${w.count} action${w.count === 1 ? '' : 's'}`}
-                      className={cn(
-                        'flex-1 h-2 rounded-full transition-all',
-                        fill,
-                        w.isCurrent && 'ring-1 ring-teal-400/60 ring-offset-1 ring-offset-background'
-                      )}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="px-5 py-4 space-y-3">
-          {/* Suggested momentum actions — always visible, richer than the
-              old empty-state list. Each suggestion is a starter move: title
-              + a one-line "how" so the user knows where to begin. Tapping
-              one adds it to their list. Already-added titles are filtered
-              out so a suggestion never duplicates an existing row. */}
+      {/* 2. Momentum — suggested + your own progressive steps.
+          The state machinery (load/save/sync to /api/journey/goal-data,
+          status cycling, reflections) is declared above; this block is
+          the rendered surface. Adding a personal step also marks Grow
+          complete on the dashboard's progress card. */}
+      <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
+        <SectionHeader
+          icon={Zap}
+          title="Momentum"
+          badge={
+            actions.length > 0 ? (
+              <span className="text-[10px] text-muted-foreground/40">
+                {actions.filter((a) => statusOf(a) === 'done').length}/{actions.length} done
+              </span>
+            ) : undefined
+          }
+        />
+        <div className="p-4 space-y-5">
+          {/* Suggested momentum — 3 concrete starting points pulled
+              from public search URLs so they always work without an API. */}
           {(() => {
-            // External lookup links scoped to the user's career. We render
-            // these as a single shared row at the bottom of the Suggested
-            // Momentum block — not per-suggestion — so the section doesn't
-            // repeat the same Coursera/edX chips three times.
-            const courseQuery = encodeURIComponent(career.title);
-            const courseLinks = [
-              { label: 'Coursera', url: `https://www.coursera.org/search?query=${courseQuery}` },
-              { label: 'edX', url: `https://www.edx.org/search?q=${courseQuery}` },
-              { label: 'YouTube', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${career.title} tutorial`)}` },
-            ];
-            // LinkedIn people-search filtered by current job title AND
-            // geographically restricted to Norway via the geoUrn facet
-            // (Norway's LinkedIn geoUrn is 103819153). Endeavrly is a
-            // Norway-first platform so the country filter is hard-coded
-            // — if we expand to other markets we'll need to derive this
-            // from the user's profile.country instead.
-            const norwayGeoUrn = encodeURIComponent('["103819153"]');
-            const peopleLinkedInUrl = `https://www.linkedin.com/search/results/people/?keywords=${courseQuery}&geoUrn=${norwayGeoUrn}&origin=FACETED_SEARCH`;
+              // utdanning.no is Norwegian-language, so an English career
+              // title ("Healthcare Worker") returns next to nothing.
+              // Pull the Norwegian programme name from our curated map
+              // and strip suffixes like "(bachelor)" or "→ Vg2" so the
+              // search term is the bare noun ("Helse- og oppvekstfag",
+              // "Sykepleie", "Medisin"). Falls back to the English
+              // title when we don't have a Norwegian mapping.
+              const norwayData = getNorwayProgrammes(career.id, career.title);
+              const norwegianTerm = norwayData?.programmes?.[0]?.programme
+                ?.replace(/\s*\([^)]*\)/g, '')
+                .split('→')[0]
+                .trim();
+              const courseSearchTerm = norwegianTerm || career.title;
+              const courseDescriptor = norwegianTerm
+                ? `Aligned programmes on utdanning.no — searching “${norwegianTerm}”`
+                : 'Aligned programmes on utdanning.no';
 
-            const suggestions: { title: string; how: string; type: ActionType }[] = [
-              {
-                title: 'Build a starter skill stack',
-                how: `Pick 2–3 core skills a ${career.title} actually uses and start learning them this week — a free YouTube series or short online course is enough to begin.`,
-                type: 'learn',
-              },
-              {
-                title: 'Talk to someone in this career',
-                how: `Find a ${career.title} on LinkedIn, through your school's alumni network, or at a careers fair. Send one short polite message asking one honest question about their day.`,
-                type: 'reach',
-              },
-              {
-                title: 'Try the work in miniature',
-                how: `Build a tiny project, shadow for a day, or take an intro course — test what the work actually feels like before committing years to it.`,
-                type: 'do',
-              },
-            ];
-            const taken = new Set(actions.map(a => a.text.toLowerCase()));
-            const available = suggestions.filter(s => !taken.has(s.title.toLowerCase()));
-            if (available.length === 0) return null;
-            return (
-              <div>
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-medium mb-2">Suggested momentum</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {available.map((s, i) => {
-                    const t = typeMeta(s.type);
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
-                        className="group h-full flex flex-col gap-2 rounded-lg border border-border/30 bg-background/30 px-3 py-3 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-base shrink-0">{t.emoji}</span>
-                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug flex-1 min-w-0">{s.title}</p>
-                          <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0" />
-                        </div>
-                        <p className="text-[11px] text-muted-foreground/65 leading-snug">{s.how}</p>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Shared resource links — rendered once at the bottom of
-                    the Suggested Momentum block rather than per-suggestion,
-                    so the same Coursera / LinkedIn chips don't appear next
-                    to two or three different cards. */}
-                <div className="mt-3 pt-2.5 border-t border-border/20 space-y-1.5">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[10px] text-muted-foreground/50 shrink-0">Try a course on:</span>
-                    {courseLinks.map((c) => (
+              const allSuggestions = [
+                {
+                  icon: Users,
+                  color: 'text-blue-400',
+                  title: `People in ${career.title} roles`,
+                  descriptor: 'Find professionals on LinkedIn and read their journeys',
+                  url: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}`,
+                },
+                {
+                  icon: GraduationCap,
+                  color: 'text-violet-400',
+                  title: `University courses for ${career.title}`,
+                  descriptor: courseDescriptor,
+                  url: `https://utdanning.no/sok?q=${encodeURIComponent(courseSearchTerm)}`,
+                },
+              ];
+              // Hide a suggestion once it's already been added to the
+              // user's momentum list. Deleting it from "Your momentum"
+              // brings the card back automatically.
+              const visibleSuggestions = allSuggestions.filter(
+                (s) => !actions.some((a) => a.text === s.title)
+              );
+              if (visibleSuggestions.length === 0) return null;
+              return (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-2">
+                Suggested next moves
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {visibleSuggestions.map((s) => {
+                const Icon = s.icon;
+                return (
+                  <div
+                    key={s.title}
+                    className="rounded-lg border border-border/25 bg-background/30 p-3 flex flex-col gap-2"
+                  >
+                    <div className="flex items-start gap-2">
+                      <Icon className={cn('h-3.5 w-3.5 mt-0.5 shrink-0', s.color)} />
+                      <div className="min-w-0">
+                        <p className="text-[12px] font-semibold text-foreground/85 leading-tight">
+                          {s.title}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground/55 leading-snug mt-0.5">
+                          {s.descriptor}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5 mt-auto pt-1">
                       <a
-                        key={c.label}
-                        href={c.url}
+                        href={s.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
+                        className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-border/30 bg-background/40 px-2 py-1.5 text-[10px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
                       >
-                        {c.label}
-                        <ExternalLink className="h-2.5 w-2.5 opacity-60" />
+                        Open <ExternalLink className="h-2.5 w-2.5" />
                       </a>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[10px] text-muted-foreground/50 shrink-0">Find a {career.title} in Norway on:</span>
-                    <a
-                      href={peopleLinkedInUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md border border-teal-500/25 bg-teal-500/5 px-1.5 py-0.5 text-[10px] font-medium text-teal-400 hover:bg-teal-500/15 hover:border-teal-500/50 transition-colors"
-                    >
-                      LinkedIn
-                      <ExternalLink className="h-2.5 w-2.5 opacity-60" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Action list — each pending row has an explicit Todo / Doing /
-              Done segmented control so all three states are visible and
-              directly tappable. No hidden cycling, no guessing. */}
-          {actions.length > 0 && (() => {
-            const pending = actions.filter(a => statusOf(a) !== 'done');
-            const completed = actions.filter(a => statusOf(a) === 'done').sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
-            const STATUS_BUTTONS: { value: ActionStatus; label: string; activeClass: string }[] = [
-              { value: 'not_started', label: 'Todo', activeClass: 'bg-muted/40 text-foreground border-muted-foreground/40' },
-              { value: 'in_progress', label: 'Doing', activeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/50' },
-              { value: 'done', label: 'Done', activeClass: 'bg-teal-500/20 text-teal-300 border-teal-500/50' },
-            ];
-            return (
-              <div className="space-y-1">
-                {pending.map((action) => {
-                  const t = typeMeta(action.type);
-                  const st = statusOf(action);
-                  const inProgress = st === 'in_progress';
-                  return (
-                    <div
-                      key={action.id}
-                      className={cn(
-                        'group flex items-center gap-3 rounded-lg px-2.5 py-2 -mx-1 transition-colors',
-                        inProgress ? 'bg-amber-500/[0.04] hover:bg-amber-500/[0.07]' : 'hover:bg-muted/5'
-                      )}
-                    >
-                      <span className="text-base leading-none shrink-0" title={t.label}>{t.emoji}</span>
-                      <span className={cn(
-                        'text-[13px] flex-1 leading-snug min-w-0',
-                        inProgress ? 'text-foreground/95 font-medium' : 'text-foreground/85'
-                      )}>
-                        {action.text}
-                      </span>
-                      <div className="flex items-center gap-0.5 rounded-md border border-border/30 bg-background/40 p-0.5 shrink-0">
-                        {STATUS_BUTTONS.map(b => {
-                          const active = st === b.value;
-                          return (
-                            <button
-                              key={b.value}
-                              onClick={() => setActionStatus(action.id, b.value)}
-                              className={cn(
-                                'rounded-[4px] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider transition-all border',
-                                active
-                                  ? b.activeClass
-                                  : 'border-transparent text-muted-foreground/45 hover:text-foreground/70 hover:bg-muted/20'
-                              )}
-                              aria-label={`Mark as ${b.label}`}
-                              aria-pressed={active}
-                            >
-                              {b.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all shrink-0">
-                        <Trash2 className="h-3 w-3" />
+                      <button
+                        onClick={() => {
+                          saveActions([
+                            ...actions,
+                            {
+                              id: Date.now().toString(),
+                              text: s.title,
+                              done: false,
+                              status: 'not_started',
+                              type: 'do',
+                            },
+                          ]);
+                          markGrowActive(goalTitle);
+                        }}
+                        className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-[10px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors"
+                        title="Add this as one of your momentum steps"
+                      >
+                        <Plus className="h-2.5 w-2.5" /> Add
                       </button>
                     </div>
+                  </div>
+                );
+              })}
+              </div>
+            </div>
+              );
+            })()}
+
+          {/* Your momentum — user-authored steps with status + delete. */}
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-2">
+              Your momentum
+            </p>
+            {actions.length === 0 ? (
+              <p className="text-[11px] text-muted-foreground/40 italic mb-2">
+                No steps yet. Add one below or pick a suggested move above.
+              </p>
+            ) : (
+              <ul className="space-y-1.5 mb-3">
+                {actions.map((a) => {
+                  const status = statusOf(a);
+                  return (
+                    <li
+                      key={a.id}
+                      className="flex items-center gap-2 rounded-lg border border-border/25 bg-background/30 px-3 py-2"
+                    >
+                      <button
+                        onClick={() =>
+                          setActionStatus(a.id, status === 'done' ? 'not_started' : 'done')
+                        }
+                        className={cn(
+                          'h-4 w-4 rounded border flex items-center justify-center shrink-0 transition-colors',
+                          status === 'done'
+                            ? 'bg-emerald-500 border-emerald-500'
+                            : 'border-border/50 hover:border-foreground/50',
+                        )}
+                        aria-label={status === 'done' ? 'Mark not done' : 'Mark done'}
+                      >
+                        {status === 'done' && (
+                          <Check className="h-2.5 w-2.5 text-white" strokeWidth={4} />
+                        )}
+                      </button>
+                      <span
+                        className={cn(
+                          'flex-1 text-[12px] leading-snug',
+                          status === 'done'
+                            ? 'text-muted-foreground/45 line-through'
+                            : 'text-foreground/80',
+                        )}
+                      >
+                        {a.text}
+                      </span>
+                      <button
+                        onClick={() => deleteAction(a.id)}
+                        className="text-muted-foreground/30 hover:text-rose-400 transition-colors shrink-0"
+                        aria-label="Delete step"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </li>
                   );
                 })}
-                {completed.length > 0 && (
-                  <>
-                    {pending.length > 0 && <div className="border-t border-border/15 my-2" />}
-                    <p className="text-[9px] uppercase tracking-wider text-muted-foreground/50 font-medium px-2.5 mb-1">Done</p>
-                    {completed.map((action) => {
-                      const t = typeMeta(action.type);
-                      const r = reactionMeta(action.reaction);
-                      const isReflecting = reflectingId === action.id;
-                      return (
-                        <div key={action.id} className="space-y-1">
-                          <div className="group flex items-start gap-3 rounded-lg px-2.5 py-1.5 -mx-1 transition-colors">
-                            <button onClick={() => toggleAction(action.id)}
-                              className="flex h-[20px] w-[20px] items-center justify-center rounded-md bg-teal-500/20 border border-teal-500/40 shrink-0 transition-all hover:bg-teal-500/30 mt-px"
-                              aria-label="Mark incomplete"
-                            >
-                              <Check className="h-3 w-3 text-teal-400" />
-                            </button>
-                            <span className="text-base leading-none shrink-0 opacity-50 mt-px" title={t.label}>{t.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[13px] text-muted-foreground/55 leading-snug line-through">{action.text}</p>
-                              {action.note && (
-                                <p className="text-[11px] text-foreground/60 mt-0.5 italic">&ldquo;{action.note}&rdquo;</p>
-                              )}
-                            </div>
-                            {r && (
-                              <span title={r.label} className="text-sm shrink-0">{r.emoji}</span>
-                            )}
-                            <button onClick={() => deleteAction(action.id)} className="p-1 rounded-md text-muted-foreground/15 hover:text-red-400 hover:bg-red-500/5 opacity-0 group-hover:opacity-100 transition-all">
-                              <Trash2 className="h-3 w-3" />
-                            </button>
-                          </div>
+              </ul>
+            )}
 
-                          {/* Reflection panel — appears immediately after ticking */}
-                          {isReflecting && (
-                            <div className="ml-9 mr-2 rounded-lg border border-teal-500/30 bg-teal-500/[0.05] p-3 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                              <p className="text-[11px] font-medium text-foreground/85">How did that go?</p>
-                              <div className="flex gap-1.5 flex-wrap">
-                                {REACTIONS.map(r => (
-                                  <button
-                                    key={r.id}
-                                    onClick={() => saveReflection(action.id, r.id)}
-                                    className="flex items-center gap-1.5 rounded-md border border-border/40 bg-background/50 px-2.5 py-1 text-[11px] text-foreground/75 hover:border-teal-500/40 hover:bg-teal-500/10 hover:text-foreground transition-all"
-                                  >
-                                    <span>{r.emoji}</span>
-                                    <span>{r.label}</span>
-                                  </button>
-                                ))}
-                              </div>
-                              <input
-                                value={reflectionNote}
-                                onChange={(e) => setReflectionNote(e.target.value)}
-                                placeholder="Optional: one thing you learned…"
-                                className="w-full bg-background/40 border border-border/40 rounded-md px-2.5 py-1.5 text-[11px] text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none focus:border-teal-500/40"
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') saveReflection(action.id, action.reaction ?? 'mixed');
-                                }}
-                              />
-                              <button
-                                onClick={skipReflection}
-                                className="text-[10px] text-muted-foreground/60 hover:text-foreground/80 transition-colors"
-                              >
-                                Skip for now
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </>
-                )}
-              </div>
-            );
-          })()}
-
-          {/* Add input — type picker + text + add */}
-          <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-background/40 px-2.5 py-2 focus-within:border-teal-500/40 focus-within:bg-teal-500/[0.03] transition-colors">
-            <button
-              type="button"
-              onClick={cycleNewActionType}
-              className="shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-muted/30 transition-colors"
-              title={`Type: ${typeMeta(newActionType).label} — click to change`}
-            >
-              <span className="text-base">{typeMeta(newActionType).emoji}</span>
-              <span className="text-[9px] text-muted-foreground/70 uppercase tracking-wider">{typeMeta(newActionType).label}</span>
-            </button>
-            <input
-              value={newAction}
-              onChange={(e) => setNewAction(e.target.value)}
-              placeholder="Add the next step…"
-              className="flex-1 bg-transparent text-[13px] text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none"
-              onKeyDown={(e) => { if (e.key === 'Enter' && newAction.trim()) addAction(); }}
-            />
-            {newAction.trim() && (
-              <button onClick={addAction} className="shrink-0 px-2.5 py-1 rounded-md text-[10px] font-semibold bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 transition-colors">
-                Add
+            {/* Add new step */}
+            <div className="flex gap-2">
+              <input
+                value={newAction}
+                onChange={(e) => setNewAction(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addAction();
+                  }
+                }}
+                placeholder="Add your own next step..."
+                className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground/85 placeholder:text-muted-foreground/30 focus:outline-none focus:border-amber-500/40"
+              />
+              <button
+                onClick={addAction}
+                disabled={!newAction.trim()}
+                className="inline-flex items-center gap-1 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <Plus className="h-3 w-3" /> Add
               </button>
+            </div>
+            {syncStatus === 'saved' && (
+              <p className="text-[9px] text-emerald-400/50 mt-1.5">Saved to your journey</p>
             )}
           </div>
         </div>
@@ -1915,17 +1821,6 @@ export default function MyJourneyPage() {
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData } = useGoals(isYouth);
   const goalTitle = goalsData?.primaryGoal?.title ?? null;
-
-  const { data: journeyData } = useQuery<{ success: boolean; journey: JourneyUIState }>({
-    queryKey: ['journey-state'],
-    queryFn: async () => {
-      const res = await fetch('/api/journey');
-      if (!res.ok) throw new Error('Failed');
-      return res.json();
-    },
-    enabled: isYouth,
-    staleTime: 30_000,
-  });
 
   const career = useMemo(() => {
     if (!goalTitle) return null;

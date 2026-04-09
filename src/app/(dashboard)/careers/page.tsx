@@ -352,10 +352,11 @@ function CareersPageContent() {
           {/* Column headers — list view only. Mirrors the ListRow grid so
               labels line up over their data columns. */}
           {viewMode === "list" && (
-            <div className="inline-grid grid-cols-[18rem_6rem_4rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit">
+            <div className="inline-grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit">
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
+              <span className="text-center">Match</span>
               <span>Learn more</span>
             </div>
           )}

@@ -8,8 +8,6 @@
  * All data stays in localStorage (private to the user's device).
  */
 
-import type { JourneyLens } from '@/lib/journey/types';
-
 export interface ReflectionEntry {
   id: string;
   createdAt: string;
@@ -17,7 +15,12 @@ export interface ReflectionEntry {
   energy: { level: number; notes?: string };
   capability: { skills?: string[]; responsibility?: string; growthNote?: string };
   direction: { nextInterest?: string; perspectiveShift?: string; addToRoadmap?: boolean };
-  linkedPhase?: JourneyLens;
+  /**
+   * Optional free-form tab tag the reflection was created from
+   * (e.g. "discover" / "understand" / "grow"). Plain string — no
+   * dependency on the legacy lens state machine.
+   */
+  linkedPhase?: string;
 }
 
 export type ReflectionStep = 'tried' | 'learned' | 'surprised';

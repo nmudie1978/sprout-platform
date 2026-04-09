@@ -134,176 +134,108 @@ Never store:
 
 <journey_logic>
 
-# My Journey Framework (Current Implementation)
+# My Journey — Tabs-as-Content, Roadmap-Driven
 
 ## Overview
 
-The My Journey experience is structured into three core stages:
+My Journey has three tabs — **Discover**, **Understand**, **Grow** — but
+they are content views, NOT a stage machine. The user is free to move
+between them in any order. There is no gating, no "complete N actions
+to unlock the next tab", no required steps, no orchestrator, no lens
+completion criteria, no DB-backed journey state. Real progression
+happens inside the **Grow** tab's roadmap, where the user marks
+individual roadmap steps as in-progress / done.
 
-1. Discover → Explore the career
-2. Understand → Know the role in depth
-3. Grow → Take initial steps toward the career
+The legacy gating engine — `JourneyOrchestrator`, `state-machine.ts`,
+`/api/journey` GET/PATCH, `/api/journey/complete`, `/api/journey/skip`,
+`/api/journey/advance-to-understand`, the `journeyState` /
+`journeyCompletedSteps` / `journeySkippedSteps` columns on
+`YouthProfile`, the `currentLens` step-completion machine — is REMOVED.
+Do not reintroduce it. New code must not import from
+`src/lib/journey/orchestrator.ts` or `src/lib/journey/state-machine.ts`.
 
-This structure represents a progression from awareness → clarity → early action.
+## What each tab contains
 
-The current implementation is intentionally lightweight and mostly informational, with limited personalization and automation.
+### 1. Discover — Explore the career
+Calm, content-first introduction. A Day in the Life video, salary,
+growth outlook, key skills, role context. Passive — no required input.
+Designed to spark curiosity.
 
----
+### 2. Understand — Know the role
+Deeper structured view. Role reality, education paths, key skills,
+courses & certifications, entry requirements, industry outlook. Real
+Norwegian programmes via `getNorwayProgrammes` and certifications via
+`getCertificationPath`. Optional personal notes.
 
-## 1. Discover (Explore the Career)
+### 3. Grow — Build your roadmap
+The action surface. Composed of:
 
-### Purpose
+  a. **Foundation Card** — diagnostic of the user's starting point
+     (school, track, finish year, current subjects, alignment status
+     with the chosen career: Aligned / Partially aligned / Needs
+     attention, plus one suggested action). Editable in place.
 
-Discover is designed to introduce the user to a career at a high level.
+  b. **Personal Roadmap** — age-anchored timeline from today to a
+     senior role. Branches on the user's education stage (school /
+     college / university / other) and finish year. Three render
+     styles (Zigzag / Rail / Steps). Per-step progress
+     (not_started / in_progress / done) with sequential gating
+     INSIDE the roadmap (each step unlocks when the previous is
+     done — this gating is local to the roadmap, NOT the old
+     lens machine). "You are here" marker derived from progress.
 
-It helps answer:
-- What is this career?
-- What does it involve?
-- Is this something I might be interested in?
+  c. **Momentum** — suggested next moves (LinkedIn people in
+     similar roles, utdanning.no university courses for the chosen
+     career, with the Norwegian programme name auto-filled). The
+     user's own action list with status + delete. Suggestions
+     disappear once added and reappear on delete.
 
-### Content & Features
+  d. **Reference Content** — Real Career Paths (alternative routes
+     from real people), Tools of the Trade, Real Voices videos
+     (career-reality API, country-filtered to remove non-Norway
+     content).
 
-Discover typically includes:
+## Career Radar is NOT a journey stage
 
-- A Day in the Life (video-based content)
-- Salary range
-- Growth outlook
-- Education path (high-level)
-- Key skills required (e.g. communication, empathy, etc.)
-- A high-level career roadmap preview
+Career Radar collects `discoveryPreferences` (subjects, work style,
+people preference, interests). These power:
+  - Match % on /careers
+  - Recommended for you cards
+  - Personalised sorting
 
-### UX Characteristics
+`discoveryPreferences` is editable from BOTH the Radar and from
+/profile (Career Preferences section). It is profile data, not
+journey state. Editing in either surface invalidates
+`['my-profile', 'profile-completion', 'discover-recommendations',
+'career-recommendations']` so the Match column refreshes immediately.
 
-- Passive exploration
-- Content-driven (video + summary cards)
-- No user input required
-- Designed to spark curiosity and initial interest
+## Hard rules
 
-### Notes
-
-- Discover is not deep or technical
-- It should feel accessible, engaging, and easy to consume
-- It sets the context for deeper exploration in Understand
-
----
-
-## 2. Understand (Know the Role)
-
-### Purpose
-
-Understand provides a deeper, more structured view of the career.
-
-It helps answer:
-- What does this job actually involve day-to-day?
-- What do I need to qualify?
-- What skills and knowledge are required?
-- What is the reality of this role?
-
-### Content & Features
-
-Understand typically includes:
-
-- Role Reality:
-  - Core responsibilities (e.g. diagnose conditions, prescribe treatments)
-- Education & Qualifications:
-  - Degree requirements
-  - Specialization paths
-- Key Skills:
-  - More explicit breakdown of required capabilities
-- Courses & Certifications:
-  - External learning platforms (e.g. Coursera, edX)
-- Entry Requirements:
-  - Basic eligibility and expectations
-- Industry Outlook:
-  - Growth level
-  - Salary range
-- Notes:
-  - User can optionally write personal notes and reflections
-
-### UX Characteristics
-
-- More structured and informational than Discover
-- Still largely passive consumption
-- Some optional user input (notes)
-- Provides clarity and realism
-
-### Notes
-
-- Understand bridges curiosity and informed decision-making
-- It introduces more detail but does not yet drive action
-
----
-
-## 3. Grow (Build your roadmap)
-
-### Purpose
-
-Grow is where curiosity becomes a plan. The user maps their path toward a
-chosen career, sets concrete next steps, tracks their progress over time,
-and builds momentum.
-
-It helps answer:
-- What does my path to this career look like, year by year?
-- What concrete things can I do next?
-- How am I progressing toward becoming this?
-
-### Content & Features
-
-Grow includes:
-
-1. Personal Career Roadmap
-   - Visual roadmap mapped to the user's age and current education stage
-   - Timeline-based progression toward the chosen career
-   - Multiple visual formats (Zigzag, Rail, Steps) for different
-     learning styles
-   - "Your Foundation" anchor showing where the user is today
-   - "You are here" marker that moves as the user progresses
-
-2. Concrete Next Steps
-   - Actionable suggestions tied to the user's chosen career
-   - Things the user can realistically do this week, month, term
-
-3. Progress Tracking
-   - Per-step status (todo / in progress / done)
-   - Persistent across sessions
-   - Reinforces the user's own sense of momentum (never public,
-     never gamified, never compared to others)
-
-### UX Characteristics
-
-- Action-oriented but calm — no streaks, no badges, no leaderboards
-- Roadmap is the central visual anchor
-- Progress is visible but private
-- Users can re-anchor "You are here" as their situation changes
-
-### Important: Grow ≠ entry-level positions
-
-Grow is about long-term direction and momentum toward a *full career*.
-Entry-level job positions and short-term work belong elsewhere in the app
-(My Jobs, Browse Jobs). Don't conflate them.
-
----
-
-## Design Principles (Current State)
-
-- Minimal friction
-- No mandatory user input
-- Clean, card-based UI
-- Focus on clarity over complexity
-- Content-first approach
-
----
+- Tabs are content views, not stages. Never gate switching between
+  Discover / Understand / Grow on action completion.
+- Never reintroduce `JourneyOrchestrator`, `createOrchestrator`,
+  `JOURNEY_STATES`, `JOURNEY_STATE_DEFINITIONS`, `JourneyStateId`,
+  `canTransition`, `calculateLensProgress`, `determineCurrentState`,
+  or step-list arrays whose entries each represent a "completion gate".
+- Do not write to `YouthProfile.journeyState`,
+  `journeyCompletedSteps`, or `journeySkippedSteps`. These columns
+  are legacy and being dropped. `journeySummary` is also legacy —
+  read it only as a fallback for already-stored data, never write.
+- The roadmap's per-step progress lives in `roadmap-card-data`
+  (localStorage, per goal) and the sequential-unlock helper
+  `isStepUnlocked` / `enforceProgressChain` in
+  `src/components/journey/timeline/`. This is the only progression
+  machine in the app.
+- The dashboard surfaces roadmap progress for the active goal via
+  `markGrowActive` / lightweight per-goal signals — not via
+  `computeLensProgress` over the legacy state machine.
 
 ## Summary
 
-The model follows a clear progression:
+Three tabs, no gating. Discover and Understand are content. Grow is
+where the user builds their roadmap, marks steps done, and grows
+their own momentum list. That's the whole model.
 
-Discover → "This looks interesting"
-Understand → "I understand what this actually involves"
-Grow → "Here is my roadmap and my next move"
-
-Each stage builds on the last. Curiosity becomes clarity; clarity becomes
-direction. The user moves at their own pace, on their own terms.
 </journey_logic>
 
 

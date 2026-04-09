@@ -1,5 +1,19 @@
 // Typical day content for careers
 // Provides realistic day-in-the-life information for each career
+//
+// Coverage strategy:
+//   1. `careerDetailsMap` below — hand-curated entries (highest quality).
+//   2. `generatedCareerDetailsMap` from ./career-typical-days.generated
+//      — AI pre-generated entries for any career not in the curated map.
+//      Produced by `scripts/generate-career-details.ts`. Lives in its
+//      own file so the curated set stays human-readable.
+//   3. `defaultDetails` — last-resort generic template.
+//
+// Lookup order: curated → generated → default. The route layer treats
+// any of these as a successful answer so Understand never shows a
+// "Loading…" trap.
+
+import { generatedCareerDetailsMap } from './career-typical-days.generated';
 
 export interface TypicalDaySchedule {
   morning: string[];
@@ -12536,28 +12550,35 @@ const careerDetailsMap: Record<string, CareerDetails> = {
 };
 
 /**
- * Get detailed career information including typical day
+ * Get detailed career information including typical day.
+ * Lookup order: curated map → generated overlay → default template.
+ * Always returns a usable CareerDetails object — never null.
  */
 export function getCareerDetails(careerId: string): CareerDetails {
-  // Try exact match first
-  if (careerDetailsMap[careerId]) {
-    return careerDetailsMap[careerId];
-  }
-
-  // Try normalized ID (lowercase, hyphenated)
   const normalizedId = careerId.toLowerCase().replace(/\s+/g, "-");
-  if (careerDetailsMap[normalizedId]) {
-    return careerDetailsMap[normalizedId];
-  }
 
-  // Return default template
+  // 1. Hand-curated entries
+  if (careerDetailsMap[careerId]) return careerDetailsMap[careerId];
+  if (careerDetailsMap[normalizedId]) return careerDetailsMap[normalizedId];
+
+  // 2. AI-generated overlay (filled by scripts/generate-career-details.ts)
+  if (generatedCareerDetailsMap[careerId]) return generatedCareerDetailsMap[careerId];
+  if (generatedCareerDetailsMap[normalizedId]) return generatedCareerDetailsMap[normalizedId];
+
+  // 3. Last-resort template
   return defaultDetails;
 }
 
 /**
- * Check if a career has specific detailed content
+ * Check if a career has specific (curated OR generated) content.
+ * Used by the route layer to flag "real" coverage vs. defaults.
  */
 export function hasDetailedContent(careerId: string): boolean {
   const normalizedId = careerId.toLowerCase().replace(/\s+/g, "-");
-  return careerId in careerDetailsMap || normalizedId in careerDetailsMap;
+  return (
+    careerId in careerDetailsMap ||
+    normalizedId in careerDetailsMap ||
+    careerId in generatedCareerDetailsMap ||
+    normalizedId in generatedCareerDetailsMap
+  );
 }
