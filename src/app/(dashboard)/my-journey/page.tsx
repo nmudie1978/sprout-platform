@@ -37,6 +37,7 @@ import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
+import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
 
@@ -1731,7 +1732,13 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </div>
       </SectionCard>
 
-      {/* 3. From the Field — real professional stories */}
+      {/* 3. Live Opportunities — three-stage agent: real, web-verified
+          jobs, courses and university programmes for the active goal.
+          See src/lib/agents/career-opportunities.ts and
+          docs/agents/career-opportunities.md. */}
+      <LiveOpportunitiesSection careerTitle={career.title} />
+
+      {/* 4. From the Field — real professional stories */}
       {careerStories.length > 0 && (
         <SectionCard>
           <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} />
