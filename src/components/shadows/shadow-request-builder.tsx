@@ -118,7 +118,6 @@ export function ShadowRequestBuilder({
   youthAgeBand,
 }: ShadowRequestBuilderProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [isRewriting, setIsRewriting] = useState(false);
 
   // Host selection state
   const [hosts, setHosts] = useState<ShadowHost[]>([]);
@@ -193,36 +192,6 @@ export function ShadowRequestBuilder({
       updateFormData({ preferredDays: current.filter(d => d !== day) });
     } else {
       updateFormData({ preferredDays: [...current, day] });
-    }
-  };
-
-  const handleAiRewrite = async () => {
-    if (!formData.message || formData.message.trim().length < 10) return;
-
-    setIsRewriting(true);
-    try {
-      const response = await fetch("/api/shadows/rewrite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalMessage: formData.message,
-          roleTitle: formData.roleTitle,
-          learningGoals: formData.learningGoals,
-          format: formData.format,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        updateFormData({
-          message: data.rewritten,
-          aiAssistedDraft: true,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to rewrite message:", error);
-    } finally {
-      setIsRewriting(false);
     }
   };
 
@@ -664,28 +633,7 @@ export function ShadowRequestBuilder({
             </p>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Your Message</label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleAiRewrite}
-                  disabled={isRewriting || formData.message.trim().length < 10}
-                  className="text-xs"
-                >
-                  {isRewriting ? (
-                    <>
-                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      Improving...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-3 w-3 mr-1" />
-                      AI Polish
-                    </>
-                  )}
-                </Button>
-              </div>
+              <label className="text-sm font-medium block mb-2">Your Message</label>
 
               <textarea
                 value={formData.message}
