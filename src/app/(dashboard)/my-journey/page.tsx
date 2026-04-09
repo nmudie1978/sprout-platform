@@ -1608,21 +1608,21 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             return (
               <div>
                 <p className="text-[9px] uppercase tracking-wider text-muted-foreground/60 font-medium mb-2">Suggested momentum</p>
-                <div className="space-y-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {available.map((s, i) => {
                     const t = typeMeta(s.type);
                     return (
                       <button
                         key={i}
                         onClick={() => saveActions([...actions, { id: `${Date.now()}-${i}`, text: s.title, done: false, type: s.type }])}
-                        className="group w-full flex items-start gap-3 rounded-lg border border-border/30 bg-background/30 px-3 py-2.5 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
+                        className="group h-full flex flex-col gap-2 rounded-lg border border-border/30 bg-background/30 px-3 py-3 text-left hover:border-teal-500/40 hover:bg-teal-500/[0.03] transition-all"
                       >
-                        <span className="text-base shrink-0 mt-0.5">{t.emoji}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug">{s.title}</p>
-                          <p className="text-[11px] text-muted-foreground/65 leading-snug mt-0.5">{s.how}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-base shrink-0">{t.emoji}</span>
+                          <p className="text-[12px] font-semibold text-foreground/90 group-hover:text-foreground leading-snug flex-1 min-w-0">{s.title}</p>
+                          <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0" />
                         </div>
-                        <Plus className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-teal-400 shrink-0 mt-1" />
+                        <p className="text-[11px] text-muted-foreground/65 leading-snug">{s.how}</p>
                       </button>
                     );
                   })}
