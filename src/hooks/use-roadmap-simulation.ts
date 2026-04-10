@@ -196,13 +196,17 @@ export function useRoadmapSimulation(
 
       audio.onended = () => {
         if (playingRef.current) {
-          playSegment(segmentIndex + 1);
+          // Breathing pause between steps — gives the user time to
+          // absorb what was said before the next segment starts.
+          setTimeout(() => {
+            if (playingRef.current) playSegment(segmentIndex + 1);
+          }, 3000);
         }
       };
 
       audio.onerror = () => {
         if (playingRef.current) {
-          setTimeout(() => playSegment(segmentIndex + 1), 1500);
+          setTimeout(() => playSegment(segmentIndex + 1), 3000);
         }
       };
 

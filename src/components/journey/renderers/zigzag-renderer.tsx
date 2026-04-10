@@ -187,10 +187,17 @@ export function ZigzagRenderer({
               "Your route", so on alt routes it's a disabled visual. */}
           <div
             className={cn(
-              'absolute transition-opacity duration-500',
+              'absolute transition-all duration-700 ease-out',
               simActive && simulation!.currentStepIndex !== -1 ? 'opacity-20' : '',
+              simActive && simulation!.currentStepIndex === -1 && 'z-20 scale-105',
             )}
-            style={{ left: 12, top: HIGH_Y - 16 }}
+            style={{
+              left: 12,
+              top: HIGH_Y - 16,
+              ...(simActive && simulation!.currentStepIndex === -1
+                ? { filter: 'drop-shadow(0 0 12px rgba(20,184,166,0.5)) drop-shadow(0 0 30px rgba(20,184,166,0.2))' }
+                : {}),
+            }}
           >
             {userAge && (
               <div
@@ -248,10 +255,11 @@ export function ZigzagRenderer({
                 : `Age ${item.startAge}`;
             const state = stateFor(i);
 
-            // Simulation focus: active step is full opacity, adjacent
+            // Simulation focus: active step glows + scales, adjacent
             // steps are dimmed, distant steps are very dim.
+            const isSimActive = simActive && simulation!.currentStepIndex === i;
             const simOpacity = simActive
-              ? simulation!.currentStepIndex === i
+              ? isSimActive
                 ? 'opacity-100'
                 : Math.abs(simulation!.currentStepIndex - i) === 1
                   ? 'opacity-40'
@@ -261,8 +269,20 @@ export function ZigzagRenderer({
             return (
               <div
                 key={item.id}
-                className={cn('absolute transition-opacity duration-500', simOpacity)}
-                style={{ left: pos.x, top: pos.y }}
+                className={cn(
+                  'absolute transition-all duration-700 ease-out',
+                  simOpacity,
+                  isSimActive && 'z-20 scale-105',
+                )}
+                style={{
+                  left: pos.x,
+                  top: pos.y,
+                  ...(isSimActive
+                    ? {
+                        filter: 'drop-shadow(0 0 12px rgba(20,184,166,0.5)) drop-shadow(0 0 30px rgba(20,184,166,0.2))',
+                      }
+                    : {}),
+                }}
               >
                 <div
                   className="flex flex-col items-center"
