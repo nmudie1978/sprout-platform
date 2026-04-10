@@ -167,12 +167,11 @@ export function computeLensProgress(opts: {
   hasPrimaryGoal: boolean;
   careerTitle?: string | null;
 }): LensProgressSnapshot {
-  // Discover = explicit YES on the Discover tab confirmation card,
-  // per-career via slugified key. Picking a goal alone is no longer
-  // enough — switching to a never-chosen career must reset the ring
-  // to 0/3 until the user actively confirms they've explored it.
-  const discoverDone =
-    opts.hasPrimaryGoal && isDiscoverConfirmed(opts.careerTitle);
+  // Discover = the user has set a primary career goal. The act of
+  // choosing the career IS Discover — that's the whole point of the
+  // stage ("This looks interesting"). The dashboard ring should
+  // reflect that immediately, no extra confirmation card required.
+  const discoverDone = opts.hasPrimaryGoal;
 
   // Understand = explicit YES on the new career's confirmation card.
   // Per-career via slugified key, so switching careers wipes the

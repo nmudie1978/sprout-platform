@@ -160,7 +160,9 @@ export function ZigzagRenderer({
     <TooltipProvider delayDuration={300}>
       <div className="overflow-x-auto pb-4 -mx-2 px-2">
         <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
-          {/* Calm neutral connector — no gradient, no glow, no animated pulse */}
+          {/* Connector line — calm neutral stroke with a slow opacity
+              pulse so the path feels "alive" without becoming flashy.
+              motion-safe so reduced-motion users get a static line. */}
           <svg
             className="absolute inset-0 pointer-events-none"
             width={totalWidth}
@@ -170,7 +172,7 @@ export function ZigzagRenderer({
               points={polylinePoints}
               fill="none"
               stroke="currentColor"
-              className="text-slate-200 dark:text-slate-700"
+              className="text-slate-200 dark:text-slate-700 motion-safe:animate-[roadmap-line-pulse_6s_ease-in-out_infinite]"
               strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -222,9 +224,7 @@ export function ZigzagRenderer({
             />
             {isFoundationCurrent && !readOnly && (
               <YouAreHerePill
-                canGoBack={false}
                 canGoForward={canGoForward}
-                onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
                 onForward={() => setManualYouAreHereIndex(youAreHereIndex + 1)}
               />
             )}
@@ -259,12 +259,17 @@ export function ZigzagRenderer({
                     </div>
                   )}
                   {!isHigh && (
-                    <ZigzagCard
-                      item={item}
-                      state={state}
-                      onClick={() => onItemClick(item)}
-                      cardData={cardDataMap?.[item.id]}
-                    />
+                    <CardWithBackArrow
+                      showBack={state === 'current' && canGoBack && !readOnly}
+                      onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
+                    >
+                      <ZigzagCard
+                        item={item}
+                        state={state}
+                        onClick={() => onItemClick(item)}
+                        cardData={cardDataMap?.[item.id]}
+                      />
+                    </CardWithBackArrow>
                   )}
                   <SharedNode
                     item={item}
@@ -278,12 +283,17 @@ export function ZigzagRenderer({
                     }
                   />
                   {isHigh && (
-                    <ZigzagCard
-                      item={item}
-                      state={state}
-                      onClick={() => onItemClick(item)}
-                      cardData={cardDataMap?.[item.id]}
-                    />
+                    <CardWithBackArrow
+                      showBack={state === 'current' && canGoBack && !readOnly}
+                      onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
+                    >
+                      <ZigzagCard
+                        item={item}
+                        state={state}
+                        onClick={() => onItemClick(item)}
+                        cardData={cardDataMap?.[item.id]}
+                      />
+                    </CardWithBackArrow>
                   )}
                   {!isHigh && (
                     <div className="flex justify-center mt-1">
@@ -292,9 +302,7 @@ export function ZigzagRenderer({
                   )}
                   {state === 'current' && !readOnly && (
                     <YouAreHerePill
-                      canGoBack={canGoBack}
                       canGoForward={canGoForward}
-                      onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
                       onForward={() => setManualYouAreHereIndex(youAreHereIndex + 1)}
                     />
                   )}
@@ -326,35 +334,19 @@ function AgePill({ label, active }: { label: string; active?: boolean }) {
 }
 
 function YouAreHerePill({
-  canGoBack,
   canGoForward,
-  onBack,
   onForward,
 }: {
-  canGoBack: boolean;
   canGoForward: boolean;
-  onBack: () => void;
   onForward: () => void;
 }) {
   return (
     <div className="flex justify-center mt-2">
-      {/* "You are here" uses sky/blue — a totally distinct colour from
-          amber so it can never be confused with the current-step
-          accent. Back/forward chevrons are inlined into the pill so the
-          user can re-anchor without an extra row of buttons. */}
+      {/* "You are here" uses sky/blue — distinct from the amber
+          current-step accent so they can't be confused. The BACK
+          control lives next to the step card itself (see
+          CardWithBackArrow); only forward stays inline here. */}
       <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 bg-sky-500/10 text-sky-700 dark:text-sky-300 ring-1 ring-sky-500/50 text-[9px] font-semibold uppercase tracking-wider">
-        {canGoBack && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onBack();
-            }}
-            aria-label="Move you are here back one step"
-            className="inline-flex items-center hover:text-sky-900 dark:hover:text-sky-100 transition-colors"
-          >
-            <ChevronLeft className="h-2.5 w-2.5" />
-          </button>
-        )}
         <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
         You are here
         {canGoForward && (
@@ -370,6 +362,40 @@ function YouAreHerePill({
           </button>
         )}
       </span>
+    </div>
+  );
+}
+
+/**
+ * Wraps a step card with an optional left-side back chevron used to
+ * re-anchor "you are here" one step earlier. Only rendered for the
+ * current step when `showBack` is true. The chevron sits flush
+ * against the card's left edge so it visually belongs to the box,
+ * not to the "You are here" pill below it.
+ */
+function CardWithBackArrow({
+  showBack,
+  onBack,
+  children,
+}: {
+  showBack: boolean;
+  onBack: () => void;
+  children: React.ReactNode;
+}) {
+  if (!showBack) return <>{children}</>;
+  return (
+    <div className="relative">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onBack();
+        }}
+        aria-label="Move you are here back one step"
+        className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center h-5 w-5 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 ring-1 ring-sky-500/50 hover:bg-sky-500/20 hover:text-sky-900 dark:hover:text-sky-100 transition-colors"
+      >
+        <ChevronLeft className="h-3 w-3" />
+      </button>
+      {children}
     </div>
   );
 }
@@ -410,26 +436,32 @@ function ZigzagCard({
       <button
         onClick={onClick}
         className={cn(
-          'w-full text-left rounded-lg border p-2 transition-colors cursor-pointer',
+          // Fixed min-height + flex column lets the title sit in the
+          // visual centre of the box regardless of how many lines it
+          // wraps to. The Done badge / sticky-note overlay sits in
+          // the top-right corner so the title can always start from
+          // a clean centre.
+          'relative w-full min-h-[64px] rounded-lg border p-2 flex flex-col items-center justify-center text-center transition-colors cursor-pointer',
           'hover:border-slate-500',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           stateClasses[state]
         )}
       >
-        <div className="flex items-center justify-end gap-1 mb-0.5 min-h-[12px]">
-          {/* State badge only — amber reserved exclusively for `current`. */}
-          {state === 'completed' ? (
-            <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-              <Check className="h-2 w-2" strokeWidth={4} />
-              Done
-            </span>
-          ) : null}
-          {cardData?.hasStickyNote && (
-            <span className="text-[8px] shrink-0" title={cardData.stickyNote}>
-              📌
-            </span>
-          )}
-        </div>
+        {(state === 'completed' || cardData?.hasStickyNote) && (
+          <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+            {state === 'completed' && (
+              <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                <Check className="h-2 w-2" strokeWidth={4} />
+                Done
+              </span>
+            )}
+            {cardData?.hasStickyNote && (
+              <span className="text-[8px] shrink-0" title={cardData.stickyNote}>
+                📌
+              </span>
+            )}
+          </div>
+        )}
         <p
           className={cn(
             'text-xs font-semibold leading-tight',
@@ -588,25 +620,27 @@ function FoundationCard({
       )}
     >
       {/* ── 1. HEADER ─────────────────────────────────────────────── */}
-      <div className="px-4 pt-3.5 pb-3 border-b border-border/60">
-        <div className="flex items-center justify-between mb-1">
-          <p className="text-[14px] font-semibold leading-tight text-foreground">
-            Your Starting Point
-          </p>
-          {!disabled && (
-            <span
-              className="inline-flex items-center gap-1 text-muted-foreground/60 group-hover:text-foreground transition-colors"
-              aria-hidden
-            >
-              <Pencil className="h-2.5 w-2.5" />
-              <span className="text-[9px] font-medium uppercase tracking-wider">Edit</span>
-            </span>
-          )}
-        </div>
-        <div className="flex items-center justify-end gap-2">
+      <div className="relative px-4 pt-3.5 pb-3 border-b border-border/60">
+        {!disabled && (
+          <span
+            className="absolute right-3 top-3 inline-flex items-center gap-1 text-muted-foreground/60 group-hover:text-foreground transition-colors"
+            aria-hidden
+          >
+            <Pencil className="h-2.5 w-2.5" />
+            <span className="text-[9px] font-medium uppercase tracking-wider">Edit</span>
+          </span>
+        )}
+        <p className="text-[14px] font-semibold leading-tight text-foreground text-center mb-1">
+          Your Starting Point
+        </p>
+        {/* Status pill — centred under the title so it never collides
+            with the absolutely-positioned Edit affordance in the
+            top-right. When the foundation is marked done, the pill
+            replaces the alignment badge with a green DONE state. */}
+        <div className="flex items-center justify-center gap-2">
           {status === 'done' ? (
             <span
-              className="inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 ring-emerald-500/30"
+              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 ring-emerald-500/30"
             >
               <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
               Done
@@ -614,7 +648,7 @@ function FoundationCard({
           ) : alignmentKey !== 'missing' ? (
             <span
               className={cn(
-                'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0',
+                'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0',
                 badge.cls
               )}
             >
@@ -669,8 +703,11 @@ function FoundationCard({
         )}
       </div>
 
-      {/* ── 3. ALIGNMENT INSIGHT ─────────────────────────────────── */}
-      <div className="px-4 py-3 bg-muted/[0.12] rounded-b-2xl">
+      {/* ── 3. ALIGNMENT INSIGHT ───────────────────────────────────
+          Distinct shade — slightly tinted teal/sky background plus an
+          inset top border so it stands out from the foundation-data
+          zone above and reads as the "brain" of the card. */}
+      <div className="px-4 py-3 bg-sky-500/[0.06] dark:bg-sky-500/[0.05] border-t border-sky-500/15 rounded-b-2xl">
         <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1.5">
           Alignment with {careerTitle || 'your path'}
         </p>

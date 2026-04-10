@@ -177,6 +177,12 @@ const VERBS = [
   'apply', 'begin', 'start', 'complete', 'finish', 'earn', 'accept',
   'gain', 'step', 'find', 'build', 'join', 'pass', 'submit', 'continue',
   'graduate', 'enrol', 'enroll', 'take', 'choose', 'pick', 'study',
+  // Verbs that read as natural step starters but were missing from
+  // the list, causing the sanitiser to prepend "Begin " and produce
+  // junk like "Begin consider professional certifications".
+  'consider', 'explore', 'pursue', 'develop', 'specialise', 'specialize',
+  'qualify', 'register', 'volunteer', 'shadow', 'attend', 'research',
+  'prepare', 'practise', 'practice', 'become', 'move',
 ];
 
 const NOUN_PREFIX_FIXES: Array<[RegExp, string]> = [
@@ -232,7 +238,21 @@ export function scrubText(s: string | null | undefined, careerRe: RegExp | null)
 
 /** Force a title to start with a verb. Uses the noun→verb fix table, then a generic "Begin" fallback. */
 export function verbLead(title: string): string {
-  const trimmed = title.trim();
+  let trimmed = title.trim();
+
+  // Defensive: strip a stale "Begin <verb>" double-prefix that an
+  // earlier version of this sanitiser may have produced (e.g.
+  // "Begin consider professional certifications" → "Consider
+  // professional certifications"). The cached server roadmap can
+  // still hold these stale strings.
+  const doubleVerb = trimmed.match(/^Begin\s+(\w+)\b(.*)$/i);
+  if (doubleVerb) {
+    const inner = doubleVerb[1].toLowerCase();
+    if (VERBS.includes(inner)) {
+      trimmed = doubleVerb[1].charAt(0).toUpperCase() + doubleVerb[1].slice(1) + doubleVerb[2];
+    }
+  }
+
   const firstWord = trimmed.split(/\s+/)[0]?.toLowerCase().replace(/[,.;:]+$/, '');
   if (firstWord && VERBS.includes(firstWord)) return trimmed;
   for (const [pattern, replacement] of NOUN_PREFIX_FIXES) {

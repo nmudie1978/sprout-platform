@@ -335,8 +335,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         <p className="text-sm">
           <span className="text-foreground/75">
             {profileData?.displayName
-              ? `${profileData.displayName.charAt(0).toUpperCase()}${profileData.displayName.slice(1)}'s Path to `
-              : 'Your Path to '}
+              ? `${profileData.displayName.charAt(0).toUpperCase()}${profileData.displayName.slice(1)}'s Roadmap to `
+              : 'Your Roadmap to '}
           </span>
           <span className="font-semibold text-foreground">{journey.career}</span>
           {spanYears > 0 && (

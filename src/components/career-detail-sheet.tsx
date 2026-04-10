@@ -29,8 +29,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
-import { getRelatedNicheCareers } from "@/lib/career-pathways";
-import { Compass } from "lucide-react";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
@@ -353,59 +351,6 @@ export function CareerDetailSheet({
               </DialogHeader>
 
               <div className="p-4 space-y-5">
-                {/* Roles like this you might not know about — fights prestige bias */}
-                {(() => {
-                  const nicheRelated = getRelatedNicheCareers(career, 3);
-                  if (nicheRelated.length === 0) return null;
-                  return (
-                    <div className="rounded-lg border bg-muted/20 p-3">
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Compass className="h-3.5 w-3.5 text-teal-500" />
-                        <span className="text-[11px] font-semibold">
-                          Roles like this most people miss
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground mb-2.5">
-                        Same field, different path. Worth knowing about.
-                      </p>
-                      <div className="space-y-1">
-                        {nicheRelated.map((rel) => (
-                          <button
-                            key={rel.id}
-                            type="button"
-                            onClick={() => {
-                              // Swap to the related career inside the same sheet
-                              onClose();
-                              // Defer so the parent can re-open with the new selection
-                              setTimeout(() => {
-                                window.dispatchEvent(
-                                  new CustomEvent("open-career-detail", { detail: rel })
-                                );
-                              }, 50);
-                            }}
-                            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-background transition-colors text-left"
-                          >
-                            <span className="text-base shrink-0">{rel.emoji}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-medium truncate">{rel.title}</span>
-                                {rel.entryLevel && (
-                                  <Badge variant="secondary" className="text-[9px] px-1 py-0 shrink-0">
-                                    Entry
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-[10px] text-muted-foreground truncate">
-                                {rel.description}
-                              </p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-
                 {/* Journey nudge */}
                 <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-3">
                   <p className="text-xs font-medium text-teal-700 dark:text-teal-400">

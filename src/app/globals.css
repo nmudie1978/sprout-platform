@@ -659,4 +659,13 @@
     100% { transform: translateX(-50%); }
   }
 
+  /* Roadmap connector line — slow calm pulse on stroke opacity.
+     6s loop, no easing tricks, just a subtle "alive" cue. Wrapped
+     in motion-safe at the call site so reduced-motion users never
+     see it move. */
+  @keyframes roadmap-line-pulse {
+    0%, 100% { stroke-opacity: 0.45; }
+    50%      { stroke-opacity: 1; }
+  }
+
 }

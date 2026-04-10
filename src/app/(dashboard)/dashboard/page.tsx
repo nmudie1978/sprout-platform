@@ -969,11 +969,9 @@ export default function DashboardPage() {
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-500",
-                              isLensDone || isActive
-                                ? "bg-teal-500"
-                                : "bg-transparent"
+                              isLensDone ? "bg-teal-500" : "bg-transparent"
                             )}
-                            style={{ width: isLensDone ? '100%' : isActive ? '40%' : '0%' }}
+                            style={{ width: isLensDone ? '100%' : '0%' }}
                           />
                         </div>
                         <p

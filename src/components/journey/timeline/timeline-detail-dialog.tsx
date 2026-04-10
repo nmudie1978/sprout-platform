@@ -130,7 +130,7 @@ export function enforceProgressChain(orderedItemIds: string[]): boolean {
 }
 
 const STATUS_OPTIONS = [
-  { value: 'not_started' as const, label: 'Not started', icon: Circle, color: 'text-muted-foreground/50' },
+  { value: 'not_started' as const, label: 'Not started', icon: Circle, color: 'text-muted-foreground/75' },
   { value: 'in_progress' as const, label: 'In progress', icon: CircleDot, color: 'text-amber-500' },
   { value: 'done' as const, label: 'Done', icon: CheckCircle2, color: 'text-emerald-500' },
 ];
@@ -329,7 +329,7 @@ export function TimelineDetailDialog({
           {/* Foundation: Education inputs */}
           {isFoundation && (
             <div className="space-y-3">
-              <p className="text-[11px] text-muted-foreground/50">Tell us about your current education</p>
+              <p className="text-[11px] text-muted-foreground/75">Tell us about your current education</p>
 
               {/* Stage selector — once the user has filled in details for
                   their current stage (school name, programme, completion
@@ -379,13 +379,13 @@ export function TimelineDetailDialog({
                               eduStage === opt.value
                                 ? 'border-teal-500/30 bg-teal-500/10 text-teal-400'
                                 : isLocked
-                                  ? 'border-transparent bg-muted/10 text-muted-foreground/25 cursor-not-allowed'
-                                  : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40'
+                                  ? 'border-transparent bg-muted/10 text-muted-foreground/55 cursor-not-allowed'
+                                  : 'border-transparent bg-muted/20 text-muted-foreground/75 hover:bg-muted/40'
                             )}
                           >
                             <span>{opt.label}</span>
                             {isSchoolForAdult && !isLocked && (
-                              <span className="text-[8px] text-muted-foreground/40 font-normal mt-0.5">
+                              <span className="text-[8px] text-muted-foreground/70 font-normal mt-0.5">
                                 if you&apos;re still in Vg3
                               </span>
                             )}
@@ -394,7 +394,7 @@ export function TimelineDetailDialog({
                       })}
                     </div>
                     {hasDetails && (
-                      <p className="text-[9px] text-muted-foreground/50 mt-1 leading-snug">
+                      <p className="text-[9px] text-muted-foreground/75 mt-1 leading-snug">
                         Other stages are locked while your {EDUCATION_STAGE_LABEL[eduStage]} details are filled in. Clear them to switch.
                       </p>
                     )}
@@ -404,44 +404,74 @@ export function TimelineDetailDialog({
 
               {/* School/University name */}
               <div>
-                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">
+                <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                   {eduStage === 'university' ? 'University' : eduStage === 'college' ? 'College' : 'School'} name
                 </label>
                 <input
                   value={schoolName}
                   onChange={(e) => { setSchoolName(e.target.value); setDirty(true); }}
                   placeholder={eduStage === 'university' ? 'e.g. NTNU, UiO' : 'e.g. Lakewood High'}
-                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
+                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
                 />
               </div>
 
               {/* Study program */}
               <div>
-                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">
+                <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
                   {eduStage === 'school' ? 'Programme / Track' : 'Study programme'}
                 </label>
                 <input
                   value={studyProgram}
                   onChange={(e) => { setStudyProgram(e.target.value); setDirty(true); }}
                   placeholder={eduStage === 'school' ? 'e.g. Studiespesialisering, Realfag' : 'e.g. Computer Science'}
-                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
+                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
                 />
               </div>
 
-              {/* Expected completion */}
+              {/* Expected completion year — drives roadmap anchoring */}
               <div>
-                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Expected completion</label>
-                <input
-                  value={expectedCompletion}
-                  onChange={(e) => { setExpectedCompletion(e.target.value); setDirty(true); }}
-                  placeholder="e.g. June 2027"
-                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
-                />
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] uppercase tracking-wider text-amber-400/80 font-semibold">
+                    Finish year
+                    <span className="ml-1 text-amber-400/60">*</span>
+                  </label>
+                </div>
+                <p className="text-[10px] text-muted-foreground/75 leading-snug mt-0.5 mb-1.5">
+                  The single most important field. Your whole roadmap is anchored
+                  to this year — when you finish, the next step starts.
+                </p>
+                {(() => {
+                  // Show the current 4-digit year extracted from any
+                  // legacy free-text value (e.g. "June 2027" → 2027) so
+                  // existing rows still pre-fill cleanly.
+                  const match = expectedCompletion.match(/(20\d{2})/);
+                  const currentYear = match ? Number(match[1]) : null;
+                  const thisYear = new Date().getFullYear();
+                  // Reasonable horizon: this year through this year + 10
+                  const years = Array.from({ length: 11 }, (_, i) => thisYear + i);
+                  return (
+                    <select
+                      value={currentYear ?? ''}
+                      onChange={(e) => {
+                        setExpectedCompletion(e.target.value);
+                        setDirty(true);
+                      }}
+                      className="w-full rounded-lg border border-amber-500/30 bg-amber-500/[0.04] px-3 py-2 text-xs text-foreground/85 focus:outline-none focus:border-amber-500/60"
+                    >
+                      <option value="">Select a year…</option>
+                      {years.map((y) => (
+                        <option key={y} value={String(y)}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  );
+                })()}
               </div>
 
               {/* Subjects — dropdown multi-select */}
               <div>
-                <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Your Subjects</label>
+                <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">Your Subjects</label>
 
                 {/* Selected subjects as removable pills */}
                 {subjects.length > 0 && (
@@ -463,10 +493,10 @@ export function TimelineDetailDialog({
                   onClick={() => setSubjectDropdownOpen(prev => !prev)}
                   className="w-full flex items-center justify-between rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-left hover:border-border/50 transition-colors"
                 >
-                  <span className={subjects.length > 0 ? 'text-foreground/60' : 'text-muted-foreground/30'}>
+                  <span className={subjects.length > 0 ? 'text-foreground/90' : 'text-muted-foreground/55'}>
                     {subjects.length > 0 ? `${subjects.length} subject${subjects.length !== 1 ? 's' : ''} selected` : 'Select subjects...'}
                   </span>
-                  <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/40 transition-transform', subjectDropdownOpen && 'rotate-180')} />
+                  <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 transition-transform', subjectDropdownOpen && 'rotate-180')} />
                 </button>
 
                 {/* Dropdown panel */}
@@ -483,7 +513,7 @@ export function TimelineDetailDialog({
                           'Creative & Practical': 'text-orange-400',
                           'Health & Care': 'text-pink-400',
                         };
-                        const color = categoryColors[group.category] || 'text-muted-foreground/50';
+                        const color = categoryColors[group.category] || 'text-muted-foreground/75';
                         return (
                           <div key={group.category}>
                             <p className={cn('text-[9px] font-bold uppercase tracking-wider px-1 mb-1', color)}>{group.category}</p>
@@ -505,7 +535,7 @@ export function TimelineDetailDialog({
                                   )}>
                                     {selected && <Check className="h-2.5 w-2.5 text-white" />}
                                   </div>
-                                  <span className={selected ? 'text-foreground/80 font-medium' : 'text-foreground/50'}>{s}</span>
+                                  <span className={selected ? 'text-foreground/90 font-medium' : 'text-foreground/70'}>{s}</span>
                                 </button>
                               );
                             })}
@@ -519,7 +549,7 @@ export function TimelineDetailDialog({
                         value={newSubject}
                         onChange={(e) => setNewSubject(e.target.value)}
                         placeholder="Other subject..."
-                        className="flex-1 rounded-md border border-border/30 bg-muted/10 px-2.5 py-1.5 text-[10px] text-foreground/80 placeholder:text-muted-foreground/25 focus:outline-none focus:border-teal-500/40"
+                        className="flex-1 rounded-md border border-border/30 bg-muted/10 px-2.5 py-1.5 text-[10px] text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
                         onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSubject(); } }}
                       />
                       <button onClick={addSubject} disabled={!newSubject.trim()} className="shrink-0 rounded-md bg-teal-500/10 px-2 py-1.5 text-teal-400 hover:bg-teal-500/20 transition-colors disabled:opacity-20">
@@ -558,7 +588,7 @@ export function TimelineDetailDialog({
                     'flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-[11px] font-medium transition-all border',
                     status === opt.value
                       ? 'border-foreground/20 bg-foreground/5'
-                      : 'border-transparent bg-muted/20 text-muted-foreground/50 hover:bg-muted/40',
+                      : 'border-transparent bg-muted/20 text-muted-foreground/75 hover:bg-muted/40',
                     disabled && 'opacity-30 cursor-not-allowed hover:bg-muted/20'
                   )}
                 >
@@ -608,7 +638,7 @@ export function TimelineDetailDialog({
                           >
                             <span>{action}</span>
                             <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity shrink-0" />
-                            <span className="text-[10px] text-muted-foreground/50 ml-0.5">on LinkedIn</span>
+                            <span className="text-[10px] text-muted-foreground/75 ml-0.5">on LinkedIn</span>
                           </a>
                         ) : (
                           <span className="text-[13px] leading-snug text-foreground/75">{action}</span>
@@ -637,7 +667,7 @@ export function TimelineDetailDialog({
               'w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-medium transition-all',
               dirty
                 ? 'bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 border border-teal-500/30'
-                : 'bg-muted/20 text-muted-foreground/40 border border-border/20'
+                : 'bg-muted/20 text-muted-foreground/70 border border-border/20'
             )}
           >
             <Save className="h-3.5 w-3.5" />

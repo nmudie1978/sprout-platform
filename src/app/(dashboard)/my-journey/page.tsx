@@ -34,7 +34,7 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
+import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/nordic-programmes';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
@@ -1157,6 +1157,48 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   const details = detailsData?.details ?? null;
   const careerStories = storiesData?.stories ?? [];
 
+  // Display name — used to personalise the Momentum header.
+  // Shares the `profile-dob` query key with personal-career-timeline
+  // so both components hit the same cached payload.
+  const { data: profileData } = useQuery<{ displayName?: string | null }>({
+    queryKey: ['profile-dob'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 30 * 1000,
+  });
+  const rawName = profileData?.displayName ?? '';
+  const possessiveName = rawName
+    ? `${rawName.charAt(0).toUpperCase()}${rawName.slice(1)}'s`
+    : 'Your';
+
+  // Collapse state for Roadmap + Momentum, persisted per-user via
+  // localStorage so the user's choice survives reloads.
+  const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
+  const [momentumCollapsed, setMomentumCollapsed] = useState(false);
+  useEffect(() => {
+    try {
+      setRoadmapCollapsed(window.localStorage.getItem('grow-roadmap-collapsed') === '1');
+      setMomentumCollapsed(window.localStorage.getItem('grow-momentum-collapsed') === '1');
+    } catch { /* ignore */ }
+  }, []);
+  const toggleRoadmap = () => {
+    setRoadmapCollapsed((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem('grow-roadmap-collapsed', next ? '1' : '0'); } catch { /* ignore */ }
+      return next;
+    });
+  };
+  const toggleMomentum = () => {
+    setMomentumCollapsed((prev) => {
+      const next = !prev;
+      try { window.localStorage.setItem('grow-momentum-collapsed', next ? '1' : '0'); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
   if (!goalTitle || !career) {
     return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
   }
@@ -1511,17 +1553,31 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </p>
       </div>
 
-      {/* 1. My Roadmap — with route selector */}
+      {/* 1. Roadmap — collapsible. The timeline component owns its
+          own header ("Henry's Roadmap to Surgeon · …") so the
+          collapse toggle is a small chevron above it. */}
       <SectionCard className="border-teal-500/25" style={{ boxShadow: '0 0 25px rgba(20,184,166,0.12), 0 0 50px rgba(20,184,166,0.06)' }}>
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
-          <div className="flex items-center gap-2.5">
-            <Rocket className="h-4 w-4 text-teal-400" />
-            <h3 className="text-sm font-semibold text-foreground/90">My Roadmap</h3>
+        <button
+          type="button"
+          onClick={toggleRoadmap}
+          aria-expanded={!roadmapCollapsed}
+          className="w-full flex items-center justify-between px-4 py-2 border-b border-border/20 hover:bg-teal-500/[0.04] transition-colors"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
+            Roadmap
+          </span>
+          <ChevronDown
+            className={cn(
+              'h-3.5 w-3.5 text-muted-foreground/55 transition-transform duration-200',
+              roadmapCollapsed && '-rotate-90'
+            )}
+          />
+        </button>
+        {!roadmapCollapsed && (
+          <div className="p-4">
+            <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
           </div>
-        </div>
-        <div className="p-4">
-          <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
-        </div>
+        )}
       </SectionCard>
 
       {/* 2. Momentum — suggested + your own progressive steps.
@@ -1530,17 +1586,29 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           the rendered surface. Adding a personal step also marks Grow
           complete on the dashboard's progress card. */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
-        <SectionHeader
-          icon={Zap}
-          title="Momentum"
-          badge={
-            actions.length > 0 ? (
-              <span className="text-[10px] text-muted-foreground/40">
+        <button
+          type="button"
+          onClick={toggleMomentum}
+          aria-expanded={!momentumCollapsed}
+          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-amber-500/[0.04] transition-colors text-left"
+        >
+          <div className="flex items-center gap-2.5">
+            <Zap className="h-4 w-4 text-amber-400" />
+            <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Momentum</h3>
+            {actions.length > 0 && (
+              <span className="text-[10px] text-muted-foreground/55 ml-1">
                 {actions.filter((a) => statusOf(a) === 'done').length}/{actions.length} done
               </span>
-            ) : undefined
-          }
-        />
+            )}
+          </div>
+          <ChevronDown
+            className={cn(
+              'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
+              momentumCollapsed && '-rotate-90'
+            )}
+          />
+        </button>
+        {!momentumCollapsed && (
         <div className="p-4 space-y-5">
           {/* Suggested momentum — 3 concrete starting points pulled
               from public search URLs so they always work without an API. */}
@@ -1609,14 +1677,14 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-1.5 mt-auto pt-1">
+                    <div className="flex gap-1 mt-auto pt-1">
                       <a
                         href={s.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-border/30 bg-background/40 px-2 py-1.5 text-[10px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
+                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-border/30 bg-background/40 px-1.5 py-0.5 text-[9px] font-medium text-foreground/70 hover:border-border/60 hover:text-foreground transition-colors"
                       >
-                        Open <ExternalLink className="h-2.5 w-2.5" />
+                        Open <ExternalLink className="h-2 w-2" />
                       </a>
                       <button
                         onClick={() => {
@@ -1632,10 +1700,10 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                           ]);
                           markGrowActive(goalTitle);
                         }}
-                        className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-[10px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors"
+                        className="inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors"
                         title="Add this as one of your momentum steps"
                       >
-                        <Plus className="h-2.5 w-2.5" /> Add
+                        <Plus className="h-2 w-2" /> Add
                       </button>
                     </div>
                   </div>
@@ -1730,6 +1798,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
             )}
           </div>
         </div>
+        )}
       </SectionCard>
 
       {/* 3. Live Opportunities — three-stage agent: real, web-verified

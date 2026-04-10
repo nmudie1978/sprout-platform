@@ -32,7 +32,7 @@
 
 import OpenAI from 'openai';
 import { z } from 'zod';
-import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/norway-programmes';
+import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/nordic-programmes';
 
 // ────────────────────────────────────────────────────────────────────
 // Public types

@@ -126,20 +126,18 @@ function RailCard({
     <button
       onClick={onClick}
       className={cn(
-        'w-full text-left rounded-lg border p-2.5 mt-2 transition-colors cursor-pointer',
+        'relative w-full min-h-[68px] mt-2 rounded-lg border p-2.5 flex flex-col items-center justify-center text-center transition-colors cursor-pointer',
         'hover:border-amber-400',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         stateClasses[state]
       )}
     >
-      <div className="flex items-center justify-end gap-1 mb-1 min-h-[12px]">
-        {state === 'completed' ? (
-          <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            <Check className="h-2 w-2" strokeWidth={4} />
-            Done
-          </span>
-        ) : null}
-      </div>
+      {state === 'completed' && (
+        <span className="absolute right-2 top-2 inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+          <Check className="h-2 w-2" strokeWidth={4} />
+          Done
+        </span>
+      )}
       <p
         className={cn(
           'text-xs font-semibold leading-tight',

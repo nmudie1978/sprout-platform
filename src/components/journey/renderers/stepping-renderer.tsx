@@ -109,33 +109,34 @@ function SteppingCard({
     <button
       onClick={onClick}
       className={cn(
-        'flex-1 text-left rounded-lg border p-2.5 transition-colors cursor-pointer',
+        'relative flex-1 min-h-[80px] rounded-lg border p-2.5 flex flex-col items-center justify-center text-center transition-colors cursor-pointer',
         'hover:border-amber-400',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         stateClasses[state]
       )}
     >
-      <div className="flex items-center gap-2 mb-0.5">
-        {state === 'completed' ? (
-          <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            <Check className="h-2 w-2" strokeWidth={4} />
-            Done
-          </span>
-        ) : null}
-        <span
-          className={cn(
-            'ml-auto inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
-            state === 'current'
-              ? 'bg-card text-foreground ring-1 ring-border'
-              : 'bg-muted text-muted-foreground'
-          )}
-        >
-          {ageLabel}
+      {/* Age pill in top-left, Done badge in top-right — both
+          absolutely positioned so the title sits visually centred
+          regardless of which corners are populated. */}
+      <span
+        className={cn(
+          'absolute left-2 top-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium',
+          state === 'current'
+            ? 'bg-card text-foreground ring-1 ring-border'
+            : 'bg-muted text-muted-foreground'
+        )}
+      >
+        {ageLabel}
+      </span>
+      {state === 'completed' && (
+        <span className="absolute right-2 top-2 inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+          <Check className="h-2 w-2" strokeWidth={4} />
+          Done
         </span>
-      </div>
+      )}
       <p
         className={cn(
-          'text-sm font-semibold leading-tight',
+          'text-sm font-semibold leading-tight mt-3',
           state === 'future' ? 'text-muted-foreground' : 'text-foreground'
         )}
       >
