@@ -24,6 +24,7 @@ import {
   LayoutGrid,
   List,
   AlignJustify,
+  ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -93,8 +94,8 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     return map;
   }, [allProgrammes, foundation]);
 
-  type ViewMode = 'detailed' | 'cards' | 'compact';
-  const [viewMode, setViewMode] = useState<ViewMode>('detailed');
+  type ViewMode = 'list' | 'detailed' | 'cards';
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -207,7 +208,10 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   // ── Main layout ─────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6 rounded-2xl border border-teal-500/25 p-5 sm:p-6"
+      style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
+    >
       {/* ── Hero card ─────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] p-5 sm:p-6 relative overflow-hidden">
         {/* Ambient glow */}
@@ -225,7 +229,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
                 <span className="text-teal-400">{careerTitle}</span>
               </h1>
               {summary && (
-                <p className="text-[12px] text-muted-foreground/75 leading-relaxed mt-1 max-w-xl">
+                <p className="text-[12px] text-muted-foreground/75 leading-relaxed mt-1">
                   {summary}
                 </p>
               )}
@@ -307,9 +311,9 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         </p>
         <div className="inline-flex items-center gap-0.5 rounded-md border border-border/40 bg-background/40 p-0.5">
           {([
+            { id: 'list' as const, icon: AlignJustify, label: 'List' },
             { id: 'detailed' as const, icon: LayoutGrid, label: 'Detailed' },
             { id: 'cards' as const, icon: List, label: 'Cards' },
-            { id: 'compact' as const, icon: AlignJustify, label: 'Compact' },
           ]).map(({ id, icon: Icon, label }) => (
             <button
               key={id}
@@ -364,7 +368,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
                       <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2">
                         {prog.englishName}
                       </h4>
-                      <AlignmentBadge status={alignment.status} compact />
+                      <AlignmentBadge status={alignment.status} matchedSubjects={alignment.matchedSubjects} missingSubjects={alignment.missingSubjects} compact />
                     </div>
                     <p className="text-[11px] text-muted-foreground/70 mb-1 truncate">{prog.programme}</p>
                     <p className="text-[11px] text-foreground/75 font-medium mb-2">
@@ -393,34 +397,66 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
             </div>
           )}
 
-          {/* Compact view — dense table-like rows */}
-          {viewMode === 'compact' && (
-            <div className="rounded-xl border border-border/40 overflow-hidden divide-y divide-border/25">
-              {filtered.map((prog) => {
-                const inst = getInstitutionById(prog.institutionId);
-                const alignment = alignments.get(prog.id);
-                return (
-                  <a
-                    key={prog.id}
-                    href={prog.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-teal-500/[0.04] transition-colors group"
-                  >
-                    <span className="text-[11px] shrink-0">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-medium text-foreground/90 truncate group-hover:text-teal-300 transition-colors">
-                        {prog.englishName}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground/65 truncate">
-                        {inst?.name ?? prog.institution} &middot; {prog.city} &middot; {prog.duration}
-                      </p>
-                    </div>
-                    <AlignmentBadge status={alignment?.status ?? 'unknown'} compact />
-                  </a>
-                );
-              })}
-            </div>
+          {/* List view — table-style rows matching Explore Careers */}
+          {viewMode === 'list' && (
+            <>
+              {/* Column headers */}
+              <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-full">
+                <span>Programme</span>
+                <span>Institution</span>
+                <span>Location</span>
+                <span className="text-center">Duration</span>
+                <span className="text-center">Alignment</span>
+                <span>Learn more</span>
+              </div>
+              <div className="border rounded-b-md overflow-hidden bg-background w-full">
+                {filtered.map((prog) => {
+                  const inst = getInstitutionById(prog.institutionId);
+                  const alignment = alignments.get(prog.id);
+                  return (
+                    <a
+                      key={prog.id}
+                      href={prog.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1.5 border-b border-border/25 hover:bg-muted/50 transition-colors text-left group"
+                    >
+                      {/* Programme */}
+                      <span className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm flex-shrink-0 leading-none">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
+                        <span className="text-xs font-medium truncate group-hover:text-teal-300 transition-colors">{prog.englishName}</span>
+                      </span>
+
+                      {/* Institution */}
+                      <span className="text-[11px] text-muted-foreground truncate">
+                        {inst?.name ?? prog.institution}
+                      </span>
+
+                      {/* Location */}
+                      <span className="text-[11px] text-muted-foreground truncate">
+                        {prog.city}
+                      </span>
+
+                      {/* Duration */}
+                      <span className="text-[11px] text-muted-foreground text-center">
+                        {prog.duration}
+                      </span>
+
+                      {/* Alignment */}
+                      <span className="flex items-center justify-center">
+                        <AlignmentBadge status={alignment?.status ?? 'unknown'} matchedSubjects={alignment?.matchedSubjects} missingSubjects={alignment?.missingSubjects} compact />
+                      </span>
+
+                      {/* Learn more */}
+                      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+                        Visit page
+                        <ChevronRight className="h-3 w-3" />
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </>
           )}
         </>
       ) : (

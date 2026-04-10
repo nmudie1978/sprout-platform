@@ -23,9 +23,61 @@ import {
   X,
   ExternalLink,
 } from 'lucide-react';
+import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { RealWorldSection } from './real-world-section';
+
+/**
+ * Returns a single contextual tip for a roadmap step — one key piece
+ * of guidance that nudges the user toward the most useful action.
+ */
+function getStepTip(item: JourneyItem, careerTitle?: string | null): { text: string; link?: string } | null {
+  const title = item.title.toLowerCase();
+
+  // University application steps → Study Paths
+  if (/apply.*universit|university.*appli|apply.*studi/i.test(title)) {
+    const href = careerTitle
+      ? `/my-journey#understand`
+      : '/my-journey#understand';
+    return {
+      text: "Head to the Understand tab's Study Paths to explore programmes and check which courses align with your subjects.",
+      link: href,
+    };
+  }
+
+  // Begin university / start degree
+  if (/begin.*universit|start.*degree|begin.*studi/i.test(title)) {
+    return {
+      text: "Use Study Paths in the Understand tab to compare programmes, entry requirements, and course alignment before you commit.",
+      link: '/my-journey#understand',
+    };
+  }
+
+  // Internship / work experience / volunteering
+  if (/intern|work experience|volunteer|shadow|placement/i.test(title)) {
+    return {
+      text: "Check the Momentum section below your roadmap for live opportunities you can act on right now.",
+    };
+  }
+
+  // School-related / exams / subjects
+  if (/school|exam|subject|grade|coursework/i.test(title)) {
+    return {
+      text: "Make sure your Starting Point is up to date — your current subjects shape the alignment signals across your journey.",
+    };
+  }
+
+  // Certification / qualification
+  if (/certif|qualif|licence|accredit|diploma/i.test(title)) {
+    return {
+      text: "Explore the Understand tab to see which certifications are valued in this field and where to get them.",
+      link: '/my-journey#understand',
+    };
+  }
+
+  return null;
+}
 
 interface TimelineDetailDialogProps {
   item: JourneyItem | null;
@@ -308,6 +360,7 @@ export function TimelineDetailDialog({
     : `Age ${item.startAge}`;
   const stepType = classifyStepType(item);
   const hasMicroActions = item.microActions && item.microActions.length > 0;
+  const stepTip = isFoundation ? null : getStepTip(item, careerTitle);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -569,110 +622,41 @@ export function TimelineDetailDialog({
             </div>
           )}
 
-          {/* Progress */}
-          {!unlocked && (
-            <p className="text-[11px] text-amber-400/80">
-              Complete the previous step before starting this one.
-            </p>
+          {/* Contextual tip — one key nudge per step type */}
+          {stepTip && (
+            <div className="flex items-start gap-2.5 rounded-lg bg-teal-500/[0.06] border border-teal-500/15 px-3.5 py-3">
+              <Lightbulb className="h-3.5 w-3.5 text-teal-400 shrink-0 mt-0.5" />
+              <p className="text-xs leading-relaxed text-foreground/70">
+                {stepTip.text}
+                {stepTip.link && (
+                  <a href={stepTip.link} className="ml-1 text-teal-400 hover:text-teal-300 underline underline-offset-2">
+                    Go there
+                  </a>
+                )}
+              </p>
+            </div>
           )}
-          <div className="flex gap-1.5">
-            {STATUS_OPTIONS.map((opt) => {
-              const Icon = opt.icon;
-              const disabled = !unlocked && opt.value !== 'not_started';
-              return (
-                <button
-                  key={opt.value}
-                  disabled={disabled}
-                  onClick={() => { if (disabled) return; setStatus(opt.value); setDirty(true); }}
-                  className={cn(
-                    'flex-1 flex items-center justify-center gap-1.5 rounded-lg px-2 py-2.5 text-[11px] font-medium transition-all border',
-                    status === opt.value
-                      ? 'border-foreground/20 bg-foreground/5'
-                      : 'border-transparent bg-muted/20 text-muted-foreground/75 hover:bg-muted/40',
-                    disabled && 'opacity-30 cursor-not-allowed hover:bg-muted/20'
-                  )}
-                >
-                  <Icon className={cn('h-3.5 w-3.5', status === opt.value ? opt.color : '')} />
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
 
-          {/* Suggested actions — informational only, not measured.
-              Actions that mention applying for entry-level / graduate
-              positions become LinkedIn job-search links pre-filtered
-              to entry-level roles for this career, so the user can
-              act on the suggestion in one click instead of opening a
-              new tab and re-typing the search themselves. */}
-          {hasMicroActions && (() => {
-            // Pull the career name out of the item title — items in the
-            // generated timeline are titled like "Entry-level <career> role"
-            // so we can recover the keyword by stripping the prefix/suffix.
-            // Falls back to the full item title for non-experience steps.
-            const careerKeyword = item.title
-              .replace(/^Entry[-\s]?level\s+/i, '')
-              .replace(/^Senior\s+/i, '')
-              .replace(/\s+role$/i, '')
-              .trim();
-            // f_E=2 = "Entry level" filter in LinkedIn job search
-            const linkedInUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(careerKeyword)}&f_E=2`;
-            const isJobSearchAction = (text: string) =>
-              /entry[-\s]?level\s+positions?|graduate.*positions?|apply.*positions?|first\s+job/i.test(text);
+          {/* What this step involves */}
+          {hasMicroActions && (
+            <div>
+              <p className="text-xs font-medium text-foreground/75 mb-2">What this involves</p>
+              <ul className="space-y-1.5">
+                {item.microActions!.map((action, i) => (
+                  <li key={i} className="flex items-start gap-2.5 px-2.5 py-1.5">
+                    <span className="mt-1.5 h-1 w-1 rounded-full bg-muted-foreground/50 shrink-0" />
+                    <span className="text-[13px] leading-snug text-foreground/75">{action}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-            return (
-              <div>
-                <p className="text-xs font-medium text-foreground/70 mb-2">Suggested actions</p>
-                <ul className="space-y-1.5">
-                  {item.microActions!.map((action, i) => {
-                    const linkable = isJobSearchAction(action);
-                    return (
-                      <li key={i} className="flex items-start gap-2.5 px-2.5 py-1.5">
-                        <span className="mt-1.5 h-1 w-1 rounded-full bg-muted-foreground/40 shrink-0" />
-                        {linkable ? (
-                          <a
-                            href={linkedInUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[13px] leading-snug text-teal-400 hover:text-teal-300 underline-offset-2 hover:underline inline-flex items-center gap-1.5 group"
-                          >
-                            <span>{action}</span>
-                            <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity shrink-0" />
-                            <span className="text-[10px] text-muted-foreground/75 ml-0.5">on LinkedIn</span>
-                          </a>
-                        ) : (
-                          <span className="text-[13px] leading-snug text-foreground/75">{action}</span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            );
-          })()}
-
-          {/* Real-world connections — concrete external opportunities
-              tied to this step's type and the user's chosen career.
-              Skipped for the Foundation anchor since it represents
-              "where you are today" rather than an actionable step. */}
+          {/* Real-world connections — courses, universities, and jobs
+              relevant to this step and the user's chosen career. */}
           {!isFoundation && (
             <RealWorldSection item={item} career={careerTitle} />
           )}
-
-          {/* Save button */}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className={cn(
-              'w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-medium transition-all',
-              dirty
-                ? 'bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 border border-teal-500/30'
-                : 'bg-muted/20 text-muted-foreground/70 border border-border/20'
-            )}
-          >
-            <Save className="h-3.5 w-3.5" />
-            {saving ? 'Saving...' : 'Save'}
-          </button>
         </div>
       </DialogContent>
     </Dialog>

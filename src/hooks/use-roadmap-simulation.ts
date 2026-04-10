@@ -126,6 +126,24 @@ export function useRoadmapSimulation(
     [fetchAudio],
   );
 
+  // ── Eager pre-fetch: generate the script + fetch the first 2
+  //    segments as soon as journey data arrives, so clicking "Play
+  //    Journey" starts instantly instead of waiting 3-4s for TTS. ────
+
+  useEffect(() => {
+    if (!narrationCtx || !journey) return;
+    // Don't re-generate if we already have a script with the same career
+    if (scriptRef.current?.career === narrationCtx.careerTitle) return;
+
+    const script = generateNarrationScript(narrationCtx);
+    scriptRef.current = script;
+
+    // Pre-fetch segments 0 (foundation) and 1 (first step)
+    prefetch(0);
+    prefetch(1);
+  }, [narrationCtx, journey, prefetch]);
+
+
   // ── Play a specific segment ───────────────────────────────────────
 
   const playSegment = useCallback(

@@ -11,6 +11,51 @@ import type {
   CareerSubjectMapping,
 } from './types';
 import type { JourneyItem, JourneyStage } from '@/lib/journey/career-journey-types';
+import requirementsData from './data/career-requirements.json';
+
+// ── Career Requirements Lookup ──────────────────────────────────────
+
+interface CareerRequirements {
+  schoolSubjects: {
+    required: string[];
+    recommended: string[];
+    minimumGrade: string;
+  };
+  universityPath: {
+    programme: string;
+    duration: string;
+    type: string;
+    examples: string[];
+    applicationRoute: string;
+    competitiveness: string;
+  };
+}
+
+const requirementsMap = (requirementsData as { requirements: Record<string, CareerRequirements> }).requirements;
+
+/**
+ * Look up structured career requirements from career-requirements.json.
+ * Falls back to null for unknown careers.
+ */
+export function getCareerRequirements(careerTitle: string): CareerRequirements | null {
+  const slug = careerTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  // Direct match
+  if (requirementsMap[slug]) return requirementsMap[slug];
+  // Try common variants
+  const variants = [
+    slug,
+    slug.replace(/-/g, ''),
+    careerTitle.toLowerCase().replace(/\s+/g, '-'),
+  ];
+  for (const v of variants) {
+    if (requirementsMap[v]) return requirementsMap[v];
+  }
+  // Partial match — career slug starts with or contains key
+  for (const key of Object.keys(requirementsMap)) {
+    if (key.includes(slug) || slug.includes(key)) return requirementsMap[key];
+  }
+  return null;
+}
 
 // ── Career → Subject Mappings ────────────────────────────────────────
 // Covers the most common career paths. Falls back gracefully for unknown careers.

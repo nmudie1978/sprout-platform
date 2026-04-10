@@ -51,6 +51,8 @@ export interface NarrationContext {
   userAge?: number;
   education?: EducationSnapshot | null;
   careerTitle: string;
+  /** e.g. "1,100,000 - 2,000,000 kr/year" — from career-pathways */
+  salaryRange?: string;
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -64,6 +66,39 @@ function possessiveName(name?: string): string {
   if (!name) return 'Your';
   const capitalised = name.charAt(0).toUpperCase() + name.slice(1);
   return `${capitalised}'s`;
+}
+
+/**
+ * Parse a salary range string like "1,100,000 - 2,000,000 kr/year"
+ * into a low and high number for narration phrasing.
+ */
+function parseSalary(range?: string): { low: string; high: string } | null {
+  if (!range) return null;
+  const nums = range.match(/[\d,]+/g);
+  if (!nums || nums.length < 2) return null;
+  // Format as shorter "1.1 million" style for natural speech
+  const format = (s: string) => {
+    const n = parseInt(s.replace(/,/g, ''), 10);
+    if (isNaN(n)) return s;
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.0', '')} million`;
+    if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+    return String(n);
+  };
+  return { low: format(nums[0]), high: format(nums[1]) };
+}
+
+/** Detect if a step title is about getting the first job */
+function isEntryJobStep(title: string): boolean {
+  const t = title.toLowerCase();
+  return /\b(accept|start|begin)\b.*\b(entry|first|junior)\b.*\b(role|job|position)\b/i.test(t)
+    || /\b(entry[-\s]level)\b/i.test(t)
+    || /\bfirst.*role\b/i.test(t);
+}
+
+/** Detect if a step title is about reaching a senior role */
+function isSeniorStep(title: string): boolean {
+  const t = title.toLowerCase();
+  return /\b(senior|step up|advance|lead|specialist|expert)\b/i.test(t);
 }
 
 function subjectList(subjects?: string[]): string {
@@ -112,6 +147,8 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
 
   // ── Step segments (0..N) ──────────────────────────────────────────
 
+  const salary = parseSalary(ctx.salaryRange);
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const isLast = i === items.length - 1;
@@ -127,7 +164,6 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
 
     // Description adds depth
     if (item.description) {
-      // Take first 2 sentences max to keep it concise
       const sentences = item.description.split(/(?<=[.!?])\s+/).slice(0, 2);
       text += sentences.join(' ') + ' ';
     }
@@ -138,7 +174,13 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
       text += `This means things like: ${action.charAt(0).toLowerCase()}${action.slice(1)}. `;
     }
 
-    // Transition or closing
+    // Salary context at key career milestones
+    if (salary && isEntryJobStep(item.title)) {
+      text += `This is when ${name} starts earning — entry-level salaries for this field typically start around ${salary.low} kroner per year. `;
+    } else if (salary && isSeniorStep(item.title)) {
+      text += `At this level, experienced professionals in this field earn up to ${salary.high} kroner per year. `;
+    }
+
     if (isLast) {
       text += `And that's the destination.`;
     }
@@ -159,12 +201,16 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
   const lastAge = lastItem?.endAge ?? lastItem?.startAge ?? firstAge;
   const spanYears = lastAge - firstAge;
 
-  let outcomeText = `So there it is — ${possessive.toLowerCase()} full path to becoming a ${careerTitle}. `;
+  let outcomeText = `So there it is — ${possessive.toLowerCase()} complete path to becoming a ${careerTitle}. `;
   if (spanYears > 0) {
-    outcomeText += `From where ${name} is now to the end of this roadmap is roughly ${spanYears} years. `;
+    outcomeText += `From where ${name} is today to a fully qualified ${careerTitle} is roughly ${spanYears} years. `;
   }
-  outcomeText += `It's a real commitment, but every step builds on the last. `;
-  outcomeText += `The most important thing right now isn't to have it all figured out — it's to understand what the path looks like and decide if it feels right.`;
+  if (salary) {
+    outcomeText += `Along the way, ${name} will go from earning around ${salary.low} kroner at the start to up to ${salary.high} kroner at the senior level. `;
+  }
+  outcomeText += `It's a real commitment — but every single step builds on the last, and thousands of people walk this exact path every year. `;
+  outcomeText += `${name.charAt(0).toUpperCase() + name.slice(1)} doesn't need to have it all figured out right now. The fact that ${name} is exploring this path already puts ${name === 'you' ? 'you' : 'them'} ahead. `;
+  outcomeText += `The future is closer than it looks.`;
 
   segments.push({
     stepIndex: items.length, // one past the last item

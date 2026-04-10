@@ -75,7 +75,15 @@ const TIPS = [
 
 const STORAGE_KEY = "dashboard-guide-seen";
 
-export function DashboardGuideTips({ className }: { className?: string }) {
+export function DashboardGuideTips({
+  className,
+  hasGoal = false,
+}: {
+  className?: string;
+  /** True when the user already has a primary career goal set. Users
+   *  with a goal are not new — the guide should never auto-open. */
+  hasGoal?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [currentTip, setCurrentTip] = useState(0);
 
@@ -85,15 +93,22 @@ export function DashboardGuideTips({ className }: { className?: string }) {
     try {
       const seen = window.localStorage.getItem(STORAGE_KEY) === "1";
       setHasSeen(seen);
-      if (!seen) {
-        // Auto-open on first visit after a small delay.
+      // Auto-open ONLY for genuinely new users: no localStorage flag
+      // AND no primary goal set (proves they haven't used the app).
+      if (!seen && !hasGoal) {
         const t = setTimeout(() => setOpen(true), 1200);
         return () => clearTimeout(t);
+      }
+      // If the user already has a goal but localStorage was cleared,
+      // silently mark as seen so they never get the strong pulse.
+      if (!seen && hasGoal) {
+        setHasSeen(true);
+        window.localStorage.setItem(STORAGE_KEY, "1");
       }
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [hasGoal]);
 
   const markSeen = () => {
     setHasSeen(true);
@@ -141,9 +156,9 @@ export function DashboardGuideTips({ className }: { className?: string }) {
           className={cn(
             "relative inline-flex items-center justify-center rounded-full transition-all",
             "h-8 w-8",
-            // Unseen state: teal-tinted, pulsing outer ring to draw
-            // attention. Once the user has seen the guide, it fades
-            // to a quiet neutral icon.
+            // Unseen state: teal-tinted, strong pulsing ring to draw
+            // attention on first login. After seen, a faint subtle
+            // pulse reminds the user guidance is still available.
             !hasSeen && !open
               ? "border-2 border-teal-400/70 bg-teal-500/15 text-teal-300 shadow-[0_0_12px_rgba(20,184,166,0.35)]"
               : "border border-border/40 bg-background/60 text-muted-foreground/60 hover:bg-muted/40 hover:text-foreground",
@@ -153,11 +168,13 @@ export function DashboardGuideTips({ className }: { className?: string }) {
           aria-label="How to use Endeavrly"
           title="How to use Endeavrly"
         >
-          {/* Animated pulse ring — only shows when the guide hasn't
-              been seen yet, so the user notices the icon. Disappears
-              permanently after the first interaction. */}
+          {/* Animated pulse ring — strong ping when unseen (first login),
+              faint slow pulse after seen so the user remembers it's there. */}
           {!hasSeen && !open && (
             <span className="absolute inset-0 rounded-full border-2 border-teal-400/60 motion-safe:animate-ping" />
+          )}
+          {hasSeen && !open && (
+            <span className="absolute inset-0 rounded-full border border-teal-400/20 motion-safe:animate-pulse" />
           )}
           <HelpCircle className={cn("h-4 w-4", !hasSeen && "drop-shadow-[0_0_4px_rgba(20,184,166,0.5)]")} />
         </button>

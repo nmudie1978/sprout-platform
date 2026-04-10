@@ -279,7 +279,7 @@ function StatCard({ label, value, icon: Icon, accent }: { label: string; value: 
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
         <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{label}</span>
       </div>
-      <p className="text-sm font-semibold text-foreground/90">{value}</p>
+      <p className="text-xs font-semibold text-foreground/90">{value}</p>
     </div>
   );
 }
@@ -329,7 +329,20 @@ function DiscoverTab({
       >
         <p className="text-sm text-foreground/70 leading-[1.8]">
           {dDetails?.whoThisIsGoodFor?.length
-            ? `This role suits ${dDetails.whoThisIsGoodFor.slice(0, 2).join(' and ').toLowerCase()}.`
+            ? (() => {
+                // Clean each trait: strip trailing punctuation, trim,
+                // lowercase, and remove leading "people who are" etc.
+                // so the sentence reads naturally when assembled.
+                const clean = (s: string) =>
+                  s.replace(/[.,;:!]+$/g, '').trim().toLowerCase()
+                   .replace(/^people who (are |)/i, '')
+                   .replace(/^those who (are |)/i, '');
+                const traits = dDetails.whoThisIsGoodFor.slice(0, 3).map(clean).filter(Boolean);
+                if (traits.length === 0) return career.description;
+                if (traits.length === 1) return `This role suits people who are ${traits[0]}.`;
+                if (traits.length === 2) return `This role suits people who are ${traits[0]} and ${traits[1]}.`;
+                return `This role suits people who are ${traits[0]}, ${traits[1]}, and ${traits[2]}.`;
+              })()
             : career.description
           }
           {career.growthOutlook === 'high' ? ' Demand is high and growing.' : career.growthOutlook === 'medium' ? ' The field is growing steadily.' : ' This is a stable career.'}
@@ -384,7 +397,7 @@ function DiscoverTab({
                   <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
                   <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Education Path</span>
                 </div>
-                <p className="text-sm text-foreground/80">{career.educationPath}</p>
+                <p className="text-xs text-foreground/80">{career.educationPath}</p>
               </div>
               {career.entryLevel && (
                 <div className="col-span-2 rounded-lg border border-teal-500/20 bg-teal-500/5 px-3.5 py-2.5">
@@ -603,33 +616,26 @@ function UnderstandTab({
                   </div>
                 )}
 
-                {/* Video cards */}
+                {/* Video links — compact list, no thumbnails */}
                 {realityData.videos.length > 0 && (
-                  <div className="space-y-2 pt-1">
-                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/30">Real voices</p>
-                    {realityData.videos.map((video) => (
-                      <a
-                        key={video.videoId}
-                        href={`https://www.youtube.com/watch?v=${video.videoId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex gap-3 rounded-lg border border-border/15 bg-background/30 p-2 transition-colors hover:border-border/30 hover:bg-background/50"
-                      >
-                        <div className="relative shrink-0 w-24 aspect-video rounded overflow-hidden bg-muted/20">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={video.thumbnailUrl} alt="" className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20 transition-colors">
-                            <Play className="h-4 w-4 text-white/90 fill-white/90" />
-                          </div>
-                        </div>
-                        <div className="flex-1 min-w-0 py-0.5">
-                          <p className="text-[10px] font-medium text-foreground/70 leading-snug line-clamp-2">{video.title.replace(/&amp;/g, '&')}</p>
-                          <p className="text-[9px] text-muted-foreground/40 mt-0.5">{video.channel}</p>
-                          <p className="text-[9px] text-muted-foreground/30 mt-1 italic">{video.whySelected}</p>
-                        </div>
-                        <ExternalLink className="h-3 w-3 text-muted-foreground/20 shrink-0 mt-1 group-hover:text-muted-foreground/40 transition-colors" />
-                      </a>
-                    ))}
+                  <div className="pt-1">
+                    <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/40 mb-1.5">Real voices</p>
+                    <div className="rounded-lg border border-border/20 divide-y divide-border/15 overflow-hidden">
+                      {realityData.videos.map((video) => (
+                        <a
+                          key={video.videoId}
+                          href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-2 px-2.5 py-1.5 hover:bg-muted/10 transition-colors"
+                        >
+                          <Play className="h-3 w-3 text-muted-foreground/40 group-hover:text-rose-400 shrink-0" />
+                          <span className="text-[10px] text-foreground/70 group-hover:text-foreground truncate flex-1">{video.title.replace(/&amp;/g, '&')}</span>
+                          <span className="text-[9px] text-muted-foreground/40 shrink-0 hidden sm:inline">{video.channel}</span>
+                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/25 group-hover:text-muted-foreground/50 shrink-0" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
               </>
@@ -1476,20 +1482,9 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           background: 'linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 50%)',
         }}
       >
-        <div className="flex items-start justify-between gap-4">
-          <p className="text-sm text-foreground/70 leading-[1.8] flex-1">
-            This is your personal journey to become a <span className="font-semibold text-foreground/90">{goalTitle}</span>. Play through your roadmap to hear your path narrated step by step, or explore each section at your own pace.
-          </p>
-          <button
-            type="button"
-            onClick={() => simulationPlay?.()}
-            disabled={!simulationPlay}
-            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-teal-500/15 border border-teal-500/30 px-4 py-2.5 text-sm font-semibold text-teal-300 hover:bg-teal-500/25 hover:border-teal-500/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <Play className="h-4 w-4" />
-            Play Journey
-          </button>
-        </div>
+        <p className="text-sm text-foreground/70 leading-[1.8]">
+          This is your personal journey to become a <span className="font-semibold text-foreground/90">{goalTitle}</span>. Explore your roadmap, play the voice-guided narration, or browse each section at your own pace.
+        </p>
       </div>
 
       {/* 1. Roadmap — collapsible. The timeline component owns its
@@ -1553,6 +1548,9 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </button>
         {!momentumCollapsed && (
         <div className="p-4 space-y-5">
+          <p className="text-xs text-muted-foreground/50 leading-relaxed -mt-1">
+            Small, concrete steps you can take right now. Pick a suggestion or add your own — even one action builds real momentum toward your goal.
+          </p>
           {/* Suggested momentum — 3 concrete starting points pulled
               from public search URLs so they always work without an API. */}
           {(() => {
@@ -1778,36 +1776,13 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         )}
       </SectionCard>
 
-      {/* 3. Study Paths — replaces Live Opportunities. Users access
-          the full university & course browser from /study-paths or the
-          sidebar. A lightweight link here nudges them toward it. */}
-      <SectionCard>
-        <a
-          href={`/study-paths?career=${encodeURIComponent(career.title)}`}
-          className="flex items-center gap-3 px-5 py-4 group hover:bg-teal-500/[0.03] transition-colors"
-        >
-          <div className="h-9 w-9 rounded-xl bg-teal-500/10 flex items-center justify-center shrink-0">
-            <GraduationCap className="h-4 w-4 text-teal-400" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground/85 group-hover:text-teal-400 transition-colors">
-              Browse Study Paths
-            </p>
-            <p className="text-[11px] text-muted-foreground/55 leading-snug mt-0.5">
-              Explore universities, programmes and courses for {career.title} — with alignment signals based on your subjects.
-            </p>
-          </div>
-          <ArrowRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-teal-400 transition-colors shrink-0" />
-        </a>
-      </SectionCard>
-
-      {/* 4. From the Field — real professional stories */}
+      {/* 3. From the Field — real professional stories */}
       {careerStories.length > 0 && (
         <SectionCard>
           <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} />
           <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {careerStories.slice(0, 2).map((story) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {careerStories.slice(0, 4).map((story) => (
                 <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
                   <div className="aspect-video">
                     <iframe
@@ -1818,23 +1793,14 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                       title={story.headline}
                     />
                   </div>
-                  <div className="p-3.5">
-                    <p className="text-xs font-semibold text-foreground/80 mb-1">{story.headline}</p>
-                    <p className="text-[11px] text-muted-foreground/45">
+                  <div className="p-2">
+                    <p className="text-[10px] font-semibold text-foreground/80 mb-0.5 line-clamp-2 leading-tight">{story.headline}</p>
+                    <p className="text-[9px] text-muted-foreground/55 truncate">
                       {story.name} — {story.jobTitle}
                       {story.company ? ` at ${story.company}` : ''}
                       {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
                     </p>
-                    {story.takeaways.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        {story.takeaways.map((t, i) => (
-                          <div key={i} className="flex items-start gap-1.5">
-                            <div className="h-1 w-1 rounded-full bg-rose-400/40 mt-1.5 shrink-0" />
-                            <p className="text-[10px] text-muted-foreground/40 leading-relaxed">{t}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {/* Takeaways hidden at compact size — visible on hover via title */}
                   </div>
                 </div>
               ))}
@@ -1913,10 +1879,10 @@ export default function MyJourneyPage() {
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
 
-  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string }[] = [
-    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)' },
-    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)' },
-    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)' },
+  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string }[] = [
+    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: 'Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.' },
+    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.' },
+    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'Play through your personal roadmap step by step, explore live opportunities, and build momentum toward your career goal.' },
   ];
 
   // First-time empty state — when there's no career goal yet, show a single
@@ -2034,6 +2000,7 @@ export default function MyJourneyPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                title={tab.tooltip}
                 className={cn(
                   'relative rounded-xl border px-4 py-3.5 text-left transition-all duration-200',
                   isActive ? 'border-transparent' : 'border-border/40 hover:border-border/60 hover:bg-muted/20',

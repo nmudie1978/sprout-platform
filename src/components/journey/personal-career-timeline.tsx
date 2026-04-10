@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Download } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Download, Play } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
@@ -13,6 +13,7 @@ import { ZigzagRenderer, RailRenderer, SteppingRenderer } from './renderers';
 import { FOUNDATION_ITEM_ID } from './renderers/zigzag-renderer';
 import { TimelineStyleSelector } from './timeline-style-selector';
 import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enforceProgressChain } from './timeline';
+import { getCareerById, getAllCareers } from '@/lib/career-pathways';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
 import { markGrowActive } from '@/lib/journey/lens-progress';
@@ -218,6 +219,11 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           }
         : null,
       careerTitle: primaryGoalTitle,
+      salaryRange: (() => {
+        const slug = primaryGoalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const career = getCareerById(slug) ?? getAllCareers().find(c => c.title === primaryGoalTitle);
+        return career?.avgSalary;
+      })(),
     };
   }, [journey, primaryGoalTitle, profileData, userAge, educationContextData]);
 
@@ -380,6 +386,18 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           )}
         </p>
         <div className="flex items-center gap-2">
+          {/* Play Journey — inline play button */}
+          {!simState.isPlaying && !simState.isPaused && (
+            <button
+              onClick={simControls.play}
+              disabled={!journey}
+              className="inline-flex items-center gap-1 rounded-full bg-teal-500/15 border border-teal-500/30 px-2.5 py-1 text-[10px] font-semibold text-teal-300 hover:bg-teal-500/25 transition-colors disabled:opacity-30"
+              title="Play a voice-guided narration of your roadmap"
+            >
+              <Play className="h-3 w-3" />
+              Play
+            </button>
+          )}
           <button
             onClick={handleExport}
             className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"

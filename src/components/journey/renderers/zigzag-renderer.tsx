@@ -2,9 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight, Check, Pencil, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
-import { classifyStepType, calculateSubjectAlignment } from '@/lib/education/alignment';
+import { classifyStepType, calculateSubjectAlignment, getCareerRequirements } from '@/lib/education/alignment';
 import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import type { EducationContext } from '@/lib/education/types';
 import { EDUCATION_STAGE_CONFIG } from '@/lib/education/types';
@@ -109,22 +109,9 @@ export function ZigzagRenderer({
   const canGoBack = youAreHereIndex > -1;
   const canGoForward = youAreHereStatus === 'done' && youAreHereIndex < items.length - 1;
 
-  /** Compute step state for an index. Single source of truth. */
-  const stateFor = (i: number): StepState => {
-    const status = cardDataMap?.[items[i].id]?.status;
-    if (status === 'done') return 'completed';
-    if (i === youAreHereIndex) return 'current';
-    if (i === youAreHereIndex + 1) return 'next';
-    return 'future';
-  };
-
-  /** Sequential gating — locked until every earlier step is done. */
-  const isLocked = (i: number): boolean => {
-    for (let j = 0; j < i; j++) {
-      if (cardDataMap?.[items[j].id]?.status !== 'done') return true;
-    }
-    return false;
-  };
+  // All steps are neutral — the roadmap is a story, not a checklist.
+  // No completed/current/next/locked states.
+  const stateFor = (_i: number): StepState => 'future';
 
   // Layout
   const schoolNodeOffset = SCHOOL_NODE_WIDTH + 40;
@@ -189,15 +176,8 @@ export function ZigzagRenderer({
             className={cn(
               'absolute transition-all duration-700 ease-out',
               simActive && simulation!.currentStepIndex !== -1 ? 'opacity-20' : '',
-              simActive && simulation!.currentStepIndex === -1 && 'z-20 scale-105',
             )}
-            style={{
-              left: 12,
-              top: HIGH_Y - 16,
-              ...(simActive && simulation!.currentStepIndex === -1
-                ? { filter: 'drop-shadow(0 0 12px rgba(20,184,166,0.5)) drop-shadow(0 0 30px rgba(20,184,166,0.2))' }
-                : {}),
-            }}
+            style={{ left: 12, top: HIGH_Y - 16 }}
           >
             {userAge && (
               <div
@@ -214,6 +194,7 @@ export function ZigzagRenderer({
               status={foundationStatus}
               careerTitle={careerTitle}
               disabled={readOnly}
+              glowing={simActive && simulation!.currentStepIndex === -1}
               onOpen={() => {
                 const foundationItem: JourneyItem = {
                   id: FOUNDATION_ITEM_ID,
@@ -237,12 +218,6 @@ export function ZigzagRenderer({
                 onItemClick(foundationItem);
               }}
             />
-            {isFoundationCurrent && !readOnly && (
-              <YouAreHerePill
-                canGoForward={canGoForward}
-                onForward={() => setManualYouAreHereIndex(youAreHereIndex + 1)}
-              />
-            )}
           </div>
 
           {/* ── Step nodes + cards ───────────────────────────────────── */}
@@ -272,17 +247,8 @@ export function ZigzagRenderer({
                 className={cn(
                   'absolute transition-all duration-700 ease-out',
                   simOpacity,
-                  isSimActive && 'z-20 scale-105',
                 )}
-                style={{
-                  left: pos.x,
-                  top: pos.y,
-                  ...(isSimActive
-                    ? {
-                        filter: 'drop-shadow(0 0 12px rgba(20,184,166,0.5)) drop-shadow(0 0 30px rgba(20,184,166,0.2))',
-                      }
-                    : {}),
-                }}
+                style={{ left: pos.x, top: pos.y }}
               >
                 <div
                   className="flex flex-col items-center"
@@ -297,52 +263,31 @@ export function ZigzagRenderer({
                     </div>
                   )}
                   {!isHigh && (
-                    <CardWithBackArrow
-                      showBack={state === 'current' && canGoBack && !readOnly}
-                      onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
-                    >
-                      <ZigzagCard
-                        item={item}
-                        state={state}
-                        onClick={() => onItemClick(item)}
-                        cardData={cardDataMap?.[item.id]}
-                      />
-                    </CardWithBackArrow>
+                    <ZigzagCard
+                      item={item}
+                      state={state}
+                      onClick={() => onItemClick(item)}
+                      glowing={isSimActive}
+                    />
                   )}
                   <SharedNode
                     item={item}
                     onClick={() => onItemClick(item)}
                     size={NODE_SIZE}
                     stepState={state}
-                    locked={state === 'future' && isLocked(i)}
-                    progressStatus={cardDataMap?.[item.id]?.status}
-                    onProgressCycle={
-                      readOnly || !onProgressCycle ? undefined : () => onProgressCycle(item.id)
-                    }
                   />
                   {isHigh && (
-                    <CardWithBackArrow
-                      showBack={state === 'current' && canGoBack && !readOnly}
-                      onBack={() => setManualYouAreHereIndex(youAreHereIndex - 1)}
-                    >
-                      <ZigzagCard
-                        item={item}
-                        state={state}
-                        onClick={() => onItemClick(item)}
-                        cardData={cardDataMap?.[item.id]}
-                      />
-                    </CardWithBackArrow>
+                    <ZigzagCard
+                      item={item}
+                      state={state}
+                      onClick={() => onItemClick(item)}
+                      glowing={isSimActive}
+                    />
                   )}
                   {!isHigh && (
                     <div className="flex justify-center mt-1">
-                      <AgePill label={ageLabel} active={state === 'current'} />
+                      <AgePill label={ageLabel} />
                     </div>
-                  )}
-                  {state === 'current' && !readOnly && (
-                    <YouAreHerePill
-                      canGoForward={canGoForward}
-                      onForward={() => setManualYouAreHereIndex(youAreHereIndex + 1)}
-                    />
                   )}
                 </div>
               </div>
@@ -442,70 +387,37 @@ function CardWithBackArrow({
 
 function ZigzagCard({
   item,
-  state,
+  state: _state,
   onClick,
-  cardData,
+  glowing = false,
 }: {
   item: JourneyItem;
   state: StepState;
   onClick: () => void;
-  cardData?: CardDataSummary;
+  /** True when this is the active step during voice simulation */
+  glowing?: boolean;
 }) {
   const stepType = classifyStepType(item);
   const typeConfig = STEP_TYPE_CONFIG[stepType];
 
   const tooltipLines: string[] = [`${typeConfig.icon} ${typeConfig.label}`];
   if (item.subtitle) tooltipLines.push(item.subtitle);
-  if (cardData?.stickyNote) tooltipLines.push(`📌 ${cardData.stickyNote}`);
-
-  // State-driven shell — `current` gets a thin amber border only; no
-  // amber background tint. The card stays the same colour as every
-  // other card so the surface stays calm. Only the small NOW badge
-  // (solid amber) marks the current step beyond the border.
-  const stateClasses: Record<StepState, string> = {
-    completed: 'border-emerald-500/40 bg-emerald-500/[0.04]',
-    current: 'border-amber-500/70 bg-card shadow-sm',
-    next: 'border-border bg-card/70',
-    future: 'border-border bg-card/70',
-  };
 
   const card = (
     <div className="w-full my-2">
       <button
         onClick={onClick}
         className={cn(
-          // Fixed min-height + flex column lets the title sit in the
-          // visual centre of the box regardless of how many lines it
-          // wraps to. The Done badge / sticky-note overlay sits in
-          // the top-right corner so the title can always start from
-          // a clean centre.
-          'relative w-full min-h-[64px] rounded-lg border p-2 flex flex-col items-center justify-center text-center transition-colors cursor-pointer',
+          'relative w-full min-h-[64px] rounded-lg border p-2 flex flex-col items-center justify-center text-center transition-all cursor-pointer',
           'hover:border-slate-500',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          stateClasses[state]
+          glowing
+            ? 'border-emerald-400/70 bg-card'
+            : 'border-border bg-card/70',
         )}
+        style={glowing ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' } : undefined}
       >
-        {(state === 'completed' || cardData?.hasStickyNote) && (
-          <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
-            {state === 'completed' && (
-              <span className="inline-flex items-center shrink-0 gap-0.5 text-[8px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                <Check className="h-2 w-2" strokeWidth={4} />
-                Done
-              </span>
-            )}
-            {cardData?.hasStickyNote && (
-              <span className="text-[8px] shrink-0" title={cardData.stickyNote}>
-                📌
-              </span>
-            )}
-          </div>
-        )}
-        <p
-          className={cn(
-            'text-xs font-semibold leading-tight',
-            state === 'future' ? 'text-muted-foreground' : 'text-foreground'
-          )}
-        >
+        <p className="text-xs font-semibold leading-tight text-muted-foreground">
           {item.title}
         </p>
       </button>
@@ -588,6 +500,8 @@ interface FoundationCardProps {
    * from another user — only "Your route" enables the foundation.
    */
   disabled?: boolean;
+  /** True when this is the active step during voice simulation */
+  glowing?: boolean;
 }
 
 function FoundationCard({
@@ -598,10 +512,8 @@ function FoundationCard({
   careerTitle,
   onOpen,
   disabled = false,
+  glowing = false,
 }: FoundationCardProps) {
-  const alignmentKey: AlignmentStatusKey = subjectHint?.alignment ?? 'unknown';
-  const badge = ALIGNMENT_BADGE[alignmentKey];
-
   // Pull subjects to show. Combine the structured currentSubjects list
   // with anything the user typed into studyProgram so the foundation
   // matches what powers the alignment calc.
@@ -621,22 +533,24 @@ function FoundationCard({
   const visibleSubjects = allSubjects.slice(0, 4);
   const extraSubjectCount = Math.max(0, allSubjects.length - visibleSubjects.length);
 
-  // Short alignment statement, dynamic on the chosen career.
+  // Career requirements from the structured data source.
+  const requirements = careerTitle ? getCareerRequirements(careerTitle) : null;
+
+  // Short insight statement — exploratory, not judgemental.
   const alignmentStatement: string = (() => {
     const career = careerTitle || 'this path';
-    if (!subjectHint || alignmentKey === 'unknown') {
-      return `Add the subjects you're taking now to see how they line up with ${career}.`;
+    if (!eduContext || allSubjects.length === 0) {
+      return `Add your subjects to see what ${career} typically requires.`;
     }
-    if (alignmentKey === 'strong') {
-      return `Your current subjects fully support the ${career} path.`;
+    if (requirements) {
+      return `Check your programme's entry requirements in the Understand tab to see how your subjects line up with ${career}.`;
     }
-    if (alignmentKey === 'partial') {
-      const miss = subjectHint.missingKey[0];
-      return `Your current subjects partially support this path${miss ? `. ${miss} is missing.` : '.'}`;
-    }
-    const miss = subjectHint.missingKey.slice(0, 2).join(' and ');
-    return `Your current subjects don't yet match this path${miss ? `. ${miss} would help most.` : '.'}`;
+    return `Use Study Paths in the Understand tab to explore what ${career} typically requires.`;
   })();
+
+  // Grade guidance from career-requirements.json
+  const gradeHint = requirements?.schoolSubjects?.minimumGrade ?? null;
+  const competitiveness = requirements?.universityPath?.competitiveness ?? null;
 
   return (
     <button
@@ -645,137 +559,91 @@ function FoundationCard({
       aria-label={disabled ? 'Foundation (reference route — read only)' : 'Open foundation details'}
       aria-disabled={disabled || undefined}
       className={cn(
-        'group w-[280px] rounded-2xl border bg-card text-left transition-colors',
+        'group w-[280px] rounded-2xl border bg-card text-left transition-all',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        disabled
-          ? 'opacity-40 grayscale cursor-not-allowed border-border/60 select-none pointer-events-none'
-          : 'hover:border-amber-400/60 cursor-pointer',
-        !disabled && (isCurrent
+        // When glowing (simulation active on this step), override
+        // everything — no greyscale, no opacity fade, just the glow.
+        glowing
+          ? 'border-emerald-400/70 opacity-100'
+          : disabled
+            ? 'opacity-40 grayscale cursor-not-allowed border-border/60 select-none pointer-events-none'
+            : 'hover:border-amber-400/60 cursor-pointer',
+        !glowing && !disabled && (isCurrent
           ? 'border-amber-500/60 shadow-sm'
           : status === 'done'
             ? 'border-emerald-500/30'
             : 'border-border')
       )}
+      style={glowing ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' } : undefined}
     >
-      {/* ── 1. HEADER ─────────────────────────────────────────────── */}
-      <div className="relative px-4 pt-3.5 pb-3 border-b border-border/60">
-        {!disabled && (
-          <span
-            className="absolute right-3 top-3 inline-flex items-center gap-1 text-muted-foreground/60 group-hover:text-foreground transition-colors"
-            aria-hidden
-          >
-            <Pencil className="h-2.5 w-2.5" />
-            <span className="text-[9px] font-medium uppercase tracking-wider">Edit</span>
-          </span>
-        )}
-        <p className="text-[14px] font-semibold leading-tight text-foreground text-center mb-1">
-          Your Starting Point
-        </p>
-        {/* Status pill — centred under the title so it never collides
-            with the absolutely-positioned Edit affordance in the
-            top-right. When the foundation is marked done, the pill
-            replaces the alignment badge with a green DONE state. */}
-        <div className="flex items-center justify-center gap-2">
-          {status === 'done' ? (
-            <span
-              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0 text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 ring-emerald-500/30"
-            >
-              <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
-              Done
-            </span>
-          ) : alignmentKey !== 'missing' ? (
-            <span
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ring-inset shrink-0',
-                badge.cls
-              )}
-            >
-              <span className={cn('h-1 w-1 rounded-full', badge.dot)} />
-              {badge.label}
-            </span>
-          ) : null}
+      {/* ── HEADER + FOUNDATION (merged) ────────────────────────── */}
+      <div className="px-3 pt-2.5 pb-2">
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-[12px] font-semibold leading-tight text-foreground">
+            Your Starting Point
+          </p>
+          <div className="flex items-center gap-2">
+            {!disabled && (
+              <span
+                className="inline-flex items-center gap-0.5 text-muted-foreground/50 group-hover:text-foreground transition-colors"
+                aria-hidden
+              >
+                <Pencil className="h-2 w-2" />
+                <span className="text-[8px] font-medium uppercase tracking-wider">Edit</span>
+              </span>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* ── 2. FOUNDATION DATA ───────────────────────────────────── */}
-      <div className="px-4 py-3 space-y-2 border-b border-border/60 bg-muted/[0.04]">
         {eduContext ? (
-          <>
-            <FoundationRow
-              label="School"
-              value={eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}
-            />
-            {eduContext.studyProgram && (
-              <FoundationRow label="Track" value={eduContext.studyProgram} />
-            )}
-            {eduContext.expectedCompletion && (
-              <FoundationRow label="Finishes" value={eduContext.expectedCompletion} />
-            )}
+          <div className="space-y-1">
+            {/* School + finish year on one line */}
+            <p className="text-[10px] text-muted-foreground leading-snug">
+              {eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+              {eduContext.studyProgram && <> · {eduContext.studyProgram}</>}
+              {eduContext.expectedCompletion && <> · {eduContext.expectedCompletion}</>}
+            </p>
+            {/* Subject pills — inline */}
             {visibleSubjects.length > 0 && (
-              <div className="pt-1">
-                <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-                  Current subjects
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {visibleSubjects.map((s) => (
-                    <span
-                      key={s}
-                      className="inline-flex items-center rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground/85 ring-1 ring-inset ring-border/60"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                  {extraSubjectCount > 0 && (
-                    <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                      +{extraSubjectCount} more
-                    </span>
-                  )}
-                </div>
+              <div className="flex flex-wrap gap-0.5">
+                {visibleSubjects.map((s) => (
+                  <span
+                    key={s}
+                    className="inline-flex items-center rounded bg-muted px-1 py-px text-[9px] font-medium text-foreground/80 ring-1 ring-inset ring-border/50"
+                  >
+                    {s}
+                  </span>
+                ))}
+                {extraSubjectCount > 0 && (
+                  <span className="inline-flex items-center px-1 py-px text-[9px] text-muted-foreground">
+                    +{extraSubjectCount}
+                  </span>
+                )}
               </div>
             )}
-          </>
+          </div>
         ) : (
-          <p className="text-[11px] text-muted-foreground leading-snug">
-            Add your school, program and current subjects to anchor your roadmap.
+          <p className="text-[10px] text-muted-foreground leading-snug">
+            Add your school &amp; subjects to see alignment.
           </p>
         )}
       </div>
 
-      {/* ── 3. ALIGNMENT INSIGHT ───────────────────────────────────
-          Distinct shade — slightly tinted teal/sky background plus an
-          inset top border so it stands out from the foundation-data
-          zone above and reads as the "brain" of the card. */}
-      <div className="px-4 py-3 bg-sky-500/[0.06] dark:bg-sky-500/[0.05] border-t border-sky-500/15 rounded-b-2xl">
-        <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground mb-1.5">
-          Alignment with {careerTitle || 'your path'}
-        </p>
-        <p className="text-[11px] leading-snug text-foreground/90">
+      {/* ── INSIGHT — grades + guidance ──────────────────────────── */}
+      <div className="px-3 py-1.5 bg-sky-500/[0.05] border-t border-sky-500/12 rounded-b-2xl space-y-1">
+        <p className="text-[10px] leading-snug text-foreground/85">
           {alignmentStatement}
         </p>
-
-        {(subjectHint && (subjectHint.matchedKey.length > 0 || subjectHint.missingKey.length > 0)) && (
-          <ul className="mt-2 space-y-1">
-            {subjectHint.matchedKey.slice(0, 2).map((s) => (
-              <li
-                key={`a-${s}`}
-                className="flex items-center gap-1.5 text-[10px] text-foreground/85"
-              >
-                <Check className="h-3 w-3 text-emerald-500 shrink-0" strokeWidth={3} />
-                <span>{s} aligns</span>
-              </li>
-            ))}
-            {subjectHint.missingKey.slice(0, 2).map((s) => (
-              <li
-                key={`m-${s}`}
-                className="flex items-center gap-1.5 text-[10px] text-foreground/85"
-              >
-                <AlertTriangle className="h-3 w-3 text-amber-500 shrink-0" strokeWidth={2.5} />
-                <span>{s} missing</span>
-              </li>
-            ))}
-          </ul>
+        {gradeHint && (
+          <p className="text-[9px] leading-snug text-muted-foreground/70">
+            Grades: {gradeHint}
+          </p>
         )}
-
+        {competitiveness && (
+          <p className="text-[9px] leading-snug text-muted-foreground/70">
+            {competitiveness}
+          </p>
+        )}
       </div>
     </button>
   );

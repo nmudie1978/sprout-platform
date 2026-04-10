@@ -64,10 +64,11 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
                 <span className="font-medium text-foreground/80">Why you&apos;re here: </span>
                 {purpose}
               </p>
-              <p className="text-xs text-foreground/70 leading-relaxed">
-                <span className="font-medium text-foreground/80">What to do: </span>
-                {action}
-              </p>
+              {action && (
+                <p className="text-xs text-foreground/70 leading-relaxed">
+                  {action}
+                </p>
+              )}
             </div>
           ) : (
             <button
