@@ -1252,6 +1252,18 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   const details = detailsData?.details ?? null;
   const careerStories = storiesData?.stories ?? [];
 
+  // Education context — drives the foundation gate for Play and Grow completion.
+  const { data: eduCtxData } = useQuery<{ educationContext: { stage?: string } | null }>({
+    queryKey: ['education-context'],
+    queryFn: async () => {
+      const res = await fetch('/api/journey/education-context');
+      if (!res.ok) return { educationContext: null };
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const hasFoundation = !!eduCtxData?.educationContext?.stage;
+
   // Display name — used to personalise the Momentum header.
   // Shares the `profile-dob` query key with personal-career-timeline
   // so both components hit the same cached payload.
@@ -1524,8 +1536,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       type: newActionType,
     }]);
     setNewAction('');
-    // Per-career signal for the dashboard's Grow ring.
-    markGrowActive(goalTitle);
   };
 
   // Set an action's status directly. The Momentum row exposes three
@@ -1805,7 +1815,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                               type: 'do',
                             },
                           ]);
-                          markGrowActive(goalTitle);
                         }}
                         className="inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors"
                         title="Add this as one of your momentum steps"
@@ -1975,6 +1984,101 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </SectionCard>
       )}
 
+      {/* ── Grow completion — auto-derived from foundation + momentum ── */}
+      <GrowCompletionCard
+        careerTitle={goalTitle}
+        hasFoundation={hasFoundation}
+        hasMomentum={actions.length > 0}
+      />
+
+    </div>
+  );
+}
+
+function GrowCompletionCard({
+  careerTitle,
+  hasFoundation,
+  hasMomentum,
+}: {
+  careerTitle: string | null;
+  hasFoundation: boolean;
+  hasMomentum: boolean;
+}) {
+  const growComplete = hasFoundation && hasMomentum;
+
+  // Auto-mark Grow as active on the dashboard when both conditions are met.
+  useEffect(() => {
+    if (growComplete && careerTitle) {
+      markGrowActive(careerTitle);
+    }
+  }, [growComplete, careerTitle]);
+
+  return (
+    <div className={cn(
+      'rounded-xl border px-5 py-4',
+      growComplete
+        ? 'border-emerald-500/25 bg-emerald-500/[0.04]'
+        : 'border-border/30 bg-card/30',
+    )}>
+      <p className={cn(
+        'text-sm font-semibold mb-3',
+        growComplete ? 'text-emerald-400' : 'text-foreground/85',
+      )}>
+        {growComplete ? 'Grow complete' : 'Complete Grow'}
+      </p>
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2.5">
+          <span className={cn(
+            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0',
+            hasFoundation
+              ? 'bg-emerald-500 border-emerald-500 text-white'
+              : 'border-border/50 text-muted-foreground/40',
+          )}>
+            {hasFoundation ? '✓' : '1'}
+          </span>
+          <div>
+            <p className={cn(
+              'text-xs font-medium',
+              hasFoundation ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
+            )}>
+              Fill in your starting point
+            </p>
+            <p className="text-[10px] text-muted-foreground/50">
+              {hasFoundation
+                ? 'Your foundation is set — the roadmap and narration are personalised to you.'
+                : 'Tap "Your Foundation" on the roadmap to add your school, subjects, and finish year.'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className={cn(
+            'inline-flex items-center justify-center h-5 w-5 rounded-full border text-[10px] shrink-0',
+            hasMomentum
+              ? 'bg-emerald-500 border-emerald-500 text-white'
+              : 'border-border/50 text-muted-foreground/40',
+          )}>
+            {hasMomentum ? '✓' : '2'}
+          </span>
+          <div>
+            <p className={cn(
+              'text-xs font-medium',
+              hasMomentum ? 'text-foreground/70 line-through decoration-emerald-500/40' : 'text-foreground/85',
+            )}>
+              Add your first action in Momentum
+            </p>
+            <p className="text-[10px] text-muted-foreground/50">
+              {hasMomentum
+                ? 'You\'ve started building momentum — keep going.'
+                : 'Pick a suggestion or write your own next move in the Momentum section above.'}
+            </p>
+          </div>
+        </div>
+      </div>
+      {growComplete && (
+        <p className="text-[10px] text-emerald-500/60 mt-3">
+          Your dashboard now shows Grow as complete for this career.
+        </p>
+      )}
     </div>
   );
 }
