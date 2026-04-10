@@ -52,6 +52,7 @@ import {
   Quote,
   ChevronDown,
   Radar,
+  GraduationCap,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -414,8 +415,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your career roadmap. Track progress, set milestones, and see your starting point in context." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
-              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on." />
-              <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} personal tooltip="Structured conversations with employers and your guardian — safe by design." />
+              <NavItem href="/study-paths" icon={GraduationCap} label="Study Paths" active={isActive("/study-paths")} collapsed={collapsed} personal tooltip="Universities, programmes and courses matched to your career goal. Includes alignment with your current subjects." />
+              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications") || isActive("/messages")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on. Includes messages with employers." />
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>

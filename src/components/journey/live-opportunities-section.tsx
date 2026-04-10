@@ -163,10 +163,15 @@ export function LiveOpportunitiesSection({
         className="rounded-xl border-2 border-amber-500/40 overflow-hidden"
         style={{ boxShadow: '0 0 20px rgba(245,158,11,0.12), 0 0 50px rgba(245,158,11,0.06), inset 0 0 20px rgba(245,158,11,0.03)' }}
       >
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
-          <Sparkles className="h-4 w-4 text-amber-400 animate-pulse" />
-          <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
-          <span className="text-[10px] text-muted-foreground/55 ml-2">searching the web…</span>
+        <div className="px-5 py-3.5 border-b border-amber-500/20">
+          <div className="flex items-center gap-2.5">
+            <Sparkles className="h-4 w-4 text-amber-400 animate-pulse" />
+            <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
+            <span className="text-[10px] text-muted-foreground/55 ml-2">searching the web…</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground/50 mt-1 ml-[26px] leading-snug">
+            Finding real universities, courses and entry-level roles for {careerTitle} from trusted Nordic sources.
+          </p>
         </div>
         <div className="p-4 space-y-3">
           {[0, 1, 2].map((i) => (
@@ -213,10 +218,17 @@ export function LiveOpportunitiesSection({
       >
         <div className="flex items-center gap-2.5">
           <Sparkles className="h-4 w-4 text-amber-400" />
-          <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
-          <span className="text-[10px] text-muted-foreground/60 ml-1">
-            {items.length} verified for {careerTitle}
-          </span>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
+              <span className="text-[10px] text-muted-foreground/60">
+                {items.length} verified for {careerTitle}
+              </span>
+            </div>
+            <p className="text-[10px] text-muted-foreground/45 leading-snug mt-0.5">
+              Real universities, courses and jobs pulled from trusted Nordic sources — tap any to open.
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {data?.cached && (
@@ -234,8 +246,8 @@ export function LiveOpportunitiesSection({
       {!collapsed && (
         <>
           {/* Sub-header: explainer + view mode toggle */}
-          <div className="flex items-start justify-between gap-3 px-5 pt-3 pb-2">
-            <p className="text-[11px] text-muted-foreground/65 leading-snug max-w-[60ch]">
+          <div className="px-5 pt-3 pb-2 space-y-2">
+            <p className="text-[11px] text-muted-foreground/65 leading-relaxed">
               Real, web-verified universities, courses and jobs for{' '}
               <span className="text-foreground/80 font-medium">{careerTitle}</span>.
               Pulled live from trusted sources (utdanning.no, samordnaopptak.no,

@@ -8,6 +8,7 @@
  */
 
 import { useMemo } from 'react';
+import Link from 'next/link';
 import {
   GraduationCap,
   BookOpen,
@@ -16,6 +17,7 @@ import {
   Building2,
   HeartHandshake,
   ExternalLink,
+  ArrowRight,
 } from 'lucide-react';
 import type { JourneyItem } from '@/lib/journey/career-journey-types';
 import {
@@ -66,20 +68,28 @@ export function RealWorldSection({ item, career }: RealWorldSectionProps) {
         {connections.map((c, i) => {
           const Icon = KIND_ICON[c.kind];
           const color = KIND_COLOR[c.kind];
+          const isInternal = c.url.startsWith('/');
+          const linkClass = "flex items-center gap-2.5 px-3 py-2 group hover:bg-muted/[0.08] transition-colors";
+          const content = (
+            <>
+              <Icon className={`h-3 w-3 shrink-0 ${color} opacity-70 group-hover:opacity-100 transition-opacity`} />
+              <span className="text-[12px] text-foreground/75 group-hover:text-foreground/95 truncate flex-1">
+                {c.title}
+              </span>
+              {isInternal ? (
+                <ArrowRight className="h-2.5 w-2.5 text-teal-400/50 group-hover:text-teal-400 shrink-0" />
+              ) : (
+                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/30 group-hover:text-muted-foreground/60 shrink-0" />
+              )}
+            </>
+          );
           return (
             <li key={`${c.url}-${i}`}>
-              <a
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 px-3 py-2 group hover:bg-muted/[0.08] transition-colors"
-              >
-                <Icon className={`h-3 w-3 shrink-0 ${color} opacity-70 group-hover:opacity-100 transition-opacity`} />
-                <span className="text-[12px] text-foreground/75 group-hover:text-foreground/95 truncate flex-1">
-                  {c.title}
-                </span>
-                <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/30 group-hover:text-muted-foreground/60 shrink-0" />
-              </a>
+              {isInternal ? (
+                <Link href={c.url} className={linkClass}>{content}</Link>
+              ) : (
+                <a href={c.url} target="_blank" rel="noopener noreferrer" className={linkClass}>{content}</a>
+              )}
             </li>
           );
         })}

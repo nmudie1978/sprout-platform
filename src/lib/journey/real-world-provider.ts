@@ -194,8 +194,16 @@ function internshipsFor(career: string): RealWorldItem[] {
 function buildConnections(stepType: RoadmapStepType, career: string): RealWorldItem[] {
   switch (stepType) {
     case 'school':
-    case 'qualification':
-      return [...universitiesFor(career), ...certificationsFor(career)].slice(0, 5);
+    case 'qualification': {
+      const studyPathsLink: RealWorldItem = {
+        kind: 'university',
+        title: `Browse study paths for ${career}`,
+        descriptor: 'Explore matching universities, programmes and alignment in-app',
+        url: `/study-paths?career=${enc(career)}`,
+        cta: 'Browse',
+      };
+      return [studyPathsLink, ...universitiesFor(career).slice(0, 2), ...certificationsFor(career).slice(0, 1)];
+    }
     case 'learning':
       return [...coursesFor(career), ...certificationsFor(career)].slice(0, 5);
     case 'real-world': {
@@ -241,7 +249,17 @@ function universityApplicationOverride(
   const isUniversity = /universit|bachelor|master|samordna|utdanning/.test(text);
   const isApplication = /apply|application|enrol|enroll|admiss/.test(text);
   if (!isUniversity || !isApplication) return null;
-  return universitiesFor(career);
+  // Lead with in-app Study Paths browser, then external fallbacks
+  return [
+    {
+      kind: 'university',
+      title: `Browse study paths for ${career}`,
+      descriptor: 'Explore matching universities, programmes and alignment in-app',
+      url: `/study-paths?career=${enc(career)}`,
+      cta: 'Browse',
+    },
+    ...universitiesFor(career).slice(0, 2),
+  ];
 }
 
 /**

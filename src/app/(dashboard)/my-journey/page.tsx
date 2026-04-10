@@ -37,7 +37,8 @@ import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
-import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
+// LiveOpportunitiesSection removed — replaced by Study Paths browser.
+// import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
 
@@ -1722,85 +1723,119 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               );
             })()}
 
-          {/* Your momentum — user-authored steps with status + delete. */}
+          {/* Your momentum — horizontal carousel of compact cards */}
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-2">
-              Your momentum
-            </p>
             {actions.length === 0 ? (
-              <p className="text-[11px] text-muted-foreground/40 italic mb-2">
+              <p className="text-[11px] text-muted-foreground/55 italic mb-2">
                 No steps yet. Add one below or pick a suggested move above.
               </p>
             ) : (
-              <ul className="space-y-1.5 mb-3">
-                {actions.map((a) => {
-                  const status = statusOf(a);
-                  return (
-                    <li
-                      key={a.id}
-                      className="flex items-center gap-2 rounded-lg border border-border/25 bg-background/30 px-3 py-2"
-                    >
-                      <button
-                        onClick={() =>
-                          setActionStatus(a.id, status === 'done' ? 'not_started' : 'done')
+              <div className="overflow-x-auto -mx-4 px-4 pb-2">
+                <div className="flex gap-2" style={{ minWidth: 'min-content' }}>
+                  {actions.map((a) => {
+                    const status = statusOf(a);
+                    const isDone = status === 'done';
+                    return (
+                      <div
+                        key={a.id}
+                        className={cn(
+                          'group relative shrink-0 w-[180px] rounded-lg border p-2.5 transition-colors',
+                          isDone
+                            ? 'border-emerald-500/30 bg-emerald-500/[0.04]'
+                            : 'border-border/30 bg-background/30 hover:border-amber-500/30',
+                        )}
+                      >
+                        {/* Delete — top-right, appears on hover */}
+                        <button
+                          onClick={() => deleteAction(a.id)}
+                          className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-rose-400 transition-all"
+                          aria-label="Delete step"
+                        >
+                          <X className="h-2.5 w-2.5" />
+                        </button>
+
+                        {/* Status toggle */}
+                        <button
+                          onClick={() =>
+                            setActionStatus(a.id, isDone ? 'not_started' : 'done')
+                          }
+                          className={cn(
+                            'h-4 w-4 rounded border flex items-center justify-center shrink-0 transition-colors mb-1.5',
+                            isDone
+                              ? 'bg-emerald-500 border-emerald-500'
+                              : 'border-border/50 hover:border-foreground/50',
+                          )}
+                          aria-label={isDone ? 'Mark not done' : 'Mark done'}
+                        >
+                          {isDone && (
+                            <Check className="h-2.5 w-2.5 text-white" strokeWidth={4} />
+                          )}
+                        </button>
+
+                        {/* Text */}
+                        <p
+                          className={cn(
+                            'text-[11px] leading-snug line-clamp-2',
+                            isDone
+                              ? 'text-muted-foreground/55 line-through'
+                              : 'text-foreground/85',
+                          )}
+                        >
+                          {a.text}
+                        </p>
+                      </div>
+                    );
+                  })}
+
+                  {/* Inline add — last card in the carousel */}
+                  <div className="shrink-0 w-[180px] rounded-lg border border-dashed border-border/30 bg-background/20 p-2.5 flex flex-col justify-center">
+                    <input
+                      value={newAction}
+                      onChange={(e) => setNewAction(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addAction();
                         }
-                        className={cn(
-                          'h-4 w-4 rounded border flex items-center justify-center shrink-0 transition-colors',
-                          status === 'done'
-                            ? 'bg-emerald-500 border-emerald-500'
-                            : 'border-border/50 hover:border-foreground/50',
-                        )}
-                        aria-label={status === 'done' ? 'Mark not done' : 'Mark done'}
-                      >
-                        {status === 'done' && (
-                          <Check className="h-2.5 w-2.5 text-white" strokeWidth={4} />
-                        )}
-                      </button>
-                      <span
-                        className={cn(
-                          'flex-1 text-[12px] leading-snug',
-                          status === 'done'
-                            ? 'text-muted-foreground/45 line-through'
-                            : 'text-foreground/80',
-                        )}
-                      >
-                        {a.text}
-                      </span>
-                      <button
-                        onClick={() => deleteAction(a.id)}
-                        className="text-muted-foreground/30 hover:text-rose-400 transition-colors shrink-0"
-                        aria-label="Delete step"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+                      }}
+                      placeholder="Add a step…"
+                      className="w-full rounded-md border border-border/25 bg-background/40 px-2 py-1 text-[10px] text-foreground/80 placeholder:text-muted-foreground/40 focus:outline-none focus:border-amber-500/40 mb-1.5"
+                    />
+                    <button
+                      onClick={addAction}
+                      disabled={!newAction.trim()}
+                      className="w-full inline-flex items-center justify-center gap-0.5 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <Plus className="h-2.5 w-2.5" /> Add
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
 
-            {/* Add new step */}
-            <div className="flex gap-2">
-              <input
-                value={newAction}
-                onChange={(e) => setNewAction(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addAction();
-                  }
-                }}
-                placeholder="Add your own next step..."
-                className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-2 text-xs text-foreground/85 placeholder:text-muted-foreground/30 focus:outline-none focus:border-amber-500/40"
-              />
-              <button
-                onClick={addAction}
-                disabled={!newAction.trim()}
-                className="inline-flex items-center gap-1 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <Plus className="h-3 w-3" /> Add
-              </button>
-            </div>
+            {actions.length === 0 && (
+              <div className="flex gap-2">
+                <input
+                  value={newAction}
+                  onChange={(e) => setNewAction(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addAction();
+                    }
+                  }}
+                  placeholder="Add your first step…"
+                  className="flex-1 rounded-lg border border-border/30 bg-background/40 px-3 py-1.5 text-xs text-foreground/85 placeholder:text-muted-foreground/40 focus:outline-none focus:border-amber-500/40"
+                />
+                <button
+                  onClick={addAction}
+                  disabled={!newAction.trim()}
+                  className="inline-flex items-center gap-0.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-amber-300 hover:bg-amber-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <Plus className="h-2.5 w-2.5" /> Add
+                </button>
+              </div>
+            )}
             {syncStatus === 'saved' && (
               <p className="text-[9px] text-emerald-400/50 mt-1.5">Saved to your journey</p>
             )}
@@ -1809,11 +1844,28 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         )}
       </SectionCard>
 
-      {/* 3. Live Opportunities — three-stage agent: real, web-verified
-          jobs, courses and university programmes for the active goal.
-          See src/lib/agents/career-opportunities.ts and
-          docs/agents/career-opportunities.md. */}
-      <LiveOpportunitiesSection careerTitle={career.title} />
+      {/* 3. Study Paths — replaces Live Opportunities. Users access
+          the full university & course browser from /study-paths or the
+          sidebar. A lightweight link here nudges them toward it. */}
+      <SectionCard>
+        <a
+          href={`/study-paths?career=${encodeURIComponent(career.title)}`}
+          className="flex items-center gap-3 px-5 py-4 group hover:bg-teal-500/[0.03] transition-colors"
+        >
+          <div className="h-9 w-9 rounded-xl bg-teal-500/10 flex items-center justify-center shrink-0">
+            <GraduationCap className="h-4 w-4 text-teal-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground/85 group-hover:text-teal-400 transition-colors">
+              Browse Study Paths
+            </p>
+            <p className="text-[11px] text-muted-foreground/55 leading-snug mt-0.5">
+              Explore universities, programmes and courses for {career.title} — with alignment signals based on your subjects.
+            </p>
+          </div>
+          <ArrowRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-teal-400 transition-colors shrink-0" />
+        </a>
+      </SectionCard>
 
       {/* 4. From the Field — real professional stories */}
       {careerStories.length > 0 && (

@@ -79,11 +79,14 @@ export function DashboardGuideTips({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const [currentTip, setCurrentTip] = useState(0);
 
-  // Auto-open on first visit, then never again.
+  // Track whether the user has seen the guide before.
+  const [hasSeen, setHasSeen] = useState(true); // default true to avoid flash
   useEffect(() => {
     try {
-      if (window.localStorage.getItem(STORAGE_KEY) !== "1") {
-        // Small delay so it doesn't fire during initial render churn.
+      const seen = window.localStorage.getItem(STORAGE_KEY) === "1";
+      setHasSeen(seen);
+      if (!seen) {
+        // Auto-open on first visit after a small delay.
         const t = setTimeout(() => setOpen(true), 1200);
         return () => clearTimeout(t);
       }
@@ -93,6 +96,7 @@ export function DashboardGuideTips({ className }: { className?: string }) {
   }, []);
 
   const markSeen = () => {
+    setHasSeen(true);
     try {
       window.localStorage.setItem(STORAGE_KEY, "1");
     } catch {
@@ -135,16 +139,27 @@ export function DashboardGuideTips({ className }: { className?: string }) {
         <button
           type="button"
           className={cn(
-            "inline-flex items-center justify-center rounded-full transition-colors",
-            "h-7 w-7 border border-border/40 bg-background/60 hover:bg-muted/40",
-            "text-muted-foreground/60 hover:text-foreground",
+            "relative inline-flex items-center justify-center rounded-full transition-all",
+            "h-8 w-8",
+            // Unseen state: teal-tinted, pulsing outer ring to draw
+            // attention. Once the user has seen the guide, it fades
+            // to a quiet neutral icon.
+            !hasSeen && !open
+              ? "border-2 border-teal-400/70 bg-teal-500/15 text-teal-300 shadow-[0_0_12px_rgba(20,184,166,0.35)]"
+              : "border border-border/40 bg-background/60 text-muted-foreground/60 hover:bg-muted/40 hover:text-foreground",
             open && "bg-teal-500/10 border-teal-500/40 text-teal-400",
             className,
           )}
           aria-label="How to use Endeavrly"
           title="How to use Endeavrly"
         >
-          <HelpCircle className="h-3.5 w-3.5" />
+          {/* Animated pulse ring — only shows when the guide hasn't
+              been seen yet, so the user notices the icon. Disappears
+              permanently after the first interaction. */}
+          {!hasSeen && !open && (
+            <span className="absolute inset-0 rounded-full border-2 border-teal-400/60 motion-safe:animate-ping" />
+          )}
+          <HelpCircle className={cn("h-4 w-4", !hasSeen && "drop-shadow-[0_0_4px_rgba(20,184,166,0.5)]")} />
         </button>
       </PopoverTrigger>
       <PopoverContent
