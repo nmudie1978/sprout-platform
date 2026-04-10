@@ -159,8 +159,11 @@ export function LiveOpportunitiesSection({
   // cache miss so we make the loading state feel intentional.
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-border/30 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-border/20">
+      <div
+        className="rounded-xl border-2 border-amber-500/40 overflow-hidden"
+        style={{ boxShadow: '0 0 20px rgba(245,158,11,0.12), 0 0 50px rgba(245,158,11,0.06), inset 0 0 20px rgba(245,158,11,0.03)' }}
+      >
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
           <Sparkles className="h-4 w-4 text-amber-400 animate-pulse" />
           <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
           <span className="text-[10px] text-muted-foreground/55 ml-2">searching the web…</span>
@@ -198,8 +201,8 @@ export function LiveOpportunitiesSection({
 
   return (
     <div
-      className="rounded-xl border border-amber-500/25 overflow-hidden"
-      style={{ boxShadow: '0 0 25px rgba(245,158,11,0.06), 0 0 50px rgba(245,158,11,0.03)' }}
+      className="rounded-xl border-2 border-amber-500/40 overflow-hidden"
+      style={{ boxShadow: '0 0 20px rgba(245,158,11,0.12), 0 0 50px rgba(245,158,11,0.06), inset 0 0 20px rgba(245,158,11,0.03)' }}
     >
       {/* ── Header ──────────────────────────────────────────────── */}
       <button

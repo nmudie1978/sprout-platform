@@ -1,0 +1,230 @@
+"use client";
+
+/**
+ * Dashboard Guide Tips
+ *
+ * A small "?" icon that opens a navigable popover walkthrough
+ * explaining how to use Endeavrly. Shows once automatically on first
+ * visit (dismissed after the user closes or finishes), then stays
+ * available as a subtle icon the user can tap any time.
+ *
+ * Tips are ordered to match the natural flow:
+ *   1. Choose a career
+ *   2. Explore in My Journey
+ *   3. Build your roadmap
+ *   4. Career Radar
+ *   5. Browse opportunities
+ */
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  HelpCircle,
+  ArrowLeft,
+  ArrowRight,
+  Compass,
+  Route,
+  Rocket,
+  Radar,
+  Search,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const TIPS = [
+  {
+    icon: Compass,
+    color: "text-teal-400",
+    title: "Start by choosing a career",
+    description:
+      "Browse Explore Careers to find something that interests you, then set it as your primary goal. That one choice unlocks everything else.",
+  },
+  {
+    icon: Route,
+    color: "text-blue-400",
+    title: "Dive into My Journey",
+    description:
+      "Your journey has three tabs — Discover, Understand, and Grow. Explore the career, learn what it actually involves, then build your roadmap.",
+  },
+  {
+    icon: Rocket,
+    color: "text-amber-400",
+    title: "Build your roadmap",
+    description:
+      "In the Grow tab you'll find a personal roadmap anchored to your age and education. Mark steps done as you progress — it's your plan, at your pace.",
+  },
+  {
+    icon: Radar,
+    color: "text-violet-400",
+    title: "Refine with Career Radar",
+    description:
+      "Answer a few quick questions about your interests and work style. Your answers power the Match % on every career — helping you find the best fit.",
+  },
+  {
+    icon: Search,
+    color: "text-emerald-400",
+    title: "Find real opportunities",
+    description:
+      "Live Opportunities in Grow pulls real jobs, courses, and university programmes from the web — verified and filtered for your age group.",
+  },
+] as const;
+
+const STORAGE_KEY = "dashboard-guide-seen";
+
+export function DashboardGuideTips({ className }: { className?: string }) {
+  const [open, setOpen] = useState(false);
+  const [currentTip, setCurrentTip] = useState(0);
+
+  // Auto-open on first visit, then never again.
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(STORAGE_KEY) !== "1") {
+        // Small delay so it doesn't fire during initial render churn.
+        const t = setTimeout(() => setOpen(true), 1200);
+        return () => clearTimeout(t);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const markSeen = () => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleClose = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) {
+      markSeen();
+      // Reset to first tip so the next open starts fresh.
+      setTimeout(() => setCurrentTip(0), 300);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentTip < TIPS.length - 1) {
+      setCurrentTip(currentTip + 1);
+    } else {
+      // Finished the tour
+      setOpen(false);
+      markSeen();
+      setTimeout(() => setCurrentTip(0), 300);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentTip > 0) setCurrentTip(currentTip - 1);
+  };
+
+  const tip = TIPS[currentTip];
+  const TipIcon = tip.icon;
+  const isFirst = currentTip === 0;
+  const isLast = currentTip === TIPS.length - 1;
+
+  return (
+    <Popover open={open} onOpenChange={handleClose}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "inline-flex items-center justify-center rounded-full transition-colors",
+            "h-7 w-7 border border-border/40 bg-background/60 hover:bg-muted/40",
+            "text-muted-foreground/60 hover:text-foreground",
+            open && "bg-teal-500/10 border-teal-500/40 text-teal-400",
+            className,
+          )}
+          aria-label="How to use Endeavrly"
+          title="How to use Endeavrly"
+        >
+          <HelpCircle className="h-3.5 w-3.5" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[300px] p-0 shadow-lg border-border/60"
+        side="bottom"
+        sideOffset={8}
+        align="end"
+      >
+        {/* Tip body */}
+        <div className="p-4 space-y-3">
+          <div className="flex items-start gap-2.5">
+            <div
+              className={cn(
+                "shrink-0 rounded-lg p-1.5 bg-muted/30",
+                tip.color,
+              )}
+            >
+              <TipIcon className="h-4 w-4" />
+            </div>
+            <div className="space-y-1 min-w-0">
+              <p className="text-[13px] font-semibold leading-tight">
+                {tip.title}
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {tip.description}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer: step counter + nav */}
+        <div className="flex items-center justify-between border-t border-border/40 px-4 py-2.5 bg-muted/10">
+          {/* Step dots */}
+          <div className="flex items-center gap-1">
+            {TIPS.map((_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  "h-1 rounded-full transition-all duration-200",
+                  i === currentTip
+                    ? "w-3 bg-teal-500"
+                    : i < currentTip
+                      ? "w-1 bg-teal-500/40"
+                      : "w-1 bg-muted-foreground/25",
+                )}
+              />
+            ))}
+            <span className="text-[10px] text-muted-foreground/60 ml-1.5">
+              {currentTip + 1}/{TIPS.length}
+            </span>
+          </div>
+
+          {/* Nav buttons */}
+          <div className="flex items-center gap-1">
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={handlePrev}
+              disabled={isFirst}
+              aria-label="Previous tip"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              size="icon"
+              variant={isLast ? "default" : "ghost"}
+              className={cn("h-6", isLast ? "w-auto px-2 text-[11px]" : "w-6")}
+              onClick={handleNext}
+              aria-label={isLast ? "Finish tour" : "Next tip"}
+            >
+              {isLast ? (
+                "Got it"
+              ) : (
+                <ArrowRight className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}

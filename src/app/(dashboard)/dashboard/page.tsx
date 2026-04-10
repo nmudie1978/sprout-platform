@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { DashboardGuideTips } from "@/components/dashboard/guide-tips";
 
 /**
  * DASHBOARD PAGE — Information-Rich Overview
@@ -713,6 +714,7 @@ export default function DashboardPage() {
             })()}
           </div>
           <div className="flex items-center gap-3">
+            <DashboardGuideTips />
             <span className="text-sm text-muted-foreground/60 flex items-center gap-2">
               <Clock className="h-4 w-4" />
               {dateStr}

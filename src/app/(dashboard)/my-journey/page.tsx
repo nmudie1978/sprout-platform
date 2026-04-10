@@ -1549,7 +1549,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         }}
       >
         <p className="text-sm text-foreground/70 leading-[1.8]">
-          This is your space. Track your progress toward becoming a <span className="font-semibold text-foreground/90">{goalTitle}</span>, set actions, and build momentum — one step at a time. Your roadmap shows the path ahead, and you can explore how real people in this field got to where they are.
+          Your personal action space for <span className="font-semibold text-foreground/90">{goalTitle}</span>. Build your roadmap step by step, track momentum with real actions, and discover live opportunities — verified universities, courses and jobs pulled from the web for this career.
         </p>
       </div>
 
@@ -1561,14 +1561,15 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           type="button"
           onClick={toggleRoadmap}
           aria-expanded={!roadmapCollapsed}
-          className="w-full flex items-center justify-between px-4 py-2 border-b border-border/20 hover:bg-teal-500/[0.04] transition-colors"
+          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-teal-500/[0.04] transition-colors text-left"
         >
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/65">
-            Roadmap
-          </span>
+          <div className="flex items-center gap-2.5">
+            <Rocket className="h-4 w-4 text-teal-400" />
+            <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Roadmap</h3>
+          </div>
           <ChevronDown
             className={cn(
-              'h-3.5 w-3.5 text-muted-foreground/55 transition-transform duration-200',
+              'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
               roadmapCollapsed && '-rotate-90'
             )}
           />
