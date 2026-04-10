@@ -9,6 +9,9 @@ interface StyleOption {
   description: string;
   /** Tiny SVG preview of the layout */
   preview: React.ReactNode;
+  /** Active colour classes */
+  activeBg: string;
+  activeText: string;
 }
 
 const OPTIONS: StyleOption[] = [
@@ -16,6 +19,8 @@ const OPTIONS: StyleOption[] = [
     id: 'zigzag',
     label: 'Zigzag',
     description: 'Alternating wave',
+    activeBg: 'bg-violet-500/15',
+    activeText: 'text-violet-700 dark:text-violet-300',
     preview: (
       <svg viewBox="0 0 32 20" className="w-full h-full" fill="none">
         <polyline
@@ -35,6 +40,8 @@ const OPTIONS: StyleOption[] = [
     id: 'rail',
     label: 'Rail',
     description: 'Straight track',
+    activeBg: 'bg-violet-500/15',
+    activeText: 'text-violet-700 dark:text-violet-300',
     preview: (
       <svg viewBox="0 0 32 20" className="w-full h-full" fill="none">
         <line
@@ -56,6 +63,8 @@ const OPTIONS: StyleOption[] = [
     id: 'stepping',
     label: 'Steps',
     description: 'Vertical list',
+    activeBg: 'bg-violet-500/15',
+    activeText: 'text-violet-700 dark:text-violet-300',
     preview: (
       <svg viewBox="0 0 32 20" className="w-full h-full" fill="none">
         <line
@@ -94,7 +103,7 @@ export function TimelineStyleSelector({ value, onChange }: TimelineStyleSelector
           className={cn(
             'flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs transition-colors',
             value === opt.id
-              ? 'bg-teal-500/15 text-teal-700 dark:text-teal-300'
+              ? `${opt.activeBg} ${opt.activeText}`
               : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
           )}
         >

@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, Banknote } from 'lucide-react';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
+import { getAllCareers, getCareerById } from '@/lib/career-pathways';
 import { classifyStepType, calculateSubjectAlignment, getCareerRequirements } from '@/lib/education/alignment';
 import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import type { EducationContext } from '@/lib/education/types';
@@ -88,6 +89,44 @@ export function ZigzagRenderer({
     if (a.alignment === 'unknown' && a.missingKey.length === 0) return null;
     return a;
   }, [eduContext, careerTitle, userAge]);
+
+  // Earnings indicator — resolve career salary and find the first
+  // "experience" step (where the user starts earning) and the last
+  // "career" step (senior-level salary). Only shown if salary data exists.
+  const earningsInfo = useMemo(() => {
+    if (!careerTitle) return null;
+    const slug = careerTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const career = getCareerById(slug) ?? getAllCareers().find(c => c.title === careerTitle);
+    if (!career?.avgSalary) return null;
+
+    // Parse salary range — e.g. "450,000 - 650,000 kr/year"
+    const nums = career.avgSalary.match(/[\d,]+/g);
+    if (!nums || nums.length < 1) return null;
+    const low = nums[0].replace(/,/g, '');
+    const high = nums.length >= 2 ? nums[nums.length - 1].replace(/,/g, '') : null;
+
+    // Find first experience step and last career step indices
+    let firstExpIdx = -1;
+    let lastCareerIdx = -1;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].stage === 'experience' && firstExpIdx === -1) firstExpIdx = i;
+      if (items[i].stage === 'career') lastCareerIdx = i;
+    }
+
+    // Format compact salary — e.g. "~450k kr"
+    const formatCompact = (n: string) => {
+      const num = parseInt(n, 10);
+      if (isNaN(num)) return n;
+      return num >= 1000 ? `${Math.round(num / 1000)}k` : `${num}`;
+    };
+
+    return {
+      firstExpIdx,
+      lastCareerIdx,
+      entryLabel: high ? `~${formatCompact(low)}–${formatCompact(high)} kr` : `~${formatCompact(low)} kr`,
+      seniorLabel: high ? `~${formatCompact(high)}+ kr` : null,
+    };
+  }, [careerTitle, items]);
 
   // "You are here" derived from progress: first non-done step
   const derivedYouAreHereIndex = useMemo(() => {
@@ -230,6 +269,15 @@ export function ZigzagRenderer({
                 : `Age ${item.startAge}`;
             const state = stateFor(i);
 
+            // Earnings hint — show on first experience step (start earning)
+            // and last career step (senior salary).
+            const stepEarnings =
+              earningsInfo && i === earningsInfo.firstExpIdx
+                ? earningsInfo.entryLabel
+                : earningsInfo?.seniorLabel && i === earningsInfo.lastCareerIdx
+                  ? earningsInfo.seniorLabel
+                  : undefined;
+
             // Simulation focus: active step glows + scales, adjacent
             // steps are dimmed, distant steps are very dim.
             const isSimActive = simActive && simulation!.currentStepIndex === i;
@@ -268,6 +316,7 @@ export function ZigzagRenderer({
                       state={state}
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
+                      earningsHint={stepEarnings}
                     />
                   )}
                   <SharedNode
@@ -282,6 +331,7 @@ export function ZigzagRenderer({
                       state={state}
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
+                      earningsHint={stepEarnings}
                     />
                   )}
                   {!isHigh && (
@@ -390,18 +440,22 @@ function ZigzagCard({
   state: _state,
   onClick,
   glowing = false,
+  earningsHint,
 }: {
   item: JourneyItem;
   state: StepState;
   onClick: () => void;
   /** True when this is the active step during voice simulation */
   glowing?: boolean;
+  /** Optional earnings indicator — shown as a subtle badge */
+  earningsHint?: string;
 }) {
   const stepType = classifyStepType(item);
   const typeConfig = STEP_TYPE_CONFIG[stepType];
 
   const tooltipLines: string[] = [`${typeConfig.icon} ${typeConfig.label}`];
   if (item.subtitle) tooltipLines.push(item.subtitle);
+  if (earningsHint) tooltipLines.push(`💰 ${earningsHint}`);
 
   const card = (
     <div className="w-full my-2">
@@ -420,6 +474,12 @@ function ZigzagCard({
         <p className="text-xs font-semibold leading-tight text-muted-foreground">
           {item.title}
         </p>
+        {earningsHint && (
+          <span className="inline-flex items-center gap-1 mt-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-medium">
+            <Banknote className="h-2.5 w-2.5" />
+            {earningsHint}
+          </span>
+        )}
       </button>
     </div>
   );
@@ -572,12 +632,25 @@ function FoundationCard({
 
         {eduContext ? (
           <div className="space-y-1">
-            {/* School + finish year on one line */}
-            <p className="text-[10px] text-muted-foreground leading-snug">
-              {eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}
-              {eduContext.studyProgram && <> · {eduContext.studyProgram}</>}
-              {eduContext.expectedCompletion && <> · {eduContext.expectedCompletion}</>}
-            </p>
+            {/* Labelled fields — crisp key: value format */}
+            <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] leading-snug">
+              <span>
+                <span className="text-muted-foreground/50">School:</span>{' '}
+                <span className="text-foreground/80 font-medium">{eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}</span>
+              </span>
+              {eduContext.studyProgram && (
+                <span>
+                  <span className="text-muted-foreground/50">Track:</span>{' '}
+                  <span className="text-foreground/80 font-medium">{eduContext.studyProgram}</span>
+                </span>
+              )}
+              {eduContext.expectedCompletion && (
+                <span>
+                  <span className="text-muted-foreground/50">Completion:</span>{' '}
+                  <span className="text-foreground/80 font-medium">{eduContext.expectedCompletion}</span>
+                </span>
+              )}
+            </div>
             {/* Subject pills — inline */}
             {visibleSubjects.length > 0 && (
               <div className="flex flex-wrap gap-0.5">
@@ -610,9 +683,20 @@ function FoundationCard({
           {alignmentStatement}
         </p>
         {gradeHint && (
-          <p className="text-[9px] leading-snug text-muted-foreground/70">
-            Grades: {gradeHint}
-          </p>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="text-[9px] leading-snug text-muted-foreground/70 cursor-help underline decoration-dotted underline-offset-2">
+                  Your grades matter for this path
+                </p>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[240px] text-xs leading-relaxed">
+                <p className="font-medium mb-1">Karakterpoeng (grade points)</p>
+                <p>Your average grades are converted into points for university admission via Samordna opptak. Higher grades = more points. Competitive programmes have a cutoff (poenggrense).</p>
+                {gradeHint && <p className="mt-1.5 text-muted-foreground">{gradeHint}</p>}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
         {competitiveness && (
           <p className="text-[9px] leading-snug text-muted-foreground/70">

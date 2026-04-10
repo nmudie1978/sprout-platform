@@ -15,6 +15,7 @@
 
 import institutionsData from './data/institutions.json';
 import programmesData from './data/programmes.json';
+import requirementsData from './data/career-requirements.json';
 
 // ── Types ───────────────────────────────────────────────────────────
 
@@ -418,4 +419,54 @@ function toLegacyShape(
     alternativePaths: getAlternativePaths(careerId),
     ...(specialisationNote ? { specialisationNote } : {}),
   };
+}
+
+// ── Career Requirements (structured "What You Need" chain) ──────────
+
+export interface CareerRequirements {
+  schoolSubjects: {
+    required: string[];
+    recommended: string[];
+    minimumGrade: string;
+  };
+  universityPath: {
+    programme: string;
+    duration: string;
+    type: string;
+    examples: string[];
+    applicationRoute: string;
+    competitiveness: string;
+  };
+  entryLevelRequirements: {
+    title: string;
+    description: string;
+    whatYouNeed: string;
+  };
+  qualifiesFor: {
+    immediate: string;
+    withExperience: string;
+    seniorPath: string;
+  };
+  specialisationNote: string | null;
+}
+
+const requirementsMap: Record<string, CareerRequirements> =
+  (requirementsData as { requirements: Record<string, CareerRequirements> }).requirements;
+
+/**
+ * Get the structured entry-requirements chain for a career.
+ * Returns null if no data exists for this career yet.
+ */
+export function getCareerRequirements(
+  careerIdOrTitle: string,
+): CareerRequirements | null {
+  const slug = careerIdOrTitle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  if (requirementsMap[slug]) return requirementsMap[slug];
+  // Try resolving via career alias
+  const resolved = resolveCareerId(careerIdOrTitle);
+  if (resolved && requirementsMap[resolved]) return requirementsMap[resolved];
+  return null;
 }

@@ -3,7 +3,8 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Download, Play } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Play, FileText, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
@@ -365,17 +366,24 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       ? 'Apprenticeship'
       : 'Education';
 
+  const [reportOpen, setReportOpen] = useState(false);
+
   return (
     <div>
-      {/* Header row — just the meta line + controls. The title
-          ("Henry's Roadmap") is already in the collapsible section
-          header above, so we only show the small-print stats here. */}
+      {/* Header row */}
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] text-muted-foreground/75">
+        <button
+          type="button"
+          onClick={() => setReportOpen(true)}
+          className="text-[11px] text-muted-foreground/75 hover:text-foreground/80 transition-colors group flex items-center gap-1.5"
+        >
           {spanYears > 0 && (
             <>
-              <span className="font-semibold text-foreground/85">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
-              {eduStages.length > 0 && <> · {eduLabel} track</>}
+              <FileText className="h-3 w-3 text-muted-foreground/40 group-hover:text-foreground/60 shrink-0" />
+              <span>
+                <span className="font-semibold text-foreground/85 group-hover:text-foreground">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
+                {eduStages.length > 0 && <> · {eduLabel} track</>}
+              </span>
             </>
           )}
           {isPreliminary && (
@@ -384,31 +392,36 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               <span className="text-[10px]">Personalising...</span>
             </span>
           )}
-        </p>
+        </button>
         <div className="flex items-center gap-2">
           {/* Play Journey — inline play button */}
           {!simState.isPlaying && !simState.isPaused && (
             <button
               onClick={simControls.play}
               disabled={!journey}
-              className="inline-flex items-center gap-1 rounded-full bg-teal-500/15 border border-teal-500/30 px-2.5 py-1 text-[10px] font-semibold text-teal-300 hover:bg-teal-500/25 transition-colors disabled:opacity-30"
+              className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 text-[10px] font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors disabled:opacity-30"
               title="Play a voice-guided narration of your roadmap"
             >
               <Play className="h-3 w-3" />
               Play
             </button>
           )}
-          <button
-            onClick={handleExport}
-            className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
-            title="Download roadmap as image"
-          >
-            <Download className="h-3 w-3" />
-            <span className="hidden sm:inline">Export</span>
-          </button>
           <TimelineStyleSelector value={style} onChange={setStyle} />
         </div>
       </div>
+
+      {/* Roadmap report dialog */}
+      {reportOpen && (
+        <RoadmapReportDialog
+          journey={journey}
+          careerTitle={primaryGoalTitle}
+          firstAge={firstAge}
+          lastAge={lastAge}
+          spanYears={spanYears}
+          eduLabel={eduLabel}
+          onClose={() => setReportOpen(false)}
+        />
+      )}
 
       {/* Roadmap */}
       <div ref={roadmapRef}>
@@ -457,6 +470,109 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           if (!open) setSelectedItem(null);
         }}
       />
+    </div>
+  );
+}
+
+// ── Roadmap Report Dialog ─────────────────────────────────────────────────────
+
+const STAGE_STYLES: Record<string, { label: string; dot: string }> = {
+  foundation: { label: 'Foundation', dot: 'bg-amber-400' },
+  education:  { label: 'Education',  dot: 'bg-blue-400' },
+  experience: { label: 'Experience', dot: 'bg-emerald-400' },
+  career:     { label: 'Career',     dot: 'bg-violet-400' },
+};
+
+function RoadmapReportDialog({
+  journey,
+  careerTitle,
+  firstAge,
+  lastAge,
+  spanYears,
+  eduLabel,
+  onClose,
+}: {
+  journey: Journey;
+  careerTitle: string | null;
+  firstAge: number;
+  lastAge: number;
+  spanYears: number;
+  eduLabel: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Panel */}
+      <div className="relative w-full max-w-lg rounded-2xl border border-border/50 bg-card shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border/30">
+          <div>
+            <h2 className="text-sm font-bold text-foreground/90">Roadmap Summary</h2>
+            <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+              {careerTitle && <>{careerTitle} · </>}~{spanYears} years · Age {firstAge}–{lastAge} · {eduLabel} track
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/20 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Table */}
+        <div className="max-h-[60vh] overflow-y-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/20">
+                <th className="px-5 py-2 w-[4.5rem]">Age</th>
+                <th className="px-2 py-2">Step</th>
+                <th className="px-5 py-2 w-24 text-right">Stage</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/15">
+              {journey.items.map((item, i) => {
+                const stageStyle = STAGE_STYLES[item.stage] ?? STAGE_STYLES.career;
+                const ageLabel = item.endAge && item.endAge !== item.startAge
+                  ? `${item.startAge}–${item.endAge}`
+                  : `${item.startAge}`;
+                return (
+                  <tr key={item.id} className="hover:bg-muted/10 transition-colors">
+                    <td className="px-5 py-2.5 text-[11px] text-muted-foreground/70 tabular-nums font-medium">
+                      {ageLabel}
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <p className="text-xs font-medium text-foreground/85">{item.title}</p>
+                      {item.subtitle && (
+                        <p className="text-[10px] text-muted-foreground/50 mt-0.5">{item.subtitle}</p>
+                      )}
+                    </td>
+                    <td className="px-5 py-2.5 text-right">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className={cn('h-1.5 w-1.5 rounded-full', stageStyle.dot)} />
+                        <span className="text-[10px] text-muted-foreground/55">{stageStyle.label}</span>
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer summary */}
+        <div className="px-5 py-3 border-t border-border/20 bg-muted/[0.04] flex items-center justify-between text-[10px] text-muted-foreground/50">
+          <span>{journey.items.length} steps</span>
+          <span>
+            {journey.items.filter((i) => i.stage === 'education').length} education ·{' '}
+            {journey.items.filter((i) => i.stage === 'experience').length} experience ·{' '}
+            {journey.items.filter((i) => i.stage === 'career').length} career
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

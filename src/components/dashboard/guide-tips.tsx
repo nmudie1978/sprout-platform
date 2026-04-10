@@ -9,11 +9,11 @@
  * available as a subtle icon the user can tap any time.
  *
  * Tips are ordered to match the natural flow:
- *   1. Choose a career
- *   2. Explore in My Journey
- *   3. Build your roadmap
- *   4. Career Radar
- *   5. Browse opportunities
+ *   1. Pick a career to explore
+ *   2. Explore your journey (Discover / Understand / Grow)
+ *   3. Play through your roadmap
+ *   4. Sharpen your match (Career Radar)
+ *   5. Find real opportunities (Momentum)
  */
 
 import { useState, useEffect } from "react";
@@ -39,37 +39,37 @@ const TIPS = [
   {
     icon: Compass,
     color: "text-teal-400",
-    title: "Start by choosing a career",
+    title: "Pick a career to explore",
     description:
-      "Browse Explore Careers to find something that interests you, then set it as your primary goal. That one choice unlocks everything else.",
+      "Head to Explore Careers, find something that sparks your interest, and set it as your goal. Everything else — your journey, roadmap, and opportunities — builds from that choice.",
   },
   {
     icon: Route,
     color: "text-blue-400",
-    title: "Dive into My Journey",
+    title: "Explore your journey",
     description:
-      "Your journey has three tabs — Discover, Understand, and Grow. Explore the career, learn what it actually involves, then build your roadmap.",
+      "My Journey has three tabs you can visit in any order. Discover shows what a day in the role looks like. Understand breaks down education paths and entry requirements. Grow is where it all comes together.",
   },
   {
     icon: Rocket,
     color: "text-amber-400",
-    title: "Build your roadmap",
+    title: "Play through your roadmap",
     description:
-      "In the Grow tab you'll find a personal roadmap anchored to your age and education. Mark steps done as you progress — it's your plan, at your pace.",
+      "In the Grow tab, hit Play Journey to hear your personalised roadmap narrated step by step — from where you are now to a senior role. It's built around your age and education automatically.",
   },
   {
     icon: Radar,
     color: "text-violet-400",
-    title: "Refine with Career Radar",
+    title: "Sharpen your match",
     description:
-      "Answer a few quick questions about your interests and work style. Your answers power the Match % on every career — helping you find the best fit.",
+      "Career Radar asks a few quick questions about your interests and work style. Your answers power the Match % on every career so the best fits rise to the top.",
   },
   {
     icon: Search,
     color: "text-emerald-400",
     title: "Find real opportunities",
     description:
-      "Live Opportunities in Grow pulls real jobs, courses, and university programmes from the web — verified and filtered for your age group.",
+      "The Momentum section in Grow surfaces live jobs, courses, and programmes relevant to your career — plus a personal action list to track your next moves.",
   },
 ] as const;
 

@@ -5,17 +5,43 @@ import { type JourneyItem, type SchoolTrackItem } from '@/lib/journey/career-jou
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
-import { BookOpen, Check } from 'lucide-react';
+import { BookOpen, Check, Banknote } from 'lucide-react';
+import { getAllCareers, getCareerById } from '@/lib/career-pathways';
 
 const NODE_SIZE = 40;
 const H_SPACING = 200;
 const CAREER_TRACK_Y = 40;
 const CARD_WIDTH = 180;
 
-export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle }: RendererProps) {
+export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle }: RendererProps) {
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
+
+  // Earnings indicator
+  const earningsInfo = useMemo(() => {
+    if (!careerTitle) return null;
+    const slug = careerTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const career = getCareerById(slug) ?? getAllCareers().find(c => c.title === careerTitle);
+    if (!career?.avgSalary) return null;
+    const nums = career.avgSalary.match(/[\d,]+/g);
+    if (!nums || nums.length < 1) return null;
+    const low = nums[0].replace(/,/g, '');
+    const high = nums.length >= 2 ? nums[nums.length - 1].replace(/,/g, '') : null;
+    let firstExpIdx = -1;
+    let lastCareerIdx = -1;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].stage === 'experience' && firstExpIdx === -1) firstExpIdx = i;
+      if (items[i].stage === 'career') lastCareerIdx = i;
+    }
+    const fmt = (n: string) => { const v = parseInt(n, 10); return isNaN(v) ? n : v >= 1000 ? `${Math.round(v / 1000)}k` : `${v}`; };
+    return {
+      firstExpIdx,
+      lastCareerIdx,
+      entryLabel: high ? `~${fmt(low)}–${fmt(high)} kr` : `~${fmt(low)} kr`,
+      seniorLabel: high ? `~${fmt(high)}+ kr` : null,
+    };
+  }, [careerTitle, items]);
 
   const youAreHereIndex = useMemo(() => {
     for (let i = 0; i < items.length; i++) {
@@ -90,7 +116,18 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
                   onProgressCycle={onProgressCycle ? () => onProgressCycle(item.id) : undefined}
                 />
 
-                <RailCard item={item} state={state} onClick={() => onItemClick(item)} />
+                <RailCard
+                  item={item}
+                  state={state}
+                  onClick={() => onItemClick(item)}
+                  earningsHint={
+                    earningsInfo && i === earningsInfo.firstExpIdx
+                      ? earningsInfo.entryLabel
+                      : earningsInfo?.seniorLabel && i === earningsInfo.lastCareerIdx
+                        ? earningsInfo.seniorLabel
+                        : undefined
+                  }
+                />
 
                 {i === 0 && firstSchool && (
                   <div className="mt-2 w-full">
@@ -110,10 +147,12 @@ function RailCard({
   item,
   state,
   onClick,
+  earningsHint,
 }: {
   item: JourneyItem;
   state: StepState;
   onClick: () => void;
+  earningsHint?: string;
 }) {
   const stateClasses: Record<StepState, string> = {
     completed: 'border-emerald-500/40 bg-emerald-500/[0.04]',
@@ -146,6 +185,12 @@ function RailCard({
       >
         {item.title}
       </p>
+      {earningsHint && (
+        <span className="inline-flex items-center gap-1 mt-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-medium">
+          <Banknote className="h-2.5 w-2.5" />
+          {earningsHint}
+        </span>
+      )}
     </button>
   );
 }

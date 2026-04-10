@@ -12,9 +12,156 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+/* ── Radar Guide Tips ─────────────────────────────────────────────── */
+
+const RADAR_GUIDE_KEY = "radar-guide-dismissed";
+
+const RADAR_TIPS = [
+  {
+    icon: MousePointerClick,
+    color: "text-teal-400",
+    title: "Tap any dot to explore",
+    description:
+      "Each dot is a career that matches your interests. Tap one to see salary, skills, and growth outlook — and set it as your goal if it sparks something.",
+  },
+  {
+    icon: Target,
+    color: "text-pink-400",
+    title: "Closer to centre = stronger match",
+    description:
+      "The radar places your best matches near the centre. Pink glowing dots are your top matches. Your active goal always has a gold ring around it.",
+  },
+  {
+    icon: Layers,
+    color: "text-violet-400",
+    title: "Switch views and filter",
+    description:
+      "Use Dots, Rings, or Initials to change how careers are shown. Use the filter to focus on specific match tiers — Top, Strong, Good, or Worth a look.",
+  },
+  {
+    icon: Settings2,
+    color: "text-amber-400",
+    title: "Refine with What I like",
+    description:
+      "Tap 'What I like' to update your subjects, work style, and people preferences. Your radar recalculates instantly — every answer reshapes the map.",
+  },
+] as const;
+
+function RadarGuideTips() {
+  const [dismissed, setDismissed] = useState(true); // default true to avoid flash
+  const [currentTip, setCurrentTip] = useState(0);
+
+  useEffect(() => {
+    try {
+      const d = window.localStorage.getItem(RADAR_GUIDE_KEY) === "1";
+      setDismissed(d);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const dismiss = () => {
+    setDismissed(true);
+    try {
+      window.localStorage.setItem(RADAR_GUIDE_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  if (dismissed) return null;
+
+  const tip = RADAR_TIPS[currentTip];
+  const TipIcon = tip.icon;
+
+  return (
+    <div className="px-4 pt-3 pb-2 border-b bg-gradient-to-r from-teal-500/5 via-transparent to-violet-500/5">
+      <div className="flex items-start gap-2.5">
+        <div
+          className={cn(
+            "shrink-0 rounded-lg p-1.5 bg-muted/30 mt-0.5",
+            tip.color,
+          )}
+        >
+          <TipIcon className="h-4 w-4" />
+        </div>
+        <div className="flex-1 min-w-0 space-y-1">
+          <p className="text-[13px] font-semibold leading-tight">
+            {tip.title}
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {tip.description}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={dismiss}
+          className="shrink-0 p-1 rounded-md hover:bg-muted text-muted-foreground/60 hover:text-foreground transition-colors"
+          aria-label="Dismiss guide"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center gap-1">
+          {RADAR_TIPS.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setCurrentTip(i)}
+              className={cn(
+                "h-1 rounded-full transition-all duration-200",
+                i === currentTip
+                  ? "w-3 bg-teal-500"
+                  : i < currentTip
+                    ? "w-1.5 bg-teal-500/40"
+                    : "w-1.5 bg-muted-foreground/25",
+              )}
+              aria-label={`Tip ${i + 1}`}
+            />
+          ))}
+          <span className="text-[10px] text-muted-foreground/60 ml-1.5">
+            {currentTip + 1}/{RADAR_TIPS.length}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 text-[11px] px-2"
+            onClick={() => setCurrentTip((c) => Math.max(0, c - 1))}
+            disabled={currentTip === 0}
+          >
+            Back
+          </Button>
+          <Button
+            size="sm"
+            variant={currentTip === RADAR_TIPS.length - 1 ? "default" : "ghost"}
+            className={cn(
+              "h-6 text-[11px] px-2",
+              currentTip === RADAR_TIPS.length - 1 && "bg-teal-600 hover:bg-teal-700"
+            )}
+            onClick={() => {
+              if (currentTip === RADAR_TIPS.length - 1) {
+                dismiss();
+              } else {
+                setCurrentTip((c) => c + 1);
+              }
+            }}
+          >
+            {currentTip === RADAR_TIPS.length - 1 ? "Got it" : "Next"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Career Radar
@@ -344,6 +491,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   return (
     <>
     <div className="rounded-2xl border bg-card overflow-hidden">
+      <RadarGuideTips />
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-muted-foreground">
@@ -414,8 +562,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   {([
                     { id: "top", label: "Top match", swatch: "bg-pink-400" },
                     { id: "strong", label: "Strong", swatch: "bg-teal-500" },
-                    { id: "good", label: "Good", swatch: "bg-teal-500/70" },
-                    { id: "worth", label: "Worth a look", swatch: "bg-slate-400/70" },
+                    { id: "good", label: "Good", swatch: "bg-sky-400" },
+                    { id: "worth", label: "Worth a look", swatch: "bg-amber-400" },
                   ] as const).map((opt) => {
                     const checked = activeTiers.has(opt.id);
                     return (
@@ -692,8 +840,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                       : d.ring === 0
                       ? "fill-teal-500 group-hover:fill-teal-400"
                       : d.ring === 1
-                      ? "fill-teal-500/70 group-hover:fill-teal-400"
-                      : "fill-slate-400/70 group-hover:fill-slate-300"
+                      ? "fill-sky-400/70 group-hover:fill-sky-300"
+                      : "fill-amber-400/70 group-hover:fill-amber-300"
                   )}
                 />
               )}
@@ -711,8 +859,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                       : d.ring === 0
                       ? "stroke-teal-500 group-hover:stroke-teal-400"
                       : d.ring === 1
-                      ? "stroke-teal-500/70 group-hover:stroke-teal-400"
-                      : "stroke-slate-400/70 group-hover:stroke-slate-300"
+                      ? "stroke-sky-400/70 group-hover:stroke-sky-300"
+                      : "stroke-amber-400/70 group-hover:stroke-amber-300"
                   )}
                 />
               )}
@@ -729,8 +877,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         : d.ring === 0
                         ? "fill-teal-500/15 stroke-teal-500"
                         : d.ring === 1
-                        ? "fill-teal-500/10 stroke-teal-500/70"
-                        : "fill-slate-500/10 stroke-slate-400/70"
+                        ? "fill-sky-400/10 stroke-sky-400/70"
+                        : "fill-amber-400/10 stroke-amber-400/70"
                     )}
                     strokeWidth={1}
                   />
@@ -747,8 +895,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         : d.ring === 0
                         ? "fill-teal-300"
                         : d.ring === 1
-                        ? "fill-teal-300/85"
-                        : "fill-slate-300/85"
+                        ? "fill-sky-300/85"
+                        : "fill-amber-300/85"
                     )}
                   >
                     {careerInitials(d.career.title)}
@@ -841,11 +989,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             Strong
           </span>
           <span className="flex items-center gap-1">
-            <span className="inline-block w-2 h-2 rounded-full bg-teal-500/70" />
+            <span className="inline-block w-2 h-2 rounded-full bg-sky-400" />
             Good
           </span>
           <span className="flex items-center gap-1">
-            <span className="inline-block w-2 h-2 rounded-full bg-slate-400/70" />
+            <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
             Worth a look
           </span>
           <span className="flex items-center gap-1">
@@ -886,8 +1034,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 ring === 0
                   ? "text-teal-600 dark:text-teal-400"
                   : ring === 1
-                  ? "text-teal-500/80"
-                  : "text-muted-foreground",
+                  ? "text-sky-500 dark:text-sky-400"
+                  : "text-amber-500 dark:text-amber-400",
               dots: ringDots,
             };
           })
@@ -983,7 +1131,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"
                               : growth === "medium"
                               ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25"
-                              : "bg-slate-500/15 text-slate-500 dark:text-slate-400 border-slate-500/25";
+                              : "bg-amber-500/15 text-amber-500 dark:text-amber-400 border-amber-500/25";
                           return (
                             <tr
                               key={d.career.id}
@@ -1028,7 +1176,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                         ? "bg-emerald-500"
                                         : growth === "medium"
                                         ? "bg-amber-500"
-                                        : "bg-slate-400"
+                                        : "bg-blue-400"
                                     )}
                                   />
                                   {growth}

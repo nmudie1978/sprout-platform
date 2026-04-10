@@ -218,13 +218,13 @@ export function useRoadmapSimulation(
           // absorb what was said before the next segment starts.
           setTimeout(() => {
             if (playingRef.current) playSegment(segmentIndex + 1);
-          }, 3000);
+          }, 2000);
         }
       };
 
       audio.onerror = () => {
         if (playingRef.current) {
-          setTimeout(() => playSegment(segmentIndex + 1), 3000);
+          setTimeout(() => playSegment(segmentIndex + 1), 2000);
         }
       };
 

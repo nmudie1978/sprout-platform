@@ -22,11 +22,17 @@ import {
   Sparkles,
   Route,
   LayoutGrid,
-  List,
   AlignJustify,
   ChevronRight,
+  ChevronDown,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {
   getProgrammesForCareer,
   getInstitutionById,
@@ -43,7 +49,6 @@ import {
   type FoundationContext,
 } from '@/lib/education/programme-alignment';
 import { BrowserFilters, type FilterState } from './browser-filters';
-import { InstitutionCard } from './institution-card';
 import { AlignmentBadge } from './alignment-badge';
 
 interface EducationBrowserProps {
@@ -94,8 +99,9 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     return map;
   }, [allProgrammes, foundation]);
 
-  type ViewMode = 'list' | 'detailed' | 'cards';
+  type ViewMode = 'list' | 'cards';
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -213,56 +219,85 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
       style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
     >
       {/* ── Hero card ─────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] p-5 sm:p-6 relative overflow-hidden">
+      <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] relative overflow-hidden">
         {/* Ambient glow */}
         <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-teal-500/[0.06] blur-3xl pointer-events-none" />
 
-        <div className="relative">
-          {/* Title row */}
-          <div className="flex items-start gap-3 mb-4">
-            <div className="h-10 w-10 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0">
-              <GraduationCap className="h-5 w-5 text-teal-400" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-base font-bold text-foreground/90 leading-tight">
-                Study paths for{' '}
-                <span className="text-teal-400">{careerTitle}</span>
-              </h1>
-              {summary && (
-                <p className="text-[12px] text-muted-foreground/75 leading-relaxed mt-1">
-                  {summary}
-                </p>
+        {/* Clickable header row — always visible */}
+        <button
+          type="button"
+          onClick={() => setHeaderCollapsed((c) => !c)}
+          className="relative w-full flex items-center gap-3 p-5 sm:p-6 text-left group"
+          aria-expanded={!headerCollapsed}
+        >
+          <div className="h-10 w-10 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0">
+            <GraduationCap className="h-5 w-5 text-teal-400" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-base font-bold text-foreground/90 leading-tight flex items-center gap-2">
+              <span>Study paths for{' '}<span className="text-teal-400">{careerTitle}</span></span>
+              <TooltipProvider delayDuration={150}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span onClick={(e) => e.stopPropagation()}>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                    Real universities and programmes that lead to this career — filtered by your location and subjects.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </h1>
+            {headerCollapsed && (
+              <p className="text-[11px] text-muted-foreground/50 mt-0.5">
+                {groups.length} institution{groups.length !== 1 ? 's' : ''} &middot; {allProgrammes.length} programme{allProgrammes.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+          <ChevronDown className={cn(
+            'h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-transform duration-200 shrink-0',
+            headerCollapsed && '-rotate-90',
+          )} />
+        </button>
+
+        {/* Collapsible content */}
+        {!headerCollapsed && (
+          <div className="relative px-5 sm:px-6 pb-5 sm:pb-6 space-y-4">
+            {summary && (
+              <p className="text-[12px] text-muted-foreground/75 leading-relaxed -mt-2">
+                {summary}
+              </p>
+            )}
+
+            {/* Stat pills */}
+            <div className="flex flex-wrap gap-2">
+              <StatPill
+                icon={Building2}
+                label={`${groups.length} institution${groups.length !== 1 ? 's' : ''}`}
+              />
+              <StatPill
+                icon={BookOpen}
+                label={`${allProgrammes.length} programme${allProgrammes.length !== 1 ? 's' : ''}`}
+              />
+              <StatPill
+                icon={MapPin}
+                label={countries.map((c) => COUNTRY_FLAGS[c] ?? c).join(' ')}
+              />
+              {alignedCount > 0 && (
+                <StatPill
+                  icon={Sparkles}
+                  label={`${alignedCount} aligned`}
+                  accent
+                />
               )}
             </div>
           </div>
-
-          {/* Stat pills */}
-          <div className="flex flex-wrap gap-2">
-            <StatPill
-              icon={Building2}
-              label={`${groups.length} institution${groups.length !== 1 ? 's' : ''}`}
-            />
-            <StatPill
-              icon={BookOpen}
-              label={`${allProgrammes.length} programme${allProgrammes.length !== 1 ? 's' : ''}`}
-            />
-            <StatPill
-              icon={MapPin}
-              label={countries.map((c) => COUNTRY_FLAGS[c] ?? c).join(' ')}
-            />
-            {alignedCount > 0 && (
-              <StatPill
-                icon={Sparkles}
-                label={`${alignedCount} aligned`}
-                accent
-              />
-            )}
-          </div>
-        </div>
+        )}
       </div>
 
       {/* ── Info cards (advanced route / alternative paths) ────────── */}
-      {(advanced || alternativePaths.length > 0) && (
+      {!headerCollapsed && (advanced || alternativePaths.length > 0) && (
         <div className={cn('grid gap-3', advanced && alternativePaths.length > 0 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1')}>
           {advanced && (
             <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.04] px-4 py-3.5">
@@ -312,8 +347,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         <div className="inline-flex items-center gap-0.5 rounded-md border border-border/40 bg-background/40 p-0.5">
           {([
             { id: 'list' as const, icon: AlignJustify, label: 'List' },
-            { id: 'detailed' as const, icon: LayoutGrid, label: 'Detailed' },
-            { id: 'cards' as const, icon: List, label: 'Cards' },
+            { id: 'cards' as const, icon: LayoutGrid, label: 'Cards' },
           ]).map(({ id, icon: Icon, label }) => (
             <button
               key={id}
@@ -338,21 +372,6 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
       {/* ── Institution cards ─────────────────────────────────────── */}
       {groups.length > 0 ? (
         <>
-          {/* Detailed view — 2-col grid with institution cards + programme carousel */}
-          {viewMode === 'detailed' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {groups.map((group) => (
-                <InstitutionCard
-                  key={group.institution.id}
-                  institution={group.institution}
-                  programmes={group.programmes}
-                  alignments={alignments}
-                  routeNote={advanced?.specialisationNote}
-                />
-              ))}
-            </div>
-          )}
-
           {/* Cards view — flat grid of all programmes as standalone cards */}
           {viewMode === 'cards' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">

@@ -5,15 +5,41 @@ import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
-import { Check } from 'lucide-react';
+import { Check, Banknote } from 'lucide-react';
+import { getAllCareers, getCareerById } from '@/lib/career-pathways';
 
 const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
 const LINE_X = NODE_SIZE / 2;
 
-export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle }: RendererProps) {
+export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle }: RendererProps) {
   const items = journey.items;
   const totalHeight = items.length * ROW_HEIGHT + NODE_SIZE;
+
+  // Earnings indicator
+  const earningsInfo = useMemo(() => {
+    if (!careerTitle) return null;
+    const slug = careerTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const career = getCareerById(slug) ?? getAllCareers().find(c => c.title === careerTitle);
+    if (!career?.avgSalary) return null;
+    const nums = career.avgSalary.match(/[\d,]+/g);
+    if (!nums || nums.length < 1) return null;
+    const low = nums[0].replace(/,/g, '');
+    const high = nums.length >= 2 ? nums[nums.length - 1].replace(/,/g, '') : null;
+    let firstExpIdx = -1;
+    let lastCareerIdx = -1;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].stage === 'experience' && firstExpIdx === -1) firstExpIdx = i;
+      if (items[i].stage === 'career') lastCareerIdx = i;
+    }
+    const fmt = (n: string) => { const v = parseInt(n, 10); return isNaN(v) ? n : v >= 1000 ? `${Math.round(v / 1000)}k` : `${v}`; };
+    return {
+      firstExpIdx,
+      lastCareerIdx,
+      entryLabel: high ? `~${fmt(low)}–${fmt(high)} kr` : `~${fmt(low)} kr`,
+      seniorLabel: high ? `~${fmt(high)}+ kr` : null,
+    };
+  }, [careerTitle, items]);
 
   const youAreHereIndex = useMemo(() => {
     for (let i = 0; i < items.length; i++) {
@@ -79,6 +105,13 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
               ageLabel={ageLabel}
               state={state}
               onClick={() => onItemClick(item)}
+              earningsHint={
+                earningsInfo && i === earningsInfo.firstExpIdx
+                  ? earningsInfo.entryLabel
+                  : earningsInfo?.seniorLabel && i === earningsInfo.lastCareerIdx
+                    ? earningsInfo.seniorLabel
+                    : undefined
+              }
             />
           </div>
         );
@@ -92,11 +125,13 @@ function SteppingCard({
   ageLabel,
   state,
   onClick,
+  earningsHint,
 }: {
   item: JourneyItem;
   ageLabel: string;
   state: StepState;
   onClick: () => void;
+  earningsHint?: string;
 }) {
   const stateClasses: Record<StepState, string> = {
     completed: 'border-emerald-500/40 bg-emerald-500/[0.04]',
@@ -142,6 +177,12 @@ function SteppingCard({
       >
         {item.title}
       </p>
+      {earningsHint && (
+        <span className="inline-flex items-center gap-1 mt-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-medium">
+          <Banknote className="h-2.5 w-2.5" />
+          {earningsHint}
+        </span>
+      )}
     </button>
   );
 }

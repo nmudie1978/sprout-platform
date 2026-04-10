@@ -16,29 +16,29 @@ function getOpenAIClient(): OpenAI | null {
   return _openai;
 }
 
-const SYSTEM_PROMPT = `You generate realistic career path examples for Norwegian youth. Output ONLY valid JSON.
+const SYSTEM_PROMPT = `You generate realistic career path examples for Nordic youth. Output ONLY valid JSON.
 
 You will be given a specific career title. Generate exactly 2 example career paths for THAT EXACT career — not a related or broader career.
 
-CRITICAL: The career paths must be specifically about the career title given. For example:
-- "Network Engineer" → paths about network engineering, NOT mechanical or civil engineering
-- "Data Scientist" → paths about data science, NOT generic data analysis
-- "UX Designer" → paths about UX design, NOT graphic design
+CRITICAL RULE — THE TWO PATHS MUST BE GENUINELY DIFFERENT:
+- Path 1: The NORWEGIAN ROUTE — studied in Norway (videregående → Norwegian university like UiO, NTNU, OsloMet, UiB, UiT, etc.) → works in Norway.
+- Path 2: The INTERNATIONAL ROUTE — grew up in Norway but studied ABROAD (e.g. university in Sweden, Denmark, UK, Netherlands, Germany, Czech Republic, Hungary, or another country relevant to the career) → may have returned to work in Norway or stayed abroad.
 
-Each example should show a different realistic route to that career in Norway.
+This contrast is the entire point — showing that there is more than one way in.
 
 JSON format:
-{"examples":[{"name":"Firstname L.","title":"<exact career title> — <Norwegian city>","currentAge":N,"location":"<city>","steps":[{"age":N,"label":"description"}]}]}
+{"examples":[{"name":"Firstname L.","title":"<exact career title> — <city>","currentAge":N,"location":"<city>","steps":[{"age":N,"label":"description"}]}]}
 
 Rules:
-- Use Norwegian educational context (videregående, Norwegian universities: UiO, NTNU, OsloMet, UiB, UiT, HVL, etc.)
-- Use Norwegian companies and organisations
-- First step should be videregående at age 16
+- Path 1 uses Norwegian educational context (videregående, Norwegian universities, Norwegian companies)
+- Path 2 uses an international educational context (studied abroad, possibly different school system, returned to Norway or works abroad)
+- First step for both should be around age 16
 - Career progression must be realistic — proper education duration, entry-level before senior
 - Each path should have exactly 5 steps (keep labels concise, max ~10 words each)
-- The two examples should show genuinely different routes (e.g. different universities, different specialisations, academic vs vocational)
 - Names should be typical Norwegian first names with last initial
-- Ages should be realistic for the career stage`;
+- Ages should be realistic for the career stage
+- The international path should name the REAL foreign university (e.g. "Studied medicine at Charles University, Prague" or "BSc Computer Science at TU Delft")
+- Both paths end at a realistic current age (25-35 depending on career length)`;
 
 function isValidExamples(data: unknown): data is { examples: CareerPathExample[] } {
   if (!data || typeof data !== 'object') return false;
@@ -68,7 +68,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Check global cache first
-    const cacheKey = `career-paths:${career.toLowerCase().trim()}`;
+    // v2: Norwegian + international contrast. Bumped to invalidate
+    // old cached results that had two Norwegian-only paths.
+    const cacheKey = `career-paths:v2:${career.toLowerCase().trim()}`;
     try {
       const cached = await prisma.videoCache.findUnique({ where: { cacheKey } });
       if (cached && cached.expiresAt > new Date()) {

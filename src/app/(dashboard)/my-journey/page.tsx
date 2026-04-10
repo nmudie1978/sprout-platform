@@ -15,7 +15,7 @@
  *   - YouTube: /api/youtube-search
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
@@ -26,15 +26,21 @@ import {
   Eye, ExternalLink, ChevronDown,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
-  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap,
+  DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import { getNorwayProgrammes, getCertificationPath } from '@/lib/education';
+import { getNorwayProgrammes, getCertificationPath, getCareerRequirements } from '@/lib/education';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import { EducationBrowser } from '@/components/education-browser';
@@ -251,15 +257,50 @@ function SectionCard({ children, className, style }: { children: React.ReactNode
   );
 }
 
-function SectionHeader({ icon: Icon, title, badge }: { icon: typeof Eye; title: string; badge?: React.ReactNode }) {
+function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle }: {
+  icon: typeof Eye;
+  title: string;
+  badge?: React.ReactNode;
+  tooltip?: string;
+  /** When provided, the header becomes a clickable collapse toggle. */
+  collapsed?: boolean;
+  onToggle?: () => void;
+}) {
+  const Wrapper = onToggle ? 'button' : 'div';
   return (
-    <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/30">
+    <Wrapper
+      {...(onToggle ? { type: 'button' as const, onClick: onToggle, 'aria-expanded': !collapsed } : {})}
+      className={cn(
+        'flex items-center justify-between px-5 py-3.5 border-b border-border/30 w-full text-left',
+        onToggle && 'hover:bg-muted/20 transition-colors cursor-pointer',
+      )}
+    >
       <div className="flex items-center gap-2.5">
         <Icon className="h-4 w-4 text-muted-foreground/60" />
         <h3 className="text-sm font-semibold text-foreground/90">{title}</h3>
+        {tooltip && (
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                {tooltip}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
-      {badge}
-    </div>
+      <div className="flex items-center gap-2">
+        {badge}
+        {onToggle && (
+          <ChevronDown className={cn(
+            'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
+            collapsed && '-rotate-90',
+          )} />
+        )}
+      </div>
+    </Wrapper>
   );
 }
 
@@ -272,9 +313,9 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
   );
 }
 
-function StatCard({ label, value, icon: Icon, accent }: { label: string; value: string; icon: typeof TrendingUp; accent?: string }) {
-  return (
-    <div className="rounded-lg border border-border/30 bg-background/50 p-3.5">
+function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string; value: string; icon: typeof TrendingUp; accent?: string; tooltip?: string }) {
+  const card = (
+    <div className={cn('rounded-lg border border-border/30 bg-background/50 p-3.5', tooltip && 'cursor-help')}>
       <div className="flex items-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
         <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{label}</span>
@@ -282,6 +323,29 @@ function StatCard({ label, value, icon: Icon, accent }: { label: string; value: 
       <p className="text-xs font-semibold text-foreground/90">{value}</p>
     </div>
   );
+  if (!tooltip) return card;
+  return (
+    <TooltipProvider delayDuration={150}>
+      <Tooltip>
+        <TooltipTrigger asChild>{card}</TooltipTrigger>
+        <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">{tooltip}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+/** Formats "700,000 - 1,400,000 kr/year" → "700k – 1.4M NOK" */
+function formatSalaryShort(raw: string): string {
+  const nums = raw.match(/[\d,]+/g);
+  if (!nums || nums.length === 0) return raw;
+  const fmt = (s: string) => {
+    const n = parseInt(s.replace(/,/g, ''), 10);
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 1)}M`;
+    if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+    return String(n);
+  };
+  if (nums.length >= 2) return `${fmt(nums[0])} – ${fmt(nums[1])} NOK`;
+  return `${fmt(nums[0])} NOK`;
 }
 
 function LoadingSkeleton() {
@@ -292,6 +356,32 @@ function LoadingSkeleton() {
       ))}
     </div>
   );
+}
+
+// ─── Section collapse helper ─────────────────────────────────────────────────
+
+/** Manages collapse state for multiple sections, persisted in localStorage. */
+function useSectionCollapse(keys: string[]) {
+  const [state, setState] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    try {
+      const loaded: Record<string, boolean> = {};
+      for (const k of keys) {
+        loaded[k] = window.localStorage.getItem(`section-${k}`) === '1';
+      }
+      setState(loaded);
+    } catch { /* ignore */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const toggle = useCallback((key: string) => {
+    setState((prev) => {
+      const next = !prev[key];
+      try { window.localStorage.setItem(`section-${key}`, next ? '1' : '0'); } catch { /* ignore */ }
+      return { ...prev, [key]: next };
+    });
+  }, []);
+  const isCollapsed = useCallback((key: string) => !!state[key], [state]);
+  return { isCollapsed, toggle };
 }
 
 // ─── DISCOVER TAB ────────────────────────────────────────────────────────────
@@ -309,6 +399,7 @@ function DiscoverTab({
   const { data: ytData } = useYouTubeVideo(goalTitle);
   const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
   const videoId = ytData?.videoId ?? null;
+  const { isCollapsed: dCollapsed, toggle: dToggle } = useSectionCollapse(['d-video', 'd-overview', 'd-insights']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Target} message="Set a career goal to start exploring" />;
@@ -353,8 +444,8 @@ function DiscoverTab({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Video — 2 cols */}
         <SectionCard className="lg:col-span-2">
-          <SectionHeader icon={Play} title="A Day in the Life" />
-          <div className="p-4">
+          <SectionHeader icon={Play} title="A Day in the Life" collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
+          {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
               <div className="rounded-lg overflow-hidden">
                 <iframe
@@ -377,28 +468,68 @@ function DiscoverTab({
                 <p className="text-xs text-muted-foreground/50">Watch on YouTube</p>
               </a>
             )}
-          </div>
+          </div>}
         </SectionCard>
 
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
           <SectionCard>
-            <SectionHeader icon={BarChart3} title="Career Overview" />
-            <div className="p-4 grid grid-cols-2 gap-3">
-              <StatCard label="Avg. Salary" value={career.avgSalary} icon={DollarSign} accent="text-emerald-400" />
+            <SectionHeader icon={BarChart3} title="Career Overview" collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
+            {!dCollapsed('d-overview') && <div className="p-4 grid grid-cols-2 gap-3">
+              <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
               <StatCard
                 label="Growth"
                 value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
                 icon={TrendingUp}
                 accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
               />
-              <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3.5">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
-                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Education Path</span>
-                </div>
-                <p className="text-xs text-foreground/80">{career.educationPath}</p>
-              </div>
+              {/* What You Need — compact horizontal chain for Discover.
+                  Each step is one small pill with full detail in its
+                  native tooltip. Keeps the card tight and scannable. */}
+              {(() => {
+                const reqs = getCareerRequirements(career.id) || getCareerRequirements(career.title);
+                if (!reqs) {
+                  return (
+                    <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
+                        <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Education Path</span>
+                      </div>
+                      <p className="text-xs text-foreground/80">{career.educationPath}</p>
+                    </div>
+                  );
+                }
+                // Merge specialisation note into the last pill's tooltip
+                const specNote = reqs.specialisationNote ? `\n\n${reqs.specialisationNote}` : '';
+                const steps = [
+                  { emoji: '🏫', label: reqs.schoolSubjects.required.slice(0, 3).join(', '), tip: `Required: ${reqs.schoolSubjects.required.join(', ')}${reqs.schoolSubjects.recommended.length ? `\nRecommended: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}\n${reqs.schoolSubjects.minimumGrade}` },
+                  { emoji: '🎓', label: `${reqs.universityPath.programme} · ${reqs.universityPath.duration}`, tip: `e.g. ${reqs.universityPath.examples.join(', ')}\nApply via ${reqs.universityPath.applicationRoute}\n${reqs.universityPath.competitiveness}` },
+                  { emoji: '📋', label: reqs.entryLevelRequirements.title, tip: `${reqs.entryLevelRequirements.description}\nYou need: ${reqs.entryLevelRequirements.whatYouNeed}${specNote}` },
+                  { emoji: '💼', label: reqs.qualifiesFor.immediate, tip: `→ ${reqs.qualifiesFor.withExperience}\n→ ${reqs.qualifiesFor.seniorPath}${specNote}` },
+                ];
+                return (
+                  <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
+                      <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">What you need</span>
+                    </div>
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {steps.map((s, i) => (
+                        <div key={i} className="contents">
+                          {i > 0 && <span className="text-[10px] text-muted-foreground/40 px-0.5">→</span>}
+                          <span
+                            title={s.tip}
+                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/25 bg-muted/10 px-2 py-1 text-[10px] text-foreground/80 cursor-help hover:border-blue-500/30 hover:bg-blue-500/[0.05] transition-colors"
+                          >
+                            <span>{s.emoji}</span>
+                            <span className="max-w-[150px] truncate">{s.label}</span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
               {career.entryLevel && (
                 <div className="col-span-2 rounded-lg border border-teal-500/20 bg-teal-500/5 px-3.5 py-2.5">
                   <p className="text-xs text-teal-400 font-medium">Entry-level accessible — no degree required</p>
@@ -415,7 +546,7 @@ function DiscoverTab({
                   ))}
                 </div>
               </div>
-            </div>
+            </div>}
           </SectionCard>
         </div>
       </div>
@@ -528,6 +659,7 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [carouselTab, setCarouselTab] = useState<'paths' | 'tools'>('paths');
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-notes', 'u-career-paths']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -563,26 +695,28 @@ function UnderstandTab({
         {/* Left: What You'll Actually Do */}
         {details && details.whatYouActuallyDo.length > 0 && (
           <SectionCard>
-            <SectionHeader icon={Briefcase} title="What You'll Actually Do" />
-            <div className="p-4">
-              <div className="space-y-1.5">
-                {details.whatYouActuallyDo.map((task, i) => (
-                  <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
-                    <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+            <SectionHeader icon={Briefcase} title="What You'll Actually Do" tooltip="The core responsibilities and daily tasks that define this role — what you'd actually spend your time doing." collapsed={uCollapsed('u-tasks')} onToggle={() => uToggle('u-tasks')} />
+            {!uCollapsed('u-tasks') && (
+              <div className="p-4">
+                <div className="space-y-1.5">
+                  {details.whatYouActuallyDo.map((task, i) => (
+                    <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
+                      <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+                      </div>
+                      <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
                     </div>
-                    <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </SectionCard>
         )}
 
         {/* Right: The Reality — dynamic reality check */}
         <SectionCard>
-          <SectionHeader icon={Eye} title="The Reality" />
-          <div className="p-4 space-y-3">
+          <SectionHeader icon={Eye} title="The Reality" tooltip="An honest look at what this career is really like — the challenges, trade-offs, and what makes someone a good fit." collapsed={uCollapsed('u-reality')} onToggle={() => uToggle('u-reality')} />
+          {!uCollapsed('u-reality') && <div className="p-4 space-y-3">
             {realityLoading ? (
               <div className="space-y-2.5">
                 <div className="h-3 w-full rounded bg-muted-foreground/5 animate-pulse" />
@@ -648,44 +782,60 @@ function UnderstandTab({
                 </div>
               </div>
             ) : null}
-          </div>
+          </div>}
         </SectionCard>
       </div>
 
-      {/* ── MIDDLE: A Typical Day — always visible ── */}
+      {/* ── MIDDLE: A Typical Day — horizontal timeline ── */}
       <SectionCard>
-        <SectionHeader icon={Clock} title="A Typical Day" />
-        {detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details ? (
-          <div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
-              {([
-                { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅' },
-                { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️' },
-                { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆' },
-              ] as const).map(({ label, time, items, icon }, idx) => (
-                <div key={label} className={cn('relative p-4', idx < 2 && 'sm:border-r border-border/20', idx > 0 && 'border-t sm:border-t-0 border-border/20')}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm">{icon}</span>
-                    <div>
-                      <p className="text-xs font-semibold text-foreground/80">{label}</p>
-                      <p className="text-[10px] text-muted-foreground/40">{time}</p>
+        <SectionHeader icon={Clock} title="A Typical Day" tooltip="What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
+        {uCollapsed('u-day') ? null : detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details ? (
+          <div className="p-4 sm:p-5">
+            <div className="relative">
+              {/* Horizontal connector line */}
+              <div className="absolute top-[14px] left-0 right-0 h-px bg-gradient-to-r from-amber-400/40 via-sky-400/40 to-indigo-400/40 hidden sm:block" />
+
+              {/* Three columns */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-3">
+                {([
+                  { label: 'Morning', time: '08:00 – 12:00', items: details.typicalDay.morning, icon: '🌅', dotClass: 'bg-amber-400', bgClass: 'bg-amber-500/[0.06]', borderClass: 'border-amber-500/15' },
+                  { label: 'Midday', time: '12:00 – 14:00', items: details.typicalDay.midday, icon: '☀️', dotClass: 'bg-sky-400', bgClass: 'bg-sky-500/[0.06]', borderClass: 'border-sky-500/15' },
+                  { label: 'Afternoon', time: '14:00 – 17:00', items: details.typicalDay.afternoon, icon: '🌆', dotClass: 'bg-indigo-400', bgClass: 'bg-indigo-500/[0.06]', borderClass: 'border-indigo-500/15' },
+                ] as const).map(({ label, time, items, icon, dotClass, bgClass, borderClass }) => (
+                  <div key={label} className="flex flex-col items-center">
+                    {/* Timeline node */}
+                    <div className="hidden sm:flex items-center justify-center mb-3 z-10">
+                      <div className={cn('h-[10px] w-[10px] rounded-full ring-2 ring-background', dotClass)} />
+                    </div>
+
+                    {/* Card */}
+                    <div className={cn('w-full rounded-xl border p-3.5', bgClass, borderClass)}>
+                      <div className="flex items-center justify-between mb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base leading-none">{icon}</span>
+                          <span className="text-xs font-semibold text-foreground/85">{label}</span>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground/45 tabular-nums font-medium">{time}</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {items.map((item, i) => (
+                          <div key={i} className="flex items-start gap-2.5">
+                            <div className={cn('h-1.5 w-1.5 rounded-full mt-[5px] shrink-0 opacity-60', dotClass)} />
+                            <span className="text-[11px] text-foreground/65 leading-relaxed">{item}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <ul className="space-y-1.5">
-                    {items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="text-[9px] font-bold text-muted-foreground/30 mt-0.5 w-3 shrink-0">{i + 1}</span>
-                        <span className="text-xs text-foreground/60 leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+
+            {/* Environment footer */}
             {details.typicalDay.environment && (
-              <div className="flex items-center gap-2.5 px-4 py-2.5 border-t border-border/15 bg-muted/5">
-                <MapPin className="h-3 w-3 text-muted-foreground/40" />
-                <span className="text-[11px] text-muted-foreground/50">{details.typicalDay.environment}</span>
+              <div className="flex items-center gap-2.5 mt-3 px-3 py-2 rounded-lg bg-muted/[0.06] border border-border/15">
+                <MapPin className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                <span className="text-[10px] text-muted-foreground/55 leading-relaxed">{details.typicalDay.environment}</span>
               </div>
             )}
           </div>
@@ -698,60 +848,75 @@ function UnderstandTab({
       <EducationBrowser careerTitle={goalTitle} />
 
       {/* ── BOTTOM: Tabbed carousel — Career Paths, Tools ── */}
-      <div className="rounded-xl border border-border/40 overflow-hidden" style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)' }}>
-        {/* Tab bar — coloured pills */}
-        <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
-          {([
-            { id: 'paths' as const, label: 'Real Career Paths', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', activeBorder: 'border-emerald-500/30', activeBg: 'bg-emerald-500/15' },
-            { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15' },
-          ]).map((tab) => {
-            const TabIcon = tab.icon;
-            const active = carouselTab === tab.id;
-            return (
-              <button key={tab.id} onClick={() => setCarouselTab(tab.id)}
-                className={cn(
-                  'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border',
-                  active
-                    ? `${tab.activeBg} ${tab.activeBorder} ${tab.color}`
-                    : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
-                )}
-              >
-                <TabIcon className={cn('h-3.5 w-3.5', active ? tab.color : '')} />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+      <SectionCard>
+        <SectionHeader icon={Users} title="Real Career Paths & Tools" tooltip="How real people got into this career, and the tools professionals use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
+        {!uCollapsed('u-career-paths') && (
+          <>
+            {/* Tab bar — coloured pills */}
+            <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
+              {([
+                { id: 'paths' as const, label: 'Real Career Paths', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', activeBorder: 'border-emerald-500/30', activeBg: 'bg-emerald-500/15', tooltip: 'How real people got into this career — different starting points, different routes, same destination.' },
+                { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15', tooltip: 'The software, equipment, and tools professionals in this role use every day.' },
+              ]).map((tab) => {
+                const TabIcon = tab.icon;
+                const active = carouselTab === tab.id;
+                return (
+                  <button key={tab.id} onClick={() => setCarouselTab(tab.id)}
+                    className={cn(
+                      'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border',
+                      active
+                        ? `${tab.activeBg} ${tab.activeBorder} ${tab.color}`
+                        : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
+                    )}
+                  >
+                    <TabIcon className={cn('h-3.5 w-3.5', active ? tab.color : '')} />
+                    {tab.label}
+                    <TooltipProvider delayDuration={150}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[240px] text-[11px] leading-snug">
+                          {tab.tooltip}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </button>
+                );
+              })}
+            </div>
 
-        {/* Tab content */}
-        <div className="p-4">
-          {carouselTab === 'paths' && (
-            <CareerPathExamplesPanel careerId={career.id} careerTitle={career.title} />
-          )}
+            {/* Tab content */}
+            <div className="p-4">
+              {carouselTab === 'paths' && (
+                <CareerPathExamplesPanel careerId={career.id} careerTitle={career.title} />
+              )}
 
-          {carouselTab === 'tools' && (() => {
-            if (!details?.typicalDay.tools?.length) return <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>;
-            return (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {details.typicalDay.tools.map((tool, i) => {
-                  const info = getToolInfo(tool);
-                  return (
-                    <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-lg border border-border/30 bg-background/40 px-3.5 py-2.5 hover:border-amber-500/40 hover:bg-amber-500/[0.04] transition-colors">
-                      <Wrench className="h-4 w-4 text-amber-400/70 group-hover:text-amber-400 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground group-hover:text-foreground">{tool}</p>
-                        {info && <p className="text-[11px] text-foreground/65 mt-0.5">{info.description}</p>}
-                      </div>
-                      <ExternalLink className="h-3 w-3 text-muted-foreground/40 group-hover:text-amber-400 shrink-0" />
-                    </a>
-                  );
-                })}
-              </div>
-            );
-          })()}
-        </div>
-      </div>
+              {carouselTab === 'tools' && (() => {
+                if (!details?.typicalDay.tools?.length) return <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>;
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {details.typicalDay.tools.map((tool, i) => {
+                      const info = getToolInfo(tool);
+                      return (
+                        <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
+                          className="group flex items-center gap-3 rounded-lg border border-border/30 bg-background/40 px-3.5 py-2.5 hover:border-amber-500/40 hover:bg-amber-500/[0.04] transition-colors">
+                          <Wrench className="h-4 w-4 text-amber-400/70 group-hover:text-amber-400 shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground group-hover:text-foreground">{tool}</p>
+                            {info && <p className="text-[11px] text-foreground/65 mt-0.5">{info.description}</p>}
+                          </div>
+                          <ExternalLink className="h-3 w-3 text-muted-foreground/40 group-hover:text-amber-400 shrink-0" />
+                        </a>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          </>
+        )}
+      </SectionCard>
 
       {/* Self-confirmation — drives the dashboard's Understand progress.
           The Understand tab is read-only deep-dive content, so a deliberate
@@ -964,7 +1129,7 @@ function saveNotes(careerTitle: string, notes: CareerNote[]) {
   } catch { /* ignore */ }
 }
 
-function CareerNotes({ careerTitle }: { careerTitle: string }) {
+function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string; collapsed?: boolean; onToggle?: () => void }) {
   const [notes, setNotes] = useState<CareerNote[]>([]);
   const [newText, setNewText] = useState('');
   const [newCategory, setNewCategory] = useState<NoteCategory>('general');
@@ -1009,8 +1174,8 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
 
   return (
     <SectionCard>
-      <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/40">{notes.length}</span> : undefined} />
-      <div className="px-4 pb-3">
+      <SectionHeader icon={Pencil} title="Your Notes" badge={notes.length > 0 ? <span className="text-[10px] text-muted-foreground/40">{notes.length}</span> : undefined} collapsed={collapsed} onToggle={onToggle} />
+      {!collapsed && <div className="px-4 pb-3">
         {/* Notes list — compact rows */}
         {notes.length > 0 && (
           <div className="divide-y divide-border/15">
@@ -1073,7 +1238,7 @@ function CareerNotes({ careerTitle }: { careerTitle: string }) {
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
-      </div>
+      </div>}
     </SectionCard>
   );
 }
@@ -1104,10 +1269,11 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     ? `${rawName.charAt(0).toUpperCase()}${rawName.slice(1)}'s`
     : 'Your';
 
-  // Collapse state for Roadmap + Momentum, persisted per-user via
-  // localStorage so the user's choice survives reloads.
+  // Collapse state for Roadmap + Momentum + From the Field, persisted
+  // per-user via localStorage so the user's choice survives reloads.
   const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
   const [momentumCollapsed, setMomentumCollapsed] = useState(false);
+  const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field']);
   useEffect(() => {
     try {
       setRoadmapCollapsed(window.localStorage.getItem('grow-roadmap-collapsed') === '1');
@@ -1779,8 +1945,8 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       {/* 3. From the Field — real professional stories */}
       {careerStories.length > 0 && (
         <SectionCard>
-          <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} />
-          <div className="p-4">
+          <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} collapsed={gCollapsed('g-field')} onToggle={() => gToggle('g-field')} />
+          {!gCollapsed('g-field') && <div className="p-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {careerStories.slice(0, 4).map((story) => (
                 <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
@@ -1805,7 +1971,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                 </div>
               ))}
             </div>
-          </div>
+          </div>}
         </SectionCard>
       )}
 
@@ -1855,7 +2021,7 @@ function ActionRow({
 export default function MyJourneyPage() {
   const { data: session } = useSession();
   const isYouth = session?.user?.role === 'YOUTH';
-  const { data: goalsData } = useGoals(isYouth);
+  const { data: goalsData, isLoading: goalsLoading } = useGoals(isYouth);
   const goalTitle = goalsData?.primaryGoal?.title ?? null;
 
   const career = useMemo(() => {
@@ -1884,6 +2050,20 @@ export default function MyJourneyPage() {
     { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.' },
     { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'Play through your personal roadmap step by step, explore live opportunities, and build momentum toward your career goal.' },
   ];
+
+  // While goals are loading, show a skeleton to avoid flashing the onboarding
+  // screen for users who already have a career goal set.
+  if (goalsLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+          <div className="h-8 w-48 rounded bg-muted/50 animate-pulse mb-4" />
+          <div className="h-4 w-72 rounded bg-muted/30 animate-pulse mb-8" />
+          <div className="h-64 rounded-xl bg-muted/20 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
 
   // First-time empty state — when there's no career goal yet, show a single
   // welcoming screen explaining the framework instead of three confused tabs.

@@ -62,7 +62,7 @@
     "kemisti": "chemist"
   },
   "advancedCareerMap": {
-    "surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgery is a specialisation after the 6-year medical degree. After LIS1 (18 months internship), you enter LIS2/3 surgical specialisation which takes 6+ additional years." },
+    "surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgery is a specialisation you choose after completing a 6-year medical degree and an 18-month internship. Surgical training then takes around 6 more years." },
     "general-surgeon": { "baseCareerId": "doctor", "specialisationNote": "General surgery covers a broad range of abdominal and soft-tissue operations. After the 6-year medical degree + LIS1, complete LIS2/3 in general surgery (6+ years)." },
     "colorectal-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Colorectal surgery is a subspeciality of general surgery. Complete the medical degree + general surgery specialisation, then a colorectal fellowship (1-2 years)." },
     "hepatobiliary-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Hepatobiliary surgery focuses on liver, gallbladder, and pancreas. Complete the medical degree + general surgery, then a hepatobiliary fellowship (1-2 years)." },
