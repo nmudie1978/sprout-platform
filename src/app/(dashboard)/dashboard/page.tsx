@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 /**
  * DASHBOARD PAGE — Information-Rich Overview
  *
@@ -511,6 +513,17 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["education-context"] });
+      // Nudge the user toward My Journey so they start exploring the
+      // career in depth. The toast stays for 8s and has a clickable
+      // action that navigates directly.
+      toast.success(`${goalTitle} set as your goal`, {
+        description: "Now head to My Journey to explore the daily reality, education paths, and build your personal roadmap.",
+        duration: 8000,
+        action: {
+          label: "Go to My Journey",
+          onClick: () => window.location.assign("/my-journey#discover"),
+        },
+      });
     },
   });
 
@@ -519,30 +532,13 @@ export default function DashboardPage() {
   const goalTitle = primaryGoal?.title ?? null;
 
   // ── Journey progress (Discover / Understand / Grow) ─────────────
-  // The legacy state machine in lib/journey/orchestrator.ts is no
-  // longer driven by the refactored /my-journey UI, so its
-  // `lenses` / `currentLens` output stays frozen at 0/3 forever.
-  // We derive completion directly from what the new UI persists:
-  //   • Discover  → primary career goal selected
-  //   • Understand → Foundation card marked done in the roadmap
-  //   • Grow      → ≥1 non-Foundation roadmap step marked done
+  // Derived directly from goalTitle so the ring updates in the same
+  // render that the title changes — no useState/useEffect timing gap.
   // See lib/journey/lens-progress.ts for the rationale.
-  const [lensProgress, setLensProgress] = useState(() =>
-    computeLensProgress({ hasPrimaryGoal: false }),
+  const lensProgress = useMemo(
+    () => computeLensProgress({ hasPrimaryGoal: !!goalTitle, careerTitle: goalTitle }),
+    [goalTitle],
   );
-  useEffect(() => {
-    const recompute = () =>
-      setLensProgress(
-        computeLensProgress({ hasPrimaryGoal: !!goalTitle, careerTitle: goalTitle }),
-      );
-    recompute();
-    window.addEventListener('focus', recompute);
-    window.addEventListener('storage', recompute);
-    return () => {
-      window.removeEventListener('focus', recompute);
-      window.removeEventListener('storage', recompute);
-    };
-  }, [goalTitle]);
 
   const { discoverDone, understandDone, growDone, currentLens, completedCount: completedLensCount } =
     lensProgress;
