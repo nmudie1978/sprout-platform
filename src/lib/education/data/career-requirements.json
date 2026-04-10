@@ -79,6 +79,79 @@
       },
       "specialisationNote": null
     },
+    "addiction-counsellor": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Social Studies",
+          "Health and Physical Education"
+        ],
+        "recommended": [
+          "English",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Addiction Counsellor Assistant",
+        "description": "Support licensed counsellors in their work with clients.",
+        "whatYouNeed": "Completed bachelor's degree in social work or psychology."
+      },
+      "qualifiesFor": {
+        "immediate": "Addiction Counsellor",
+        "withExperience": "Senior Addiction Counsellor",
+        "seniorPath": "Clinical Director of Addiction Services"
+      },
+      "specialisationNote": null
+    },
+    "adoption-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Norwegian",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Biology",
+          "Philosophy",
+          "History"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Social Work Intern",
+        "description": "Assist in case management and support services under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in social work."
+      },
+      "qualifiesFor": {
+        "immediate": "Adoption Caseworker",
+        "withExperience": "Senior Social Worker",
+        "seniorPath": "Team Leader in Adoption Services"
+      },
+      "specialisationNote": null
+    },
     "agile-coach": {
       "schoolSubjects": {
         "required": [
@@ -609,6 +682,43 @@
       },
       "specialisationNote": null
     },
+    "ar-rep": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "Business",
+          "Media Studies"
+        ],
+        "recommended": [
+          "English",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Music Business",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Music (NMH)",
+          "University of Bergen",
+          "Södertörn University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, with a focus on passion for music."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior A&R Assistant",
+        "description": "Support A&R teams in scouting and developing talent.",
+        "whatYouNeed": "Relevant experience in music or internships in the industry."
+      },
+      "qualifiesFor": {
+        "immediate": "A&R Representative",
+        "withExperience": "Senior A&R Manager",
+        "seniorPath": "Director of A&R"
+      },
+      "specialisationNote": null
+    },
     "ar-vr-developer": {
       "schoolSubjects": {
         "required": [
@@ -762,6 +872,82 @@
         "immediate": "Asset Management Analyst",
         "withExperience": "Senior Asset Manager",
         "seniorPath": "Asset Management Director"
+      },
+      "specialisationNote": null
+    },
+    "assistant-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "Health",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences (NIH)",
+          "University of Copenhagen",
+          "Swedish School of Sport and Health Sciences"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a reasonable chance of acceptance."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Coach",
+        "description": "Assist the head coach in training and team management.",
+        "whatYouNeed": "Coaching qualifications and relevant experience in sports."
+      },
+      "qualifiesFor": {
+        "immediate": "Assistant Coach",
+        "withExperience": "Head Coach or Sports Manager",
+        "seniorPath": "Director of Coaching or Sports Program Director"
+      },
+      "specialisationNote": null
+    },
+    "athletic-trainer": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Health",
+          "Chemistry"
+        ],
+        "recommended": [
+          "Psychology",
+          "Mathematics"
+        ],
+        "minimumGrade": "Good grades in science and physical education subjects, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), opintopolku.fi (Finland)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Athletic Trainer Assistant",
+        "description": "Support athletic trainers in providing care to athletes.",
+        "whatYouNeed": "Completed relevant degree and first aid certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Athletic Trainer",
+        "withExperience": "Senior Athletic Trainer",
+        "seniorPath": "Head Athletic Trainer or Sports Medicine Coordinator"
       },
       "specialisationNote": null
     },
@@ -1413,6 +1599,44 @@
       },
       "specialisationNote": "Breast Surgeon is a specialisation of General Surgery, requiring additional fellowship training."
     },
+    "bricklayer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Technology",
+          "Art",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Geography"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Bricklaying",
+        "duration": "4 years (including apprenticeship)",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Bergen Vocational School",
+          "Trondheim Technical College"
+        ],
+        "applicationRoute": "Apply directly to vocational schools or through local municipalities",
+        "competitiveness": "There are often many spots available in vocational training."
+      },
+      "entryLevelRequirements": {
+        "title": "Apprentice Bricklayer",
+        "description": "Work under the supervision of experienced bricklayers to gain practical skills.",
+        "whatYouNeed": "Completed vocational training program in bricklaying."
+      },
+      "qualifiesFor": {
+        "immediate": "Bricklayer",
+        "withExperience": "Site supervisor or foreman",
+        "seniorPath": "Construction manager"
+      },
+      "specialisationNote": null
+    },
     "building-surveyor": {
       "schoolSubjects": {
         "required": [
@@ -1681,6 +1905,42 @@
       },
       "specialisationNote": null
     },
+    "caregiver": {
+      "schoolSubjects": {
+        "required": [
+          "Health and care",
+          "Norwegian",
+          "Social studies"
+        ],
+        "recommended": [
+          "Biology",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Helsefagarbeider (Health Worker)",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, Fagskolen Oslo",
+          "Fagskolen i Viken"
+        ],
+        "applicationRoute": "Direct application to vocational schools",
+        "competitiveness": "Moderately competitive with a steady demand for caregivers."
+      },
+      "entryLevelRequirements": {
+        "title": "Caregiver",
+        "description": "Assist clients with daily living activities and provide companionship.",
+        "whatYouNeed": "Completed fagbrev in health work or relevant vocational training."
+      },
+      "qualifiesFor": {
+        "immediate": "Caregiver",
+        "withExperience": "Senior caregiver or team leader in care settings",
+        "seniorPath": "Care manager or supervisor in a healthcare facility"
+      },
+      "specialisationNote": null
+    },
     "carpenter": {
       "schoolSubjects": {
         "required": [
@@ -1714,6 +1974,82 @@
         "immediate": "Junior Carpenter",
         "withExperience": "Skilled Carpenter",
         "seniorPath": "Master Carpenter or Construction Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "case-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health and Care",
+          "Philosophy"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically around 3-4 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Case Worker",
+        "description": "Assist in managing client cases under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in Social Work or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Case Worker",
+        "withExperience": "Senior Case Worker",
+        "seniorPath": "Team Leader or Case Management Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "chartered-surveyor": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Geography",
+          "English",
+          "Technology"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Environmental Science",
+          "Art"
+        ],
+        "minimumGrade": "Good grades in mathematics and science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Surveying",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "Høgskolen i Oslo og Akershus"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to limited spots in popular programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Surveyor",
+        "description": "This role involves assisting experienced surveyors in inspections and assessments.",
+        "whatYouNeed": "Completed degree in surveying and relevant internships."
+      },
+      "qualifiesFor": {
+        "immediate": "Assistant Surveyor",
+        "withExperience": "Senior Surveyor",
+        "seniorPath": "Chartered Surveyor"
       },
       "specialisationNote": null
     },
@@ -1944,6 +2280,42 @@
       },
       "specialisationNote": null
     },
+    "child-protection-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "Norwegian",
+          "English"
+        ],
+        "recommended": [
+          "Biology",
+          "Health and Physical Education"
+        ],
+        "minimumGrade": "Good grades in social studies and language subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to the limited number of spots available."
+      },
+      "entryLevelRequirements": {
+        "title": "Child Protection Assistant",
+        "description": "Entry-level role supporting child protection investigations and case management.",
+        "whatYouNeed": "Completed bachelor's degree in social work."
+      },
+      "qualifiesFor": {
+        "immediate": "Child Protection Officer",
+        "withExperience": "Senior Child Protection Officer",
+        "seniorPath": "Manager of Child Protection Services"
+      },
+      "specialisationNote": null
+    },
     "childcare-assistant": {
       "schoolSubjects": {
         "required": [
@@ -2054,6 +2426,44 @@
         "immediate": "IT Manager",
         "withExperience": "Director of IT",
         "seniorPath": "Chief Information Officer"
+      },
+      "specialisationNote": null
+    },
+    "civil-servant": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "History",
+          "Political Science",
+          "Economics"
+        ],
+        "minimumGrade": "Good grades in social studies and English, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Public Administration",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with many applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Civil Servant",
+        "description": "This role involves supporting government projects and policies.",
+        "whatYouNeed": "Completed degree in Public Administration or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Policy Analyst",
+        "withExperience": "Senior Policy Advisor",
+        "seniorPath": "Director of Policy"
       },
       "specialisationNote": null
     },
@@ -2286,6 +2696,44 @@
       },
       "specialisationNote": null
     },
+    "coast-guard-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English",
+          "Norwegian"
+        ],
+        "recommended": [
+          "Geography",
+          "Physical Education"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Maritime Studies",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Sjøkrigsskolen",
+          "UiT The Arctic University of Norway",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Entry can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Coast Guard Officer Trainee",
+        "description": "This step involves training in maritime operations and safety protocols.",
+        "whatYouNeed": "Completed maritime degree and passing physical fitness tests."
+      },
+      "qualifiesFor": {
+        "immediate": "Coast Guard Officer",
+        "withExperience": "Senior Coast Guard Officer",
+        "seniorPath": "Commander of Coast Guard Operations"
+      },
+      "specialisationNote": null
+    },
     "coded-welder": {
       "schoolSubjects": {
         "required": [
@@ -2510,6 +2958,116 @@
         "immediate": "Commissioning Engineer",
         "withExperience": "Senior Commissioning Engineer",
         "seniorPath": "Commissioning Manager"
+      },
+      "specialisationNote": null
+    },
+    "community-development-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "History"
+        ],
+        "minimumGrade": "Good grades in social studies and English, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Community Development",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Community Development Assistant",
+        "description": "Support community projects and assist in organising events.",
+        "whatYouNeed": "Completed bachelor's degree in community development or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Community Development Worker",
+        "withExperience": "Project Coordinator",
+        "seniorPath": "Community Development Manager"
+      },
+      "specialisationNote": null
+    },
+    "community-organiser": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "History",
+          "Psychology",
+          "Political Science"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Sciences",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Uppsala University",
+          "University of Copenhagen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a range of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Community Engagement Assistant",
+        "description": "Support community initiatives and assist in organizing events.",
+        "whatYouNeed": "Completed bachelor's degree in social sciences or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Community Organiser",
+        "withExperience": "Project Coordinator",
+        "seniorPath": "Director of Community Development"
+      },
+      "specialisationNote": null
+    },
+    "community-outreach-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social studies",
+          "English",
+          "Norwegian",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "History"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 3-4 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Stavanger"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of spots available."
+      },
+      "entryLevelRequirements": {
+        "title": "Community Outreach Assistant",
+        "description": "Support outreach efforts and engage with community members.",
+        "whatYouNeed": "Completed bachelor's degree in social work or relevant experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Community Outreach Worker",
+        "withExperience": "Program Coordinator",
+        "seniorPath": "Director of Community Services"
       },
       "specialisationNote": null
     },
@@ -3128,6 +3686,44 @@
       },
       "specialisationNote": null
     },
+    "corrections-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "Social Studies",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Psychology",
+          "Health",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Correctional Services",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "KRUS",
+          "OsloMet",
+          "Høgskolen i Innlandet"
+        ],
+        "applicationRoute": "Direct application to KRUS",
+        "competitiveness": "Entry is moderate, with a focus on personal qualities."
+      },
+      "entryLevelRequirements": {
+        "title": "Corrections Officer Trainee",
+        "description": "This role involves training under experienced officers while learning prison protocols.",
+        "whatYouNeed": "Completed fagbrev in Correctional Services"
+      },
+      "qualifiesFor": {
+        "immediate": "Corrections Officer",
+        "withExperience": "Senior Corrections Officer",
+        "seniorPath": "Prison Unit Manager"
+      },
+      "specialisationNote": null
+    },
     "cosmetic-surgeon": {
       "schoolSubjects": {
         "required": [
@@ -3165,6 +3761,45 @@
         "seniorPath": "Lead cosmetic surgeon or department head."
       },
       "specialisationNote": "Cosmetic surgery is a specialisation of plastic surgery, requiring additional training after residency."
+    },
+    "counsellor": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Sociology",
+          "English",
+          "Health and Social Care"
+        ],
+        "recommended": [
+          "Philosophy",
+          "Religious Studies",
+          "Art"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Psychology or Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive, especially for popular programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Counsellor Intern",
+        "description": "Assist experienced counsellors while gaining practical skills.",
+        "whatYouNeed": "Completed relevant bachelor's degree and some counselling training."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Counsellor",
+        "withExperience": "Senior Counsellor",
+        "seniorPath": "Lead Therapist"
+      },
+      "specialisationNote": null
     },
     "country-manager": {
       "schoolSubjects": {
@@ -3276,6 +3911,43 @@
         "immediate": "Crane Technician",
         "withExperience": "Senior Crane Technician or Maintenance Supervisor",
         "seniorPath": "Technical Manager or Safety Compliance Officer"
+      },
+      "specialisationNote": null
+    },
+    "crisis-intervention-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Sociology",
+          "Health and Social Care"
+        ],
+        "recommended": [
+          "English",
+          "Mathematics"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work or Psychology",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "UiB"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to the popularity of the programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Crisis Intervention Trainee",
+        "description": "Support experienced specialists in managing crisis situations.",
+        "whatYouNeed": "Completed relevant bachelor's degree and crisis intervention training."
+      },
+      "qualifiesFor": {
+        "immediate": "Crisis Intervention Specialist",
+        "withExperience": "Senior Crisis Intervention Specialist",
+        "seniorPath": "Crisis Management Team Leader"
       },
       "specialisationNote": null
     },
@@ -3584,6 +4256,42 @@
         "immediate": "Software Engineer",
         "withExperience": "Technical Manager",
         "seniorPath": "Chief Technology Officer"
+      },
+      "specialisationNote": null
+    },
+    "customs-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Norwegian",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Tolletaten basic training programme",
+        "duration": "1 year",
+        "type": "vocational",
+        "examples": [
+          "Tolletaten",
+          "Oslo Metropolitan University"
+        ],
+        "applicationRoute": "Apply directly through Tolletaten's recruitment page",
+        "competitiveness": "Entry is moderate, with a focus on relevant skills and fitness."
+      },
+      "entryLevelRequirements": {
+        "title": "Customs Officer Trainee",
+        "description": "This step involves practical training and learning customs regulations.",
+        "whatYouNeed": "Completed basic training programme with physical fitness assessment."
+      },
+      "qualifiesFor": {
+        "immediate": "Customs Officer",
+        "withExperience": "Senior Customs Officer",
+        "seniorPath": "Customs Supervisor"
       },
       "specialisationNote": null
     },
@@ -4353,6 +5061,41 @@
       },
       "specialisationNote": null
     },
+    "disability-support-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Health and Social Care",
+          "Psychology",
+          "Biology"
+        ],
+        "recommended": [
+          "Sociology",
+          "Physical Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Helsefagarbeider (Vocational Care Training)",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, Fagskolen Oslo"
+        ],
+        "applicationRoute": "Direct application to vocational schools",
+        "competitiveness": "Moderately competitive with available spots in many programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Disability Support Worker",
+        "description": "Assist individuals with disabilities in daily activities and support their needs.",
+        "whatYouNeed": "Completed vocational care training or relevant short courses."
+      },
+      "qualifiesFor": {
+        "immediate": "Disability Support Worker",
+        "withExperience": "Senior Disability Support Worker",
+        "seniorPath": "Team Leader in Disability Services"
+      },
+      "specialisationNote": null
+    },
     "dispositions-manager": {
       "schoolSubjects": {
         "required": [
@@ -4505,6 +5248,44 @@
       },
       "specialisationNote": null
     },
+    "domestic-violence-advocate": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Norwegian",
+          "Health Studies"
+        ],
+        "recommended": [
+          "Sociology",
+          "Philosophy",
+          "Political Science"
+        ],
+        "minimumGrade": "Good grades in social studies and English, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Domestic Violence Support Worker",
+        "description": "Assist survivors with resources and support services.",
+        "whatYouNeed": "Completed social work degree and relevant volunteer experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Domestic Violence Advocate",
+        "withExperience": "Senior Advocate or Program Coordinator",
+        "seniorPath": "Director of Advocacy Services"
+      },
+      "specialisationNote": null
+    },
     "drilling-technician": {
       "schoolSubjects": {
         "required": [
@@ -4576,6 +5357,42 @@
         "immediate": "Dynamic Positioning Operator",
         "withExperience": "Senior Dynamic Positioning Operator",
         "seniorPath": "DP Operations Manager"
+      },
+      "specialisationNote": null
+    },
+    "early-childhood-educator": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "Mathematics",
+          "Social Studies",
+          "Arts and Crafts"
+        ],
+        "recommended": [
+          "English",
+          "Physical Education"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Early Childhood Education",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, Nord University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Early Childhood Educator",
+        "description": "Involves planning and leading educational activities for young children.",
+        "whatYouNeed": "Completed bachelor's degree in Early Childhood Education."
+      },
+      "qualifiesFor": {
+        "immediate": "Early Childhood Educator",
+        "withExperience": "Lead Educator or Coordinator in a kindergarten",
+        "seniorPath": "Director of a kindergarten or educational institution"
       },
       "specialisationNote": null
     },
@@ -5416,6 +6233,82 @@
       },
       "specialisationNote": null
     },
+    "esports-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Computer Science",
+          "English",
+          "Statistics"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Media Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 3-4 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Data Science or Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University",
+          "Uppsala University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive due to growing interest in esports."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Esports Analyst",
+        "description": "Assist in analysing gameplay and providing insights to the team.",
+        "whatYouNeed": "Relevant degree or experience in data analysis and esports."
+      },
+      "qualifiesFor": {
+        "immediate": "Esports Analyst",
+        "withExperience": "Senior Esports Analyst or Coach",
+        "seniorPath": "Head of Esports Analytics"
+      },
+      "specialisationNote": null
+    },
+    "esports-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Computer Science",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Coaching",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki Metropolia University of Applied Sciences"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Coach",
+        "description": "Support the head coach in training and strategy development.",
+        "whatYouNeed": "Experience in esports and knowledge of coaching principles."
+      },
+      "qualifiesFor": {
+        "immediate": "Esports Coach for amateur teams",
+        "withExperience": "Head Coach for professional teams",
+        "seniorPath": "Director of Esports"
+      },
+      "specialisationNote": null
+    },
     "estate-manager": {
       "schoolSubjects": {
         "required": [
@@ -5598,6 +6491,80 @@
       },
       "specialisationNote": null
     },
+    "facility-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Business Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health Sciences",
+          "Management",
+          "Environmental Studies"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki Metropolia University of Applied Sciences"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with a good number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Facility Manager",
+        "description": "Support the management of sports facilities and assist in daily operations.",
+        "whatYouNeed": "Completed bachelor's degree in sports management or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Facility Coordinator",
+        "withExperience": "Operations Manager in sports facilities",
+        "seniorPath": "Director of Sports Facilities"
+      },
+      "specialisationNote": null
+    },
+    "family-support-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Health and Nutrition",
+          "Psychology"
+        ],
+        "recommended": [
+          "English",
+          "Norwegian",
+          "Mathematics"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Health and Social Care",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, VID vitenskapelige høgskole"
+        ],
+        "applicationRoute": "Apply directly to vocational schools or through local municipalities",
+        "competitiveness": "Moderately competitive, depending on local demand for family support workers."
+      },
+      "entryLevelRequirements": {
+        "title": "Family Support Worker Trainee",
+        "description": "Assist experienced workers in providing support to families in need.",
+        "whatYouNeed": "Completed vocational training in Health & Social Care."
+      },
+      "qualifiesFor": {
+        "immediate": "Family Support Worker",
+        "withExperience": "Senior Family Support Worker",
+        "seniorPath": "Team Leader in Family Support Services"
+      },
+      "specialisationNote": null
+    },
     "fashion-designer": {
       "schoolSubjects": {
         "required": [
@@ -5635,6 +6602,44 @@
         "immediate": "Junior Fashion Designer",
         "withExperience": "Senior Fashion Designer",
         "seniorPath": "Creative Director"
+      },
+      "specialisationNote": null
+    },
+    "film-composer": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "Arts",
+          "Mathematics"
+        ],
+        "recommended": [
+          "English",
+          "Media Studies"
+        ],
+        "minimumGrade": "Good grades in music and arts subjects, typically 4-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film Scoring",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Music (NMH)",
+          "University of Bergen",
+          "Stockholm University of the Arts",
+          "Danish National School of Performing Arts"
+        ],
+        "applicationRoute": "Direct application to the institution",
+        "competitiveness": "It can be quite competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Film Composer",
+        "description": "Assist in composing music for small projects or short films.",
+        "whatYouNeed": "Completed film scoring degree or equivalent portfolio showcasing your work."
+      },
+      "qualifiesFor": {
+        "immediate": "Film Composer Assistant",
+        "withExperience": "Film Composer for independent films or TV shows",
+        "seniorPath": "Lead Film Composer for major productions"
       },
       "specialisationNote": null
     },
@@ -5820,6 +6825,42 @@
         "immediate": "Flight Attendant",
         "withExperience": "Senior Flight Attendant",
         "seniorPath": "Cabin Crew Manager"
+      },
+      "specialisationNote": null
+    },
+    "foster-care-coordinator": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health Education",
+          "Biology"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Child Welfare Assistant",
+        "description": "Support social workers in assessing and managing child welfare cases.",
+        "whatYouNeed": "Completed bachelor's degree in social work or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Foster Care Coordinator",
+        "withExperience": "Senior Child Welfare Officer",
+        "seniorPath": "Manager of Child Welfare Services"
       },
       "specialisationNote": null
     },
@@ -6048,6 +7089,44 @@
         "immediate": "Junior Full-Stack Engineer",
         "withExperience": "Mid-level Full-Stack Engineer",
         "seniorPath": "Lead Full-Stack Engineer"
+      },
+      "specialisationNote": null
+    },
+    "game-composer": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "Mathematics",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Art",
+          "English",
+          "Physics"
+        ],
+        "minimumGrade": "Good grades in music and mathematics, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Music Technology",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian University of Science and Technology (NTNU)",
+          "University of Bergen",
+          "University of Oslo (UiO)"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Entry can be competitive, especially for popular programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Game Composer",
+        "description": "Assist in composing music and soundscapes for games under supervision.",
+        "whatYouNeed": "Completed relevant degree or strong portfolio showcasing music composition."
+      },
+      "qualifiesFor": {
+        "immediate": "Game Composer",
+        "withExperience": "Lead Game Composer",
+        "seniorPath": "Audio Director"
       },
       "specialisationNote": null
     },
@@ -6596,6 +7675,42 @@
         "immediate": "Junior Grid Engineer",
         "withExperience": "Project Manager for grid modernisation",
         "seniorPath": "Grid Transformation Lead"
+      },
+      "specialisationNote": null
+    },
+    "groundskeeper": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Physical Education",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Environmental Science"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Groundskeeping",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Norwegian School of Horticulture"
+        ],
+        "applicationRoute": "Apply through local vocational training centres or schools",
+        "competitiveness": "Entry is generally accessible with vocational training options available."
+      },
+      "entryLevelRequirements": {
+        "title": "Groundskeeper Apprentice",
+        "description": "Assist in maintaining and preparing sports grounds under supervision.",
+        "whatYouNeed": "Completed vocational training or relevant experience in horticulture."
+      },
+      "qualifiesFor": {
+        "immediate": "Groundskeeper",
+        "withExperience": "Head Groundskeeper",
+        "seniorPath": "Sports Facility Manager"
       },
       "specialisationNote": null
     },
@@ -7541,6 +8656,42 @@
       },
       "specialisationNote": null
     },
+    "homelessness-support-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Health and Physical Education",
+          "Psychology"
+        ],
+        "recommended": [
+          "English",
+          "Norwegian",
+          "Arts"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Vocational Training in Social Work",
+        "duration": "2 years",
+        "type": "vocational",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, VID vitenskapelige høgskole"
+        ],
+        "applicationRoute": "Local vocational training application processes",
+        "competitiveness": "Moderately competitive, with spots available in various programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Homelessness Support Worker Trainee",
+        "description": "Assist experienced workers in outreach and support tasks.",
+        "whatYouNeed": "Completion of vocational training or relevant experience in social services."
+      },
+      "qualifiesFor": {
+        "immediate": "Homelessness Support Worker",
+        "withExperience": "Senior Homelessness Support Worker",
+        "seniorPath": "Program Coordinator for Homeless Services"
+      },
+      "specialisationNote": null
+    },
     "hospital-administrator": {
       "schoolSubjects": {
         "required": [
@@ -7614,6 +8765,41 @@
         "immediate": "Hotel Supervisor",
         "withExperience": "Operations Manager",
         "seniorPath": "General Manager"
+      },
+      "specialisationNote": null
+    },
+    "housing-support-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderate competition for entry into social work programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Housing Support Assistant",
+        "description": "This role involves supporting clients in finding and maintaining housing.",
+        "whatYouNeed": "Completed relevant degree or significant experience in social services."
+      },
+      "qualifiesFor": {
+        "immediate": "Housing Support Officer",
+        "withExperience": "Senior Housing Support Officer",
+        "seniorPath": "Housing Services Manager"
       },
       "specialisationNote": null
     },
@@ -7844,6 +9030,43 @@
         "immediate": "Freelance Illustrator",
         "withExperience": "Senior Illustrator or Art Director",
         "seniorPath": "Creative Director"
+      },
+      "specialisationNote": null
+    },
+    "immigration-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "History",
+          "Foreign Language"
+        ],
+        "minimumGrade": "Good grades in social studies and languages, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Law",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "UiB",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Immigration Officer Trainee",
+        "description": "Assist in processing applications and conducting interviews under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in law or social sciences."
+      },
+      "qualifiesFor": {
+        "immediate": "Immigration Officer",
+        "withExperience": "Senior Immigration Officer",
+        "seniorPath": "Team Leader in Immigration Services"
       },
       "specialisationNote": null
     },
@@ -8839,32 +10062,30 @@
     "lettings-agent": {
       "schoolSubjects": {
         "required": [
-          "Business Studies",
-          "English",
+          "Business",
+          "Economics",
           "Mathematics"
         ],
         "recommended": [
-          "Social Studies",
-          "Communication",
-          "IT"
+          "English",
+          "Social Studies"
         ],
-        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
       },
       "universityPath": {
-        "programme": "Not applicable for this career",
-        "duration": "Not applicable for this career",
-        "type": "vocational",
+        "programme": "Fagbrev in Real Estate Management",
+        "duration": "2 years",
+        "type": "fagbrev",
         "examples": [
-          "Norwegian School of Economics",
-          "BI Norwegian Business School"
+          "OsloMet, BI Norwegian Business School, Høyskolen Kristiania"
         ],
-        "applicationRoute": "Direct application to training agencies or vocational schools.",
-        "competitiveness": "Entry is generally accessible with relevant training."
+        "applicationRoute": "Direct application to vocational schools or through apprenticeship programs",
+        "competitiveness": "Entry is generally accessible with vocational training options available."
       },
       "entryLevelRequirements": {
         "title": "Junior Lettings Agent",
         "description": "Assist in matching tenants with properties and managing viewings.",
-        "whatYouNeed": "Completed high school education and relevant agency training."
+        "whatYouNeed": "Completed vocational training or relevant experience in customer service."
       },
       "qualifiesFor": {
         "immediate": "Lettings Agent",
@@ -9672,6 +10893,41 @@
       },
       "specialisationNote": "Mental Health Nursing is a specialisation that requires additional training after the nursing degree."
     },
+    "mental-health-support-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Health and Social Care",
+          "Psychology",
+          "Biology"
+        ],
+        "recommended": [
+          "Sociology",
+          "Physical Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Health and Social Care",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, Universitetet i Stavanger"
+        ],
+        "applicationRoute": "Apply through local vocational schools and apprenticeships",
+        "competitiveness": "Moderate competition for placements in vocational programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Mental Health Support Worker",
+        "description": "Assist individuals with mental health challenges in daily activities.",
+        "whatYouNeed": "Completed fagbrev in Health and Social Care or relevant experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Mental Health Support Worker",
+        "withExperience": "Senior Mental Health Support Worker",
+        "seniorPath": "Mental Health Team Leader"
+      },
+      "specialisationNote": null
+    },
     "midwife": {
       "schoolSubjects": {
         "required": [
@@ -9709,6 +10965,44 @@
         "seniorPath": "Midwifery Team Leader"
       },
       "specialisationNote": "Midwifery is a specialisation of nursing, requiring additional training after the nursing degree."
+    },
+    "military-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "English",
+          "Physical Education",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Physics",
+          "History",
+          "Biology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Krigsskolen (Norwegian Military Academy)",
+        "duration": "3 years",
+        "type": "vocational",
+        "examples": [
+          "Krigsskolen",
+          "Forsvarets høgskole"
+        ],
+        "applicationRoute": "Direct application to the Norwegian Armed Forces after national service.",
+        "competitiveness": "Entry can be competitive due to limited spots and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Officer Cadet",
+        "description": "This step involves training to become a commissioned officer in the military.",
+        "whatYouNeed": "Completed national service and passed the selection process for officer school."
+      },
+      "qualifiesFor": {
+        "immediate": "Lieutenant",
+        "withExperience": "Captain",
+        "seniorPath": "Colonel"
+      },
+      "specialisationNote": null
     },
     "millwright": {
       "schoolSubjects": {
@@ -9900,6 +11194,42 @@
       },
       "specialisationNote": null
     },
+    "music-journalist": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "English",
+          "Media Studies"
+        ],
+        "recommended": [
+          "Music",
+          "History",
+          "Social Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Journalism",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Music Journalist",
+        "description": "Assist in writing and researching music articles for various publications.",
+        "whatYouNeed": "Completed journalism degree or strong writing portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Music Journalist",
+        "withExperience": "Senior Music Journalist or Editor",
+        "seniorPath": "Editorial Director or Chief Music Critic"
+      },
+      "specialisationNote": null
+    },
     "music-lecturer": {
       "schoolSubjects": {
         "required": [
@@ -9936,6 +11266,45 @@
         "immediate": "Junior Music Lecturer",
         "withExperience": "Senior Music Lecturer",
         "seniorPath": "Professor of Music"
+      },
+      "specialisationNote": null
+    },
+    "music-licensing-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "English",
+          "Business",
+          "Law"
+        ],
+        "recommended": [
+          "Media Studies",
+          "Communication",
+          "Art"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Music Business or Law",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "BI Norwegian Business School",
+          "Norwegian School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Music Licensing Assistant",
+        "description": "Support licensing negotiations and manage documentation.",
+        "whatYouNeed": "Completed relevant bachelor's degree or equivalent experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Music Licensing Coordinator",
+        "withExperience": "Senior Music Licensing Specialist",
+        "seniorPath": "Director of Music Licensing"
       },
       "specialisationNote": null
     },
@@ -11270,6 +12639,79 @@
       },
       "specialisationNote": "This career requires additional training after a medical degree to specialise in otolaryngology."
     },
+    "outdoor-instructor": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Geography"
+        ],
+        "recommended": [
+          "Health and Nutrition",
+          "Mathematics"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Outdoor Studies",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiT The Arctic University of Norway",
+          "Norwegian School of Sport Sciences",
+          "Helsinki Metropolia University of Applied Sciences"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a focus on practical skills."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Outdoor Instructor",
+        "description": "Assist in leading outdoor activities and ensuring safety.",
+        "whatYouNeed": "Completed relevant degree or diploma in outdoor studies."
+      },
+      "qualifiesFor": {
+        "immediate": "Outdoor Instructor",
+        "withExperience": "Lead Outdoor Instructor",
+        "seniorPath": "Program Director for Outdoor Education"
+      },
+      "specialisationNote": null
+    },
+    "outreach-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social studies",
+          "Psychology",
+          "Health and physical education"
+        ],
+        "recommended": [
+          "English",
+          "Norwegian",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Vocational training in Social Care",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, VID vitenskapelige høgskole"
+        ],
+        "applicationRoute": "Direct application to vocational schools",
+        "competitiveness": "Entry is generally accessible with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Outreach Worker Trainee",
+        "description": "Assist experienced outreach workers in connecting clients to services.",
+        "whatYouNeed": "Completed vocational training in Social Care or equivalent experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Outreach Worker",
+        "withExperience": "Senior Outreach Worker or Case Manager",
+        "seniorPath": "Program Coordinator or Social Services Manager"
+      },
+      "specialisationNote": null
+    },
     "overhead-line-equipment-technician": {
       "schoolSubjects": {
         "required": [
@@ -11380,6 +12822,44 @@
         "immediate": "Painter",
         "withExperience": "Senior Painter or Project Supervisor",
         "seniorPath": "Painting Contractor or Business Owner"
+      },
+      "specialisationNote": null
+    },
+    "painter-decorator": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Mathematics",
+          "Technology",
+          "Norwegian"
+        ],
+        "recommended": [
+          "English",
+          "Social Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Maler (Painter)",
+        "duration": "4 years (including apprenticeship)",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Fagskolen Oslo",
+          "Bergen Maritime and Technical College"
+        ],
+        "applicationRoute": "Direct application to vocational schools or through local apprenticeship programs",
+        "competitiveness": "Entry is generally accessible but may vary by region."
+      },
+      "entryLevelRequirements": {
+        "title": "Apprentice Painter",
+        "description": "Work under the supervision of a qualified painter to gain practical skills.",
+        "whatYouNeed": "Completion of vocational training programme and apprenticeship."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Painter",
+        "withExperience": "Lead Painter",
+        "seniorPath": "Painting Contractor"
       },
       "specialisationNote": null
     },
@@ -11497,6 +12977,43 @@
       },
       "specialisationNote": null
     },
+    "performance-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physical Education",
+          "Statistics"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Biology"
+        ],
+        "minimumGrade": "Good grades in mathematics and science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Høgskolen i Innlandet"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Performance Analyst",
+        "description": "Assist in collecting and analysing performance data for teams and athletes.",
+        "whatYouNeed": "Completed bachelor's degree in sports science or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Performance Analyst",
+        "withExperience": "Senior Performance Analyst",
+        "seniorPath": "Performance Director"
+      },
+      "specialisationNote": null
+    },
     "performance-marketing-director": {
       "schoolSubjects": {
         "required": [
@@ -11573,6 +13090,44 @@
         "seniorPath": "Lead peripheral nerve surgeon"
       },
       "specialisationNote": "This career requires additional fellowship training in peripheral nerve surgery after residency."
+    },
+    "personal-trainer": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Health Studies"
+        ],
+        "recommended": [
+          "Psychology",
+          "Nutrition",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Personal Trainer Certification",
+        "duration": "3-12 months",
+        "type": "vocational",
+        "examples": [
+          "AFPT",
+          "NIH",
+          "Fagskolen Oslo"
+        ],
+        "applicationRoute": "Direct application to the training provider.",
+        "competitiveness": "Moderately competitive, depending on the training provider."
+      },
+      "entryLevelRequirements": {
+        "title": "Certified Personal Trainer",
+        "description": "You will work with clients to create and implement fitness plans.",
+        "whatYouNeed": "Completed personal trainer certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Personal Trainer",
+        "withExperience": "Fitness Coach or Group Exercise Instructor",
+        "seniorPath": "Head of Fitness or Gym Manager"
+      },
+      "specialisationNote": null
     },
     "petroleum-engineer": {
       "schoolSubjects": {
@@ -12723,6 +14278,42 @@
       },
       "specialisationNote": null
     },
+    "probation-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "English",
+          "Psychology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "History",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in social studies and English, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Probation Officer",
+        "description": "Assist in supervising offenders and supporting their rehabilitation.",
+        "whatYouNeed": "Completed bachelor's degree in social work or criminology."
+      },
+      "qualifiesFor": {
+        "immediate": "Probation Officer",
+        "withExperience": "Senior Probation Officer",
+        "seniorPath": "Probation Service Manager"
+      },
+      "specialisationNote": null
+    },
     "process-operator": {
       "schoolSubjects": {
         "required": [
@@ -13140,6 +14731,45 @@
       },
       "specialisationNote": null
     },
+    "property-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Geography",
+          "Art",
+          "Physics"
+        ],
+        "minimumGrade": "Good grades in mathematics and economics, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Real Estate Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "Norwegian School of Economics (NHH)",
+          "Stockholm University",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, with a focus on business and economics backgrounds."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Property Developer",
+        "description": "Assist in planning and managing property projects under supervision.",
+        "whatYouNeed": "Bachelor's degree in Real Estate or Business plus relevant internships."
+      },
+      "qualifiesFor": {
+        "immediate": "Property Development Assistant",
+        "withExperience": "Project Manager in Real Estate",
+        "seniorPath": "Senior Property Developer or Development Director"
+      },
+      "specialisationNote": null
+    },
     "property-inspector": {
       "schoolSubjects": {
         "required": [
@@ -13252,6 +14882,44 @@
         "immediate": "Property Management Assistant",
         "withExperience": "Property Manager",
         "seniorPath": "Director of Property Management"
+      },
+      "specialisationNote": null
+    },
+    "property-valuer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Geography"
+        ],
+        "recommended": [
+          "Business Studies",
+          "English",
+          "Statistics"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Real Estate",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "NTNU",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Property Valuer",
+        "description": "Assist in property assessments and report writing under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in Real Estate or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Property Valuer",
+        "withExperience": "Senior Property Valuer",
+        "seniorPath": "Chief Valuation Officer"
       },
       "specialisationNote": null
     },
@@ -13371,6 +15039,41 @@
         "immediate": "Psychologist Intern",
         "withExperience": "Clinical Psychologist",
         "seniorPath": "Senior Psychologist or Psychotherapy Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "public-health-social-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Biology",
+          "Psychology"
+        ],
+        "recommended": [
+          "Health Education",
+          "Statistics"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of spots available."
+      },
+      "entryLevelRequirements": {
+        "title": "Social Worker",
+        "description": "Assist individuals and communities in accessing health and social services.",
+        "whatYouNeed": "Completed bachelor's degree in social work."
+      },
+      "qualifiesFor": {
+        "immediate": "Public Health Social Worker",
+        "withExperience": "Senior Social Worker or Public Health Advocate",
+        "seniorPath": "Director of Public Health Programs"
       },
       "specialisationNote": null
     },
@@ -13560,6 +15263,46 @@
         "immediate": "Junior Quantitative Analyst",
         "withExperience": "Senior Quantitative Analyst",
         "seniorPath": "Quantitative Research Director"
+      },
+      "specialisationNote": null
+    },
+    "quantity-surveyor": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Physics",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Technology",
+          "Art"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Quantity Surveying",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "Høgskolen i Oslo og Akershus"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to the popularity of the program."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Quantity Surveyor",
+        "description": "This step involves assisting in cost management and project planning.",
+        "whatYouNeed": "Completed bachelor's degree in Quantity Surveying or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Quantity Surveyor",
+        "withExperience": "Senior Quantity Surveyor",
+        "seniorPath": "Chief Quantity Surveyor"
       },
       "specialisationNote": null
     },
@@ -14279,6 +16022,41 @@
       },
       "specialisationNote": "This career is a specialisation of doctor, requiring additional training in plastic surgery and a fellowship in reconstructive surgery."
     },
+    "refuge-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "Health and Physical Education"
+        ],
+        "recommended": [
+          "Languages",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Refuge Worker Trainee",
+        "description": "Assist in shelters providing support and services to vulnerable individuals.",
+        "whatYouNeed": "Completed vocational care training or a Bachelor's in Social Work."
+      },
+      "qualifiesFor": {
+        "immediate": "Refuge Worker",
+        "withExperience": "Senior Refuge Worker or Case Manager",
+        "seniorPath": "Program Coordinator or Shelter Manager"
+      },
+      "specialisationNote": null
+    },
     "regional-director": {
       "schoolSubjects": {
         "required": [
@@ -14432,6 +16210,41 @@
       },
       "specialisationNote": null
     },
+    "rehabilitation-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Health and Social Care",
+          "Psychology",
+          "Biology"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with a good number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Rehabilitation Assistant",
+        "description": "Support rehabilitation workers in helping clients recover.",
+        "whatYouNeed": "Completed vocational training or relevant bachelor's degree."
+      },
+      "qualifiesFor": {
+        "immediate": "Rehabilitation Worker",
+        "withExperience": "Senior Rehabilitation Worker",
+        "seniorPath": "Rehabilitation Manager"
+      },
+      "specialisationNote": null
+    },
     "renewable-energy-tech": {
       "schoolSubjects": {
         "required": [
@@ -14467,6 +16280,42 @@
         "immediate": "Renewable Energy Technician",
         "withExperience": "Senior Renewable Energy Technician",
         "seniorPath": "Project Manager in Renewable Energy"
+      },
+      "specialisationNote": null
+    },
+    "residential-care-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Health and Physical Education",
+          "Psychology"
+        ],
+        "recommended": [
+          "Biology",
+          "Norwegian",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Stavanger"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Residential Care Worker",
+        "description": "This role involves providing support and care to individuals in a residential setting.",
+        "whatYouNeed": "Completed vocational care training or a relevant degree."
+      },
+      "qualifiesFor": {
+        "immediate": "Residential Care Worker",
+        "withExperience": "Senior Residential Care Worker or Team Leader",
+        "seniorPath": "Care Manager or Service Coordinator"
       },
       "specialisationNote": null
     },
@@ -14927,6 +16776,42 @@
       },
       "specialisationNote": null
     },
+    "safeguarding-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Health and Care"
+        ],
+        "recommended": [
+          "Sociology",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Stavanger"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It's moderately competitive to get into social work programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Safeguarding Assistant",
+        "description": "Support safeguarding officers in investigations and training.",
+        "whatYouNeed": "Completed bachelor's degree in social work or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Safeguarding Officer",
+        "withExperience": "Senior Safeguarding Officer",
+        "seniorPath": "Head of Safeguarding Department"
+      },
+      "specialisationNote": null
+    },
     "sales-director": {
       "schoolSubjects": {
         "required": [
@@ -15074,6 +16959,121 @@
         "immediate": "SCADA Technician",
         "withExperience": "Senior SCADA Technician",
         "seniorPath": "SCADA System Manager"
+      },
+      "specialisationNote": null
+    },
+    "scaffolder": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Technology"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Art",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Scaffolding Apprenticeship",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Norwegian School of Economics",
+          "University of Bergen"
+        ],
+        "applicationRoute": "Apply through local vocational training centres",
+        "competitiveness": "Moderately competitive due to high demand for skilled workers."
+      },
+      "entryLevelRequirements": {
+        "title": "Scaffolder Apprentice",
+        "description": "Assist experienced scaffolders in erecting and dismantling scaffolding.",
+        "whatYouNeed": "Completion of vocational training and scaffolding certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Scaffolder",
+        "withExperience": "Lead Scaffolder",
+        "seniorPath": "Scaffolding Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "school-counsellor": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Sociology",
+          "Norwegian",
+          "English"
+        ],
+        "recommended": [
+          "Mathematics",
+          "Health",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Education or Master in Counselling",
+        "duration": "3 years or 5 years (integrated)",
+        "type": "bachelor | master",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "UiA"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, depending on the university."
+      },
+      "entryLevelRequirements": {
+        "title": "School Counsellor Intern",
+        "description": "Support experienced counsellors while gaining practical experience.",
+        "whatYouNeed": "Completed relevant degree and internship requirements."
+      },
+      "qualifiesFor": {
+        "immediate": "School Counsellor",
+        "withExperience": "Senior School Counsellor or Educational Consultant",
+        "seniorPath": "Director of Student Services"
+      },
+      "specialisationNote": null
+    },
+    "scouting-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physical Education",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Statistics",
+          "English",
+          "Psychology"
+        ],
+        "minimumGrade": "Good grades in mathematics and physical education, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences",
+          "University of Agder",
+          "University of Bergen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive due to the popularity of sports-related programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Scouting Analyst",
+        "description": "Assist in compiling player data and reports for recruitment.",
+        "whatYouNeed": "Completed bachelor's degree in sports science or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Scouting Analyst",
+        "withExperience": "Senior Scouting Analyst",
+        "seniorPath": "Head of Scouting Department"
       },
       "specialisationNote": null
     },
@@ -15807,6 +17807,44 @@
       },
       "specialisationNote": null
     },
+    "site-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Technology",
+          "Business Studies"
+        ],
+        "minimumGrade": "Good grades in mathematics and science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Construction Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "OsloMet",
+          "UiA"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with a fair number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Site Manager",
+        "description": "Support the site manager in daily operations and coordination of tasks.",
+        "whatYouNeed": "Completed bachelor's degree in Construction Management or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Construction Site Manager",
+        "withExperience": "Project Manager",
+        "seniorPath": "Senior Construction Manager"
+      },
+      "specialisationNote": null
+    },
     "site-reliability-engineer": {
       "schoolSubjects": {
         "required": [
@@ -15843,6 +17881,42 @@
         "immediate": "Junior Production Engineer",
         "withExperience": "Production Engineer",
         "seniorPath": "Lead Production Engineer"
+      },
+      "specialisationNote": null
+    },
+    "social-services-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Psychology",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health Studies",
+          "Sociology"
+        ],
+        "minimumGrade": "Good grades in social science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, University of Tromsø"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be moderately competitive to get in."
+      },
+      "entryLevelRequirements": {
+        "title": "Social Worker",
+        "description": "Assist clients in accessing services and support.",
+        "whatYouNeed": "Completed bachelor's degree in social work."
+      },
+      "qualifiesFor": {
+        "immediate": "Social Worker",
+        "withExperience": "Senior Social Worker",
+        "seniorPath": "Social Services Manager"
       },
       "specialisationNote": null
     },
@@ -16069,6 +18143,79 @@
       },
       "specialisationNote": null
     },
+    "sound-technician": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "Physics",
+          "Technology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Art",
+          "Media Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Sound Engineering",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Norwegian School of Audio Engineering (NISS)",
+          "Oslo Metropolitan University"
+        ],
+        "applicationRoute": "Direct application to vocational schools or apprenticeships.",
+        "competitiveness": "Entry is generally accessible but may depend on local demand for sound technicians."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sound Technician",
+        "description": "Assisting in setting up and operating sound equipment at events.",
+        "whatYouNeed": "Completion of fagbrev in sound engineering or relevant hands-on experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Sound Technician at events",
+        "withExperience": "Senior Sound Technician or Audio Engineer",
+        "seniorPath": "Head of Audio Production or Sound Designer"
+      },
+      "specialisationNote": null
+    },
+    "special-needs-assistant": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "English",
+          "Social Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "Health and Physical Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Vocational Training in Special Needs Assistance",
+        "duration": "2 years",
+        "type": "vocational",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, VID vitenskapelige høgskole"
+        ],
+        "applicationRoute": "Direct application to vocational schools",
+        "competitiveness": "Moderately competitive, with many programs available."
+      },
+      "entryLevelRequirements": {
+        "title": "Special Needs Assistant",
+        "description": "Assist teachers in supporting students with additional needs.",
+        "whatYouNeed": "Completed vocational training in special needs assistance."
+      },
+      "qualifiesFor": {
+        "immediate": "Special Needs Assistant",
+        "withExperience": "Lead Special Needs Assistant",
+        "seniorPath": "Special Needs Coordinator"
+      },
+      "specialisationNote": null
+    },
     "special-needs-educator": {
       "schoolSubjects": {
         "required": [
@@ -16227,6 +18374,429 @@
       },
       "specialisationNote": "Spinal surgery is a specialisation of orthopaedic or neurosurgery, requiring additional fellowship training."
     },
+    "sponsorship-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Business Studies",
+          "Economics",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Media Studies",
+          "Psychology"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Marketing",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Hanken School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Marketing Assistant",
+        "description": "Support marketing efforts and learn about sponsorship management.",
+        "whatYouNeed": "Completed bachelor's degree in marketing or business."
+      },
+      "qualifiesFor": {
+        "immediate": "Sponsorship Coordinator",
+        "withExperience": "Senior Sponsorship Manager",
+        "seniorPath": "Head of Sponsorships"
+      },
+      "specialisationNote": null
+    },
+    "sports-agent": {
+      "schoolSubjects": {
+        "required": [
+          "Business",
+          "Law",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "Communication",
+          "Sports Science"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Business Administration or Law",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "BI Norwegian Business School",
+          "UiT",
+          "Copenhagen Business School"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Agent",
+        "description": "Assist in managing athlete contracts and negotiations.",
+        "whatYouNeed": "Completed degree in Business or Law, and knowledge of sports industry."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Sports Agent",
+        "withExperience": "Senior Sports Agent or Agency Manager",
+        "seniorPath": "Director of Athlete Representation"
+      },
+      "specialisationNote": null
+    },
+    "sports-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physical Education",
+          "Statistics"
+        ],
+        "recommended": [
+          "Biology",
+          "English",
+          "Information Technology"
+        ],
+        "minimumGrade": "Good grades in mathematics and physical education, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Høgskolen i Innlandet"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a focus on relevant subjects."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Analyst",
+        "description": "Assist in analysing game footage and performance data.",
+        "whatYouNeed": "Completed bachelor's degree in sports science or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Sports Analyst",
+        "withExperience": "Senior Sports Analyst",
+        "seniorPath": "Head of Performance Analysis"
+      },
+      "specialisationNote": null
+    },
+    "sports-broadcaster": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Drama",
+          "Communication",
+          "Sports Science"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Broadcast Journalism",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University",
+          "Jönköping University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Reporter",
+        "description": "Assist in covering sports events and producing content.",
+        "whatYouNeed": "Completed bachelor's degree in Broadcast Journalism or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Reporter",
+        "withExperience": "Senior Sports Journalist",
+        "seniorPath": "Head Sports Anchor"
+      },
+      "specialisationNote": null
+    },
+    "sports-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Psychology"
+        ],
+        "recommended": [
+          "Health Studies",
+          "Mathematics"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences (NIH)",
+          "University of Copenhagen",
+          "Helsinki Metropolia University of Applied Sciences"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), kvote (Denmark), opintopolku.fi (Finland)",
+        "competitiveness": "Moderately competitive, with some programs having limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Coach",
+        "description": "Support head coaches in training and managing teams.",
+        "whatYouNeed": "Relevant coaching certifications and some experience in the sport."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Coach",
+        "withExperience": "Head Coach",
+        "seniorPath": "Director of Coaching"
+      },
+      "specialisationNote": null
+    },
+    "sports-commentator": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Physical Education",
+          "Communication",
+          "Journalism"
+        ],
+        "recommended": [
+          "History",
+          "Psychology",
+          "Drama"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Journalism",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "JMG (University of Gothenburg)",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive due to popular interest in media careers."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Commentator",
+        "description": "This step involves providing commentary on lower-level sports events.",
+        "whatYouNeed": "Completed journalism degree and some experience in sports broadcasting."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Commentator for local broadcasts",
+        "withExperience": "Senior Sports Commentator or Analyst",
+        "seniorPath": "Head of Sports Commentary Department"
+      },
+      "specialisationNote": null
+    },
+    "sports-event-coordinator": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Business Studies",
+          "Communication",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Media Studies",
+          "Psychology"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-5 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Event Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Stavanger",
+          "Lund University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Event Coordinator Assistant",
+        "description": "Assist in the planning and execution of sports events.",
+        "whatYouNeed": "Completed bachelor's degree in Event Management or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Event Coordinator",
+        "withExperience": "Senior Event Coordinator",
+        "seniorPath": "Event Manager"
+      },
+      "specialisationNote": null
+    },
+    "sports-event-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Business Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "English",
+          "Project Management",
+          "Communication"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Høyskolen Kristiania"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a growing interest in the field."
+      },
+      "entryLevelRequirements": {
+        "title": "Event Coordinator",
+        "description": "Assist in planning and executing events while managing logistics.",
+        "whatYouNeed": "Completed bachelor's degree in a relevant field."
+      },
+      "qualifiesFor": {
+        "immediate": "Assistant Sports Event Manager",
+        "withExperience": "Senior Event Manager",
+        "seniorPath": "Director of Events"
+      },
+      "specialisationNote": null
+    },
+    "sports-journalist": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "English",
+          "Social Studies",
+          "Media and Communication"
+        ],
+        "recommended": [
+          "Physical Education",
+          "History",
+          "Mathematics"
+        ],
+        "minimumGrade": "Good grades in language and social subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Journalism",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Bergen",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It's moderately competitive, with many applicants for limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Journalist",
+        "description": "Assist in reporting and writing under the guidance of senior journalists.",
+        "whatYouNeed": "Completed journalism degree with a focus on sports."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Reporter",
+        "withExperience": "Senior Sports Journalist",
+        "seniorPath": "Editor-in-Chief of Sports Section"
+      },
+      "specialisationNote": null
+    },
+    "sports-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Business Studies",
+          "Physical Education"
+        ],
+        "recommended": [
+          "English",
+          "Social Studies"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences (NIH)",
+          "BI Norwegian Business School",
+          "University of Agder"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Sports Manager",
+        "description": "Support the sports manager in daily operations and administration.",
+        "whatYouNeed": "Completed bachelor's degree in Sports Management or Business."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Sports Manager",
+        "withExperience": "Sports Operations Manager",
+        "seniorPath": "Director of Sports Management"
+      },
+      "specialisationNote": null
+    },
+    "sports-marketing-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Business",
+          "Marketing",
+          "Mathematics",
+          "English"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Media Studies"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Marketing",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Hanken School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with many applicants for limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Marketing Assistant",
+        "description": "Support marketing campaigns and assist in promotional activities.",
+        "whatYouNeed": "Completed bachelor's degree in marketing or business."
+      },
+      "qualifiesFor": {
+        "immediate": "Marketing Coordinator",
+        "withExperience": "Senior Marketing Manager",
+        "seniorPath": "Director of Marketing"
+      },
+      "specialisationNote": null
+    },
     "sports-medicine-surgeon": {
       "schoolSubjects": {
         "required": [
@@ -16265,6 +18835,193 @@
         "seniorPath": "Chief of sports medicine department"
       },
       "specialisationNote": "This career is a specialisation of doctor, requiring additional training in orthopaedic surgery and a fellowship in sports medicine."
+    },
+    "sports-photographer": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media Studies",
+          "Photography"
+        ],
+        "recommended": [
+          "Physical Education",
+          "English",
+          "Graphic Design"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Diploma in Photography",
+        "duration": "2 years",
+        "type": "diploma",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Stockholm University",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Direct application to the institution.",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Photographer",
+        "description": "Assist in capturing sports events and editing photos for publication.",
+        "whatYouNeed": "Portfolio showcasing photography skills and a diploma in photography."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Photographer for local events",
+        "withExperience": "Senior Sports Photographer or Photo Editor",
+        "seniorPath": "Lead Photographer or Photography Director"
+      },
+      "specialisationNote": null
+    },
+    "sports-physiotherapist": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Physical Education",
+          "Health Studies"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Psychology"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Physiotherapy",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University",
+          "Karolinska Institute"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is moderately competitive to get into physiotherapy programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Physiotherapist",
+        "description": "This role involves assisting in the rehabilitation of athletes under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in physiotherapy."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Physiotherapist",
+        "withExperience": "Senior Sports Physiotherapist",
+        "seniorPath": "Head of Sports Rehabilitation Department"
+      },
+      "specialisationNote": "This career includes a specialisation in sports physiotherapy after the bachelor's degree."
+    },
+    "sports-psychologist": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Biology",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Sociology",
+          "Health Studies"
+        ],
+        "minimumGrade": "Top grades in psychology and science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master's in Sports Psychology",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Stockholm University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Psychologist",
+        "description": "Assist in providing psychological support to athletes under supervision.",
+        "whatYouNeed": "Completed master's degree in sports psychology + relevant internship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Psychologist Assistant",
+        "withExperience": "Senior Sports Psychologist",
+        "seniorPath": "Director of Sports Psychology Services"
+      },
+      "specialisationNote": null
+    },
+    "sports-scientist": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Mathematics",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Health Science"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sport Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NIH",
+          "NTNU",
+          "University of Copenhagen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It is moderately competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Scientist",
+        "description": "This role involves supporting senior scientists in research and data collection.",
+        "whatYouNeed": "Completed bachelor's degree in Sport Science."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Sports Scientist",
+        "withExperience": "Senior Sports Scientist",
+        "seniorPath": "Head of Sports Science Department"
+      },
+      "specialisationNote": null
+    },
+    "sports-therapist": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Physical Education",
+          "Health Studies"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Psychology"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Therapy",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Høgskolen i Oslo og Akershus"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It is moderately competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Therapist",
+        "description": "This role involves assisting in the rehabilitation of athletes and managing minor injuries.",
+        "whatYouNeed": "Completed bachelor's degree in Sports Therapy."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Sports Therapist",
+        "withExperience": "Sports Therapist",
+        "seniorPath": "Lead Sports Therapist"
+      },
+      "specialisationNote": null
     },
     "sre": {
       "schoolSubjects": {
@@ -16497,6 +19254,43 @@
       },
       "specialisationNote": null
     },
+    "strength-conditioning-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health",
+          "Psychology"
+        ],
+        "minimumGrade": "Good grades in science and physical education subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences (NIH)",
+          "University of Agder",
+          "Norwegian School of Economics (NHH)"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with several applicants per spot."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Strength & Conditioning Coach",
+        "description": "Support senior coaches in developing and implementing training programmes.",
+        "whatYouNeed": "Completed bachelor's degree in sports science and relevant certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Strength & Conditioning Coach",
+        "withExperience": "Senior Strength & Conditioning Coach",
+        "seniorPath": "Director of Sports Performance"
+      },
+      "specialisationNote": null
+    },
     "studio-director": {
       "schoolSubjects": {
         "required": [
@@ -16652,6 +19446,44 @@
       },
       "specialisationNote": null
     },
+    "substance-abuse-counsellor": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Sociology",
+          "Health and Social Care"
+        ],
+        "recommended": [
+          "Biology",
+          "Philosophy",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, typically 4-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Social Work or Psychology",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Høgskolen i Oslo og Akershus"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, depending on the programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Substance Abuse Counsellor Intern",
+        "description": "Assist experienced counsellors in supporting clients with addiction issues.",
+        "whatYouNeed": "Completed bachelor's degree in Social Work or Psychology."
+      },
+      "qualifiesFor": {
+        "immediate": "Substance Abuse Counsellor",
+        "withExperience": "Senior Substance Abuse Counsellor",
+        "seniorPath": "Clinical Director of Addiction Services"
+      },
+      "specialisationNote": null
+    },
     "substation-technician": {
       "schoolSubjects": {
         "required": [
@@ -16766,6 +19598,42 @@
       },
       "specialisationNote": null
     },
+    "support-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Health and social care",
+          "Psychology",
+          "Biology"
+        ],
+        "recommended": [
+          "English",
+          "Norwegian",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev as Helsefagarbeider",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "OsloMet, Høgskolen i Innlandet, Høgskolen i Bergen"
+        ],
+        "applicationRoute": "Direct application to vocational schools",
+        "competitiveness": "Moderate competition for places in vocational training."
+      },
+      "entryLevelRequirements": {
+        "title": "Support Worker",
+        "description": "Assist clients with daily living activities and provide emotional support.",
+        "whatYouNeed": "Completed vocational training or fagbrev as Helsefagarbeider."
+      },
+      "qualifiesFor": {
+        "immediate": "Support Worker",
+        "withExperience": "Senior Support Worker",
+        "seniorPath": "Team Leader in support services"
+      },
+      "specialisationNote": null
+    },
     "surgeon": {
       "schoolSubjects": {
         "required": [
@@ -16844,6 +19712,43 @@
         "immediate": "Junior Surveyor",
         "withExperience": "Senior Surveyor",
         "seniorPath": "Chief Surveyor"
+      },
+      "specialisationNote": null
+    },
+    "swim-instructor": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Health",
+          "Biology"
+        ],
+        "recommended": [
+          "Psychology",
+          "First Aid",
+          "Sports Science"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Norwegian Swimming Federation instructor certification",
+        "duration": "3-6 months",
+        "type": "vocational",
+        "examples": [
+          "Norwegian School of Sport Sciences",
+          "Oslo Metropolitan University"
+        ],
+        "applicationRoute": "Direct application through the Norwegian Swimming Federation",
+        "competitiveness": "Entry is generally accessible with no strict limits."
+      },
+      "entryLevelRequirements": {
+        "title": "Swim Instructor",
+        "description": "You will teach swimming skills and safety to various age groups.",
+        "whatYouNeed": "Completed instructor certification from the Norwegian Swimming Federation"
+      },
+      "qualifiesFor": {
+        "immediate": "Swim Instructor",
+        "withExperience": "Head Swim Instructor or Swim Coach",
+        "seniorPath": "Aquatics Program Director"
       },
       "specialisationNote": null
     },
@@ -16960,6 +19865,120 @@
         "immediate": "Junior Systems Engineer",
         "withExperience": "Systems Engineer",
         "seniorPath": "Lead Systems Engineer"
+      },
+      "specialisationNote": null
+    },
+    "talent-agent": {
+      "schoolSubjects": {
+        "required": [
+          "Business studies",
+          "English",
+          "Communication",
+          "Music"
+        ],
+        "recommended": [
+          "Marketing",
+          "Economics"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Arts Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Södertörn University",
+          "Copenhagen Business School"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Talent Agent Assistant",
+        "description": "Support agents in booking and managing artists' schedules.",
+        "whatYouNeed": "Relevant experience in the music industry or an arts management degree."
+      },
+      "qualifiesFor": {
+        "immediate": "Talent Agent Assistant",
+        "withExperience": "Talent Agent",
+        "seniorPath": "Senior Talent Agent or Agency Manager"
+      },
+      "specialisationNote": null
+    },
+    "talent-scout": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Sports Studies",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Psychology",
+          "Communication",
+          "Media Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences",
+          "Halmstad University",
+          "University of Copenhagen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Talent Scout",
+        "description": "Assist in identifying and evaluating young athletes for potential recruitment.",
+        "whatYouNeed": "Relevant qualifications in sports management or coaching."
+      },
+      "qualifiesFor": {
+        "immediate": "Talent Scout",
+        "withExperience": "Senior Talent Scout or Scout Manager",
+        "seniorPath": "Director of Scouting"
+      },
+      "specialisationNote": null
+    },
+    "team-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Business Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "English",
+          "Psychology"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sports Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Sport Sciences (NIH)",
+          "UiT The Arctic University of Norway",
+          "Høgskolen i Innlandet"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a decent number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Team Manager",
+        "description": "Support the team manager in daily operations and logistics.",
+        "whatYouNeed": "Completed bachelor's degree in a relevant field."
+      },
+      "qualifiesFor": {
+        "immediate": "Team Manager",
+        "withExperience": "Sports Operations Manager",
+        "seniorPath": "Director of Sports Operations"
       },
       "specialisationNote": null
     },
@@ -19946,6 +22965,44 @@
       },
       "specialisationNote": "Thoracic surgery is a specialisation of general surgery, requiring additional training after the medical degree."
     },
+    "ticketing-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Business Studies",
+          "English",
+          "Economics"
+        ],
+        "recommended": [
+          "Statistics",
+          "Information Technology"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Business Administration",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "UiO",
+          "Høyskolen Kristiania"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Ticketing Assistant",
+        "description": "Support the ticketing operations and customer inquiries.",
+        "whatYouNeed": "Completed relevant degree or coursework in business or sports management."
+      },
+      "qualifiesFor": {
+        "immediate": "Ticketing Coordinator",
+        "withExperience": "Senior Ticketing Manager",
+        "seniorPath": "Director of Ticketing Operations"
+      },
+      "specialisationNote": null
+    },
     "title-officer": {
       "schoolSubjects": {
         "required": [
@@ -21387,6 +24444,81 @@
         "immediate": "HR Analyst",
         "withExperience": "HR Manager",
         "seniorPath": "Workforce Strategy Director"
+      },
+      "specialisationNote": null
+    },
+    "yoga-instructor": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Health",
+          "Biology"
+        ],
+        "recommended": [
+          "Psychology",
+          "Art",
+          "Philosophy"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Yoga Teacher Training",
+        "duration": "200-500 hours",
+        "type": "vocational",
+        "examples": [
+          "Yoga Alliance certified schools",
+          "Nordic Yoga Institute",
+          "Yoga Teacher Training Norway"
+        ],
+        "applicationRoute": "Direct application to training schools",
+        "competitiveness": "Training programs can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Certified Yoga Instructor",
+        "description": "Lead beginner yoga classes and workshops.",
+        "whatYouNeed": "Completion of a 200-hour Yoga Teacher Training program."
+      },
+      "qualifiesFor": {
+        "immediate": "Yoga Instructor",
+        "withExperience": "Senior Yoga Instructor or Studio Manager",
+        "seniorPath": "Yoga Teacher Trainer or Wellness Director"
+      },
+      "specialisationNote": null
+    },
+    "youth-worker": {
+      "schoolSubjects": {
+        "required": [
+          "Social studies",
+          "Psychology",
+          "Communication",
+          "English"
+        ],
+        "recommended": [
+          "Health and physical education",
+          "Art",
+          "Drama"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Youth Work",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, Malmö University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Youth Support Worker",
+        "description": "Assist young people in community settings and facilitate activities.",
+        "whatYouNeed": "Completed vocational training or bachelor's degree in youth work."
+      },
+      "qualifiesFor": {
+        "immediate": "Youth Support Worker",
+        "withExperience": "Youth Project Coordinator",
+        "seniorPath": "Youth Services Manager"
       },
       "specialisationNote": null
     }

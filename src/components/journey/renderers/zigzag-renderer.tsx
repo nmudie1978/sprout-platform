@@ -458,31 +458,6 @@ function ZigzagCard({
 
 type AlignmentStatusKey = 'strong' | 'partial' | 'missing' | 'unknown';
 
-const ALIGNMENT_BADGE: Record<
-  AlignmentStatusKey,
-  { label: string; cls: string; dot: string }
-> = {
-  strong: {
-    label: 'Aligned',
-    cls: 'text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 ring-emerald-500/30',
-    dot: 'bg-emerald-500',
-  },
-  partial: {
-    label: 'Partially aligned',
-    cls: 'text-amber-700 dark:text-amber-300 bg-amber-500/10 ring-amber-500/30',
-    dot: 'bg-amber-500',
-  },
-  missing: {
-    label: 'Needs attention',
-    cls: 'text-rose-700 dark:text-rose-300 bg-rose-500/10 ring-rose-500/30',
-    dot: 'bg-rose-500',
-  },
-  unknown: {
-    label: 'Add subjects',
-    cls: 'text-muted-foreground bg-muted ring-border',
-    dot: 'bg-muted-foreground/50',
-  },
-};
 
 interface FoundationCardProps {
   eduContext: EducationContext | null | undefined;

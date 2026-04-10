@@ -1,0 +1,60 @@
+name: Refresh career datasets
+
+# Runs on the 1st of each month at 03:00 UTC, or on manual trigger.
+# Regenerates AI-generated career data (requirements + typical-day
+# details) for any new or failed careers, then opens a PR if anything
+# changed. Zero manual effort — just review and merge.
+
+on:
+  schedule:
+    - cron: '0 3 1 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Career requirements (school subjects → university → entry-level → outcome)
+      - name: Refresh career-requirements.json
+        run: npx tsx scripts/generate-career-requirements.ts
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      # Career details (typical day, what you actually do, entry paths)
+      - name: Refresh career-typical-days.generated.ts
+        run: npx tsx scripts/generate-career-details.ts
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      # Open a PR with any changes
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh AI-generated career data'
+          body: |
+            Automated monthly refresh of career datasets.
+
+            **Files updated:**
+            - `src/lib/education/data/career-requirements.json` — entry requirements chain per career
+            - `src/lib/career-typical-days.generated.ts` — typical day, skills, entry paths
+
+            Both scripts are incremental — only new or previously-failed careers are regenerated.
+            Review the diff, spot-check a few entries, then merge.
+          branch: chore/refresh-career-data
+          commit-message: 'chore: refresh AI-generated career data'
+          labels: automated, data
+          delete-branch: true
