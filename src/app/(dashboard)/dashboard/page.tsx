@@ -750,7 +750,6 @@ export default function DashboardPage() {
         <PageContext
           pageKey="dashboard"
           purpose="This is your home base — a snapshot of your journey, goals, and activity."
-          action="Check your progress, explore careers, or pick up where you left off."
         />
 
         <VerificationStatus compact />
