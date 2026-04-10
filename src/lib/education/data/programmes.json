@@ -1,0 +1,1570 @@
+{
+  "meta": {
+    "source": "Official Nordic admissions portals + hand-curated Norwegian data",
+    "lastUpdated": "2026-04-10"
+  },
+  "careerKeyMap": {
+    "lege": "doctor",
+    "läkare": "doctor",
+    "læge": "doctor",
+    "lääkäri": "doctor",
+    "sykepleier": "nurse",
+    "sjuksköterska": "nurse",
+    "sygeplejerske": "nurse",
+    "sairaanhoitaja": "nurse",
+    "tannlege": "dentist",
+    "tandläkare": "dentist",
+    "tandlæge": "dentist",
+    "hammaslääkäri": "dentist",
+    "fysioterapeut": "physiotherapist",
+    "sjukgymnast": "physiotherapist",
+    "fysioterapeutti": "physiotherapist",
+    "veterinær": "veterinarian",
+    "veterinär": "veterinarian",
+    "dyrlæge": "veterinarian",
+    "eläinlääkäri": "veterinarian",
+    "programvareutvikler": "software-developer",
+    "mjukvaruutvecklare": "software-developer",
+    "softwareudvikler": "software-developer",
+    "ohjelmistokehittäjä": "software-developer",
+    "ingeniør": "it-engineer",
+    "civilingenjör": "it-engineer",
+    "diplominsinööri": "it-engineer",
+    "maskiningeniør": "mechanical-engineer",
+    "maskiningenjör": "mechanical-engineer",
+    "koneinsinööri": "mechanical-engineer",
+    "sivilingeniør bygg": "civil-engineer",
+    "civilingenjör väg och vatten": "civil-engineer",
+    "rakennusinsinööri": "civil-engineer",
+    "revisor": "accountant",
+    "regnskapsfører": "accountant",
+    "kirjanpitäjä": "accountant",
+    "sosialøkonom": "economist",
+    "nationalekonom": "economist",
+    "kansantaloustieteilijä": "economist",
+    "advokat": "lawyer",
+    "jurist": "lawyer",
+    "asianajaja": "lawyer",
+    "arkitekt": "architect",
+    "arkkitehti": "architect",
+    "designer": "designer",
+    "muotoilija": "designer",
+    "lærer": "teacher",
+    "lärare": "teacher",
+    "opettaja": "teacher",
+    "sosionom": "social-worker",
+    "socionom": "social-worker",
+    "sosiaaliohjaaja": "social-worker",
+    "biolog": "biologist",
+    "biologi": "biologist",
+    "kemiker": "chemist",
+    "kemist": "chemist",
+    "kemisti": "chemist"
+  },
+  "advancedCareerMap": {
+    "surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Surgery is a specialisation after the 6-year medical degree. After LIS1 (18 months internship), you enter LIS2/3 surgical specialisation which takes 6+ additional years. Apply through your health trust."
+    },
+    "anesthesiologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 anaesthesiology specialisation (5 years)."
+    },
+    "general-practitioner": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then the ALIS general-practice specialisation (5 years)."
+    },
+    "psychiatrist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 psychiatry specialisation (5 years)."
+    },
+    "radiologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 radiology specialisation (5 years)."
+    },
+    "pediatrician": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 paediatrics specialisation (5 years)."
+    }
+  },
+  "programmes": [
+    {
+      "id": "no-uio-medisin",
+      "careerId": "doctor",
+      "institutionId": "uio",
+      "programme": "Medisin (profesjonsstudium)",
+      "englishName": "Medicine (Professional Degree)",
+      "url": "https://www.uio.no/studier/program/medisin/",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with strong grades in maths, physics, chemistry",
+      "careerOutcome": "Eligible for LIS1 (internship) then full medical authorisation"
+    },
+    {
+      "id": "no-ntnu-medisin",
+      "careerId": "doctor",
+      "institutionId": "ntnu",
+      "programme": "Medisin (profesjonsstudium)",
+      "englishName": "Medicine (Professional Degree)",
+      "url": "https://www.ntnu.no/studier/medisin",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with strong grades in maths, physics, chemistry",
+      "careerOutcome": "Eligible for LIS1 (internship) then full medical authorisation"
+    },
+    {
+      "id": "se-ki-l-karprogrammet",
+      "careerId": "doctor",
+      "institutionId": "ki",
+      "programme": "Läkarprogrammet",
+      "englishName": "Medical Programme",
+      "url": "https://ki.se/utbildning/lakarprogrammet",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Naturvetenskaplig linje or equivalent, high GPA",
+      "careerOutcome": "Eligible for AT (allmäntjänstgöring) then medical licence"
+    },
+    {
+      "id": "se-uu-l-karprogrammet",
+      "careerId": "doctor",
+      "institutionId": "uu",
+      "programme": "Läkarprogrammet",
+      "englishName": "Medical Programme",
+      "url": "https://www.uu.se/utbildning/program/lakarprogrammet",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Naturvetenskaplig linje or equivalent, high GPA",
+      "careerOutcome": "Eligible for AT then medical licence"
+    },
+    {
+      "id": "dk-ku-medicin",
+      "careerId": "doctor",
+      "institutionId": "ku",
+      "programme": "Medicin (kandidatuddannelse)",
+      "englishName": "Medicine",
+      "url": "https://studier.ku.dk/kandidat/medicin/",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with high marks in biology, chemistry, maths",
+      "careerOutcome": "Eligible for KBU (klinisk basisuddannelse) then authorisation"
+    },
+    {
+      "id": "fi-helsinki-l-ketieteen-koulutusohjelma",
+      "careerId": "doctor",
+      "institutionId": "helsinki",
+      "programme": "Lääketieteen koulutusohjelma",
+      "englishName": "Medical Degree Programme",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/laaketiede",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto with strong sciences, entrance exam",
+      "careerOutcome": "Eligible for Valvira medical licence after supervised practice"
+    },
+    {
+      "id": "no-oslomet-sykepleie",
+      "careerId": "nurse",
+      "institutionId": "oslomet",
+      "programme": "Sykepleie (bachelor)",
+      "englishName": "Nursing (Bachelor)",
+      "url": "https://www.oslomet.no/studier/hv/sykepleie",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse",
+      "careerOutcome": "Eligible for Helsedirektoratet nursing authorisation"
+    },
+    {
+      "id": "no-ntnu-sykepleie",
+      "careerId": "nurse",
+      "institutionId": "ntnu",
+      "programme": "Sykepleie (bachelor)",
+      "englishName": "Nursing (Bachelor)",
+      "url": "https://www.ntnu.no/studier/sykepleie",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse",
+      "careerOutcome": "Eligible for Helsedirektoratet nursing authorisation"
+    },
+    {
+      "id": "se-ki-sjuksk-terskeprogrammet",
+      "careerId": "nurse",
+      "institutionId": "ki",
+      "programme": "Sjuksköterskeprogrammet",
+      "englishName": "Bachelor of Science in Nursing",
+      "url": "https://ki.se/utbildning/sjukskoterskeprogrammet",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Naturkunskap 2, Samhällskunskap 1b or equivalent",
+      "careerOutcome": "Eligible for Socialstyrelsen nursing licence"
+    },
+    {
+      "id": "dk-kp-sygeplejerskeuddannelsen",
+      "careerId": "nurse",
+      "institutionId": "kp",
+      "programme": "Sygeplejerskeuddannelsen",
+      "englishName": "Bachelor in Nursing",
+      "url": "https://www.kp.dk/uddannelser/sygeplejerske/",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse or relevant erhvervsuddannelse",
+      "careerOutcome": "Eligible for Styrelsen for Patientsikkerhed authorisation"
+    },
+    {
+      "id": "fi-metropolia-sairaanhoitaja",
+      "careerId": "nurse",
+      "institutionId": "metropolia",
+      "programme": "Sairaanhoitaja (AMK)",
+      "englishName": "Bachelor of Health Care (Nursing)",
+      "url": "https://www.metropolia.fi/fi/koulutus/amk-tutkinnot/sairaanhoitaja",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Lukio or ammatillinen perustutkinto, entrance exam",
+      "careerOutcome": "Eligible for Valvira nursing registration"
+    },
+    {
+      "id": "no-uio-odontologi",
+      "careerId": "dentist",
+      "institutionId": "uio",
+      "programme": "Odontologi (master)",
+      "englishName": "Dentistry (Integrated Master)",
+      "url": "https://www.uio.no/studier/program/odontologi/",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with strong grades in biology, chemistry",
+      "careerOutcome": "Eligible for dental authorisation from Helsedirektoratet"
+    },
+    {
+      "id": "se-gu-tandl-karprogrammet",
+      "careerId": "dentist",
+      "institutionId": "gu",
+      "programme": "Tandläkarprogrammet",
+      "englishName": "Dentistry Programme",
+      "url": "https://www.gu.se/studera/tandlakarprogrammet",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Naturvetenskaplig gymnasieutbildning, high GPA",
+      "careerOutcome": "Eligible for Socialstyrelsen dental licence"
+    },
+    {
+      "id": "dk-au-odontologi",
+      "careerId": "dentist",
+      "institutionId": "au",
+      "programme": "Odontologi (kandidat)",
+      "englishName": "Dentistry",
+      "url": "https://studier.au.dk/kandidat/odontologi",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with biology and chemistry",
+      "careerOutcome": "Eligible for Danish dental authorisation"
+    },
+    {
+      "id": "no-oslomet-fysioterapi",
+      "careerId": "physiotherapist",
+      "institutionId": "oslomet",
+      "programme": "Fysioterapi (bachelor)",
+      "englishName": "Physiotherapy (Bachelor)",
+      "url": "https://www.oslomet.no/studier/hv/fysioterapi",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with realfag",
+      "careerOutcome": "Eligible for Helsedirektoratet physiotherapy authorisation"
+    },
+    {
+      "id": "se-lu-fysioterapeutprogrammet",
+      "careerId": "physiotherapist",
+      "institutionId": "lu",
+      "programme": "Fysioterapeutprogrammet",
+      "englishName": "Physiotherapy Programme",
+      "url": "https://www.lu.se/utbildning/program/fysioterapeutprogrammet",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Naturkunskap 2, Matematik 2a or equivalent",
+      "careerOutcome": "Eligible for Socialstyrelsen physiotherapy licence"
+    },
+    {
+      "id": "dk-kp-fysioterapeutuddannelsen",
+      "careerId": "physiotherapist",
+      "institutionId": "kp",
+      "programme": "Fysioterapeutuddannelsen",
+      "englishName": "Bachelor in Physiotherapy",
+      "url": "https://www.kp.dk/uddannelser/fysioterapeut/",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse or relevant erhvervsuddannelse",
+      "careerOutcome": "Eligible for Danish physiotherapy authorisation"
+    },
+    {
+      "id": "fi-metropolia-fysioterapeutti",
+      "careerId": "physiotherapist",
+      "institutionId": "metropolia",
+      "programme": "Fysioterapeutti (AMK)",
+      "englishName": "Bachelor of Health Care (Physiotherapy)",
+      "url": "https://www.metropolia.fi/fi/koulutus/amk-tutkinnot/fysioterapeutti",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Lukio or ammatillinen perustutkinto, entrance exam",
+      "careerOutcome": "Eligible for Valvira physiotherapy registration"
+    },
+    {
+      "id": "no-nmbu-veterin-rmedisin",
+      "careerId": "veterinarian",
+      "institutionId": "nmbu",
+      "programme": "Veterinærmedisin",
+      "englishName": "Veterinary Medicine",
+      "url": "https://www.nmbu.no/studier/veterinærmedisin",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with biology and chemistry, competitive entry",
+      "careerOutcome": "Eligible for veterinary authorisation from Mattilsynet"
+    },
+    {
+      "id": "se-slu-veterin-rprogrammet",
+      "careerId": "veterinarian",
+      "institutionId": "slu",
+      "programme": "Veterinärprogrammet",
+      "englishName": "Veterinary Medicine Programme",
+      "url": "https://www.slu.se/utbildning/program-kurser/program/veterinarprogrammet/",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Biologi 2, Kemi 2, Matematik 4 or equivalent",
+      "careerOutcome": "Eligible for Jordbruksverket veterinary licence"
+    },
+    {
+      "id": "dk-ku-veterin-rmedicin",
+      "careerId": "veterinarian",
+      "institutionId": "ku",
+      "programme": "Veterinærmedicin",
+      "englishName": "Veterinary Medicine",
+      "url": "https://studier.ku.dk/bachelor/veterinaermedicin/",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with high grades in biology, chemistry, maths",
+      "careerOutcome": "Eligible for Danish veterinary authorisation"
+    },
+    {
+      "id": "fi-helsinki-el-inl-ketieteen-koulutusohjel",
+      "careerId": "veterinarian",
+      "institutionId": "helsinki",
+      "programme": "Eläinlääketieteen koulutusohjelma",
+      "englishName": "Veterinary Medicine",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/elainlaaketiede",
+      "type": "integrated",
+      "duration": "6 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto with strong sciences, entrance exam",
+      "careerOutcome": "Eligible for Ruokavirasto veterinary licence"
+    },
+    {
+      "id": "no-uio-informatikk",
+      "careerId": "software-developer",
+      "institutionId": "uio",
+      "programme": "Informatikk (bachelor)",
+      "englishName": "Informatics (Bachelor)",
+      "url": "https://www.uio.no/studier/program/informatikk/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with mathematics R1+R2",
+      "careerOutcome": "Qualified for developer, consultant, or IT roles across industries"
+    },
+    {
+      "id": "no-ntnu-datateknologi",
+      "careerId": "software-developer",
+      "institutionId": "ntnu",
+      "programme": "Datateknologi (sivilingeniør)",
+      "englishName": "Computer Science (Integrated Master)",
+      "url": "https://www.ntnu.no/studier/mtdt",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with R1+R2 and Fysikk 1, competitive entry",
+      "careerOutcome": "Sivilingeniør title; qualified for senior technical roles"
+    },
+    {
+      "id": "se-kth-civilingenj-r-datateknik",
+      "careerId": "software-developer",
+      "institutionId": "kth",
+      "programme": "Civilingenjör Datateknik",
+      "englishName": "Computer Science and Engineering (MSc)",
+      "url": "https://www.kth.se/utbildning/civilingenjor/datateknik",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Fysik 2 or equivalent, competitive GPA",
+      "careerOutcome": "Civilingenjör title; qualified for senior engineering roles"
+    },
+    {
+      "id": "dk-itu-softwareudvikling",
+      "careerId": "software-developer",
+      "institutionId": "itu",
+      "programme": "Softwareudvikling (bachelor)",
+      "englishName": "Software Development (Bachelor)",
+      "url": "https://www.itu.dk/uddannelser/bacheloruddannelser/softwareudvikling",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik B",
+      "careerOutcome": "Qualified for developer and IT consultant roles"
+    },
+    {
+      "id": "fi-aalto-tietotekniikka",
+      "careerId": "software-developer",
+      "institutionId": "aalto",
+      "programme": "Tietotekniikka (kandidaatti)",
+      "englishName": "Computer Science (Bachelor)",
+      "url": "https://www.aalto.fi/fi/koulutusohjelmat/tietotekniikka",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto with strong maths, entrance exam",
+      "careerOutcome": "Qualified for developer, data, or IT specialist roles"
+    },
+    {
+      "id": "is-hi-t-lvunarfr-i",
+      "careerId": "software-developer",
+      "institutionId": "hi",
+      "programme": "Tölvunarfræði (BS)",
+      "englishName": "Computer Science (BSc)",
+      "url": "https://www.hi.is/nam/tolvunarfraedi_bs",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Icelandic",
+      "tuitionFee": "free",
+      "entryRequirements": "Stúdentspróf with mathematics",
+      "careerOutcome": "Qualified for developer and IT roles in Iceland and the Nordics"
+    },
+    {
+      "id": "no-oslomet-informasjonsteknologi",
+      "careerId": "it-engineer",
+      "institutionId": "oslomet",
+      "programme": "Informasjonsteknologi (bachelor)",
+      "englishName": "Information Technology (Bachelor)",
+      "url": "https://www.oslomet.no/studier/tkd/informasjonsteknologi",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with Matematikk R1",
+      "careerOutcome": "Qualified for IT infrastructure, network, or systems roles"
+    },
+    {
+      "id": "se-liu-civilingenj-r-informationstekn",
+      "careerId": "it-engineer",
+      "institutionId": "liu",
+      "programme": "Civilingenjör Informationsteknologi",
+      "englishName": "Information Technology Engineering (MSc)",
+      "url": "https://liu.se/utbildning/program/civilingenjor-informationsteknologi",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Fysik 2 or equivalent",
+      "careerOutcome": "Civilingenjör title; senior IT engineering roles"
+    },
+    {
+      "id": "no-ntnu-produktutvikling-og-produksjon",
+      "careerId": "mechanical-engineer",
+      "institutionId": "ntnu",
+      "programme": "Produktutvikling og produksjon (sivilingeniør)",
+      "englishName": "Mechanical Engineering (Integrated Master)",
+      "url": "https://www.ntnu.no/studier/mtprod",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with R1+R2 and Fysikk 1",
+      "careerOutcome": "Sivilingeniør title; qualified for engineering roles in manufacturing, oil & gas, tech"
+    },
+    {
+      "id": "se-chalmers-civilingenj-r-maskinteknik",
+      "careerId": "mechanical-engineer",
+      "institutionId": "chalmers",
+      "programme": "Civilingenjör Maskinteknik",
+      "englishName": "Mechanical Engineering (MSc)",
+      "url": "https://www.chalmers.se/utbildning/program/civilingenjor-maskinteknik/",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Fysik 2, Kemi 1",
+      "careerOutcome": "Civilingenjör title; qualified for manufacturing and product development roles"
+    },
+    {
+      "id": "dk-dtu-maskinteknik",
+      "careerId": "mechanical-engineer",
+      "institutionId": "dtu",
+      "programme": "Maskinteknik (diplomingeniør)",
+      "englishName": "Mechanical Engineering (BEng)",
+      "url": "https://www.dtu.dk/uddannelse/diplomingenior/maskinteknik",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik A, Fysik B, Kemi C",
+      "careerOutcome": "Diplomingeniør title; qualified for industry engineering roles"
+    },
+    {
+      "id": "no-ntnu-bygg-og-milj-teknikk",
+      "careerId": "civil-engineer",
+      "institutionId": "ntnu",
+      "programme": "Bygg- og miljøteknikk (sivilingeniør)",
+      "englishName": "Civil and Environmental Engineering (Integrated Master)",
+      "url": "https://www.ntnu.no/studier/mtbygg",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with R1+R2 and Fysikk 1",
+      "careerOutcome": "Sivilingeniør title; qualified for construction, infrastructure, and environmental roles"
+    },
+    {
+      "id": "se-kth-civilingenj-r-samh-llsbyggnad",
+      "careerId": "civil-engineer",
+      "institutionId": "kth",
+      "programme": "Civilingenjör Samhällsbyggnad",
+      "englishName": "Civil Engineering and Urban Management (MSc)",
+      "url": "https://www.kth.se/utbildning/civilingenjor/samhallsbyggnad",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Fysik 2, Kemi 1",
+      "careerOutcome": "Civilingenjör title; qualified for infrastructure and urban planning roles"
+    },
+    {
+      "id": "dk-dtu-bygningsdesign",
+      "careerId": "civil-engineer",
+      "institutionId": "dtu",
+      "programme": "Bygningsdesign (diplomingeniør)",
+      "englishName": "Architectural Engineering (BEng)",
+      "url": "https://www.dtu.dk/uddannelse/diplomingenior/bygningsdesign",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik A and Fysik B",
+      "careerOutcome": "Diplomingeniør title; qualified for construction and consulting roles"
+    },
+    {
+      "id": "no-oslomet-regnskap-og-revisjon",
+      "careerId": "accountant",
+      "institutionId": "oslomet",
+      "programme": "Regnskap og revisjon (bachelor)",
+      "englishName": "Accounting and Auditing (Bachelor)",
+      "url": "https://www.oslomet.no/studier/sam/regnskap-revisjon",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with Matematikk R1",
+      "careerOutcome": "Eligible for regnskapsfører authorisation after 2 years work experience"
+    },
+    {
+      "id": "se-sse-ekonomie-kandidat",
+      "careerId": "accountant",
+      "institutionId": "sse",
+      "programme": "Ekonomie kandidat",
+      "englishName": "BSc in Business and Economics",
+      "url": "https://www.hhs.se/utbildning/bsc/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish / English",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Engelska 6, competitive GPA",
+      "careerOutcome": "Strong pathway into accounting, audit, and finance roles"
+    },
+    {
+      "id": "dk-cbs-ha",
+      "careerId": "accountant",
+      "institutionId": "cbs",
+      "programme": "HA (almen erhvervsøkonomi)",
+      "englishName": "BSc in Business Administration and Economics",
+      "url": "https://www.cbs.dk/uddannelser/bachelor/ha-almen-erhvervsokonomi",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik A",
+      "careerOutcome": "Qualified for accounting, consulting, and finance roles"
+    },
+    {
+      "id": "no-nhh-konomi-og-administrasjon",
+      "careerId": "economist",
+      "institutionId": "nhh",
+      "programme": "Økonomi og administrasjon (bachelor)",
+      "englishName": "Economics and Business Administration (Bachelor)",
+      "url": "https://www.nhh.no/studier/bachelor/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with Matematikk R1+R2",
+      "careerOutcome": "Qualified for economist, analyst, and advisory roles in public and private sectors"
+    },
+    {
+      "id": "se-su-kandidatprogram-i-nationalekon",
+      "careerId": "economist",
+      "institutionId": "su",
+      "programme": "Kandidatprogram i nationalekonomi",
+      "englishName": "BSc in Economics",
+      "url": "https://www.su.se/utbildning/program/nationalekonomi-kandidatprogram",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 3b or equivalent",
+      "careerOutcome": "Qualified for analyst and economist roles in government and business"
+    },
+    {
+      "id": "fi-aalto-kauppatieteet",
+      "careerId": "economist",
+      "institutionId": "aalto",
+      "programme": "Kauppatieteet (kandidaatti)",
+      "englishName": "BSc in Economics and Business Administration",
+      "url": "https://www.aalto.fi/fi/koulutusohjelmat/kauppatieteet",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto, entrance exam",
+      "careerOutcome": "Qualified for analyst, consulting, and public-sector economist roles"
+    },
+    {
+      "id": "no-uio-rettsvitenskap",
+      "careerId": "lawyer",
+      "institutionId": "uio",
+      "programme": "Rettsvitenskap (master)",
+      "englishName": "Law (Integrated Master)",
+      "url": "https://www.uio.no/studier/program/rettsvitenskap/",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse, competitive entry",
+      "careerOutcome": "Eligible for advokatbevilling after 2 years supervised practice"
+    },
+    {
+      "id": "se-uu-juristprogrammet",
+      "careerId": "lawyer",
+      "institutionId": "uu",
+      "programme": "Juristprogrammet",
+      "englishName": "Master of Laws Programme",
+      "url": "https://www.uu.se/utbildning/program/juristprogrammet",
+      "type": "integrated",
+      "duration": "4.5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "High GPA, Samhällskunskap 1b or equivalent",
+      "careerOutcome": "Juristexamen; eligible for advokat title after work experience"
+    },
+    {
+      "id": "dk-ku-jura",
+      "careerId": "lawyer",
+      "institutionId": "ku",
+      "programme": "Jura (kandidat)",
+      "englishName": "Law (Master of Laws)",
+      "url": "https://studier.ku.dk/bachelor/jura/",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with high marks, Dansk A",
+      "careerOutcome": "Cand.jur. degree; eligible for advokatbestalling after 3 years practice"
+    },
+    {
+      "id": "fi-helsinki-oikeustieteen-maisterin-koulut",
+      "careerId": "lawyer",
+      "institutionId": "helsinki",
+      "programme": "Oikeustieteen maisterin koulutusohjelma",
+      "englishName": "Master of Laws Programme",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/oikeustiede",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto, entrance exam",
+      "careerOutcome": "OTM degree; eligible for asianajaja (advocate) after supervised work"
+    },
+    {
+      "id": "no-aho-arkitektur",
+      "careerId": "architect",
+      "institutionId": "aho",
+      "programme": "Arkitektur (master)",
+      "englishName": "Architecture (Integrated Master)",
+      "url": "https://aho.no/no/studier/arkitektur",
+      "type": "integrated",
+      "duration": "5.5 years",
+      "languageOfInstruction": "Norwegian / English",
+      "tuitionFee": "free",
+      "entryRequirements": "Portfolio + generell studiekompetanse, competitive entry",
+      "careerOutcome": "Qualified as architect; eligible for MNAL membership"
+    },
+    {
+      "id": "se-kth-arkitektutbildning",
+      "careerId": "architect",
+      "institutionId": "kth",
+      "programme": "Arkitektutbildning",
+      "englishName": "Architecture Programme",
+      "url": "https://www.kth.se/utbildning/arkitekt",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Matematik 4, Fysik 2, arbeitsprover (portfolio)",
+      "careerOutcome": "Arkitektexamen; eligible for SAR membership"
+    },
+    {
+      "id": "dk-kadk-arkitektuddannelsen",
+      "careerId": "architect",
+      "institutionId": "kadk",
+      "programme": "Arkitektuddannelsen",
+      "englishName": "Architecture Programme",
+      "url": "https://kadk.dk/uddannelser/arkitektur",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse + admission test, portfolio",
+      "careerOutcome": "Cand.arch. degree; eligible for MAA membership"
+    },
+    {
+      "id": "no-aho-design",
+      "careerId": "designer",
+      "institutionId": "aho",
+      "programme": "Design (master)",
+      "englishName": "Design (Integrated Master)",
+      "url": "https://aho.no/no/studier/design",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian / English",
+      "tuitionFee": "free",
+      "entryRequirements": "Portfolio + generell studiekompetanse",
+      "careerOutcome": "Qualified for industrial, service, or interaction design roles"
+    },
+    {
+      "id": "se-konstfack-industridesign",
+      "careerId": "designer",
+      "institutionId": "konstfack",
+      "programme": "Industridesign (kandidat)",
+      "englishName": "Industrial Design (Bachelor)",
+      "url": "https://www.konstfack.se/utbildning/program/industridesign/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Portfolio and admission test",
+      "careerOutcome": "Qualified for product, UX, or service design roles"
+    },
+    {
+      "id": "dk-kadk-design",
+      "careerId": "designer",
+      "institutionId": "kadk",
+      "programme": "Design",
+      "englishName": "Design Programme",
+      "url": "https://kadk.dk/uddannelser/design",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse + admission test, portfolio",
+      "careerOutcome": "Qualified for design roles across product, graphic, and interaction fields"
+    },
+    {
+      "id": "fi-aalto-muotoilu",
+      "careerId": "designer",
+      "institutionId": "aalto",
+      "programme": "Muotoilu (kandidaatti)",
+      "englishName": "Design (Bachelor)",
+      "url": "https://www.aalto.fi/fi/koulutusohjelmat/muotoilu",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Portfolio and entrance exam",
+      "careerOutcome": "Qualified for industrial, interaction, or fashion design roles"
+    },
+    {
+      "id": "no-oslomet-grunnskolel-rerutdanning-1-7",
+      "careerId": "teacher",
+      "institutionId": "oslomet",
+      "programme": "Grunnskolelærerutdanning 1–7",
+      "englishName": "Primary Teacher Education (Grades 1–7)",
+      "url": "https://www.oslomet.no/studier/lui/grunnskolelaerer-1-7",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with Matematikk and Norsk, minimum grade 3",
+      "careerOutcome": "Qualified as primary school teacher in Norway"
+    },
+    {
+      "id": "no-ntnu-lektorutdanning-8-13",
+      "careerId": "teacher",
+      "institutionId": "ntnu",
+      "programme": "Lektorutdanning 8–13",
+      "englishName": "Upper Secondary Teacher Education (Grades 8–13)",
+      "url": "https://www.ntnu.no/studier/lektorutdanning",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse with relevant subject specialisation",
+      "careerOutcome": "Qualified as upper secondary school teacher (lektor) in Norway"
+    },
+    {
+      "id": "se-su-mnesl-rarprogrammet",
+      "careerId": "teacher",
+      "institutionId": "su",
+      "programme": "Ämneslärarprogrammet",
+      "englishName": "Subject Teacher Programme",
+      "url": "https://www.su.se/utbildning/program/amneslararprogrammet",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Depends on chosen subject area",
+      "careerOutcome": "Qualified as upper secondary teacher with lärarlegitimation"
+    },
+    {
+      "id": "dk-kp-l-reruddannelsen",
+      "careerId": "teacher",
+      "institutionId": "kp",
+      "programme": "Læreruddannelsen",
+      "englishName": "Teacher Education Programme",
+      "url": "https://www.kp.dk/uddannelser/laerer/",
+      "type": "bachelor",
+      "duration": "4 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse or relevant erhvervsuddannelse",
+      "careerOutcome": "Qualified as folkeskole (primary/lower secondary) teacher"
+    },
+    {
+      "id": "fi-helsinki-luokanopettajan-koulutus",
+      "careerId": "teacher",
+      "institutionId": "helsinki",
+      "programme": "Luokanopettajan koulutus",
+      "englishName": "Class Teacher Education",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/luokanopettaja",
+      "type": "integrated",
+      "duration": "5 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto, VAKAVA entrance exam",
+      "careerOutcome": "Qualified as class teacher (luokanopettaja) in Finland"
+    },
+    {
+      "id": "no-oslomet-sosialt-arbeid",
+      "careerId": "social-worker",
+      "institutionId": "oslomet",
+      "programme": "Sosialt arbeid (bachelor)",
+      "englishName": "Social Work (Bachelor)",
+      "url": "https://www.oslomet.no/studier/sam/sosialt-arbeid",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Generell studiekompetanse",
+      "careerOutcome": "Qualified as sosionom; roles in NAV, barnevern, community services"
+    },
+    {
+      "id": "se-gu-socionomprogrammet",
+      "careerId": "social-worker",
+      "institutionId": "gu",
+      "programme": "Socionomprogrammet",
+      "englishName": "Social Work Programme",
+      "url": "https://www.gu.se/studera/socionomprogrammet",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Samhällskunskap 1b or equivalent",
+      "careerOutcome": "Socionomexamen; qualified for social services, school counselling, family support"
+    },
+    {
+      "id": "dk-kp-socialr-dgiveruddannelsen",
+      "careerId": "social-worker",
+      "institutionId": "kp",
+      "programme": "Socialrådgiveruddannelsen",
+      "englishName": "Bachelor in Social Work",
+      "url": "https://www.kp.dk/uddannelser/socialraadgiver/",
+      "type": "bachelor",
+      "duration": "3.5 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse or relevant erhvervsuddannelse",
+      "careerOutcome": "Qualified as socialrådgiver; roles in municipality, hospitals, NGOs"
+    },
+    {
+      "id": "no-uio-biovitenskap",
+      "careerId": "biologist",
+      "institutionId": "uio",
+      "programme": "Biovitenskap (bachelor)",
+      "englishName": "Biosciences (Bachelor)",
+      "url": "https://www.uio.no/studier/program/biovitenskap/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with biology, chemistry, mathematics",
+      "careerOutcome": "Qualified for research, environmental monitoring, pharma, and lab roles"
+    },
+    {
+      "id": "se-uu-kandidatprogram-i-biologi",
+      "careerId": "biologist",
+      "institutionId": "uu",
+      "programme": "Kandidatprogram i biologi",
+      "englishName": "BSc in Biology",
+      "url": "https://www.uu.se/utbildning/program/biologi-kandidatprogram",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Biologi 2, Kemi 2, Matematik 2a or equivalent",
+      "careerOutcome": "Qualified for research, environmental, and biotech roles"
+    },
+    {
+      "id": "dk-ku-biologi",
+      "careerId": "biologist",
+      "institutionId": "ku",
+      "programme": "Biologi (bachelor)",
+      "englishName": "Biology (Bachelor)",
+      "url": "https://studier.ku.dk/bachelor/biologi/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik A, Fysik B, Kemi B",
+      "careerOutcome": "Qualified for research, environmental science, and biotech roles"
+    },
+    {
+      "id": "fi-helsinki-biologian-koulutusohjelma",
+      "careerId": "biologist",
+      "institutionId": "helsinki",
+      "programme": "Biologian koulutusohjelma",
+      "englishName": "Bachelor of Science in Biology",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/biologia",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto with strong sciences",
+      "careerOutcome": "Qualified for research, environmental monitoring, and biotech roles"
+    },
+    {
+      "id": "no-uio-kjemi",
+      "careerId": "chemist",
+      "institutionId": "uio",
+      "programme": "Kjemi (bachelor)",
+      "englishName": "Chemistry (Bachelor)",
+      "url": "https://www.uio.no/studier/program/kjemi/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Realfag with chemistry, mathematics, physics",
+      "careerOutcome": "Qualified for lab, pharma, environmental chemistry, and research roles"
+    },
+    {
+      "id": "se-su-kandidatprogram-i-kemi",
+      "careerId": "chemist",
+      "institutionId": "su",
+      "programme": "Kandidatprogram i kemi",
+      "englishName": "BSc in Chemistry",
+      "url": "https://www.su.se/utbildning/program/kemi-kandidatprogram",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Swedish",
+      "tuitionFee": "free",
+      "entryRequirements": "Kemi 2, Matematik 3c or equivalent",
+      "careerOutcome": "Qualified for lab, pharmaceutical, and chemical industry roles"
+    },
+    {
+      "id": "dk-ku-kemi",
+      "careerId": "chemist",
+      "institutionId": "ku",
+      "programme": "Kemi (bachelor)",
+      "englishName": "Chemistry (Bachelor)",
+      "url": "https://studier.ku.dk/bachelor/kemi/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Danish",
+      "tuitionFee": "free",
+      "entryRequirements": "Gymnasial uddannelse with Matematik A, Fysik B, Kemi A",
+      "careerOutcome": "Qualified for chemical analysis, research, and pharmaceutical roles"
+    },
+    {
+      "id": "fi-helsinki-kemian-koulutusohjelma",
+      "careerId": "chemist",
+      "institutionId": "helsinki",
+      "programme": "Kemian koulutusohjelma",
+      "englishName": "Bachelor of Science in Chemistry",
+      "url": "https://www.helsinki.fi/fi/koulutusohjelmat/kemia",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Finnish",
+      "tuitionFee": "free",
+      "entryRequirements": "Ylioppilastutkinto with strong chemistry and mathematics",
+      "careerOutcome": "Qualified for lab, pharma, and chemical industry roles"
+    },
+    {
+      "id": "no-uio-psykologi",
+      "careerId": "psychologist",
+      "institutionId": "uio",
+      "programme": "Psykologi (profesjonsstudium)",
+      "englishName": "Psychology (Professional Degree)",
+      "url": "https://www.uio.no/studier/program/psykologi-profesjon/",
+      "type": "integrated",
+      "duration": "6 years"
+    },
+    {
+      "id": "no-uib-psykologi",
+      "careerId": "psychologist",
+      "institutionId": "uib",
+      "programme": "Psykologi (profesjonsstudium)",
+      "englishName": "Psychology (Professional Degree)",
+      "url": "https://www.uib.no/studier/psykologi-profesjon",
+      "type": "integrated",
+      "duration": "6 years"
+    },
+    {
+      "id": "no-ntnu-psykologi",
+      "careerId": "psychologist",
+      "institutionId": "ntnu",
+      "programme": "Psykologi (profesjonsstudium)",
+      "englishName": "Psychology (Professional Degree)",
+      "url": "https://www.ntnu.no/studier/psykologi-profesjon",
+      "type": "integrated",
+      "duration": "6 years"
+    },
+    {
+      "id": "no-uit-psykologi",
+      "careerId": "psychologist",
+      "institutionId": "uit",
+      "programme": "Psykologi (profesjonsstudium)",
+      "englishName": "Psychology (Professional Degree)",
+      "url": "https://uit.no/utdanning/program/272193/psykologi_profesjon",
+      "type": "integrated",
+      "duration": "6 years"
+    },
+    {
+      "id": "no-ntnu-sivilingeni-r",
+      "careerId": "engineer",
+      "institutionId": "ntnu",
+      "programme": "Sivilingeniør (various specialisations)",
+      "englishName": "Engineering (Integrated Master)",
+      "url": "https://www.ntnu.no/studier/sivilingenior",
+      "type": "integrated",
+      "duration": "5 years"
+    },
+    {
+      "id": "no-oslomet-ingeni-rfag",
+      "careerId": "engineer",
+      "institutionId": "oslomet",
+      "programme": "Ingeniørfag (bachelor)",
+      "englishName": "Engineering (Bachelor)",
+      "url": "https://www.oslomet.no/studier/tkd/ingenior",
+      "type": "bachelor",
+      "duration": "3 years"
+    },
+    {
+      "id": "no-universitetet-i-s-r-st-norge-ingeni-rfag",
+      "careerId": "engineer",
+      "institutionId": "universitetet-i-s-r-st-norge",
+      "programme": "Ingeniørfag (bachelor)",
+      "englishName": "Engineering (Bachelor)",
+      "url": "https://www.usn.no/studier/studie-og-emneoversikt/teknologi/",
+      "type": "bachelor",
+      "duration": "3 years"
+    },
+    {
+      "id": "no-vgs-no-helse-og-oppvekstfag-helsearbe",
+      "careerId": "healthcare-worker",
+      "institutionId": "vgs-no",
+      "programme": "Helse- og oppvekstfag (Vg1) → Helsearbeiderfag (Vg2)",
+      "englishName": "Health and Social Care (Upper Secondary)",
+      "url": "https://utdanning.no/yrker/beskrivelse/helsefagarbeider",
+      "type": "fagbrev",
+      "duration": "2 years school + 2 years apprenticeship"
+    },
+    {
+      "id": "no-uio-statistikk-og-datavitenskap",
+      "careerId": "data-analyst",
+      "institutionId": "uio",
+      "programme": "Statistikk og datavitenskap (bachelor)",
+      "englishName": "Statistics and Data Science (Bachelor)",
+      "url": "https://www.uio.no/studier/program/statistikk/",
+      "type": "bachelor",
+      "duration": "3 years"
+    },
+    {
+      "id": "no-ntnu-datavitenskap",
+      "careerId": "data-analyst",
+      "institutionId": "ntnu",
+      "programme": "Datavitenskap (bachelor)",
+      "englishName": "Data Science (Bachelor)",
+      "url": "https://www.ntnu.no/studier/bdat",
+      "type": "bachelor",
+      "duration": "3 years"
+    },
+    {
+      "id": "no-phs-bachelorstudium-i-politiarbeid",
+      "careerId": "police-officer",
+      "institutionId": "phs",
+      "programme": "Bachelorstudium i politiarbeid",
+      "englishName": "Bachelor in Police Studies",
+      "url": "https://www.politihogskolen.no/studietilbud/bachelor/",
+      "type": "bachelor",
+      "duration": "3 years"
+    },
+    {
+      "id": "no-nbsk-grunnkurs-for-brann-og-redning",
+      "careerId": "firefighter",
+      "institutionId": "nbsk",
+      "programme": "Grunnkurs for brann- og redningspersonell",
+      "englishName": "Basic Course for Fire and Rescue Personnel",
+      "url": "https://www.nbsk.no/",
+      "type": "vocational",
+      "duration": "1 year"
+    },
+    {
+      "id": "no-osm-integrated-atpl-programme",
+      "careerId": "airline-pilot",
+      "institutionId": "osm",
+      "programme": "Integrated ATPL Programme",
+      "englishName": "Airline Pilot Training",
+      "url": "https://www.osmaviationacademy.com/",
+      "type": "vocational",
+      "duration": "18-24 months"
+    },
+    {
+      "id": "no-saa-trafikkflygerutdanning",
+      "careerId": "airline-pilot",
+      "institutionId": "saa",
+      "programme": "Trafikkflygerutdanning",
+      "englishName": "Commercial Pilot Training",
+      "url": "https://www.pilot.no/",
+      "type": "vocational",
+      "duration": "18-24 months"
+    },
+    {
+      "id": "no-uit-luftfart-luftfartsfag",
+      "careerId": "airline-pilot",
+      "institutionId": "uit-luftfart",
+      "programme": "Luftfartsfag",
+      "englishName": "Aviation Studies",
+      "url": "https://uit.no/utdanning/program/341185/luftfartsfag",
+      "type": "bachelor",
+      "duration": "3 years (bachelor + ATPL)"
+    },
+    {
+      "id": "no-hft-helikopterflygerutdanning",
+      "careerId": "helicopter-pilot",
+      "institutionId": "hft",
+      "programme": "Helikopterflygerutdanning",
+      "englishName": "Helicopter Pilot Training",
+      "url": "https://www.hft.no/",
+      "type": "vocational",
+      "duration": "12-18 months"
+    }
+  ],
+  "certificationPaths": {
+    "project": {
+      "summary": "Project management is a skills-based career. While a degree helps, industry certifications are what employers look for. Most project managers start in technical or business roles and transition into management.",
+      "certifications": [
+        {
+          "name": "PRINCE2 Foundation & Practitioner",
+          "provider": "PeopleCert / Axelos",
+          "duration": "5 days + exam",
+          "cost": "~15,000 NOK",
+          "url": "https://www.peoplecert.org/browse-certifications/project-management/prince2",
+          "recognised": "Globally recognised, standard in Norway/UK"
+        },
+        {
+          "name": "PMP (Project Management Professional)",
+          "provider": "PMI",
+          "duration": "Self-paced + exam",
+          "cost": "~5,000 NOK (exam)",
+          "url": "https://www.pmi.org/certifications/project-management-pmp",
+          "recognised": "Globally recognised, standard in US/international"
+        },
+        {
+          "name": "Certified Scrum Master (CSM)",
+          "provider": "Scrum Alliance",
+          "duration": "2 days + exam",
+          "cost": "~12,000 NOK",
+          "url": "https://www.scrumalliance.org/get-certified/scrum-master-track/certified-scrummaster",
+          "recognised": "Industry standard for agile teams"
+        },
+        {
+          "name": "ITIL 4 Foundation",
+          "provider": "PeopleCert / Axelos",
+          "duration": "3 days + exam",
+          "cost": "~10,000 NOK",
+          "url": "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/itil-4",
+          "recognised": "IT service management standard"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in IT or Computer Science",
+        "Bachelor's in Business Administration",
+        "Master's in Project Management"
+      ],
+      "matchTerms": [
+        "project"
+      ]
+    },
+    "programme": {
+      "summary": "Programme management typically requires 10+ years of project management experience. There is no direct degree — it's a senior role you grow into. Certifications like MSP and PgMP demonstrate readiness.",
+      "certifications": [
+        {
+          "name": "MSP (Managing Successful Programmes)",
+          "provider": "PeopleCert / Axelos",
+          "duration": "5 days + exam",
+          "cost": "~20,000 NOK",
+          "url": "https://www.peoplecert.org/browse-certifications/programme-management/msp",
+          "recognised": "Standard for programme management in Norway/UK"
+        },
+        {
+          "name": "PgMP (Programme Management Professional)",
+          "provider": "PMI",
+          "duration": "Self-paced + exam",
+          "cost": "~7,000 NOK (exam)",
+          "url": "https://www.pmi.org/certifications/program-management-pgmp",
+          "recognised": "Globally recognised senior PM credential"
+        },
+        {
+          "name": "PRINCE2 Agile",
+          "provider": "PeopleCert / Axelos",
+          "duration": "3 days + exam",
+          "cost": "~15,000 NOK",
+          "url": "https://www.peoplecert.org/browse-certifications/project-management/prince2-agile",
+          "recognised": "Combines PRINCE2 with agile methods"
+        },
+        {
+          "name": "SAFe Program Consultant (SPC)",
+          "provider": "Scaled Agile",
+          "duration": "4 days + exam",
+          "cost": "~25,000 NOK",
+          "url": "https://scaledagile.com/training/safe-program-consultant/",
+          "recognised": "Enterprise agile at scale"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in IT or Engineering",
+        "MBA or Master's in Business",
+        "Master's in Project Management"
+      ],
+      "matchTerms": [
+        "programme"
+      ]
+    },
+    "cyber": {
+      "summary": "Cybersecurity is one of the fastest-growing fields. While a degree in IT or computer science helps, industry certifications are essential and often valued more than degrees by employers.",
+      "certifications": [
+        {
+          "name": "CompTIA Security+",
+          "provider": "CompTIA",
+          "duration": "Self-paced + exam",
+          "cost": "~4,000 NOK",
+          "url": "https://www.comptia.org/certifications/security",
+          "recognised": "Entry-level industry standard"
+        },
+        {
+          "name": "CISSP",
+          "provider": "ISC²",
+          "duration": "Self-paced + exam",
+          "cost": "~8,000 NOK (exam)",
+          "url": "https://www.isc2.org/certifications/cissp",
+          "recognised": "Gold standard for senior security roles"
+        },
+        {
+          "name": "CEH (Certified Ethical Hacker)",
+          "provider": "EC-Council",
+          "duration": "5 days + exam",
+          "cost": "~15,000 NOK",
+          "url": "https://www.eccouncil.org/programs/certified-ethical-hacker-ceh/",
+          "recognised": "Penetration testing standard"
+        },
+        {
+          "name": "OSCP",
+          "provider": "Offensive Security",
+          "duration": "Self-paced + exam",
+          "cost": "~12,000 NOK",
+          "url": "https://www.offsec.com/courses/pen-200/",
+          "recognised": "Hands-on penetration testing — highly respected"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Computer Science or IT",
+        "Bachelor's in Cybersecurity",
+        "Master's in Information Security"
+      ],
+      "matchTerms": [
+        "cyber"
+      ]
+    },
+    "cloud": {
+      "summary": "Cloud engineering is certification-driven. The major cloud providers (AWS, Azure, Google Cloud) each have their own certification paths that employers specifically look for.",
+      "certifications": [
+        {
+          "name": "AWS Solutions Architect Associate",
+          "provider": "Amazon Web Services",
+          "duration": "Self-paced + exam",
+          "cost": "~2,000 NOK",
+          "url": "https://aws.amazon.com/certification/certified-solutions-architect-associate/",
+          "recognised": "Most in-demand cloud cert globally"
+        },
+        {
+          "name": "Azure Administrator Associate",
+          "provider": "Microsoft",
+          "duration": "Self-paced + exam",
+          "cost": "~2,000 NOK",
+          "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/",
+          "recognised": "Standard for Microsoft cloud environments"
+        },
+        {
+          "name": "Google Cloud Professional Cloud Architect",
+          "provider": "Google",
+          "duration": "Self-paced + exam",
+          "cost": "~2,500 NOK",
+          "url": "https://cloud.google.com/learn/certification/cloud-architect",
+          "recognised": "GCP enterprise standard"
+        },
+        {
+          "name": "Kubernetes Administrator (CKA)",
+          "provider": "CNCF",
+          "duration": "Self-paced + exam",
+          "cost": "~3,000 NOK",
+          "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+          "recognised": "Container orchestration standard"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Computer Science or IT",
+        "Bachelor's in Software Engineering"
+      ],
+      "matchTerms": [
+        "cloud"
+      ]
+    },
+    "data": {
+      "summary": "Data science and analytics roles value a mix of formal education and practical skills. A degree in statistics, maths, or computer science provides the foundation, but practical certifications and portfolio projects matter equally.",
+      "certifications": [
+        {
+          "name": "Google Data Analytics Certificate",
+          "provider": "Google (via Coursera)",
+          "duration": "6 months part-time",
+          "cost": "~3,000 NOK",
+          "url": "https://www.coursera.org/professional-certificates/google-data-analytics",
+          "recognised": "Industry-recognised entry-level credential"
+        },
+        {
+          "name": "AWS Machine Learning Specialty",
+          "provider": "Amazon Web Services",
+          "duration": "Self-paced + exam",
+          "cost": "~3,500 NOK",
+          "url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/",
+          "recognised": "Cloud ML standard"
+        },
+        {
+          "name": "TensorFlow Developer Certificate",
+          "provider": "Google",
+          "duration": "Self-paced + exam",
+          "cost": "~1,500 NOK",
+          "url": "https://www.tensorflow.org/certificate",
+          "recognised": "Deep learning credential"
+        },
+        {
+          "name": "Microsoft Power BI Data Analyst",
+          "provider": "Microsoft",
+          "duration": "Self-paced + exam",
+          "cost": "~2,000 NOK",
+          "url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
+          "recognised": "Business intelligence standard"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Statistics or Mathematics",
+        "Bachelor's in Computer Science",
+        "Master's in Data Science"
+      ],
+      "matchTerms": [
+        "data"
+      ]
+    },
+    "product": {
+      "summary": "Product management is a cross-functional role with no single degree path. Most product managers come from engineering, design, or business backgrounds. Certifications help but experience matters most.",
+      "certifications": [
+        {
+          "name": "Certified Scrum Product Owner (CSPO)",
+          "provider": "Scrum Alliance",
+          "duration": "2 days + exam",
+          "cost": "~12,000 NOK",
+          "url": "https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner",
+          "recognised": "Agile product ownership standard"
+        },
+        {
+          "name": "Product Management Certificate",
+          "provider": "Product School",
+          "duration": "8 weeks",
+          "cost": "~40,000 NOK",
+          "url": "https://productschool.com/product-management-certification",
+          "recognised": "Recognised by tech companies globally"
+        },
+        {
+          "name": "SAFe Product Owner/Product Manager",
+          "provider": "Scaled Agile",
+          "duration": "2 days + exam",
+          "cost": "~15,000 NOK",
+          "url": "https://scaledagile.com/training/safe-product-owner-product-manager/",
+          "recognised": "Enterprise product management"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Computer Science or Engineering",
+        "Bachelor's in Business",
+        "MBA"
+      ],
+      "matchTerms": [
+        "product"
+      ]
+    },
+    "ux": {
+      "summary": "UX design can be entered through bootcamps, self-study, or formal education. A strong portfolio matters more than any specific degree. Google's UX certificate is a popular entry point.",
+      "certifications": [
+        {
+          "name": "Google UX Design Certificate",
+          "provider": "Google (via Coursera)",
+          "duration": "6 months part-time",
+          "cost": "~3,000 NOK",
+          "url": "https://www.coursera.org/professional-certificates/google-ux-design",
+          "recognised": "Industry-recognised entry-level credential"
+        },
+        {
+          "name": "Nielsen Norman Group UX Certification",
+          "provider": "NN/g",
+          "duration": "Multiple courses + exam",
+          "cost": "~30,000 NOK",
+          "url": "https://www.nngroup.com/ux-certification/",
+          "recognised": "Gold standard in UX research and design"
+        },
+        {
+          "name": "Interaction Design Foundation",
+          "provider": "IxDF",
+          "duration": "Self-paced courses",
+          "cost": "~2,000 NOK/year",
+          "url": "https://www.interaction-design.org/",
+          "recognised": "Comprehensive UX learning platform"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Interaction Design",
+        "Bachelor's in Visual Communication",
+        "Bachelor's in Informatics"
+      ],
+      "matchTerms": [
+        "ux"
+      ]
+    }
+  },
+  "alternativePaths": {
+    "doctor": [
+      "Study medicine abroad (Hungary, Poland, Czech Republic) and apply for HPR authorisation in Norway",
+      "Some students take a year of realfag (science subjects) to improve grades before applying"
+    ],
+    "psychologist": [
+      "Bachelor in psychology (3 years) + master (2 years) — but this does not give clinical authorisation without additional supervised practice"
+    ],
+    "software-developer": [
+      "Coding bootcamps (e.g. Kodehode, Salt)",
+      "Self-taught with portfolio and open source contributions",
+      "Fagskole in IT (2 years vocational college)"
+    ],
+    "accountant": [
+      "Fagbrev in accounting (regnskapsmedarbeider) through vocational training"
+    ],
+    "healthcare-worker": [
+      "Praksiskandidat — if you have 5+ years of relevant work experience, you can take the fagprøve directly"
+    ],
+    "police-officer": [
+      "No alternative route — Politihøgskolen is the only path to becoming a police officer in Norway"
+    ],
+    "firefighter": [
+      "Deltidsbrannkonstabel (part-time firefighter) — shorter training, common in rural areas",
+      "Technical fagbrev + fire academy provides the strongest application"
+    ],
+    "airline-pilot": [
+      "Military pilot training via Luftforsvaret (Norwegian Air Force)",
+      "Modular route: PPL → CPL → IR → ATPL theory — cheaper but takes longer"
+    ],
+    "helicopter-pilot": [
+      "Military helicopter pilot training via Forsvaret",
+      "Train abroad (USA, South Africa) — typically cheaper, then convert licence to EASA"
+    ]
+  },
+  "careerSummaries": {
+    "doctor": "In Norway, becoming a doctor requires completing a 6-year medical degree (medisin) followed by 18 months of supervised internship (LIS1). Admission is highly competitive with strict grade requirements.",
+    "nurse": "Nursing in Norway requires a 3-year bachelor's degree in sykepleie (nursing), followed by authorisation from Helsedirektoratet. Most universities and university colleges across Norway offer the programme.",
+    "psychologist": "To become a psychologist in Norway, you need to complete the 6-year profesjonsstudium i psykologi. This is a competitive integrated programme that leads directly to authorisation. A bachelor + master route also exists but takes longer.",
+    "teacher": "Teaching in Norway requires a teaching degree — either grunnskolelærer (primary/lower secondary) or lektorutdanning (upper secondary). The programme is 5 years and includes practical placements in schools.",
+    "software-developer": "Software development in Norway can be entered through a bachelor's in informatics/computer science (3 years) or a 5-year integrated master's. Bootcamps and self-taught routes also work — the industry values skills and portfolio over formal degrees.",
+    "engineer": "Engineering in Norway is typically studied as a 5-year sivilingeniør (integrated master's) at NTNU or a 3-year bachelor's at a university college. NTNU's sivilingeniør programme is the most prestigious route.",
+    "accountant": "To become an authorised accountant (regnskapsfører) in Norway, you need a bachelor's degree in accounting or economics, plus 2 years of relevant work experience. The authorisation is granted by Finanstilsynet.",
+    "lawyer": "Becoming a lawyer in Norway requires a 5-year master's degree in law (rettsvitenskap/jus). After graduating, you need 2 years of supervised practice to obtain your advokatbevilling (lawyer's licence).",
+    "healthcare-worker": "Healthcare worker (helsefagarbeider) is a vocational path in Norway. You take 2 years of health and social care studies at videregående skole (upper secondary), followed by 2 years of apprenticeship (læretid) to earn your fagbrev.",
+    "data-analyst": "Data analysis in Norway typically requires a bachelor's in statistics, mathematics, informatics, or a related field. Many roles accept a strong portfolio in lieu of a specific degree.",
+    "physiotherapist": "Physiotherapy in Norway requires a 3-year bachelor's degree in fysioterapi, followed by authorisation from Helsedirektoratet. The programme includes extensive practical placements.",
+    "police-officer": "In Norway, becoming a police officer requires a 3-year bachelor's degree at Politihøgskolen (Police University College). Entry is extremely competitive — typically 3,000+ applicants for ~700 places. You must pass physical tests, background checks, and be a Norwegian citizen.",
+    "firefighter": "Norwegian firefighters train at Norges brannskole (Norwegian Fire Academy) in Tjeldsund, Nordland. The programme is 1 year. Many candidates have a technical fagbrev or relevant work experience before applying. You must pass demanding physical tests.",
+    "airline-pilot": "Becoming an airline pilot in Norway requires an ATPL (Airline Transport Pilot Licence). You can train through an integrated flight school programme (18-24 months) or via a modular route. Norwegian airlines typically require 1,500+ flight hours.",
+    "helicopter-pilot": "Helicopter pilots in Norway typically train for a CPL-H (Commercial Pilot Licence — Helicopter). Offshore helicopter operations (North Sea) require additional training including HUET (Helicopter Underwater Escape Training)."
+  }
+}

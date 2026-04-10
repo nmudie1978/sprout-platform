@@ -1,0 +1,511 @@
+{
+  "meta": {
+    "source": "Official Nordic admissions portals",
+    "lastUpdated": "2026-04-10"
+  },
+  "institutions": [
+    {
+      "id": "aalto",
+      "name": "Aalto-yliopisto",
+      "shortName": "AALTO",
+      "country": "FI",
+      "city": "Espoo",
+      "url": "https://www.aalto.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "software-developer",
+        "economist",
+        "designer"
+      ]
+    },
+    {
+      "id": "aho",
+      "name": "Arkitektur- og designhøgskolen i Oslo (AHO)",
+      "shortName": "AHO",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://aho.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "architect",
+        "designer"
+      ]
+    },
+    {
+      "id": "au",
+      "name": "Aarhus Universitet",
+      "shortName": "AU",
+      "country": "DK",
+      "city": "Aarhus",
+      "url": "https://www.au.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "dentist"
+      ]
+    },
+    {
+      "id": "cbs",
+      "name": "Copenhagen Business School (CBS)",
+      "shortName": "CBS",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://www.cbs.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "accountant"
+      ]
+    },
+    {
+      "id": "chalmers",
+      "name": "Chalmers tekniska högskola",
+      "shortName": "CHALMERS",
+      "country": "SE",
+      "city": "Gothenburg",
+      "url": "https://www.chalmers.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "mechanical-engineer"
+      ]
+    },
+    {
+      "id": "dtu",
+      "name": "Danmarks Tekniske Universitet (DTU)",
+      "shortName": "DTU",
+      "country": "DK",
+      "city": "Lyngby",
+      "url": "https://www.dtu.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "mechanical-engineer",
+        "civil-engineer"
+      ]
+    },
+    {
+      "id": "gu",
+      "name": "Göteborgs universitet",
+      "shortName": "GU",
+      "country": "SE",
+      "city": "Gothenburg",
+      "url": "https://www.gu.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "dentist",
+        "social-worker"
+      ]
+    },
+    {
+      "id": "helsinki",
+      "name": "Helsingin yliopisto",
+      "shortName": "HELSINKI",
+      "country": "FI",
+      "city": "Helsinki",
+      "url": "https://www.helsinki.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "doctor",
+        "veterinarian",
+        "lawyer",
+        "teacher",
+        "biologist",
+        "chemist"
+      ]
+    },
+    {
+      "id": "hft",
+      "name": "Helicopter Flight Training AS",
+      "shortName": "HFT",
+      "country": "NO",
+      "city": "Stavanger",
+      "url": "https://helicopter-flight-training-as.no",
+      "applicationVia": "Direct application",
+      "careerIds": [
+        "helicopter-pilot"
+      ]
+    },
+    {
+      "id": "hi",
+      "name": "Háskóli Íslands",
+      "shortName": "HI",
+      "country": "IS",
+      "city": "Reykjavik",
+      "url": "https://www.hi.is",
+      "applicationVia": "haskolinn.is",
+      "careerIds": [
+        "software-developer"
+      ]
+    },
+    {
+      "id": "itu",
+      "name": "IT-Universitetet i København (ITU)",
+      "shortName": "ITU",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://www.itu.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "software-developer"
+      ]
+    },
+    {
+      "id": "kadk",
+      "name": "Det Kongelige Akademi (KADK)",
+      "shortName": "KADK",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://kadk.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "architect",
+        "designer"
+      ]
+    },
+    {
+      "id": "ki",
+      "name": "Karolinska Institutet",
+      "shortName": "KI",
+      "country": "SE",
+      "city": "Stockholm",
+      "url": "https://ki.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "doctor",
+        "nurse"
+      ]
+    },
+    {
+      "id": "konstfack",
+      "name": "Konstfack",
+      "shortName": "KONSTFACK",
+      "country": "SE",
+      "city": "Stockholm",
+      "url": "https://www.konstfack.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "designer"
+      ]
+    },
+    {
+      "id": "kp",
+      "name": "Københavns Professionshøjskole",
+      "shortName": "KP",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://www.kp.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "nurse",
+        "physiotherapist",
+        "teacher",
+        "social-worker"
+      ]
+    },
+    {
+      "id": "kth",
+      "name": "KTH Royal Institute of Technology",
+      "shortName": "KTH",
+      "country": "SE",
+      "city": "Stockholm",
+      "url": "https://www.kth.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "software-developer",
+        "civil-engineer",
+        "architect"
+      ]
+    },
+    {
+      "id": "ku",
+      "name": "Københavns Universitet",
+      "shortName": "KU",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://www.ku.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "doctor",
+        "veterinarian",
+        "lawyer",
+        "biologist",
+        "chemist"
+      ]
+    },
+    {
+      "id": "liu",
+      "name": "Linköpings universitet",
+      "shortName": "LIU",
+      "country": "SE",
+      "city": "Linköping",
+      "url": "https://liu.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "it-engineer"
+      ]
+    },
+    {
+      "id": "lu",
+      "name": "Lunds universitet",
+      "shortName": "LU",
+      "country": "SE",
+      "city": "Lund",
+      "url": "https://www.lu.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "physiotherapist"
+      ]
+    },
+    {
+      "id": "metropolia",
+      "name": "Metropolia AMK",
+      "shortName": "METROPOLIA",
+      "country": "FI",
+      "city": "Helsinki",
+      "url": "https://www.metropolia.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "nurse",
+        "physiotherapist"
+      ]
+    },
+    {
+      "id": "nbsk",
+      "name": "Norges brannskole",
+      "shortName": "NBSK",
+      "country": "NO",
+      "city": "Tjeldsund",
+      "url": "https://www.nbsk.no",
+      "applicationVia": "Norges brannskole direct",
+      "careerIds": [
+        "firefighter"
+      ]
+    },
+    {
+      "id": "nhh",
+      "name": "Norges Handelshøyskole (NHH)",
+      "shortName": "NHH",
+      "country": "NO",
+      "city": "Bergen",
+      "url": "https://www.nhh.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "economist"
+      ]
+    },
+    {
+      "id": "nmbu",
+      "name": "NMBU (Norges miljø- og biovitenskapelige universitet)",
+      "shortName": "NMBU",
+      "country": "NO",
+      "city": "Ås",
+      "url": "https://www.nmbu.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "ntnu",
+      "name": "NTNU",
+      "shortName": "NTNU",
+      "country": "NO",
+      "city": "Trondheim",
+      "url": "https://www.ntnu.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "doctor",
+        "nurse",
+        "software-developer",
+        "mechanical-engineer",
+        "civil-engineer",
+        "teacher",
+        "psychologist",
+        "engineer",
+        "data-analyst"
+      ]
+    },
+    {
+      "id": "oslomet",
+      "name": "OsloMet",
+      "shortName": "OSLOMET",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://www.oslomet.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "nurse",
+        "physiotherapist",
+        "it-engineer",
+        "accountant",
+        "teacher",
+        "social-worker",
+        "engineer"
+      ]
+    },
+    {
+      "id": "osm",
+      "name": "OSM Aviation Academy",
+      "shortName": "OSM",
+      "country": "NO",
+      "city": "Oslo/Arendal",
+      "url": "https://www.osmaviationacademy.com",
+      "applicationVia": "Direct application",
+      "careerIds": [
+        "airline-pilot"
+      ]
+    },
+    {
+      "id": "phs",
+      "name": "Politihøgskolen",
+      "shortName": "PHS",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://www.politihogskolen.no",
+      "applicationVia": "Politihøgskolen direct",
+      "careerIds": [
+        "police-officer"
+      ]
+    },
+    {
+      "id": "saa",
+      "name": "Scandinavian Aviation Academy",
+      "shortName": "SAA",
+      "country": "NO",
+      "city": "Various",
+      "url": "https://scandinavian-aviation-academy.no",
+      "applicationVia": "Direct application",
+      "careerIds": [
+        "airline-pilot"
+      ]
+    },
+    {
+      "id": "slu",
+      "name": "Sveriges lantbruksuniversitet (SLU)",
+      "shortName": "SLU",
+      "country": "SE",
+      "city": "Uppsala",
+      "url": "https://www.slu.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "veterinarian"
+      ]
+    },
+    {
+      "id": "sse",
+      "name": "Handelshögskolan i Stockholm (SSE)",
+      "shortName": "SSE",
+      "country": "SE",
+      "city": "Stockholm",
+      "url": "https://www.hhs.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "accountant"
+      ]
+    },
+    {
+      "id": "su",
+      "name": "Stockholms universitet",
+      "shortName": "SU",
+      "country": "SE",
+      "city": "Stockholm",
+      "url": "https://www.su.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "economist",
+        "teacher",
+        "chemist"
+      ]
+    },
+    {
+      "id": "uib",
+      "name": "Universitetet i Bergen (UiB)",
+      "shortName": "UIB",
+      "country": "NO",
+      "city": "Bergen",
+      "url": "https://www.uib.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "psychologist"
+      ]
+    },
+    {
+      "id": "uio",
+      "name": "Universitetet i Oslo (UiO)",
+      "shortName": "UIO",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://www.uio.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "doctor",
+        "dentist",
+        "software-developer",
+        "lawyer",
+        "biologist",
+        "chemist",
+        "psychologist",
+        "data-analyst"
+      ]
+    },
+    {
+      "id": "uit",
+      "name": "UiT Norges arktiske universitet",
+      "shortName": "UIT",
+      "country": "NO",
+      "city": "Tromsø",
+      "url": "https://uit.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "psychologist"
+      ]
+    },
+    {
+      "id": "uit-luftfart",
+      "name": "University of Tromsø (UiT)",
+      "shortName": "UIT-LUFTFART",
+      "country": "NO",
+      "city": "Tromsø/Bardufoss",
+      "url": "https://university-of-troms.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "airline-pilot"
+      ]
+    },
+    {
+      "id": "universitetet-i-s-r-st-norge",
+      "name": "Universitetet i Sørøst-Norge (USN)",
+      "shortName": "UNIVERSITETET-I-S-R-ST-NORGE",
+      "country": "NO",
+      "city": "Various",
+      "url": "https://universitetet-i-s-r-st-norge.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "engineer"
+      ]
+    },
+    {
+      "id": "uu",
+      "name": "Uppsala universitet",
+      "shortName": "UU",
+      "country": "SE",
+      "city": "Uppsala",
+      "url": "https://www.uu.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "doctor",
+        "lawyer",
+        "biologist"
+      ]
+    },
+    {
+      "id": "vgs-no",
+      "name": "Videregående skoler across Norway",
+      "shortName": "VGS-NO",
+      "country": "NO",
+      "city": "Nationwide",
+      "url": "https://videreg-ende-skoler-across-nor.no",
+      "applicationVia": "Vigo.no (county application)",
+      "careerIds": [
+        "healthcare-worker"
+      ]
+    }
+  ]
+}

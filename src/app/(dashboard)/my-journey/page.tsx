@@ -34,7 +34,7 @@ import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import { getNorwayProgrammes, getCertificationPath } from '@/lib/education/nordic-programmes';
+import { getNorwayProgrammes, getCertificationPath } from '@/lib/education';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
@@ -723,6 +723,13 @@ function UnderstandTab({
               return (
                 <div className="space-y-3">
                   <p className="text-xs text-foreground/75 leading-relaxed">{eduData.summary}</p>
+                  {eduData.specialisationNote && (
+                    <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2">
+                      <p className="text-xs text-amber-200/90 leading-relaxed">
+                        <span className="font-semibold">Specialisation path:</span> {eduData.specialisationNote}
+                      </p>
+                    </div>
+                  )}
                   <div className="rounded-lg border border-border/40 overflow-hidden">
                     <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
                       <thead><tr className="border-b border-border/30 bg-muted/20">
