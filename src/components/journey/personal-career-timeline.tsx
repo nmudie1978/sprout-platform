@@ -230,12 +230,27 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   const [simState, simControls] = useRoadmapSimulation(journey, narrationCtx);
 
+  // Foundation gate — the user must fill in their starting point before
+  // the voice-guided simulation is available. Without foundation data the
+  // narration can't be personalised (school, subjects, finish year).
+  const hasFoundation = !!educationContextData?.educationContext?.stage;
+
+  const guardedPlay = useCallback(() => {
+    if (!hasFoundation) {
+      toast.info('Fill in your starting point first', {
+        description: 'Tap "Your Foundation" on the roadmap to add your school, subjects, and finish year — then you can play your journey.',
+      });
+      return;
+    }
+    simControls.play();
+  }, [hasFoundation, simControls]);
+
   // Expose play function to parent (Grow tab's "Play Journey" button)
   useEffect(() => {
     if (onSimulationReady && journey) {
-      onSimulationReady({ play: simControls.play });
+      onSimulationReady({ play: guardedPlay });
     }
-  }, [onSimulationReady, journey, simControls.play]);
+  }, [onSimulationReady, journey, guardedPlay]);
 
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
@@ -394,13 +409,20 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           )}
         </button>
         <div className="flex items-center gap-2">
-          {/* Play Journey — inline play button */}
+          {/* Play Journey — inline play button. Gated on foundation:
+              if the user hasn't filled in their starting point the button
+              still shows but triggers a toast guiding them to do so. */}
           {!simState.isPlaying && !simState.isPaused && (
             <button
-              onClick={simControls.play}
+              onClick={guardedPlay}
               disabled={!journey}
-              className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 text-[10px] font-semibold text-amber-300 hover:bg-amber-500/25 transition-colors disabled:opacity-30"
-              title="Play a voice-guided narration of your roadmap"
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors disabled:opacity-30",
+                hasFoundation
+                  ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/25"
+                  : "bg-muted/30 border-border/40 text-muted-foreground/60 hover:bg-muted/40"
+              )}
+              title={hasFoundation ? "Play a voice-guided narration of your roadmap" : "Fill in your starting point first to unlock Play"}
             >
               <Play className="h-3 w-3" />
               Play
