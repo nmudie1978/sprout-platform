@@ -16,6 +16,9 @@ import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enfo
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
 import { markGrowActive } from '@/lib/journey/lens-progress';
+import { useRoadmapSimulation, type SimulationControls as SimCtrl } from '@/hooks/use-roadmap-simulation';
+import { SimulationControls } from './simulation';
+import type { NarrationContext } from '@/lib/simulation/narration-generator';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -24,13 +27,12 @@ function slugify(text: string): string {
 interface PersonalCareerTimelineProps {
   primaryGoalTitle: string | null;
   overrideJourney?: Journey | null;
-  /**
-   * When true, the timeline is rendered in reference mode: no foundation
-   * card, no "You are here", no progress saving. Used for alternate
-   * routes from other users (Markus, Fatima) — they're examples, not
-   * the user's own path, so nothing about them touches user state.
-   */
   readOnly?: boolean;
+  /**
+   * Called once the timeline data loads, passing a `play` function that
+   * the parent (Grow tab) can attach to a "Play Journey" button.
+   */
+  onSimulationReady?: (controls: { play: () => void }) => void;
 }
 
 const RENDERERS = {
@@ -39,7 +41,7 @@ const RENDERERS = {
   stepping: SteppingRenderer,
 } as const;
 
-export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false }: PersonalCareerTimelineProps) {
+export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   const { style, setStyle } = useTimelineStyle();
@@ -198,6 +200,35 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   );
 
   const careerName = journey?.career ?? '';
+
+  // ── Voice-guided simulation ───────────────────────────────────────
+  const narrationCtx = useMemo<NarrationContext | null>(() => {
+    if (!journey || !primaryGoalTitle) return null;
+    return {
+      journey,
+      userName: profileData?.displayName ?? undefined,
+      userAge,
+      education: educationContextData?.educationContext
+        ? {
+            stage: educationContextData.educationContext.stage,
+            schoolName: (educationContextData.educationContext as Record<string, unknown>).schoolName as string | undefined,
+            studyProgram: (educationContextData.educationContext as Record<string, unknown>).studyProgram as string | undefined,
+            expectedCompletion: educationContextData.educationContext.expectedCompletion,
+            currentSubjects: (educationContextData.educationContext as Record<string, unknown>).currentSubjects as string[] | undefined,
+          }
+        : null,
+      careerTitle: primaryGoalTitle,
+    };
+  }, [journey, primaryGoalTitle, profileData, userAge, educationContextData]);
+
+  const [simState, simControls] = useRoadmapSimulation(journey, narrationCtx);
+
+  // Expose play function to parent (Grow tab's "Play Journey" button)
+  useEffect(() => {
+    if (onSimulationReady && journey) {
+      onSimulationReady({ play: simControls.play });
+    }
+  }, [onSimulationReady, journey, simControls.play]);
 
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
@@ -366,16 +397,30 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         <Renderer
           key={`${style}-${saveVersion}`}
           journey={journey}
-          onItemClick={(item) => setSelectedItem(item)}
+          onItemClick={simState.isPlaying ? () => {} : (item) => setSelectedItem(item)}
           overlayData={{}}
           activeLayers={{ progress: false, reflections: false, resources: false, confidence: false }}
           userAge={journey.startAge}
           cardDataMap={cardDataMap}
           onProgressCycle={handleProgressCycle}
           careerTitle={primaryGoalTitle ?? undefined}
-          readOnly={readOnly}
+          readOnly={readOnly || simState.isPlaying}
+          simulation={
+            simState.isPlaying || simState.isPaused
+              ? {
+                  isPlaying: simState.isPlaying,
+                  currentStepIndex: simState.currentStepIndex,
+                  progress: simState.narrationProgress,
+                }
+              : undefined
+          }
         />
       </div>
+
+      {/* Simulation controls — sticky bar at the bottom during playback */}
+      {(simState.isPlaying || simState.isPaused || simState.isCompleted) && (
+        <SimulationControls state={simState} controls={simControls} />
+      )}
 
       {/* Card detail popup */}
       <TimelineDetailDialog

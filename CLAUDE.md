@@ -230,11 +230,63 @@ journey state. Editing in either surface invalidates
   `markGrowActive` / lightweight per-goal signals — not via
   `computeLensProgress` over the legacy state machine.
 
+### Voice-Guided Roadmap Simulation
+
+The Grow tab's roadmap has a "Play Journey" mode that narrates the
+user's career path step-by-step using OpenAI TTS. When playing:
+
+  - The roadmap enters read-only mode (no progress cycling)
+  - Each step is highlighted in turn, others dimmed (opacity
+    transitions over 500ms)
+  - Audio narration is generated per-segment via POST
+    /api/simulation/narrate
+  - User controls: play/pause, skip forward/back, exit
+  - Pre-fetches the next segment while the current one plays
+
+The narration script is built client-side from Journey + Foundation
+data (no extra AI call for the text). Only the TTS conversion hits
+the API (~$0.001 per full playthrough). Simulation state lives
+entirely in React state (no localStorage, no DB writes).
+
+Hard rules:
+  - Simulation never writes to roadmap-card-data or progress state
+  - Simulation is additive — the static roadmap remains functional
+  - TTS rate limit: 30 requests/hour per user
+  - No autoplay — user must explicitly click "Play Journey"
+
+### Product Philosophy
+
+- The roadmap is a **guided simulation experience**, not a checklist
+- Users understand their path in one session through narration and
+  visual focus — they don't need to return for 10 years to "complete"
+  steps
+- The product is about **clarity and exploration**, not task execution
+- Prefer guided experiences over static UI
+- Prefer simulation over instruction
+- Prefer storytelling over documentation
+- Reduce cognitive load — avoid enterprise UX patterns
+
+### Anti-Patterns (STRICTLY FORBIDDEN)
+
+- Designing the roadmap primarily as a task completion system
+- "Mark as done" as the primary roadmap interaction
+- Roadmaps that feel like project management tools
+- Static, unguided interfaces that dump data without context
+- Features that don't help the user understand their future better
+
+### Feature Standard
+
+Every new feature must answer:
+  "Does this help the user understand their future better?"
+If not, it should not exist.
+
 ## Summary
 
 Three tabs, no gating. Discover and Understand are content. Grow is
-where the user builds their roadmap, marks steps done, and grows
-their own momentum list. That's the whole model.
+the simulation + exploration surface — the user plays through their
+roadmap narration, explores real opportunities, and builds momentum
+with concrete next moves. The voice-guided simulation is the primary
+experience; the static roadmap supports it.
 
 </journey_logic>
 

@@ -1123,6 +1123,10 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     });
   };
 
+  // Simulation — "Play Journey" button in the intro triggers the
+  // voice-guided roadmap experience inside PersonalCareerTimeline.
+  const [simulationPlay, setSimulationPlay] = useState<(() => void) | null>(null);
+
   if (!goalTitle || !career) {
     return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
   }
@@ -1472,9 +1476,20 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           background: 'linear-gradient(135deg, rgba(245,158,11,0.04) 0%, transparent 50%)',
         }}
       >
-        <p className="text-sm text-foreground/70 leading-[1.8]">
-          This is your personal action space to become a <span className="font-semibold text-foreground/90">{goalTitle}</span>. You can review your roadmap, track momentum with real actions, and discover live opportunities — using verified universities, courses and jobs pulled from the web for this career.
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <p className="text-sm text-foreground/70 leading-[1.8] flex-1">
+            This is your personal journey to become a <span className="font-semibold text-foreground/90">{goalTitle}</span>. Play through your roadmap to hear your path narrated step by step, or explore each section at your own pace.
+          </p>
+          <button
+            type="button"
+            onClick={() => simulationPlay?.()}
+            disabled={!simulationPlay}
+            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-teal-500/15 border border-teal-500/30 px-4 py-2.5 text-sm font-semibold text-teal-300 hover:bg-teal-500/25 hover:border-teal-500/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <Play className="h-4 w-4" />
+            Play Journey
+          </button>
+        </div>
       </div>
 
       {/* 1. Roadmap — collapsible. The timeline component owns its
@@ -1500,7 +1515,10 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </button>
         {!roadmapCollapsed && (
           <div className="p-4">
-            <PersonalCareerTimeline primaryGoalTitle={goalTitle} />
+            <PersonalCareerTimeline
+              primaryGoalTitle={goalTitle}
+              onSimulationReady={({ play }) => setSimulationPlay(() => play)}
+            />
           </div>
         )}
       </SectionCard>

@@ -37,7 +37,9 @@ export function ZigzagRenderer({
   onProgressCycle,
   careerTitle,
   readOnly = false,
+  simulation,
 }: RendererProps) {
+  const simActive = simulation?.isPlaying ?? false;
   // Filter out duplicated foundation
   const items = useMemo(
     () =>
@@ -183,7 +185,13 @@ export function ZigzagRenderer({
               On reference routes the card is rendered greyed-out and
               non-interactive — the user's foundation only belongs to
               "Your route", so on alt routes it's a disabled visual. */}
-          <div className="absolute" style={{ left: 12, top: HIGH_Y - 16 }}>
+          <div
+            className={cn(
+              'absolute transition-opacity duration-500',
+              simActive && simulation!.currentStepIndex !== -1 ? 'opacity-20' : '',
+            )}
+            style={{ left: 12, top: HIGH_Y - 16 }}
+          >
             {userAge && (
               <div
                 className="flex justify-center mb-1.5"
@@ -240,10 +248,20 @@ export function ZigzagRenderer({
                 : `Age ${item.startAge}`;
             const state = stateFor(i);
 
+            // Simulation focus: active step is full opacity, adjacent
+            // steps are dimmed, distant steps are very dim.
+            const simOpacity = simActive
+              ? simulation!.currentStepIndex === i
+                ? 'opacity-100'
+                : Math.abs(simulation!.currentStepIndex - i) === 1
+                  ? 'opacity-40'
+                  : 'opacity-15'
+              : '';
+
             return (
               <div
                 key={item.id}
-                className="absolute"
+                className={cn('absolute transition-opacity duration-500', simOpacity)}
                 style={{ left: pos.x, top: pos.y }}
               >
                 <div

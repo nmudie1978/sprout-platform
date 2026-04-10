@@ -62,30 +62,41 @@
     "kemisti": "chemist"
   },
   "advancedCareerMap": {
-    "surgeon": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "Surgery is a specialisation after the 6-year medical degree. After LIS1 (18 months internship), you enter LIS2/3 surgical specialisation which takes 6+ additional years. Apply through your health trust."
-    },
-    "anesthesiologist": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 anaesthesiology specialisation (5 years)."
-    },
-    "general-practitioner": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then the ALIS general-practice specialisation (5 years)."
-    },
-    "psychiatrist": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 psychiatry specialisation (5 years)."
-    },
-    "radiologist": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 radiology specialisation (5 years)."
-    },
-    "pediatrician": {
-      "baseCareerId": "doctor",
-      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 paediatrics specialisation (5 years)."
-    }
+    "surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgery is a specialisation after the 6-year medical degree. After LIS1 (18 months internship), you enter LIS2/3 surgical specialisation which takes 6+ additional years." },
+    "general-surgeon": { "baseCareerId": "doctor", "specialisationNote": "General surgery covers a broad range of abdominal and soft-tissue operations. After the 6-year medical degree + LIS1, complete LIS2/3 in general surgery (6+ years)." },
+    "colorectal-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Colorectal surgery is a subspeciality of general surgery. Complete the medical degree + general surgery specialisation, then a colorectal fellowship (1-2 years)." },
+    "hepatobiliary-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Hepatobiliary surgery focuses on liver, gallbladder, and pancreas. Complete the medical degree + general surgery, then a hepatobiliary fellowship (1-2 years)." },
+    "endocrine-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Endocrine surgery focuses on thyroid, parathyroid, and adrenal glands. Complete the medical degree + general surgery, then an endocrine surgery fellowship." },
+    "cardiothoracic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cardiothoracic surgery covers the heart and lungs. After the medical degree + LIS1, complete LIS2/3 in cardiothoracic surgery (8+ years total post-graduation)." },
+    "cardiac-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cardiac surgery is a subspeciality of cardiothoracic surgery focusing on the heart. Medical degree + cardiothoracic specialisation + cardiac fellowship." },
+    "vascular-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Vascular surgery covers arteries and veins. After the medical degree + LIS1, complete LIS2/3 in vascular surgery (6+ years)." },
+    "thoracic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Thoracic surgery focuses on the lungs and chest. After the medical degree + LIS1, complete LIS2/3 in thoracic surgery (7+ years)." },
+    "neurosurgeon": { "baseCareerId": "doctor", "specialisationNote": "Neurosurgery covers the brain, spinal cord, and nervous system. After the medical degree + LIS1, complete LIS2/3 in neurosurgery (7+ years)." },
+    "spinal-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Spinal surgery is a subspeciality accessible via orthopaedics or neurosurgery. Complete the base specialisation, then a spine fellowship (1-2 years)." },
+    "orthopaedic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Orthopaedic surgery covers bones, joints, and muscles. After the medical degree + LIS1, complete LIS2/3 in orthopaedic surgery (6+ years)." },
+    "trauma-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Trauma surgery handles life-threatening injuries. Complete the medical degree + general surgery specialisation, then a trauma fellowship." },
+    "sports-medicine-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Sports medicine surgery focuses on athletic injuries. Complete orthopaedic surgery specialisation, then a sports medicine fellowship (1-2 years)." },
+    "plastic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Plastic surgery covers reconstruction and repair. After the medical degree + LIS1, complete LIS2/3 in plastic surgery (6+ years)." },
+    "reconstructive-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Reconstructive surgery restores form after trauma or cancer. Complete plastic surgery specialisation, then a reconstructive fellowship." },
+    "cosmetic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cosmetic surgery focuses on elective aesthetic procedures. Complete plastic surgery specialisation, then an aesthetic fellowship or private-practice training." },
+    "ophthalmic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Ophthalmic surgery covers the eye. After the medical degree + LIS1, complete LIS2/3 in ophthalmology (5+ years)." },
+    "otolaryngologist": { "baseCareerId": "doctor", "specialisationNote": "ENT surgery covers the ear, nose, throat, and head/neck. After the medical degree + LIS1, complete LIS2/3 in otorhinolaryngology (5+ years)." },
+    "oral-maxillofacial-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Maxillofacial surgery requires BOTH a medical degree AND a dental degree, followed by a maxillofacial surgery specialisation (4+ years)." },
+    "urological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Urology covers the urinary tract and male reproductive system. After the medical degree + LIS1, complete LIS2/3 in urology (6+ years)." },
+    "paediatric-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Paediatric surgery operates on children. Complete general surgery specialisation, then a paediatric surgery fellowship (2+ years)." },
+    "obstetric-gynaecological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "OB/GYN surgery covers female reproductive health. After the medical degree + LIS1, complete LIS2/3 in obstetrics and gynaecology (5+ years)." },
+    "transplant-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Transplant surgery involves organ transplantation. Complete general surgery specialisation, then a transplant fellowship (2+ years)." },
+    "bariatric-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Bariatric surgery performs weight-loss operations. Complete general surgery specialisation, then a bariatric/metabolic surgery fellowship." },
+    "oncological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgical oncology removes cancerous tumours. Complete general surgery specialisation, then a surgical oncology fellowship (2+ years)." },
+    "hand-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Hand surgery covers the hand, wrist, and forearm. Accessible via orthopaedics or plastic surgery, then a hand surgery fellowship (1-2 years)." },
+    "breast-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Breast surgery focuses on breast cancer and reconstruction. Complete general surgery specialisation, then a breast surgery fellowship." },
+    "dermatologic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Dermatologic surgery treats skin cancers and conditions surgically. Complete dermatology specialisation, then a surgical dermatology fellowship." },
+    "peripheral-nerve-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Peripheral nerve surgery repairs damaged nerves. Accessible via neurosurgery or plastic surgery, then a peripheral nerve fellowship." },
+    "anesthesiologist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 anaesthesiology specialisation (5 years)." },
+    "general-practitioner": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then the ALIS general-practice specialisation (5 years)." },
+    "psychiatrist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 psychiatry specialisation (5 years)." },
+    "radiologist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 radiology specialisation (5 years)." },
+    "pediatrician": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 paediatrics specialisation (5 years)." }
   },
   "programmes": [
     {

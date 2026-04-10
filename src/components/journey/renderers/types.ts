@@ -29,4 +29,14 @@ export interface RendererProps {
    * comparison routes — they're inspiration, not the user's own path.
    */
   readOnly?: boolean;
+  /**
+   * Simulation state — when set and `isPlaying` is true, the renderer
+   * dims non-active steps and disables click handlers. The current
+   * step is highlighted as the simulation progresses.
+   */
+  simulation?: {
+    isPlaying: boolean;
+    currentStepIndex: number; // -1 = foundation, 0+ = items index
+    progress: number; // 0–1 within current step
+  };
 }
