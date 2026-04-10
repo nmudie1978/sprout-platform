@@ -245,12 +245,16 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     simControls.play();
   }, [hasFoundation, simControls]);
 
-  // Expose play function to parent (Grow tab's "Play Journey" button)
+  // Expose play function to parent (Grow tab's "Play Journey" button).
+  // Use a ref for the callback to avoid re-triggering when the parent
+  // passes an inline arrow (new reference every render).
+  const onSimReadyRef = useRef(onSimulationReady);
+  onSimReadyRef.current = onSimulationReady;
   useEffect(() => {
-    if (onSimulationReady && journey) {
-      onSimulationReady({ play: guardedPlay });
+    if (onSimReadyRef.current && journey) {
+      onSimReadyRef.current({ play: guardedPlay });
     }
-  }, [onSimulationReady, journey, guardedPlay]);
+  }, [journey, guardedPlay]);
 
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {

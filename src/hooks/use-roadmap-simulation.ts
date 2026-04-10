@@ -13,7 +13,7 @@
 
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import {
   generateNarrationScript,
@@ -314,14 +314,14 @@ export function useRoadmapSimulation(
     setState(INITIAL_STATE);
   }, [cleanup]);
 
-  const controls: SimulationControls = {
+  const controls: SimulationControls = useMemo(() => ({
     play,
     pause,
     resume,
     skipForward,
     skipBack,
     exit,
-  };
+  }), [play, pause, resume, skipForward, skipBack, exit]);
 
   return [state, controls];
 }

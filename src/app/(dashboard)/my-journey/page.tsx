@@ -509,10 +509,11 @@ function DiscoverTab({
                 ];
                 return (
                   <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-0.5">
                       <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
-                      <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">What you need</span>
+                      <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">Path to becoming a {career.title.toLowerCase()}</span>
                     </div>
+                    <p className="text-[10px] text-muted-foreground/55 mb-2 ml-5">From school subjects to your first role — and what comes next.</p>
                     <div className="flex items-center gap-1 flex-wrap">
                       {steps.map((s, i) => (
                         <div key={i} className="contents">
@@ -1311,12 +1312,11 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   // voice-guided roadmap experience inside PersonalCareerTimeline.
   const [simulationPlay, setSimulationPlay] = useState<(() => void) | null>(null);
 
-  if (!goalTitle || !career) {
-    return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
-  }
+  // Grow accordion — only one section open at a time
+  const [growSection, setGrowSection] = useState<string | null>('actions');
 
   // Build contextual actions from real career data
-  const topSkills = details?.topSkills ?? career.keySkills;
+  const topSkills = details?.topSkills ?? career?.keySkills ?? [];
 
   // Map career skills to school subjects
   const skillToSubject: Record<string, { subject: string; why: string }> = {
@@ -1351,6 +1351,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   };
 
   const schoolSubjects = useMemo(() => {
+    if (!career) return [];
     const seen = new Set<string>();
     const subjects: { subject: string; why: string }[] = [];
     for (const skill of career.keySkills) {
@@ -1372,14 +1373,13 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       );
     }
     return subjects;
-  }, [career.keySkills]);
+  }, [career?.keySkills]);
 
-  // Grow accordion — only one section open at a time
-  const [growSection, setGrowSection] = useState<string | null>('actions');
   const toggleGrow = (id: string) => setGrowSection(prev => prev === id ? null : id);
 
   // Build a contextual career consideration summary
   const careerConsideration = useMemo(() => {
+    if (!career) return '';
     const edu = career.educationPath;
     const realityText = details?.realityCheck;
     const entryPaths = details?.entryPaths ?? [];
@@ -1444,7 +1444,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   const statusOf = (a: Action): ActionStatus =>
     a.status ?? (a.done ? 'done' : 'not_started');
 
-  const actionsKey = `journey-actions-${career.id}`;
+  const actionsKey = `journey-actions-${career?.id ?? 'none'}`;
   // Server goalId — must match the slug used everywhere else in the
   // journey (PersonalCareerTimeline, /api/journey/goal-data) so the
   // momentum actions land on the SAME row as the rest of the user's
@@ -1646,6 +1646,11 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     { id: 'mixed',     emoji: '⚖️', label: 'Mixed',         tone: 'text-slate-400' },
   ];
   const reactionMeta = (r?: ActionReaction) => REACTIONS.find(x => x.id === r);
+
+  // Early return AFTER all hooks to satisfy React rules of hooks.
+  if (!goalTitle || !career) {
+    return <EmptyState icon={Rocket} message="Complete Discover and Understand first" />;
+  }
 
   return (
     <div className="space-y-5">
