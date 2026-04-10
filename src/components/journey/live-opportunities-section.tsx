@@ -319,6 +319,25 @@ export function LiveOpportunitiesSection({
 
 // ── Confidence helper ───────────────────────────────────────────────
 
+// ── Country flag from location string ────────────────────────────────
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  norway: '🇳🇴', norge: '🇳🇴', oslo: '🇳🇴', bergen: '🇳🇴', trondheim: '🇳🇴', tromsø: '🇳🇴', stavanger: '🇳🇴', 'ås': '🇳🇴',
+  sweden: '🇸🇪', sverige: '🇸🇪', stockholm: '🇸🇪', gothenburg: '🇸🇪', göteborg: '🇸🇪', lund: '🇸🇪', uppsala: '🇸🇪', linköping: '🇸🇪',
+  denmark: '🇩🇰', danmark: '🇩🇰', copenhagen: '🇩🇰', københavn: '🇩🇰', aarhus: '🇩🇰', lyngby: '🇩🇰',
+  finland: '🇫🇮', suomi: '🇫🇮', helsinki: '🇫🇮', espoo: '🇫🇮', tampere: '🇫🇮', turku: '🇫🇮',
+  iceland: '🇮🇸', ísland: '🇮🇸', reykjavik: '🇮🇸', reykjavík: '🇮🇸',
+};
+
+function countryFlag(location: string | undefined): string | null {
+  if (!location) return null;
+  const lower = location.toLowerCase();
+  for (const [key, flag] of Object.entries(COUNTRY_FLAGS)) {
+    if (lower.includes(key)) return flag;
+  }
+  return null;
+}
+
 function confidenceColor(score: number) {
   if (score >= 80) return 'bg-emerald-500';
   if (score >= 60) return 'bg-amber-500';
@@ -331,6 +350,7 @@ function OpportunityCard({ item }: { item: ValidatedItem }) {
   const { data, decision, confidence_score, flags } = item;
   const isFlagged = decision === 'KEEP_WITH_FLAGS' || flags.length > 0;
   const confColor = confidenceColor(confidence_score);
+  const flag = countryFlag(data.location);
 
   return (
     <a
@@ -349,6 +369,7 @@ function OpportunityCard({ item }: { item: ValidatedItem }) {
             {data.title}
           </p>
           <p className="text-[10px] text-muted-foreground/65 mt-0.5 truncate">
+            {flag && <span className="mr-1">{flag}</span>}
             {data.provider}
             {data.location && data.location !== 'Online' ? ` · ${data.location}` : ''}
             {data.location === 'Online' ? ' · Online' : ''}
@@ -386,6 +407,7 @@ function OpportunityRow({ item }: { item: ValidatedItem }) {
   const { data, decision, confidence_score, flags } = item;
   const isFlagged = decision === 'KEEP_WITH_FLAGS' || flags.length > 0;
   const confColor = confidenceColor(confidence_score);
+  const flag = countryFlag(data.location);
 
   return (
     <a
@@ -404,6 +426,7 @@ function OpportunityRow({ item }: { item: ValidatedItem }) {
             {data.title}
           </p>
           <span className="text-[10px] text-muted-foreground/55 truncate">
+            {flag && <span className="mr-1">{flag}</span>}
             {data.provider}
             {data.location ? ` · ${data.location}` : ''}
           </span>
@@ -433,6 +456,7 @@ function OpportunityRow({ item }: { item: ValidatedItem }) {
 function OpportunityCompact({ item }: { item: ValidatedItem }) {
   const { data, confidence_score, flags } = item;
   const confColor = confidenceColor(confidence_score);
+  const flag = countryFlag(data.location);
   return (
     <a
       href={data.url}
@@ -441,6 +465,7 @@ function OpportunityCompact({ item }: { item: ValidatedItem }) {
       className="group flex items-center gap-2 px-3 py-1.5 hover:bg-amber-500/[0.04] transition-colors"
     >
       <span className={cn('h-1 w-1 rounded-full shrink-0', confColor)} />
+      {flag && <span className="text-[10px] shrink-0 leading-none" title={data.location}>{flag}</span>}
       <span className="text-[11px] font-medium text-foreground/85 group-hover:text-foreground transition-colors truncate flex-1">
         {data.title}
       </span>

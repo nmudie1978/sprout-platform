@@ -330,20 +330,16 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
   return (
     <div>
-      {/* Header row */}
+      {/* Header row — just the meta line + controls. The title
+          ("Henry's Roadmap") is already in the collapsible section
+          header above, so we only show the small-print stats here. */}
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm">
-          <span className="text-foreground/75">
-            {profileData?.displayName
-              ? `${profileData.displayName.charAt(0).toUpperCase()}${profileData.displayName.slice(1)}'s Roadmap to `
-              : 'Your Roadmap to '}
-          </span>
-          <span className="font-semibold text-foreground">{journey.career}</span>
+        <p className="text-[11px] text-muted-foreground/75">
           {spanYears > 0 && (
-            <span className="block text-[10px] text-muted-foreground/50 font-normal mt-0.5">
-              ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
+            <>
+              <span className="font-semibold text-foreground/85">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
               {eduStages.length > 0 && <> · {eduLabel} track</>}
-            </span>
+            </>
           )}
           {isPreliminary && (
             <span className="ml-2 inline-flex items-center gap-1 text-foreground/55">

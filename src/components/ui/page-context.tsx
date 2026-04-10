@@ -9,8 +9,8 @@ interface PageContextProps {
   pageKey: string;
   /** What this page is for — one sentence */
   purpose: string;
-  /** What the user should do here — one sentence */
-  action: string;
+  /** What the user should do here — one sentence (optional) */
+  action?: string;
 }
 
 const STORAGE_PREFIX = "endeavrly-page-ctx-";

@@ -1549,7 +1549,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         }}
       >
         <p className="text-sm text-foreground/70 leading-[1.8]">
-          Your personal action space for <span className="font-semibold text-foreground/90">{goalTitle}</span>. Build your roadmap step by step, track momentum with real actions, and discover live opportunities — verified universities, courses and jobs pulled from the web for this career.
+          This is your personal action space to become a <span className="font-semibold text-foreground/90">{goalTitle}</span>. You can review your roadmap, track momentum with real actions, and discover live opportunities — using verified universities, courses and jobs pulled from the web for this career.
         </p>
       </div>
 

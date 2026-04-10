@@ -132,31 +132,43 @@ const TRANSFORM_MODEL = process.env.AGENT_TRANSFORM_MODEL ?? 'gpt-4o-mini';
 // Stage 1 — SOURCE (web search + curated seed)
 // ────────────────────────────────────────────────────────────────────
 
-const SOURCE_SYSTEM = `You are a careers researcher for a Norwegian youth platform (Endeavrly,
-audience age 15-23). Find REAL, currently-live opportunities for the
-given career.
+const SOURCE_SYSTEM = `You are a careers researcher for a NORDIC youth platform (Endeavrly,
+audience age 15-23, based in Norway). Find REAL, currently-live
+opportunities for the given career.
+
+GEOGRAPHIC SCOPE — VERY IMPORTANT:
+All results MUST be from the Nordic countries (Norway, Sweden, Denmark,
+Finland, Iceland) OR from major global online platforms that serve
+Nordic users (Coursera, edX, LinkedIn Learning, FutureLearn, Udemy).
+Do NOT include results from India, USA, UK, Asia, Middle East, Africa,
+South America, or any non-Nordic/non-European institution. If a course
+or university is physically located outside the Nordics and is not a
+well-known global online platform, EXCLUDE it.
 
 You MUST use the web_search tool — do not rely on memory. Made-up URLs
 will be rejected downstream.
 
 Return up to 12 items split across these categories:
-  - "job":        entry-level jobs or internships (real listings on
-                  finn.no, linkedin.com/jobs, indeed.com, nav.no)
-  - "course":     online or in-person courses / certifications from
-                  recognised providers (coursera.org, edx.org,
-                  udemy.com, futurelearn.com, linkedin.com/learning,
-                  utdanning.no)
-  - "university": Norwegian universities, university colleges or
+  - "job":        entry-level jobs or internships in the Nordics (real
+                  listings on finn.no, linkedin.com/jobs, nav.no,
+                  arbetsformedlingen.se, jobindex.dk, mol.fi)
+  - "course":     online courses / certifications from recognised
+                  GLOBAL platforms (coursera.org, edx.org, udemy.com,
+                  futurelearn.com, linkedin.com/learning) OR Nordic
+                  providers (utdanning.no, folkeuniversitetet.no,
+                  komvux.se, aof.no)
+  - "university": Nordic universities, university colleges or
                   fagskoler offering relevant programmes
                   (uio.no, ntnu.no, oslomet.no, uib.no, uit.no,
-                  samordnaopptak.no, utdanning.no)
+                  samordnaopptak.no, utdanning.no, antagning.se,
+                  kth.se, ki.se, ku.dk, dtu.dk, aalto.fi, helsinki.fi)
 
 For each item return EXACTLY this JSON shape (no other fields):
 {
   "type":         "job" | "course" | "university",
   "title":        "short, clear title",
   "provider":     "company / platform / institution name",
-  "location":     "city, country (or 'Online' / 'Remote')",
+  "location":     "city, country (or 'Online' for global platforms)",
   "url":          "the real, working URL you found",
   "description":  "1-2 sentences from the page itself",
   "requirements": "1 short line of entry requirements if visible, else empty"
@@ -166,9 +178,10 @@ Wrap the array under a top-level key "items" so the response is valid
 JSON: { "items": [ ... ] }.
 
 Hard rules:
+- NORDIC ONLY for jobs and universities. Global platforms OK for courses.
 - Only include items you actually found via web_search. If you cannot
   verify a URL, drop it.
-- Prefer Norway-relevant results. Norwegian-language pages are fine.
+- Norwegian, Swedish, Danish, Finnish, Icelandic pages are fine.
 - Aim for 3-5 jobs, 3-5 courses, 2-4 universities. Less is fine; do
   not pad with irrelevant filler.
 - Avoid duplicates (same URL or near-identical title).
@@ -178,6 +191,33 @@ Hard rules:
 
 interface SourceResponse {
   items: unknown[];
+}
+
+// ── Domain allowlist — hard filter applied AFTER the LLM returns ────
+// Anything not matching is silently dropped. This catches the LLM
+// including Indian hospitals, US-only colleges, etc. despite the
+// prompt saying "Nordic only".
+
+const TRUSTED_DOMAIN_PATTERNS = [
+  // Nordic TLDs
+  /\.no\b/, /\.se\b/, /\.dk\b/, /\.fi\b/, /\.is\b/,
+  // Major global course platforms
+  /coursera\.org/, /edx\.org/, /udemy\.com/, /futurelearn\.com/,
+  /linkedin\.com/, /udacity\.com/,
+  // EU education / job boards
+  /\.eu\b/, /\.edu\b/,
+  // Specific trusted Nordic domains
+  /samordnaopptak\.no/, /utdanning\.no/, /antagning\.se/,
+  /optagelse\.dk/, /opintopolku\.fi/,
+];
+
+function isTrustedDomain(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return TRUSTED_DOMAIN_PATTERNS.some((p) => p.test(host));
+  } catch {
+    return false;
+  }
 }
 
 async function stageSource({ career, location }: CareerOpportunitiesInput): Promise<RawItem[]> {
@@ -266,7 +306,11 @@ async function stageSource({ career, location }: CareerOpportunitiesInput): Prom
             const result = RawItemSchema.safeParse(item);
             if (result.success) {
               // Skip duplicate URLs vs. the curated seed.
-              if (!items.some((existing) => existing.url === result.data.url)) {
+              // Skip duplicate URLs and non-Nordic/non-trusted domains.
+              if (
+                !items.some((existing) => existing.url === result.data.url) &&
+                isTrustedDomain(result.data.url)
+              ) {
                 items.push(result.data);
               }
             }
@@ -411,8 +455,20 @@ function mapRawToStructured(r: RawItem, career: string): StructuredItemData {
 // Stage 3 — VALIDATE (quality + safety + decision)
 // ────────────────────────────────────────────────────────────────────
 
-const VALIDATE_SYSTEM = `You are a quality reviewer for a Norwegian youth careers platform.
-Audience: ages 15-23. Decisions go LIVE to teenagers.
+const VALIDATE_SYSTEM = `You are a quality reviewer for a NORDIC youth careers platform.
+Audience: ages 15-23. Decisions go LIVE to teenagers in Norway,
+Sweden, Denmark, Finland and Iceland.
+
+GEOGRAPHIC RULE — CRITICAL:
+This platform serves Nordic users ONLY. Every item must be either:
+  (a) physically located in the Nordics (Norway, Sweden, Denmark,
+      Finland, Iceland), OR
+  (b) a well-known global online platform (Coursera, edX, Udemy,
+      FutureLearn, LinkedIn Learning).
+REJECT any item from a non-Nordic physical institution (India, USA,
+UK, Asia, Middle East, Africa, South America, etc.) that is not one
+of the global platforms listed above. This is a hard reject — no
+exceptions.
 
 Input: an array of structured opportunity items.
 
@@ -420,16 +476,18 @@ For EACH item, decide:
   decision: "KEEP" | "KEEP_WITH_FLAGS" | "REJECT"
 
 Use this rubric:
-  - KEEP             — relevant, clear, real source, age-appropriate,
-                       confidence 75+
+  - KEEP             — Nordic or trusted global source, relevant, clear,
+                       age-appropriate, confidence 75+
   - KEEP_WITH_FLAGS  — usable but has minor issues (vague summary,
                        unclear requirements, dated tone). Add the
                        relevant flags. confidence 50-74.
-  - REJECT           — irrelevant to the career, age-inappropriate,
-                       senior-only, suspicious URL, requires payment
-                       up front, vague to the point of being useless.
+  - REJECT           — non-Nordic physical institution, irrelevant to
+                       the career, age-inappropriate, senior-only,
+                       suspicious URL, requires payment up front, vague
+                       to the point of being useless.
 
 Possible flags (use any that apply, lowercase, snake_case):
+  non_nordic
   low_relevance
   unclear_requirements
   low_confidence
@@ -438,14 +496,19 @@ Possible flags (use any that apply, lowercase, snake_case):
   senior_only
   paid_upfront
   unverified_source
-  language_barrier  (if the page is not in English/Norwegian)
+  language_barrier  (if the page is not in English or a Nordic language)
 
 Adjustment rules:
-- Bump confidence_score up by 10 if the source is a top-tier provider
-  (utdanning.no, samordnaopptak.no, finn.no, nav.no, coursera.org,
-  edx.org, linkedin.com, ntnu.no, uio.no, oslomet.no, uib.no, uit.no).
+- Bump confidence_score up by 10 if the source is a top-tier Nordic
+  provider (utdanning.no, samordnaopptak.no, finn.no, nav.no,
+  antagning.se, optagelse.dk, opintopolku.fi, ntnu.no, uio.no,
+  oslomet.no, uib.no, uit.no, kth.se, ki.se, ku.dk, dtu.dk,
+  aalto.fi, helsinki.fi) or a global platform (coursera.org, edx.org,
+  linkedin.com).
 - Bump confidence down by 15 if the source hostname is unfamiliar.
 - Bump confidence down by 10 for each meaningful flag.
+- Set confidence to 0 and decision to REJECT if the item is from a
+  non-Nordic, non-global-platform source.
 
 Output ONE wrapped JSON object: { "items": [ <ValidatedItem>... ] }
 where each ValidatedItem is:

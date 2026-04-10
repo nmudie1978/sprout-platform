@@ -28,7 +28,9 @@ const BodySchema = z.object({
 function cacheKeyFor(career: string, location?: string): string {
   const c = career.toLowerCase().trim().replace(/\s+/g, '-');
   const l = (location ?? '').toLowerCase().trim().replace(/\s+/g, '-');
-  return `agent:career-opportunities:v1:${c}${l ? `:${l}` : ''}`;
+  // v2: Nordic-only domain filter. Bumped to invalidate cached results
+  // that included non-Nordic sources (e.g. laparoscopyhospital.com).
+  return `agent:career-opportunities:v2:${c}${l ? `:${l}` : ''}`;
 }
 
 const TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
