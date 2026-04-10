@@ -37,8 +37,7 @@ import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath } from '@/lib/education';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
-// LiveOpportunitiesSection removed — replaced by Study Paths browser.
-// import { LiveOpportunitiesSection } from '@/components/journey/live-opportunities-section';
+import { EducationBrowser } from '@/components/education-browser';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
 
@@ -514,7 +513,7 @@ function UnderstandTab({
 
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [carouselTab, setCarouselTab] = useState<'education' | 'paths' | 'tools'>('education');
+  const [carouselTab, setCarouselTab] = useState<'paths' | 'tools'>('paths');
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   if (!career || !goalTitle) {
@@ -689,12 +688,14 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── BOTTOM: Tabbed carousel — Education, Career Paths, Tools ── */}
+      {/* ── Study Paths — embedded browser with full institution/programme data ── */}
+      <EducationBrowser careerTitle={goalTitle} />
+
+      {/* ── BOTTOM: Tabbed carousel — Career Paths, Tools ── */}
       <div className="rounded-xl border border-border/40 overflow-hidden" style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)' }}>
         {/* Tab bar — coloured pills */}
         <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
           {([
-            { id: 'education' as const, label: 'Education & Certs', icon: GraduationCap, color: 'text-violet-400', bg: 'bg-violet-500/10', activeBorder: 'border-violet-500/30', activeBg: 'bg-violet-500/15' },
             { id: 'paths' as const, label: 'Real Career Paths', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', activeBorder: 'border-emerald-500/30', activeBg: 'bg-emerald-500/15' },
             { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15' },
           ]).map((tab) => {
@@ -718,91 +719,6 @@ function UnderstandTab({
 
         {/* Tab content */}
         <div className="p-4">
-          {carouselTab === 'education' && (() => {
-            const eduData = getNorwayProgrammes(career.id, career.title);
-            if (eduData) {
-              return (
-                <div className="space-y-3">
-                  <p className="text-xs text-foreground/75 leading-relaxed">{eduData.summary}</p>
-                  {eduData.specialisationNote && (
-                    <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2">
-                      <p className="text-xs text-amber-200/90 leading-relaxed">
-                        <span className="font-semibold">Specialisation path:</span> {eduData.specialisationNote}
-                      </p>
-                    </div>
-                  )}
-                  <div className="rounded-lg border border-border/40 overflow-hidden">
-                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
-                      <thead><tr className="border-b border-border/30 bg-muted/20">
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Programme</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Institution</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">City</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Duration</th>
-                        <th className="w-8"></th>
-                      </tr></thead>
-                      <tbody className="divide-y divide-border/20">
-                        {eduData.programmes.map((prog, i) => (
-                          <tr key={i} onClick={() => setSelectedRow(selectedRow === i ? null : i)}
-                            className={cn('group cursor-pointer transition-all duration-200',
-                              selectedRow === i
-                                ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
-                                : 'bg-violet-500/[0.04] shadow-[inset_3px_0_0_0_rgba(139,92,246,0.45)] hover:bg-violet-500/[0.08]'
-                            )}>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15"><a href={prog.url} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300">{prog.programme}</a></td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.institution}</td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.city}</td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{prog.duration}</td>
-                            <td className="px-2 py-2"><a href={prog.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3.5 w-3.5 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/40 group-hover:text-violet-400')} /></a></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {eduData.alternativePaths && eduData.alternativePaths.length > 0 && (
-                    <div className="pt-1 space-y-0.5">{eduData.alternativePaths.map((alt, i) => <p key={i} className="text-xs text-foreground/75 leading-relaxed">· {alt}</p>)}</div>
-                  )}
-                </div>
-              );
-            }
-            const certPath = getCertificationPath(career.id, career.title);
-            if (certPath) {
-              return (
-                <div className="space-y-3">
-                  <p className="text-xs text-foreground/75 leading-relaxed">{certPath.summary}</p>
-                  <div className="rounded-lg border border-border/40 overflow-hidden">
-                    <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
-                      <thead><tr className="border-b border-border/30 bg-muted/20">
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Certification</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Provider</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Duration</th>
-                        <th className="text-left px-3 py-2 text-[10px] font-semibold text-foreground/75 uppercase tracking-wider border-r border-border/25 last:border-r-0">Cost</th>
-                        <th className="w-8"></th>
-                      </tr></thead>
-                      <tbody className="divide-y divide-border/20">
-                        {certPath.certifications.map((cert, i) => (
-                          <tr key={i} onClick={() => setSelectedRow(selectedRow === i ? null : i)}
-                            className={cn('group cursor-pointer transition-all duration-200',
-                              selectedRow === i
-                                ? 'bg-violet-500/10 shadow-[inset_3px_0_0_0_rgb(139,92,246)]'
-                                : 'bg-violet-500/[0.04] shadow-[inset_3px_0_0_0_rgba(139,92,246,0.45)] hover:bg-violet-500/[0.08]'
-                            )}>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15"><a href={cert.url} target="_blank" rel="noopener noreferrer" className="hover:text-violet-300">{cert.name}</a><p className="text-[10px] text-foreground/55 mt-0.5">{cert.recognised}</p></td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.provider}</td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.duration}</td>
-                            <td className="px-3 py-2 text-xs text-foreground/80 border-r border-border/15">{cert.cost}</td>
-                            <td className="px-2 py-2"><a href={cert.url} target="_blank" rel="noopener noreferrer"><ExternalLink className={cn('h-3.5 w-3.5 transition-colors', selectedRow === i ? 'text-violet-400' : 'text-muted-foreground/40 group-hover:text-violet-400')} /></a></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {certPath.recommendedDegrees && <div className="flex flex-wrap gap-1.5 pt-1">{certPath.recommendedDegrees.map((d, i) => <span key={i} className="inline-flex rounded-md border border-border/30 bg-background/40 px-2 py-0.5 text-[11px] text-foreground/75">{d}</span>)}</div>}
-                </div>
-              );
-            }
-            return <div className="space-y-2"><p className="text-sm text-foreground/70">{career.educationPath}</p>{details?.entryPaths && details.entryPaths.map((p, i) => <p key={i} className="text-xs text-muted-foreground/50">· {p}</p>)}</div>;
-          })()}
-
           {carouselTab === 'paths' && (
             <CareerPathExamplesPanel careerId={career.id} careerTitle={career.title} />
           )}
