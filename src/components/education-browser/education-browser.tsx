@@ -40,9 +40,12 @@ import {
   resolveCareer,
   getAlternativePaths,
   getCareerSummary,
+  getCareerRequirements,
   type ProgrammeWithInstitution,
   type Institution,
+  type CareerRequirements,
 } from '@/lib/education';
+import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
   type AlignmentResult,
@@ -186,28 +189,31 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     );
   }
 
+  // ── Fallback: career has no university programme data ──────────────
+  //
+  // Many careers (chef, electrician, YouTuber, soldier, trader, etc.)
+  // don't follow a university pathway and so have no entries in
+  // programmes.json. Instead of dead-ending the user with "No
+  // programmes found", surface what we DO know: the structured
+  // career-requirements record (school subjects → entry-level role
+  // → progression) plus the Career object's educationPath summary.
+  // This way every career renders SOMETHING useful.
   if (allProgrammes.length === 0) {
+    const requirements = careerTitle ? getCareerRequirements(careerTitle) : null;
+    const career = careerTitle
+      ? getAllCareers().find((c) => c.title.toLowerCase() === careerTitle.toLowerCase())
+      : null;
+
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="h-14 w-14 rounded-2xl bg-muted/20 flex items-center justify-center mb-4">
-          <Search className="h-6 w-6 text-muted-foreground/40" />
-        </div>
-        <h2 className="text-base font-semibold text-foreground/80 mb-1">
-          No programmes found
-        </h2>
-        <p className="text-[12px] text-muted-foreground/75 max-w-[280px]">
-          We&apos;re expanding our programme database for &ldquo;{careerTitle}&rdquo;. Try{' '}
-          <a
-            href={`https://utdanning.no/sok?q=${encodeURIComponent(careerTitle || '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-teal-400 hover:underline"
-          >
-            utdanning.no
-          </a>{' '}
-          in the meantime.
-        </p>
-      </div>
+      <PathwayFallbackView
+        careerTitle={careerTitle ?? ''}
+        summary={summary}
+        requirements={requirements}
+        educationPath={career?.educationPath}
+        dailyTasks={career?.dailyTasks}
+        emoji={career?.emoji}
+        alternativePaths={alternativePaths}
+      />
     );
   }
 
@@ -516,6 +522,194 @@ function StatPill({
     >
       <Icon className="h-3 w-3" />
       <span className="text-[11px] font-medium">{label}</span>
+    </div>
+  );
+}
+
+// ── Pathway fallback view ─────────────────────────────────────────────
+//
+// Rendered when a career has no matching university programmes (chef,
+// electrician, YouTuber, etc.). Falls back to the structured
+// career-requirements record + the Career object so every career still
+// gets a useful "how to get into this" view.
+
+function PathwayFallbackView({
+  careerTitle,
+  summary,
+  requirements,
+  educationPath,
+  dailyTasks,
+  emoji,
+  alternativePaths,
+}: {
+  careerTitle: string;
+  summary: string | null;
+  requirements: CareerRequirements | null;
+  educationPath: string | undefined;
+  dailyTasks: string[] | undefined;
+  emoji: string | undefined;
+  alternativePaths: string[];
+}) {
+  // Build a 4-step pathway chain from whichever data is richest.
+  // Falls back gracefully through: requirements → educationPath → empty.
+  const steps: { title: string; body: string; icon: string }[] = [];
+
+  if (requirements) {
+    steps.push({
+      title: 'School subjects',
+      icon: '🏫',
+      body: requirements.schoolSubjects.required.length > 0
+        ? `Required: ${requirements.schoolSubjects.required.join(', ')}`
+        : 'No specific subject requirements — focus on core grades.',
+    });
+    if (requirements.universityPath?.programme) {
+      steps.push({
+        title: requirements.universityPath.programme,
+        icon: '🎓',
+        body: `${requirements.universityPath.duration} · ${requirements.universityPath.type || 'Vocational/University'}`,
+      });
+    }
+    if (requirements.entryLevelRequirements?.title) {
+      steps.push({
+        title: requirements.entryLevelRequirements.title,
+        icon: '📋',
+        body: requirements.entryLevelRequirements.description,
+      });
+    }
+    if (requirements.qualifiesFor?.immediate) {
+      steps.push({
+        title: requirements.qualifiesFor.immediate,
+        icon: '💼',
+        body: `Then: ${requirements.qualifiesFor.withExperience || 'gain experience'} → ${requirements.qualifiesFor.seniorPath || 'senior role'}`,
+      });
+    }
+  } else if (educationPath) {
+    steps.push({
+      title: 'Education path',
+      icon: '🎓',
+      body: educationPath,
+    });
+  }
+
+  return (
+    <div
+      className="space-y-5 rounded-2xl border border-teal-500/25 p-5 sm:p-6"
+      style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
+    >
+      {/* Hero */}
+      <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] p-5 sm:p-6 relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-teal-500/[0.06] blur-3xl pointer-events-none" />
+        <div className="relative flex items-start gap-3">
+          <div className="h-10 w-10 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0 text-xl">
+            {emoji ?? <GraduationCap className="h-5 w-5 text-teal-400" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-base font-bold text-foreground/90 leading-tight flex items-center gap-2">
+              <span>How to become a <span className="text-teal-400">{careerTitle}</span></span>
+              <TooltipProvider delayDuration={150}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span onClick={(e) => e.stopPropagation()}>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                    The typical pathway into this career — from school subjects to your first role and beyond. Most non-university careers don't have university programmes; this is the practical route.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </h1>
+            {summary && (
+              <p className="text-[12px] text-muted-foreground/75 leading-relaxed mt-1">{summary}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Pathway steps */}
+      {steps.length > 0 ? (
+        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04]">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Typical pathway
+            </p>
+          </div>
+          <ol className="divide-y divide-border/25">
+            {steps.map((s, i) => (
+              <li key={i} className="flex items-start gap-3 px-4 py-3">
+                <span className="text-base shrink-0 mt-px">{s.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] font-semibold text-foreground/90 leading-snug">
+                    {i + 1}. {s.title}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground/70 leading-relaxed mt-0.5">
+                    {s.body}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-border/30 bg-card/30 p-5 text-center">
+          <p className="text-[12px] text-muted-foreground/70 leading-relaxed">
+            {educationPath || 'No formal training required — most people learn on the job or are self-taught.'}
+          </p>
+        </div>
+      )}
+
+      {/* Alternative routes (if any) */}
+      {alternativePaths.length > 0 && (
+        <div className="rounded-xl border border-amber-500/15 bg-amber-500/[0.03] px-4 py-3.5">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Route className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+            <span className="text-[10px] font-semibold text-amber-400/80 uppercase tracking-wider">
+              Alternative routes
+            </span>
+          </div>
+          <ul className="space-y-1">
+            {alternativePaths.map((path) => (
+              <li key={path} className="text-[12px] text-foreground/85 leading-relaxed flex items-start gap-2">
+                <span className="text-amber-400/60 mt-1.5 h-1 w-1 rounded-full bg-amber-400/60 shrink-0" />
+                {path}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* What you'll do day-to-day */}
+      {dailyTasks && dailyTasks.length > 0 && (
+        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04]">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              What you'll do
+            </p>
+          </div>
+          <ul className="px-4 py-3 space-y-1.5">
+            {dailyTasks.slice(0, 5).map((task) => (
+              <li key={task} className="flex items-start gap-2 text-[11px] text-foreground/75 leading-snug">
+                <span className="h-1 w-1 rounded-full bg-teal-400/60 shrink-0 mt-1.5" />
+                {task}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Help link */}
+      <p className="text-[10px] text-muted-foreground/55 text-center">
+        Looking for formal programmes? Search{' '}
+        <a
+          href={`https://utdanning.no/sok?q=${encodeURIComponent(careerTitle)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-teal-400/80 hover:text-teal-400 hover:underline"
+        >
+          utdanning.no
+        </a>{' '}
+        for the latest options.
+      </p>
     </div>
   );
 }

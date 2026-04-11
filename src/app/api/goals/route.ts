@@ -173,6 +173,36 @@ export async function PUT(request: Request) {
           }
         }
 
+        // Always ensure a JourneyGoalData record exists for the NEW
+        // primary goal — this is what powers "My Explored Journeys" on
+        // the dashboard. Without this upsert, first-time goal selection
+        // never created a row, so the explored list stayed empty until
+        // the user switched goals at least once.
+        const newGoalId = slugifyGoal(goal.title);
+        await tx.journeyGoalData.upsert({
+          where: { userId_goalId: { userId: session.user.id, goalId: newGoalId } },
+          create: {
+            userId: session.user.id,
+            goalId: newGoalId,
+            goalTitle: goal.title,
+            isActive: true,
+          },
+          update: {
+            goalTitle: goal.title,
+            isActive: true,
+            updatedAt: new Date(),
+          },
+        });
+        // Deactivate any other active rows so isActive is unique-per-user.
+        await tx.journeyGoalData.updateMany({
+          where: {
+            userId: session.user.id,
+            isActive: true,
+            NOT: { goalId: newGoalId },
+          },
+          data: { isActive: false },
+        });
+
         // Atomically update the profile with new goal + journey state
         return tx.youthProfile.upsert({
           where: { userId: session.user.id },

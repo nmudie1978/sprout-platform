@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CareerPreferencesSection } from "@/components/profile/career-preferences-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -757,7 +756,22 @@ export default function ProfilePage() {
                 {/* Primary Goal */}
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-primary/60">Primary Goal</span>
+                      <TooltipProvider delayDuration={150}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-3 w-3 text-primary/40 hover:text-primary/70 cursor-help transition-colors" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                            <p className="font-semibold mb-1">Your main career focus</p>
+                            <p className="text-muted-foreground">
+                              The Primary Goal powers everything in My Journey — your roadmap, study paths, suggested actions, voice simulation, and progress. Pick the one you most want to explore in depth.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     <Badge
                       variant="secondary"
                       className={`text-[9px] h-4 ${
@@ -775,7 +789,22 @@ export default function ProfilePage() {
                 {/* Secondary Goal */}
                 <div className={`rounded-lg border p-3 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
+                      <TooltipProvider delayDuration={150}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-3 w-3 text-muted-foreground/40 hover:text-muted-foreground/70 cursor-help transition-colors" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                            <p className="font-semibold mb-1">A backup to keep on your radar</p>
+                            <p className="text-muted-foreground">
+                              A placeholder for a second career you're curious about. It doesn't drive your roadmap or actions — only your <span className="text-foreground/80 font-medium">Primary Goal</span> does. Use it to remember an option for later.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                     {goalsData.secondaryGoal && (
                       <Badge variant="secondary" className="text-[9px] h-4 bg-muted/50 text-muted-foreground/60">
                         {goalsData.secondaryGoal.status === "committed" ? "Committed" : "Exploring"}
@@ -1211,12 +1240,6 @@ export default function ProfilePage() {
               </Button>
             </CardContent>
           </Card>
-
-          {/* Career preferences — same field as Career Radar's onboarding,
-              editable here so users don't have to re-do the wizard. */}
-          {profile && (
-            <CareerPreferencesSection initial={profile.discoveryPreferences as any} />
-          )}
 
         </div>
 

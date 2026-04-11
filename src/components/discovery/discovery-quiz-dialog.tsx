@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, ChevronDown, Check, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 
 /**
@@ -164,74 +165,73 @@ export function DiscoveryQuizDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 py-2">
-          {/* Subjects */}
+        <div className="space-y-4 py-2">
+          {/* Subjects — dropdown multi-select */}
           <div>
             <Label className="text-xs font-semibold">Subjects you enjoy</Label>
-            <p className="text-[10px] text-muted-foreground mb-2">
-              Tap to pick. Double-tap to ⭐ a subject you really love — it counts more.
+            <p className="text-[10px] text-muted-foreground mb-1.5">
+              Select the subjects you like most. Pick 3–5 for the sharpest results.
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {SUBJECTS.map((s) => {
-                const selected = subjects.includes(s.id);
-                const starred = starredSubjects.includes(s.id);
-                return (
-                  <Badge
-                    key={s.id}
-                    variant={selected ? "default" : "outline"}
-                    className={`cursor-pointer text-[11px] px-2 py-0.5 select-none ${
-                      starred
-                        ? "ring-2 ring-amber-400/70 bg-amber-500/20 text-amber-100 hover:bg-amber-500/30"
-                        : ""
-                    }`}
-                    onClick={(e) => handleSubjectClick(s.id, e)}
-                  >
-                    {starred && <span className="mr-1">⭐</span>}
-                    {s.label}
-                  </Badge>
+            <SubjectMultiSelect
+              subjects={SUBJECTS}
+              selected={subjects}
+              starred={starredSubjects}
+              onToggle={(id) => {
+                setSubjects((prev) =>
+                  prev.includes(id)
+                    ? (setStarredSubjects((s) => s.filter((x) => x !== id)), prev.filter((s) => s !== id))
+                    : [...prev, id]
                 );
-              })}
-            </div>
-            {subjects.length >= 6 && (
-              <p className="text-[10px] text-amber-500/80 mt-2 animate-in fade-in duration-300">
-                Tip: picking your top 4–5 makes the radar sharper.
-              </p>
-            )}
+              }}
+              onStar={(id) => {
+                if (!subjects.includes(id)) setSubjects((prev) => [...prev, id]);
+                setStarredSubjects((prev) =>
+                  prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+                );
+              }}
+            />
           </div>
 
-          {/* Work styles */}
+          {/* Work styles — compact inline */}
           <div>
             <Label className="text-xs font-semibold">How you like to work</Label>
-            <p className="text-[10px] text-muted-foreground mb-2">Pick any that fit.</p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 mt-1.5">
               {WORK_STYLES.map((w) => (
-                <Badge
+                <button
                   key={w.id}
-                  variant={workStyles.includes(w.id) ? "default" : "outline"}
-                  className="cursor-pointer text-[11px] px-2 py-0.5"
+                  type="button"
                   onClick={() => toggle(workStyles, setWorkStyles, w.id)}
+                  className={cn(
+                    'rounded-full border px-3 py-1 text-[11px] font-medium transition-colors',
+                    workStyles.includes(w.id)
+                      ? 'border-teal-500/60 bg-teal-500/15 text-teal-300'
+                      : 'border-border/40 text-muted-foreground/70 hover:border-teal-500/40',
+                  )}
                 >
-                  <span className="mr-1">{w.emoji}</span>
-                  {w.label}
-                </Badge>
+                  {w.emoji} {w.label}
+                </button>
               ))}
             </div>
           </div>
 
-          {/* People preference */}
+          {/* People preference — compact inline */}
           <div>
             <Label className="text-xs font-semibold">Working with people</Label>
-            <p className="text-[10px] text-muted-foreground mb-2">Pick one.</p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 mt-1.5">
               {PEOPLE_PREFS.map((p) => (
-                <Badge
+                <button
                   key={p.id}
-                  variant={peoplePref === p.id ? "default" : "outline"}
-                  className="cursor-pointer text-[11px] px-2 py-0.5"
+                  type="button"
                   onClick={() => setPeoplePref(peoplePref === p.id ? undefined : p.id)}
+                  className={cn(
+                    'rounded-full border px-3 py-1 text-[11px] font-medium transition-colors',
+                    peoplePref === p.id
+                      ? 'border-teal-500/60 bg-teal-500/15 text-teal-300'
+                      : 'border-border/40 text-muted-foreground/70 hover:border-teal-500/40',
+                  )}
                 >
                   {p.label}
-                </Badge>
+                </button>
               ))}
             </div>
           </div>
@@ -258,5 +258,109 @@ export function DiscoveryQuizDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ── Multi-select dropdown for subjects ──────────────────────────────
+
+function SubjectMultiSelect({
+  subjects,
+  selected,
+  starred,
+  onToggle,
+  onStar,
+}: {
+  subjects: { id: string; label: string }[];
+  selected: string[];
+  starred: string[];
+  onToggle: (id: string) => void;
+  onStar: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-teal-500/40 transition-colors"
+      >
+        {selected.length === 0 ? (
+          <span className="text-xs text-muted-foreground/60">Select subjects…</span>
+        ) : (
+          <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+            {selected.slice(0, 5).map((id) => {
+              const label = subjects.find((s) => s.id === id)?.label ?? id;
+              const isStarred = starred.includes(id);
+              return (
+                <span
+                  key={id}
+                  className={cn(
+                    'inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-medium',
+                    isStarred
+                      ? 'bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/25'
+                      : 'bg-teal-500/15 text-teal-300 ring-1 ring-teal-500/25',
+                  )}
+                >
+                  {isStarred && '⭐ '}{label}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onToggle(id); }}
+                    className="ml-0.5 hover:text-foreground"
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                </span>
+              );
+            })}
+            {selected.length > 5 && (
+              <span className="text-[10px] text-muted-foreground/60">+{selected.length - 5}</span>
+            )}
+          </div>
+        )}
+        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full max-h-[200px] overflow-y-auto rounded-lg border border-border/50 bg-card shadow-lg">
+          {subjects.map((s) => {
+            const isSelected = selected.includes(s.id);
+            const isStarred = starred.includes(s.id);
+            return (
+              <div
+                key={s.id}
+                className="flex items-center gap-2 px-3 py-1.5 hover:bg-muted/20 cursor-pointer"
+                onClick={() => onToggle(s.id)}
+              >
+                <div className={cn(
+                  'h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0',
+                  isSelected ? 'bg-teal-500 border-teal-500' : 'border-border/50',
+                )}>
+                  {isSelected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
+                </div>
+                <span className="text-xs text-foreground/85 flex-1">{s.label}</span>
+                {isSelected && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onStar(s.id); }}
+                    className={cn(
+                      'text-[10px] px-1.5 py-0.5 rounded-full transition-colors',
+                      isStarred
+                        ? 'bg-amber-500/20 text-amber-300'
+                        : 'text-muted-foreground/40 hover:text-amber-300 hover:bg-amber-500/10',
+                    )}
+                    title="Star this subject — it counts more in your radar"
+                  >
+                    {isStarred ? '⭐' : '☆'}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }

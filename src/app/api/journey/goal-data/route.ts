@@ -165,3 +165,50 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update goal data' }, { status: 500 });
   }
 }
+
+/**
+ * DELETE /api/journey/goal-data?goalId=xxx
+ *
+ * Remove an explored journey from the user's history. Used by the
+ * "My Explored Journeys" card so users can curate the list and
+ * drop careers they no longer care about. The active goal cannot
+ * be removed via this endpoint — clear the primary goal first.
+ */
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'YOUTH') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const goalId = req.nextUrl.searchParams.get('goalId');
+    if (!goalId) {
+      return NextResponse.json({ error: 'goalId is required' }, { status: 400 });
+    }
+
+    // Refuse to delete the active row — the user should clear the
+    // primary goal first if they want to remove their current journey.
+    const existing = await prisma.journeyGoalData.findUnique({
+      where: { userId_goalId: { userId: session.user.id, goalId } },
+      select: { isActive: true },
+    });
+    if (!existing) {
+      return NextResponse.json({ success: true });
+    }
+    if (existing.isActive) {
+      return NextResponse.json(
+        { error: 'Cannot remove an active journey. Switch goals first.' },
+        { status: 409 },
+      );
+    }
+
+    await prisma.journeyGoalData.delete({
+      where: { userId_goalId: { userId: session.user.id, goalId } },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Failed to delete goal data:', error);
+    return NextResponse.json({ error: 'Failed to delete goal data' }, { status: 500 });
+  }
+}

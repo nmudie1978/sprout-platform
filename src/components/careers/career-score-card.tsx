@@ -22,7 +22,7 @@ const STRENGTH_COLORS: Record<Strength, [string, string, string]> = {
 };
 
 const STRENGTH_LABEL: Record<Strength, string> = {
-  weak: "Worth a look",
+  weak: "Possible fit",
   moderate: "Good fit",
   strong: "Strong match",
 };

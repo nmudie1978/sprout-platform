@@ -536,17 +536,6 @@ function DiscoverTab({
                   <p className="text-xs text-teal-400 font-medium">Entry-level accessible — no degree required</p>
                 </div>
               )}
-              <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3.5">
-                <div className="flex items-center gap-2 mb-2">
-                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground/50" />
-                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Day-to-Day</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {career.dailyTasks.map((task) => (
-                    <span key={task} className="inline-flex rounded-full border border-border/20 bg-background/30 px-2.5 py-0.5 text-[11px] text-foreground/60">{task}</span>
-                  ))}
-                </div>
-              </div>
             </div>}
           </SectionCard>
         </div>
