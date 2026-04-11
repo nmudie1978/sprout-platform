@@ -1168,44 +1168,63 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <div className="divide-y divide-border/60 flex-1 rounded-lg border border-border/60 overflow-hidden mt-1.5 bg-muted/10">
-                  {pageGoals.map((goal) => {
-                    const career = allCareers.find((c) => c.title === goal.goalTitle);
-                    const isCurrentGoal = goal.goalTitle === goalTitle;
-                    // Derive which stage this journey is at
-                    const goalLensProgress = computeLensProgress({ hasPrimaryGoal: true, careerTitle: goal.goalTitle });
-                    const stageLabel = goalLensProgress.growDone ? 'Grow ✓' : goalLensProgress.understandDone ? 'Grow' : goalLensProgress.discoverDone ? 'Understand' : 'Discover';
-                    const stageColor = goalLensProgress.growDone ? 'text-emerald-400 bg-emerald-500/10' : goalLensProgress.understandDone ? 'text-amber-400 bg-amber-500/10' : goalLensProgress.discoverDone ? 'text-blue-400 bg-blue-500/10' : 'text-muted-foreground/50 bg-muted/20';
-                    return (
-                      <button
-                        key={goal.goalId}
-                        onClick={() => {
-                          if (!isCurrentGoal) setSwitchConfirm({ goalTitle: goal.goalTitle, emoji: career?.emoji ?? "🎯" });
-                        }}
-                        disabled={isCurrentGoal || switchGoalMutation.isPending}
-                        className={cn(
-                          "w-full flex items-center gap-2 px-2.5 py-2 text-left transition-colors",
-                          !isCurrentGoal && "hover:bg-muted/40",
-                        )}
-                      >
-                        <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
-                        <span className={cn("text-[11px] truncate flex-1 min-w-0", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/70")}>
-                          {goal.goalTitle}
-                        </span>
-                        {isCurrentGoal && (
-                          <span className="text-[8px] font-medium text-teal-500/70 bg-teal-500/10 px-1.5 py-0.5 rounded-full shrink-0">
-                            Active
-                          </span>
-                        )}
-                        <span className={cn("text-[8px] font-medium px-1.5 py-0.5 rounded-full shrink-0", stageColor)}>
-                          {stageLabel}
-                        </span>
-                        {!isCurrentGoal && (
-                          <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
-                        )}
-                      </button>
-                    );
-                  })}
+                {/* Compact table */}
+                <div className="mt-1.5 rounded-lg border border-border/60 overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
+                        <th className="px-2.5 py-1.5">Career</th>
+                        <th className="px-2 py-1.5 w-16 text-center">Stage</th>
+                        <th className="px-2 py-1.5 w-14 text-center">Status</th>
+                        <th className="px-2 py-1.5 w-8"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {pageGoals.map((goal) => {
+                        const career = allCareers.find((c) => c.title === goal.goalTitle);
+                        const isCurrentGoal = goal.goalTitle === goalTitle;
+                        const goalLensProgress = computeLensProgress({ hasPrimaryGoal: true, careerTitle: goal.goalTitle });
+                        const stageLabel = goalLensProgress.growDone ? 'Complete' : goalLensProgress.understandDone ? 'Grow' : goalLensProgress.discoverDone ? 'Understand' : 'Discover';
+                        const stageColor = goalLensProgress.growDone ? 'text-emerald-400 bg-emerald-500/10' : goalLensProgress.understandDone ? 'text-amber-400 bg-amber-500/10' : goalLensProgress.discoverDone ? 'text-blue-400 bg-blue-500/10' : 'text-muted-foreground/50 bg-muted/20';
+                        return (
+                          <tr
+                            key={goal.goalId}
+                            onClick={() => {
+                              if (!isCurrentGoal) setSwitchConfirm({ goalTitle: goal.goalTitle, emoji: career?.emoji ?? "🎯" });
+                            }}
+                            className={cn(
+                              "transition-colors",
+                              isCurrentGoal ? "bg-teal-500/[0.04]" : "hover:bg-muted/30 cursor-pointer",
+                            )}
+                          >
+                            <td className="px-2.5 py-1.5">
+                              <span className="flex items-center gap-2 min-w-0">
+                                <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
+                                <span className={cn("text-[11px] truncate", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/75")}>
+                                  {goal.goalTitle}
+                                </span>
+                              </span>
+                            </td>
+                            <td className="px-2 py-1.5 text-center">
+                              <span className={cn("text-[8px] font-semibold px-1.5 py-0.5 rounded-full", stageColor)}>
+                                {stageLabel}
+                              </span>
+                            </td>
+                            <td className="px-2 py-1.5 text-center">
+                              {isCurrentGoal ? (
+                                <span className="text-[8px] font-medium text-teal-500/80 bg-teal-500/10 px-1.5 py-0.5 rounded-full">Active</span>
+                              ) : (
+                                <span className="text-[8px] text-muted-foreground/40">Saved</span>
+                              )}
+                            </td>
+                            <td className="px-2 py-1.5">
+                              {!isCurrentGoal && <ArrowRight className="h-3 w-3 text-muted-foreground/20" />}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               </GlassCard>
             );
