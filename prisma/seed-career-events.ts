@@ -227,26 +227,6 @@ export const careerEvents: CareerEventSeed[] = [
   // VERIFIED ONLINE EVENTS
   // Source: Eventbrite
   // ================================================
-  {
-    title: "London Career Fair - Virtual Event",
-    type: CareerEventType.WEBINAR,
-    description:
-      "Virtual career fair connecting job seekers with top employers in Government, Sales, Retail, Education, IT, Engineering, Healthcare, Financial Services, Management, Manufacturing, and Customer Service.",
-    organizer: "Career Fair Connection",
-    startDate: new Date("2026-03-12T09:30:00Z"),
-    time: "09:30 - 15:00",
-    locationMode: LocationMode.ONLINE,
-    onlineUrl: "https://www.eventbrite.com/e/london-career-fair-tickets-238771741707",
-    registrationUrl: "https://www.eventbrite.com/e/london-career-fair-tickets-238771741707",
-    isYouthFocused: false,
-    industryTypes: ["tech", "health", "creative"],
-    isVerified: true,
-    verifiedAt: new Date("2026-01-20"),
-    verificationNotes: "Verified on Eventbrite — London Career Fair Virtual, Mar 12, tickets available, event ID 238771741707",
-    sourceName: "Eventbrite",
-    sourceUrl: "https://www.eventbrite.com/e/london-career-fair-tickets-238771741707",
-  },
-
   // ================================================
   // VERIFIED YOUTH-RELEVANT EVENTS
   // Each URL below has been manually verified to

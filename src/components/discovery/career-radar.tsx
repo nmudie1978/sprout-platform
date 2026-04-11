@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
-import { FloatingCompareCTA } from "@/components/compare/floating-compare-cta";
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
 
@@ -192,6 +191,7 @@ const CATEGORY_ORDER: CareerCategory[] = [
   "SPORT_FITNESS",
   "EDUCATION_TRAINING",
   "PUBLIC_SERVICE_SAFETY",
+  "MILITARY_DEFENCE",
   "TECHNOLOGY_IT",
   "BUSINESS_MANAGEMENT",
   "FINANCE_BANKING",
@@ -219,6 +219,7 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   TELECOMMUNICATIONS: "Telecom",
   CREATIVE_MEDIA: "Creative",
   PUBLIC_SERVICE_SAFETY: "Public",
+  MILITARY_DEFENCE: "Military",
   SPORT_FITNESS: "Sport",
   REAL_ESTATE_PROPERTY: "Property",
   SOCIAL_CARE_COMMUNITY: "Social Care",
@@ -360,7 +361,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [viewMode, setViewMode] = useState<"dots" | "rings" | "initials">("dots");
+  type ViewMode = "dots" | "pulse";
+  const [viewMode, setViewMode] = useState<ViewMode>("dots");
   // Multi-select tier filter — start with everything visible.
   // The active goal is always shown regardless of which tiers are toggled.
   type Tier = "top" | "strong" | "good";
@@ -502,20 +504,24 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           {/* View mode toggle */}
           <div className="flex items-center rounded-md border bg-background text-[10px]">
-            {(["dots", "rings", "initials"] as const).map((m) => (
+            {([
+              { id: "dots" as const, label: "Dots" },
+              { id: "pulse" as const, label: "Pulse" },
+            ]).map(({ id, label }) => (
               <button
-                key={m}
+                key={id}
                 type="button"
-                onClick={() => setViewMode(m)}
+                onClick={() => setViewMode(id)}
                 className={cn(
-                  "h-7 px-2 capitalize transition-colors first:rounded-l-md last:rounded-r-md",
-                  viewMode === m
+                  "h-7 px-3 transition-colors first:rounded-l-md last:rounded-r-md",
+                  viewMode === id
                     ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
                     : "hover:bg-muted text-muted-foreground"
                 )}
-                aria-pressed={viewMode === m}
+                aria-pressed={viewMode === id}
+                title={`Switch to ${label} view`}
               >
-                {m}
+                {label}
               </button>
             ))}
           </div>
@@ -797,7 +803,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 <circle
                   cx={d.cx}
                   cy={d.cy}
-                  r={viewMode === "initials" ? 13 : 11}
+                  r={11}
                   fill="none"
                   className="stroke-pink-400/70 radar-top-halo pointer-events-none"
                   strokeWidth={1.25}
@@ -845,62 +851,43 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   )}
                 />
               )}
-              {viewMode === "rings" && (
-                <circle
-                  cx={d.cx}
-                  cy={d.cy}
-                  r={6}
-                  fill="none"
-                  strokeWidth={2}
-                  className={cn(
-                    "transition-all duration-150 radar-dot-circle",
-                    d.topMatch
-                      ? "stroke-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                      : d.ring === 0
-                      ? "stroke-teal-500 group-hover:stroke-teal-400"
-                      : d.ring === 1
-                      ? "stroke-sky-400/70 group-hover:stroke-sky-300"
-                      : "stroke-amber-400/70 group-hover:stroke-amber-300"
-                  )}
-                />
-              )}
-              {viewMode === "initials" && (
+              {/* Pulse — small dot with an animated halo radiating out.
+                  Top match pulses faster + brighter. */}
+              {viewMode === "pulse" && (
                 <>
                   <circle
                     cx={d.cx}
                     cy={d.cy}
-                    r={9}
+                    r={d.topMatch ? 9 : 7}
+                    fill="none"
+                    strokeWidth={1}
+                    className={cn(
+                      "radar-pulse-halo pointer-events-none",
+                      d.topMatch
+                        ? "stroke-pink-400/70"
+                        : d.ring === 0
+                        ? "stroke-teal-400/70"
+                        : d.ring === 1
+                        ? "stroke-sky-400/60"
+                        : "stroke-amber-400/60",
+                    )}
+                    style={{ animationDuration: d.topMatch ? "1.8s" : "2.6s" }}
+                  />
+                  <circle
+                    cx={d.cx}
+                    cy={d.cy}
+                    r={2.5}
                     className={cn(
                       "transition-all duration-150 radar-dot-circle",
                       d.topMatch
-                        ? "fill-pink-500/15 stroke-pink-400"
+                        ? "fill-pink-400"
                         : d.ring === 0
-                        ? "fill-teal-500/15 stroke-teal-500"
+                        ? "fill-teal-400"
                         : d.ring === 1
-                        ? "fill-sky-400/10 stroke-sky-400/70"
-                        : "fill-amber-400/10 stroke-amber-400/70"
+                        ? "fill-sky-400"
+                        : "fill-amber-400",
                     )}
-                    strokeWidth={1}
                   />
-                  <text
-                    x={d.cx}
-                    y={d.cy}
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    style={{ fontSize: 7, fontWeight: 600 }}
-                    className={cn(
-                      "transition-all duration-150 select-none pointer-events-none",
-                      d.topMatch
-                        ? "fill-pink-300"
-                        : d.ring === 0
-                        ? "fill-teal-300"
-                        : d.ring === 1
-                        ? "fill-sky-300/85"
-                        : "fill-amber-300/85"
-                    )}
-                  >
-                    {careerInitials(d.career.title)}
-                  </text>
                 </>
               )}
             </g>
@@ -929,9 +916,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             transform-box: fill-box;
             transform-origin: center;
           }
+          /* Pulse view — radiating halo for the "Pulse" view mode */
+          @keyframes radar-pulse-out {
+            0%   { opacity: 0.7; transform: scale(0.5); }
+            70%  { opacity: 0;   transform: scale(2.2); }
+            100% { opacity: 0;   transform: scale(2.2); }
+          }
+          .radar-pulse-halo {
+            animation: radar-pulse-out 2.4s ease-out infinite;
+            transform-box: fill-box;
+            transform-origin: center;
+          }
           @media (prefers-reduced-motion: reduce) {
             .radar-dot { animation: none; }
             .radar-top-halo { animation: none; }
+            .radar-pulse-halo { animation: none; }
           }
         `}</style>
 
@@ -1002,12 +1001,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
     {/* ─── Matches Report — separate card, carousel of bands with filter ─── */}
     <div className="mt-4 rounded-2xl border bg-card overflow-hidden">
-      {/* Header */}
-      <div className="px-4 py-3 border-b">
-        <h3 className="text-sm font-semibold">Matches Report</h3>
-        <p className="text-[11px] text-muted-foreground">
-          {visibleDots.length} of {dots.length} careers shown
-        </p>
+      {/* Header — title on the left, Compare Vault on the right */}
+      <div className="px-4 py-3 border-b flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold">Matches Report</h3>
+          <p className="text-[11px] text-muted-foreground">
+            {visibleDots.length} of {dots.length} careers shown
+          </p>
+        </div>
+        <CompareVault
+          shortlist={compareShortlist.shortlist}
+          max={compareShortlist.max}
+          onCompare={() => setCompareModalOpen(true)}
+          onClear={compareShortlist.clear}
+          onRemove={compareShortlist.remove}
+        />
       </div>
 
       {/* Build bands from the *filtered* dots so the carousel reflects the filter */}
@@ -1112,7 +1120,13 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                           <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
                           <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
                           <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
-                          <th className="px-2 py-1.5 w-10 text-center text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Add to compare shortlist">Compare</th>
+                          <th className="px-2 py-1.5 w-14 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
+                            <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-teal-300" title="Tap + on any 2–3 careers to compare them side by side. See how they stack up across day-to-day, training time, fit, and more.">
+                              <Plus className="h-2.5 w-2.5" strokeWidth={3} />
+                              Compare
+                              <HelpCircle className="h-2.5 w-2.5 text-teal-400/60" />
+                            </div>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/30">
@@ -1180,7 +1194,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                               >
                                 {d.career.educationPath}
                               </td>
-                              <td className="px-2 py-1 align-middle text-center">
+                              <td className="px-2 py-1 align-middle text-center bg-teal-500/[0.04] border-l border-teal-500/15">
                                 {(() => {
                                   const inList = compareShortlist.isInShortlist(d.career.id);
                                   return (
@@ -1191,15 +1205,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                         compareShortlist.toggle(d.career);
                                       }}
                                       className={cn(
-                                        "inline-flex items-center justify-center h-6 w-6 rounded-md border transition-colors",
+                                        "inline-flex items-center justify-center h-7 w-7 rounded-md border transition-all",
                                         inList
-                                          ? "bg-teal-500/20 border-teal-500/50 text-teal-300 hover:bg-teal-500/30"
-                                          : "border-border/40 text-muted-foreground/55 hover:border-teal-500/40 hover:text-teal-400 hover:bg-teal-500/10"
+                                          ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35 shadow-sm shadow-teal-500/20"
+                                          : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15 hover:scale-110"
                                       )}
                                       aria-label={inList ? `Remove ${d.career.title} from compare` : `Add ${d.career.title} to compare`}
-                                      title={inList ? "Remove from compare" : "Add to compare"}
+                                      title={inList ? "Remove from compare" : "Add to compare — pick 2 or 3 careers, then tap Compare"}
                                     >
-                                      {inList ? <Check className="h-3 w-3" strokeWidth={3} /> : <Plus className="h-3 w-3" />}
+                                      {inList ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />}
                                     </button>
                                   );
                                 })()}
@@ -1239,13 +1253,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       })()}
     </div>
 
-    {/* Compare feature — floating CTA + modal */}
-    <FloatingCompareCTA
-      shortlist={compareShortlist.shortlist}
-      max={compareShortlist.max}
-      onCompare={() => setCompareModalOpen(true)}
-      onClear={compareShortlist.clear}
-    />
+    {/* Compare modal */}
     <CompareModal
       open={compareModalOpen}
       careers={compareShortlist.shortlist}
@@ -1254,5 +1262,120 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       onRemove={compareShortlist.remove}
     />
   </>
+  );
+}
+
+// ── Compare Vault ───────────────────────────────────────────────────
+//
+// Inline "compare bucket" that lives in the Matches Report header.
+// Always visible — empty state shows the cap (0/3), filled state shows
+// the picked careers + a Compare CTA. Clicking a chip removes it.
+
+function CompareVault({
+  shortlist,
+  max,
+  onCompare,
+  onClear,
+  onRemove,
+}: {
+  shortlist: import("@/lib/career-pathways").Career[];
+  max: number;
+  onCompare: () => void;
+  onClear: () => void;
+  onRemove: (id: string) => void;
+}) {
+  const isEmpty = shortlist.length === 0;
+  const canCompare = shortlist.length >= 2;
+
+  return (
+    <div
+      className={cn(
+        "shrink-0 rounded-xl border bg-background/40 px-2.5 py-2 transition-colors",
+        isEmpty
+          ? "border-dashed border-border/40"
+          : "border-teal-500/40 bg-teal-500/[0.05]"
+      )}
+    >
+      <div className="flex items-center gap-2">
+        {/* Label */}
+        <div className="flex flex-col">
+          <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 leading-none">
+            Compare
+          </span>
+          <span className={cn(
+            "text-[10px] font-medium leading-tight mt-0.5 tabular-nums",
+            isEmpty ? "text-muted-foreground/50" : "text-foreground/85"
+          )}>
+            {shortlist.length} of {max}
+          </span>
+        </div>
+
+        {/* Slot indicators / chips */}
+        <div className="flex items-center gap-1">
+          {Array.from({ length: max }).map((_, i) => {
+            const career = shortlist[i];
+            if (career) {
+              return (
+                <button
+                  key={career.id}
+                  type="button"
+                  onClick={() => onRemove(career.id)}
+                  title={`Remove ${career.title}`}
+                  className="group relative h-7 w-7 rounded-full bg-teal-500/15 hover:bg-rose-500/20 ring-1 ring-teal-500/30 hover:ring-rose-500/40 flex items-center justify-center transition-colors"
+                >
+                  <span className="text-base group-hover:opacity-30 transition-opacity">{career.emoji}</span>
+                  <X className="absolute h-3 w-3 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              );
+            }
+            return (
+              <span
+                key={`empty-${i}`}
+                className="h-7 w-7 rounded-full border border-dashed border-border/40 flex items-center justify-center"
+                title="Empty slot"
+              >
+                <Plus className="h-3 w-3 text-muted-foreground/30" />
+              </span>
+            );
+          })}
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-1 ml-1">
+          <button
+            type="button"
+            onClick={onCompare}
+            disabled={!canCompare}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors",
+              canCompare
+                ? "bg-teal-500 text-white hover:bg-teal-400"
+                : "bg-muted/30 text-muted-foreground/50 cursor-not-allowed"
+            )}
+            title={
+              canCompare
+                ? "Open compare view"
+                : shortlist.length === 0
+                  ? "Tap + on careers below to add them"
+                  : "Add at least 2 careers to compare"
+            }
+          >
+            Compare
+            <ChevronRight className="h-3 w-3" />
+          </button>
+          {!isEmpty && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="h-6 w-6 rounded-full flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted/30 transition-colors"
+              aria-label="Clear all"
+              title="Clear all"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

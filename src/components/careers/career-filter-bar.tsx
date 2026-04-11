@@ -32,6 +32,7 @@ const categoryConfig: Record<string, { label: string; emoji: string }> = {
   MANUFACTURING_ENGINEERING: { label: "Engineering", emoji: "\u2699\uFE0F" },
   LOGISTICS_TRANSPORT: { label: "Logistics", emoji: "\u{1F69B}" },
   HOSPITALITY_TOURISM: { label: "Hospitality", emoji: "\u{1F3E8}" },
+  MILITARY_DEFENCE: { label: "Military", emoji: "\u{1FA96}" },
   REAL_ESTATE_PROPERTY: { label: "Property", emoji: "\u{1F3E1}" },
   SOCIAL_CARE_COMMUNITY: { label: "Social Care", emoji: "\u{1F91D}" },
   CONSTRUCTION_TRADES: { label: "Construction", emoji: "\u{1F3D7}\uFE0F" },

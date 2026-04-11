@@ -17,6 +17,7 @@ export type CareerCategory =
   | "TELECOMMUNICATIONS"
   | "CREATIVE_MEDIA"
   | "PUBLIC_SERVICE_SAFETY"
+  | "MILITARY_DEFENCE"
   | "SPORT_FITNESS"
   | "REAL_ESTATE_PROPERTY"
   | "SOCIAL_CARE_COMMUNITY"
@@ -6430,17 +6431,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       entryLevel: true,
     },
     {
-      id: "military-officer",
-      title: "Military Officer",
-      emoji: "🪖",
-      description: "Lead Norwegian Armed Forces personnel across army, navy, air force, cyber and home guard. Begins with officer school after national service.",
-      avgSalary: "550,000 - 950,000 kr/year",
-      educationPath: "Krigsskolen (Norwegian Military Academy) — 3 years",
-      keySkills: ["leadership", "physical fitness", "decision-making", "discipline", "teamwork"],
-      dailyTasks: ["Lead unit", "Plan operations", "Train personnel", "Maintain readiness", "Report up the chain"],
-      growthOutlook: "stable",
-    },
-    {
       id: "customs-officer",
       title: "Customs Officer",
       emoji: "🛂",
@@ -6857,7 +6847,30 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ── Security & investigation ──
     { id: "security-guard", title: "Security Guard", emoji: "🛡️", description: "Protect people, property, and assets — patrolling, monitoring CCTV, and responding to incidents.", avgSalary: "380,000 - 500,000 kr/year", educationPath: "Vekterskolen (security guard certification, ~150 hours)", keySkills: ["observation", "calm under pressure", "communication", "physical fitness", "reliability"], dailyTasks: ["Patrol premises", "Monitor CCTV", "Check IDs", "Respond to alarms", "Write reports"], growthOutlook: "stable", entryLevel: true },
     { id: "detective", title: "Detective", emoji: "🕵️", description: "Investigate serious crimes — interviewing witnesses, gathering evidence, and building cases for prosecution.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Police College (3 years) + investigative experience + specialist training", keySkills: ["analytical thinking", "interviewing", "patience", "report writing", "law knowledge"], dailyTasks: ["Interview witnesses", "Gather evidence", "Build cases", "Brief prosecutors", "Lead operations"], growthOutlook: "medium" },
-    // ── Military ──
+  ],
+
+  // ========================================
+  // MILITARY & DEFENCE
+  // ========================================
+  // Norway's armed forces (Forsvaret) are a major employer of young
+  // people. Conscription means almost every Norwegian youth interacts
+  // with the military at some point, and the entry pipeline
+  // (Førstegangstjeneste → Krigsskolen / Sjøkrigsskolen / Luftkrigsskolen)
+  // is structurally distinct from civilian public service. Treating it
+  // as its own category lets the radar surface it cleanly for users
+  // who want this path.
+  MILITARY_DEFENCE: [
+    {
+      id: "military-officer",
+      title: "Military Officer",
+      emoji: "🪖",
+      description: "Lead Norwegian Armed Forces personnel across army, navy, air force, cyber and home guard. Begins with officer school after national service.",
+      avgSalary: "550,000 - 950,000 kr/year",
+      educationPath: "Krigsskolen (Norwegian Military Academy) — 3 years",
+      keySkills: ["leadership", "physical fitness", "decision-making", "discipline", "teamwork"],
+      dailyTasks: ["Lead unit", "Plan operations", "Train personnel", "Maintain readiness", "Report up the chain"],
+      growthOutlook: "stable",
+    },
     { id: "soldier", title: "Soldier", emoji: "🪖", description: "Serve in the army — train in combat, weapons, and field operations as part of a unit defending the country.", avgSalary: "380,000 - 550,000 kr/year", educationPath: "Førstegangstjeneste (initial service, 12 months) + further training for career soldiers", keySkills: ["physical fitness", "discipline", "teamwork", "weapon handling", "resilience"], dailyTasks: ["Drill and train", "Maintain equipment", "Run patrols", "Practice tactics", "Stand watch"], growthOutlook: "stable", entryLevel: true },
     { id: "infantry-officer", title: "Infantry Officer", emoji: "🎖️", description: "Lead infantry units in the field — planning operations, training soldiers, and executing missions.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen (Norwegian Military Academy, 3 years) + commission", keySkills: ["leadership", "tactics", "decision-making", "fitness", "communication"], dailyTasks: ["Lead training", "Plan exercises", "Mentor soldiers", "Run operations", "Report to command"], growthOutlook: "stable" },
     { id: "special-forces-operator", title: "Special Forces Operator", emoji: "🦅", description: "Elite soldier trained for high-risk missions — direct action, reconnaissance, hostage rescue, counter-terrorism.", avgSalary: "650,000 - 950,000 kr/year", educationPath: "Forsvarets Spesialkommando (FSK) selection + multi-year specialist training", keySkills: ["elite fitness", "marksmanship", "calm under fire", "languages", "small-team tactics"], dailyTasks: ["Train relentlessly", "Plan missions", "Maintain kit", "Conduct ops", "Debrief after"], growthOutlook: "stable" },
@@ -6874,7 +6887,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "military-intelligence-analyst", title: "Military Intelligence Analyst", emoji: "🧠", description: "Collect, analyse, and disseminate intelligence to support military decision-making — from imagery to signals to HUMINT.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Military service + intelligence training (often Bachelor's/Master's)", keySkills: ["analysis", "research", "languages", "report writing", "security awareness"], dailyTasks: ["Analyse intel", "Brief commanders", "Track threats", "Write assessments", "Coordinate sources"], growthOutlook: "high" },
     { id: "cyber-warfare-specialist", title: "Cyber Warfare Specialist", emoji: "💻", description: "Conduct offensive and defensive cyber operations on behalf of the military — protecting networks and degrading adversaries.", avgSalary: "750,000 - 1,200,000 kr/year", educationPath: "Bachelor's in CS/Cybersecurity + military cyber training (e.g. Cyberforsvaret)", keySkills: ["network security", "exploitation", "scripting", "OPSEC", "calm focus"], dailyTasks: ["Defend networks", "Hunt threats", "Develop tools", "Run exercises", "Report findings"], growthOutlook: "high" },
     { id: "eod-technician", title: "EOD Technician", emoji: "💣", description: "Dispose of bombs, IEDs, and unexploded ordnance — protecting civilians and personnel from explosive threats.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military service + EOD school (rigorous selection)", keySkills: ["explosives knowledge", "calm under pressure", "precision", "diagnostics", "safety"], dailyTasks: ["Identify threats", "Disarm devices", "Clear sites", "Train constantly", "Document incidents"], growthOutlook: "medium" },
-    { id: "logistics-officer", title: "Logistics Officer", emoji: "📦", description: "Plan and run military logistics — supply, transport, fuel, ammunition — keeping units fed, fuelled, and resupplied.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen + logistics branch training", keySkills: ["planning", "supply chain", "leadership", "problem-solving", "coordination"], dailyTasks: ["Plan resupply", "Track inventory", "Coordinate transport", "Lead teams", "Brief command"], growthOutlook: "stable" },
+    { id: "logistics-officer", title: "Military Logistics Officer", emoji: "📦", description: "Plan and run military logistics — supply, transport, fuel, ammunition — keeping units fed, fuelled, and resupplied.", avgSalary: "600,000 - 900,000 kr/year", educationPath: "Krigsskolen + logistics branch training", keySkills: ["planning", "supply chain", "leadership", "problem-solving", "coordination"], dailyTasks: ["Plan resupply", "Track inventory", "Coordinate transport", "Lead teams", "Brief command"], growthOutlook: "stable" },
     { id: "military-police", title: "Military Police", emoji: "🚔", description: "Enforce military law, investigate misconduct, secure installations, and provide convoy and personnel protection.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + MP training", keySkills: ["law enforcement", "discipline", "investigation", "fitness", "report writing"], dailyTasks: ["Patrol bases", "Investigate cases", "Secure convoys", "Process reports", "Train soldiers"], growthOutlook: "stable" },
     { id: "search-and-rescue-operator", title: "Search and Rescue Operator", emoji: "🚁", description: "Deploy by helicopter, boat, or on foot to rescue people in distress — at sea, in mountains, or in disaster zones.", avgSalary: "600,000 - 950,000 kr/year", educationPath: "Military rescue school or Redningsselskapet training + medical/first responder certification", keySkills: ["fitness", "first aid", "swimming", "rope rescue", "calm under pressure"], dailyTasks: ["Run drills", "Respond to calls", "Treat casualties", "Hoist from sea", "Maintain kit"], growthOutlook: "high" },
     { id: "weapons-specialist", title: "Weapons Specialist", emoji: "🔫", description: "Maintain, repair, and instruct on military weapons systems — from small arms to crew-served and vehicle-mounted weapons.", avgSalary: "500,000 - 800,000 kr/year", educationPath: "Military service + armourer / weapons specialist course", keySkills: ["weapons knowledge", "precision", "safety", "diagnostics", "instruction"], dailyTasks: ["Service weapons", "Train soldiers", "Inspect arsenals", "Document maintenance", "Test fire systems"], growthOutlook: "stable" },
@@ -8022,6 +8035,7 @@ const WORK_SETTING_DEFAULTS: Record<CareerCategory, WorkSetting> = {
   TELECOMMUNICATIONS: "mixed",
   CREATIVE_MEDIA: "creative",
   PUBLIC_SERVICE_SAFETY: "mixed",
+  MILITARY_DEFENCE: "hands-on",
   SPORT_FITNESS: "hands-on",
   REAL_ESTATE_PROPERTY: "mixed",
   SOCIAL_CARE_COMMUNITY: "hands-on",
@@ -8041,6 +8055,7 @@ const PEOPLE_INTENSITY_DEFAULTS: Record<CareerCategory, PeopleIntensity> = {
   TELECOMMUNICATIONS: "medium",
   CREATIVE_MEDIA: "medium",
   PUBLIC_SERVICE_SAFETY: "high",
+  MILITARY_DEFENCE: "high",
   SPORT_FITNESS: "high",
   REAL_ESTATE_PROPERTY: "high",
   SOCIAL_CARE_COMMUNITY: "high",
@@ -8105,35 +8120,56 @@ export function getCareerPeopleIntensity(career: Career): PeopleIntensity {
   return cat ? PEOPLE_INTENSITY_DEFAULTS[cat] : "medium";
 }
 
-// Subject -> career category weights. Hand-curated, deterministic.
+// Subject → career category weights.
+//
+// Tuning rules (audit notes — see RADAR_TUNING below for the live constants):
+//
+//   • Strongest single weight is capped at 4 to prevent any one subject
+//     from steamrolling the radar. Previously `computing → TECHNOLOGY_IT`
+//     was 6, which alone gave Tech a per-category cap ~2× the next bucket
+//     and produced the "tech bias" the user reported.
+//
+//   • Each subject must spread weight across ≥2 categories so no subject
+//     becomes a single-category fast-pass. Computing now meaningfully
+//     distributes between Tech, Telecom, and Manufacturing (robotics, CAM).
+//
+//   • Sum-of-weights per subject is roughly normalised (target ~6–8) so
+//     different subjects contribute comparable raw scoring power. The
+//     audit found that prior to normalisation, computing handed out
+//     9 total points while music handed out 4 — that's a 2.25× advantage
+//     to anyone picking computing, before any boost lists kicked in.
 const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, number>>> = {
-  biology:      { HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 1 },
-  chemistry:    { HEALTHCARE_LIFE_SCIENCES: 2, MANUFACTURING_ENGINEERING: 2 },
-  physics:      { MANUFACTURING_ENGINEERING: 3, TECHNOLOGY_IT: 2, TELECOMMUNICATIONS: 2 },
-  math:         { TECHNOLOGY_IT: 2, FINANCE_BANKING: 3, MANUFACTURING_ENGINEERING: 2 },
-  computing:    { TECHNOLOGY_IT: 6, TELECOMMUNICATIONS: 3 },
-  english:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, SALES_MARKETING: 2, CREATIVE_MEDIA: 2 },
-  history:      { EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 2 },
-  geography:    { LOGISTICS_TRANSPORT: 2, HOSPITALITY_TOURISM: 2, PUBLIC_SERVICE_SAFETY: 1 },
-  art:          { CREATIVE_MEDIA: 4, SALES_MARKETING: 2, HOSPITALITY_TOURISM: 1 },
-  music:        { CREATIVE_MEDIA: 3, EDUCATION_TRAINING: 1 },
-  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1 },
-  business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 2, SALES_MARKETING: 2 },
-  languages:    { HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 1 },
-  psychology:   { HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 2, SPORT_FITNESS: 1 },
+  biology:      { HEALTHCARE_LIFE_SCIENCES: 4, SOCIAL_CARE_COMMUNITY: 1, MANUFACTURING_ENGINEERING: 1, SPORT_FITNESS: 1 },
+  chemistry:    { HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 2 },
+  physics:      { MANUFACTURING_ENGINEERING: 4, TECHNOLOGY_IT: 2, TELECOMMUNICATIONS: 2, MILITARY_DEFENCE: 1 },
+  math:         { FINANCE_BANKING: 4, TECHNOLOGY_IT: 2, MANUFACTURING_ENGINEERING: 2, MILITARY_DEFENCE: 1 },
+  // Computing weight reduced from 6 → 4. The cap-bypass boost list still
+  // surfaces curated tech careers, but the raw category lift is now in
+  // line with every other subject. Telecom kept at 2 (not 3) because
+  // most telecom careers also benefit from the boost list.
+  computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2, MANUFACTURING_ENGINEERING: 1, MILITARY_DEFENCE: 1 },
+  english:      { EDUCATION_TRAINING: 2, CREATIVE_MEDIA: 3, SALES_MARKETING: 2, BUSINESS_MANAGEMENT: 1 },
+  history:      { EDUCATION_TRAINING: 3, PUBLIC_SERVICE_SAFETY: 2, BUSINESS_MANAGEMENT: 1, MILITARY_DEFENCE: 2 },
+  geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 2, PUBLIC_SERVICE_SAFETY: 2, MILITARY_DEFENCE: 1 },
+  art:          { CREATIVE_MEDIA: 4, HOSPITALITY_TOURISM: 1, SALES_MARKETING: 2 },
+  music:        { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 2 },
+  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 3 },
+  business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 3, SALES_MARKETING: 2 },
+  languages:    { HOSPITALITY_TOURISM: 3, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
+  psychology:   { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1 },
   // The school subject "Design & Technology" is really two distinct things
   // glued together: a design/digital stream (CAD, product design, graphics)
   // and a workshop/making stream (woodwork, metalwork, electronics). The
   // discovery quiz now offers them separately so users get the right careers.
-  "design-tech":      { CREATIVE_MEDIA: 4, TECHNOLOGY_IT: 2, HOSPITALITY_TOURISM: 1 },
-  "workshop-making":  { MANUFACTURING_ENGINEERING: 4, HOSPITALITY_TOURISM: 1 },
-  "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 3, SPORT_FITNESS: 1 },
-  drama:           { CREATIVE_MEDIA: 3, HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, SALES_MARKETING: 2 },
+  "design-tech":      { CREATIVE_MEDIA: 4, TECHNOLOGY_IT: 1, HOSPITALITY_TOURISM: 1 },
+  "workshop-making":  { MANUFACTURING_ENGINEERING: 4, CONSTRUCTION_TRADES: 3, HOSPITALITY_TOURISM: 1 },
+  "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 4, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 2 },
+  drama:           { CREATIVE_MEDIA: 4, HOSPITALITY_TOURISM: 1, EDUCATION_TRAINING: 1, SALES_MARKETING: 1 },
   // Food Tech is a four-band subject — cooking craft (Hospitality),
   // food science / nutrition (Healthcare), industrial brewing & food
   // production (Manufacturing), and food media / styling (Creative).
-  "food-tech":     { HOSPITALITY_TOURISM: 4, HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 2, CREATIVE_MEDIA: 1, SPORT_FITNESS: 1 },
-  "media-studies": { CREATIVE_MEDIA: 4, SALES_MARKETING: 3, TECHNOLOGY_IT: 1 },
+  "food-tech":     { HOSPITALITY_TOURISM: 4, HEALTHCARE_LIFE_SCIENCES: 2, MANUFACTURING_ENGINEERING: 2, CREATIVE_MEDIA: 1 },
+  "media-studies": { CREATIVE_MEDIA: 4, SALES_MARKETING: 2, TECHNOLOGY_IT: 1 },
 };
 
 // ──────────────────────────────────────────────────────────────────────
@@ -8204,9 +8240,61 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
   ],
 };
 
-// Minimum subject-score a career needs to make it onto the radar.
-// Prevents 0-relevance careers from sneaking in via the entry-level interleave.
-const RADAR_SCORE_FLOOR = 1;
+// ──────────────────────────────────────────────────────────────────────
+// Radar tuning constants
+// ──────────────────────────────────────────────────────────────────────
+//
+// All scoring multipliers, penalties, and thresholds live here so the
+// ranking model can be tuned without diving into the scoring function.
+// Every multi-line block in `scoreCareerForPreferences` references one
+// of these — change a value here, see the radar shift everywhere.
+export const RADAR_TUNING = {
+  // ── Positive matching ─────────────────────────────────────────
+  /** Bonus when this career sits in a category targeted by a picked subject. */
+  subjectCategoryWeightMultiplier: 1.0,
+  /** Multiplier applied to a starred (double-clicked) subject. */
+  starredSubjectMultiplier: 2.5,
+  /** Bonus for a career being on a curated subject boost list. */
+  explicitBoostBonus: 6,
+  /** Bonus per matching work-style. */
+  workStyleMatchBonus: 3,
+  /** Bonus when people-preference matches the career's people-intensity. */
+  peoplePrefMatchBonus: 2,
+  /** Bonus per matching free-form interest term. */
+  interestMatchBonus: 1,
+  /** Precision reward — bonus when a career matches multiple distinct attribute groups (subject + workstyle + people). */
+  precisionRewardPerExtraGroup: 1.5,
+
+  // ── Contradiction penalties (NEW — none existed before) ──────
+  /** Penalty when a chosen work-style strongly contradicts the career setting (e.g. user picks Outdoors, career is Desk). */
+  workStyleContradictionPenalty: 4,
+  /** Penalty when people-preference contradicts the career's intensity (e.g. user picks Mostly alone, career is High people). */
+  peoplePrefContradictionPenalty: 3,
+
+  // ── Broad-role / specificity controls ────────────────────────
+  /** Penalty applied to careers that score on too many different signals weakly without any strong (≥3) match. Discourages "matches a bit of everything" results. */
+  broadRolePenalty: 2,
+  /** Threshold above which a single subject→category weight counts as a "strong" match for the broad-role check. */
+  strongMatchThreshold: 3,
+
+  // ── Score floor & cap controls ───────────────────────────────
+  /** Minimum total score for a career to even appear on the radar. Raised from 1 → 3 so a single weak signal isn't enough. */
+  scoreFloor: 3,
+  /** Per-category cap base. The cap formula = clamp(base + round(catScore × scale), min, max). */
+  perCategoryCapBase: 2,
+  perCategoryCapScale: 0.6,
+  perCategoryCapMin: 2,
+  perCategoryCapMax: 10,
+
+  // ── Post-score concentration guardrail ───────────────────────
+  /** Maximum share of the top-30 results that any one category may occupy. If a category exceeds this share, low-precision results from it are demoted into the long tail. */
+  maxCategoryShareInTopBands: 0.35,
+  /** Number of slots considered the "top bands" for the concentration check (matches Strong + Good band sizes). */
+  topBandSize: 30,
+} as const;
+
+/** Legacy constant kept for back-compat readers; the live floor is in RADAR_TUNING. */
+const RADAR_SCORE_FLOOR = RADAR_TUNING.scoreFloor;
 
 // Human-readable labels — kept here so getMatchReasons can name things
 // without forcing every caller to maintain its own label map.
@@ -8306,58 +8394,233 @@ function passesPeopleFilter(_career: Career, _peoplePref?: string): boolean {
   return true;
 }
 
-/**
- * Get careers that match a user's discovery preferences.
- *
- * Two-stage pipeline:
- *   1. HARD FILTERS — work setting and people preference exclude careers
- *      that don't physically match the user's reality (e.g. a Crane Operator
- *      cannot appear when the user picked "At a desk").
- *   2. SOFT SCORING — subject choices score the surviving careers by
- *      mapping subjects to category weights. Substring matching against
- *      descriptions has been removed because it was the source of most
- *      false positives.
- *
- * Returns a deliberately interleaved list — entry-level and university-track
- * roles sit side by side, not stacked, so vocational paths are not buried.
- */
-export function getCareersFromDiscovery(
+// ──────────────────────────────────────────────────────────────────────
+// Career scoring engine
+// ──────────────────────────────────────────────────────────────────────
+//
+// This is the heart of CareerRadar's matching. It takes a single career
+// and a user's preferences and returns a structured breakdown of the
+// score so we can rank, debug, and explain results.
+//
+// Design principles (audit-driven):
+//
+//   1. Positive matches add points proportionally to weight × multiplier.
+//   2. Contradictions SUBTRACT points (the previous engine had no
+//      negative signals — desk-bound careers scored the same whether
+//      the user said "outdoors" or "desk").
+//   3. Multi-group matches earn a precision bonus so a career matching
+//      subject AND work-style AND people-pref outranks one matching
+//      three subjects weakly.
+//   4. A broad-role penalty discourages "scores a bit of everything"
+//      careers from drifting up the rankings.
+//   5. Returns the breakdown by reference so debugScoreCareer() and
+//      getCareersFromDiscovery() can both use the same logic.
+
+export interface ScoreBreakdown {
+  /** Final score after positives, penalties, and adjustments. */
+  total: number;
+  /** Raw signal contributions (before precision/broad-role adjustments). */
+  positives: { source: string; value: number }[];
+  /** Penalty contributions (negative numbers). */
+  penalties: { source: string; value: number }[];
+  /** Number of distinct attribute groups (subjects, workstyle, people, interests, boost) the career matched. */
+  groupsMatched: number;
+  /** True if this career sits on a curated subject boost list. */
+  isExplicitlyBoosted: boolean;
+  /** Strongest single positive contribution — used by the broad-role check. */
+  strongestSignal: number;
+}
+
+function scoreCareerForPreferences(
+  career: Career,
   prefs: DiscoveryPreferences,
-  limit = 80
-): Career[] {
-  const all = getAllCareers();
-  if (!all.length) return [];
+  precomputed: {
+    subjectCategoryScores: Partial<Record<CareerCategory, number>>;
+    subjectsByCareer: Map<string, string[]>;
+    boostedIds: Set<string>;
+  },
+): ScoreBreakdown {
+  const T = RADAR_TUNING;
+  const breakdown: ScoreBreakdown = {
+    total: 0,
+    positives: [],
+    penalties: [],
+    groupsMatched: 0,
+    isExplicitlyBoosted: false,
+    strongestSignal: 0,
+  };
 
-  // Stage 1: hard filters
+  const cat = findCareerCategory(career.id);
+
+  // ── 1. Subject → category match ─────────────────────────────────
+  if (cat && precomputed.subjectCategoryScores[cat]) {
+    const v = precomputed.subjectCategoryScores[cat]! * T.subjectCategoryWeightMultiplier;
+    breakdown.positives.push({ source: 'subject-category', value: v });
+    breakdown.total += v;
+    breakdown.groupsMatched++;
+    if (v > breakdown.strongestSignal) breakdown.strongestSignal = v;
+  }
+
+  // ── 2. Explicit boost list ──────────────────────────────────────
+  if (precomputed.boostedIds.has(career.id)) {
+    breakdown.isExplicitlyBoosted = true;
+    breakdown.positives.push({ source: 'explicit-boost', value: T.explicitBoostBonus });
+    breakdown.total += T.explicitBoostBonus;
+    breakdown.groupsMatched++;
+    if (T.explicitBoostBonus > breakdown.strongestSignal) {
+      breakdown.strongestSignal = T.explicitBoostBonus;
+    }
+  }
+
+  // ── 3. Work-style match / contradiction ─────────────────────────
   const chosenStyles = prefs.workStyles || [];
-  const filtered = all.filter(
-    (c) =>
-      passesWorkStyleFilter(c, chosenStyles) &&
-      passesPeopleFilter(c, prefs.peoplePref)
-  );
+  if (chosenStyles.length > 0 && !chosenStyles.includes('mixed')) {
+    const setting = getCareerWorkSetting(career);
+    if (setting === 'mixed' || chosenStyles.includes(setting)) {
+      breakdown.positives.push({ source: 'work-style', value: T.workStyleMatchBonus });
+      breakdown.total += T.workStyleMatchBonus;
+      breakdown.groupsMatched++;
+      if (T.workStyleMatchBonus > breakdown.strongestSignal) {
+        breakdown.strongestSignal = T.workStyleMatchBonus;
+      }
+    } else if (isWorkStyleContradiction(chosenStyles, setting)) {
+      // ❗ Contradiction penalty — previously zero. This is the single
+      //    biggest fix for the tech bias: a desk-bound tech career now
+      //    actively LOSES points when the user picks Outdoors.
+      breakdown.penalties.push({
+        source: `work-style-contradiction (${setting})`,
+        value: -T.workStyleContradictionPenalty,
+      });
+      breakdown.total -= T.workStyleContradictionPenalty;
+    }
+  }
 
-  if (filtered.length === 0) return [];
+  // ── 4. People-preference match / contradiction ──────────────────
+  if (prefs.peoplePref && prefs.peoplePref !== 'mixed') {
+    const intensity = getCareerPeopleIntensity(career);
+    const wantsPeople = prefs.peoplePref === 'with-people';
+    const wantsAlone = prefs.peoplePref === 'mostly-alone';
+    const matches =
+      (wantsPeople && (intensity === 'high' || intensity === 'medium')) ||
+      (wantsAlone && (intensity === 'low' || intensity === 'medium'));
+    if (matches) {
+      breakdown.positives.push({ source: 'people-pref', value: T.peoplePrefMatchBonus });
+      breakdown.total += T.peoplePrefMatchBonus;
+      breakdown.groupsMatched++;
+    } else {
+      // ❗ Contradiction penalty
+      const isContradiction =
+        (wantsPeople && intensity === 'low') ||
+        (wantsAlone && intensity === 'high');
+      if (isContradiction) {
+        breakdown.penalties.push({
+          source: `people-pref-contradiction (${intensity})`,
+          value: -T.peoplePrefContradictionPenalty,
+        });
+        breakdown.total -= T.peoplePrefContradictionPenalty;
+      }
+    }
+  }
 
-  // Stage 2: soft scoring on subjects (and free-form interests, if present)
-  // Starred subjects (double-clicked by the user) carry 4× the weight,
-  // letting users emphasise their strongest interests dramatically. This
-  // also makes their categories qualify for a much larger per-category
-  // cap downstream (capForScore scales linearly with category score).
+  // ── 5. Free-form interest matches ───────────────────────────────
+  let interestHits = 0;
+  for (const interest of prefs.interests || []) {
+    const i = interest.toLowerCase();
+    if (
+      career.title.toLowerCase().includes(i) ||
+      career.keySkills.some((s) => s.toLowerCase().includes(i))
+    ) {
+      interestHits++;
+    }
+  }
+  if (interestHits > 0) {
+    const v = interestHits * T.interestMatchBonus;
+    breakdown.positives.push({ source: `interests (${interestHits})`, value: v });
+    breakdown.total += v;
+    breakdown.groupsMatched++;
+  }
+
+  // ── 6. Precision reward ─────────────────────────────────────────
+  // A career matching multiple distinct attribute groups (subject + style +
+  // people, say) feels more "right" than a career that matches only by
+  // having a high subject weight. Reward the integration.
+  if (breakdown.groupsMatched >= 2) {
+    const reward = (breakdown.groupsMatched - 1) * T.precisionRewardPerExtraGroup;
+    breakdown.positives.push({ source: 'precision', value: reward });
+    breakdown.total += reward;
+  }
+
+  // ── 7. Broad-role penalty ───────────────────────────────────────
+  // If the only thing this career has going for it is a weak (<3) subject
+  // tag — no work-style match, no people-pref match, no strong signal —
+  // it's a broad/generic match and shouldn't outrank a precise one.
+  // Boosted careers are exempt because they're explicitly curated.
+  if (
+    !breakdown.isExplicitlyBoosted &&
+    breakdown.strongestSignal < T.strongMatchThreshold &&
+    breakdown.groupsMatched <= 1
+  ) {
+    breakdown.penalties.push({ source: 'broad-role', value: -T.broadRolePenalty });
+    breakdown.total -= T.broadRolePenalty;
+  }
+
+  return breakdown;
+}
+
+/**
+ * Decide whether a chosen work-style is in genuine conflict with a
+ * career's setting. "mixed" never contradicts; everything else maps
+ * via this table.
+ */
+function isWorkStyleContradiction(
+  chosenStyles: string[],
+  careerSetting: WorkSetting,
+): boolean {
+  // Pairs that ARE genuine opposites (chosen → career setting that conflicts).
+  // Anything not in this map is treated as merely "no match" (no penalty).
+  const CONTRADICTIONS: Record<string, WorkSetting[]> = {
+    'outdoors': ['desk'],
+    'desk': ['outdoors', 'hands-on'],
+    'hands-on': ['desk'],
+    'creative': [], // creative doesn't strongly contradict anything
+  };
+
+  // Penalty applies only if EVERY style the user chose contradicts.
+  // If they picked "outdoors AND a mix" we don't penalise desk roles.
+  return chosenStyles.every((style) => {
+    const conflicts = CONTRADICTIONS[style];
+    return conflicts ? conflicts.includes(careerSetting) : false;
+  });
+}
+
+/**
+ * Public debug helper. Pass a career and preferences, get a structured
+ * breakdown of why it scored the way it did. Used by tests and (one day)
+ * a "Why this match?" inspector in dev builds.
+ */
+export function debugScoreCareer(
+  career: Career,
+  prefs: DiscoveryPreferences,
+): ScoreBreakdown {
+  const precomputed = precomputeScoring(prefs);
+  return scoreCareerForPreferences(career, prefs, precomputed);
+}
+
+function precomputeScoring(prefs: DiscoveryPreferences) {
+  const T = RADAR_TUNING;
   const starredSet = new Set((prefs.starredSubjects || []).map((s) => s.toLowerCase()));
-  const subjectWeight = (subj: string) => (starredSet.has(subj.toLowerCase()) ? 4 : 1);
+  const subjectMult = (subj: string) => (starredSet.has(subj.toLowerCase()) ? T.starredSubjectMultiplier : 1);
 
   const subjectCategoryScores: Partial<Record<CareerCategory, number>> = {};
   for (const subj of prefs.subjects || []) {
     const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
     if (!weights) continue;
-    const mult = subjectWeight(subj);
+    const mult = subjectMult(subj);
     for (const [cat, w] of Object.entries(weights) as [CareerCategory, number][]) {
       subjectCategoryScores[cat] = (subjectCategoryScores[cat] || 0) + w * mult;
     }
   }
 
-  // Build the set of explicitly-boosted career IDs across all picked subjects
-  // so we can both score and cap-bypass them in one pass.
   const boostedIds = new Set<string>();
   for (const subj of prefs.subjects || []) {
     const ids = SUBJECT_CAREER_BOOSTS[subj.toLowerCase()];
@@ -8365,128 +8628,149 @@ export function getCareersFromDiscovery(
     for (const id of ids) boostedIds.add(id);
   }
 
-  const scored = filtered.map((career) => {
-    const cat = findCareerCategory(career.id);
-    let score = cat ? subjectCategoryScores[cat] || 0 : 0;
-    const isExplicitlyBoosted = boostedIds.has(career.id);
+  return { subjectCategoryScores, subjectsByCareer: new Map<string, string[]>(), boostedIds };
+}
 
-    // Explicit per-career subject boost — large enough that boosted careers
-    // sort to the top of their category before the cap is applied.
-    if (isExplicitlyBoosted) {
-      score += 15;
-    }
+/**
+ * Get careers that match a user's discovery preferences.
+ *
+ * Refactored pipeline (2026-04-11):
+ *   1. Score every career via `scoreCareerForPreferences` — positive
+ *      matches AND contradiction penalties, with a precision reward
+ *      and a broad-role penalty.
+ *   2. Filter to careers above the score floor.
+ *   3. Apply a per-category cap that scales softly with the category's
+ *      raw subject score (no longer hard-tied to one subject's weight).
+ *   4. Run a category-concentration guardrail: any single category that
+ *      claims more than `maxCategoryShareInTopBands` of the top slots
+ *      has its weakest non-boosted entries demoted.
+ *   5. Interleave vocational and university paths so entry-level
+ *      careers stay visible.
+ *
+ * Returns careers in final ranked order. The radar takes the first N
+ * for its visible band.
+ */
+export function getCareersFromDiscovery(
+  prefs: DiscoveryPreferences,
+  limit = 80,
+): Career[] {
+  const T = RADAR_TUNING;
+  const all = getAllCareers();
+  if (!all.length) return [];
 
-    // Soft work-style preference. The user's chosen styles boost matching
-    // careers but never exclude others, so picking "Outdoors" doesn't
-    // shrink the radar to a handful of forestry roles.
-    if (chosenStyles.length > 0 && !chosenStyles.includes('mixed')) {
-      const careerSetting = getCareerWorkSetting(career);
-      if (careerSetting === 'mixed' || chosenStyles.includes(careerSetting)) {
-        score += 3;
-      }
-    }
-
-    // Soft people-preference. Same idea: nudges, doesn't exclude.
-    if (prefs.peoplePref && prefs.peoplePref !== 'mixed') {
-      const intensity = getCareerPeopleIntensity(career);
-      const wantsPeople = prefs.peoplePref === 'with-people';
-      const wantsAlone = prefs.peoplePref === 'mostly-alone';
-      if (
-        (wantsPeople && (intensity === 'high' || intensity === 'medium')) ||
-        (wantsAlone && (intensity === 'low' || intensity === 'medium'))
-      ) {
-        score += 2;
-      }
-    }
-
-    // Free-form interests: title/skills match (kept narrow, no description scan)
-    for (const interest of prefs.interests || []) {
-      const i = interest.toLowerCase();
-      if (
-        career.title.toLowerCase().includes(i) ||
-        career.keySkills.some((s) => s.toLowerCase().includes(i))
-      ) {
-        score += 1;
-      }
-    }
-
-    return { career, score, isExplicitlyBoosted };
-  });
-
-  // If the user picked subjects/interests, require a meaningful score.
-  // If they picked nothing scoreable, the hard filters alone produce the radar.
   const hasScoreableInputs =
     (prefs.subjects && prefs.subjects.length > 0) ||
-    (prefs.interests && prefs.interests.length > 0);
+    (prefs.interests && prefs.interests.length > 0) ||
+    (prefs.workStyles && prefs.workStyles.length > 0) ||
+    !!prefs.peoplePref;
 
+  if (!hasScoreableInputs) {
+    // No signal at all — return a stable diverse sample so the radar
+    // is at least populated. We pick the first ~5 from each category.
+    const sample: Career[] = [];
+    for (const careers of Object.values(CAREER_PATHWAYS)) {
+      sample.push(...careers.slice(0, 5));
+    }
+    return sample.slice(0, limit);
+  }
+
+  // ── Stage 1: score every career ─────────────────────────────────
+  const precomputed = precomputeScoring(prefs);
+  const scored = all.map((career) => ({
+    career,
+    breakdown: scoreCareerForPreferences(career, prefs, precomputed),
+  }));
+
+  // ── Stage 2: filter by floor + sort by score ────────────────────
   const matched = scored
-    .filter((s) => (hasScoreableInputs ? s.score >= RADAR_SCORE_FLOOR : true))
-    .sort((a, b) => b.score - a.score);
+    .filter((s) => s.breakdown.total >= T.scoreFloor || s.breakdown.isExplicitlyBoosted)
+    .sort((a, b) => b.breakdown.total - a.breakdown.total);
 
   if (matched.length === 0) return [];
 
-  // Per-category cap, weighted by the category's subject score so dominant
-  // interests visually dominate the radar.
-  //
-  // Without this, a flat cap of 5 made every category look identical: a
-  // Computing+Design user saw the same number of Tech dots as Hospitality
-  // dots, which contradicts the score that placed them there in the first
-  // place. With the weighted cap, a category scoring 5 gets ~7 slots while
-  // a category scoring 1 gets only 3 — high-affinity slices look denser.
-  //
-  // When no scoreable subjects are picked (just work-style + people-pref),
-  // all eligible careers score 0, so we fall back to a flat cap of 5 to
-  // preserve the previous balanced behaviour.
-  const capForScore = (score: number): number => {
-    if (!hasScoreableInputs) return 5;
-    if (score <= 0) return 0;
-    // Ceiling raised to 14 so categories backed by a starred subject
-    // (which now multiplies category score by 4) can actually expand
-    // their footprint on the radar instead of being capped at 8.
-    return Math.min(14, Math.max(2, Math.round(score) + 2));
+  // ── Stage 3: per-category cap ───────────────────────────────────
+  // Soft cap: scales with how well the category is supported by the
+  // user's subjects, but never explodes for a single high-weight subject.
+  const capForCategory = (cat: CareerCategory): number => {
+    const catScore = precomputed.subjectCategoryScores[cat] || 0;
+    if (catScore <= 0) return T.perCategoryCapMin;
+    const raw = T.perCategoryCapBase + Math.round(catScore * T.perCategoryCapScale);
+    return Math.max(T.perCategoryCapMin, Math.min(T.perCategoryCapMax, raw));
   };
 
   const perCategoryCount = new Map<CareerCategory, number>();
-  const cappedByCategory: { career: Career; score: number; isExplicitlyBoosted: boolean }[] = [];
+  const capped: typeof matched = [];
   for (const item of matched) {
     const cat = findCareerCategory(item.career.id);
     if (!cat) continue;
-    // Explicitly boosted careers (e.g. all music careers when "music" is
-    // picked) bypass the per-category cap entirely. The user wants every
-    // career on their hand-curated subject list, not just five of them.
-    if (item.isExplicitlyBoosted) {
-      cappedByCategory.push(item);
+    if (item.breakdown.isExplicitlyBoosted) {
+      // Boosted careers still bypass the cap, but they ALSO contribute
+      // to the concentration check downstream so they can't dominate
+      // unilaterally.
+      capped.push(item);
       continue;
     }
-    // Look up the category score from the precomputed map (not the per-career
-    // score, which can include free-form interest bonuses). This is what made
-    // the category eligible in the first place.
-    const catScore = subjectCategoryScores[cat] || 0;
-    const cap = capForScore(catScore);
+    const cap = capForCategory(cat);
     const count = perCategoryCount.get(cat) || 0;
     if (count >= cap) continue;
     perCategoryCount.set(cat, count + 1);
-    cappedByCategory.push(item);
+    capped.push(item);
   }
 
-  // Boosted careers (from explicit per-subject boost lists) get absolute
-  // priority — every career on a hand-curated subject list must make it
-  // onto the radar, otherwise picking "Music" alongside "Computing" would
-  // see all 28 music careers shoved out by 30 tech careers.
-  const boostedAll = cappedByCategory.filter((m) => m.isExplicitlyBoosted).map((m) => m.career);
-  const nonBoosted = cappedByCategory.filter((m) => !m.isExplicitlyBoosted);
+  // ── Stage 4: category concentration guardrail ───────────────────
+  // Check the top band — if any category claims > maxCategoryShareInTopBands
+  // of those slots, push its WEAKEST non-boosted entries to the long tail
+  // so the visible radar surface stays varied.
+  const top = capped.slice(0, T.topBandSize);
+  const tail = capped.slice(T.topBandSize);
+  const counts = new Map<CareerCategory, number>();
+  for (const item of top) {
+    const cat = findCareerCategory(item.career.id);
+    if (cat) counts.set(cat, (counts.get(cat) || 0) + 1);
+  }
+  const maxAllowed = Math.floor(T.topBandSize * T.maxCategoryShareInTopBands);
+  const demoted: typeof matched = [];
+  const survivors: typeof matched = [];
+  // Track per-category survivors so we can demote the weakest excess.
+  const survivedByCategory = new Map<CareerCategory, number>();
+  for (const item of top) {
+    const cat = findCareerCategory(item.career.id);
+    const total = (cat && counts.get(cat)) || 0;
+    if (cat && total > maxAllowed && !item.breakdown.isExplicitlyBoosted) {
+      const survivedCount = survivedByCategory.get(cat) || 0;
+      if (survivedCount >= maxAllowed) {
+        demoted.push(item);
+        continue;
+      }
+      survivedByCategory.set(cat, survivedCount + 1);
+    } else if (cat) {
+      survivedByCategory.set(cat, (survivedByCategory.get(cat) || 0) + 1);
+    }
+    survivors.push(item);
+  }
+  // Re-fill the top band from the original tail to replace demoted entries.
+  const refilled = [...survivors];
+  let tailIdx = 0;
+  while (refilled.length < T.topBandSize && tailIdx < tail.length) {
+    refilled.push(tail[tailIdx++]);
+  }
+  const finalRanked = [...refilled, ...demoted, ...tail.slice(tailIdx)];
 
-  // Interleave entry-level and non-entry within the non-boosted pool to
-  // keep vocational paths visible alongside university tracks.
-  const entry = nonBoosted.filter((m) => m.career.entryLevel).map((m) => m.career);
-  const rest = nonBoosted.filter((m) => !m.career.entryLevel).map((m) => m.career);
+  // ── Stage 5: vocational/university interleave ───────────────────
+  // Keep the boost-list and the top of the rank in their score order,
+  // then interleave entry-level vs university-track for the remainder
+  // so vocational paths aren't buried.
+  const boostedAll = finalRanked.filter((m) => m.breakdown.isExplicitlyBoosted).map((m) => m.career);
+  const nonBoosted = finalRanked.filter((m) => !m.breakdown.isExplicitlyBoosted);
 
-  // Make sure the limit accommodates ALL boosted careers — boosted is the
-  // user's explicit "yes I'm interested in this exact thing" signal, so we
-  // never want to truncate it. The radar can render extra dots; the visual
-  // budget caveats only apply to the soft-scored long tail.
+  const entry: Career[] = [];
+  const rest: Career[] = [];
+  for (const m of nonBoosted) {
+    if (m.career.entryLevel) entry.push(m.career);
+    else rest.push(m.career);
+  }
+
   const effectiveLimit = Math.max(limit, boostedAll.length + 20);
-
   const interleaved: Career[] = [...boostedAll];
   while (interleaved.length < effectiveLimit && (entry.length || rest.length)) {
     if (entry.length) interleaved.push(entry.shift()!);
