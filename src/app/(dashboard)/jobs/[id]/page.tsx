@@ -334,6 +334,7 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
       setShowApplicationForm(false);
       setApplicationMessage("");
       queryClient.invalidateQueries({ queryKey: ["job", params.id] });
+      queryClient.invalidateQueries({ queryKey: ["my-applications"] });
     },
     onError: (error: Error) => {
       toast({

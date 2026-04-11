@@ -199,7 +199,11 @@ function buildConnections(stepType: RoadmapStepType, career: string): RealWorldI
         kind: 'university',
         title: `Browse study paths for ${career}`,
         descriptor: 'Explore matching universities, programmes and alignment in-app',
-        url: `/study-paths?career=${enc(career)}`,
+        // Study Paths now lives only inside the Understand tab of
+        // My Journey. The standalone /study-paths route was removed
+        // during consolidation; deep-link via URL hash so the user
+        // lands directly on the right tab.
+        url: `/my-journey#understand`,
         cta: 'Browse',
       };
       return [studyPathsLink, ...universitiesFor(career).slice(0, 2), ...certificationsFor(career).slice(0, 1)];
@@ -249,13 +253,15 @@ function universityApplicationOverride(
   const isUniversity = /universit|bachelor|master|samordna|utdanning/.test(text);
   const isApplication = /apply|application|enrol|enroll|admiss/.test(text);
   if (!isUniversity || !isApplication) return null;
-  // Lead with in-app Study Paths browser, then external fallbacks
+  // Lead with in-app Study Paths browser, then external fallbacks.
+  // Study Paths now lives only in the Understand tab of My Journey;
+  // deep-link there via URL hash.
   return [
     {
       kind: 'university',
       title: `Browse study paths for ${career}`,
       descriptor: 'Explore matching universities, programmes and alignment in-app',
-      url: `/study-paths?career=${enc(career)}`,
+      url: `/my-journey#understand`,
       cta: 'Browse',
     },
     ...universitiesFor(career).slice(0, 2),

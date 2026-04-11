@@ -158,10 +158,14 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
       <TooltipTrigger asChild>{link}</TooltipTrigger>
       <TooltipContent
         side="right"
-        sideOffset={8}
-        className="max-w-[220px] text-[11px] leading-snug"
+        sideOffset={12}
+        showArrow
+        className="max-w-[240px] py-2.5 border-slate-700 bg-slate-900 text-slate-100 shadow-lg shadow-black/30"
       >
-        {tooltip}
+        <div className="space-y-0.5">
+          <p className="text-[12px] font-medium text-slate-50">{label}</p>
+          <p className="text-[11px] leading-snug text-slate-400">{tooltip}</p>
+        </div>
       </TooltipContent>
     </Tooltip>
   );
@@ -429,7 +433,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             </NavSection>
 
             <NavSection title="Account" collapsed={collapsed}>
-              <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your name, school, interests and what you share with employers." />
+              <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your display name, bio, city, career goals, job availability and privacy settings — everything that makes up your profile." />
               {isGuardian && (
                 <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} tooltip="Guardian dashboard — review and approve activity for the youth in your care." />
               )}

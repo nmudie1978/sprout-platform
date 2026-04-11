@@ -250,7 +250,7 @@ function CareersPageContent() {
   }, [updateFilter]);
 
   return (
-    <div className="container mx-auto px-4 py-6 relative">
+    <div className="max-w-6xl mx-auto px-4 py-6 relative">
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
@@ -350,9 +350,13 @@ function CareersPageContent() {
       {totalItems > 0 ? (
         <>
           {/* Column headers — list view only. Mirrors the ListRow grid so
-              labels line up over their data columns. */}
+              labels line up over their data columns. `w-fit mx-auto`
+              centers the fixed-width table inside the page container so
+              it doesn't sit at the left edge leaving dead space on the
+              right. Needs `grid` (not `inline-grid`) for mx-auto to take
+              effect — inline-level elements ignore auto horizontal margin. */}
           {viewMode === "list" && (
-            <div className="inline-grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit">
+            <div className="grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit mx-auto">
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
@@ -363,7 +367,7 @@ function CareersPageContent() {
           <div
             className={
               viewMode === "list"
-                ? "border rounded-b-md overflow-hidden bg-background w-fit"
+                ? "border rounded-b-md overflow-hidden bg-background w-fit mx-auto"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
@@ -386,9 +390,13 @@ function CareersPageContent() {
             ))}
           </div>
 
-          {/* Pagination Controls */}
+          {/* Pagination Controls — PaginationControls uses justify-between
+              internally, and with showItemCount=false only the pagination
+              block remains, so justify-between pins it hard left. Wrap in
+              a flex justify-center so the pagination sits under the
+              centered table. */}
           {totalPages > 1 && (
-            <div className="mt-6">
+            <div className="mt-6 flex justify-center">
               <PaginationControls
                 currentPage={validCurrentPage}
                 totalPages={totalPages}

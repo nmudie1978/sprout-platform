@@ -37,7 +37,14 @@ const categoryEmojis: Record<string, string> = {
 
 type FilterType = "all" | "pending" | "accepted" | "in_progress" | "completed" | "rejected" | "saved";
 
-const APP_GRID = "grid-cols-[2.5fr_1fr_1fr_auto_auto_auto]";
+// Fixed widths on the Status/Pay/Arrow columns are load-bearing: each
+// <div className="grid ..."> is its own independent grid, so `auto` sizes
+// to that grid's own content. The header's "Status"/"Pay" text is much
+// narrower than the row's Pending badge + "263 kr / fixed" block, which
+// pushed the fr columns out of alignment between the header and rows.
+// Fixed pixel widths force both grids to share the same geometry.
+const APP_GRID =
+  "grid-cols-[minmax(0,2.5fr)_minmax(0,1fr)_minmax(0,1fr)_110px_90px_20px]";
 
 function formatTimeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();

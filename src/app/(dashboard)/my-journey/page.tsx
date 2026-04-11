@@ -41,6 +41,11 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath, getCareerRequirements } from '@/lib/education';
+import {
+  parseGradeRequirement,
+  formatGradeLabel,
+  formatGradeTooltip,
+} from '@/lib/education/parse-grade-requirement';
 import { getToolInfo } from '@/lib/education/tool-links';
 import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import { EducationBrowser } from '@/components/education-browser';
@@ -251,7 +256,7 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 
 function SectionCard({ children, className, style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={cn('rounded-xl border border-border/40 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 0 20px rgba(139,92,246,0.06), 0 0 40px rgba(139,92,246,0.03)', ...style }}>
+    <div className={cn('rounded-xl border border-border/60 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.08), 0 0 40px rgba(139,92,246,0.04)', ...style }}>
       {children}
     </div>
   );
@@ -318,7 +323,7 @@ function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string
     <div className={cn('rounded-lg border border-border/30 bg-background/50 p-3.5', tooltip && 'cursor-help')}>
       <div className="flex items-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
-        <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">{label}</span>
+        <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">{label}</span>
       </div>
       <p className="text-xs font-semibold text-foreground/90">{value}</p>
     </div>
@@ -475,14 +480,16 @@ function DiscoverTab({
         <div className="lg:col-span-3 space-y-4">
           <SectionCard>
             <SectionHeader icon={BarChart3} title="Career Overview" collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
-            {!dCollapsed('d-overview') && <div className="p-4 grid grid-cols-2 gap-3">
-              <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
-              <StatCard
-                label="Growth"
-                value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
-                icon={TrendingUp}
-                accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
-              />
+            {!dCollapsed('d-overview') && <div className="p-4 flex flex-col items-center gap-3">
+              <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+                <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
+                <StatCard
+                  label="Growth"
+                  value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
+                  icon={TrendingUp}
+                  accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
+                />
+              </div>
               {/* What You Need — compact horizontal chain for Discover.
                   Each step is one small pill with full detail in its
                   native tooltip. Keeps the card tight and scannable. */}
@@ -490,10 +497,10 @@ function DiscoverTab({
                 const reqs = getCareerRequirements(career.id) || getCareerRequirements(career.title);
                 if (!reqs) {
                   return (
-                    <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3">
+                    <div className="w-full max-w-md rounded-lg border border-border/20 bg-muted/5 p-3">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
-                        <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">Education Path</span>
+                        <GraduationCap className="h-3.5 w-3.5 text-emerald-400/60" />
+                        <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">Education Path</span>
                       </div>
                       <p className="text-xs text-foreground/80">{career.educationPath}</p>
                     </div>
@@ -501,28 +508,40 @@ function DiscoverTab({
                 }
                 // Merge specialisation note into the last pill's tooltip
                 const specNote = reqs.specialisationNote ? `\n\n${reqs.specialisationNote}` : '';
-                const steps = [
-                  { emoji: '🏫', label: reqs.schoolSubjects.required.slice(0, 3).join(', '), tip: `Required: ${reqs.schoolSubjects.required.join(', ')}${reqs.schoolSubjects.recommended.length ? `\nRecommended: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}\n${reqs.schoolSubjects.minimumGrade}` },
-                  { emoji: '🎓', label: `${reqs.universityPath.programme} · ${reqs.universityPath.duration}`, tip: `e.g. ${reqs.universityPath.examples.join(', ')}\nApply via ${reqs.universityPath.applicationRoute}\n${reqs.universityPath.competitiveness}` },
-                  { emoji: '📋', label: reqs.entryLevelRequirements.title, tip: `${reqs.entryLevelRequirements.description}\nYou need: ${reqs.entryLevelRequirements.whatYouNeed}${specNote}` },
-                  { emoji: '💼', label: reqs.qualifiesFor.immediate, tip: `→ ${reqs.qualifiesFor.withExperience}\n→ ${reqs.qualifiesFor.seniorPath}${specNote}` },
+
+                // Parse the free-text `minimumGrade` field into a structured
+                // shape. A grade pill is only inserted into the path chain
+                // when the career has a real cutoff — vocational / entry-
+                // accessible careers have no numeric cutoff in the source
+                // data and the pill stays hidden rather than faking one.
+                const grade = parseGradeRequirement(reqs.schoolSubjects.minimumGrade);
+                const gradeLabel = formatGradeLabel(grade);
+                const gradeTip = formatGradeTooltip(grade);
+
+                type PathStep = { label: string; tip: string };
+                const steps: PathStep[] = [
+                  { label: reqs.schoolSubjects.required.slice(0, 3).join(', '), tip: `Key subjects: ${reqs.schoolSubjects.required.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
+                  ...(grade.hasCutoff && gradeLabel
+                    ? [{ label: gradeLabel, tip: gradeTip || 'Typical grade requirement for this path' }]
+                    : []),
+                  { label: `${reqs.universityPath.programme} · ${reqs.universityPath.duration}`, tip: `e.g. ${reqs.universityPath.examples.join(', ')}. Apply via ${reqs.universityPath.applicationRoute}` },
+                  { label: reqs.entryLevelRequirements.title, tip: reqs.entryLevelRequirements.description },
+                  { label: reqs.qualifiesFor.immediate, tip: `First role. With experience: ${reqs.qualifiesFor.withExperience}` },
                 ];
                 return (
-                  <div className="col-span-2 rounded-lg border border-border/30 bg-background/50 p-3">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
-                      <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">Path to becoming a {career.title.toLowerCase()}</span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground/55 mb-2 ml-5">From school subjects to your first role — and what comes next.</p>
-                    <div className="flex items-center gap-1 flex-wrap">
+                  <div className="w-full max-w-md rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5" title="The typical path from school to your first role in this career">
+                    <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider mb-1.5 text-center">
+                      Path to {career.title}
+                      {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 flex-wrap">
                       {steps.map((s, i) => (
                         <div key={i} className="contents">
-                          {i > 0 && <span className="text-[10px] text-muted-foreground/40 px-0.5">→</span>}
+                          {i > 0 && <span className="text-[10px] text-muted-foreground/30">→</span>}
                           <span
                             title={s.tip}
-                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/25 bg-muted/10 px-2 py-1 text-[10px] text-foreground/80 cursor-help hover:border-blue-500/30 hover:bg-blue-500/[0.05] transition-colors"
+                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-2 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors"
                           >
-                            <span>{s.emoji}</span>
                             <span className="max-w-[150px] truncate">{s.label}</span>
                           </span>
                         </div>
@@ -531,11 +550,6 @@ function DiscoverTab({
                   </div>
                 );
               })()}
-              {career.entryLevel && (
-                <div className="col-span-2 rounded-lg border border-teal-500/20 bg-teal-500/5 px-3.5 py-2.5">
-                  <p className="text-xs text-teal-400 font-medium">Entry-level accessible — no degree required</p>
-                </div>
-              )}
             </div>}
           </SectionCard>
         </div>
@@ -2342,7 +2356,10 @@ export default function MyJourneyPage() {
         onClose={() => setGoalSheetOpen(false)}
         primaryGoal={goalsData?.primaryGoal || null}
         secondaryGoal={goalsData?.secondaryGoal || null}
-        onSuccess={() => setGoalSheetOpen(false)}
+        onSuccess={() => {
+          setGoalSheetOpen(false);
+          setActiveTab('discover');
+        }}
       />
     </div>
   );

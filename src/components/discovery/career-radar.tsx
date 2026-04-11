@@ -42,7 +42,7 @@ const RADAR_TIPS = [
     color: "text-violet-400",
     title: "Switch views and filter",
     description:
-      "Use Dots, Rings, or Initials to change how careers are shown. Use the filter to focus on specific match tiers — Top, Strong, or Good.",
+      "Toggle between Dots and Pulse to change how careers are shown — Pulse animates each dot with a radiating halo. Use the filter to focus on specific match tiers: Top, Strong, or Good.",
   },
   {
     icon: Settings2,

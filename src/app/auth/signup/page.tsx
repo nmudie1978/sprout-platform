@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -30,8 +30,23 @@ function SignUpForm() {
   const isEmployer = searchParams.get("role") === "employer";
 
   // ── Step state ────────────────────────────────────────────────────
+  // Employers skip the DOB step entirely — they don't have an age gate
+  // (the under-18-must-register-a-guardian / 15-23-only rules are for
+  // youth workers). They'll verify 18+ separately before they can post.
   type Step = "dob" | "details";
-  const [step, setStep] = useState<Step>("dob");
+  const [step, setStep] = useState<Step>(isEmployer ? "details" : "dob");
+
+  // If the user lands on /auth/signup as a youth, enters an over-23 DOB,
+  // and clicks the "sign up as a job poster" link, Next.js soft-navigates
+  // to /auth/signup?role=employer. The component re-renders but useState
+  // is preserved, so step would still be "dob" and the user would stay
+  // stuck on the age gate. Flip to the details step as soon as we see
+  // the employer flag so the flow actually advances.
+  useEffect(() => {
+    if (isEmployer) {
+      setStep("details");
+    }
+  }, [isEmployer]);
 
   // ── Form state ────────────────────────────────────────────────────
   const [firstName, setFirstName] = useState("");
@@ -244,21 +259,40 @@ function SignUpForm() {
           {/* ── Step 2: Details ───────────────────────────────────── */}
           {step === "details" && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <button
-                type="button"
-                onClick={() => setStep("dob")}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors -ml-1"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Back
-              </button>
+              {/* Youth flow has a DOB step to go back to. Employers don't —
+                  they land straight on details, so the Back button instead
+                  takes them to the landing page. */}
+              {isEmployer ? (
+                <Link
+                  href="/"
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors -ml-1"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Back
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setStep("dob")}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors -ml-1"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Back
+                </button>
+              )}
 
               <div>
                 <h1 className="text-xl font-bold tracking-tight">
-                  {isUnder18 ? "Almost there" : "Let's get you set up"}
+                  {isEmployer
+                    ? "Create your job poster account"
+                    : isUnder18
+                    ? "Almost there"
+                    : "Let's get you set up"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {isUnder18
+                  {isEmployer
+                    ? "Just a few details. You'll verify you're 18+ before posting your first job."
+                    : isUnder18
                     ? "Just a few details and a parent email so we can let them know."
                     : "Just a few details and you're in."}
                 </p>

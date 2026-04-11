@@ -467,6 +467,8 @@ export default function JobsPage() {
         </div>
       ) : filteredJobs.length > 0 ? (
           <>
+            {/* Column headers — list view only */}
+            {viewMode === "list" && <JobListHeader />}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -475,11 +477,10 @@ export default function JobsPage() {
                 viewMode === "grid"
                   ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
                   : viewMode === "list"
-                    ? "border rounded-lg overflow-hidden bg-background"
+                    ? "border rounded-b-md overflow-hidden bg-background w-fit"
                     : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5"
               }
             >
-              {viewMode === "list" && <JobListHeader />}
               {filteredJobs.map((job: any, index: number) => (
                 <motion.div
                   key={job.id}

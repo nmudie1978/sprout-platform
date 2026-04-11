@@ -187,6 +187,7 @@ export async function GET(req: NextRequest) {
               payAmount: true,
               payType: true,
               location: true,
+              startDate: true,
               dateTime: true,
               status: true,
               category: true,

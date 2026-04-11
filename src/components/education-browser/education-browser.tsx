@@ -45,6 +45,11 @@ import {
   type Institution,
   type CareerRequirements,
 } from '@/lib/education';
+import {
+  parseGradeRequirement,
+  formatGradeLabel,
+  formatGradeTooltip,
+} from '@/lib/education/parse-grade-requirement';
 import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
@@ -528,10 +533,18 @@ function StatPill({
 
 // ── Pathway fallback view ─────────────────────────────────────────────
 //
-// Rendered when a career has no matching university programmes (chef,
-// electrician, YouTuber, etc.). Falls back to the structured
-// career-requirements record + the Career object so every career still
-// gets a useful "how to get into this" view.
+// Rendered when a career has no matching university programmes in the
+// 3-layer programmes.json data — which is the case for most vocational
+// careers (chef, electrician, hairdresser, plumber, etc.). Instead of
+// dead-ending, this view reconstructs a "study paths" experience from
+// the structured career-requirements.json fields, so every career —
+// vocational or academic — gets the same visual language: institution
+// cards as the headline, typical pathway steps as secondary context.
+//
+// See also: the main university-browser render at the top of this file.
+// The two modes are intentionally visually similar so the user doesn't
+// perceive a Chef career as showing a "different feature" from a
+// Medicine career — Study Paths is Study Paths regardless of tier.
 
 function PathwayFallbackView({
   careerTitle,
@@ -550,9 +563,39 @@ function PathwayFallbackView({
   emoji: string | undefined;
   alternativePaths: string[];
 }) {
+  // Parse the grade requirement once — used to render an amber cutoff
+  // pill on the school-subjects step when the career has a real numeric
+  // bar. Vocational careers return hasCutoff=false and the pill is
+  // simply not rendered, which is the right answer.
+  const grade = requirements
+    ? parseGradeRequirement(requirements.schoolSubjects.minimumGrade)
+    : null;
+  const gradeLabel = grade ? formatGradeLabel(grade) : null;
+  const gradeTip = grade ? formatGradeTooltip(grade) : null;
+
+  // Parse the free-text school list from universityPath.examples. The
+  // source data is inconsistent: some careers have one clean entry per
+  // school (["BI", "UiO", "Aalto"]), others pack them into a single
+  // comma-delimited string (["OsloMet, Bergen UC, Culinary Institute"]).
+  // Flatten both shapes into a list of individual institution names.
+  const schools: string[] = requirements?.universityPath?.examples
+    ? requirements.universityPath.examples
+        .flatMap((entry) => entry.split(/\s*,\s*/))
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+
+  const programmeName = requirements?.universityPath?.programme ?? null;
+  const programmeDuration = requirements?.universityPath?.duration ?? null;
+  const programmeType = requirements?.universityPath?.type ?? null;
+  const applicationRoute = requirements?.universityPath?.applicationRoute ?? null;
+
   // Build a 4-step pathway chain from whichever data is richest.
   // Falls back gracefully through: requirements → educationPath → empty.
-  const steps: { title: string; body: string; icon: string }[] = [];
+  // `showGradePill` marks the step that should render the grade cutoff
+  // pill inline beneath the body text — only the school-subjects step.
+  type PathStep = { title: string; body: string; icon: string; showGradePill?: boolean };
+  const steps: PathStep[] = [];
 
   if (requirements) {
     steps.push({
@@ -561,12 +604,16 @@ function PathwayFallbackView({
       body: requirements.schoolSubjects.required.length > 0
         ? `Required: ${requirements.schoolSubjects.required.join(', ')}`
         : 'No specific subject requirements — focus on core grades.',
+      showGradePill: true,
     });
-    if (requirements.universityPath?.programme) {
+    if (programmeName) {
+      const programmeBody = [programmeDuration, programmeType || 'Vocational/University']
+        .filter(Boolean)
+        .join(' · ');
       steps.push({
-        title: requirements.universityPath.programme,
+        title: programmeName,
         icon: '🎓',
-        body: `${requirements.universityPath.duration} · ${requirements.universityPath.type || 'Vocational/University'}`,
+        body: programmeBody,
       });
     }
     if (requirements.entryLevelRequirements?.title) {
@@ -596,7 +643,8 @@ function PathwayFallbackView({
       className="space-y-5 rounded-2xl border border-teal-500/25 p-5 sm:p-6"
       style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
     >
-      {/* Hero */}
+      {/* Hero — same as the university-browser mode's hero so the two
+          modes read as one consolidated feature. */}
       <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] p-5 sm:p-6 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-teal-500/[0.06] blur-3xl pointer-events-none" />
         <div className="relative flex items-start gap-3">
@@ -614,7 +662,7 @@ function PathwayFallbackView({
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
-                    The typical pathway into this career — from school subjects to your first role and beyond. Most non-university careers don't have university programmes; this is the practical route.
+                    Real schools and the typical pathway into this career. Most non-university careers go through vocational schools, fagbrev tracks or apprenticeships — this view surfaces them.
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -626,12 +674,80 @@ function PathwayFallbackView({
         </div>
       </div>
 
-      {/* Pathway steps */}
+      {/* Programme metadata — the stat row. Mirrors the stat pills the
+          main university-browser mode shows above its card grid, so the
+          two modes feel like one feature. */}
+      {programmeName && (
+        <div className="flex flex-wrap items-center gap-2">
+          <StatPill icon={GraduationCap} label={programmeName} accent />
+          {programmeDuration && <StatPill icon={BookOpen} label={programmeDuration} />}
+          {programmeType && <StatPill icon={Building2} label={programmeType} />}
+          {applicationRoute && <StatPill icon={Route} label={applicationRoute} />}
+        </div>
+      )}
+
+      {/* Institution cards grid — the headline of the vocational view.
+          Each school in universityPath.examples gets a standalone card
+          linking to a utdanning.no search for that school + programme.
+          Layout mirrors the university-browser's card grid so users
+          perceive Study Paths as one feature, not two. */}
+      {schools.length > 0 && (
+        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04] flex items-center justify-between gap-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              Schools offering {programmeName || 'this programme'}
+            </p>
+            <span className="text-[10px] text-muted-foreground/45 tabular-nums shrink-0">
+              {schools.length} institution{schools.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3">
+            {schools.map((school) => {
+              const searchQuery = programmeName ? `${school} ${programmeName}` : school;
+              const url = `https://utdanning.no/sok?q=${encodeURIComponent(searchQuery)}`;
+              return (
+                <a
+                  key={school}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-border/40 bg-card/60 p-3.5 hover:border-teal-500/30 transition-colors group"
+                >
+                  <div className="flex items-start gap-2 mb-2">
+                    <Building2 className="h-3.5 w-3.5 text-teal-400/70 mt-0.5 shrink-0" />
+                    <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2 group-hover:text-teal-300 transition-colors">
+                      {school}
+                    </h4>
+                  </div>
+                  {programmeName && (
+                    <p className="text-[11px] text-muted-foreground/70 mb-1 truncate">
+                      {programmeName}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground/65">
+                    {programmeDuration && <span>{programmeDuration}</span>}
+                    {programmeDuration && programmeType && <span>·</span>}
+                    {programmeType && <span>{programmeType}</span>}
+                  </div>
+                  <span className="mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 group-hover:underline">
+                    Visit school page →
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Pathway steps — now the secondary "how this career works" panel
+          that contextualises the institution cards above. The school-
+          subjects step renders the grade-cutoff pill inline beneath the
+          body text when the career has a real numeric bar. */}
       {steps.length > 0 ? (
         <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
           <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04]">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-              Typical pathway
+              How this career works
             </p>
           </div>
           <ol className="divide-y divide-border/25">
@@ -645,6 +761,15 @@ function PathwayFallbackView({
                   <p className="text-[11px] text-muted-foreground/70 leading-relaxed mt-0.5">
                     {s.body}
                   </p>
+                  {s.showGradePill && grade?.hasCutoff && gradeLabel && (
+                    <span
+                      title={gradeTip ?? undefined}
+                      className="mt-1.5 inline-flex items-center gap-1 shrink-0 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200/90 cursor-help hover:border-amber-500/50 hover:bg-amber-500/[0.15] transition-colors"
+                    >
+                      <span>📊</span>
+                      <span>{gradeLabel}</span>
+                    </span>
+                  )}
                 </div>
               </li>
             ))}
@@ -699,7 +824,7 @@ function PathwayFallbackView({
 
       {/* Help link */}
       <p className="text-[10px] text-muted-foreground/55 text-center">
-        Looking for formal programmes? Search{' '}
+        Looking for more options? Search{' '}
         <a
           href={`https://utdanning.no/sok?q=${encodeURIComponent(careerTitle)}`}
           target="_blank"
@@ -708,7 +833,7 @@ function PathwayFallbackView({
         >
           utdanning.no
         </a>{' '}
-        for the latest options.
+        for the latest programmes.
       </p>
     </div>
   );

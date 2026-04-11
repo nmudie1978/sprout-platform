@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
-import { MapPin, Clock, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import { MapPin, Clock, AlertCircle, CheckCircle2, ArrowRight, ChevronRight } from "lucide-react";
 import { RoleThumbnailSquare } from "@/components/role-thumbnail";
 import { JobCourseLinks } from "@/components/job-course-links";
 import type { ViewMode } from "@/hooks/useViewMode";
@@ -113,133 +113,88 @@ function formatTimeAgo(dateStr: string | undefined): string {
   return `${weeks}w ago`;
 }
 
-// Grid template shared between header and rows
-const LIST_GRID = "grid-cols-[2.5fr_1fr_1fr_1fr_auto_auto]";
+// Grid template shared between header and rows — mirrors CareerCardV2's
+// list layout so Small Jobs and Explore Careers feel like the same product.
+const LIST_GRID = "grid-cols-[18rem_6rem_5rem_5rem_8rem]";
 
 // ============================================
-// LIST HEADER - Column labels
+// LIST HEADER - Column labels (matches careers page)
 // ============================================
 export function JobListHeader() {
   return (
-    <div className={`hidden lg:grid ${LIST_GRID} items-center gap-4 px-4 py-2 border-b bg-muted/30 text-[11px] font-medium text-muted-foreground uppercase tracking-wider`}>
+    <div className={`inline-grid ${LIST_GRID} items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit`}>
       <span>Job</span>
-      <span>Location</span>
-      <span>Date</span>
-      <span>Posted</span>
       <span className="text-right">Pay</span>
-      <span className="w-3.5" />
+      <span className="text-center">Date</span>
+      <span className="text-center">Status</span>
+      <span>View job</span>
     </div>
   );
 }
 
 // ============================================
-// LIST VIEW - Full-width horizontal row
+// LIST VIEW - Clean table row (careers-style)
 // ============================================
 function ListRow({ job, userCity, showDeadline }: Omit<JobCardV2Props, "viewMode">) {
   const employer = job.postedBy?.employerProfile;
   const startDate = job.startDate || job.dateTime;
   const isNearby = isJobNearby(job.location, userCity);
   const deadline = getDaysUntilDeadline(job.applicationDeadline);
-  const postedAgo = formatTimeAgo(job.createdAt);
+
+  // Compact pay label — e.g. "350 kr" or "150/hr"
+  const payLabel = `${formatCurrency(job.payAmount)}${job.payType === "HOURLY" ? "/hr" : ""}`;
+
+  // Status label
+  const statusInfo = (() => {
+    if (deadline.passed) return { label: "Closed", color: "text-red-500" };
+    if (showDeadline && deadline.urgent) return { label: `${deadline.days}d left`, color: "text-amber-500 font-medium" };
+    return { label: "Open", color: "text-emerald-600 dark:text-emerald-400" };
+  })();
 
   return (
     <Link href={`/jobs/${job.id}`} className="block group">
-      {/* Desktop: grid row */}
-      <div className={`hidden lg:grid ${LIST_GRID} items-center gap-4 px-4 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${
+      <div className={`grid ${LIST_GRID} items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left ${
         isNearby ? "bg-emerald-50/50 dark:bg-emerald-950/20" : ""
       }`}>
-        <div className="flex items-center gap-3 min-w-0">
-          <RoleThumbnailSquare category={job.category} title={job.title} size="md" />
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h4 className="font-medium text-sm leading-tight truncate group-hover:text-primary transition-colors">
-                {job.title}
-              </h4>
-              {isNearby && (
-                <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0 shrink-0">
-                  Near you
-                </Badge>
-              )}
-            </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-              <span className="truncate font-medium">{employer?.companyName || "Individual"}</span>
-              {employer?.verified && <CheckCircle2 className="h-3 w-3 text-blue-500 shrink-0" />}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <MapPin className={`h-3 w-3 shrink-0 ${isNearby ? "text-emerald-500" : ""}`} />
-          <span className="truncate">{job.location?.split(",")[0] || "TBC"}</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3 shrink-0" />
-          <span>
-            {formatDateCompact(startDate)}
-            {job.duration ? ` · ${formatDuration(job.duration)}` : ""}
-          </span>
-        </div>
-
-        <div className="text-xs text-muted-foreground">
-          {showDeadline && deadline.days >= 0 ? (
-            <span className={deadline.urgent ? "text-orange-500 font-medium" : ""}>
-              <AlertCircle className="h-3 w-3 inline mr-1" />
-              {deadline.days === 0 ? "Due today" : `${deadline.days}d left`}
-            </span>
-          ) : postedAgo ? (
-            <span>{postedAgo}</span>
-          ) : null}
-        </div>
-
-        <div className="text-right">
-          <span className="font-bold text-sm">{formatCurrency(job.payAmount)}</span>
-          {job.payType && (
-            <p className="text-[10px] text-muted-foreground">
-              {job.payType === "HOURLY" ? "/hr" : "fixed"}
-            </p>
-          )}
-        </div>
-
-        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
-      </div>
-
-      {/* Mobile: stacked row */}
-      <div className={`flex lg:hidden items-start gap-3 px-3 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${
-        isNearby ? "bg-emerald-50/50 dark:bg-emerald-950/20" : ""
-      }`}>
-        <RoleThumbnailSquare category={job.category} title={job.title} size="md" />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h4 className="font-medium text-sm leading-tight truncate group-hover:text-primary transition-colors">
+        {/* Title + employer */}
+        <span className="flex items-center gap-2 min-w-0">
+          <RoleThumbnailSquare category={job.category} title={job.title} size="sm" />
+          <span className="min-w-0">
+            <span className="text-xs font-medium truncate block group-hover:text-primary transition-colors">
               {job.title}
-            </h4>
-            {isNearby && (
-              <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0 shrink-0">Near you</Badge>
-            )}
-          </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-            <span className="truncate font-medium">{employer?.companyName || "Individual"}</span>
-            {employer?.verified && <CheckCircle2 className="h-3 w-3 text-blue-500 shrink-0" />}
-          </div>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground/70 mt-1">
-            <span className="flex items-center gap-1">
-              <MapPin className={`h-2.5 w-2.5 shrink-0 ${isNearby ? "text-emerald-500" : ""}`} />
-              {job.location?.split(",")[0] || "TBC"}
             </span>
-            <span className="flex items-center gap-1">
-              <Clock className="h-2.5 w-2.5 shrink-0" />
-              {formatDateCompact(startDate)}
+            <span className="text-[10px] text-muted-foreground/60 truncate block">
+              {employer?.companyName || "Individual"}
+              {isNearby ? " · Near you" : job.location ? ` · ${job.location.split(",")[0]}` : ""}
             </span>
-            {postedAgo && <span>{postedAgo}</span>}
-          </div>
-        </div>
-        <div className="text-right shrink-0 pt-0.5">
-          <span className="font-bold text-sm">{formatCurrency(job.payAmount)}</span>
-          {job.payType && (
-            <p className="text-[10px] text-muted-foreground">{job.payType === "HOURLY" ? "/hr" : "fixed"}</p>
+          </span>
+          {isNearby && (
+            <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0 shrink-0">
+              Near you
+            </Badge>
           )}
-        </div>
+        </span>
+
+        {/* Pay */}
+        <span className="text-xs text-muted-foreground tabular-nums text-right">
+          {payLabel}
+        </span>
+
+        {/* Date */}
+        <span className="text-[10px] text-muted-foreground text-center">
+          {formatDateCompact(startDate)}
+        </span>
+
+        {/* Status */}
+        <span className={`text-[10px] text-center ${statusInfo.color}`}>
+          {statusInfo.label}
+        </span>
+
+        {/* View job */}
+        <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+          View job
+          <ChevronRight className="h-3 w-3" />
+        </span>
       </div>
     </Link>
   );
