@@ -122,17 +122,30 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
   let foundationText = `Let's walk through ${possessive.toLowerCase()} path to becoming a ${careerTitle}. `;
 
   if (education?.schoolName) {
-    foundationText += `Right now, ${name} ${userAge ? `is ${userAge} years old and ` : ''}studying at ${education.schoolName}. `;
+    foundationText += `${name.charAt(0).toUpperCase() + name.slice(1)} is currently ${userAge ? `${userAge} years old, ` : ''}studying at ${education.schoolName}`;
+    if (education.expectedCompletion) {
+      foundationText += ` until around ${education.expectedCompletion}`;
+    }
+    foundationText += '. ';
   } else if (userAge) {
     foundationText += `${name.charAt(0).toUpperCase() + name.slice(1)} is ${userAge} years old. `;
   }
 
   if (education?.currentSubjects && education.currentSubjects.length > 0) {
-    foundationText += `${possessive} subjects in ${subjectList(education.currentSubjects)} form the foundation for this career. `;
+    foundationText += `${possessive} current subjects — ${subjectList(education.currentSubjects)} — are a good start. `;
   }
 
-  if (education?.expectedCompletion) {
-    foundationText += `The current stage finishes around ${education.expectedCompletion}. `;
+  // Actionable advice based on what comes next
+  const firstStep = items[0];
+  if (firstStep) {
+    const titleLower = firstStep.title.toLowerCase();
+    if (/university|degree|bachelor|master/i.test(titleLower)) {
+      foundationText += `The focus right now should be on achieving strong grades, especially in relevant subjects, to qualify for a university place. `;
+    } else if (/apprentice|vocational|fagbrev/i.test(titleLower)) {
+      foundationText += `The next step is applying for the right vocational programme, so focus on keeping grades solid and exploring practical work experience. `;
+    } else if (/apply|intern/i.test(titleLower)) {
+      foundationText += `The priority right now is building a strong application — grades, relevant experience, and a clear sense of direction. `;
+    }
   }
 
   foundationText += 'This is where the journey begins.';

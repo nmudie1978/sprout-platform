@@ -39,4 +39,6 @@ export interface RendererProps {
     currentStepIndex: number; // -1 = foundation, 0+ = items index
     progress: number; // 0–1 within current step
   };
+  /** Scenario overlay — maps step index → overridden title */
+  scenarioOverrides?: Map<number, string>;
 }

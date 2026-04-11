@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight, Pencil, Banknote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, Banknote, Check, AlertTriangle } from 'lucide-react';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
 import { classifyStepType, calculateSubjectAlignment, getCareerRequirements } from '@/lib/education/alignment';
@@ -39,6 +39,7 @@ export function ZigzagRenderer({
   careerTitle,
   readOnly = false,
   simulation,
+  scenarioOverrides,
 }: RendererProps) {
   const simActive = simulation?.isPlaying ?? false;
   // Filter out duplicated foundation
@@ -317,6 +318,7 @@ export function ZigzagRenderer({
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
                       earningsHint={stepEarnings}
+                      titleOverride={scenarioOverrides?.get(i)}
                     />
                   )}
                   <SharedNode
@@ -332,6 +334,7 @@ export function ZigzagRenderer({
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
                       earningsHint={stepEarnings}
+                      titleOverride={scenarioOverrides?.get(i)}
                     />
                   )}
                   {!isHigh && (
@@ -441,14 +444,15 @@ function ZigzagCard({
   onClick,
   glowing = false,
   earningsHint,
+  titleOverride,
 }: {
   item: JourneyItem;
   state: StepState;
   onClick: () => void;
-  /** True when this is the active step during voice simulation */
   glowing?: boolean;
-  /** Optional earnings indicator — shown as a subtle badge */
   earningsHint?: string;
+  /** Scenario override — replaces the step title with a specific uni/employer variant */
+  titleOverride?: string;
 }) {
   const stepType = classifyStepType(item);
   const typeConfig = STEP_TYPE_CONFIG[stepType];
@@ -472,7 +476,7 @@ function ZigzagCard({
         style={glowing ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' } : undefined}
       >
         <p className="text-xs font-semibold leading-tight text-muted-foreground">
-          {item.title}
+          {titleOverride ?? item.title}
         </p>
         {earningsHint && (
           <span className="inline-flex items-center gap-1 mt-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-medium">
@@ -594,25 +598,20 @@ function FoundationCard({
       aria-label={disabled ? 'Foundation (reference route — read only)' : 'Open foundation details'}
       aria-disabled={disabled || undefined}
       className={cn(
-        'group w-[280px] rounded-2xl border bg-card text-left transition-all',
+        'group w-[280px] rounded-2xl bg-card text-left transition-all',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        // When glowing (simulation active on this step), override
-        // everything — no greyscale, no opacity fade, just the glow.
+        // Dashed teal border signals "you own this card — tap to edit".
+        // Simulation glow overrides everything.
         glowing
-          ? 'border-emerald-400/70 opacity-100'
+          ? 'border-2 border-emerald-400/70 opacity-100'
           : disabled
-            ? 'opacity-40 grayscale cursor-not-allowed border-border/60 select-none pointer-events-none'
-            : 'hover:border-amber-400/60 cursor-pointer',
-        !glowing && !disabled && (isCurrent
-          ? 'border-amber-500/60 shadow-sm'
-          : status === 'done'
-            ? 'border-emerald-500/30'
-            : 'border-border')
+            ? 'opacity-40 grayscale cursor-not-allowed border border-border/60 select-none pointer-events-none'
+            : 'border-2 border-dashed border-teal-500/40 hover:border-teal-500/60 cursor-pointer shadow-sm'
       )}
       style={glowing ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' } : undefined}
     >
       {/* ── HEADER + FOUNDATION (merged) ────────────────────────── */}
-      <div className="px-3 pt-2.5 pb-2">
+      <div className="px-3 pt-2.5 pb-2 bg-teal-500/[0.03] rounded-t-2xl">
         <div className="flex items-center justify-between mb-1.5">
           <p className="text-[12px] font-semibold leading-tight text-foreground">
             Your Starting Point
@@ -651,22 +650,49 @@ function FoundationCard({
                 </span>
               )}
             </div>
-            {/* Subject pills — inline */}
+            {/* Subject pills — colour-coded by alignment */}
             {visibleSubjects.length > 0 && (
-              <div className="flex flex-wrap gap-0.5">
-                {visibleSubjects.map((s) => (
-                  <span
-                    key={s}
-                    className="inline-flex items-center rounded bg-muted px-1 py-px text-[9px] font-medium text-foreground/80 ring-1 ring-inset ring-border/50"
-                  >
-                    {s}
-                  </span>
-                ))}
+              <div className="flex flex-wrap gap-1 mt-1">
+                {visibleSubjects.map((s) => {
+                  const isMatched = subjectHint?.matchedKey.some(
+                    (m) => m.toLowerCase() === s.toLowerCase()
+                  );
+                  return (
+                    <span
+                      key={s}
+                      className={cn(
+                        'inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-medium ring-1 ring-inset',
+                        isMatched
+                          ? 'bg-emerald-500/10 text-emerald-300 ring-emerald-500/25'
+                          : 'bg-muted text-foreground/75 ring-border/50',
+                      )}
+                      title={isMatched ? 'Aligns with this career' : undefined}
+                    >
+                      {isMatched && <Check className="h-2 w-2 mr-0.5" strokeWidth={3} />}
+                      {s}
+                    </span>
+                  );
+                })}
                 {extraSubjectCount > 0 && (
                   <span className="inline-flex items-center px-1 py-px text-[9px] text-muted-foreground">
                     +{extraSubjectCount}
                   </span>
                 )}
+              </div>
+            )}
+            {/* Missing subjects hint — slim inline */}
+            {subjectHint && subjectHint.missingKey.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-1">
+                {subjectHint.missingKey.slice(0, 3).map((s) => (
+                  <span
+                    key={s}
+                    className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-medium bg-amber-500/10 text-amber-300/80 ring-1 ring-inset ring-amber-500/20"
+                    title={`Consider adding ${s} — it aligns with this career`}
+                  >
+                    <AlertTriangle className="h-2 w-2 mr-0.5" strokeWidth={2.5} />
+                    {s}
+                  </span>
+                ))}
               </div>
             )}
           </div>

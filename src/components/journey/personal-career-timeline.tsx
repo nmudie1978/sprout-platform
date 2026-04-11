@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Target, AlertCircle, RefreshCw, Play, FileText, X } from 'lucide-react';
+import { Target, AlertCircle, RefreshCw, Play, FileText, X, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import type { JourneyItem, Journey } from '@/lib/journey/career-journey-types';
@@ -21,6 +21,7 @@ import { markGrowActive } from '@/lib/journey/lens-progress';
 import { useRoadmapSimulation, type SimulationControls as SimCtrl } from '@/hooks/use-roadmap-simulation';
 import { SimulationControls } from './simulation';
 import type { NarrationContext } from '@/lib/simulation/narration-generator';
+import { generateScenarios, buildScenarioOverlay, type Scenario } from '@/lib/simulation/scenario-engine';
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -256,6 +257,30 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     }
   }, [journey, guardedPlay]);
 
+  // ── Scenario toggle (university + employer path variations) ────────
+  const scenarios = useMemo<Scenario[]>(() => {
+    if (!primaryGoalTitle) return [];
+    const slug = primaryGoalTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return generateScenarios(slug, primaryGoalTitle);
+  }, [primaryGoalTitle]);
+
+  const [scenarioIndex, setScenarioIndex] = useState<number | null>(null);
+
+  const activeScenario = scenarioIndex !== null ? scenarios[scenarioIndex] ?? null : null;
+  const scenarioOverlay = useMemo(() => {
+    if (!activeScenario || !journey) return null;
+    return buildScenarioOverlay(journey.items, activeScenario);
+  }, [activeScenario, journey]);
+
+  const cycleScenario = useCallback(() => {
+    if (scenarios.length === 0) return;
+    setScenarioIndex((prev) => {
+      if (prev === null) return 0;
+      const next = prev + 1;
+      return next >= scenarios.length ? null : next;
+    });
+  }, [scenarios.length]);
+
   // Build per-node card data summaries for visual indicators on the roadmap
   const cardDataMap = useMemo<Record<string, CardDataSummary>>(() => {
     if (!journey) return {};
@@ -432,6 +457,22 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               Play
             </button>
           )}
+          {/* Scenario toggle — cycles through uni+employer path variations */}
+          {scenarios.length > 0 && (
+            <button
+              onClick={cycleScenario}
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors',
+                activeScenario
+                  ? 'bg-violet-500/15 border-violet-500/30 text-violet-300 hover:bg-violet-500/25'
+                  : 'bg-muted/20 border-border/40 text-muted-foreground/60 hover:bg-muted/30',
+              )}
+              title={activeScenario ? `Showing: ${activeScenario.label} — click to cycle` : 'Toggle university & employer scenarios'}
+            >
+              <Shuffle className="h-3 w-3" />
+              {activeScenario ? activeScenario.label : 'Scenarios'}
+            </button>
+          )}
           <TimelineStyleSelector value={style} onChange={setStyle} />
         </div>
       </div>
@@ -471,6 +512,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
                 }
               : undefined
           }
+          scenarioOverrides={scenarioOverlay?.stepOverrides}
         />
       </div>
 
