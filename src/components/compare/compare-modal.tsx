@@ -140,9 +140,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const why = whyItMightSuitYou(career, preferences);
   const signals = getValueSignals(career);
 
-  // Shared title style — amber to match the bars. Per the spec, only
-  // titles and bars are coloured; everything else stays neutral.
-  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-amber-400/85';
+  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-muted-foreground/70';
 
   return (
     <div
@@ -168,7 +166,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </button>
         <div className="flex items-start gap-2.5 mb-2 pr-8">
           <span className="text-2xl leading-none shrink-0">{career.emoji}</span>
-          <h3 className="text-sm font-bold text-amber-300 leading-tight">{career.title}</h3>
+          <h3 className="text-sm font-bold text-foreground/95 leading-tight">{career.title}</h3>
         </div>
         <p className="text-[11px] text-muted-foreground/75 leading-relaxed mb-2.5">
           {career.description}
@@ -187,7 +185,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             <span className="text-[10px] text-foreground/70 w-[64px] shrink-0">{d.label}</span>
             <div className="relative flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden">
               <div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-300"
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-300"
                 style={{ width: `${(d.score / 5) * 100}%` }}
               />
             </div>

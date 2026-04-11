@@ -667,6 +667,17 @@ export function TimelineDetailDialog({
           {!isFoundation && (
             <RealWorldSection item={item} career={careerTitle} />
           )}
+
+          {/* Save button — foundation data persists across all careers */}
+          {isFoundation && dirty && (
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold bg-teal-500/15 text-teal-400 hover:bg-teal-500/25 border border-teal-500/30 transition-colors disabled:opacity-50"
+            >
+              {saving ? 'Saving…' : 'Save foundation'}
+            </button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
