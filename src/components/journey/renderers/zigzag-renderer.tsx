@@ -317,8 +317,7 @@ export function ZigzagRenderer({
                       state={state}
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
-                      earningsHint={stepEarnings}
-                      titleOverride={scenarioOverrides?.get(i)}
+                                            titleOverride={scenarioOverrides?.get(i)}
                     />
                   )}
                   <SharedNode
@@ -333,8 +332,7 @@ export function ZigzagRenderer({
                       state={state}
                       onClick={() => onItemClick(item)}
                       glowing={isSimActive}
-                      earningsHint={stepEarnings}
-                      titleOverride={scenarioOverrides?.get(i)}
+                                            titleOverride={scenarioOverrides?.get(i)}
                     />
                   )}
                   {!isHigh && (

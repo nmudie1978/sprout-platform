@@ -27,6 +27,8 @@ import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { RealWorldSection } from './real-world-section';
+import { getCertificationPath } from '@/lib/education';
+import { Award, ExternalLink as ExtLink } from 'lucide-react';
 
 /**
  * Returns a single contextual tip for a roadmap step — one key piece
@@ -664,10 +666,13 @@ export function TimelineDetailDialog({
 
           {/* Real-world connections — courses, universities, and jobs
               relevant to this step and the user's chosen career.
-              Hidden for "Accept" steps (first job etc.) — those are
-              about the job itself, not about finding external links. */}
+              Hidden for "Accept" steps (about the job, not links).
+              Certification steps get specific cert data instead of
+              generic job/course links. */}
           {!isFoundation && !/\baccept\b/i.test(item.title) && (
-            <RealWorldSection item={item} career={careerTitle} />
+            /\bcertif/i.test(item.title)
+              ? <CertificationsSection career={careerTitle} />
+              : <RealWorldSection item={item} career={careerTitle} />
           )}
 
           {/* Save button — foundation data persists across all careers */}
@@ -683,5 +688,43 @@ export function TimelineDetailDialog({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// ── Certifications section for cert-related steps ───────────────────
+
+function CertificationsSection({ career }: { career?: string | null }) {
+  if (!career) return null;
+  const certPath = getCertificationPath(career, career);
+  if (!certPath || certPath.certifications.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Award className="h-3.5 w-3.5 text-violet-400" />
+        <p className="text-[9px] font-semibold uppercase tracking-wider text-violet-400/80">
+          Key certifications
+        </p>
+      </div>
+      <div className="rounded-lg border border-border/30 divide-y divide-border/20 overflow-hidden">
+        {certPath.certifications.map((cert, i) => (
+          <a
+            key={i}
+            href={cert.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-start gap-2.5 px-3 py-2 hover:bg-muted/10 transition-colors group"
+          >
+            <Award className="h-3 w-3 text-violet-400/60 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-foreground/85 group-hover:text-violet-300 transition-colors">{cert.name}</p>
+              <p className="text-[10px] text-muted-foreground/60 mt-0.5">{cert.provider} · {cert.duration}</p>
+              <p className="text-[9px] text-muted-foreground/50 mt-0.5">{cert.recognised}</p>
+            </div>
+            <ExtLink className="h-3 w-3 text-muted-foreground/30 group-hover:text-violet-400 shrink-0 mt-0.5" />
+          </a>
+        ))}
+      </div>
+    </div>
   );
 }

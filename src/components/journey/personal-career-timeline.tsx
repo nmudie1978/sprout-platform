@@ -467,7 +467,10 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
                   ? 'bg-violet-500/15 border-violet-500/30 text-violet-300 hover:bg-violet-500/25'
                   : 'bg-muted/20 border-border/40 text-muted-foreground/60 hover:bg-muted/30',
               )}
-              title={activeScenario ? `Showing: ${activeScenario.label} — click to cycle` : 'Toggle university & employer scenarios'}
+              title={activeScenario
+                ? `Showing: ${activeScenario.label}\n${activeScenario.university.name} (${activeScenario.university.city}) → ${activeScenario.employer.name} (${activeScenario.employer.city})\n\nClick to see the next scenario`
+                : 'Toggle through different university and employer path scenarios.\nEach click shows a different combination of where you could study and where you could work.'
+              }
             >
               <Shuffle className="h-3 w-3" />
               {activeScenario ? activeScenario.label : 'Scenarios'}
