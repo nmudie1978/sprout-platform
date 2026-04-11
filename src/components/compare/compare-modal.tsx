@@ -140,7 +140,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const why = whyItMightSuitYou(career, preferences);
   const signals = getValueSignals(career);
 
-  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-muted-foreground/70';
+  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-sky-400/80';
 
   return (
     <div
