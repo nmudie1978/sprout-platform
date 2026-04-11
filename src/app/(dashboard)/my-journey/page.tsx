@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Globe, Rocket, Play, TrendingUp,
   ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
-  Eye, ExternalLink, ChevronDown,
+  Eye, ExternalLink, ChevronDown, Lock,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
@@ -41,7 +41,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import { CareerPresenceCard } from '@/components/journey/career-presence-card';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import { getNorwayProgrammes, getCertificationPath, getCareerRequirements } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements } from '@/lib/education';
 import {
   parseGradeRequirement,
   formatGradeLabel,
@@ -417,16 +417,46 @@ function DiscoverTab({
   career,
   goalTitle,
   onContinue,
+  onConfirmChange,
 }: {
   career: Career | null;
   goalTitle: string | null;
   onContinue: () => void;
+  /** Notifies the page so the Understand tab unlocks immediately. */
+  onConfirmChange?: (confirmed: boolean) => void;
 }) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
   const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
   const videoId = ytData?.videoId ?? null;
   const { isCollapsed: dCollapsed, toggle: dToggle } = useSectionCollapse(['d-video', 'd-overview', 'd-insights']);
+
+  // Pull the user's age from /api/profile so the Timeline card can
+  // compute "qualified by age X" against the user's actual age rather
+  // than a hardcoded 16. We share the same queryKey as
+  // personal-career-timeline so this rides on the existing cache and
+  // adds no extra network round-trip in practice.
+  const { data: profileData } = useQuery<{
+    user?: { dateOfBirth?: string | null } | null;
+  }>({
+    queryKey: ['profile-dob'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile');
+      if (!res.ok) return {};
+      return res.json();
+    },
+    staleTime: 30 * 1000,
+  });
+  const userAge: number | undefined = useMemo(() => {
+    const dob = profileData?.user?.dateOfBirth;
+    if (!dob) return undefined;
+    const birth = new Date(dob);
+    const now = new Date();
+    let age = now.getFullYear() - birth.getFullYear();
+    const m = now.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+    return age;
+  }, [profileData]);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Target} message="Set a career goal to start exploring" />;
@@ -635,7 +665,17 @@ function DiscoverTab({
         {(() => {
           const yearMatch = career.educationPath.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || career.educationPath.match(/(\d+)\s*years?/i);
           const years = yearMatch ? parseInt(yearMatch[2] || yearMatch[1]) : null;
-          const qualifiedAge = years ? 16 + years : null;
+          // Rule: study paths (uni / college / vocational) can't start
+          // before upper secondary ends — i.e. age 18. So the earliest
+          // the user can begin the study years is max(userAge, 18). If
+          // the user is already older than 18 they start now; if
+          // they're 17 or younger they start at 18. When we don't know
+          // the user's age, fall back to 18 as the canonical start.
+          const startAge = Math.max(userAge ?? 18, 18);
+          const qualifiedAge = years ? startAge + years : null;
+          // "Years from now" is relative to the user's current age.
+          const yearsFromNow =
+            qualifiedAge != null && userAge != null ? qualifiedAge - userAge : years;
           return (
             <div className="rounded-xl border border-border/30 bg-card/50 p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -645,7 +685,7 @@ function DiscoverTab({
               {qualifiedAge ? (
                 <p className="text-xs text-foreground/70 leading-relaxed">
                   You could be qualified by <span className="font-semibold text-foreground/90">age {qualifiedAge}</span>
-                  <span className="text-muted-foreground/40"> — that&apos;s ~{years} years from now</span>
+                  <span className="text-muted-foreground/40"> — that&apos;s ~{yearsFromNow} years from now</span>
                 </p>
               ) : (
                 <p className="text-xs text-foreground/70 leading-relaxed">{career.educationPath}</p>
@@ -677,15 +717,30 @@ function DiscoverTab({
         )}
       </div>
 
-      {/* Self-confirmation — drives the dashboard's Discover progress.
-          Picking a goal alone no longer counts; the user has to actively
-          say they've explored the role, so a brand-new career starts at
-          0/3 on the dashboard ring. */}
-      <DiscoverConfirmCard careerTitle={goalTitle} />
+      {/* Self-confirmation — drives the dashboard's Discover progress
+          AND the tab lock. Picking a goal alone no longer counts; the
+          user has to actively say they've explored the role before the
+          Understand tab unlocks. A brand-new career starts at 0/3 on
+          the dashboard ring and Understand / Grow are locked. */}
+      <DiscoverConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
-      {/* Next */}
+      {/* Next — the Continue button is the happy-path route into
+          Understand, but it only fires when the user has confirmed.
+          The confirmation is the ONLY way to unlock the next tab, so
+          clicking the button before answering is a no-op (with a
+          gentle inline hint below the confirmation card). */}
       <div className="flex justify-end pt-2">
-        <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
+        <button
+          onClick={onContinue}
+          disabled={!isDiscoverConfirmed(goalTitle)}
+          className={cn(
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            isDiscoverConfirmed(goalTitle)
+              ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
+              : 'text-muted-foreground/25 cursor-not-allowed',
+          )}
+          title={isDiscoverConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
+        >
           Understand <ArrowRight className="h-4 w-4" />
         </button>
       </div>
@@ -723,10 +778,13 @@ function UnderstandTab({
   career,
   goalTitle,
   onContinue,
+  onConfirmChange,
 }: {
   career: Career | null;
   goalTitle: string | null;
   onContinue: () => void;
+  /** Notifies the page so the Grow tab unlocks immediately. */
+  onConfirmChange?: (confirmed: boolean) => void;
 }) {
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
   const { data: learningData, isLoading: learningLoading } = useLearningRecommendations(goalTitle);
@@ -1025,14 +1083,26 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* Self-confirmation — drives the dashboard's Understand progress.
-          The Understand tab is read-only deep-dive content, so a deliberate
-          YES is the cleanest completion signal we can capture. */}
-      <UnderstandConfirmCard careerTitle={goalTitle} />
+      {/* Self-confirmation — drives the dashboard's Understand progress
+          AND the tab lock. The Understand tab is read-only deep-dive
+          content, so a deliberate YES is the cleanest completion signal
+          we can capture, and it's also the only thing that unlocks Grow. */}
+      <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
-      {/* Next */}
+      {/* Next — gated on the confirmation above. Clicking without
+          confirming is a no-op (disabled). */}
       <div className="flex justify-end pt-2">
-        <button onClick={onContinue} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground/60 hover:text-foreground hover:bg-muted/30 transition-colors">
+        <button
+          onClick={onContinue}
+          disabled={!isUnderstandConfirmed(goalTitle)}
+          className={cn(
+            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+            isUnderstandConfirmed(goalTitle)
+              ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
+              : 'text-muted-foreground/25 cursor-not-allowed',
+          )}
+          title={isUnderstandConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
+        >
           Grow <ArrowRight className="h-4 w-4" />
         </button>
       </div>
@@ -1040,7 +1110,15 @@ function UnderstandTab({
   );
 }
 
-function DiscoverConfirmCard({ careerTitle }: { careerTitle: string | null }) {
+function DiscoverConfirmCard({
+  careerTitle,
+  onChange,
+}: {
+  careerTitle: string | null;
+  /** Notifies the parent page so the tab bar can re-lock/unlock the
+   *  next tab immediately when the user toggles their answer. */
+  onChange?: (confirmed: boolean) => void;
+}) {
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => {
     setConfirmed(isDiscoverConfirmed(careerTitle));
@@ -1050,6 +1128,7 @@ function DiscoverConfirmCard({ careerTitle }: { careerTitle: string | null }) {
   const choose = (value: boolean) => {
     setDiscoverConfirmed(careerTitle, value);
     setConfirmed(value);
+    onChange?.(value);
   };
 
   return (
@@ -1094,7 +1173,15 @@ function DiscoverConfirmCard({ careerTitle }: { careerTitle: string | null }) {
   );
 }
 
-function UnderstandConfirmCard({ careerTitle }: { careerTitle: string | null }) {
+function UnderstandConfirmCard({
+  careerTitle,
+  onChange,
+}: {
+  careerTitle: string | null;
+  /** Notifies the parent page so the tab bar can re-lock/unlock Grow
+   *  immediately when the user toggles their answer. */
+  onChange?: (confirmed: boolean) => void;
+}) {
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => {
     setConfirmed(isUnderstandConfirmed(careerTitle));
@@ -1104,6 +1191,7 @@ function UnderstandConfirmCard({ careerTitle }: { careerTitle: string | null }) 
   const choose = (value: boolean) => {
     setUnderstandConfirmed(careerTitle, value);
     setConfirmed(value);
+    onChange?.(value);
   };
 
   return (
@@ -1829,26 +1917,16 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
           <p className="text-xs text-muted-foreground/50 leading-relaxed -mt-1">
             Small, concrete steps you can take right now. Pick a suggestion or add your own — even one action builds real momentum toward your goal.
           </p>
-          {/* Suggested momentum — 3 concrete starting points pulled
-              from public search URLs so they always work without an API. */}
+          {/* Suggested momentum — concrete starting points pulled
+              from public search URLs so they always work without an API.
+              Study-path suggestions (utdanning.no) are NOT included here:
+              the Understand tab already has a dedicated "Study Path"
+              section which is the canonical surface for that data. Don't
+              re-add a "University courses for X" card — it duplicates
+              Understand and muddies the job of Momentum, which is about
+              non-study actions the user can take today (networking,
+              conversations, hands-on exposure). */}
           {(() => {
-              // utdanning.no is Norwegian-language, so an English career
-              // title ("Healthcare Worker") returns next to nothing.
-              // Pull the Norwegian programme name from our curated map
-              // and strip suffixes like "(bachelor)" or "→ Vg2" so the
-              // search term is the bare noun ("Helse- og oppvekstfag",
-              // "Sykepleie", "Medisin"). Falls back to the English
-              // title when we don't have a Norwegian mapping.
-              const norwayData = getNorwayProgrammes(career.id, career.title);
-              const norwegianTerm = norwayData?.programmes?.[0]?.programme
-                ?.replace(/\s*\([^)]*\)/g, '')
-                .split('→')[0]
-                .trim();
-              const courseSearchTerm = norwegianTerm || career.title;
-              const courseDescriptor = norwegianTerm
-                ? `Aligned programmes on utdanning.no — searching “${norwegianTerm}”`
-                : 'Aligned programmes on utdanning.no';
-
               const allSuggestions = [
                 {
                   icon: Users,
@@ -1856,13 +1934,6 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
                   title: `People in ${career.title} roles`,
                   descriptor: 'Find professionals on LinkedIn and read their journeys',
                   url: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}`,
-                },
-                {
-                  icon: GraduationCap,
-                  color: 'text-violet-400',
-                  title: `University courses for ${career.title}`,
-                  descriptor: courseDescriptor,
-                  url: `https://utdanning.no/sok?q=${encodeURIComponent(courseSearchTerm)}`,
                 },
               ];
               // Hide a suggestion once it's already been added to the
@@ -2246,24 +2317,87 @@ export default function MyJourneyPage() {
 
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
 
-  // Read hash on mount (client only) and sync tab changes to hash
+  // ── Tab gating ─────────────────────────────────────────────────────
+  // The three tabs are Discover → Understand → Grow, and the user MUST
+  // answer the YES/NOT-YET confirmation at the bottom of each content
+  // tab before the next one unlocks. This is enforced at three places:
+  //
+  //   1. The tab bar disables locked tabs and shows a lock icon.
+  //   2. `goToTab` is a guarded setter that silently refuses jumps to
+  //      locked tabs (so a stale hash or a programmatic onContinue call
+  //      can't bypass the gate).
+  //   3. If the currently active tab becomes locked (the user toggled
+  //      the previous tab's answer back to "Not yet"), we auto-rewind
+  //      them to the earliest unlocked tab.
+  //
+  // Confirmation state lives in localStorage via lens-progress helpers;
+  // we mirror it into React state so the tab bar re-renders the moment
+  // the user clicks Yes / Not yet. The mirror is refreshed whenever
+  // the career goal changes (localStorage keys are per-career).
+  const [discoverConfirmedState, setDiscoverConfirmedState] = useState(false);
+  const [understandConfirmedState, setUnderstandConfirmedState] = useState(false);
+  useEffect(() => {
+    setDiscoverConfirmedState(isDiscoverConfirmed(goalTitle));
+    setUnderstandConfirmedState(isUnderstandConfirmed(goalTitle));
+  }, [goalTitle]);
+
+  const isTabLocked = useCallback(
+    (id: V2Tab) => {
+      if (id === 'discover') return false;
+      if (id === 'understand') return !discoverConfirmedState;
+      if (id === 'grow') return !understandConfirmedState;
+      return false;
+    },
+    [discoverConfirmedState, understandConfirmedState],
+  );
+
+  const goToTab = useCallback(
+    (id: V2Tab) => {
+      if (isTabLocked(id)) return;
+      setActiveTab(id);
+    },
+    [isTabLocked],
+  );
+
+  // Read hash on mount (client only) and sync tab changes to hash.
+  // If the hash points at a locked tab (e.g. stale bookmark, career
+  // switch that reset the flags), fall back to the earliest unlocked
+  // tab instead of honouring the hash.
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') as V2Tab;
-    if (['discover', 'understand', 'grow'].includes(hash)) {
-      setActiveTab(hash);
+    if (!['discover', 'understand', 'grow'].includes(hash)) return;
+    if (isTabLocked(hash)) {
+      // Don't honour a hash that points at a locked tab.
+      setActiveTab('discover');
+      return;
     }
+    setActiveTab(hash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     window.location.hash = activeTab;
   }, [activeTab]);
+
+  // If the user un-confirms the previous tab while sitting on a now-
+  // locked tab (e.g. they're on Understand and click "Not yet" on
+  // Discover via the dashboard), bounce them back to the earliest
+  // unlocked tab so they can never sit on content they haven't earned.
+  useEffect(() => {
+    if (activeTab === 'grow' && isTabLocked('grow')) {
+      setActiveTab(isTabLocked('understand') ? 'discover' : 'understand');
+    } else if (activeTab === 'understand' && isTabLocked('understand')) {
+      setActiveTab('discover');
+    }
+  }, [discoverConfirmedState, understandConfirmedState, activeTab, isTabLocked]);
+
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
 
-  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string }[] = [
-    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: 'Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.' },
-    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.' },
-    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'Play through your personal roadmap step by step, explore live opportunities, and build momentum toward your career goal.' },
+  const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
+    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: 'Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.', lockedTooltip: '' },
+    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.', lockedTooltip: 'Answer the confirmation at the bottom of Discover to unlock Understand' },
+    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'Play through your personal roadmap step by step, explore live opportunities, and build momentum toward your career goal.', lockedTooltip: 'Answer the confirmation at the bottom of Understand to unlock Grow' },
   ];
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding
@@ -2389,31 +2523,71 @@ export default function MyJourneyPage() {
           </div>
         </div>
 
-        {/* Tab bar */}
+        {/* Tab bar — locked tabs are visually dimmed, get a lock icon
+            in place of the category icon, and are click-disabled. The
+            native title attribute surfaces why the tab is locked so the
+            user never has to guess. */}
         <div className="grid grid-cols-3 gap-2 mb-6">
           {tabs.map((tab) => {
             const TabIcon = tab.icon;
             const isActive = activeTab === tab.id;
+            const locked = isTabLocked(tab.id);
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                title={tab.tooltip}
+                onClick={() => goToTab(tab.id)}
+                disabled={locked}
+                aria-disabled={locked}
+                title={locked ? tab.lockedTooltip : tab.tooltip}
                 className={cn(
                   'relative rounded-xl border px-4 py-3.5 text-left transition-all duration-200',
-                  isActive ? 'border-transparent' : 'border-border/40 hover:border-border/60 hover:bg-muted/20',
+                  locked
+                    ? 'border-border/20 bg-muted/10 cursor-not-allowed opacity-55'
+                    : isActive
+                      ? 'border-transparent'
+                      : 'border-border/40 hover:border-border/60 hover:bg-muted/20',
                 )}
-                style={isActive ? {
+                style={isActive && !locked ? {
                   boxShadow: `0 0 20px ${tab.glow}, 0 0 40px ${tab.glow.replace('0.25', '0.1')}, inset 0 1px 0 rgba(255,255,255,0.05)`,
                   border: `1px solid ${tab.glow.replace('0.25', '0.4')}`,
                   background: `linear-gradient(180deg, ${tab.glow.replace('0.25', '0.08')} 0%, transparent 100%)`,
                 } : undefined}
               >
                 <div className="flex items-center gap-2 mb-0.5">
-                  <TabIcon className={cn('h-3.5 w-3.5', isActive ? tab.color : 'text-muted-foreground/50')} />
-                  <span className={cn('text-sm font-semibold', isActive ? 'text-foreground' : 'text-muted-foreground/60')}>{tab.label}</span>
+                  {locked ? (
+                    <Lock className="h-3.5 w-3.5 text-muted-foreground/40" />
+                  ) : (
+                    <TabIcon className={cn('h-3.5 w-3.5', isActive ? tab.color : 'text-muted-foreground/50')} />
+                  )}
+                  <span
+                    className={cn(
+                      'text-sm font-semibold',
+                      locked
+                        ? 'text-muted-foreground/45'
+                        : isActive
+                          ? 'text-foreground'
+                          : 'text-muted-foreground/60',
+                    )}
+                  >
+                    {tab.label}
+                  </span>
                 </div>
-                <p className={cn('text-[11px]', isActive ? 'text-foreground/50' : 'text-muted-foreground/30')}>{tab.subtitle}</p>
+                <p
+                  className={cn(
+                    'text-[11px]',
+                    locked
+                      ? 'text-muted-foreground/25'
+                      : isActive
+                        ? 'text-foreground/50'
+                        : 'text-muted-foreground/30',
+                  )}
+                >
+                  {locked
+                    ? tab.id === 'understand'
+                      ? 'Locked — finish Discover first'
+                      : 'Locked — finish Understand first'
+                    : tab.subtitle}
+                </p>
               </button>
             );
           })}
@@ -2429,13 +2603,19 @@ export default function MyJourneyPage() {
             transition={{ duration: 0.15 }}
           >
             {activeTab === 'discover' && (
-              <DiscoverTab career={career} goalTitle={goalTitle} onContinue={() => setActiveTab('understand')} />
+              <DiscoverTab
+                career={career}
+                goalTitle={goalTitle}
+                onContinue={() => goToTab('understand')}
+                onConfirmChange={setDiscoverConfirmedState}
+              />
             )}
             {activeTab === 'understand' && (
               <UnderstandTab
                 career={career}
                 goalTitle={goalTitle}
-                onContinue={() => setActiveTab('grow')}
+                onContinue={() => goToTab('grow')}
+                onConfirmChange={setUnderstandConfirmedState}
               />
             )}
             {activeTab === 'grow' && (

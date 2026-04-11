@@ -134,25 +134,60 @@ Never store:
 
 <journey_logic>
 
-# My Journey — Tabs-as-Content, Roadmap-Driven
+# My Journey — Tabs-as-Content, Confirmation-Gated
 
 ## Overview
 
-My Journey has three tabs — **Discover**, **Understand**, **Grow** — but
-they are content views, NOT a stage machine. The user is free to move
-between them in any order. There is no gating, no "complete N actions
-to unlock the next tab", no required steps, no orchestrator, no lens
-completion criteria, no DB-backed journey state. Real progression
-happens inside the **Grow** tab's roadmap, where the user marks
-individual roadmap steps as in-progress / done.
+My Journey has three tabs — **Discover**, **Understand**, **Grow** —
+presented as a linear progression. The student must answer the
+YES confirmation at the bottom of Discover before Understand unlocks,
+and the YES confirmation at the bottom of Understand before Grow
+unlocks. This forces them to deliberately consider each stage before
+moving on, and gives the product a controllable completion signal for
+each section.
 
-The legacy gating engine — `JourneyOrchestrator`, `state-machine.ts`,
-`/api/journey` GET/PATCH, `/api/journey/complete`, `/api/journey/skip`,
-`/api/journey/advance-to-understand`, the `journeyState` /
-`journeyCompletedSteps` / `journeySkippedSteps` columns on
-`YouthProfile`, the `currentLens` step-completion machine — is REMOVED.
-Do not reintroduce it. New code must not import from
-`src/lib/journey/orchestrator.ts` or `src/lib/journey/state-machine.ts`.
+This is the ONLY gating in My Journey. It is a single-predicate gate
+per tab (the localStorage flag set by the confirmation card), not a
+state machine. Do NOT reintroduce any of the following:
+
+  - A multi-step "complete N actions to unlock" ladder
+  - An orchestrator / state-machine engine
+  - DB-backed journey-state columns
+  - The `JourneyOrchestrator`, `state-machine.ts`,
+    `/api/journey` GET/PATCH, `/api/journey/complete`,
+    `/api/journey/skip`, `/api/journey/advance-to-understand`,
+    `journeyState` / `journeyCompletedSteps` / `journeySkippedSteps`
+    columns on `YouthProfile`, or the `currentLens` step-completion
+    machine — all removed. New code must not import from
+    `src/lib/journey/orchestrator.ts` or
+    `src/lib/journey/state-machine.ts`.
+
+Real progression inside Grow still happens via the roadmap's per-step
+progress cycling — that local sequential-unlock behaviour is unchanged.
+
+## How the tab gating works
+
+Each tab has a confirmation card at the bottom:
+  - Discover → "Have you explored what this role is about?" (YES / Not yet)
+  - Understand → "Did you understand the role in more detail?" (YES / Not yet)
+
+Clicking YES stores a per-career flag via
+`setDiscoverConfirmed` / `setUnderstandConfirmed` in
+`src/lib/journey/lens-progress.ts`. The parent
+`src/app/(dashboard)/my-journey/page.tsx` mirrors both flags into
+React state and uses them to:
+
+  1. Disable the locked tab button (greyed-out, lock icon, native
+     tooltip explaining why it's locked).
+  2. Block programmatic jumps via a `goToTab` guard — so stale URL
+     hashes, `onContinue` callbacks, and the dashboard's "jump to
+     Grow" deep links can't bypass the gate.
+  3. Auto-rewind the user if they're sitting on a tab that becomes
+     locked (e.g. they click "Not yet" on the previous tab's card).
+
+Confirmations are keyed per-career slug, so switching primary goals
+resets the gate for the new career. This is intentional — the user
+must consider each new career on its own.
 
 ## What each tab contains
 
@@ -211,8 +246,12 @@ journey state. Editing in either surface invalidates
 
 ## Hard rules
 
-- Tabs are content views, not stages. Never gate switching between
-  Discover / Understand / Grow on action completion.
+- Tab navigation IS gated — but only by the single confirmation card
+  at the bottom of each tab (Discover → Understand, Understand → Grow).
+  No multi-step gates, no completion ladders, no DB journey state, no
+  orchestrator. The gate is one boolean per tab, stored in
+  localStorage, mirrored into React state via the parent page so the
+  tab bar re-renders the moment the user clicks YES / Not yet.
 - Never reintroduce `JourneyOrchestrator`, `createOrchestrator`,
   `JOURNEY_STATES`, `JOURNEY_STATE_DEFINITIONS`, `JourneyStateId`,
   `canTransition`, `calculateLensProgress`, `determineCurrentState`,
@@ -282,11 +321,15 @@ If not, it should not exist.
 
 ## Summary
 
-Three tabs, no gating. Discover and Understand are content. Grow is
-the simulation + exploration surface — the user plays through their
-roadmap narration, explores real opportunities, and builds momentum
-with concrete next moves. The voice-guided simulation is the primary
-experience; the static roadmap supports it.
+Three tabs, single-predicate confirmation gating. The student cannot
+jump between Discover / Understand / Grow without answering the YES
+confirmation at the bottom of each content tab — this forces
+deliberate consideration of each stage and gives us a clean per-tab
+completion signal. Grow is the simulation + exploration surface — the
+user plays through their roadmap narration, explores real
+opportunities, and builds momentum with concrete next moves. The
+voice-guided simulation is the primary experience; the static roadmap
+supports it.
 
 </journey_logic>
 

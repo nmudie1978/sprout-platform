@@ -108,9 +108,32 @@ export async function PUT(request: Request) {
     // snapshot under JourneyGoalData and restore the new goal's snapshot
     // (if any). The legacy `journeyState` / `journeyCompletedSteps` /
     // `journeySkippedSteps` fields are no longer touched — see CLAUDE.md
-    // <journey_logic>. We still preserve `journeySummary` since it's a
-    // generic JSON store used by discover-reflections, education-context,
-    // career-interests, etc.
+    // <journey_logic>.
+    //
+    // Key architectural rule, learned the hard way:
+    // `journeySummary` is a mixed bag of profile-level data
+    // (educationContext, discoverProfile, strengths, careerInterests)
+    // AND per-goal data (discoverReflections). Only per-goal fields get
+    // snapshotted into JourneyGoalData; profile-level fields stay on
+    // YouthProfile.journeySummary and are NEVER overwritten by a goal
+    // switch. Previous versions of this handler rebuilt journeySummary
+    // wholesale from the restored snapshot, which stale-overwrote the
+    // user's "Your Starting Point" data every time they toggled between
+    // career goals. Do not reintroduce that pattern.
+    const PER_GOAL_FIELDS = ['discoverReflections'] as const;
+    const pickPerGoal = (s: Record<string, unknown> | null | undefined) => {
+      if (!s) return {};
+      const out: Record<string, unknown> = {};
+      for (const f of PER_GOAL_FIELDS) if (s[f] !== undefined) out[f] = s[f];
+      return out;
+    };
+    const stripPerGoal = (s: Record<string, unknown> | null | undefined) => {
+      if (!s) return {};
+      const out: Record<string, unknown> = { ...s };
+      for (const f of PER_GOAL_FIELDS) delete out[f];
+      return out;
+    };
+
     if (slot === "primary" && goal) {
       const updatedProfile = await prisma.$transaction(async (tx) => {
         const currentProfile = await tx.youthProfile.findUnique({
@@ -122,26 +145,41 @@ export async function PUT(request: Request) {
         });
 
         const currentGoal = currentProfile?.primaryGoal as CareerGoal | null;
+        const currentSummary =
+          (currentProfile?.journeySummary as Record<string, unknown> | null) || {};
 
-        // Save current goal's summary before switching (if there is a current goal)
+        // Save the OLD goal's per-goal slice to JourneyGoalData. We
+        // deliberately snapshot only per-goal fields so the snapshot
+        // can never clobber profile-level data when the user comes back.
         if (currentGoal?.title && currentGoal.title !== goal.title) {
           const goalId = slugifyGoal(currentGoal.title);
+          const perGoalSnapshot = pickPerGoal(currentSummary);
+          const hasPerGoalData = Object.keys(perGoalSnapshot).length > 0;
           await tx.journeyGoalData.upsert({
             where: { userId_goalId: { userId: session.user.id, goalId } },
             create: {
               userId: session.user.id,
               goalId,
               goalTitle: currentGoal.title,
-              journeySummary: currentProfile!.journeySummary || undefined,
+              journeySummary: hasPerGoalData
+                ? (JSON.parse(JSON.stringify(perGoalSnapshot)) as Prisma.InputJsonValue)
+                : undefined,
             },
             update: {
               goalTitle: currentGoal.title,
-              journeySummary: currentProfile!.journeySummary || undefined,
+              journeySummary: hasPerGoalData
+                ? (JSON.parse(JSON.stringify(perGoalSnapshot)) as Prisma.InputJsonValue)
+                : Prisma.DbNull,
             },
           });
         }
 
-        // Check if the new goal has saved progress to restore
+        // Rebuild the profile's journeySummary for the NEW goal.
+        // Start from the current profile-level summary (this preserves
+        // educationContext, discoverProfile, strengths, careerInterests
+        // and anything else that's user-scoped), strip the OLD goal's
+        // per-goal fields, and overlay the NEW goal's per-goal fields
+        // (if we have a saved snapshot for it).
         let journeyUpdate: Record<string, unknown> = {};
         if (currentGoal?.title !== goal.title) {
           const newGoalId = slugifyGoal(goal.title);
@@ -149,28 +187,15 @@ export async function PUT(request: Request) {
             where: { userId_goalId: { userId: session.user.id, goalId: newGoalId } },
           });
 
-          // Verify goalTitle matches to prevent slug collision from loading wrong data
-          if (savedData && savedData.goalTitle === goal.title) {
-            // Preserve educationContext from current profile — it's user-level, not goal-level
-            const currentSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
-            const restoredSummary = (savedData.journeySummary as Record<string, unknown>) || {};
-            journeyUpdate = {
-              journeySummary: {
-                ...restoredSummary,
-                educationContext: restoredSummary.educationContext || currentSummary.educationContext || undefined,
-              },
-            };
-          } else {
-            const existingSummary = (currentProfile?.journeySummary as Record<string, unknown>) || {};
-            journeyUpdate = {
-              journeySummary: {
-                strengths: existingSummary.strengths || [],
-                careerInterests: existingSummary.careerInterests || [],
-                discoverReflections: existingSummary.discoverReflections || undefined,
-                educationContext: existingSummary.educationContext || undefined,
-              },
-            };
-          }
+          const profileLevel = stripPerGoal(currentSummary);
+          const restoredPerGoal =
+            savedData && savedData.goalTitle === goal.title
+              ? pickPerGoal(savedData.journeySummary as Record<string, unknown> | null)
+              : {};
+
+          journeyUpdate = {
+            journeySummary: { ...profileLevel, ...restoredPerGoal } as Prisma.InputJsonValue,
+          };
         }
 
         // Always ensure a JourneyGoalData record exists for the NEW

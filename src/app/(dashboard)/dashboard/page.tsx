@@ -719,6 +719,24 @@ export default function DashboardPage() {
               <Clock className="h-4 w-4" />
               {dateStr}
             </span>
+            {/* Guardian-consent signal — pulsing amber dot next to the
+                profile link. Native title tooltip so there's zero
+                extra markup weight on the header. Whole element links
+                to /profile where the user can resend / change the
+                guardian email. */}
+            {profileData && profileData.guardianEmail && !profileData.guardianConsent && (
+              <Link
+                href="/profile"
+                title="Waiting for guardian confirmation — tap to resend or change"
+                aria-label="Waiting for guardian confirmation"
+                className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors flex items-center justify-center"
+              >
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-amber-500/70 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
+                </span>
+              </Link>
+            )}
             {profileData && (() => {
               const total = 8;
               let done = 0;
@@ -753,18 +771,6 @@ export default function DashboardPage() {
         />
 
         <VerificationStatus compact />
-
-        {/* Guardian consent pending — subtle signal */}
-        {profileData && profileData.guardianEmail && !profileData.guardianConsent && (
-          <Link href="/profile" className="block mb-4">
-            <div className="flex items-center gap-2 rounded-lg bg-amber-500/[0.04] border border-amber-500/10 px-3 py-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
-              <p className="text-[11px] text-muted-foreground/60">
-                Waiting for guardian confirmation
-              </p>
-            </div>
-          </Link>
-        )}
 
         {/* ── First-action card ───────────────────────────────────
             Three states, in order of priority:

@@ -56,7 +56,16 @@ export function ZigzagRenderer({
     [journey.items]
   );
 
-  // Education context for the foundation card
+  // Education context for the foundation card.
+  //
+  // IMPORTANT: keep this query aggressive. The Foundation card is the
+  // only visible surface for profile-level starting-point data, so
+  // showing "Tap to add..." when the DB actually has a saved value is a
+  // loud, wrong bug. refetchOnMount: 'always' guarantees every mount
+  // (including after a career switch) hits the API and can't be served
+  // a stale empty snapshot from React Query's cache. The 30s staleTime
+  // is short enough to self-heal any race without being so aggressive
+  // that it thrashes the endpoint during normal navigation.
   const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -64,7 +73,9 @@ export function ZigzagRenderer({
       if (!res.ok) return { educationContext: null };
       return res.json();
     },
-    staleTime: 30 * 60 * 1000,
+    staleTime: 30 * 1000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
   const eduContext = eduData?.educationContext;
 
