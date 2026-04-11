@@ -2069,9 +2069,18 @@ function GrowCompletionCard({
         </div>
       </div>
       {growComplete && (
-        <p className="text-[10px] text-emerald-500/60 mt-3">
-          Your dashboard now shows Grow as complete for this career.
-        </p>
+        <div className="mt-4 rounded-xl border-2 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent p-4 text-center">
+          <p className="text-2xl mb-2">🎉</p>
+          <p className="text-sm font-bold text-emerald-400 mb-1">
+            Congratulations — you've completed your journey!
+          </p>
+          <p className="text-xs text-foreground/70 leading-relaxed max-w-sm mx-auto">
+            You've explored, understood, and experienced what it takes to pursue this career.
+            This journey is saved in <span className="font-medium text-foreground/85">My Explored Journeys</span> on your dashboard.
+            Whether you commit to this path or explore another — you're ahead of where you started.
+          </p>
+          <p className="text-[10px] text-emerald-400/60 mt-2">We wish you the very best.</p>
+        </div>
       )}
     </div>
   );
@@ -2247,7 +2256,10 @@ export default function MyJourneyPage() {
           onClose={() => setGoalSheetOpen(false)}
           primaryGoal={goalsData?.primaryGoal || null}
           secondaryGoal={goalsData?.secondaryGoal || null}
-          onSuccess={() => setGoalSheetOpen(false)}
+          onSuccess={() => {
+            setGoalSheetOpen(false);
+            setActiveTab('discover');
+          }}
         />
       </div>
     );

@@ -101,7 +101,11 @@ export async function POST(req: NextRequest) {
     // request body can override it for explicit regeneration.
     const summary = (profile?.journeySummary as Record<string, unknown> | null) || null;
     const ctx = summary?.educationContext as { stage?: string; expectedCompletion?: string } | undefined;
-    const expectedCompletion = typeof ctx?.expectedCompletion === 'string' ? ctx.expectedCompletion.trim() : '';
+    // Prefer body.expectedCompletion (fresher — just saved) over the DB snapshot.
+    const expectedCompletion =
+      typeof body.expectedCompletion === 'string' && body.expectedCompletion.trim()
+        ? body.expectedCompletion.trim()
+        : typeof ctx?.expectedCompletion === 'string' ? ctx.expectedCompletion.trim() : '';
     const validStages: EducationStage[] = ['school', 'college', 'university', 'other'];
     const bodyStage = typeof body.educationStage === 'string' ? body.educationStage : undefined;
     const educationStage: EducationStage | undefined =

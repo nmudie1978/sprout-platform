@@ -170,12 +170,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     // showing a stale "Complete Videregående" step to a university
     // graduate (or "Continue studying" to someone who marked their
     // Foundation as Complete).
-    queryKey: ['personal-career-timeline', primaryGoalTitle, educationStage ?? 'default', foundationComplete ? 'done' : 'open'],
+    queryKey: ['personal-career-timeline', primaryGoalTitle, educationStage ?? 'default', foundationComplete ? 'done' : 'open', expectedCompletion ?? 'none'],
     queryFn: async () => {
       const res = await fetch('/api/journey/generate-timeline', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ career: primaryGoalTitle, educationStage, foundationComplete }),
+        body: JSON.stringify({ career: primaryGoalTitle, educationStage, foundationComplete, expectedCompletion }),
       });
 
       if (!res.ok) {

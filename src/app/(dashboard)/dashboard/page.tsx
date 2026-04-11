@@ -1172,7 +1172,10 @@ export default function DashboardPage() {
                   {pageGoals.map((goal) => {
                     const career = allCareers.find((c) => c.title === goal.goalTitle);
                     const isCurrentGoal = goal.goalTitle === goalTitle;
-                    const salaryShort = career?.avgSalary?.split(" ")[0];
+                    // Derive which stage this journey is at
+                    const goalLensProgress = computeLensProgress({ hasPrimaryGoal: true, careerTitle: goal.goalTitle });
+                    const stageLabel = goalLensProgress.growDone ? 'Grow ✓' : goalLensProgress.understandDone ? 'Grow' : goalLensProgress.discoverDone ? 'Understand' : 'Discover';
+                    const stageColor = goalLensProgress.growDone ? 'text-emerald-400 bg-emerald-500/10' : goalLensProgress.understandDone ? 'text-amber-400 bg-amber-500/10' : goalLensProgress.discoverDone ? 'text-blue-400 bg-blue-500/10' : 'text-muted-foreground/50 bg-muted/20';
                     return (
                       <button
                         key={goal.goalId}
@@ -1194,11 +1197,9 @@ export default function DashboardPage() {
                             Active
                           </span>
                         )}
-                        {salaryShort && (
-                          <span className="text-[10px] text-muted-foreground/40 shrink-0 tabular-nums">
-                            {salaryShort}
-                          </span>
-                        )}
+                        <span className={cn("text-[8px] font-medium px-1.5 py-0.5 rounded-full shrink-0", stageColor)}>
+                          {stageLabel}
+                        </span>
                         {!isCurrentGoal && (
                           <ArrowRight className="h-3 w-3 text-muted-foreground/20 shrink-0" />
                         )}
