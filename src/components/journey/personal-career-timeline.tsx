@@ -426,7 +426,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               <FileText className="h-3 w-3 text-muted-foreground/40 group-hover:text-foreground/60 shrink-0" />
               <span>
                 <span className="font-semibold text-foreground/85 group-hover:text-foreground">Total roadmap:</span> ~{spanYears} year{spanYears !== 1 ? 's' : ''} · Age {firstAge}–{lastAge}
-                {eduStages.length > 0 && <> · {eduLabel} track</>}
               </span>
             </>
           )}

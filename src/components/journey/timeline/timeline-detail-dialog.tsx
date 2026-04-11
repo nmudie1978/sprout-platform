@@ -480,18 +480,20 @@ export function TimelineDetailDialog({
                 />
               </div>
 
-              {/* Study program */}
-              <div>
-                <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
-                  {eduStage === 'school' ? 'Programme / Track' : 'Study programme'}
-                </label>
-                <input
-                  value={studyProgram}
-                  onChange={(e) => { setStudyProgram(e.target.value); setDirty(true); }}
-                  placeholder={eduStage === 'school' ? 'e.g. Studiespesialisering, Realfag' : 'e.g. Computer Science'}
-                  className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
-                />
-              </div>
+              {/* Study programme — only shown for college/university/other, not school */}
+              {eduStage !== 'school' && (
+                <div>
+                  <label className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">
+                    Study programme
+                  </label>
+                  <input
+                    value={studyProgram}
+                    onChange={(e) => { setStudyProgram(e.target.value); setDirty(true); }}
+                    placeholder="e.g. Computer Science, Nursing"
+                    className="w-full mt-1 rounded-lg border border-border/30 bg-muted/10 px-3 py-2 text-xs text-foreground/90 placeholder:text-muted-foreground/55 focus:outline-none focus:border-teal-500/40"
+                  />
+                </div>
+              )}
 
               {/* Expected completion year — drives roadmap anchoring */}
               <div>
@@ -564,9 +566,11 @@ export function TimelineDetailDialog({
                   <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/70 transition-transform', subjectDropdownOpen && 'rotate-180')} />
                 </button>
 
-                {/* Dropdown panel */}
+                {/* Dropdown panel — click outside to close */}
                 {subjectDropdownOpen && (
-                  <div className="mt-1.5 rounded-lg border border-border/30 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden">
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setSubjectDropdownOpen(false)} />
+                    <div className="relative z-50 mt-1.5 rounded-lg border border-border/30 bg-card/95 backdrop-blur-sm shadow-lg overflow-hidden">
                     <div className="max-h-[220px] overflow-y-auto p-2 space-y-2">
                       {SUBJECT_GROUPS.map((group) => {
                         const categoryColors: Record<string, string> = {
@@ -622,6 +626,7 @@ export function TimelineDetailDialog({
                       </button>
                     </div>
                   </div>
+                  </>
                 )}
               </div>
             </div>

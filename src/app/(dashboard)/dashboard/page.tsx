@@ -1113,7 +1113,7 @@ export default function DashboardPage() {
                 <GlassCard className="p-4 h-full">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="h-3.5 w-3.5 text-violet-500" />
-                    <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                    <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journey snapshots <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   </div>
                   <GuidanceCallout
                     id="explored-journeys-empty"
@@ -1143,7 +1143,7 @@ export default function DashboardPage() {
               <GlassCard className="p-3 h-full flex flex-col">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold flex items-center gap-1.5">My Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journey snapshots <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                   <span className="flex-1" />
                   {totalPages > 1 && (
