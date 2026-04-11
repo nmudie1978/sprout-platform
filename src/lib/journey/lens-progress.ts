@@ -147,27 +147,37 @@ export function isUnderstandConfirmed(
 export type LensKey = 'discover' | 'understand' | 'grow';
 
 export interface LensProgressSnapshot {
-  /** True iff the user clicked YES on the Discover confirmation card. */
+  /**
+   * True when Discover is considered done. Uses an implicit cascade:
+   * confirming Understand OR completing Grow also marks Discover done,
+   * because you can't understand a role without having explored it
+   * and you can't build a roadmap without having understood it.
+   * The cascade applies to display state (dashboard ring, stage label)
+   * but NOT to `isJourneySnapshotWorthy`, which uses the raw flags so
+   * each checkpoint remains a sufficient condition for snapshot
+   * creation.
+   */
   discoverDone: boolean;
-  /** True iff the user clicked YES on the Understand confirmation card. */
+  /**
+   * True when Understand is considered done. Cascades from Grow:
+   * completing Grow also marks Understand done.
+   */
   understandDone: boolean;
   /** True iff the user has completed both required Grow tasks. */
   growDone: boolean;
   /**
    * The first not-done lens in Discover → Understand → Grow order.
-   * Used to highlight the active stage in the dashboard ring. Note
-   * that the three checkpoints are OR conditions — a user can have
-   * `growDone` without `understandDone`, in which case `currentLens`
-   * still points at the first gap so the UI nudges them to close it.
+   * After the cascade is applied this naturally points at the next
+   * real gap (e.g. if Understand is confirmed, `currentLens === 'grow'`
+   * because Discover is derived as done too).
    */
   currentLens: LensKey;
-  /** 0–3, for the dashboard ring. */
+  /** 0–3, for the dashboard ring. Uses cascaded values. */
   completedCount: number;
   /**
    * The highest checkpoint reached — used for the Dashboard
-   * "Previously Explored Journey snapshots" stage label and for the
-   * snapshot-worthy predicate. `null` when no checkpoint has been
-   * reached (the career has not been meaningfully explored yet).
+   * "Previously Explored Journey snapshots" stage label. `null` when
+   * no checkpoint has been reached.
    */
   highestStage: LensKey | null;
 }
@@ -184,21 +194,31 @@ export function computeLensProgress(opts: {
   hasPrimaryGoal?: boolean;
   careerTitle?: string | null;
 }): LensProgressSnapshot {
-  // Discover = explicit YES on the Discover confirmation card —
-  // "Have you explored what this role is about?". Setting a goal
-  // alone is NOT sufficient.
-  const discoverDone = isDiscoverConfirmed(opts.careerTitle);
+  // Raw per-checkpoint state from localStorage. These are the
+  // authoritative YES/NO signals — each one is set by its own
+  // confirmation card in the Discover, Understand and Grow tabs of
+  // /my-journey. `isJourneySnapshotWorthy` below uses these raw
+  // values as an OR, so any single checkpoint is sufficient to
+  // create a snapshot.
+  const rawDiscover = isDiscoverConfirmed(opts.careerTitle);
+  const rawUnderstand = isUnderstandConfirmed(opts.careerTitle);
+  const rawGrow = isGrowActive(opts.careerTitle);
 
-  // Understand = explicit YES on the Understand confirmation card —
-  // "Did you understand the role in more detail?". Independent of
-  // Discover; users can reach this without having clicked Discover.
-  const understandDone = isUnderstandConfirmed(opts.careerTitle);
-
-  // Grow = the user completed both required Grow tasks (Foundation
-  // filled in AND first Momentum action added). The GrowCompleteCard
-  // calls `markGrowActive` once both conditions hold, which writes
-  // `journey-grow-active-{slug}`. Independent of Understand.
-  const growDone = isGrowActive(opts.careerTitle);
+  // Implicit cascade for the *display* layer: a higher checkpoint
+  // implies lower ones. This matches user intuition — if you've
+  // confirmed Understand, you've by definition already explored the
+  // role (Discover), and if you've completed the Grow tasks you've
+  // also been through the earlier stages. Without this cascade, a
+  // user who clicks Understand YES sees the ring at 1/3 with
+  // Discover stuck as the "current" lens, which is confusing.
+  //
+  // The cascade is applied to `discoverDone` / `understandDone` /
+  // `growDone` on the snapshot object. `isJourneySnapshotWorthy`
+  // intentionally reads the *raw* flags, not the cascaded ones, so
+  // the spec's OR-of-three remains the snapshot predicate.
+  const growDone = rawGrow;
+  const understandDone = rawUnderstand || rawGrow;
+  const discoverDone = rawDiscover || rawUnderstand || rawGrow;
 
   const currentLens: LensKey = !discoverDone
     ? 'discover'
@@ -251,9 +271,11 @@ export function isJourneySnapshotWorthy(
 
 /**
  * The human-readable label for the "Stage" column in the Dashboard's
- * snapshots table. Based on the highest reached checkpoint so a
- * Discover-only snapshot shows "Discover", not "Understand" (which
- * would be the next-to-do stage under the old renderer).
+ * snapshots table. Uses the same implicit cascade as
+ * `computeLensProgress` — Grow implies Understand and Discover, so a
+ * Grow-complete journey shows "Complete" even if the user never
+ * explicitly clicked Discover/Understand YES. This matches user
+ * intuition: reaching Grow means the whole journey is done.
  *
  * Returns null when the career has not reached any checkpoint yet —
  * callers should filter those rows out before passing them to this
@@ -263,13 +285,13 @@ export function journeyStageLabel(
   careerTitle: string | null | undefined,
 ): { label: 'Discover' | 'Understand' | 'Grow' | 'Complete'; highest: LensKey } | null {
   if (!careerTitle) return null;
-  const discover = isDiscoverConfirmed(careerTitle);
-  const understand = isUnderstandConfirmed(careerTitle);
   const grow = isGrowActive(careerTitle);
-  // "Complete" — all three checkpoints reached. Shown as a subtle flag
-  // on the Dashboard; the full celebration stays inside Grow.
-  if (discover && understand && grow) return { label: 'Complete', highest: 'grow' };
-  if (grow) return { label: 'Grow', highest: 'grow' };
+  const understand = isUnderstandConfirmed(careerTitle);
+  const discover = isDiscoverConfirmed(careerTitle);
+  // "Complete" — Grow reached (which cascades to understand +
+  // discover as done, so all three display as complete). Shown as a
+  // subtle flag on the Dashboard; the full celebration stays in Grow.
+  if (grow) return { label: 'Complete', highest: 'grow' };
   if (understand) return { label: 'Understand', highest: 'understand' };
   if (discover) return { label: 'Discover', highest: 'discover' };
   return null;

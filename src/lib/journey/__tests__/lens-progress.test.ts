@@ -98,28 +98,37 @@ describe('computeLensProgress (Issue 1)', () => {
     expect(p.highestStage).toBe('discover');
   });
 
-  it('marks Understand done independently of Discover', () => {
-    // Old logic gated `understandDone = discoverDone && isUnderstandConfirmed`.
-    // Per spec the three checkpoints are independent OR conditions,
-    // so Understand can be true even if Discover is false.
+  it('Understand YES cascades down to Discover done (implicit hierarchy)', () => {
+    // Hierarchy model: confirming Understand implies Discover is
+    // also done — you can't understand a role without having
+    // explored it first. The cascade lives in computeLensProgress
+    // (display layer). `isJourneySnapshotWorthy` still uses raw
+    // flags so the OR-of-three snapshot predicate is unchanged.
     setUnderstandConfirmed('Chef', true);
     const p = computeLensProgress({ hasPrimaryGoal: false, careerTitle: 'Chef' });
-    expect(p.discoverDone).toBe(false);
     expect(p.understandDone).toBe(true);
+    expect(p.discoverDone).toBe(true); // cascaded
     expect(p.growDone).toBe(false);
+    expect(p.completedCount).toBe(2);
     expect(p.highestStage).toBe('understand');
+    // currentLens should now point at the first real gap (Grow)
+    expect(p.currentLens).toBe('grow');
   });
 
-  it('marks Grow done independently of Understand', () => {
-    // Old logic gated `growDone = understandDone && isGrowActive`.
-    // The spec permits Grow completion as a sufficient checkpoint.
+  it('Grow complete cascades down to Understand AND Discover done', () => {
+    // Reaching Grow implies the whole journey — dashboard ring
+    // should show 3/3 even if the user never explicitly confirmed
+    // the earlier stages.
     markGrowActive('Chef');
     const p = computeLensProgress({ hasPrimaryGoal: false, careerTitle: 'Chef' });
     expect(p.growDone).toBe(true);
+    expect(p.understandDone).toBe(true); // cascaded
+    expect(p.discoverDone).toBe(true); // cascaded
+    expect(p.completedCount).toBe(3);
     expect(p.highestStage).toBe('grow');
   });
 
-  it('all three checkpoints reached → completedCount 3, highestStage grow', () => {
+  it('all three checkpoints explicitly set → completedCount 3, highestStage grow', () => {
     setDiscoverConfirmed('Chef', true);
     setUnderstandConfirmed('Chef', true);
     markGrowActive('Chef');
@@ -247,17 +256,10 @@ describe('journeyStageLabel (Issue 1)', () => {
     });
   });
 
-  it('returns "Grow" after Grow active', () => {
-    markGrowActive('Chef');
-    expect(journeyStageLabel('Chef')).toEqual({
-      label: 'Grow',
-      highest: 'grow',
-    });
-  });
-
-  it('returns "Complete" only when all three checkpoints are reached', () => {
-    setDiscoverConfirmed('Chef', true);
-    setUnderstandConfirmed('Chef', true);
+  it('returns "Complete" after Grow alone (cascade hierarchy)', () => {
+    // With the cascade model, Grow implies the whole journey —
+    // reaching Grow is enough to mark the label as Complete because
+    // the dashboard ring also shows 3/3.
     markGrowActive('Chef');
     expect(journeyStageLabel('Chef')).toEqual({
       label: 'Complete',
@@ -265,12 +267,13 @@ describe('journeyStageLabel (Issue 1)', () => {
     });
   });
 
-  it('returns "Grow" (not "Complete") when only Grow is done', () => {
-    // Guards against a false-positive "Complete" when only the Grow
-    // flag happens to be set. Complete requires ALL three.
+  it('returns "Complete" when all three checkpoints are explicitly reached', () => {
+    // Same outcome as Grow alone, via the explicit path.
+    setDiscoverConfirmed('Chef', true);
+    setUnderstandConfirmed('Chef', true);
     markGrowActive('Chef');
     expect(journeyStageLabel('Chef')).toEqual({
-      label: 'Grow',
+      label: 'Complete',
       highest: 'grow',
     });
   });
