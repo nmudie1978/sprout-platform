@@ -52,33 +52,56 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   useRoadmapCardData(goalId);
 
-  // Foundation card data — persisted at profile level (survives goal changes)
-  const [foundationCardData, setFoundationCardData] = useState<Record<string, unknown> | null>(null);
+  // Foundation card data — persisted at profile level (survives goal
+  // changes). Source of truth is `/api/journey/foundation-data` which
+  // reads/writes `youthProfile.foundationCardData`. The timeline
+  // mirrors it into localStorage under `roadmap-card-data[my-foundation]`
+  // so the Foundation card render path (`cardDataMap` useMemo below)
+  // can read it synchronously via `loadCardData(FOUNDATION_ITEM_ID)`.
   const foundationSyncRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load foundation data from DB. Deliberately re-runs when the active
-  // goal changes: `useRoadmapCardData` fetches per-goal card data in
-  // parallel and may otherwise leave a stale or missing foundation slot
-  // in localStorage, which the Foundation card reads for its display
-  // values. Re-fetching the profile-level source here guarantees that
-  // whatever the user last saved on the Foundation card is re-hydrated
-  // into localStorage and component state immediately on goal switch,
-  // so the card no longer appears empty until the user re-saves.
+  // Load foundation data from DB on mount AND on goal change. Two
+  // important pieces here:
+  //
+  // 1. Dependency on `primaryGoalTitle` — when the user switches
+  //    career, `useRoadmapCardData` hydrates per-goal card data in
+  //    parallel and may leave a stale or missing foundation slot in
+  //    localStorage. Re-fetching the profile-level source here on
+  //    goal change guarantees the freshest value wins regardless of
+  //    race ordering.
+  //
+  // 2. `setSaveVersion` bump after the fetch resolves — the display
+  //    path (`cardDataMap` useMemo, line ~298) is keyed on
+  //    `[journey, saveVersion]`, so without a version bump the memo
+  //    never recomputes after the async fetch completes and the
+  //    Foundation card renders with stale/empty localStorage values
+  //    until the user interacts with something else. Bumping
+  //    saveVersion forces `cardDataMap` to re-read localStorage and
+  //    the Foundation card shows the freshly hydrated data
+  //    immediately. This is the fix for the "foundation data missing
+  //    until I save" bug on career switch.
   useEffect(() => {
+    let cancelled = false;
     fetch('/api/journey/foundation-data')
       .then((res) => res.json())
       .then((data) => {
+        if (cancelled) return;
         if (data.foundationCardData) {
-          setFoundationCardData(data.foundationCardData as Record<string, unknown>);
-          // Also write to localStorage so TimelineDetailDialog can read it
           try {
             const all = JSON.parse(localStorage.getItem('roadmap-card-data') || '{}');
             all[FOUNDATION_ITEM_ID] = data.foundationCardData;
             localStorage.setItem('roadmap-card-data', JSON.stringify(all));
           } catch { /* silent */ }
+          // Force the cardDataMap useMemo to recompute so the card
+          // picks up the fresh localStorage values without requiring
+          // the user to interact with the roadmap first.
+          setSaveVersion((v) => v + 1);
         }
       })
       .catch(() => { /* silent */ });
+    return () => {
+      cancelled = true;
+    };
   }, [primaryGoalTitle]);
 
   // Sync foundation data to DB (debounced)

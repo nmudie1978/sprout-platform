@@ -11,11 +11,18 @@ const STORAGE_KEY = 'roadmap-card-data';
 // the user switches careers. This constant is mirrored in
 // src/components/journey/renderers/zigzag-renderer.tsx; kept duplicated
 // here to avoid a cross-component import dependency from the hook.
-const FOUNDATION_ITEM_ID = 'my-foundation';
+// Exported so unit tests can assert that the hook's read/write path
+// cannot contaminate per-goal records with profile-level foundation
+// state. See src/hooks/__tests__/use-roadmap-card-data.test.ts.
+export const FOUNDATION_ITEM_ID_INTERNAL = 'my-foundation';
+const FOUNDATION_ITEM_ID = FOUNDATION_ITEM_ID_INTERNAL;
 
-// Strip the foundation slot from a card-data map so per-goal reads and
-// writes can never touch profile-level foundation state.
-function stripFoundation<T extends Record<string, unknown>>(data: T): T {
+/**
+ * Strip the foundation slot from a card-data map so per-goal reads
+ * and writes can never touch profile-level foundation state. Pure —
+ * does not mutate the input. Exported for unit testing.
+ */
+export function stripFoundation<T extends Record<string, unknown>>(data: T): T {
   if (!(FOUNDATION_ITEM_ID in data)) return data;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { [FOUNDATION_ITEM_ID]: _foundation, ...rest } = data;

@@ -551,15 +551,31 @@ function DiscoverTab({
                     ? `${reqSubjects[0]} +${reqSubjects.length - 1}`
                     : reqSubjects[0] || 'No specific subjects';
 
+                // Some careers (e.g. chef) now store a full arrow-chain
+                // in `programme` / `immediate` — that belongs in the
+                // tooltip, not the pill. Strip to the final outcome so
+                // each pill shows one concept, matching the compact
+                // overview we had before the dataset got richer.
+                const finalSegment = (s: string) =>
+                  s.includes('→') ? (s.split('→').pop() || s).trim() : s;
+                // Duration "4 years total (2 school + 2 apprenticeship)"
+                // → "4 years" for the pill; full form stays in tooltip.
+                const shortDuration = reqs.universityPath.duration
+                  .replace(/\s*\(.*\)\s*$/, '')
+                  .replace(/\s+total\s*$/i, '')
+                  .trim();
+                const programmeLabel = `${finalSegment(reqs.universityPath.programme)} · ${shortDuration}`;
+                const programmeTip = `${reqs.universityPath.programme} (${reqs.universityPath.duration}). e.g. ${reqs.universityPath.examples.join(', ')}. Apply via ${reqs.universityPath.applicationRoute}`;
+
                 type PathStep = { label: string; tip: string };
                 const steps: PathStep[] = [
                   { label: schoolSubjectsLabel, tip: `Key subjects: ${reqSubjects.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
                   ...(grade.hasCutoff && gradeLabel
                     ? [{ label: gradeLabel, tip: gradeTip || 'Typical grade requirement for this path' }]
                     : []),
-                  { label: `${reqs.universityPath.programme} · ${reqs.universityPath.duration}`, tip: `e.g. ${reqs.universityPath.examples.join(', ')}. Apply via ${reqs.universityPath.applicationRoute}` },
-                  { label: reqs.entryLevelRequirements.title, tip: reqs.entryLevelRequirements.description },
-                  { label: reqs.qualifiesFor.immediate, tip: `First role. With experience: ${reqs.qualifiesFor.withExperience}` },
+                  { label: programmeLabel, tip: programmeTip },
+                  { label: finalSegment(reqs.entryLevelRequirements.title), tip: reqs.entryLevelRequirements.description },
+                  { label: finalSegment(reqs.qualifiesFor.immediate), tip: `First role: ${reqs.qualifiesFor.immediate}. With experience: ${reqs.qualifiesFor.withExperience}` },
                 ];
                 return (
                   <div className="w-full rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5">
@@ -600,7 +616,7 @@ function DiscoverTab({
                             title={s.tip}
                             className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors"
                           >
-                            <span>{s.label}</span>
+                            <span className="max-w-[160px] truncate">{s.label}</span>
                           </span>
                         </div>
                       ))}

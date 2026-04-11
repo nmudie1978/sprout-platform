@@ -81,6 +81,30 @@
       ]
     },
     {
+      "id": "etterstad",
+      "name": "Etterstad videregående skole",
+      "shortName": "ETTERSTAD",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://etterstad.vgs.no",
+      "applicationVia": "Vigo.no (county application)",
+      "careerIds": [
+        "chef"
+      ]
+    },
+    {
+      "id": "grythyttan",
+      "name": "Restaurang- och hotellhögskolan, Grythyttan (Örebro universitet)",
+      "shortName": "GRYTHYTTAN",
+      "country": "SE",
+      "city": "Grythyttan",
+      "url": "https://www.oru.se/institutioner/restaurang--och-hotellhogskolan/",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "chef"
+      ]
+    },
+    {
       "id": "gu",
       "name": "Göteborgs universitet",
       "shortName": "GU",
@@ -132,6 +156,18 @@
       "applicationVia": "haskolinn.is",
       "careerIds": [
         "software-developer"
+      ]
+    },
+    {
+      "id": "hrs",
+      "name": "Hotel- og Restaurantskolen (Copenhagen Hospitality College)",
+      "shortName": "HRS",
+      "country": "DK",
+      "city": "Copenhagen",
+      "url": "https://www.hrs.dk",
+      "applicationVia": "optagelse.dk",
+      "careerIds": [
+        "chef"
       ]
     },
     {
@@ -227,6 +263,18 @@
         "lawyer",
         "biologist",
         "chemist"
+      ]
+    },
+    {
+      "id": "kulinarisk-akademi",
+      "name": "Kulinarisk Akademi",
+      "shortName": "KULAKA",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://kulinariskakademi.no",
+      "applicationVia": "Direct application",
+      "careerIds": [
+        "chef"
       ]
     },
     {
@@ -353,6 +401,18 @@
       ]
     },
     {
+      "id": "perho",
+      "name": "Perho Liiketalousopisto",
+      "shortName": "PERHO",
+      "country": "FI",
+      "city": "Helsinki",
+      "url": "https://www.perho.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "chef"
+      ]
+    },
+    {
       "id": "phs",
       "name": "Politihøgskolen",
       "shortName": "PHS",
@@ -362,6 +422,18 @@
       "applicationVia": "Politihøgskolen direct",
       "careerIds": [
         "police-officer"
+      ]
+    },
+    {
+      "id": "ryssby",
+      "name": "Ryssbygymnasiet",
+      "shortName": "RYSSBY",
+      "country": "SE",
+      "city": "Ljungby",
+      "url": "https://ryssbygymnasiet.se",
+      "applicationVia": "gymnasieantagningen",
+      "careerIds": [
+        "chef"
       ]
     },
     {
@@ -501,10 +573,26 @@
       "shortName": "VGS-NO",
       "country": "NO",
       "city": "Nationwide",
-      "url": "https://videreg-ende-skoler-across-nor.no",
+      "url": "https://www.vilbli.no",
       "applicationVia": "Vigo.no (county application)",
       "careerIds": [
-        "healthcare-worker"
+        "healthcare-worker",
+        "carpenter",
+        "bricklayer",
+        "painter-decorator",
+        "civil-works-foreman",
+        "electrician",
+        "automation-technician",
+        "industrial-electrician",
+        "care-assistant",
+        "childcare-assistant",
+        "dental-assistant",
+        "cnc-machinist",
+        "welder",
+        "industrial-mechanic",
+        "auto-mechanic",
+        "hairdresser",
+        "boilermaker"
       ]
     }
   ]

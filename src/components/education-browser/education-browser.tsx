@@ -39,7 +39,6 @@ import {
   getAdvancedCareerMapping,
   resolveCareer,
   getAlternativePaths,
-  getCareerSummary,
   getCareerRequirements,
   type ProgrammeWithInstitution,
   type Institution,
@@ -86,7 +85,6 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   const lookup = careerId || careerTitle || '';
   const resolvedId = useMemo(() => resolveCareer(lookup), [lookup]);
   const advanced = useMemo(() => (lookup ? getAdvancedCareerMapping(lookup) : null), [lookup]);
-  const summary = useMemo(() => (resolvedId ? getCareerSummary(resolvedId) : null), [resolvedId]);
   const alternativePaths = useMemo(() => (resolvedId ? getAlternativePaths(resolvedId) : []), [resolvedId]);
 
   const allProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
@@ -206,7 +204,6 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     return (
       <PathwayFallbackView
         careerTitle={careerTitle ?? ''}
-        summary={summary}
         requirements={requirements}
         alternativePaths={alternativePaths}
       />
@@ -224,15 +221,15 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
 
   return (
     <div className="space-y-4">
-      {/* Career summary — short one-liner under the section header.
-          Kept because it frames the study-path content below. Dropped
-          from fallback mode (no programmes) since summary there is
-          more valuable inside the hero copy that mode already has. */}
-      {summary && (
-        <p className="text-[12px] text-muted-foreground/75 leading-relaxed">
-          {summary}
-        </p>
-      )}
+      {/* Study Path section is deliberately 100% structured pathway
+          data — no narrative prose. The career-summary paragraph
+          that used to sit here ("In Norway, becoming a doctor
+          requires...") was removed because it reads as a "how to
+          become" overview, which belongs to Discover / Understand's
+          other sections, not Study Path. What this section contains
+          now: specialisation notes, alternative routes, institution
+          and programme cards, filters, and the utdanning.no help
+          link — all structured, all route-to-entry focused. */}
 
       {/* ── Info cards (advanced route / alternative paths) ────────── */}
       {(advanced || alternativePaths.length > 0) && (
@@ -241,7 +238,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
             <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.04] px-4 py-3.5">
               <div className="flex items-center gap-2 mb-1.5">
                 <Info className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-                <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">Specialisation route</span>
+                <span className="text-[10px] font-semibold text-blue-400/80 uppercase tracking-wider">Career pathway</span>
               </div>
               <p className="text-[12px] text-foreground/85 leading-relaxed">
                 {advanced.specialisationNote}
@@ -475,12 +472,10 @@ function StatPill({
 
 function PathwayFallbackView({
   careerTitle,
-  summary,
   requirements,
   alternativePaths,
 }: {
   careerTitle: string;
-  summary: string | null;
   requirements: CareerRequirements | null;
   alternativePaths: string[];
 }) {
@@ -508,13 +503,14 @@ function PathwayFallbackView({
 
   return (
     <div className="space-y-5">
-      {/* Optional career summary blurb — framing text under the
-          section header. */}
-      {summary && (
-        <p className="text-[12px] text-muted-foreground/75 leading-relaxed">
-          {summary}
-        </p>
-      )}
+      {/* Fallback mode renders ONLY structured pathway data for
+          vocational / non-university careers: programme stat row,
+          institution cards, alternative routes, help link. The
+          narrative summary paragraph was removed to match the main
+          university-browser mode's content model — Study Path is
+          structured data, not prose. Content that reads as "how to
+          become" or "typical day" lives in other Understand-tab
+          sections (Career Overview, A Typical Day), not here. */}
 
       {/* Programme metadata — the stat row. Mirrors the stat pills the
           main university-browser mode shows above its card grid, so the

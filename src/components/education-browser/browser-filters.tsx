@@ -35,6 +35,7 @@ const TYPES: { value: ProgrammeType | ''; label: string }[] = [
   { value: 'integrated', label: 'Integrated' },
   { value: 'vocational', label: 'Vocational' },
   { value: 'fagbrev', label: 'Fagbrev' },
+  { value: 'diploma', label: 'Diploma' },
 ];
 
 const ALIGNMENT: { value: AlignmentStatus | ''; label: string }[] = [

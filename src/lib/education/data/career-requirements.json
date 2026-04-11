@@ -2056,37 +2056,40 @@
     "chef": {
       "schoolSubjects": {
         "required": [
-          "Home Economics",
-          "Biology",
-          "Mathematics"
+          "Mat og helse",
+          "Norwegian"
         ],
         "recommended": [
-          "Art",
-          "Business Studies"
+          "Biology",
+          "English"
         ],
-        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+        "minimumGrade": "Completed lower secondary (10. trinn) — no specific grade requirement"
       },
       "universityPath": {
-        "programme": "Culinary Arts",
-        "duration": "2 years",
+        "programme": "Vg1 Restaurant- og matfag → Vg2 Kokk- og servitørfag → 2-year apprenticeship → fagbrev kokk",
+        "duration": "4 years total (2 school + 2 apprenticeship)",
         "type": "fagbrev",
         "examples": [
-          "OsloMet, Bergen University College, Culinary Institute of Norway"
+          "Etterstad vgs (Oslo)",
+          "Sogn vgs (Oslo)",
+          "Strømmen vgs (Akershus)",
+          "Hotel- og Restaurantskolen, Copenhagen (DK)",
+          "Restaurang- och hotellhögskolan, Grythyttan (SE bachelor route)"
         ],
-        "applicationRoute": "Direct application to vocational schools",
-        "competitiveness": "Moderately competitive with many applicants each year."
+        "applicationRoute": "Vigo.no for Norwegian vgs / antagning.se for Swedish bachelor / optagelse.dk for Danish EUD",
+        "competitiveness": "Generally accessible — apprenticeship placements depend on local kitchen demand"
       },
       "entryLevelRequirements": {
-        "title": "Apprentice Chef",
-        "description": "Assist in food preparation and learn cooking techniques under supervision.",
-        "whatYouNeed": "Completed culinary training or vocational school."
+        "title": "Lærling (Apprentice Chef)",
+        "description": "Work in a real kitchen under a fagbrev-certified chef while completing the 2-year apprenticeship phase. Paid position.",
+        "whatYouNeed": "Completed Vg1 Restaurant- og matfag and Vg2 Kokk- og servitørfag, plus a signed lærekontrakt with an approved kitchen."
       },
       "qualifiesFor": {
-        "immediate": "Line Cook",
+        "immediate": "Fagbrev kokk → Line Cook",
         "withExperience": "Sous Chef",
-        "seniorPath": "Head Chef"
+        "seniorPath": "Head Chef / Køkkenchef"
       },
-      "specialisationNote": null
+      "specialisationNote": "In Norway, becoming a chef is primarily a vocational fagbrev path — not a university degree. The Nordic model emphasises real kitchen experience over elite culinary academies. Sweden's Grythyttan and Denmark's HRS are the strongest formal options if you want a more academic or international route."
     },
     "chief-digital-officer": {
       "schoolSubjects": {

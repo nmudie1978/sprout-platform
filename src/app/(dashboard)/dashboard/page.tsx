@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
-import { computeLensProgress, isUnderstandConfirmed } from "@/lib/journey/lens-progress";
+import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
@@ -989,15 +989,16 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Congrats banner — shown when all three lenses are complete */}
+            {/* Subtle completion indicator — replaces the old congrats
+                banner that used to render here. The full celebration
+                stays inside the Grow tab's GrowCompleteCard so the
+                congratulatory moment happens in context. On the
+                Dashboard we only need a quiet marker that this journey
+                is complete, consistent across refresh and revisit. */}
             {completedLensCount === 3 && (
-              <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 mt-3">
-                <p className="text-xs font-semibold text-emerald-400 mb-0.5">
-                  Congratulations — you fully understand this path!
-                </p>
-                <p className="text-[11px] text-emerald-300/70 leading-relaxed">
-                  You've explored, understood, and experienced what it takes to become a {goalTitle}. Whether you commit to this path or explore another, this journey is saved in My Explored Journeys. We wish you the very best.
-                </p>
+              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-emerald-400/90">
+                <CheckCircle2 className="h-3 w-3 shrink-0" />
+                <span>Journey complete</span>
               </div>
             )}
           </GlassCard>
@@ -1094,18 +1095,19 @@ export default function DashboardPage() {
 
           {/* My Explored Journeys */}
           {(() => {
-            // A career only counts as "explored" once the user has
-            // passed the Understand phase by clicking YES on the
-            // Understand confirmation card. Until then we hide the
-            // server-side goal entry from this list, even though the
-            // goal record itself exists. The flag lives in
-            // localStorage (`journey-understand-confirmed-{slug}`) so
-            // we filter client-side. The active goal is also kept
-            // visible regardless, so the user always sees what they're
-            // currently on.
+            // Snapshot visibility is governed by a single predicate:
+            // `isJourneySnapshotWorthy` (see src/lib/journey/lens-progress.ts).
+            // A career appears here only once it has reached one of
+            // the three approved checkpoints:
+            //   - Discover YES
+            //   - Understand YES
+            //   - Grow 2/2 tasks complete
+            // Per-goal rows in JourneyGoalData exist for data
+            // persistence (roadmap cards, foundation mirror) but are
+            // invisible to this list until a checkpoint fires.
             const allExplored = exploredGoalsData?.goals ?? [];
             const exploredGoals = allExplored.filter((g) =>
-              isUnderstandConfirmed(g.goalTitle),
+              isJourneySnapshotWorthy(g.goalTitle),
             );
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
@@ -1183,9 +1185,23 @@ export default function DashboardPage() {
                       {pageGoals.map((goal) => {
                         const career = allCareers.find((c) => c.title === goal.goalTitle);
                         const isCurrentGoal = goal.goalTitle === goalTitle;
-                        const goalLensProgress = computeLensProgress({ hasPrimaryGoal: true, careerTitle: goal.goalTitle });
-                        const stageLabel = goalLensProgress.growDone ? 'Complete' : goalLensProgress.understandDone ? 'Grow' : goalLensProgress.discoverDone ? 'Understand' : 'Discover';
-                        const stageColor = goalLensProgress.growDone ? 'text-emerald-400 bg-emerald-500/10' : goalLensProgress.understandDone ? 'text-amber-400 bg-amber-500/10' : goalLensProgress.discoverDone ? 'text-blue-400 bg-blue-500/10' : 'text-muted-foreground/50 bg-muted/20';
+                        // Stage label derived from the highest reached
+                        // checkpoint (not the next-to-do stage). Rows
+                        // that haven't reached any checkpoint have
+                        // already been filtered out above, so
+                        // journeyStageLabel() will always return a
+                        // value here — the `?? ...` fallback is
+                        // defensive only.
+                        const stageInfo = journeyStageLabel(goal.goalTitle);
+                        const stageLabel = stageInfo?.label ?? 'Discover';
+                        const stageColor =
+                          stageLabel === 'Complete'
+                            ? 'text-emerald-400 bg-emerald-500/10'
+                            : stageLabel === 'Grow'
+                              ? 'text-amber-400 bg-amber-500/10'
+                              : stageLabel === 'Understand'
+                                ? 'text-blue-400 bg-blue-500/10'
+                                : 'text-teal-400 bg-teal-500/10';
                         return (
                           <tr
                             key={goal.goalId}
