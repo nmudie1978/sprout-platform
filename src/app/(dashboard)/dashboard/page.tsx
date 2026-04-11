@@ -518,7 +518,7 @@ export default function DashboardPage() {
       // career in depth. The toast stays for 8s and has a clickable
       // action that navigates directly.
       toast.success(`${goalTitle} set as your goal`, {
-        description: "Now head to My Journey to explore the daily reality, education paths, and build your personal roadmap.",
+        description: "Your previous journey is saved in My Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring this new path.",
         duration: 8000,
         action: {
           label: "Go to My Journey",
@@ -988,6 +988,18 @@ export default function DashboardPage() {
 
               </div>
             </div>
+
+            {/* Congrats banner — shown when all three lenses are complete */}
+            {completedLensCount === 3 && (
+              <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 mt-3">
+                <p className="text-xs font-semibold text-emerald-400 mb-0.5">
+                  Congratulations — you fully understand this path!
+                </p>
+                <p className="text-[11px] text-emerald-300/70 leading-relaxed">
+                  You've explored, understood, and experienced what it takes to become a {goalTitle}. Whether you commit to this path or explore another, this journey is saved in My Explored Journeys. We wish you the very best.
+                </p>
+              </div>
+            )}
           </GlassCard>
           );
           return goalTitle ? (
@@ -1363,9 +1375,9 @@ export default function DashboardPage() {
             <div className="rounded-lg bg-muted/40 border border-border/40 p-3 mb-4 space-y-1">
               <p className="text-[10px] font-medium text-muted-foreground/70">What happens:</p>
               <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Progress for {goalTitle || 'your current goal'} is saved</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> You can switch back anytime</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> All of your data can be restored later</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Your journey for {goalTitle || 'your current goal'} is saved</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">My Explored Journeys</span> on your dashboard</li>
+                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> All data — roadmap, foundation, preferences — is preserved</li>
               </ul>
             </div>
             <div className="flex justify-end gap-2">
