@@ -12,9 +12,12 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
+import { CompareModal } from "@/components/compare/compare-modal";
+import { FloatingCompareCTA } from "@/components/compare/floating-compare-cta";
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
 
@@ -40,7 +43,7 @@ const RADAR_TIPS = [
     color: "text-violet-400",
     title: "Switch views and filter",
     description:
-      "Use Dots, Rings, or Initials to change how careers are shown. Use the filter to focus on specific match tiers — Top, Strong, Good, or Worth a look.",
+      "Use Dots, Rings, or Initials to change how careers are shown. Use the filter to focus on specific match tiers — Top, Strong, or Good.",
   },
   {
     icon: Settings2,
@@ -224,7 +227,7 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
 
 interface PlacedDot {
   career: Career;
-  ring: 0 | 1 | 2; // 0 = strongest, 2 = worth a look
+  ring: 0 | 1 | 2; // 0 = strong, 1 = good (ring 2 is legacy/unused)
   cx: number;
   cy: number;
   topMatch?: boolean; // First few overall matches — highlighted distinctly
@@ -239,18 +242,18 @@ const TOP_MATCH_COUNT = 3;
 // keeps everything legible.
 const SIZE = 440;
 const CENTER = SIZE / 2;
-const RING_RADII = [85, 155, 210]; // outer edge of each ring band
+// Two rings only — Strong (inner) and Good (outer). The legacy
+// "Worth a look" outer band has been removed.
+const RING_RADII = [95, 175];
 // Padding around the SVG so category labels around the outer ring aren't clipped
 const VIEWBOX_PAD = 40;
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.25;
 
-// Fixed band sizes — Strong is always the top 10, Good is always the next 20,
-// the rest are "Worth a look". This is intentional: ratio-based bands meant
-// "Strong" stretched as far as the result count, diluting its meaning. Fixed
-// sizes keep the top tier scarce and useful regardless of how many matches
-// the discovery quiz produced.
+// Fixed band sizes — Strong is always the top 10, Good is the next 20.
+// Anything beyond that is dropped from the radar entirely (the previous
+// "Worth a look" tier is gone — too noisy, diluted the signal).
 const STRONG_BAND_SIZE = 10;
 const GOOD_BAND_SIZE = 20;
 
@@ -274,18 +277,21 @@ function placeDots(
 ): PlacedDot[] {
   if (careers.length === 0) return [];
 
-  // Bucket into 3 relevance rings by absolute rank position.
+  // Cap to Strong + Good only — anything beyond is dropped entirely.
+  const TOTAL_VISIBLE = STRONG_BAND_SIZE + GOOD_BAND_SIZE;
+  const visibleCareers = careers.slice(0, TOTAL_VISIBLE);
+
+  // Bucket into 2 relevance rings by absolute rank position.
   const ringFor = (idx: number): 0 | 1 | 2 => {
     if (idx < STRONG_BAND_SIZE) return 0;
-    if (idx < STRONG_BAND_SIZE + GOOD_BAND_SIZE) return 1;
-    return 2;
+    return 1;
   };
 
   // Pass 1: bucket by (ring, category) so we know how many dots will share
   // each slice cell before placing any of them.
   type Pre = { career: Career; ring: 0 | 1 | 2; idx: number };
   const buckets = new Map<string, Pre[]>();
-  careers.forEach((career, idx) => {
+  visibleCareers.forEach((career, idx) => {
     const cat = findCareerCategory(career.id);
     if (!cat) return;
     const ring = ringFor(idx);
@@ -315,9 +321,7 @@ function placeDots(
     const baseR =
       ring === 0
         ? RING_RADII[0] - 22
-        : ring === 1
-        ? RING_RADII[1] - 22
-        : RING_RADII[2] - 18;
+        : RING_RADII[1] - 22;
 
     group.forEach((p, i) => {
       // Even distribution: single dot sits dead-centre; multiple dots span
@@ -352,13 +356,15 @@ function placeDots(
 }
 
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
+  const compareShortlist = useCompareShortlist();
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
   const [viewMode, setViewMode] = useState<"dots" | "rings" | "initials">("dots");
   // Multi-select tier filter — start with everything visible.
   // The active goal is always shown regardless of which tiers are toggled.
-  type Tier = "top" | "strong" | "good" | "worth";
-  const ALL_TIERS: Tier[] = ["top", "strong", "good", "worth"];
+  type Tier = "top" | "strong" | "good";
+  const ALL_TIERS: Tier[] = ["top", "strong", "good"];
   const [activeTiers, setActiveTiers] = useState<Set<Tier>>(new Set(ALL_TIERS));
   const [filterOpen, setFilterOpen] = useState(false);
   const toggleTier = (t: Tier) => {
@@ -416,11 +422,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   const matched = useMemo(() => {
     if (!preferences) return [];
-    // 60 dots is the visual sweet spot: combined with the per-category cap
-    // of 5 in getCareersFromDiscovery, no slice can have more than ~5 dots
-    // and most have 2-4. Bands below split this into Strong (10) + Good (20)
-    // + Worth a look (rest) so the top tier always means something.
-    return getCareersFromDiscovery(preferences, 60);
+    // 30 dots = 10 Strong + 20 Good. The legacy "Worth a look" tier was
+    // dropped, so we no longer fetch the long tail.
+    return getCareersFromDiscovery(preferences, 30);
   }, [preferences]);
 
   const dots = useMemo(
@@ -435,8 +439,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     const tierOf = (d: PlacedDot): Tier => {
       if (d.topMatch) return "top";
       if (d.ring === 0) return "strong";
-      if (d.ring === 1) return "good";
-      return "worth";
+      return "good";
     };
     if (allTiersOn) return dots;
     return dots.filter((d) => activeTiers.has(tierOf(d)) || d.isActiveGoal);
@@ -541,9 +544,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                       ? "Top"
                       : activeTiers.has("strong")
                       ? "Strong"
-                      : activeTiers.has("good")
-                      ? "Good"
-                      : "Worth a look"
+                      : "Good"
                   }`
                 : `${activeTiers.size} tiers`}
               <ChevronDown className="h-3 w-3" />
@@ -563,7 +564,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     { id: "top", label: "Top match", swatch: "bg-pink-400" },
                     { id: "strong", label: "Strong", swatch: "bg-teal-500" },
                     { id: "good", label: "Good", swatch: "bg-sky-400" },
-                    { id: "worth", label: "Worth a look", swatch: "bg-amber-400" },
                   ] as const).map((opt) => {
                     const checked = activeTiers.has(opt.id);
                     return (
@@ -974,10 +974,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         })()}
       </div>
 
-      {/* Legend — mirrors the bands used by the Matches Report below
-          (Top match → halo'd dots, Strong → inner ring, Good → middle ring,
-          Worth a look → outer ring). Keeps both views speaking the same
-          language so users can map a dot back to its band at a glance. */}
+      {/* Legend — mirrors the bands used by the Matches Report below.
+          Top match → halo'd dots, Strong → inner ring, Good → outer ring. */}
       <div className="px-4 py-2 border-t flex items-center justify-between flex-wrap gap-2 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="flex items-center gap-1">
@@ -991,10 +989,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="flex items-center gap-1">
             <span className="inline-block w-2 h-2 rounded-full bg-sky-400" />
             Good
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
-            Worth a look
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-full border-[1.5px] border-amber-400" />
@@ -1018,24 +1012,17 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
       {/* Build bands from the *filtered* dots so the carousel reflects the filter */}
       {(() => {
-        const bands = ([0, 1, 2] as const)
+        const bands = ([0, 1] as const)
           .map((ring) => {
             const ringDots = visibleDots.filter((d) => d.ring === ring);
             if (ringDots.length === 0) return null;
             return {
               ring,
-              label:
-                ring === 0
-                  ? "Strong match"
-                  : ring === 1
-                  ? "Good match"
-                  : "Worth a look",
+              label: ring === 0 ? "Strong match" : "Good match",
               accent:
                 ring === 0
                   ? "text-teal-600 dark:text-teal-400"
-                  : ring === 1
-                  ? "text-sky-500 dark:text-sky-400"
-                  : "text-amber-500 dark:text-amber-400",
+                  : "text-sky-500 dark:text-sky-400",
               dots: ringDots,
             };
           })
@@ -1114,13 +1101,18 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               {bands.map((band) => (
                 <div key={band.ring} className="snap-start shrink-0 w-full px-4 pb-3">
                   <div className="rounded-lg border bg-background overflow-hidden">
+                    {/* Cap the table to a compact height — roughly 5 rows
+                        of body content. Anything beyond that scrolls
+                        inside the card so the radar page stays compact. */}
+                    <div className="max-h-[200px] overflow-y-auto">
                     <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
-                      <thead>
-                        <tr className="border-b border-border/40 bg-muted/20">
-                          <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
-                          <th className="hidden sm:table-cell text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
-                          <th className="text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
-                          <th className="hidden md:table-cell text-left px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
+                      <thead className="sticky top-0 z-10">
+                        <tr className="border-b border-border/40 bg-muted/40 backdrop-blur-sm">
+                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
+                          <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
+                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
+                          <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
+                          <th className="px-2 py-1.5 w-10 text-center text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Add to compare shortlist">Compare</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/30">
@@ -1147,7 +1139,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                 d.topMatch && "bg-pink-500/[0.06]"
                               )}
                             >
-                              <td className="px-3 py-2 align-top">
+                              <td className="px-3 py-1 align-middle">
                                 <div className="flex items-center gap-2 min-w-0">
                                   <span className="text-sm leading-none shrink-0">{d.career.emoji}</span>
                                   <span className="text-foreground font-medium truncate">{d.career.title}</span>
@@ -1158,10 +1150,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                   )}
                                 </div>
                               </td>
-                              <td className="hidden sm:table-cell px-3 py-2 align-top text-foreground/70 whitespace-nowrap">
+                              <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
                                 {d.career.avgSalary?.split(" ")[0] ?? "—"}
                               </td>
-                              <td className="px-3 py-2 align-top">
+                              <td className="px-3 py-1 align-middle">
                                 <span
                                   className={cn(
                                     "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize",
@@ -1183,16 +1175,41 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                 </span>
                               </td>
                               <td
-                                className="hidden md:table-cell px-3 py-2 align-top text-foreground/65 max-w-[280px] truncate"
+                                className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px] truncate"
                                 title={d.career.educationPath}
                               >
                                 {d.career.educationPath}
+                              </td>
+                              <td className="px-2 py-1 align-middle text-center">
+                                {(() => {
+                                  const inList = compareShortlist.isInShortlist(d.career.id);
+                                  return (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        compareShortlist.toggle(d.career);
+                                      }}
+                                      className={cn(
+                                        "inline-flex items-center justify-center h-6 w-6 rounded-md border transition-colors",
+                                        inList
+                                          ? "bg-teal-500/20 border-teal-500/50 text-teal-300 hover:bg-teal-500/30"
+                                          : "border-border/40 text-muted-foreground/55 hover:border-teal-500/40 hover:text-teal-400 hover:bg-teal-500/10"
+                                      )}
+                                      aria-label={inList ? `Remove ${d.career.title} from compare` : `Add ${d.career.title} to compare`}
+                                      title={inList ? "Remove from compare" : "Add to compare"}
+                                    >
+                                      {inList ? <Check className="h-3 w-3" strokeWidth={3} /> : <Plus className="h-3 w-3" />}
+                                    </button>
+                                  );
+                                })()}
                               </td>
                             </tr>
                           );
                         })}
                       </tbody>
                     </table>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1221,6 +1238,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         );
       })()}
     </div>
+
+    {/* Compare feature — floating CTA + modal */}
+    <FloatingCompareCTA
+      shortlist={compareShortlist.shortlist}
+      max={compareShortlist.max}
+      onCompare={() => setCompareModalOpen(true)}
+      onClear={compareShortlist.clear}
+    />
+    <CompareModal
+      open={compareModalOpen}
+      careers={compareShortlist.shortlist}
+      preferences={preferences}
+      onClose={() => setCompareModalOpen(false)}
+      onRemove={compareShortlist.remove}
+    />
   </>
   );
 }
