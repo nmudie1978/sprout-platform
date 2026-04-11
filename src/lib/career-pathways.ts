@@ -576,6 +576,76 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
 
     // ──────────────────────────────────────────────
+    // Healthcare — Food Science
+    // ──────────────────────────────────────────────
+    {
+      id: "food-scientist",
+      title: "Food Scientist",
+      emoji: "🔬",
+      description: "Apply chemistry, biology, and microbiology to study food — analysing nutritional content, shelf life, safety, and how ingredients behave during processing.",
+      avgSalary: "550,000 - 800,000 kr/year",
+      educationPath: "Bachelor's or Master's in Food Science / Food Technology (3–5 years)",
+      keySkills: ["food chemistry", "lab analysis", "microbiology", "research methods", "report writing"],
+      dailyTasks: ["Run lab experiments", "Analyse samples", "Test new formulations", "Document findings", "Collaborate with R&D"],
+      growthOutlook: "high",
+    },
+    {
+      id: "food-technologist",
+      title: "Food Technologist",
+      emoji: "🥫",
+      description: "Develop and refine the production processes that turn raw ingredients into safe, consistent, scalable food products on factory lines.",
+      avgSalary: "500,000 - 750,000 kr/year",
+      educationPath: "Bachelor's in Food Technology / Food Science (3 years)",
+      keySkills: ["process design", "food safety standards", "problem-solving", "quality control", "technical writing"],
+      dailyTasks: ["Design recipes for scale", "Trial production runs", "Troubleshoot lines", "Test product quality", "Document processes"],
+      growthOutlook: "high",
+    },
+    {
+      id: "food-product-developer",
+      title: "Food Product Developer",
+      emoji: "🧪",
+      description: "Create new food and drink products for brands — from first concept and kitchen prototypes through to shelf launch.",
+      avgSalary: "500,000 - 800,000 kr/year",
+      educationPath: "Bachelor's in Food Science, Nutrition, or Culinary Arts + commercial experience",
+      keySkills: ["recipe development", "consumer insight", "creativity", "sensory analysis", "project management"],
+      dailyTasks: ["Develop prototypes", "Run taste panels", "Refine recipes", "Cost ingredients", "Brief packaging teams"],
+      growthOutlook: "high",
+    },
+    {
+      id: "food-safety-inspector",
+      title: "Food Safety Inspector",
+      emoji: "🛡️",
+      description: "Inspect food businesses — restaurants, factories, farms — to make sure hygiene, labelling, and safety rules are being followed and the public is protected.",
+      avgSalary: "500,000 - 700,000 kr/year",
+      educationPath: "Bachelor's in Food Science, Public Health, or Environmental Health + Mattilsynet training",
+      keySkills: ["regulation knowledge", "attention to detail", "communication", "report writing", "independence"],
+      dailyTasks: ["Inspect premises", "Review records", "Take samples", "Write reports", "Issue improvement notices"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "quality-assurance-food",
+      title: "Food Quality Assurance Specialist",
+      emoji: "✅",
+      description: "Make sure food products leaving a factory meet every quality, safety, and labelling standard — running tests, audits, and corrective actions.",
+      avgSalary: "480,000 - 700,000 kr/year",
+      educationPath: "Bachelor's in Food Science / Quality Management (3 years)",
+      keySkills: ["HACCP", "auditing", "lab testing", "documentation", "problem-solving"],
+      dailyTasks: ["Audit production lines", "Test samples", "Review records", "Investigate complaints", "Train staff"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "sports-nutritionist",
+      title: "Sports Nutritionist",
+      emoji: "💪",
+      description: "Build performance-focused diets for athletes and active people — optimising fuelling, recovery, body composition, and competition strategy.",
+      avgSalary: "450,000 - 700,000 kr/year",
+      educationPath: "Bachelor's in Nutrition + Sports Nutrition certification (e.g. ISSN)",
+      keySkills: ["nutrition science", "exercise physiology", "client coaching", "meal planning", "data tracking"],
+      dailyTasks: ["Assess athletes", "Design meal plans", "Adjust during training cycles", "Track outcomes", "Educate teams"],
+      growthOutlook: "high",
+    },
+
+    // ──────────────────────────────────────────────
     // Healthcare — Public Health & Research
     // ──────────────────────────────────────────────
     {
@@ -3373,6 +3443,17 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
       entryLevel: true,
     },
+    {
+      id: "brewer",
+      title: "Brewer",
+      emoji: "🍺",
+      description: "Make beer at scale — managing fermentation, recipes, and production runs in a craft brewery or large brewing operation.",
+      avgSalary: "450,000 - 700,000 kr/year",
+      educationPath: "Brewing-specific course or food science degree + apprenticeship in a brewery",
+      keySkills: ["fermentation science", "recipe development", "process control", "lab testing", "physical stamina"],
+      dailyTasks: ["Mash and boil", "Manage fermentation", "Test batches", "Clean tanks", "Develop new beers"],
+      growthOutlook: "stable",
+    },
   ],
 
   // ========================================
@@ -5328,6 +5409,74 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     },
     { id: "restaurant-owner", title: "Restaurant Owner", emoji: "🍽️", description: "Own and run a restaurant — set the menu, hire chefs, manage finances, and build a place people love to eat at.", avgSalary: "400,000 - 1,500,000+ kr/year (highly variable, often loss-making early)", educationPath: "Hospitality experience + business knowledge; no degree required", keySkills: ["business management", "hospitality", "leadership", "finance", "creativity"], dailyTasks: ["Plan menus", "Manage staff", "Track costs", "Greet guests", "Handle suppliers"], growthOutlook: "stable", entryLevel: true },
     { id: "barista", title: "Barista", emoji: "☕", description: "Make and serve coffee in a café — pulling espresso, steaming milk, and building a regular customer base.", avgSalary: "320,000 - 450,000 kr/year", educationPath: "On-the-job training; specialty coffee courses (SCA) help", keySkills: ["espresso technique", "milk steaming", "customer service", "speed", "consistency"], dailyTasks: ["Brew coffee", "Serve customers", "Clean equipment", "Restock supplies", "Run the till"], growthOutlook: "stable", entryLevel: true },
+    {
+      id: "baker",
+      title: "Baker",
+      emoji: "🍞",
+      description: "Bake bread, pastries, and cakes — early starts, hot ovens, and the craft of turning flour, water, and time into something people line up for.",
+      avgSalary: "380,000 - 550,000 kr/year",
+      educationPath: "Vocational training (Baker fagbrev) — 2 years school + 2 years apprenticeship",
+      keySkills: ["dough handling", "timing", "precision", "stamina", "craftsmanship"],
+      dailyTasks: ["Mix doughs", "Shape and proof", "Bake batches", "Decorate", "Clean equipment"],
+      growthOutlook: "stable",
+      entryLevel: true,
+    },
+    {
+      id: "pastry-chef",
+      title: "Pastry Chef",
+      emoji: "🥐",
+      description: "Specialise in desserts, pastries, chocolate work, and cakes — the artistic, precise side of the kitchen where presentation and technique matter most.",
+      avgSalary: "420,000 - 680,000 kr/year",
+      educationPath: "Culinary or pastry-specific vocational training (Konditor fagbrev)",
+      keySkills: ["pastry technique", "creativity", "precision", "patience", "presentation"],
+      dailyTasks: ["Make doughs and creams", "Decorate cakes", "Develop dessert menus", "Manage stock", "Run pastry section"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "butcher",
+      title: "Butcher",
+      emoji: "🔪",
+      description: "Cut, prepare, and sell meat — breaking down whole carcasses or working from primal cuts in a shop, supermarket, or restaurant supply.",
+      avgSalary: "400,000 - 600,000 kr/year",
+      educationPath: "Vocational training (Slakter / Kjøttskjærer fagbrev) — 2 + 2 years",
+      keySkills: ["knife skills", "anatomy knowledge", "food safety", "physical stamina", "customer service"],
+      dailyTasks: ["Break down carcasses", "Trim cuts", "Mince and sausage-make", "Serve customers", "Clean tools"],
+      growthOutlook: "stable",
+      entryLevel: true,
+    },
+    {
+      id: "sommelier",
+      title: "Sommelier",
+      emoji: "🍷",
+      description: "The wine expert in a fine restaurant — selecting wines, training staff, advising guests, and pairing bottles to dishes on the menu.",
+      avgSalary: "450,000 - 800,000 kr/year",
+      educationPath: "WSET or Court of Master Sommeliers certification + restaurant experience",
+      keySkills: ["wine knowledge", "tasting", "customer service", "memory", "storytelling"],
+      dailyTasks: ["Taste and select wines", "Build wine lists", "Advise guests", "Train staff", "Manage cellar"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "catering-manager",
+      title: "Catering Manager",
+      emoji: "🍽️",
+      description: "Run catering operations for events, schools, hospitals, or workplaces — planning menus, leading kitchen teams, and managing budgets at scale.",
+      avgSalary: "500,000 - 750,000 kr/year",
+      educationPath: "Hospitality management qualification or chef background + management experience",
+      keySkills: ["menu planning", "budgeting", "leadership", "logistics", "food safety"],
+      dailyTasks: ["Plan menus", "Manage staff rotas", "Handle suppliers", "Track costs", "Run events"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "restaurant-manager",
+      title: "Restaurant Manager",
+      emoji: "📋",
+      description: "Run a restaurant day-to-day — staff, service, finances, customer experience — making sure every shift goes smoothly and the business stays profitable.",
+      avgSalary: "480,000 - 750,000 kr/year",
+      educationPath: "Hospitality management or chef background; many work up from waiter or kitchen roles",
+      keySkills: ["leadership", "customer service", "budgeting", "rota planning", "calm under pressure"],
+      dailyTasks: ["Open and close site", "Lead service", "Hire and train staff", "Track sales", "Handle issues"],
+      growthOutlook: "stable",
+    },
   ],
 
   // ========================================
@@ -7980,7 +8129,10 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   "workshop-making":  { MANUFACTURING_ENGINEERING: 4, HOSPITALITY_TOURISM: 1 },
   "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 3, SPORT_FITNESS: 1 },
   drama:           { CREATIVE_MEDIA: 3, HOSPITALITY_TOURISM: 2, EDUCATION_TRAINING: 2, SALES_MARKETING: 2 },
-  "food-tech":     { HOSPITALITY_TOURISM: 3, HEALTHCARE_LIFE_SCIENCES: 1, SPORT_FITNESS: 1 },
+  // Food Tech is a four-band subject — cooking craft (Hospitality),
+  // food science / nutrition (Healthcare), industrial brewing & food
+  // production (Manufacturing), and food media / styling (Creative).
+  "food-tech":     { HOSPITALITY_TOURISM: 4, HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 2, CREATIVE_MEDIA: 1, SPORT_FITNESS: 1 },
   "media-studies": { CREATIVE_MEDIA: 4, SALES_MARKETING: 3, TECHNOLOGY_IT: 1 },
 };
 
@@ -8034,6 +8186,21 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "music-manager", "talent-agent", "ar-rep", "music-promoter", "tour-manager",
     "sound-technician", "music-journalist", "music-content-creator",
     "music-licensing-specialist",
+  ],
+  "food-tech": [
+    // Cooking & hospitality
+    "chef", "pastry-chef", "baker", "butcher", "barista", "sommelier",
+    "catering-manager", "restaurant-manager", "restaurant-owner",
+    "kitchen-porter", "fast-food-crew",
+    // Food science & technology
+    "food-scientist", "food-technologist", "food-product-developer",
+    "food-safety-inspector", "quality-assurance-food",
+    // Nutrition & health
+    "dietitian", "nutritionist", "sports-nutritionist",
+    // Production & craft
+    "brewer",
+    // Food media
+    "food-blogger",
   ],
 };
 
