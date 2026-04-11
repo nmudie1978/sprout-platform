@@ -598,96 +598,99 @@ function FoundationCard({
       aria-label={disabled ? 'Foundation (reference route — read only)' : 'Open foundation details'}
       aria-disabled={disabled || undefined}
       className={cn(
-        'group w-[280px] rounded-2xl bg-card text-left transition-all',
+        'group w-[280px] rounded-2xl text-left transition-all overflow-hidden',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        // Dashed teal border signals "you own this card — tap to edit".
-        // Simulation glow overrides everything.
         glowing
           ? 'border-2 border-emerald-400/70 opacity-100'
           : disabled
             ? 'opacity-40 grayscale cursor-not-allowed border border-border/60 select-none pointer-events-none'
-            : 'border-2 border-dashed border-teal-500/40 hover:border-teal-500/60 cursor-pointer shadow-sm'
+            : 'border border-border/50 hover:border-teal-500/50 cursor-pointer shadow-lg'
       )}
-      style={glowing ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' } : undefined}
+      style={glowing
+        ? { boxShadow: '0 0 12px rgba(16,185,129,0.5), 0 0 30px rgba(16,185,129,0.25)' }
+        : { boxShadow: '0 4px 20px rgba(0,0,0,0.25), 0 0 0 1px rgba(20,184,166,0.08)' }
+      }
     >
-      {/* ── HEADER + FOUNDATION (merged) ────────────────────────── */}
-      <div className="px-3 pt-2.5 pb-2 bg-teal-500/[0.03] rounded-t-2xl">
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[12px] font-semibold leading-tight text-foreground">
-            Your Starting Point
-          </p>
+      {/* ── Header band — gradient accent ───────────────────────── */}
+      <div className="relative bg-gradient-to-r from-teal-600/20 via-teal-500/10 to-transparent px-4 pt-3 pb-2.5">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+        <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {!disabled && (
-              <span
-                className="inline-flex items-center gap-0.5 text-muted-foreground/50 group-hover:text-foreground transition-colors"
-                aria-hidden
-              >
-                <Pencil className="h-2 w-2" />
-                <span className="text-[8px] font-medium uppercase tracking-wider">Edit</span>
-              </span>
-            )}
+            <div className="h-6 w-6 rounded-lg bg-teal-500/20 flex items-center justify-center">
+              <span className="text-[11px]">📍</span>
+            </div>
+            <p className="text-[13px] font-bold tracking-tight text-foreground">
+              Your Starting Point
+            </p>
           </div>
+          {!disabled && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-2 py-0.5 text-muted-foreground/60 group-hover:text-teal-300 group-hover:bg-teal-500/10 transition-colors">
+              <Pencil className="h-2.5 w-2.5" />
+              <span className="text-[9px] font-medium">Edit</span>
+            </span>
+          )}
         </div>
+      </div>
 
+      {/* ── Data section ────────────────────────────────────────── */}
+      <div className="px-4 py-3 bg-card">
         {eduContext ? (
-          <div className="space-y-1">
-            {/* Labelled fields — crisp key: value format */}
-            <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] leading-snug">
-              <span>
-                <span className="text-muted-foreground/50">School:</span>{' '}
-                <span className="text-foreground/80 font-medium">{eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}</span>
-              </span>
-              {eduContext.studyProgram && (
-                <span>
-                  <span className="text-muted-foreground/50">Track:</span>{' '}
-                  <span className="text-foreground/80 font-medium">{eduContext.studyProgram}</span>
-                </span>
-              )}
+          <div className="space-y-2.5">
+            {/* Info grid — icon-led rows */}
+            <div className="grid grid-cols-2 gap-2">
+              <InfoRow
+                icon={eduContext.stage === 'university' ? '🎓' : eduContext.stage === 'college' ? '🏛️' : '🏫'}
+                label={EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+                value={eduContext.schoolName || EDUCATION_STAGE_CONFIG[eduContext.stage].label}
+              />
               {eduContext.expectedCompletion && (
-                <span>
-                  <span className="text-muted-foreground/50">Completion:</span>{' '}
-                  <span className="text-foreground/80 font-medium">{eduContext.expectedCompletion}</span>
-                </span>
+                <InfoRow icon="📅" label="Finishes" value={eduContext.expectedCompletion} />
+              )}
+              {eduContext.studyProgram && (
+                <InfoRow icon="📘" label="Track" value={eduContext.studyProgram} span />
               )}
             </div>
-            {/* Subject pills — colour-coded by alignment */}
+
+            {/* Subject chips — colour-coded alignment */}
             {visibleSubjects.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1">
-                {visibleSubjects.map((s) => {
-                  const isMatched = subjectHint?.matchedKey.some(
-                    (m) => m.toLowerCase() === s.toLowerCase()
-                  );
-                  return (
-                    <span
-                      key={s}
-                      className={cn(
-                        'inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-medium ring-1 ring-inset',
-                        isMatched
-                          ? 'bg-emerald-500/10 text-emerald-300 ring-emerald-500/25'
-                          : 'bg-muted text-foreground/75 ring-border/50',
-                      )}
-                      title={isMatched ? 'Aligns with this career' : undefined}
-                    >
-                      {isMatched && <Check className="h-2 w-2 mr-0.5" strokeWidth={3} />}
-                      {s}
-                    </span>
-                  );
-                })}
-                {extraSubjectCount > 0 && (
-                  <span className="inline-flex items-center px-1 py-px text-[9px] text-muted-foreground">
-                    +{extraSubjectCount}
-                  </span>
-                )}
+              <div>
+                <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5">Your subjects</p>
+                <div className="flex flex-wrap gap-1">
+                  {visibleSubjects.map((s) => {
+                    const isMatched = subjectHint?.matchedKey.some(
+                      (m) => m.toLowerCase() === s.toLowerCase()
+                    );
+                    return (
+                      <span
+                        key={s}
+                        className={cn(
+                          'inline-flex items-center rounded-md px-1.5 py-0.5 text-[9px] font-medium border',
+                          isMatched
+                            ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25'
+                            : 'bg-muted/30 text-foreground/75 border-border/40',
+                        )}
+                        title={isMatched ? '✓ Aligns with this career' : undefined}
+                      >
+                        {isMatched && <Check className="h-2 w-2 mr-0.5 text-emerald-400" strokeWidth={3} />}
+                        {s}
+                      </span>
+                    );
+                  })}
+                  {extraSubjectCount > 0 && (
+                    <span className="text-[9px] text-muted-foreground/50 self-center ml-0.5">+{extraSubjectCount}</span>
+                  )}
+                </div>
               </div>
             )}
-            {/* Missing subjects hint — slim inline */}
+
+            {/* Missing subjects — compact amber hints */}
             {subjectHint && subjectHint.missingKey.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1">
+              <div className="flex flex-wrap gap-1">
                 {subjectHint.missingKey.slice(0, 3).map((s) => (
                   <span
                     key={s}
-                    className="inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-medium bg-amber-500/10 text-amber-300/80 ring-1 ring-inset ring-amber-500/20"
-                    title={`Consider adding ${s} — it aligns with this career`}
+                    className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[9px] font-medium bg-amber-500/8 text-amber-300/80 border border-amber-500/20"
+                    title={`Consider adding ${s}`}
                   >
                     <AlertTriangle className="h-2 w-2 mr-0.5" strokeWidth={2.5} />
                     {s}
@@ -697,15 +700,16 @@ function FoundationCard({
             )}
           </div>
         ) : (
-          <p className="text-[10px] text-muted-foreground leading-snug">
-            Add your school &amp; subjects to see alignment.
-          </p>
+          <div className="text-center py-2">
+            <p className="text-[11px] text-muted-foreground/70 mb-1">Tap to add your school & subjects</p>
+            <p className="text-[9px] text-muted-foreground/50">This helps us show alignment with your career path</p>
+          </div>
         )}
       </div>
 
-      {/* ── INSIGHT — grades + guidance ──────────────────────────── */}
-      <div className="px-3 py-1.5 bg-sky-500/[0.05] border-t border-sky-500/12 rounded-b-2xl space-y-1">
-        <p className="text-[10px] leading-snug text-foreground/85">
+      {/* ── Alignment insight — bottom accent bar ───────────────── */}
+      <div className="px-4 py-2.5 bg-gradient-to-r from-sky-500/[0.08] to-transparent border-t border-sky-500/10 rounded-b-2xl">
+        <p className="text-[10px] leading-snug text-foreground/80">
           {alignmentStatement}
         </p>
         {gradeHint && (
@@ -741,6 +745,19 @@ function FoundationRow({ label, value }: { label: string; value: string }) {
         {label}
       </span>
       <span className="font-medium text-foreground text-right truncate">{value}</span>
+    </div>
+  );
+}
+
+/** Compact icon-led data row for the Foundation card */
+function InfoRow({ icon, label, value, span }: { icon: string; label: string; value: string; span?: boolean }) {
+  return (
+    <div className={cn('flex items-center gap-1.5 min-w-0', span && 'col-span-2')}>
+      <span className="text-[10px] shrink-0">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-[8px] uppercase tracking-wider text-muted-foreground/55 leading-none">{label}</p>
+        <p className="text-[10px] font-medium text-foreground/85 truncate leading-tight">{value}</p>
+      </div>
     </div>
   );
 }

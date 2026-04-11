@@ -663,8 +663,10 @@ export function TimelineDetailDialog({
           )}
 
           {/* Real-world connections — courses, universities, and jobs
-              relevant to this step and the user's chosen career. */}
-          {!isFoundation && (
+              relevant to this step and the user's chosen career.
+              Hidden for "Accept" steps (first job etc.) — those are
+              about the job itself, not about finding external links. */}
+          {!isFoundation && !/\baccept\b/i.test(item.title) && (
             <RealWorldSection item={item} career={careerTitle} />
           )}
 

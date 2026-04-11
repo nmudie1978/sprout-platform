@@ -121,10 +121,18 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
 
   let foundationText = `Let's walk through ${possessive.toLowerCase()} path to becoming a ${careerTitle}. `;
 
+  // Stage-aware institution description
+  const stageLabel = education?.stage === 'university' ? 'studying at'
+    : education?.stage === 'college' ? 'attending'
+    : 'at';
+
   if (education?.schoolName) {
-    foundationText += `${name.charAt(0).toUpperCase() + name.slice(1)} is currently ${userAge ? `${userAge} years old, ` : ''}studying at ${education.schoolName}`;
+    foundationText += `${name.charAt(0).toUpperCase() + name.slice(1)} is currently ${userAge ? `${userAge} years old, ` : ''}${stageLabel} ${education.schoolName}`;
+    if (education.studyProgram) {
+      foundationText += `, on the ${education.studyProgram} programme`;
+    }
     if (education.expectedCompletion) {
-      foundationText += ` until around ${education.expectedCompletion}`;
+      foundationText += `, finishing around ${education.expectedCompletion}`;
     }
     foundationText += '. ';
   } else if (userAge) {
@@ -135,9 +143,13 @@ export function generateNarrationScript(ctx: NarrationContext): NarrationScript 
     foundationText += `${possessive} current subjects — ${subjectList(education.currentSubjects)} — are a good start. `;
   }
 
-  // Actionable advice based on what comes next
+  // Actionable advice based on education stage + what comes next
   const firstStep = items[0];
-  if (firstStep) {
+  if (education?.stage === 'university') {
+    foundationText += `Since ${name} is already at university, the focus should be on completing the degree strongly and building relevant experience through internships or projects. `;
+  } else if (education?.stage === 'college') {
+    foundationText += `The focus right now should be on completing the vocational programme and gaining practical experience. `;
+  } else if (firstStep) {
     const titleLower = firstStep.title.toLowerCase();
     if (/university|degree|bachelor|master/i.test(titleLower)) {
       foundationText += `The focus right now should be on achieving strong grades, especially in relevant subjects, to qualify for a university place. `;
