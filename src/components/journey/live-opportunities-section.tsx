@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Live Opportunities — UI for the career-opportunities agent.
+ * Opportunities — UI for the career-opportunities agent.
  *
  * Calls POST /api/agents/career-opportunities for the user's active
  * career goal and renders the validated array as three grouped lists:
@@ -166,7 +166,7 @@ export function LiveOpportunitiesSection({
         <div className="px-5 py-3.5 border-b border-amber-500/20">
           <div className="flex items-center gap-2.5">
             <Sparkles className="h-4 w-4 text-amber-400 animate-pulse" />
-            <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
+            <h3 className="text-sm font-semibold text-foreground/90">Opportunities</h3>
             <span className="text-[10px] text-muted-foreground/55 ml-2">searching the web…</span>
           </div>
           <p className="text-[11px] text-muted-foreground/50 mt-1 ml-[26px] leading-snug">
@@ -220,7 +220,7 @@ export function LiveOpportunitiesSection({
           <Sparkles className="h-4 w-4 text-amber-400" />
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-foreground/90">Live Opportunities</h3>
+              <h3 className="text-sm font-semibold text-foreground/90">Opportunities</h3>
               <span className="text-[10px] text-muted-foreground/60">
                 {items.length} verified for {careerTitle}
               </span>

@@ -239,11 +239,57 @@ function buildConnections(stepType: RoadmapStepType, career: string): RealWorldI
 // ── Default mock provider ────────────────────────────────────────────
 
 /**
+ * Education-focused steps — any step that mentions a school, college,
+ * university, studies, programme, degree, apprenticeship, fagbrev etc.
+ * — must surface *only* study-path links. A user looking at "Apply for
+ * culinary school" or "Begin culinary studies" is researching schools,
+ * not looking for a job, so dumping LinkedIn / Finn.no / Indeed / Coursera
+ * into "Where to go next" is wrong regardless of step type classification.
+ *
+ * This override runs before every other override and before the
+ * stepType-based switch, so it always wins when the step text is
+ * clearly educational. In particular it defeats milestone-flagged
+ * education steps that would otherwise route through the
+ * jobsFor/coursesFor mix.
+ */
+function studyPathOnlyOverride(
+  step: JourneyItem,
+  career: string,
+): RealWorldItem[] | null {
+  const text = `${step.title} ${step.description || ''}`.toLowerCase();
+  // Broad keyword set covering academic and vocational education.
+  // The "study"/"studies" match is intentionally loose — any step
+  // talking about studying should route here. Job-board noise ("job
+  // shadowing at a school", etc.) is a theoretical false positive we
+  // accept because the alternative (showing LinkedIn on an education
+  // step) is the worse failure mode.
+  const isEducational = /school|college|universit|bachelor|master|degree|programme|program\b|studies|study|coursework|curriculum|academy|institute|enrol|enroll|admission|apprenticeship|fagbrev|vocational|culinary|trade\s+school/.test(
+    text,
+  );
+  if (!isEducational) return null;
+  return [
+    {
+      kind: 'university',
+      title: `Browse study paths for ${career}`,
+      descriptor: 'Explore matching universities, programmes and alignment in-app',
+      url: `/my-journey#understand`,
+      cta: 'Browse',
+    },
+    ...universitiesFor(career).slice(0, 2),
+    ...certificationsFor(career).slice(0, 1),
+  ];
+}
+
+/**
  * Some step types want a *single-mode* list rather than the curated
  * multi-mode mix. The clearest example is "Apply for university studies"
  * — for that step, every link should be a university search, not a
  * grab-bag of jobs and courses. Detect those overrides up front so the
  * stepType-based switch doesn't have to know about every special case.
+ *
+ * Note: the broader studyPathOnlyOverride above also handles this case
+ * now, and runs first. This override remains as a secondary safety net
+ * for edge-case phrasings not caught by the broad educational regex.
  */
 function universityApplicationOverride(
   step: JourneyItem,
@@ -291,6 +337,12 @@ function applyJobOverride(
 export const mockRealWorldProvider: RealWorldProvider = {
   getConnections({ step, career }) {
     const cleaned = cleanCareer(career, step.title);
+    // Education-first: any step mentioning school/college/university/
+    // studies/etc. gets ONLY study-path links. Runs before every other
+    // override so milestone-flagged education steps and "Apply for
+    // {culinary} school" steps can't leak into the job-board branches.
+    const studyOverride = studyPathOnlyOverride(step, cleaned);
+    if (studyOverride) return studyOverride.slice(0, 5);
     const uniOverride = universityApplicationOverride(step, cleaned);
     if (uniOverride) return uniOverride.slice(0, 5);
     const jobOverride = applyJobOverride(step, cleaned);

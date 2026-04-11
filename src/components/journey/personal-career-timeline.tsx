@@ -56,7 +56,14 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const [foundationCardData, setFoundationCardData] = useState<Record<string, unknown> | null>(null);
   const foundationSyncRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load foundation data from DB on mount
+  // Load foundation data from DB. Deliberately re-runs when the active
+  // goal changes: `useRoadmapCardData` fetches per-goal card data in
+  // parallel and may otherwise leave a stale or missing foundation slot
+  // in localStorage, which the Foundation card reads for its display
+  // values. Re-fetching the profile-level source here guarantees that
+  // whatever the user last saved on the Foundation card is re-hydrated
+  // into localStorage and component state immediately on goal switch,
+  // so the card no longer appears empty until the user re-saves.
   useEffect(() => {
     fetch('/api/journey/foundation-data')
       .then((res) => res.json())
@@ -72,7 +79,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
         }
       })
       .catch(() => { /* silent */ });
-  }, []);
+  }, [primaryGoalTitle]);
 
   // Sync foundation data to DB (debounced)
   const syncFoundationToDb = useCallback(() => {

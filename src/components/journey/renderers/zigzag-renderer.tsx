@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, Pencil, Banknote, Check, AlertTriangle } from 'lucide-react';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
-import { classifyStepType, calculateSubjectAlignment, getCareerRequirements } from '@/lib/education/alignment';
+import { classifyStepType, calculateSubjectAlignment } from '@/lib/education/alignment';
 import { STEP_TYPE_CONFIG } from '@/lib/education/types';
 import type { EducationContext } from '@/lib/education/types';
 import { EDUCATION_STAGE_CONFIG } from '@/lib/education/types';
@@ -570,25 +570,6 @@ function FoundationCard({
   const visibleSubjects = allSubjects.slice(0, 4);
   const extraSubjectCount = Math.max(0, allSubjects.length - visibleSubjects.length);
 
-  // Career requirements from the structured data source.
-  const requirements = careerTitle ? getCareerRequirements(careerTitle) : null;
-
-  // Short insight statement — exploratory, not judgemental.
-  const alignmentStatement: string = (() => {
-    const career = careerTitle || 'this path';
-    if (!eduContext || allSubjects.length === 0) {
-      return `Add your subjects to see what ${career} typically requires.`;
-    }
-    if (requirements) {
-      return `Check your programme's entry requirements in the Understand tab to see how your subjects line up with ${career}.`;
-    }
-    return `Use Study Paths in the Understand tab to explore what ${career} typically requires.`;
-  })();
-
-  // Grade guidance from career-requirements.json
-  const gradeHint = requirements?.schoolSubjects?.minimumGrade ?? null;
-  const competitiveness = requirements?.universityPath?.competitiveness ?? null;
-
   return (
     <button
       onClick={disabled ? undefined : onOpen}
@@ -705,33 +686,6 @@ function FoundationCard({
         )}
       </div>
 
-      {/* ── Alignment insight — bottom accent bar ───────────────── */}
-      <div className="px-4 py-2.5 bg-gradient-to-r from-sky-500/[0.08] to-transparent border-t border-sky-500/10 rounded-b-2xl">
-        <p className="text-[10px] leading-snug text-foreground/80">
-          {alignmentStatement}
-        </p>
-        {gradeHint && (
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="text-[9px] leading-snug text-muted-foreground/70 cursor-help underline decoration-dotted underline-offset-2">
-                  Your grades matter for this path
-                </p>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[240px] text-xs leading-relaxed">
-                <p className="font-medium mb-1">Karakterpoeng (grade points)</p>
-                <p>Your average grades are converted into points for university admission via Samordna opptak. Higher grades = more points. Competitive programmes have a cutoff (poenggrense).</p>
-                {gradeHint && <p className="mt-1.5 text-muted-foreground">{gradeHint}</p>}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-        {competitiveness && (
-          <p className="text-[9px] leading-snug text-muted-foreground/70">
-            {competitiveness}
-          </p>
-        )}
-      </div>
     </button>
   );
 }

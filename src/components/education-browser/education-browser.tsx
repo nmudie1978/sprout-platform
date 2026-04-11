@@ -45,11 +45,6 @@ import {
   type Institution,
   type CareerRequirements,
 } from '@/lib/education';
-import {
-  parseGradeRequirement,
-  formatGradeLabel,
-  formatGradeTooltip,
-} from '@/lib/education/parse-grade-requirement';
 import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
@@ -109,7 +104,6 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
 
   type ViewMode = 'list' | 'cards';
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [headerCollapsed, setHeaderCollapsed] = useState(false);
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -214,101 +208,34 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         careerTitle={careerTitle ?? ''}
         summary={summary}
         requirements={requirements}
-        educationPath={career?.educationPath}
-        dailyTasks={career?.dailyTasks}
-        emoji={career?.emoji}
         alternativePaths={alternativePaths}
       />
     );
   }
 
   // ── Main layout ─────────────────────────────────────────────────────
+  //
+  // The custom hero card + outer border/glow wrapper that used to wrap
+  // this view have both been removed. The section is now rendered
+  // inside a standard SectionCard + SectionHeader at the call site
+  // (my-journey page) so it matches "A Typical Day", "Career Presence
+  // & Tools" and the other Understand-tab sections. Collapse state
+  // lives at the parent level via uCollapsed('u-study-path').
 
   return (
-    <div
-      className="space-y-6 rounded-2xl border border-teal-500/25 p-5 sm:p-6"
-      style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
-    >
-      {/* ── Hero card ─────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] relative overflow-hidden">
-        {/* Ambient glow */}
-        <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-teal-500/[0.06] blur-3xl pointer-events-none" />
-
-        {/* Clickable header row — always visible */}
-        <button
-          type="button"
-          onClick={() => setHeaderCollapsed((c) => !c)}
-          className="relative w-full flex items-center gap-3 p-5 sm:p-6 text-left group"
-          aria-expanded={!headerCollapsed}
-        >
-          <div className="h-10 w-10 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0">
-            <GraduationCap className="h-5 w-5 text-teal-400" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-base font-bold text-foreground/90 leading-tight flex items-center gap-2">
-              <span>Study paths for{' '}<span className="text-teal-400">{careerTitle}</span></span>
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span onClick={(e) => e.stopPropagation()}>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
-                    Real universities and programmes that lead to this career — filtered by your location and subjects.
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </h1>
-            {headerCollapsed && (
-              <p className="text-[11px] text-muted-foreground/50 mt-0.5">
-                {groups.length} institution{groups.length !== 1 ? 's' : ''} &middot; {allProgrammes.length} programme{allProgrammes.length !== 1 ? 's' : ''}
-              </p>
-            )}
-          </div>
-          <ChevronDown className={cn(
-            'h-4 w-4 text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-transform duration-200 shrink-0',
-            headerCollapsed && '-rotate-90',
-          )} />
-        </button>
-
-        {/* Collapsible content */}
-        {!headerCollapsed && (
-          <div className="relative px-5 sm:px-6 pb-5 sm:pb-6 space-y-4">
-            {summary && (
-              <p className="text-[12px] text-muted-foreground/75 leading-relaxed -mt-2">
-                {summary}
-              </p>
-            )}
-
-            {/* Stat pills */}
-            <div className="flex flex-wrap gap-2">
-              <StatPill
-                icon={Building2}
-                label={`${groups.length} institution${groups.length !== 1 ? 's' : ''}`}
-              />
-              <StatPill
-                icon={BookOpen}
-                label={`${allProgrammes.length} programme${allProgrammes.length !== 1 ? 's' : ''}`}
-              />
-              <StatPill
-                icon={MapPin}
-                label={countries.map((c) => COUNTRY_FLAGS[c] ?? c).join(' ')}
-              />
-              {alignedCount > 0 && (
-                <StatPill
-                  icon={Sparkles}
-                  label={`${alignedCount} aligned`}
-                  accent
-                />
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+    <div className="space-y-4">
+      {/* Career summary — short one-liner under the section header.
+          Kept because it frames the study-path content below. Dropped
+          from fallback mode (no programmes) since summary there is
+          more valuable inside the hero copy that mode already has. */}
+      {summary && (
+        <p className="text-[12px] text-muted-foreground/75 leading-relaxed">
+          {summary}
+        </p>
+      )}
 
       {/* ── Info cards (advanced route / alternative paths) ────────── */}
-      {!headerCollapsed && (advanced || alternativePaths.length > 0) && (
+      {(advanced || alternativePaths.length > 0) && (
         <div className={cn('grid gap-3', advanced && alternativePaths.length > 0 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1')}>
           {advanced && (
             <div className="rounded-xl border border-blue-500/15 bg-blue-500/[0.04] px-4 py-3.5">
@@ -550,29 +477,13 @@ function PathwayFallbackView({
   careerTitle,
   summary,
   requirements,
-  educationPath,
-  dailyTasks,
-  emoji,
   alternativePaths,
 }: {
   careerTitle: string;
   summary: string | null;
   requirements: CareerRequirements | null;
-  educationPath: string | undefined;
-  dailyTasks: string[] | undefined;
-  emoji: string | undefined;
   alternativePaths: string[];
 }) {
-  // Parse the grade requirement once — used to render an amber cutoff
-  // pill on the school-subjects step when the career has a real numeric
-  // bar. Vocational careers return hasCutoff=false and the pill is
-  // simply not rendered, which is the right answer.
-  const grade = requirements
-    ? parseGradeRequirement(requirements.schoolSubjects.minimumGrade)
-    : null;
-  const gradeLabel = grade ? formatGradeLabel(grade) : null;
-  const gradeTip = grade ? formatGradeTooltip(grade) : null;
-
   // Parse the free-text school list from universityPath.examples. The
   // source data is inconsistent: some careers have one clean entry per
   // school (["BI", "UiO", "Aalto"]), others pack them into a single
@@ -590,89 +501,20 @@ function PathwayFallbackView({
   const programmeType = requirements?.universityPath?.type ?? null;
   const applicationRoute = requirements?.universityPath?.applicationRoute ?? null;
 
-  // Build a 4-step pathway chain from whichever data is richest.
-  // Falls back gracefully through: requirements → educationPath → empty.
-  // `showGradePill` marks the step that should render the grade cutoff
-  // pill inline beneath the body text — only the school-subjects step.
-  type PathStep = { title: string; body: string; icon: string; showGradePill?: boolean };
-  const steps: PathStep[] = [];
-
-  if (requirements) {
-    steps.push({
-      title: 'School subjects',
-      icon: '🏫',
-      body: requirements.schoolSubjects.required.length > 0
-        ? `Required: ${requirements.schoolSubjects.required.join(', ')}`
-        : 'No specific subject requirements — focus on core grades.',
-      showGradePill: true,
-    });
-    if (programmeName) {
-      const programmeBody = [programmeDuration, programmeType || 'Vocational/University']
-        .filter(Boolean)
-        .join(' · ');
-      steps.push({
-        title: programmeName,
-        icon: '🎓',
-        body: programmeBody,
-      });
-    }
-    if (requirements.entryLevelRequirements?.title) {
-      steps.push({
-        title: requirements.entryLevelRequirements.title,
-        icon: '📋',
-        body: requirements.entryLevelRequirements.description,
-      });
-    }
-    if (requirements.qualifiesFor?.immediate) {
-      steps.push({
-        title: requirements.qualifiesFor.immediate,
-        icon: '💼',
-        body: `Then: ${requirements.qualifiesFor.withExperience || 'gain experience'} → ${requirements.qualifiesFor.seniorPath || 'senior role'}`,
-      });
-    }
-  } else if (educationPath) {
-    steps.push({
-      title: 'Education path',
-      icon: '🎓',
-      body: educationPath,
-    });
-  }
+  // Custom hero + outer border/glow wrapper removed. This mode is now
+  // rendered inside a standard SectionCard + SectionHeader at the call
+  // site, same as the university-browser mode above. Collapse state
+  // lives at the parent level via uCollapsed('u-study-path').
 
   return (
-    <div
-      className="space-y-5 rounded-2xl border border-teal-500/25 p-5 sm:p-6"
-      style={{ boxShadow: '0 0 20px rgba(20,184,166,0.08), 0 0 50px rgba(20,184,166,0.04)' }}
-    >
-      {/* Hero — same as the university-browser mode's hero so the two
-          modes read as one consolidated feature. */}
-      <div className="rounded-2xl border border-teal-500/20 bg-gradient-to-br from-card/90 via-card/80 to-teal-500/[0.03] p-5 sm:p-6 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-teal-500/[0.06] blur-3xl pointer-events-none" />
-        <div className="relative flex items-start gap-3">
-          <div className="h-10 w-10 rounded-xl bg-teal-500/15 flex items-center justify-center shrink-0 text-xl">
-            {emoji ?? <GraduationCap className="h-5 w-5 text-teal-400" />}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-base font-bold text-foreground/90 leading-tight flex items-center gap-2">
-              <span>How to become a <span className="text-teal-400">{careerTitle}</span></span>
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span onClick={(e) => e.stopPropagation()}>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
-                    Real schools and the typical pathway into this career. Most non-university careers go through vocational schools, fagbrev tracks or apprenticeships — this view surfaces them.
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </h1>
-            {summary && (
-              <p className="text-[12px] text-muted-foreground/75 leading-relaxed mt-1">{summary}</p>
-            )}
-          </div>
-        </div>
-      </div>
+    <div className="space-y-5">
+      {/* Optional career summary blurb — framing text under the
+          section header. */}
+      {summary && (
+        <p className="text-[12px] text-muted-foreground/75 leading-relaxed">
+          {summary}
+        </p>
+      )}
 
       {/* Programme metadata — the stat row. Mirrors the stat pills the
           main university-browser mode shows above its card grid, so the
@@ -739,49 +581,13 @@ function PathwayFallbackView({
         </div>
       )}
 
-      {/* Pathway steps — now the secondary "how this career works" panel
-          that contextualises the institution cards above. The school-
-          subjects step renders the grade-cutoff pill inline beneath the
-          body text when the career has a real numeric bar. */}
-      {steps.length > 0 ? (
-        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04]">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-              How this career works
-            </p>
-          </div>
-          <ol className="divide-y divide-border/25">
-            {steps.map((s, i) => (
-              <li key={i} className="flex items-start gap-3 px-4 py-3">
-                <span className="text-base shrink-0 mt-px">{s.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[12px] font-semibold text-foreground/90 leading-snug">
-                    {i + 1}. {s.title}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground/70 leading-relaxed mt-0.5">
-                    {s.body}
-                  </p>
-                  {s.showGradePill && grade?.hasCutoff && gradeLabel && (
-                    <span
-                      title={gradeTip ?? undefined}
-                      className="mt-1.5 inline-flex items-center gap-1 shrink-0 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200/90 cursor-help hover:border-amber-500/50 hover:bg-amber-500/[0.15] transition-colors"
-                    >
-                      <span>📊</span>
-                      <span>{gradeLabel}</span>
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-border/30 bg-card/30 p-5 text-center">
-          <p className="text-[12px] text-muted-foreground/70 leading-relaxed">
-            {educationPath || 'No formal training required — most people learn on the job or are self-taught.'}
-          </p>
-        </div>
-      )}
+      {/* "How this career works" step list and "What you'll do" daily
+          tasks list have both been removed per product direction:
+          vocational careers without a university degree should present
+          only the alternative study path (institution cards above) and
+          nothing else — those two sections duplicated information that
+          already lives on the Discover tab's Career Overview card and
+          the "What You'll Actually Do" section in Understand. */}
 
       {/* Alternative routes (if any) */}
       {alternativePaths.length > 0 && (
@@ -797,25 +603,6 @@ function PathwayFallbackView({
               <li key={path} className="text-[12px] text-foreground/85 leading-relaxed flex items-start gap-2">
                 <span className="text-amber-400/60 mt-1.5 h-1 w-1 rounded-full bg-amber-400/60 shrink-0" />
                 {path}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* What you'll do day-to-day */}
-      {dailyTasks && dailyTasks.length > 0 && (
-        <div className="rounded-xl border border-border/40 bg-card/40 overflow-hidden">
-          <div className="px-4 py-2.5 border-b border-border/30 bg-muted/[0.04]">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-              What you'll do
-            </p>
-          </div>
-          <ul className="px-4 py-3 space-y-1.5">
-            {dailyTasks.slice(0, 5).map((task) => (
-              <li key={task} className="flex items-start gap-2 text-[11px] text-foreground/75 leading-snug">
-                <span className="h-1 w-1 rounded-full bg-teal-400/60 shrink-0 mt-1.5" />
-                {task}
               </li>
             ))}
           </ul>

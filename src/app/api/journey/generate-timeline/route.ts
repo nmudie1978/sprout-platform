@@ -129,24 +129,37 @@ export async function POST(req: NextRequest) {
     const stageKey = educationStage ?? 'default';
     const completeKey = foundationComplete ? 'done' : 'open';
 
-    // Check per-user cache first — must match career, age, stage AND
-    // foundation completion, otherwise toggling Complete on the
-    // Foundation card wouldn't visibly change the roadmap.
+    // Extract the 4-digit year from expectedCompletion (accepts "2034",
+    // "June 2034", "Spring 2034", "2034-06", etc.) — mirrors the parser
+    // in generate-fallback-timeline.ts. Part of the cache key below, so
+    // changing the finish year on the Foundation card invalidates the
+    // cached timeline and forces regeneration. Previously absent,
+    // which caused the roadmap to ignore new finish-year values.
+    const finishYearKey = ((): string => {
+      const match = expectedCompletion.match(/(20\d{2})/);
+      return match ? match[1] : 'none';
+    })();
+
+    // Check per-user cache first — must match career, age, stage,
+    // foundation completion AND expected finish year, otherwise
+    // changing the finish year on the Foundation card wouldn't
+    // visibly change the roadmap.
     if (profile?.generatedTimeline) {
-      const cached = profile.generatedTimeline as { career?: string; stage?: string; complete?: string; journey?: Journey };
+      const cached = profile.generatedTimeline as { career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
       if (
         cached.career?.toLowerCase() === career.toLowerCase() &&
         cached.journey &&
         cached.journey.startAge === userAge &&
         (cached.stage ?? 'default') === stageKey &&
-        (cached.complete ?? 'open') === completeKey
+        (cached.complete ?? 'open') === completeKey &&
+        (cached.finish ?? 'none') === finishYearKey
       ) {
         return NextResponse.json({ journey: cached.journey, cached: true });
       }
     }
 
-    // Check global cache — same career + age + stage + completion = same timeline for all users
-    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}`;
+    // Check global cache — same career + age + stage + completion + finish year = same timeline
+    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
@@ -251,9 +264,10 @@ export async function POST(req: NextRequest) {
       journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
     }
 
-    // Cache result (non-blocking) — stamp the stage AND completion so
-    // future requests cleanly miss the cache when either changes.
-    const cacheData = JSON.parse(JSON.stringify({ career, stage: stageKey, complete: completeKey, generatedAt: new Date().toISOString(), journey }));
+    // Cache result (non-blocking) — stamp the stage, completion AND
+    // finish year so future requests cleanly miss the cache when any
+    // of them changes.
+    const cacheData = JSON.parse(JSON.stringify({ career, stage: stageKey, complete: completeKey, finish: finishYearKey, generatedAt: new Date().toISOString(), journey }));
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },

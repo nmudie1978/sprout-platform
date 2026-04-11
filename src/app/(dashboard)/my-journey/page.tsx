@@ -38,6 +38,7 @@ import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
+import { CareerPresenceCard } from '@/components/journey/career-presence-card';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getNorwayProgrammes, getCertificationPath, getCareerRequirements } from '@/lib/education';
@@ -47,7 +48,6 @@ import {
   formatGradeTooltip,
 } from '@/lib/education/parse-grade-requirement';
 import { getToolInfo } from '@/lib/education/tool-links';
-import { CareerPathExamplesPanel } from '@/components/journey/career-path-examples-panel';
 import { EducationBrowser } from '@/components/education-browser';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
@@ -255,14 +255,23 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 // ─── Shared UI components ────────────────────────────────────────────────────
 
 function SectionCard({ children, className, style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+  // Border thickness: 1px → 1.2px (+20%). The default Tailwind `border`
+  // class is 1px; `border-[1.2px]` bumps it to the exact 20% increase
+  // requested — renders cleanly on hidpi displays as a touch bolder.
+  //
+  // Border glow: boxShadow opacities bumped 0.08 → 0.096 and 0.04 →
+  // 0.048 (both +20%), keeping the same violet hue and blur radii so
+  // the glow is perceptibly stronger without changing its character.
+  // The drop-shadow layer (rgba(0,0,0,0.2)) is unchanged — that's a
+  // structural shadow, not part of the glow.
   return (
-    <div className={cn('rounded-xl border border-border/60 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.08), 0 0 40px rgba(139,92,246,0.04)', ...style }}>
+    <div className={cn('rounded-xl border-[1.2px] border-border/60 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.096), 0 0 40px rgba(139,92,246,0.048)', ...style }}>
       {children}
     </div>
   );
 }
 
-function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle }: {
+function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle, centered }: {
   icon: typeof Eye;
   title: string;
   badge?: React.ReactNode;
@@ -270,6 +279,15 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle 
   /** When provided, the header becomes a clickable collapse toggle. */
   collapsed?: boolean;
   onToggle?: () => void;
+  /**
+   * When true, the icon+title pair is horizontally centered inside the
+   * header instead of being pinned to the left. The chevron stays on
+   * the right via a symmetric flex-1 spacer on the left so the center
+   * content sits at the real middle of the header, not offset by the
+   * chevron's width. Opt-in per-section so existing left-aligned
+   * headers are unaffected.
+   */
+  centered?: boolean;
 }) {
   const Wrapper = onToggle ? 'button' : 'div';
   return (
@@ -280,7 +298,11 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle 
         onToggle && 'hover:bg-muted/20 transition-colors cursor-pointer',
       )}
     >
-      <div className="flex items-center gap-2.5">
+      {/* Left spacer — present only in centered mode to balance the
+          chevron on the right so the icon+title sits at the true
+          middle of the header. */}
+      {centered && <div className="flex-1" />}
+      <div className={cn('flex items-center gap-2.5', centered && 'justify-center')}>
         <Icon className="h-4 w-4 text-muted-foreground/60" />
         <h3 className="text-sm font-semibold text-foreground/90">{title}</h3>
         {tooltip && (
@@ -296,7 +318,7 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle 
           </TooltipProvider>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className={cn('flex items-center gap-2', centered && 'flex-1 justify-end')}>
         {badge}
         {onToggle && (
           <ChevronDown className={cn(
@@ -320,8 +342,8 @@ function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: str
 
 function StatCard({ label, value, icon: Icon, accent, tooltip }: { label: string; value: string; icon: typeof TrendingUp; accent?: string; tooltip?: string }) {
   const card = (
-    <div className={cn('rounded-lg border border-border/30 bg-background/50 p-3.5', tooltip && 'cursor-help')}>
-      <div className="flex items-center gap-2 mb-1.5">
+    <div className={cn('rounded-lg border border-border/30 bg-background/50 p-3.5 flex flex-col items-center text-center', tooltip && 'cursor-help')}>
+      <div className="flex items-center justify-center gap-2 mb-1.5">
         <Icon className={cn('h-3.5 w-3.5', accent || 'text-muted-foreground/50')} />
         <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">{label}</span>
       </div>
@@ -449,7 +471,7 @@ function DiscoverTab({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Video — 2 cols */}
         <SectionCard className="lg:col-span-2">
-          <SectionHeader icon={Play} title="A Day in the Life" collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
+          <SectionHeader icon={Play} title="A Day in the Life" centered collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
           {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
               <div className="rounded-lg overflow-hidden">
@@ -479,7 +501,7 @@ function DiscoverTab({
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
           <SectionCard>
-            <SectionHeader icon={BarChart3} title="Career Overview" collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
+            <SectionHeader icon={BarChart3} title="Career Overview" centered collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
             {!dCollapsed('d-overview') && <div className="p-4 flex flex-col items-center gap-3">
               <div className="grid grid-cols-2 gap-3 w-full max-w-md">
                 <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
@@ -518,9 +540,20 @@ function DiscoverTab({
                 const gradeLabel = formatGradeLabel(grade);
                 const gradeTip = formatGradeTooltip(grade);
 
+                // Abbreviate the school-subjects label as "First +N" when
+                // there's more than one required subject, so the pill
+                // chain fits on a single row at typical desktop widths.
+                // The full list stays in the tooltip below, so no info
+                // is lost — just compressed.
+                const reqSubjects = reqs.schoolSubjects.required;
+                const schoolSubjectsLabel =
+                  reqSubjects.length > 1
+                    ? `${reqSubjects[0]} +${reqSubjects.length - 1}`
+                    : reqSubjects[0] || 'No specific subjects';
+
                 type PathStep = { label: string; tip: string };
                 const steps: PathStep[] = [
-                  { label: reqs.schoolSubjects.required.slice(0, 3).join(', '), tip: `Key subjects: ${reqs.schoolSubjects.required.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
+                  { label: schoolSubjectsLabel, tip: `Key subjects: ${reqSubjects.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
                   ...(grade.hasCutoff && gradeLabel
                     ? [{ label: gradeLabel, tip: gradeTip || 'Typical grade requirement for this path' }]
                     : []),
@@ -529,20 +562,45 @@ function DiscoverTab({
                   { label: reqs.qualifiesFor.immediate, tip: `First role. With experience: ${reqs.qualifiesFor.withExperience}` },
                 ];
                 return (
-                  <div className="w-full max-w-md rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5" title="The typical path from school to your first role in this career">
-                    <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider mb-1.5 text-center">
-                      Path to {career.title}
-                      {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
-                    </p>
-                    <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                  <div className="w-full rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5">
+                    <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                      <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider text-center">
+                        Path to {career.title}
+                        {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
+                      </p>
+                      {/* Info-icon tooltip matching the pattern used by
+                          SectionHeader and every other "why this section"
+                          tooltip in the page. Replaces the native
+                          `title=` attribute that previously sat on the
+                          outer div and never surfaced a visible affordance. */}
+                      <TooltipProvider delayDuration={150}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-3 w-3 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
+                            The typical path from school to your first role in this career — school subjects, the programme or training, the entry-level job title, and the first role you qualify for.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    {/* Tight horizontal chain. gap-1 + px-1.5 save
+                        ~30px over the previous gap-1.5 + px-2 values,
+                        which combined with the abbreviated school-
+                        subjects label lets typical Discover careers
+                        (4-5 pills + arrows) fit on a single row at
+                        normal desktop widths. justify-center pairs
+                        with the centred title above. flex-wrap remains
+                        as a graceful fallback on narrow viewports. */}
+                    <div className="flex items-center justify-center gap-1 flex-wrap">
                       {steps.map((s, i) => (
                         <div key={i} className="contents">
                           {i > 0 && <span className="text-[10px] text-muted-foreground/30">→</span>}
                           <span
                             title={s.tip}
-                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-2 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors"
+                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors"
                           >
-                            <span className="max-w-[150px] truncate">{s.label}</span>
+                            <span>{s.label}</span>
                           </span>
                         </div>
                       ))}
@@ -661,7 +719,7 @@ function UnderstandTab({
 
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [carouselTab, setCarouselTab] = useState<'paths' | 'tools'>('paths');
+  const [carouselTab, setCarouselTab] = useState<'presence' | 'tools'>('presence');
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-notes', 'u-career-paths']);
 
@@ -790,6 +848,13 @@ function UnderstandTab({
         </SectionCard>
       </div>
 
+      {/* Career Presence was previously a standalone card here — it's
+          now embedded inside the "Real Career Paths & Tools" section
+          below as a persistent header band above the tab bar. Moved so
+          the Understand tab has fewer top-level sections and so the
+          geography signal lives next to the Real Career Paths content
+          it contextualises. */}
+
       {/* ── MIDDLE: A Typical Day — horizontal timeline ── */}
       <SectionCard>
         <SectionHeader icon={Clock} title="A Typical Day" tooltip="What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
@@ -848,18 +913,39 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── Study Paths — embedded browser with full institution/programme data ── */}
-      <EducationBrowser careerTitle={goalTitle} />
-
-      {/* ── BOTTOM: Tabbed carousel — Career Paths, Tools ── */}
+      {/* ── Study Path — embedded browser with full institution/programme data ──
+          Now wrapped in the standard SectionCard + SectionHeader so it
+          matches the look-and-feel of other Understand-tab sections
+          (A Typical Day, Career Presence & Tools, etc.). The header is
+          the single collapse point — EducationBrowser no longer renders
+          its own custom hero or outer border. */}
       <SectionCard>
-        <SectionHeader icon={Users} title="Real Career Paths & Tools" tooltip="How real people got into this career, and the tools professionals use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
+        <SectionHeader
+          icon={GraduationCap}
+          title="Study Path"
+          tooltip="Real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects."
+          collapsed={uCollapsed('u-study-path')}
+          onToggle={() => uToggle('u-study-path')}
+        />
+        {!uCollapsed('u-study-path') && (
+          <div className="p-4 sm:p-5">
+            <EducationBrowser careerTitle={goalTitle} />
+          </div>
+        )}
+      </SectionCard>
+
+      {/* ── BOTTOM: Tabbed carousel — Career Presence, Tools ── */}
+      <SectionCard>
+        <SectionHeader icon={Globe} title="Career Presence & Tools" tooltip="How available this career is across Norway and nearby countries, and the tools professionals use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
         {!uCollapsed('u-career-paths') && (
           <>
-            {/* Tab bar — coloured pills */}
+            {/* Tab bar — coloured pills. Career Presence is the first
+                tab, Tools of the Trade is second. The former "Real
+                Career Paths" tab was removed entirely — that content
+                now lives elsewhere on the Understand tab. */}
             <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
               {([
-                { id: 'paths' as const, label: 'Real Career Paths', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', activeBorder: 'border-emerald-500/30', activeBg: 'bg-emerald-500/15', tooltip: 'How real people got into this career — different starting points, different routes, same destination.' },
+                { id: 'presence' as const, label: 'Career Presence', icon: Globe, color: 'text-sky-400', bg: 'bg-sky-500/10', activeBorder: 'border-sky-500/30', activeBg: 'bg-sky-500/15', tooltip: 'How available this career is in Norway compared to nearby countries. Combines job postings, employer presence, industry ecosystem, study paths and remote viability into a directional availability signal.' },
                 { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15', tooltip: 'The software, equipment, and tools professionals in this role use every day.' },
               ]).map((tab) => {
                 const TabIcon = tab.icon;
@@ -892,8 +978,8 @@ function UnderstandTab({
 
             {/* Tab content */}
             <div className="p-4">
-              {carouselTab === 'paths' && (
-                <CareerPathExamplesPanel careerId={career.id} careerTitle={career.title} />
+              {carouselTab === 'presence' && (
+                <CareerPresenceCard careerId={career?.id ?? ''} careerTitle={goalTitle ?? ''} />
               )}
 
               {carouselTab === 'tools' && (() => {
@@ -917,6 +1003,7 @@ function UnderstandTab({
                   </div>
                 );
               })()}
+
             </div>
           </>
         )}
@@ -1268,22 +1355,13 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   });
   const hasFoundation = !!eduCtxData?.educationContext?.stage;
 
-  // Display name — used to personalise the Momentum header.
-  // Shares the `profile-dob` query key with personal-career-timeline
-  // so both components hit the same cached payload.
-  const { data: profileData } = useQuery<{ displayName?: string | null }>({
-    queryKey: ['profile-dob'],
-    queryFn: async () => {
-      const res = await fetch('/api/profile');
-      if (!res.ok) return {};
-      return res.json();
-    },
-    staleTime: 30 * 1000,
-  });
-  const rawName = profileData?.displayName ?? '';
-  const possessiveName = rawName
-    ? `${rawName.charAt(0).toUpperCase()}${rawName.slice(1)}'s`
-    : 'Your';
+  // Roadmap and Momentum headers are intentionally name-neutral —
+  // always "Your Roadmap" / "Your Momentum" regardless of whether the
+  // user has set a display name. Earlier versions interpolated the
+  // user's first name as a possessive ("Henry's Roadmap") but this
+  // reads as a label rather than a heading and loses meaning when the
+  // display name is missing or awkward.
+  const possessiveName = 'Your';
 
   // Collapse state for Roadmap + Momentum + From the Field, persisted
   // per-user via localStorage so the user's choice survives reloads.
