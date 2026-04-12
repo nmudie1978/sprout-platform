@@ -196,15 +196,9 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
       </div>
 
       {/* Reality check — row 3 */}
-      <div className="p-4 border-b border-border/30 space-y-2">
-        <p className={cn(titleClass, 'mb-1')}>Reality check</p>
-        <div className="flex items-center gap-3">
-          <RealityPill icon={Clock} label="Time" value={time} />
-          <RealityPill icon={Trophy} label="Compete" value={comp} />
-        </div>
-        <div className="flex items-center gap-3">
-          <RealityPill icon={GraduationCap} label="Demand" value={getDemandLabel(academic.demand)} />
-        </div>
+      <div className="p-4 border-b border-border/30">
+        <p className={cn(titleClass, 'mb-1.5')}>Reality check</p>
+        <p className="text-[11px] text-foreground/70 leading-snug">{signals[0] || 'Talk to someone in the role if you can.'}</p>
       </div>
 
       {/* Day-to-day — row 4 */}
@@ -250,6 +244,11 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
           <div className="flex items-start gap-2 text-[10px]">
             <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
             <span className="text-foreground/75 leading-snug">{career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()}</span>
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            <RealityPill icon={Clock} label="Time" value={time} />
+            <RealityPill icon={Trophy} label="Compete" value={comp} />
+            <RealityPill icon={GraduationCap} label="Demand" value={getDemandLabel(academic.demand)} />
           </div>
           {academic.grade.hasCutoff && academic.grade.gradeMin !== null && (
             <p className="text-[9px] text-muted-foreground/50">
@@ -365,7 +364,7 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
           <div class="dims">${dimsHtml}</div>
 
           <h3>Reality check</h3>
-          <p class="meta">Time: <strong>${escapeHtml(time)}</strong>  ·  Competitiveness: <strong>${escapeHtml(comp)}</strong>  ·  Demand: <strong>${escapeHtml(getDemandLabel(ap.demand))}</strong></p>
+          <p class="path">${escapeHtml(signals[0] || 'Talk to someone in the role if you can.')}</p>
 
           <h3>Study path</h3>
           <p class="path">→ ${escapeHtml(getPathwayLabel(ap.pathwayType))}</p>
