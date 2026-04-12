@@ -74,11 +74,20 @@ function GlassCard({
   style?: React.CSSProperties;
 }) {
   return (
-    <div
-      className={`bg-card/90 backdrop-blur-sm border border-border rounded-2xl shadow-sm ${className}`}
-      style={style}
-    >
-      {children}
+    <div className="relative group/glow">
+      {/* Animated border glow — subtle teal conic sweep */}
+      <div
+        className="absolute -inset-px rounded-2xl opacity-40 group-hover/glow:opacity-60 transition-opacity duration-500 blur-[1px] overflow-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 w-full h-full animate-[glow-spin_12s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0%,rgba(20,184,166,0.4)_8%,transparent_20%,transparent_50%,rgba(20,184,166,0.25)_58%,transparent_70%)]" />
+      </div>
+      <div
+        className={`relative bg-card/90 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm ${className}`}
+        style={style}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -268,11 +277,14 @@ function ProgressRing({
   total,
   size = 80,
   strokeWidth = 6,
+  active = false,
 }: {
   current: number;
   total: number;
   size?: number;
   strokeWidth?: number;
+  /** When true (goal set), use teal/green instead of grey */
+  active?: boolean;
 }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -289,7 +301,7 @@ function ProgressRing({
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-muted/40"
+          className={active ? "text-teal-500/20" : "text-muted/40"}
         />
         <circle
           cx={size / 2}
@@ -301,11 +313,14 @@ function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="text-muted-foreground/60 transition-all duration-700"
+          className={cn(
+            "transition-all duration-700",
+            active ? "text-teal-500" : "text-muted-foreground/60"
+          )}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold text-foreground">
+        <span className={cn("text-lg font-bold", active ? "text-teal-500" : "text-foreground")}>
           {current}/{total}
         </span>
       </div>
@@ -858,8 +873,7 @@ export default function DashboardPage() {
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
                   {goalTitle ? (
                     <>
-                      My Journey to becoming a{' '}
-                      <span className="font-bold">{goalTitle}</span>
+                      My Journey &mdash; {goalTitle}
                     </>
                   ) : (
                     'My Journey'
@@ -867,18 +881,17 @@ export default function DashboardPage() {
                   <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                  {goalTitle ? 'Your Primary Goal' : (
-                    <Link href="/careers/radar" data-spotlight="choose-goal" className="text-teal-500/70 hover:text-teal-500 transition-colors" onClick={(e) => e.stopPropagation()}>
-                      Choose a Primary Goal to start &rarr;
-                    </Link>
-                  )}
-                  {goalTitle && (
+                  {goalTitle ? (
                     <button
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
                       className="text-[9px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
                     >
                       change
                     </button>
+                  ) : (
+                    <Link href="/careers/radar" data-spotlight="choose-goal" className="text-teal-500/70 hover:text-teal-500 transition-colors" onClick={(e) => e.stopPropagation()}>
+                      Choose a Primary Goal to start &rarr;
+                    </Link>
                   )}
                 </p>
               </div>
@@ -886,7 +899,7 @@ export default function DashboardPage() {
 
             <div className="flex items-center gap-6">
               {/* Progress ring */}
-              <ProgressRing current={completedLensCount} total={3} />
+              <ProgressRing current={completedLensCount} total={3} active={!!goalTitle} />
 
               {/* Stage & progress bar */}
               <div className="flex-1 min-w-0">
@@ -907,11 +920,13 @@ export default function DashboardPage() {
                           : clarityDone;
                     return (
                       <div key={key} className="flex-1">
-                        <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
+                        <div className={cn("h-1.5 rounded-full overflow-hidden", goalTitle ? "bg-teal-500/15" : "bg-muted/40")}>
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-500",
-                              isLensDone ? "bg-foreground/40" : "bg-transparent"
+                              isLensDone
+                                ? goalTitle ? "bg-teal-500" : "bg-foreground/40"
+                                : "bg-transparent"
                             )}
                             style={{ width: isLensDone ? '100%' : '0%' }}
                           />
@@ -920,7 +935,7 @@ export default function DashboardPage() {
                           className={cn(
                             "text-[10px] mt-1 text-center",
                             isActive
-                              ? "text-foreground font-semibold"
+                              ? goalTitle ? "text-teal-500 font-semibold" : "text-foreground font-semibold"
                               : "text-muted-foreground/40"
                           )}
                         >
