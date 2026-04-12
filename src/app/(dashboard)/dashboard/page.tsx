@@ -75,20 +75,13 @@ function GlassCard({
   style?: React.CSSProperties;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="relative group/glow">
-      {/* Animated border glow — subtle teal conic sweep */}
-      <div
-        className="absolute -inset-px rounded-2xl opacity-50 group-hover/glow:opacity-75 transition-opacity duration-500 blur-[1px] overflow-hidden"
-        aria-hidden="true"
-      >
-        <div className="absolute inset-0 w-full h-full animate-[glow-spin_12s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0%,rgba(20,184,166,0.5)_8%,transparent_20%,transparent_50%,rgba(20,184,166,0.3)_58%,transparent_70%)]" />
-      </div>
+    <div className="relative">
       <div
         className={cn(
-          "relative bg-card border border-border/40 rounded-2xl",
-          "shadow-[0_0_12px_rgba(20,184,166,0.04),0_0_24px_rgba(20,184,166,0.02)]",
-          "group-hover/glow:shadow-[0_0_16px_rgba(20,184,166,0.06),0_0_32px_rgba(20,184,166,0.03)]",
-          "transition-shadow duration-500",
+          "relative bg-card border border-border/30 rounded-2xl",
+          "shadow-[0_0_15px_rgba(255,255,255,0.02),0_0_30px_rgba(255,255,255,0.01)]",
+          "hover:shadow-[0_0_20px_rgba(255,255,255,0.04),0_0_40px_rgba(255,255,255,0.02)]",
+          "transition-shadow duration-300",
           className,
         )}
         style={style}
@@ -1030,7 +1023,7 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-4 gap-2 mb-2">
                     <div className="text-center">
                       <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
-                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.split(' ')[0]}</p>
+                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.replace(/\s*kr\/year\s*/i, '').trim()}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
@@ -1107,7 +1100,6 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
                   <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
-                  <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                   <span className="flex-1" />
                   {totalPages > 1 && (
                     <div className="flex items-center gap-1">
