@@ -63,9 +63,9 @@ const JOURNEY_STAGES: JourneyStage[] = [
     isCompleted: false,
   },
   {
-    id: "grow",
-    label: "Grow",
-    description: "Build toward your goals",
+    id: "clarity",
+    label: "Clarity",
+    description: "See your full journey",
     isActive: false,
     isCompleted: false,
   },
@@ -234,8 +234,8 @@ function NextBestActionCard({
     if (!hasGoals) {
       return {
         id: "set-goal",
-        title: "Set your first career goal",
-        description: "Define what you're working toward to make progress meaningful.",
+        title: "Set your first Primary Goal",
+        description: "Choose the career you want to explore properly first. You can change it anytime.",
         href: "/my-journey?section=goals",
         icon: Target,
         priority: "high",
@@ -341,7 +341,7 @@ export function JourneyDashboard({
         (stage.id === "earn" && !hasCompletedJobs) ||
         (stage.id === "learn" && hasCompletedJobs && !hasGoals) ||
         (stage.id === "explore" && hasGoals && goalsCount < 2) ||
-        (stage.id === "grow" && goalsCount >= 2),
+        (stage.id === "clarity" && goalsCount >= 2),
     }));
   };
 

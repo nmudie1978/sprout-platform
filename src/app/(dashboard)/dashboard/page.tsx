@@ -345,9 +345,9 @@ function DidYouKnowCard() {
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <div className="rounded-xl border border-border/30 bg-muted/[0.04] px-5 py-4">
+      <div className="rounded-xl border border-amber-700/20 bg-amber-900/[0.06] px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mt-0.5 shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600/60 mt-0.5 shrink-0">
             Did you know?
           </span>
           <a href={fact.href} className="flex-1 min-w-0 group">
@@ -540,7 +540,7 @@ export default function DashboardPage() {
 
   // Subtle hint — shows once when user has no goal, after 3s idle
   const dashboardHint = useSubtleHint({
-    hintKey: "dashboard-goal",
+    hintKey: "dashboard-goal-v2",
     enabled: !goalTitle && status !== "loading",
     delayMs: 3000,
     durationMs: 4000,
@@ -867,7 +867,11 @@ export default function DashboardPage() {
                   <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                  {goalTitle ? 'Your Primary Goal' : 'Choose a Primary Goal to start'}
+                  {goalTitle ? 'Your Primary Goal' : (
+                    <Link href="/careers/radar" data-spotlight="choose-goal" className="text-teal-500/70 hover:text-teal-500 transition-colors" onClick={(e) => e.stopPropagation()}>
+                      Choose a Primary Goal to start &rarr;
+                    </Link>
+                  )}
                   {goalTitle && (
                     <button
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
@@ -894,7 +898,7 @@ export default function DashboardPage() {
                     // `act` is the legacy key — the new lens-progress
                     // helper exposes Clarity as `clarity`.
                     const lensKey = key === 'act' ? 'clarity' : key;
-                    const isActive = currentLens === lensKey;
+                    const isActive = goalTitle && currentLens === lensKey;
                     const isLensDone =
                       lensKey === 'discover'
                         ? discoverDone
@@ -943,26 +947,6 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* No goal CTA — replaces the removed standalone guidance card */}
-            {!goalTitle && (
-              <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                <Link
-                  href="/careers/radar"
-                  data-spotlight="explore-careers"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-foreground/90 hover:bg-foreground text-background text-sm font-medium transition-colors"
-                >
-                  Explore Careers
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-                <button
-                  onClick={() => setShowGoalSheet(true)}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border/50 hover:bg-muted/50 text-sm font-medium text-muted-foreground transition-colors"
-                >
-                  <Target className="h-3.5 w-3.5" />
-                  Search careers
-                </button>
-              </div>
-            )}
           </GlassCard>
           );
           return goalTitle ? (
@@ -1379,12 +1363,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Spotlight — guides new users to Explore Careers CTA */}
+      {/* Spotlight — guides new users to choose a Primary Goal */}
       <SpotlightHint
         visible={dashboardHint.visible}
         onDismiss={dashboardHint.dismiss}
-        text="Start here — explore careers and choose your goal"
-        targetSelector='[data-spotlight="explore-careers"]'
+        text="Start here"
+        targetSelector='[data-spotlight="choose-goal"]'
       />
     </div>
   );

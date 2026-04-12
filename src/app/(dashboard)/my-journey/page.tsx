@@ -54,7 +54,6 @@ import { EducationBrowser } from '@/components/education-browser';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 import { useSubtleHint } from '@/hooks/use-subtle-hint';
-import { SpotlightHint } from '@/components/ui/spotlight-hint';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -2802,9 +2801,13 @@ export default function MyJourneyPage() {
         </div>
 
         {/* Journey hint — first visit */}
-        <div className="flex justify-center mb-2">
-          <SpotlightHint visible={journeyHint.visible} text="This is your path" placement="bottom" />
-        </div>
+        {journeyHint.visible && (
+          <div className="flex justify-center mb-2">
+            <span className="text-xs font-medium text-muted-foreground/70 bg-card/90 border border-border/30 rounded-lg px-3 py-1.5 animate-pulse">
+              This is your path
+            </span>
+          </div>
+        )}
 
         {/* Tab content */}
         <AnimatePresence mode="wait">

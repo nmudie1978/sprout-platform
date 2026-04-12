@@ -287,7 +287,7 @@ export function useCareerFilters(
     if (filters.academicDemand !== "all") {
       careers = careers.filter((career) => {
         const profile = getAcademicProfile(career);
-        return demandAtMost(profile.demand, filters.academicDemand);
+        return demandAtMost(profile.demand, filters.academicDemand as import("@/lib/education/academic-readiness").AcademicDemand);
       });
     }
 
