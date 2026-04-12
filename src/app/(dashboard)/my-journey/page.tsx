@@ -17,6 +17,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -1046,98 +1047,42 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── School Readiness — subject + grade + pathway detail ── */}
+      {/* ── School Readiness — compact summary ── */}
       {(() => {
         const ap = getAcademicProfile(career);
         const dc = getDemandColors(ap.demand);
         const essentialSubjects = ap.subjects.filter(s => s.importance === 'essential');
-        const importantSubjects = ap.subjects.filter(s => s.importance === 'important');
         return (
           <SectionCard>
             <SectionHeader icon={GraduationCap} title="School Readiness" centered collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
             {!uCollapsed('u-school-readiness') && (
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-3">
                 {/* Summary row */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Academic demand</p>
-                    <p className={`text-sm font-semibold ${dc.text}`}>{getDemandLabel(ap.demand)}</p>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Demand</p>
+                    <p className="text-xs font-semibold text-foreground/80">{getDemandLabel(ap.demand)}</p>
                   </div>
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Pathway</p>
-                    <p className="text-sm font-semibold text-foreground/80">{getPathwayLabel(ap.pathwayType)}</p>
+                  <div className="text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Pathway</p>
+                    <p className="text-xs font-semibold text-foreground/80">{getPathwayLabel(ap.pathwayType)}</p>
                   </div>
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Competitiveness</p>
-                    <p className="text-sm font-semibold text-foreground/80">{getCompetitivenessLabel(ap.competitiveness)}</p>
+                  <div className="text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Competition</p>
+                    <p className="text-xs font-semibold text-foreground/80">{getCompetitivenessLabel(ap.competitiveness)}</p>
                   </div>
                 </div>
 
-                {/* Grade signal */}
-                {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3">
-                    <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Typical grade expectation</p>
-                    <p className="text-xs text-foreground/80">
-                      Usually requires grades around <span className="font-semibold">{ap.grade.gradeMin}–{ap.grade.gradeMax}</span> on the Norwegian 1–6 scale
-                      {ap.grade.tier === 'top' && ' — this is among the most academically demanding career paths.'}
-                      {ap.grade.tier === 'strong' && ' — solid academic performance is typically expected.'}
-                      {ap.grade.tier === 'good' && ' — good school results will help.'}
-                      {ap.grade.tier === 'pass' && ' — passing grades are usually sufficient.'}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground/40 mt-1">
-                      Grade expectations may vary by university, programme, and year of application.
-                    </p>
-                  </div>
-                )}
-
-                {/* Subjects */}
-                {(essentialSubjects.length > 0 || importantSubjects.length > 0) && (
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 space-y-2">
-                    {essentialSubjects.length > 0 && (
-                      <div>
-                        <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Key subjects</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {essentialSubjects.map(s => (
-                            <span key={s.name} className="inline-flex items-center rounded-md border border-border/20 bg-muted/10 px-2 py-0.5 text-[10px] text-foreground/70">
-                              {s.name}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                {/* Key subjects — single line */}
+                {essentialSubjects.length > 0 && (
+                  <p className="text-[10px] text-foreground/60 text-center">
+                    <span className="text-muted-foreground/45">Key subjects: </span>
+                    {essentialSubjects.map(s => s.name).join(', ')}
+                    {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                      <span className="text-muted-foreground/40"> · Typical grades: {ap.grade.gradeMin}–{ap.grade.gradeMax}</span>
                     )}
-                    {importantSubjects.length > 0 && (
-                      <div>
-                        <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Also useful</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {importantSubjects.map(s => (
-                            <span key={s.name} className="inline-flex items-center rounded-md border border-border/15 bg-muted/5 px-2 py-0.5 text-[10px] text-muted-foreground/60">
-                              {s.name}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  </p>
                 )}
-
-                {/* Alternative pathways */}
-                {ap.alternativePathways.length > 0 && (
-                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3">
-                    <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Alternative routes</p>
-                    <ul className="space-y-0.5">
-                      {ap.alternativePathways.map((alt, i) => (
-                        <li key={i} className="text-[10px] text-muted-foreground/60 leading-relaxed">
-                          &bull; {alt}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Variability note */}
-                <p className="text-[10px] text-muted-foreground/40 leading-relaxed">
-                  {ap.variabilityNote}
-                </p>
               </div>
             )}
           </SectionCard>
@@ -1276,6 +1221,7 @@ function DiscoverConfirmCard({
    *  next tab immediately when the user toggles their answer. */
   onChange?: (confirmed: boolean) => void;
 }) {
+  const t = useTranslations();
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => {
     setConfirmed(isDiscoverConfirmed(careerTitle));
@@ -1292,7 +1238,7 @@ function DiscoverConfirmCard({
     <div className="rounded-lg border border-teal-500/15 bg-teal-500/[0.03] px-4 py-2">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] text-muted-foreground/70 min-w-0">
-          Have you explored what this role is about?
+          {t('journey.discover.confirmQuestion')}
         </p>
         <button
           onClick={() => choose(!confirmed)}
@@ -1304,7 +1250,7 @@ function DiscoverConfirmCard({
           )}
           aria-pressed={confirmed}
         >
-          {confirmed ? 'Yes' : 'Mark as explored'}
+          {confirmed ? t('journey.discover.confirmYes') : t('journey.discover.confirmNotYet')}
         </button>
       </div>
     </div>
@@ -1320,6 +1266,7 @@ function UnderstandConfirmCard({
    *  immediately when the user toggles their answer. */
   onChange?: (confirmed: boolean) => void;
 }) {
+  const t = useTranslations();
   const [confirmed, setConfirmed] = useState(false);
   useEffect(() => {
     setConfirmed(isUnderstandConfirmed(careerTitle));
@@ -1336,7 +1283,7 @@ function UnderstandConfirmCard({
     <div className="rounded-lg border border-blue-500/15 bg-blue-500/[0.03] px-4 py-2">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] text-muted-foreground/70 min-w-0">
-          Did you understand the role in more detail?
+          {t('journey.understand.confirmQuestion')}
         </p>
         <button
           onClick={() => choose(!confirmed)}
@@ -1348,7 +1295,7 @@ function UnderstandConfirmCard({
           )}
           aria-pressed={confirmed}
         >
-          {confirmed ? 'Yes' : 'Mark as understood'}
+          {confirmed ? t('journey.understand.confirmYes') : t('journey.understand.confirmNotYet')}
         </button>
       </div>
     </div>
@@ -2502,6 +2449,7 @@ function ActionRow({
 
 export default function MyJourneyPage() {
   const { data: session } = useSession();
+  const t = useTranslations();
   const isYouth = session?.user?.role === 'YOUTH';
   const { data: goalsData, isLoading: goalsLoading } = useGoals(isYouth);
   const goalTitle = goalsData?.primaryGoal?.title ?? null;
@@ -2598,9 +2546,9 @@ export default function MyJourneyPage() {
   });
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
-    { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: 'Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.', lockedTooltip: '' },
-    { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.', lockedTooltip: 'Answer the confirmation at the bottom of Discover to unlock Understand' },
-    { id: 'clarity', label: 'Clarity', subtitle: 'See your full journey', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'This section brings everything together — showing you the full journey, timeline, and what it takes to become this.', lockedTooltip: 'Answer the confirmation at the bottom of Understand to unlock Clarity' },
+    { id: 'discover', label: t('journey.discover.label'), subtitle: t('journey.discover.subtitle'), icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: t('journey.discover.tooltip'), lockedTooltip: '' },
+    { id: 'understand', label: t('journey.understand.label'), subtitle: t('journey.understand.subtitle'), icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: t('journey.understand.tooltip'), lockedTooltip: t('journey.understand.lockedTooltip') },
+    { id: 'clarity', label: t('journey.clarity.label'), subtitle: t('journey.clarity.subtitle'), icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: t('journey.clarity.tooltip'), lockedTooltip: t('journey.clarity.lockedTooltip') },
   ];
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding
@@ -2628,10 +2576,10 @@ export default function MyJourneyPage() {
               <Sparkles className="h-6 w-6 text-teal-500" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-              My Journey
+              {t('journey.title')}
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
-              Choose a Primary Goal &mdash; the career you want to explore properly first. We&rsquo;ll walk you from curiosity to a real plan, one step at a time. You can change it anytime.
+              {t('journey.empty.description')}
             </p>
           </div>
 
@@ -2639,21 +2587,21 @@ export default function MyJourneyPage() {
             {[
               {
                 n: 1,
-                title: "Discover",
-                subtitle: "Explore the career",
-                body: "Get a high-level view: what it is, who does it, salary range, and whether it's worth a closer look.",
+                title: t('journey.discover.label'),
+                subtitle: t('journey.discover.subtitle'),
+                body: t('journey.discover.description'),
               },
               {
                 n: 2,
-                title: "Understand",
-                subtitle: "Know the reality",
-                body: "Go deeper into day-to-day work, qualifications, and the hard parts.",
+                title: t('journey.understand.label'),
+                subtitle: t('journey.understand.description'),
+                body: t('journey.understand.description'),
               },
               {
                 n: 3,
-                title: "Clarity",
-                subtitle: "See your full journey",
-                body: "See the full timeline, milestones, and what it takes to get there.",
+                title: t('journey.clarity.label'),
+                subtitle: t('journey.clarity.subtitle'),
+                body: t('journey.clarity.description'),
               },
             ].map((stage) => (
               <div
@@ -2684,14 +2632,14 @@ export default function MyJourneyPage() {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold transition-colors"
             >
               <Target className="h-4 w-4" />
-              Choose your Primary Goal
+              {t('journey.empty.choosePrimary')}
             </button>
             <a
               href="/careers/radar"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border bg-background hover:bg-muted/50 text-sm font-medium transition-colors"
             >
               <Sparkles className="h-4 w-4 text-teal-500" />
-              Or explore careers in Career Radar first
+              {t('journey.empty.exploreRadar')}
             </a>
           </div>
         </div>
