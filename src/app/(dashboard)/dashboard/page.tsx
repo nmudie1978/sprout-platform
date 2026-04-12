@@ -143,7 +143,7 @@ function LibraryCard({
   const t = useTranslations();
   const [view, setView] = useState<'list' | 'grid'>('list');
   const [libPage, setLibPage] = useState(0);
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 3;
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const page = Math.min(libPage, totalPages - 1);
   const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -151,36 +151,12 @@ function LibraryCard({
   return (
     <GlassCard className="p-3">
       <div className="flex items-center gap-2 mb-2">
-        <BookmarkCheck className="h-3.5 w-3.5 text-blue-500 cursor-help" title="Articles, videos, and resources you've saved from Industry Insights." />
+        <span title="Articles, videos, and resources you've saved from Industry Insights."><BookmarkCheck className="h-3.5 w-3.5 text-blue-500 cursor-help" /></span>
         <h3 className="text-xs font-semibold">My Library</h3>
         {total > 0 && (
           <span className="text-[10px] text-muted-foreground/40">{total}</span>
         )}
         <span className="flex-1" />
-        {items.length > 0 && (
-          <div className="flex items-center gap-0.5 rounded-md bg-muted/30 p-0.5">
-            <button
-              onClick={() => { setView('list'); setLibPage(0); }}
-              className={cn(
-                'p-1 rounded transition-colors',
-                view === 'list' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
-              )}
-              title="List view"
-            >
-              <FileText className="h-3 w-3" />
-            </button>
-            <button
-              onClick={() => { setView('grid'); setLibPage(0); }}
-              className={cn(
-                'p-1 rounded transition-colors',
-                view === 'grid' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground/50 hover:text-muted-foreground'
-              )}
-              title="Grid view"
-            >
-              <Compass className="h-3 w-3" />
-            </button>
-          </div>
-        )}
         {totalPages > 1 && (
           <div className="flex items-center gap-1 ml-1">
             <button
