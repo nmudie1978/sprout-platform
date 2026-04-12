@@ -281,9 +281,6 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             )}
           </div>
         )}
-        <p className="text-[8px] text-muted-foreground/35 leading-relaxed pt-0.5">
-          {academic.variabilityNote}
-        </p>
       </div>
     </div>
   );
