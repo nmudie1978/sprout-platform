@@ -68,23 +68,31 @@ function GlassCard({
   children,
   className = "",
   style,
+  ...rest
 }: {
   children: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className="relative group/glow">
       {/* Animated border glow — subtle teal conic sweep */}
       <div
-        className="absolute -inset-px rounded-2xl opacity-40 group-hover/glow:opacity-60 transition-opacity duration-500 blur-[1px] overflow-hidden"
+        className="absolute -inset-px rounded-2xl opacity-50 group-hover/glow:opacity-75 transition-opacity duration-500 blur-[1px] overflow-hidden"
         aria-hidden="true"
       >
-        <div className="absolute inset-0 w-full h-full animate-[glow-spin_12s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0%,rgba(20,184,166,0.4)_8%,transparent_20%,transparent_50%,rgba(20,184,166,0.25)_58%,transparent_70%)]" />
+        <div className="absolute inset-0 w-full h-full animate-[glow-spin_12s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0%,rgba(20,184,166,0.5)_8%,transparent_20%,transparent_50%,rgba(20,184,166,0.3)_58%,transparent_70%)]" />
       </div>
       <div
-        className={`relative bg-card/90 backdrop-blur-sm border border-border/50 rounded-2xl shadow-sm ${className}`}
+        className={cn(
+          "relative bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl",
+          "shadow-[0_0_12px_rgba(20,184,166,0.04),0_0_24px_rgba(20,184,166,0.02)]",
+          "group-hover/glow:shadow-[0_0_16px_rgba(20,184,166,0.06),0_0_32px_rgba(20,184,166,0.03)]",
+          "transition-shadow duration-500",
+          className,
+        )}
         style={style}
+        {...rest}
       >
         {children}
       </div>
@@ -864,7 +872,7 @@ export default function DashboardPage() {
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-border/40", goalTitle && "hover:border-border/60")}>
+          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-border/30 shadow-[0_0_15px_rgba(255,255,255,0.03),0_0_30px_rgba(255,255,255,0.02)]", goalTitle && "hover:border-border/50 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_0_40px_rgba(255,255,255,0.03)]")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -1013,34 +1021,55 @@ export default function DashboardPage() {
                 <Search className="h-3.5 w-3.5 text-teal-500" />
                 <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
               </div>
-              <div className="space-y-2.5">
-                <a
-                  href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(goalCareer.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-lg border border-border/20 px-3 py-2.5 hover:bg-muted/20 hover:border-border/40 transition-all group"
-                >
-                  <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                    <PlayCircle className="h-3.5 w-3.5 text-muted-foreground/60" />
+              {/* Day in the Life — YouTube thumbnail */}
+              <a
+                href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(goalCareer.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg overflow-hidden border border-border/20 hover:border-border/40 transition-all group mb-3"
+              >
+                <div className="relative aspect-video bg-muted/20">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://img.youtube.com/vi/${encodeURIComponent(goalCareer.id)}/0.jpg`}
+                    alt={`Day in the life of a ${goalCareer.title}`}
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm">
+                      <PlayCircle className="h-5 w-5 text-white" />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/90 transition-colors">Day in the Life</p>
-                    <p className="text-[10px] text-muted-foreground/40">{goalCareer.title} on YouTube</p>
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-2.5">
+                    <p className="text-[10px] font-medium text-white/90">Day in the Life &mdash; {goalCareer.title}</p>
                   </div>
-                </a>
-                <button
-                  onClick={() => setShowGoalDetail(true)}
-                  className="flex items-center gap-3 rounded-lg border border-border/20 px-3 py-2.5 hover:bg-muted/20 hover:border-border/40 transition-all group w-full text-left"
-                >
-                  <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
-                    <Search className="h-3.5 w-3.5 text-muted-foreground/60" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/90 transition-colors">Career Details</p>
-                    <p className="text-[10px] text-muted-foreground/40">Salary, education, skills</p>
-                  </div>
-                </button>
+                </div>
+              </a>
+
+              {/* Career snapshot stats */}
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="text-center">
+                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
+                  <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.split(' ')[0]}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
+                  <p className="text-[11px] font-semibold text-foreground/75 capitalize">{goalCareer.growthOutlook}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Path</p>
+                  <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.entryLevel ? 'Entry-level' : goalCareer.educationPath.match(/bachelor|master|doctorate|vocational|fagbrev/i)?.[0] || 'Degree'}</p>
+                </div>
               </div>
+
+              {/* Full details link */}
+              <button
+                onClick={() => setShowGoalDetail(true)}
+                className="w-full text-center text-[10px] text-muted-foreground/50 hover:text-foreground/70 transition-colors py-1"
+              >
+                View full details &rarr;
+              </button>
             </GlassCard>
           ) : (
             <GlassCard className="p-3 h-full">
@@ -1073,7 +1102,7 @@ export default function DashboardPage() {
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
-                <GlassCard className="p-4 h-full border-teal-500/10">
+                <GlassCard className="p-4 h-full border-border/30">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="h-3.5 w-3.5 text-teal-500" />
                     <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
@@ -1096,7 +1125,7 @@ export default function DashboardPage() {
             const pageGoals = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
             return (
-              <GlassCard className="p-3 h-full flex flex-col border-teal-500/10">
+              <GlassCard className="p-3 h-full flex flex-col border-border/30">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
                   <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
