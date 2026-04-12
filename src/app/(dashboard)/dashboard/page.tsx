@@ -1,7 +1,6 @@
 "use client";
 
 import { toast } from "sonner";
-import { DashboardGuideTips } from "@/components/dashboard/guide-tips";
 
 /**
  * DASHBOARD PAGE — Information-Rich Overview
@@ -40,7 +39,7 @@ import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { RadarOnboardingWizard } from "@/components/onboarding/radar-onboarding-wizard";
+import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers } from "@/lib/career-pathways";
@@ -50,9 +49,10 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { SectionWhy } from "@/components/ui/section-why";
-import { GuidanceCallout } from "@/components/guidance/guidance-callout";
 import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
+import { useSubtleHint } from "@/hooks/use-subtle-hint";
+import { SpotlightHint } from "@/components/ui/spotlight-hint";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -140,7 +140,7 @@ function LibraryCard({
     <GlassCard className="p-3">
       <div className="flex items-center gap-2 mb-2">
         <BookmarkCheck className="h-3.5 w-3.5 text-blue-500" />
-        <h3 className="text-xs font-semibold flex items-center gap-1.5">My Library <SectionWhy why="Articles, videos, and resources you've saved while exploring careers. Your personal research collection." /></h3>
+        <h3 className="text-xs font-semibold flex items-center gap-1.5">My Library <SectionWhy why="Articles, videos, and resources you've saved while exploring industry insights. Your personal research collection." /></h3>
         {total > 0 && (
           <span className="text-[10px] text-muted-foreground/40">{total}</span>
         )}
@@ -203,9 +203,9 @@ function LibraryCard({
               >
                 <span className={cn(
                   "text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0",
-                  item.type === 'VIDEO' ? 'bg-red-500/10 text-red-400' :
-                  item.type === 'ARTICLE' ? 'bg-blue-500/10 text-blue-400' :
-                  'bg-purple-500/10 text-purple-400'
+                  item.type === 'VIDEO' ? 'bg-muted/20 text-muted-foreground/60' :
+                  item.type === 'ARTICLE' ? 'bg-muted/20 text-muted-foreground/60' :
+                  'bg-muted/20 text-muted-foreground/60'
                 )}>
                   {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
                 </span>
@@ -256,13 +256,7 @@ function LibraryCard({
           </div>
         )
       ) : (
-        <GuidanceCallout
-          id="library-empty"
-          category="direction"
-          variant="hint"
-          message="Your library is empty."
-          dismissible={false}
-        />
+        <p className="text-xs text-muted-foreground/50 mt-1">Your library is empty.</p>
       )}
     </GlassCard>
   );
@@ -307,7 +301,7 @@ function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="text-teal-500 transition-all duration-700"
+          className="text-muted-foreground/60 transition-all duration-700"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -323,7 +317,7 @@ function ProgressRing({
 const LENS_LABELS = [
   { key: "discover", label: "Discover" },
   { key: "understand", label: "Understand" },
-  { key: "act", label: "Grow" },
+  { key: "act", label: "Clarity" },
 ] as const;
 
 // ── Main Page ────────────────────────────────────────────────────────
@@ -351,9 +345,9 @@ function DidYouKnowCard() {
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] px-5 py-4">
+      <div className="rounded-xl border border-border/30 bg-muted/[0.04] px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-500/60 mt-0.5 shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mt-0.5 shrink-0">
             Did you know?
           </span>
           <a href={fact.href} className="flex-1 min-w-0 group">
@@ -361,10 +355,10 @@ function DidYouKnowCard() {
               {fact.text}
             </p>
           </a>
-          <span className="text-[9px] text-amber-500/40 shrink-0 mt-0.5">{fact.source}</span>
+          <span className="text-[9px] text-muted-foreground/35 shrink-0 mt-0.5">{fact.source}</span>
           <button
             onClick={refresh}
-            className="p-1 rounded-md text-amber-500/30 hover:text-amber-500/70 transition-colors shrink-0"
+            className="p-1 rounded-md text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
             title="Show another fact"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -377,8 +371,9 @@ function DidYouKnowCard() {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  // Onboarding: inline card on first login only
+  // Onboarding walkthrough
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const isReplayRef = useRef(false);
   const dismissedRef = useRef(false);
   const [careerMatchesCardDismissed, setCareerMatchesCardDismissed] = useState(true);
   useEffect(() => {
@@ -516,8 +511,8 @@ export default function DashboardPage() {
       // Nudge the user toward My Journey so they start exploring the
       // career in depth. The toast stays for 8s and has a clickable
       // action that navigates directly.
-      toast.success(`${goalTitle} set as your goal`, {
-        description: "Your previous journey is saved in My Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring this new path.",
+      toast.success(`${goalTitle} set as your Primary Goal`, {
+        description: "Your previous journey is saved in My Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring your new Primary Goal.",
         duration: 8000,
         action: {
           label: "Go to My Journey",
@@ -531,7 +526,7 @@ export default function DashboardPage() {
   const _secondaryGoal = goalsData?.secondaryGoal; // Available for future use
   const goalTitle = primaryGoal?.title ?? null;
 
-  // ── Journey progress (Discover / Understand / Grow) ─────────────
+  // ── Journey progress (Discover / Understand / Clarity) ─────────
   // Derived directly from goalTitle so the ring updates in the same
   // render that the title changes — no useState/useEffect timing gap.
   // See lib/journey/lens-progress.ts for the rationale.
@@ -540,8 +535,16 @@ export default function DashboardPage() {
     [goalTitle],
   );
 
-  const { discoverDone, understandDone, growDone, currentLens, completedCount: completedLensCount } =
+  const { discoverDone, understandDone, clarityDone, currentLens, completedCount: completedLensCount } =
     lensProgress;
+
+  // Subtle hint — shows once when user has no goal, after 3s idle
+  const dashboardHint = useSubtleHint({
+    hintKey: "dashboard-goal",
+    enabled: !goalTitle && status !== "loading",
+    delayMs: 3000,
+    durationMs: 4000,
+  });
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -673,13 +676,20 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[100vh] bg-background text-foreground">
-      {/* 3-question Radar onboarding wizard — replaces the old 4-step modal */}
-      <RadarOnboardingWizard
+      {/* Guided orientation walkthrough — explains the platform, lands on Career Radar */}
+      <OrientationWalkthrough
         open={showOnboardingWizard}
         onComplete={() => {
+          const wasReplay = isReplayRef.current;
+          isReplayRef.current = false;
           dismissedRef.current = true;
           setShowOnboardingWizard(false);
-          refetchOnboarding();
+          if (!wasReplay) {
+            // First-run: mark onboarding done + route to Career Radar
+            fetch("/api/onboarding", { method: "PATCH" }).catch(() => {});
+            refetchOnboarding();
+            window.location.href = "/careers/radar";
+          }
         }}
       />
 
@@ -689,7 +699,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
               {isFirstLogin ? (
-                <>Welcome<span className="text-teal-500">,</span> <span className="text-foreground">{displayName}</span></>
+                <>Welcome, <span className="text-foreground">{displayName}</span></>
               ) : (
                 <><span className="text-muted-foreground/70 font-normal">{timeGreeting}</span>{' '}<span className="text-muted-foreground/70 font-normal">{displayName}</span></>
               )}
@@ -713,7 +723,17 @@ export default function DashboardPage() {
             })()}
           </div>
           <div className="flex items-center gap-3">
-            <DashboardGuideTips hasGoal={!!primaryGoal} />
+            {/* Replay walkthrough */}
+            {!isFirstLogin && session?.user.role === "YOUTH" && (
+              <button
+                type="button"
+                onClick={() => { isReplayRef.current = true; setShowOnboardingWizard(true); }}
+                className="h-7 w-7 rounded-full border border-border/40 bg-background/60 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-muted/40 transition-colors"
+                title="Replay app walkthrough"
+              >
+                <Compass className="h-3.5 w-3.5" />
+              </button>
+            )}
             <span className="text-sm text-muted-foreground/60 flex items-center gap-2">
               <Clock className="h-4 w-4" />
               {dateStr}
@@ -731,8 +751,8 @@ export default function DashboardPage() {
                 className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors flex items-center justify-center"
               >
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-amber-500/70 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-500" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-muted-foreground/50 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-muted-foreground/60" />
                 </span>
               </Link>
             )}
@@ -756,7 +776,7 @@ export default function DashboardPage() {
                 >
                   <User className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
                   {pct < 100 && (
-                    <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-teal-500 border-2 border-background" />
+                    <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-muted-foreground/50 border-2 border-background" />
                   )}
                 </Link>
               );
@@ -788,124 +808,66 @@ export default function DashboardPage() {
           );
           const hasGoal = !!goalTitle;
 
-          // State 1: brand-new user, wizard hasn't been used
+          // State 1: brand-new user — the walkthrough auto-opens; this is a
+          // fallback card in case they closed it without completing.
           if (isFirstLogin) {
             return (
               <div className="mb-6">
-                <GlassCard className="relative overflow-hidden border-teal-500/30 bg-gradient-to-br from-teal-500/[0.06] via-card/80 to-card/80">
+                <GlassCard className="relative overflow-hidden border-border/40">
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start gap-4">
-                      <div className="p-2.5 rounded-xl bg-teal-500/10 shrink-0">
-                        <Sparkles className="h-5 w-5 text-teal-500" />
+                      <div className="p-2.5 rounded-xl bg-muted/30 shrink-0">
+                        <Sparkles className="h-5 w-5 text-muted-foreground" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-teal-500/60 mb-1">
-                          60 seconds
-                        </p>
                         <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          Build your Career Radar
+                          New here? Take a quick look around
                         </h2>
                         <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
-                          Three quick questions and we&rsquo;ll show you careers from across every path &mdash; including ones you&rsquo;ve probably never heard of.
+                          A short walkthrough that shows you what each part of the platform does &mdash; takes about 30 seconds.
                         </p>
                         <button
                           onClick={() => {
                             dismissedRef.current = true;
                             setShowOnboardingWizard(true);
                           }}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/90 hover:bg-foreground text-background text-sm font-medium transition-colors"
                         >
-                          Start
+                          Show me around
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
                   </div>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-teal-500/10 to-transparent pointer-events-none" />
                 </GlassCard>
               </div>
             );
           }
 
-          // State 2 & 3 (completed onboarding but no goal yet) used to be
-          // a giant pink "Find your matches" hero card here. It's been
-          // demoted to one of the First-steps cards below — the radar is
-          // one of several recommended next moves, not THE next move.
-          return null;
-        })()}
-
-        {/* ── First steps — small concrete actions, not feature shortcuts.
-            Three calm cards guiding a brand-new user toward small first
-            actions that aren't the radar (the radar already has its own
-            hero card above). Vanishes once the user has set a goal —
-            from that point forward My Journey is the centre of gravity.
-        */}
-        {(() => {
-          const hasGoal = !!goalTitle;
-          // Hide once the user has actually picked a career to commit to
-          if (isFirstLogin || hasGoal) return null;
-
-          // Re-derive prefs flag locally — the parent IIFE that tracked it
-          // is gone now that the giant pink "Find your matches" card has
-          // been demoted into this First-steps row.
-          const dp = (profileData as { discoveryPreferences?: { subjects?: string[]; workStyles?: string[] } } | null)?.discoveryPreferences;
-          const hasDiscoveryPrefs = !!dp && (
-            (dp.subjects?.length ?? 0) > 0 ||
-            (dp.workStyles?.length ?? 0) > 0
-          );
-
-          const steps = [
-            {
-              href: "/careers/radar",
-              icon: Sparkles,
-              label: hasDiscoveryPrefs ? "See your career radar" : "Find your matches",
-              hint: hasDiscoveryPrefs
-                ? "Careers mapped to the interests you told us about."
-                : "Tell us what you like and we'll map careers across every path.",
-            },
-            {
-              href: "/careers",
-              icon: Compass,
-              label: "Browse some careers",
-              hint: "Look around 400+ jobs from healthcare to tech.",
-            },
-            {
-              href: "/my-journey",
-              icon: Target,
-              label: "Set your first career goal",
-              hint: "Pick one to explore in depth in My Journey.",
-            },
-          ];
-
+          // No goal yet — nudge toward choosing a Primary Goal
           return (
             <div className="mb-6">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
-                First steps
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {steps.map((s) => {
-                  const Icon = s.icon;
-                  return (
+              <GlassCard className="relative overflow-hidden border-teal-500/15">
+                <div className="p-5 sm:p-6">
+                  <h2 className="text-lg font-semibold text-foreground mb-1">
+                    Choose your Primary Goal
+                  </h2>
+                  <p className="text-sm text-muted-foreground/70 mb-4 max-w-md">
+                    Pick one career to explore properly. You can always change it later.
+                  </p>
+                  <div className="relative inline-flex flex-col items-start gap-1.5" id="explore-careers-cta">
                     <Link
-                      key={s.label}
-                      href={s.href}
-                      className="group rounded-xl border bg-card p-3 transition-colors flex items-start gap-2.5 hover:border-teal-500/40 hover:bg-teal-500/[0.03]"
+                      href="/careers/radar"
+                      onClick={dashboardHint.dismiss}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
                     >
-                      <div className="h-7 w-7 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
-                        <Icon className="h-3.5 w-3.5 text-teal-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold leading-tight">
-                          {s.label}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
-                          {s.hint}
-                        </p>
-                      </div>
+                      Explore Careers
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
-                  );
-                })}
-              </div>
+                    <SpotlightHint visible={dashboardHint.visible} text="Start here" placement="bottom" />
+                  </div>
+                </div>
+              </GlassCard>
             </div>
           );
         })()}
@@ -913,29 +875,29 @@ export default function DashboardPage() {
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard className={cn("p-5 sm:p-6 border-teal-500/40 transition-all duration-300 ring-1 ring-teal-500/20", goalTitle && "hover:border-teal-400/60")} style={{ boxShadow: '0 0 20px rgba(20, 184, 166, 0.25), 0 0 40px rgba(20, 184, 166, 0.15), 0 0 80px rgba(20, 184, 166, 0.10)' }}>
+          <GlassCard className={cn("p-5 sm:p-6 border-border/40 transition-all duration-300", goalTitle && "hover:border-border/60")}>
             <div className="flex items-center gap-2 mb-4">
-              <div className="p-1.5 rounded-lg bg-teal-500/10">
-                <TrendingUp className="h-4 w-4 text-teal-500" />
+              <div className="p-1.5 rounded-lg bg-muted/30">
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
                   {goalTitle ? (
                     <>
                       My Journey to becoming a{' '}
-                      <span className="text-teal-400 font-bold">{goalTitle}</span>
+                      <span className="font-bold">{goalTitle}</span>
                     </>
                   ) : (
                     'My Journey'
                   )}
-                  <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Grow — helping you turn career ideas into real steps forward." />
+                  <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                  {goalTitle ? 'Your chosen path' : 'Track your growth'}
+                  {goalTitle ? 'Your Primary Goal' : 'Choose a Primary Goal to start'}
                   {goalTitle && (
                     <button
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
-                      className="text-[9px] text-teal-500/60 hover:text-teal-500 transition-colors font-medium"
+                      className="text-[9px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
                     >
                       change
                     </button>
@@ -956,22 +918,22 @@ export default function DashboardPage() {
                 <div className="flex gap-1 mb-3">
                   {LENS_LABELS.map(({ key, label }) => {
                     // `act` is the legacy key — the new lens-progress
-                    // helper exposes Grow as `grow`.
-                    const lensKey = key === 'act' ? 'grow' : key;
+                    // helper exposes Clarity as `clarity`.
+                    const lensKey = key === 'act' ? 'clarity' : key;
                     const isActive = currentLens === lensKey;
                     const isLensDone =
                       lensKey === 'discover'
                         ? discoverDone
                         : lensKey === 'understand'
                           ? understandDone
-                          : growDone;
+                          : clarityDone;
                     return (
                       <div key={key} className="flex-1">
                         <div className="h-1.5 bg-muted/40 rounded-full overflow-hidden">
                           <div
                             className={cn(
                               "h-full rounded-full transition-all duration-500",
-                              isLensDone ? "bg-teal-500" : "bg-transparent"
+                              isLensDone ? "bg-foreground/40" : "bg-transparent"
                             )}
                             style={{ width: isLensDone ? '100%' : '0%' }}
                           />
@@ -980,7 +942,7 @@ export default function DashboardPage() {
                           className={cn(
                             "text-[10px] mt-1 text-center",
                             isActive
-                              ? "text-teal-500 font-semibold"
+                              ? "text-foreground font-semibold"
                               : "text-muted-foreground/40"
                           )}
                         >
@@ -996,12 +958,12 @@ export default function DashboardPage() {
 
             {/* Subtle completion indicator — replaces the old congrats
                 banner that used to render here. The full celebration
-                stays inside the Grow tab's GrowCompleteCard so the
+                stays inside the Clarity tab's ClarityCompletionCard so the
                 congratulatory moment happens in context. On the
                 Dashboard we only need a quiet marker that this journey
                 is complete, consistent across refresh and revisit. */}
             {completedLensCount === 3 && (
-              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-emerald-400/90">
+              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
                 <CheckCircle2 className="h-3 w-3 shrink-0" />
                 <span>Journey complete</span>
               </div>
@@ -1020,8 +982,8 @@ export default function DashboardPage() {
           <Link href="/my-journey" className="block mb-6 group">
             <GlassCard className="p-4 hover:border-border/60 transition-all">
               <div className="flex items-start gap-3">
-                <div className="p-1.5 rounded-lg bg-violet-500/10 shrink-0 mt-0.5">
-                  <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+                <div className="p-1.5 rounded-lg bg-muted/20 shrink-0 mt-0.5">
+                  <Sparkles className="h-3.5 w-3.5 text-muted-foreground/60" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1">
@@ -1035,7 +997,7 @@ export default function DashboardPage() {
                       {discoverData.signals.topTags.slice(0, 6).map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-violet-500/8 text-violet-400/70"
+                          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-muted/20 text-muted-foreground/60"
                         >
                           {tag}
                         </span>
@@ -1062,10 +1024,10 @@ export default function DashboardPage() {
                   href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(goalCareer.title)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-lg bg-red-500/[0.06] border border-red-500/10 px-3 py-2.5 hover:bg-red-500/10 hover:border-red-500/20 transition-all group"
+                  className="flex items-center gap-3 rounded-lg border border-border/20 px-3 py-2.5 hover:bg-muted/20 hover:border-border/40 transition-all group"
                 >
-                  <div className="h-8 w-8 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
-                    <span className="text-red-400 text-sm">▶</span>
+                  <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                    <PlayCircle className="h-3.5 w-3.5 text-muted-foreground/60" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/90 transition-colors">Day in the Life</p>
@@ -1074,10 +1036,10 @@ export default function DashboardPage() {
                 </a>
                 <button
                   onClick={() => setShowGoalDetail(true)}
-                  className="flex items-center gap-3 rounded-lg bg-teal-500/[0.04] border border-teal-500/10 px-3 py-2.5 hover:bg-teal-500/8 hover:border-teal-500/20 transition-all group w-full text-left"
+                  className="flex items-center gap-3 rounded-lg border border-border/20 px-3 py-2.5 hover:bg-muted/20 hover:border-border/40 transition-all group w-full text-left"
                 >
-                  <div className="h-8 w-8 rounded-lg bg-teal-500/10 flex items-center justify-center shrink-0">
-                    <Search className="h-3.5 w-3.5 text-teal-500/70" />
+                  <div className="h-8 w-8 rounded-lg bg-muted/20 flex items-center justify-center shrink-0">
+                    <Search className="h-3.5 w-3.5 text-muted-foreground/60" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/90 transition-colors">Career Details</p>
@@ -1087,13 +1049,13 @@ export default function DashboardPage() {
               </div>
             </GlassCard>
           ) : (
-            <GlassCard className="p-4 h-full">
-              <div className="flex items-center gap-2 mb-2">
+            <GlassCard className="p-3 h-full">
+              <div className="flex items-center gap-2 mb-1.5">
                 <Search className="h-3.5 w-3.5 text-teal-500" />
                 <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
               </div>
-              <p className="text-sm text-muted-foreground/40">
-                Set a goal to see career info
+              <p className="text-xs text-muted-foreground/40">
+                Choose a Primary Goal to see career info
               </p>
             </GlassCard>
           )}
@@ -1106,7 +1068,7 @@ export default function DashboardPage() {
             // the three approved checkpoints:
             //   - Discover YES
             //   - Understand YES
-            //   - Grow 2/2 tasks complete
+            //   - Clarity 2/2 tasks complete
             // Per-goal rows in JourneyGoalData exist for data
             // persistence (roadmap cards, foundation mirror) but are
             // invisible to this list until a checkpoint fires.
@@ -1122,14 +1084,7 @@ export default function DashboardPage() {
                     <Target className="h-3.5 w-3.5 text-violet-500" />
                     <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journey snapshots <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   </div>
-                  <GuidanceCallout
-                    id="explored-journeys-empty"
-                    category="direction"
-                    variant="hint"
-                    message="No journeys yet."
-                    submessage="Pick a career from Explore Careers to start your first journey — every one you open is saved here."
-                    dismissible={false}
-                  />
+                  <p className="text-xs text-muted-foreground/50 mt-1">No journeys yet.</p>
                 </GlassCard>
               );
             }
@@ -1201,12 +1156,8 @@ export default function DashboardPage() {
                         const stageLabel = stageInfo?.label ?? 'Discover';
                         const stageDotColor =
                           stageLabel === 'Complete'
-                            ? 'bg-emerald-400'
-                            : stageLabel === 'Grow'
-                              ? 'bg-amber-400'
-                              : stageLabel === 'Understand'
-                                ? 'bg-blue-400'
-                                : 'bg-teal-400';
+                            ? 'bg-foreground/60'
+                            : 'bg-muted-foreground/30';
                         return (
                           <tr
                             key={goal.goalId}
@@ -1215,13 +1166,13 @@ export default function DashboardPage() {
                             }}
                             className={cn(
                               "transition-colors",
-                              isCurrentGoal ? "bg-teal-500/[0.04]" : "hover:bg-muted/30 cursor-pointer",
+                              isCurrentGoal ? "bg-muted/20" : "hover:bg-muted/30 cursor-pointer",
                             )}
                           >
                             <td className="px-2.5 py-1.5">
                               <span className="flex items-center gap-2 min-w-0">
                                 <span className="text-sm shrink-0">{career?.emoji ?? "🎯"}</span>
-                                <span className={cn("text-[11px] truncate", isCurrentGoal ? "font-medium text-teal-400" : "text-foreground/75")}>
+                                <span className={cn("text-[11px] truncate", isCurrentGoal ? "font-medium text-foreground" : "text-foreground/75")}>
                                   {goal.goalTitle}
                                 </span>
                               </span>
@@ -1231,7 +1182,7 @@ export default function DashboardPage() {
                             </td>
                             <td className="px-2 py-1.5 text-center">
                               {isCurrentGoal ? (
-                                <span className="text-[8px] font-medium text-teal-500/80 bg-teal-500/10 px-1.5 py-0.5 rounded-full">Active</span>
+                                <span className="text-[8px] font-medium text-foreground/70 bg-muted/40 px-1.5 py-0.5 rounded-full">Primary Goal</span>
                               ) : (
                                 <span className="text-[8px] text-muted-foreground/40">Saved</span>
                               )}
@@ -1314,13 +1265,7 @@ export default function DashboardPage() {
                 )}
               </>
             ) : (
-              <GuidanceCallout
-                id="saved-careers-empty"
-                category="direction"
-                variant="hint"
-                message="No saved careers yet."
-                dismissible={false}
-              />
+              <p className="text-xs text-muted-foreground/50 mt-1">No saved careers yet.</p>
             )}
           </GlassCard>
         </div>
@@ -1335,7 +1280,7 @@ export default function DashboardPage() {
           const inner = (
             <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
               <div className="flex items-center gap-2 mb-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-emerald-500/70" />
+                <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60" />
                 <h3 className="text-xs font-semibold flex items-center gap-1.5">
                   My Small Jobs
                   <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." />
@@ -1404,18 +1349,18 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{switchConfirm.emoji}</span>
               <div>
-                <h3 className="text-sm font-semibold">Switch journey to {switchConfirm.goalTitle}?</h3>
+                <h3 className="text-sm font-semibold">Switch Primary Goal to {switchConfirm.goalTitle}?</h3>
                 <p className="text-[11px] text-muted-foreground/60">
-                  Your current progress will be saved.
+                  Your current progress will be saved. You can switch back anytime.
                 </p>
               </div>
             </div>
             <div className="rounded-lg bg-muted/40 border border-border/40 p-3 mb-4 space-y-1">
               <p className="text-[10px] font-medium text-muted-foreground/70">What happens:</p>
               <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> Your journey for {goalTitle || 'your current goal'} is saved</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">My Explored Journeys</span> on your dashboard</li>
-                <li className="flex items-start gap-1.5"><span className="text-emerald-500 mt-px">&#10003;</span> All data — roadmap, foundation, preferences — is preserved</li>
+                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> Your journey for {goalTitle || 'your current goal'} is saved</li>
+                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">My Explored Journeys</span> on your dashboard</li>
+                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> All data — roadmap, foundation, preferences — is preserved</li>
               </ul>
             </div>
             <div className="flex justify-end gap-2">
@@ -1430,9 +1375,9 @@ export default function DashboardPage() {
                   switchGoalMutation.mutate(switchConfirm.goalTitle);
                   setSwitchConfirm(null);
                 }}
-                className="px-3 py-1.5 text-xs rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium transition-colors"
+                className="px-3 py-1.5 text-xs rounded-lg bg-foreground/90 hover:bg-foreground text-background font-medium transition-colors"
               >
-                Switch journey
+                Switch Primary Goal
               </button>
             </div>
           </div>

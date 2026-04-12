@@ -20,6 +20,9 @@ export type CareerNature =
   | "structured-organised"
   | "leadership";
 
+export type SectorFilter = "all" | "public" | "private";
+export type AcademicDemandFilter = "all" | "low" | "moderate" | "strong" | "very-strong";
+
 export interface SalaryRange {
   min: number; // in thousands (kr)
   max: number; // in thousands (kr)
@@ -30,6 +33,12 @@ export interface CareerFilterState {
   category: string;
   searchQuery: string;
   growthFilter: string;
+
+  // Sector filter
+  sector: SectorFilter;
+
+  // Academic demand filter
+  academicDemand: AcademicDemandFilter;
 
   // Advanced filters
   salaryRange: SalaryRange | null;
@@ -43,6 +52,8 @@ export interface ActiveFilterChip {
     | "category"
     | "search"
     | "growth"
+    | "sector"
+    | "academic"
     | "salary"
     | "education"
     | "skill"
@@ -55,6 +66,8 @@ export const DEFAULT_FILTER_STATE: CareerFilterState = {
   category: "ALL",
   searchQuery: "",
   growthFilter: "all",
+  sector: "all",
+  academicDemand: "all",
   salaryRange: null,
   educationLevels: [],
   skills: [],

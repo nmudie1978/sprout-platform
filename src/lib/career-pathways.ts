@@ -286,17 +286,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // Healthcare — Doctors & Specialists
     // ──────────────────────────────────────────────
     {
-      id: "general-practitioner",
-      title: "General Practitioner",
-      emoji: "🩺",
-      description: "Family doctor providing first-line care, diagnosing common conditions, and referring patients to specialists when needed.",
-      avgSalary: "900,000 - 1,400,000 kr/year",
-      educationPath: "Medical Degree (6 years) + GP Specialisation (5 years)",
-      keySkills: ["broad medical knowledge", "communication", "diagnostic reasoning", "empathy", "decision-making"],
-      dailyTasks: ["See patients in clinic", "Diagnose common conditions", "Prescribe medication", "Refer to specialists", "Manage chronic illness"],
-      growthOutlook: "high",
-    },
-    {
       id: "surgeon",
       title: "Surgeon",
       emoji: "🔪",
@@ -2007,17 +1996,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
     },
     {
-      id: "entrepreneur",
-      title: "Startup Founder",
-      emoji: "🚀",
-      description: "Start and grow your own business, turning ideas into products and services.",
-      avgSalary: "Variable - from loss to millions",
-      educationPath: "Any background + business knowledge and determination",
-      keySkills: ["leadership", "risk-taking", "resilience", "creativity", "sales"],
-      dailyTasks: ["Develop products", "Manage team", "Find customers", "Secure funding", "Make decisions"],
-      growthOutlook: "high",
-    },
-    {
       id: "lawyer",
       title: "Lawyer",
       emoji: "⚖️",
@@ -2951,14 +2929,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Advise clients", "Research markets", "Build models", "Present recommendations", "Win engagements"],
       growthOutlook: "high",
     },
-    // ── Entrepreneurship & solo business ──
-    { id: "entrepreneur", title: "Entrepreneur", emoji: "🚀", description: "Identify problems, build solutions, and turn them into businesses — taking on risk for the chance of outsized reward.", avgSalary: "0 - 5,000,000+ kr/year (highly variable)", educationPath: "No formal requirement — drive, judgement, and execution matter most", keySkills: ["sales", "product thinking", "resilience", "leadership", "decision-making"], dailyTasks: ["Talk to customers", "Build product", "Sell relentlessly", "Manage cash", "Hire team"], growthOutlook: "high", entryLevel: true },
-    { id: "business-owner", title: "Business Owner", emoji: "🏢", description: "Own and run an established small business — managing staff, finances, customers, and growth.", avgSalary: "400,000 - 2,000,000+ kr/year (highly variable)", educationPath: "No formal requirement — domain knowledge and business sense matter most", keySkills: ["management", "finance", "people skills", "decision-making", "operations"], dailyTasks: ["Manage staff", "Track finances", "Serve customers", "Solve problems", "Plan growth"], growthOutlook: "stable", entryLevel: true },
-    { id: "ecommerce-seller", title: "E-commerce Seller", emoji: "🛒", description: "Run an online store — sourcing products, listing them, fulfilling orders, and marketing to grow sales.", avgSalary: "0 - 1,500,000+ kr/year (highly variable)", educationPath: "Self-taught — product instinct and marketing skills matter most", keySkills: ["sourcing", "listings", "advertising", "logistics", "customer service"], dailyTasks: ["Source products", "Update listings", "Run ads", "Fulfill orders", "Reply to customers"], growthOutlook: "high", entryLevel: true },
-    { id: "dropshipper", title: "Dropshipper", emoji: "📦", description: "Sell products online without holding inventory — orders go directly to suppliers who ship to the customer.", avgSalary: "0 - 1,000,000 kr/year (highly variable, often negative)", educationPath: "Self-taught — most dropshipping fails; ad and product skills required", keySkills: ["paid ads", "product research", "store building", "supplier vetting", "patience"], dailyTasks: ["Research products", "Build store", "Run ads", "Process orders", "Handle support"], growthOutlook: "stable", entryLevel: true },
-    { id: "online-coach", title: "Online Coach", emoji: "💬", description: "Coach clients online — fitness, mindset, business, life — through video calls, courses, and community.", avgSalary: "200,000 - 1,500,000 kr/year (highly variable)", educationPath: "Subject expertise + coaching certification (often optional)", keySkills: ["coaching", "subject expertise", "marketing", "personal brand", "empathy"], dailyTasks: ["Coach clients", "Build content", "Run programs", "Market services", "Manage community"], growthOutlook: "high", entryLevel: true },
-    { id: "consultant", title: "Consultant", emoji: "🧑‍💼", description: "Advise organisations on a specific problem — strategy, tech, ops — bringing expertise from outside.", avgSalary: "650,000 - 2,500,000+ kr/year (variable)", educationPath: "Master's + significant industry or firm experience", keySkills: ["analysis", "communication", "problem-solving", "client management", "presentation"], dailyTasks: ["Diagnose problems", "Build recommendations", "Present to clients", "Lead workshops", "Write reports"], growthOutlook: "high" },
-    { id: "digital-marketer", title: "Digital Marketer", emoji: "📣", description: "Plan and run online marketing — paid ads, SEO, email, content — to grow audiences and drive sales.", avgSalary: "500,000 - 950,000 kr/year", educationPath: "Bachelor's in Marketing or self-taught with portfolio", keySkills: ["paid ads", "SEO", "content", "analytics", "copywriting"], dailyTasks: ["Run campaigns", "Write copy", "Track metrics", "Test creatives", "Brief teams"], growthOutlook: "high", entryLevel: true },
   ],
 
   // ========================================
@@ -5140,18 +5110,12 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       entryLevel: true,
     },
     // ── Drivers & couriers ──
-    { id: "uber-driver", title: "Uber Driver", emoji: "🚗", description: "Drive passengers booked through the Uber app — flexible hours, paid per trip, using your own car.", avgSalary: "200,000 - 500,000 kr/year (highly variable)", educationPath: "Class B driving licence + Norwegian taxi licence (kjøreseddel) — Uber operates in Oslo as a taxi service", keySkills: ["safe driving", "customer service", "navigation", "time management", "patience"], dailyTasks: ["Accept rides", "Drive passengers", "Maintain car", "Manage app", "Track earnings"], growthOutlook: "stable", entryLevel: true },
-    { id: "taxi-driver", title: "Taxi Driver", emoji: "🚕", description: "Drive a licensed taxi — picking up passengers from ranks, the street, or app bookings, day or night.", avgSalary: "350,000 - 600,000 kr/year", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["local knowledge", "safe driving", "customer service", "patience", "navigation"], dailyTasks: ["Pick up passengers", "Calculate fares", "Process payments", "Maintain car", "Stay on shift"], growthOutlook: "stable", entryLevel: true },
+    { id: "taxi-driver", title: "Taxi Driver", emoji: "🚕", description: "Drive a licensed taxi — picking up passengers from ranks, street hails, or app bookings (Uber, Bolt). Flexible shifts, independent work.", avgSalary: "350,000 - 600,000 kr/year", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["local knowledge", "safe driving", "customer service", "patience", "navigation", "app management"], dailyTasks: ["Pick up passengers", "Manage app bookings", "Calculate fares", "Process payments", "Maintain car", "Stay on shift"], growthOutlook: "stable", entryLevel: true },
     { id: "courier", title: "Courier", emoji: "📮", description: "Deliver parcels and documents quickly — by van, bike, or on foot — for businesses or end customers.", avgSalary: "350,000 - 500,000 kr/year", educationPath: "Driving licence (or none for bike couriers); on-the-job training", keySkills: ["fast navigation", "physical stamina", "time management", "reliability", "customer service"], dailyTasks: ["Pick up parcels", "Plan routes", "Deliver fast", "Get signatures", "Track packages"], growthOutlook: "stable", entryLevel: true },
-    { id: "rideshare-driver", title: "Rideshare Driver", emoji: "🚙", description: "Drive for ride-sharing apps — Bolt, Uber, Yango — earning per trip with flexible hours.", avgSalary: "200,000 - 500,000 kr/year (highly variable)", educationPath: "Class B licence + taxi licence (kjøreseddel)", keySkills: ["safe driving", "customer service", "app management", "patience", "navigation"], dailyTasks: ["Accept rides", "Drive passengers", "Manage app", "Refuel car", "Track earnings"], growthOutlook: "stable", entryLevel: true },
     { id: "bus-driver", title: "Bus Driver", emoji: "🚌", description: "Drive scheduled bus routes — city, regional, or long-distance — getting passengers safely from stop to stop.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class D licence + yrkessjåførkompetanse (CPC) — funded paths exist", keySkills: ["safe driving", "punctuality", "customer service", "patience", "stamina"], dailyTasks: ["Drive route", "Stop at all stops", "Sell tickets", "Help passengers", "Inspect bus"], growthOutlook: "stable", entryLevel: true },
-    { id: "chauffeur", title: "Chauffeur", emoji: "🎩", description: "Drive private clients in a luxury car — discreet, polished service for executives, VIPs, or weddings.", avgSalary: "400,000 - 700,000 kr/year", educationPath: "Class B licence + chauffeur training + impeccable driving record", keySkills: ["smooth driving", "discretion", "professional appearance", "punctuality", "service"], dailyTasks: ["Plan routes", "Drive clients", "Maintain car", "Handle luggage", "Maintain confidentiality"], growthOutlook: "stable", entryLevel: true },
     { id: "food-delivery-rider", title: "Food Delivery Rider", emoji: "🛵", description: "Deliver hot food from restaurants to customers — by bike, e-bike, or scooter — for Foodora, Wolt, etc.", avgSalary: "200,000 - 400,000 kr/year (variable, often part-time)", educationPath: "No formal requirement; bike or moped + smartphone", keySkills: ["fast cycling", "navigation", "weather tolerance", "stamina", "customer service"], dailyTasks: ["Accept orders", "Cycle to restaurants", "Deliver food", "Track app", "Stay safe in traffic"], growthOutlook: "stable", entryLevel: true },
     { id: "logistics-driver", title: "Logistics Driver", emoji: "🚚", description: "Move goods between warehouses, distribution centres, and retailers — usually in a fixed local route.", avgSalary: "450,000 - 600,000 kr/year", educationPath: "Class C licence + yrkessjåførkompetanse", keySkills: ["safe driving", "load handling", "navigation", "punctuality", "documentation"], dailyTasks: ["Load truck", "Drive route", "Deliver pallets", "Get signatures", "Maintain logbook"], growthOutlook: "stable", entryLevel: true },
-    { id: "personal-driver", title: "Personal Driver", emoji: "🚘", description: "Drive a single client or family — school runs, errands, appointments — as a permanent personal employee.", avgSalary: "400,000 - 700,000 kr/year", educationPath: "Class B licence + clean record + good references", keySkills: ["smooth driving", "discretion", "reliability", "punctuality", "flexibility"], dailyTasks: ["Plan day", "Drive client", "Run errands", "Maintain car", "Stay on call"], growthOutlook: "stable", entryLevel: true },
     { id: "freight-driver", title: "Freight Driver", emoji: "🚛", description: "Drive heavy goods vehicles long distance — across Norway and into Europe — moving freight for haulage companies.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Class C/CE licence + yrkessjåførkompetanse + ADR (for hazardous goods)", keySkills: ["heavy vehicle handling", "endurance", "navigation", "documentation", "self-reliance"], dailyTasks: ["Load freight", "Drive long routes", "Manage rest hours", "Deliver loads", "Maintain logbook"], growthOutlook: "stable" },
-    { id: "ride-hailing-driver", title: "Ride-Hailing Driver", emoji: "📱", description: "Drive for app-based ride-hailing services — picking up passengers booked through a smartphone, paid per ride.", avgSalary: "200,000 - 500,000 kr/year (highly variable)", educationPath: "Class B licence + kjøreseddel (taxi licence)", keySkills: ["safe driving", "app navigation", "customer service", "patience", "flexibility"], dailyTasks: ["Accept rides", "Drive passengers", "Manage app", "Refuel", "Track stats"], growthOutlook: "stable", entryLevel: true },
-    { id: "airport-shuttle-driver", title: "Airport Shuttle Driver", emoji: "🛫", description: "Drive shuttle buses or vans between airports and hotels — handling luggage and tight schedules.", avgSalary: "400,000 - 550,000 kr/year", educationPath: "Class D1/D licence + customer service training", keySkills: ["punctuality", "luggage handling", "customer service", "navigation", "calm under pressure"], dailyTasks: ["Pick up passengers", "Load luggage", "Drive routes", "Track flights", "Greet travellers"], growthOutlook: "stable", entryLevel: true },
     // ── Aviation ──
     { id: "air-traffic-controller", title: "Air Traffic Controller", emoji: "🗼", description: "Direct aircraft on the ground and in the air — keeping flights safe and on schedule from a tower or radar centre.", avgSalary: "850,000 - 1,400,000 kr/year", educationPath: "Avinor Air Navigation College (3 years) + on-job training", keySkills: ["spatial awareness", "fast decision-making", "calm under pressure", "communication", "discipline"], dailyTasks: ["Direct aircraft", "Watch radar", "Coordinate handovers", "Issue clearances", "Brief teams"], growthOutlook: "stable" },
   ],
@@ -7723,20 +7687,19 @@ const CATEGORY_SECTOR_DEFAULTS: Partial<Record<CareerCategory, "public" | "priva
   EDUCATION_TRAINING: "public",
   PUBLIC_SERVICE_SAFETY: "public",
   MILITARY_DEFENCE: "public",
+  SOCIAL_CARE_COMMUNITY: "public",
   TECHNOLOGY_IT: "private",
   FINANCE_BANKING: "private",
-  MEDIA_ENTERTAINMENT: "private",
-  CONTENT_CREATION: "private",
+  CREATIVE_MEDIA: "private",
+  SALES_MARKETING: "private",
   HOSPITALITY_TOURISM: "private",
-  RETAIL_ECOMMERCE: "private",
+  REAL_ESTATE_PROPERTY: "private",
+  BUSINESS_MANAGEMENT: "private",
   LOGISTICS_TRANSPORT: "mixed",
   MANUFACTURING_ENGINEERING: "mixed",
-  ENERGY_SUSTAINABILITY: "mixed",
-  CREATIVE_DESIGN: "private",
-  AGRICULTURE_ENVIRONMENT: "mixed",
+  CONSTRUCTION_TRADES: "mixed",
   SPORT_FITNESS: "mixed",
   TELECOMMUNICATIONS: "mixed",
-  BUSINESS_MANAGEMENT: "private",
 };
 
 /** Resolve the sector for a career (explicit field → category default → "mixed"). */
@@ -8329,8 +8292,10 @@ export const RADAR_TUNING = {
   precisionRewardPerExtraGroup: 1.5,
 
   // ── Contradiction penalties (NEW — none existed before) ──────
-  /** Penalty when a chosen work-style strongly contradicts the career setting (e.g. user picks Outdoors, career is Desk). */
-  workStyleContradictionPenalty: 4,
+  /** Penalty when a chosen work-style strongly contradicts the career setting
+   *  (e.g. user picks Desk, career is Hands-on). Set high enough to push
+   *  contradicted careers below the score floor so they don't appear at all. */
+  workStyleContradictionPenalty: 50,
   /** Penalty when people-preference contradicts the career's intensity (e.g. user picks Mostly alone, career is High people). */
   peoplePrefContradictionPenalty: 3,
 
@@ -8713,6 +8678,29 @@ function precomputeScoring(prefs: DiscoveryPreferences) {
  * Returns careers in final ranked order. The radar takes the first N
  * for its visible band.
  */
+/**
+ * Measure how many distinct preference dimensions the user has provided.
+ * 0 = nothing, 1 = weak (one dimension), 2 = moderate, 3 = strong.
+ */
+export function measureSignalStrength(prefs: DiscoveryPreferences | null | undefined): number {
+  if (!prefs) return 0;
+  let dims = 0;
+  if (prefs.subjects && prefs.subjects.length >= 2) dims++;
+  else if (prefs.subjects && prefs.subjects.length === 1) dims += 0.5;
+  if (prefs.workStyles && prefs.workStyles.length > 0) dims++;
+  if (prefs.peoplePref) dims++;
+  return dims;
+}
+
+/** Parse the first number from a salary string (in thousands). */
+function salaryMidpoint(salary: string): number {
+  const nums = salary.match(/[\d,]+/g);
+  if (!nums || nums.length === 0) return 500; // default mid-range
+  const parsed = nums.map(n => parseInt(n.replace(/,/g, ''), 10) / 1000);
+  // Use the average of min and max
+  return parsed.length >= 2 ? (parsed[0] + parsed[1]) / 2 : parsed[0];
+}
+
 export function getCareersFromDiscovery(
   prefs: DiscoveryPreferences,
   limit = 80,
@@ -8728,14 +8716,10 @@ export function getCareersFromDiscovery(
     !!prefs.peoplePref;
 
   if (!hasScoreableInputs) {
-    // No signal at all — return a stable diverse sample so the radar
-    // is at least populated. We pick the first ~5 from each category.
-    const sample: Career[] = [];
-    for (const careers of Object.values(CAREER_PATHWAYS)) {
-      sample.push(...careers.slice(0, 5));
-    }
-    return sample.slice(0, limit);
+    return []; // No signal at all — radar stays empty
   }
+
+  const signalStrength = measureSignalStrength(prefs);
 
   // ── Stage 1: score every career ─────────────────────────────────
   const precomputed = precomputeScoring(prefs);
@@ -8840,6 +8824,26 @@ export function getCareersFromDiscovery(
     if (interleaved.length >= effectiveLimit) break;
     if (rest.length) interleaved.push(rest.shift()!);
   }
+
+  // ── Stage 6: weak-signal salary bias ───────────────────────────
+  // When the user has provided limited preference data (1 or fewer
+  // signal dimensions), bias toward lower-to-medium salary careers.
+  // This prevents aspirational high-barrier careers from dominating
+  // when there's no evidence the student aligns with them. The bias
+  // is invisible to the user — they just see more accessible, varied
+  // careers that become richer as they add preferences.
+  if (signalStrength <= 1) {
+    // Sort by salary midpoint ascending so accessible careers surface first
+    interleaved.sort((a, b) => salaryMidpoint(a.avgSalary) - salaryMidpoint(b.avgSalary));
+  } else if (signalStrength < 2) {
+    // Moderate bias — lightly penalise very high salary (>1000k midpoint)
+    // by moving them toward the end, but don't fully re-sort
+    const accessible = interleaved.filter(c => salaryMidpoint(c.avgSalary) <= 1000);
+    const high = interleaved.filter(c => salaryMidpoint(c.avgSalary) > 1000);
+    interleaved.length = 0;
+    interleaved.push(...accessible, ...high);
+  }
+
   return interleaved;
 }
 

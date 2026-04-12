@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { Career, DiscoveryPreferences } from "@/lib/career-pathways";
+import { useSubtleHint } from "@/hooks/use-subtle-hint";
+import { SpotlightHint } from "@/components/ui/spotlight-hint";
 
 function CareerRadarPageContent() {
   const { data: session } = useSession();
@@ -20,6 +22,14 @@ function CareerRadarPageContent() {
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
 
   const isYouth = session?.user?.role === "YOUTH";
+
+  // Subtle hint — "Tap a career" on first radar visit
+  const radarHint = useSubtleHint({
+    hintKey: "radar-tap",
+    enabled: isYouth,
+    delayMs: 3000,
+    durationMs: 3500,
+  });
 
   const { data: profileData, isLoading: profileLoading } = useQuery({
     queryKey: ["my-profile"],
@@ -62,7 +72,10 @@ function CareerRadarPageContent() {
       </div>
 
       {isYouth ? (
-        <div className="mt-4 max-w-3xl mx-auto">
+        <div className="mt-4 max-w-3xl mx-auto relative">
+          <div className="flex justify-center mb-2">
+            <SpotlightHint visible={radarHint.visible} text="Tap a career to explore it" placement="bottom" />
+          </div>
           {profileLoading ? (
             <div className="rounded-2xl border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
               Loading your radar…
@@ -124,8 +137,8 @@ const RADAR_TIPS = [
     description: "The radar is only as good as what you tell it. Tap 'Edit preferences' to change your subjects, work style, or people preference — the radar updates instantly.",
   },
   {
-    title: "Set a career goal",
-    description: "Found something interesting? Set it as your primary goal from the career detail sheet. That unlocks the full My Journey experience — roadmap, voice narration, and live opportunities.",
+    title: "Set your Primary Goal",
+    description: "Found something interesting? Set it as your Primary Goal from the career detail sheet. That unlocks the full My Journey experience \u2014 roadmap, voice narration, and live opportunities. You can change it anytime.",
   },
 ];
 

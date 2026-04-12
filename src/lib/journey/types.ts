@@ -3,12 +3,12 @@
  *
  * Defines the complete type system for the guided journey workflow.
  *
- * NEW PHILOSOPHY: DISCOVER · UNDERSTAND · GROW
+ * NEW PHILOSOPHY: DISCOVER · UNDERSTAND · CLARITY
  *
  * This represents the user's guided path to career clarity:
  * - DISCOVER: Explore the career — high-level view, day-in-the-life, salary, outlook
  * - UNDERSTAND: Know the reality — daily work, qualifications, the hard parts
- * - GROW: Build your roadmap — track progress, set next steps, build momentum
+ * - CLARITY: Build your roadmap — track progress, set next steps, build momentum
  *
  * Small jobs are NOT foundational. They are ONE option among many aligned actions.
  */
@@ -230,9 +230,9 @@ export const LENS_DESCRIPTIONS: Record<JourneyLens, { title: string; subtitle: s
     fullDescription: 'Go deeper into what the role actually involves day to day — the qualifications, the hard parts, the typical week, and what it really takes to qualify.',
   },
   ACT: {
-    title: 'Grow',
-    subtitle: 'Build your roadmap',
-    fullDescription: 'Map your path toward this career, set concrete next steps, track your progress over time, and build momentum.',
+    title: 'Clarity',
+    subtitle: 'See your full journey',
+    fullDescription: 'See the complete timeline, milestones, and what it takes to pursue this career — so you can move forward with confidence.',
   },
 };
 

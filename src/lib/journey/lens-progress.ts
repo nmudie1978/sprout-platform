@@ -13,11 +13,11 @@
  *                   in more detail?" at the bottom of the Understand
  *                   tab. Stored as `journey-understand-confirmed-{slug}`.
  *
- *   3. GROW       — user has completed both required Grow tasks: filled
+ *   3. CLARITY    — user has completed both required Clarity tasks: filled
  *                   in the Foundation card AND added at least one
- *                   Momentum action. The Grow tab marks this via
- *                   `markGrowActive()` once both conditions are met.
- *                   Stored as `journey-grow-active-{slug}`.
+ *                   Momentum action. The Clarity tab marks this via
+ *                   `markClarityActive()` once both conditions are met.
+ *                   Stored as `journey-grow-active-{slug}` (legacy key preserved).
  *
  * A career becomes a snapshot the moment ANY ONE of these is true
  * (it's an OR, not a ladder). The highest reached checkpoint becomes
@@ -87,34 +87,41 @@ function understandKey(careerTitle: string) {
   return `${UNDERSTAND_CONFIRMED_PREFIX}${careerKey(careerTitle) ?? careerTitle}`;
 }
 
-function growActiveKey(careerTitle: string) {
+function clarityActiveKey(careerTitle: string) {
+  // Storage key kept as legacy 'journey-grow-active-' for backward compatibility
   return `${GROW_ACTIVE_PREFIX}${careerKey(careerTitle) ?? careerTitle}`;
 }
 
 /**
- * Mark Grow as "active" for the given career — i.e. the user has
+ * Mark Clarity as "active" for the given career — i.e. the user has
  * actually moved progress on this career (a roadmap step turned done,
  * or they added a momentum action). Called from the call sites that
  * actually mutate progress so we never have to guess from leaky
  * global storage.
  */
-export function markGrowActive(careerTitle: string | null | undefined) {
+export function markClarityActive(careerTitle: string | null | undefined) {
   if (!careerTitle || typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(growActiveKey(careerTitle), '1');
+    window.localStorage.setItem(clarityActiveKey(careerTitle), '1');
   } catch {
     /* ignore */
   }
 }
 
-export function isGrowActive(careerTitle: string | null | undefined): boolean {
+/** @deprecated Use `markClarityActive` instead. Kept for backward compatibility. */
+export const markGrowActive = markClarityActive;
+
+export function isClarityActive(careerTitle: string | null | undefined): boolean {
   if (!careerTitle || typeof window === 'undefined') return false;
   try {
-    return window.localStorage.getItem(growActiveKey(careerTitle)) === '1';
+    return window.localStorage.getItem(clarityActiveKey(careerTitle)) === '1';
   } catch {
     return false;
   }
 }
+
+/** @deprecated Use `isClarityActive` instead. Kept for backward compatibility. */
+export const isGrowActive = isClarityActive;
 
 /** YES on the Understand tab confirmation prompt. */
 export function setUnderstandConfirmed(
@@ -144,12 +151,14 @@ export function isUnderstandConfirmed(
   }
 }
 
-export type LensKey = 'discover' | 'understand' | 'grow';
+export type LensKey = 'discover' | 'understand' | 'clarity';
+/** @deprecated Use 'clarity' instead. Maps legacy 'grow' values at display layer. */
+export type LegacyLensKey = 'discover' | 'understand' | 'grow';
 
 export interface LensProgressSnapshot {
   /**
    * True when Discover is considered done. Uses an implicit cascade:
-   * confirming Understand OR completing Grow also marks Discover done,
+   * confirming Understand OR completing Clarity also marks Discover done,
    * because you can't understand a role without having explored it
    * and you can't build a roadmap without having understood it.
    * The cascade applies to display state (dashboard ring, stage label)
@@ -159,16 +168,18 @@ export interface LensProgressSnapshot {
    */
   discoverDone: boolean;
   /**
-   * True when Understand is considered done. Cascades from Grow:
-   * completing Grow also marks Understand done.
+   * True when Understand is considered done. Cascades from Clarity:
+   * completing Clarity also marks Understand done.
    */
   understandDone: boolean;
-  /** True iff the user has completed both required Grow tasks. */
+  /** True iff the user has completed both required Clarity tasks. */
+  clarityDone: boolean;
+  /** @deprecated Alias for `clarityDone`. */
   growDone: boolean;
   /**
-   * The first not-done lens in Discover → Understand → Grow order.
+   * The first not-done lens in Discover → Understand → Clarity order.
    * After the cascade is applied this naturally points at the next
-   * real gap (e.g. if Understand is confirmed, `currentLens === 'grow'`
+   * real gap (e.g. if Understand is confirmed, `currentLens === 'clarity'`
    * because Discover is derived as done too).
    */
   currentLens: LensKey;
@@ -189,56 +200,57 @@ export function computeLensProgress(opts: {
    * "has primary goal" as Discover complete, which meant setting a
    * goal auto-registered the Discover lens. Per product spec, the
    * three checkpoints are now driven by explicit YES/NO answers
-   * (Discover + Understand) and the Grow two-task completion signal.
+   * (Discover + Understand) and the Clarity two-task completion signal.
    */
   hasPrimaryGoal?: boolean;
   careerTitle?: string | null;
 }): LensProgressSnapshot {
   // Raw per-checkpoint state from localStorage. These are the
   // authoritative YES/NO signals — each one is set by its own
-  // confirmation card in the Discover, Understand and Grow tabs of
+  // confirmation card in the Discover, Understand and Clarity tabs of
   // /my-journey. `isJourneySnapshotWorthy` below uses these raw
   // values as an OR, so any single checkpoint is sufficient to
   // create a snapshot.
   const rawDiscover = isDiscoverConfirmed(opts.careerTitle);
   const rawUnderstand = isUnderstandConfirmed(opts.careerTitle);
-  const rawGrow = isGrowActive(opts.careerTitle);
+  const rawClarity = isClarityActive(opts.careerTitle);
 
   // Implicit cascade for the *display* layer: a higher checkpoint
   // implies lower ones. This matches user intuition — if you've
   // confirmed Understand, you've by definition already explored the
-  // role (Discover), and if you've completed the Grow tasks you've
+  // role (Discover), and if you've completed the Clarity tasks you've
   // also been through the earlier stages. Without this cascade, a
   // user who clicks Understand YES sees the ring at 1/3 with
   // Discover stuck as the "current" lens, which is confusing.
   //
   // The cascade is applied to `discoverDone` / `understandDone` /
-  // `growDone` on the snapshot object. `isJourneySnapshotWorthy`
+  // `clarityDone` on the snapshot object. `isJourneySnapshotWorthy`
   // intentionally reads the *raw* flags, not the cascaded ones, so
   // the spec's OR-of-three remains the snapshot predicate.
-  const growDone = rawGrow;
-  const understandDone = rawUnderstand || rawGrow;
-  const discoverDone = rawDiscover || rawUnderstand || rawGrow;
+  const clarityDone = rawClarity;
+  const growDone = clarityDone; // backward compat alias
+  const understandDone = rawUnderstand || rawClarity;
+  const discoverDone = rawDiscover || rawUnderstand || rawClarity;
 
   const currentLens: LensKey = !discoverDone
     ? 'discover'
     : !understandDone
       ? 'understand'
-      : 'grow';
+      : 'clarity';
 
   const completedCount =
-    (discoverDone ? 1 : 0) + (understandDone ? 1 : 0) + (growDone ? 1 : 0);
+    (discoverDone ? 1 : 0) + (understandDone ? 1 : 0) + (clarityDone ? 1 : 0);
 
   // Highest reached, in ladder order. `null` when none reached.
-  const highestStage: LensKey | null = growDone
-    ? 'grow'
+  const highestStage: LensKey | null = clarityDone
+    ? 'clarity'
     : understandDone
       ? 'understand'
       : discoverDone
         ? 'discover'
         : null;
 
-  return { discoverDone, understandDone, growDone, currentLens, completedCount, highestStage };
+  return { discoverDone, understandDone, clarityDone, growDone, currentLens, completedCount, highestStage };
 }
 
 /**
@@ -250,7 +262,7 @@ export function computeLensProgress(opts: {
  *
  *   - Discover YES
  *   - Understand YES
- *   - Grow 2/2 tasks complete
+ *   - Clarity 2/2 tasks complete
  *
  * Passive page visits, setting a goal, or browsing Explore Careers
  * do NOT create a snapshot. The underlying DB row for per-goal data
@@ -272,10 +284,10 @@ export function isJourneySnapshotWorthy(
 /**
  * The human-readable label for the "Stage" column in the Dashboard's
  * snapshots table. Uses the same implicit cascade as
- * `computeLensProgress` — Grow implies Understand and Discover, so a
- * Grow-complete journey shows "Complete" even if the user never
+ * `computeLensProgress` — Clarity implies Understand and Discover, so a
+ * Clarity-complete journey shows "Complete" even if the user never
  * explicitly clicked Discover/Understand YES. This matches user
- * intuition: reaching Grow means the whole journey is done.
+ * intuition: reaching Clarity means the whole journey is done.
  *
  * Returns null when the career has not reached any checkpoint yet —
  * callers should filter those rows out before passing them to this
@@ -283,15 +295,15 @@ export function isJourneySnapshotWorthy(
  */
 export function journeyStageLabel(
   careerTitle: string | null | undefined,
-): { label: 'Discover' | 'Understand' | 'Grow' | 'Complete'; highest: LensKey } | null {
+): { label: 'Discover' | 'Understand' | 'Clarity' | 'Complete'; highest: LensKey } | null {
   if (!careerTitle) return null;
-  const grow = isGrowActive(careerTitle);
+  const clarity = isClarityActive(careerTitle);
   const understand = isUnderstandConfirmed(careerTitle);
   const discover = isDiscoverConfirmed(careerTitle);
-  // "Complete" — Grow reached (which cascades to understand +
+  // "Complete" — Clarity reached (which cascades to understand +
   // discover as done, so all three display as complete). Shown as a
-  // subtle flag on the Dashboard; the full celebration stays in Grow.
-  if (grow) return { label: 'Complete', highest: 'grow' };
+  // subtle flag on the Dashboard; the full celebration stays in Clarity.
+  if (clarity) return { label: 'Complete', highest: 'clarity' };
   if (understand) return { label: 'Understand', highest: 'understand' };
   if (discover) return { label: 'Discover', highest: 'discover' };
   return null;

@@ -261,9 +261,9 @@ export default function LandingPage() {
               },
               {
                 step: "3",
-                title: "Grow",
-                subtitle: "Build your roadmap",
-                description: "Map your path toward this career, set concrete next steps, track your progress, and build momentum over time.",
+                title: "Clarity",
+                subtitle: "See your full journey",
+                description: "See the complete timeline, milestones, and what it takes to pursue this career — so you can move forward with confidence.",
                 subtitleClass: "text-amber-400",
                 accent: "from-amber-500 to-orange-600",
               },

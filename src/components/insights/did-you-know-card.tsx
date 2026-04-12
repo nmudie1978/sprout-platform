@@ -172,7 +172,10 @@ function FactListRow({
       <div className="p-1 rounded bg-amber-500/10 flex-shrink-0">
         <Lightbulb className="h-3 w-3 text-amber-500" />
       </div>
-      <p className="text-[11px] font-medium text-foreground flex-1 min-w-0 truncate">
+      <p
+        className="text-[11px] font-medium text-foreground flex-1 min-w-0 truncate"
+        title={fact.headline}
+      >
         {fact.headline}
       </p>
       <a
@@ -183,7 +186,8 @@ function FactListRow({
           e.stopPropagation();
           onSourceClick();
         }}
-        className="text-[9px] text-muted-foreground/40 hover:text-primary transition-colors flex-shrink-0"
+        title={`${fact.sourceName} (${sourceYear})`}
+        className="text-[9px] text-muted-foreground/40 hover:text-primary transition-colors flex-shrink-0 truncate max-w-[180px]"
       >
         {fact.sourceName} ({sourceYear})
       </a>

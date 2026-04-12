@@ -17,6 +17,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMutation } from "@tanstack/react-query";
+/* NOTE: motion is only used for expand/collapse transitions now, not entrance animations */
 import { useLocale, useTranslations } from "next-intl";
 import {
   Compass,
@@ -216,20 +217,14 @@ export function BeyondBordersCarousel() {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {BEYOND_BORDERS_ARTICLES.map((article, idx) => (
-          <motion.div
+          <ArticleCard
             key={article.id}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, delay: idx * 0.1, ease: "easeOut" }}
-          >
-            <ArticleCard
-              article={article}
-              theme={CARD_THEMES[idx % CARD_THEMES.length]}
-              isSaved={savedSlugs.has(article.slug)}
-              onSave={() => handleSave(article)}
-              getText={getText}
-            />
-          </motion.div>
+            article={article}
+            theme={CARD_THEMES[idx % CARD_THEMES.length]}
+            isSaved={savedSlugs.has(article.slug)}
+            onSave={() => handleSave(article)}
+            getText={getText}
+          />
         ))}
       </div>
 
@@ -254,35 +249,28 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
   const Icon = theme.icon;
 
   return (
-    <motion.div
+    <div
       data-card
-      layout
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className={`flex-shrink-0 w-[340px] sm:w-[360px] snap-start rounded-2xl border bg-card overflow-hidden transition-all duration-300 ${
+      className={`flex-shrink-0 w-[340px] sm:w-[360px] snap-start rounded-xl border bg-card overflow-hidden ${
         expanded
-          ? "border-teal-400/50 dark:border-teal-500/30 shadow-lg shadow-teal-500/10 dark:shadow-teal-500/5"
-          : "border-border shadow-sm hover:shadow-md"
+          ? "border-teal-400/30 dark:border-teal-500/20"
+          : "border-border"
       }`}
     >
-      {/* Gradient header with icon */}
-      <div className={`relative bg-gradient-to-br ${theme.gradient} px-5 py-6`}>
-        {/* Decorative background icon */}
-        <Icon className="absolute right-4 top-4 h-16 w-16 text-white/10" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-white/80 bg-white/15 backdrop-blur-sm rounded-full px-2 py-0.5">
-              <Clock className="h-2.5 w-2.5" />
-              {article.readTime} min read
-            </span>
-          </div>
-          <h4 className="text-base font-bold text-white leading-snug pr-8">
-            {getText(`bb-title-${article.id}`, article.title)}
-          </h4>
-          <p className="text-sm text-white/70 mt-1">
-            {getText(`bb-subtitle-${article.id}`, article.subtitle)}
-          </p>
+      {/* Header */}
+      <div className="px-4 pt-4 pb-3 border-b border-border/50">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground/60">
+            <Clock className="h-2.5 w-2.5" />
+            {article.readTime} min read
+          </span>
         </div>
+        <h4 className="text-sm font-semibold text-foreground leading-snug">
+          {getText(`bb-title-${article.id}`, article.title)}
+        </h4>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {getText(`bb-subtitle-${article.id}`, article.subtitle)}
+        </p>
       </div>
 
       {/* Card body */}
@@ -348,7 +336,7 @@ function ArticleCard({ article, theme, isSaved, onSave, getText }: ArticleCardPr
           </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

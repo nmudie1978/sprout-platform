@@ -89,7 +89,7 @@ export function NextStepPanel() {
           </div>
           {primaryGoalTitle && (
             <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
-              Primary career goal: {primaryGoalTitle}
+              Primary Goal: {primaryGoalTitle}
             </Badge>
           )}
         </div>

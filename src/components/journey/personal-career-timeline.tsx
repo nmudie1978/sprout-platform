@@ -17,7 +17,7 @@ import { TimelineDetailDialog, loadCardData, cycleProgress, isStepUnlocked, enfo
 import { getCareerById, getAllCareers } from '@/lib/career-pathways';
 import { useRoadmapCardData } from '@/hooks/use-roadmap-card-data';
 import { useTimelineStyle } from '@/hooks/use-timeline-style';
-import { markGrowActive } from '@/lib/journey/lens-progress';
+import { markClarityActive } from '@/lib/journey/lens-progress';
 import { useRoadmapSimulation, type SimulationControls as SimCtrl } from '@/hooks/use-roadmap-simulation';
 import { SimulationControls } from './simulation';
 import type { NarrationContext } from '@/lib/simulation/narration-generator';
@@ -33,7 +33,7 @@ interface PersonalCareerTimelineProps {
   readOnly?: boolean;
   /**
    * Called once the timeline data loads, passing a `play` function that
-   * the parent (Grow tab) can attach to a "Play Journey" button.
+   * the parent (Clarity tab) can attach to a "Play Journey" button.
    */
   onSimulationReady?: (controls: { play: () => void }) => void;
 }
@@ -298,7 +298,7 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     simControls.play();
   }, [hasFoundation, simControls]);
 
-  // Expose play function to parent (Grow tab's "Play Journey" button).
+  // Expose play function to parent (Clarity tab's "Play Journey" button).
   // Use a ref for the callback to avoid re-triggering when the parent
   // passes an inline arrow (new reference every render).
   const onSimReadyRef = useRef(onSimulationReady);
@@ -370,12 +370,12 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
       return;
     }
     cycleProgress(itemId);
-    // Whenever the user actively cycles a step we mark Grow as
+    // Whenever the user actively cycles a step we mark Clarity as
     // "active" for the current career — this is the per-career signal
     // the dashboard reads instead of scanning the global
     // roadmap-card-data blob (which leaks across goals).
     if (loadCardData(itemId).status === 'done') {
-      markGrowActive(primaryGoalTitle);
+      markClarityActive(primaryGoalTitle);
     }
     // Cascade-fix: a later step can never stay done while an earlier
     // one is incomplete. If the user just demoted a step from done,

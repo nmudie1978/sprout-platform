@@ -17,8 +17,40 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Career } from "@/lib/career-pathways";
+import { getSectorForCareer } from "@/lib/career-pathways";
+import { getAcademicProfile, getDemandLabel, getDemandColors } from "@/lib/education/academic-readiness";
 
 export type ViewMode = "list" | "small" | "large";
+
+/** Grid template for the list view — shared with the column header in the careers page. */
+export const LIST_GRID = "grid-cols-[14rem_5rem_4rem_4.5rem_4.5rem_5.5rem_5rem_7rem]";
+
+/** Derive a short path label from the full educationPath string. */
+function shortPath(educationPath: string): string {
+  const e = educationPath.toLowerCase();
+  if (/doctorate|ph\.?d/i.test(e)) return "Doctorate";
+  if (/medical degree|dental degree|veterinary degree/i.test(e)) return "Professional";
+  if (/master/i.test(e)) return "Master's";
+  if (/bachelor/i.test(e)) return "Bachelor's";
+  if (/degree|university/i.test(e)) return "Degree";
+  if (/vocational|fagbrev|apprentice|trade certificate/i.test(e)) return "Vocational";
+  if (/kriegsskolen|krigsskolen|sjøkrigsskolen|luftkrigsskolen|academy|college/i.test(e)) return "Academy";
+  if (/licence|license|lisens/i.test(e)) return "Licence";
+  if (/film school|flight school|conservatory/i.test(e)) return "Specialist";
+  if (/certification|certificate|certified/i.test(e)) return "Certificate";
+  if (/no formal|self-taught|any background/i.test(e)) return "No formal";
+  if (/on-the-job|on.job|high school|experience|training|portfolio/i.test(e)) return "On-the-job";
+  if (/military service|førstegangstjeneste/i.test(e)) return "Military";
+  return "Other";
+}
+
+/** Short sector label. */
+function shortSector(careerId: string): string {
+  const s = getSectorForCareer(careerId);
+  if (s === "public") return "Public";
+  if (s === "private") return "Private";
+  return "Mixed";
+}
 
 interface CareerCardV2Props {
   career: Career;
@@ -56,11 +88,16 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
   const GrowthIcon = growth.icon;
   const salaryShort = career.avgSalary.split(" ")[0];
 
+  const sector = shortSector(career.id);
+  const path = shortPath(career.educationPath);
+  const academic = getAcademicProfile(career);
+  const demandColor = getDemandColors(academic.demand);
+
   return (
     <button
       type="button"
       onClick={onLearnMore}
-      className="grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50"
+      className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border-b hover:bg-muted/50 transition-colors text-left focus:outline-none focus:bg-muted/50`}
     >
       {/* Title */}
       <span className="flex items-center gap-2 min-w-0">
@@ -89,8 +126,18 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
         <GrowthIcon className={`h-3 w-3 ${growth.color}`} />
       </Badge>
 
-      {/* Match — % score from Career Radar's "what I like" answers.
-          Shows "—" if the user hasn't completed Career Radar yet. */}
+      {/* Sector */}
+      <span className="text-[10px] text-muted-foreground text-center">{sector}</span>
+
+      {/* Path */}
+      <span className="text-[10px] text-muted-foreground text-center">{path}</span>
+
+      {/* Academic Demand */}
+      <span className={`text-[10px] text-center ${demandColor.text}`} title={academic.discoverHint}>
+        {getDemandLabel(academic.demand)}
+      </span>
+
+      {/* Match */}
       <span className="flex items-center justify-center">
         {matchScore !== undefined ? (
           <TooltipProvider delayDuration={150}>
@@ -98,8 +145,6 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
               <TooltipTrigger asChild>
                 <Badge
                   variant="secondary"
-                  // Stop the row click so tapping the badge doesn't open
-                  // the detail sheet — it should only show the tooltip.
                   onClick={(e) => e.stopPropagation()}
                   className="text-[10px] px-1.5 py-0 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-400 cursor-help"
                 >
@@ -118,7 +163,7 @@ function ListRow({ career, matchScore, onLearnMore }: Omit<CareerCardV2Props, "v
         )}
       </span>
 
-      {/* Learn more (last column) */}
+      {/* Learn more */}
       <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
         Learn more
         <ChevronRight className="h-3 w-3" />

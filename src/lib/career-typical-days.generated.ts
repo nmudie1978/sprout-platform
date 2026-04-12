@@ -7338,62 +7338,6 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Working in all weather can be tough, especially on rainy days."
   },
-  "general-practitioner": {
-      "typicalDay": {
-          "morning": [
-              "Review patient notes and prepare for the day",
-              "See patients for scheduled appointments",
-              "Conduct routine health checks"
-          ],
-          "midday": [
-              "Take a lunch break, often with colleagues",
-              "Consult with nurses about patient care",
-              "See walk-in patients with urgent health concerns"
-          ],
-          "afternoon": [
-              "Complete patient documentation and update records",
-              "Refer patients to specialists when necessary",
-              "Discuss treatment plans with patients"
-          ],
-          "tools": [
-              "Stethoscope",
-              "Patient management software",
-              "Medical reference books",
-              "Blood pressure monitor",
-              "Diagnostic tests equipment"
-          ],
-          "environment": "Mostly indoors in a clinic, with a steady flow of patients and a mix of consultations and administrative work."
-      },
-      "whatYouActuallyDo": [
-          "Examine patients to identify health issues.",
-          "Diagnose common illnesses and injuries.",
-          "Provide preventative care and health education.",
-          "Prescribe medications and treatments.",
-          "Refer patients to specialists for further care.",
-          "Keep detailed patient records.",
-          "Work with nurses and other healthcare staff."
-      ],
-      "whoThisIsGoodFor": [
-          "Caring and empathetic towards others.",
-          "Good at problem-solving and critical thinking.",
-          "Enjoys working with people and building relationships.",
-          "Able to handle stress and busy environments."
-      ],
-      "topSkills": [
-          "Broad medical knowledge across various fields.",
-          "Strong communication skills for patient interactions.",
-          "Ability to make quick and informed decisions.",
-          "Empathy to understand patient concerns.",
-          "Diagnostic reasoning to identify health issues."
-      ],
-      "entryPaths": [
-          "Complete a 6-year medical degree at a university.",
-          "Pursue a 5-year GP specialisation after medical school.",
-          "Consider internships or work experience in healthcare settings.",
-          "Look for apprenticeships in medical practices."
-      ],
-      "realityCheck": "The training is long and demanding, with many years before you can work independently."
-  },
   "general-surgeon": {
       "typicalDay": {
           "morning": [

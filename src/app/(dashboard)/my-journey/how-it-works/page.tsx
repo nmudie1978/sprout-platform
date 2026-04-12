@@ -3,7 +3,7 @@
 /**
  * HOW YOUR JOURNEY WORKS — Sub-page
  *
- * Full explanation of the Discover → Understand → Grow framework.
+ * Full explanation of the Discover → Understand → Clarity framework.
  * Must match the actual content and steps in the My Journey tabs.
  */
 
@@ -24,7 +24,7 @@ const STAGES = [
     steps: [
       { name: 'Reflect on Strengths', detail: 'Identify what you\'re naturally good at' },
       { name: 'Explore Careers', detail: 'Browse career paths and save what interests you' },
-      { name: 'Set Your Career Direction', detail: 'Choose a career goal to focus your journey' },
+      { name: 'Set Your Primary Goal', detail: 'Choose one career to explore properly first' },
     ],
     extras: [
       { name: 'Know Yourself Better', detail: '5 self-discovery reflections — motivations, work style, growth areas, role models, and experiences' },
@@ -49,8 +49,8 @@ const STAGES = [
   },
   {
     icon: Rocket,
-    label: 'Grow',
-    subtitle: 'Take Action & Grow',
+    label: 'Clarity',
+    subtitle: 'See Your Full Journey',
     color: 'amber',
     iconBg: 'bg-amber-500/10',
     iconColor: 'text-amber-500',

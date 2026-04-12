@@ -7649,36 +7649,6 @@
       "remoteViability": "moderate"
     }
   },
-  "general-practitioner": {
-    "NO": {
-      "jobPostingPresence": "moderate",
-      "companyPresence": "high",
-      "industryPresence": "high",
-      "pathwayAvailability": "high",
-      "remoteViability": "none"
-    },
-    "GB": {
-      "jobPostingPresence": "high",
-      "companyPresence": "high",
-      "industryPresence": "high",
-      "pathwayAvailability": "high",
-      "remoteViability": "none"
-    },
-    "DE": {
-      "jobPostingPresence": "high",
-      "companyPresence": "high",
-      "industryPresence": "high",
-      "pathwayAvailability": "high",
-      "remoteViability": "none"
-    },
-    "SE": {
-      "jobPostingPresence": "moderate",
-      "companyPresence": "high",
-      "industryPresence": "high",
-      "pathwayAvailability": "high",
-      "remoteViability": "none"
-    }
-  },
   "general-surgeon": {
     "NO": {
       "jobPostingPresence": "moderate",

@@ -17,7 +17,7 @@ export interface ReflectionEntry {
   direction: { nextInterest?: string; perspectiveShift?: string; addToRoadmap?: boolean };
   /**
    * Optional free-form tab tag the reflection was created from
-   * (e.g. "discover" / "understand" / "grow"). Plain string — no
+   * (e.g. "discover" / "understand" / "clarity"). Plain string — no
    * dependency on the legacy lens state machine.
    */
   linkedPhase?: string;

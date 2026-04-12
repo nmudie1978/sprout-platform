@@ -175,7 +175,7 @@ export function Navigation({ userRole, userName, userEmail, userProfilePic }: Na
 
   // Navigation tooltips for youth users
   const pillarTooltips: Record<string, string> = {
-    "/my-journey": "Your guided path: Discover. Understand. Grow.",
+    "/my-journey": "Your guided path: Discover. Understand. Clarity.",
     "/jobs": "Find small local jobs to earn, learn, and build confidence.",
     "/careers": "Discover career paths, skills, and what it takes to get there.",
     "/insights": "See what's shaping careers globally — trends, forces, and opportunities.",

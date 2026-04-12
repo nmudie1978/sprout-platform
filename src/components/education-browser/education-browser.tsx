@@ -181,7 +181,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         </div>
         <h2 className="text-base font-semibold text-foreground/80 mb-1">No career selected</h2>
         <p className="text-[12px] text-muted-foreground/75 max-w-[280px]">
-          Set a career goal from your dashboard or Career Radar to explore matching universities and programmes.
+          Set a Primary Goal from your dashboard or Career Radar to explore matching universities and programmes.
         </p>
       </div>
     );

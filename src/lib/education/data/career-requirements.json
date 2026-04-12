@@ -9116,47 +9116,6 @@
       },
       "specialisationNote": null
     },
-    "general-practitioner": {
-      "schoolSubjects": {
-        "required": [
-          "Biology",
-          "Chemistry",
-          "Mathematics",
-          "Norwegian",
-          "English"
-        ],
-        "recommended": [
-          "Physics",
-          "Psychology",
-          "Health Studies"
-        ],
-        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale."
-      },
-      "universityPath": {
-        "programme": "Bachelor in Medicine",
-        "duration": "6 years",
-        "type": "integrated",
-        "examples": [
-          "UiO",
-          "NTNU",
-          "Karolinska",
-          "Uppsala University"
-        ],
-        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
-        "competitiveness": "It is quite competitive to get into medical school."
-      },
-      "entryLevelRequirements": {
-        "title": "LIS1 Internship",
-        "description": "This step involves working under supervision in a clinical setting.",
-        "whatYouNeed": "Completed medical degree and passed the national medical exam."
-      },
-      "qualifiesFor": {
-        "immediate": "General Practitioner (after completing LIS1)",
-        "withExperience": "Senior General Practitioner",
-        "seniorPath": "Consultant in Family Medicine"
-      },
-      "specialisationNote": "GP is a specialisation of doctor, requiring additional training after the medical degree."
-    },
     "general-surgeon": {
       "schoolSubjects": {
         "required": [

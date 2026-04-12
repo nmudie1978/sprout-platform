@@ -386,15 +386,11 @@ const CAREER_VALUE_SIGNALS: Record<string, string[]> = {
     'Time away from family',
     'Strict regulations on driving hours',
   ],
-  'uber-driver': [
-    'Income depends on demand and timing',
-    'You cover your own car costs',
-    'Highly flexible schedule',
-  ],
   'taxi-driver': [
     'Late nights and unpredictable shifts',
     'Income varies with city demand',
     'Independent work with little supervision',
+    'Highly flexible schedule with app bookings',
   ],
 };
 

@@ -6,7 +6,7 @@
  * Three-stage career exploration:
  *   Discover = Overview (video, salary, growth, skills, roadmap)
  *   Understand = Deep dive (typical day, entry requirements, verified courses, tools, notes)
- *   Grow = Action plan (school connection, next steps, portfolio ideas)
+ *   Clarity = See your full journey (roadmap, timeline, progression)
  *
  * Data sources:
  *   - Career basics: getAllCareers() from career-pathways
@@ -49,9 +49,12 @@ import {
   formatGradeTooltip,
 } from '@/lib/education/parse-grade-requirement';
 import { getToolInfo } from '@/lib/education/tool-links';
+import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, getCompetitivenessLabel } from '@/lib/education/academic-readiness';
 import { EducationBrowser } from '@/components/education-browser';
 import type { Journey } from '@/lib/journey/career-journey-types';
-import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markGrowActive } from '@/lib/journey/lens-progress';
+import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
+import { useSubtleHint } from '@/hooks/use-subtle-hint';
+import { SpotlightHint } from '@/components/ui/spotlight-hint';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -61,10 +64,14 @@ const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
   { ssr: false }
 );
+const ReflectionPanel = dynamic(
+  () => import('@/components/journey/reflection-panel').then((m) => m.ReflectionPanel),
+  { ssr: false }
+);
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type V2Tab = 'discover' | 'understand' | 'grow';
+type V2Tab = 'discover' | 'understand' | 'clarity';
 
 interface CareerDetailsResponse {
   career: Career;
@@ -213,6 +220,32 @@ function useCareerStories(careerId: string | null) {
     queryFn: async () => {
       const res = await fetch(`/api/career-stories?career=${encodeURIComponent(careerId!)}`);
       if (!res.ok) return { stories: [], count: 0 };
+      return res.json();
+    },
+    enabled: !!careerId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+interface ContributedPath {
+  id: string;
+  displayName: string;
+  currentTitle: string;
+  country: string;
+  city: string | null;
+  steps: { age: number; label: string }[];
+  didAttendUniversity: boolean;
+  yearsOfExperience: number | null;
+  headline: string | null;
+  advice: string | null;
+}
+
+function useContributedPaths(careerId: string | null) {
+  return useQuery<{ paths: ContributedPath[]; count: number }>({
+    queryKey: ['contributed-paths', careerId],
+    queryFn: async () => {
+      const res = await fetch(`/api/career-paths?career=${encodeURIComponent(careerId!)}`);
+      if (!res.ok) return { paths: [], count: 0 };
       return res.json();
     },
     enabled: !!careerId,
@@ -460,7 +493,7 @@ function DiscoverTab({
   }, [profileData]);
 
   if (!career || !goalTitle) {
-    return <EmptyState icon={Target} message="Set a career goal to start exploring" />;
+    return <EmptyState icon={Target} message="Choose a Primary Goal to start exploring" />;
   }
 
   const dDetails = discoverDetails?.details ?? null;
@@ -671,7 +704,7 @@ function DiscoverTab({
       </div>
 
       {/* Quick insights row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* How long */}
         {(() => {
           const yearMatch = career.educationPath.match(/(\d+)\s*[–\-+]\s*(\d+)?\s*years?/i) || career.educationPath.match(/(\d+)\s*years?/i);
@@ -726,13 +759,33 @@ function DiscoverTab({
             <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.realityCheck}</p>
           </div>
         )}
+
+        {/* Academic expectations — early signal about school readiness */}
+        {(() => {
+          const ap = getAcademicProfile(career);
+          const dc = getDemandColors(ap.demand);
+          return (
+            <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <GraduationCap className={`h-3.5 w-3.5 ${dc.text}`} />
+                <span className={`text-[10px] font-semibold uppercase tracking-wider ${dc.text}`}>School readiness</span>
+              </div>
+              <p className="text-xs text-foreground/70 leading-relaxed">{ap.discoverHint}</p>
+              {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                <p className="text-[10px] text-muted-foreground/50 mt-1.5">
+                  Typical grades: {ap.grade.gradeMin}–{ap.grade.gradeMax} on the Norwegian 1–6 scale
+                </p>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Self-confirmation — drives the dashboard's Discover progress
           AND the tab lock. Picking a goal alone no longer counts; the
           user has to actively say they've explored the role before the
           Understand tab unlocks. A brand-new career starts at 0/3 on
-          the dashboard ring and Understand / Grow are locked. */}
+          the dashboard ring and Understand / Clarity are locked. */}
       <DiscoverConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
       {/* Next — the Continue button is the happy-path route into
@@ -794,7 +847,7 @@ function UnderstandTab({
   career: Career | null;
   goalTitle: string | null;
   onContinue: () => void;
-  /** Notifies the page so the Grow tab unlocks immediately. */
+  /** Notifies the page so the Clarity tab unlocks immediately. */
   onConfirmChange?: (confirmed: boolean) => void;
 }) {
   const { data: detailsData, isLoading: detailsLoading } = useCareerDetails(career?.id ?? null);
@@ -806,7 +859,7 @@ function UnderstandTab({
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [carouselTab, setCarouselTab] = useState<'presence' | 'tools'>('presence');
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-notes', 'u-career-paths']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-school-readiness', 'u-study-path', 'u-notes', 'u-career-paths']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -998,6 +1051,104 @@ function UnderstandTab({
         )}
       </SectionCard>
 
+      {/* ── School Readiness — subject + grade + pathway detail ── */}
+      {(() => {
+        const ap = getAcademicProfile(career);
+        const dc = getDemandColors(ap.demand);
+        const essentialSubjects = ap.subjects.filter(s => s.importance === 'essential');
+        const importantSubjects = ap.subjects.filter(s => s.importance === 'important');
+        return (
+          <SectionCard>
+            <SectionHeader icon={GraduationCap} title="School Readiness" centered collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
+            {!uCollapsed('u-school-readiness') && (
+              <div className="p-4 space-y-4">
+                {/* Summary row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Academic demand</p>
+                    <p className={`text-sm font-semibold ${dc.text}`}>{getDemandLabel(ap.demand)}</p>
+                  </div>
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Pathway</p>
+                    <p className="text-sm font-semibold text-foreground/80">{getPathwayLabel(ap.pathwayType)}</p>
+                  </div>
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 text-center">
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-1">Competitiveness</p>
+                    <p className="text-sm font-semibold text-foreground/80">{getCompetitivenessLabel(ap.competitiveness)}</p>
+                  </div>
+                </div>
+
+                {/* Grade signal */}
+                {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Typical grade expectation</p>
+                    <p className="text-xs text-foreground/80">
+                      Usually requires grades around <span className="font-semibold">{ap.grade.gradeMin}–{ap.grade.gradeMax}</span> on the Norwegian 1–6 scale
+                      {ap.grade.tier === 'top' && ' — this is among the most academically demanding career paths.'}
+                      {ap.grade.tier === 'strong' && ' — solid academic performance is typically expected.'}
+                      {ap.grade.tier === 'good' && ' — good school results will help.'}
+                      {ap.grade.tier === 'pass' && ' — passing grades are usually sufficient.'}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/40 mt-1">
+                      Grade expectations may vary by university, programme, and year of application.
+                    </p>
+                  </div>
+                )}
+
+                {/* Subjects */}
+                {(essentialSubjects.length > 0 || importantSubjects.length > 0) && (
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3 space-y-2">
+                    {essentialSubjects.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Key subjects</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {essentialSubjects.map(s => (
+                            <span key={s.name} className="inline-flex items-center rounded-md border border-border/20 bg-muted/10 px-2 py-0.5 text-[10px] text-foreground/70">
+                              {s.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {importantSubjects.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Also useful</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {importantSubjects.map(s => (
+                            <span key={s.name} className="inline-flex items-center rounded-md border border-border/15 bg-muted/5 px-2 py-0.5 text-[10px] text-muted-foreground/60">
+                              {s.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Alternative pathways */}
+                {ap.alternativePathways.length > 0 && (
+                  <div className="rounded-lg border border-border/20 bg-muted/5 p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground/60 mb-1">Alternative routes</p>
+                    <ul className="space-y-0.5">
+                      {ap.alternativePathways.map((alt, i) => (
+                        <li key={i} className="text-[10px] text-muted-foreground/60 leading-relaxed">
+                          &bull; {alt}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Variability note */}
+                <p className="text-[10px] text-muted-foreground/40 leading-relaxed">
+                  {ap.variabilityNote}
+                </p>
+              </div>
+            )}
+          </SectionCard>
+        );
+      })()}
+
       {/* ── Study Path — embedded browser with full institution/programme data ──
           Now wrapped in the standard SectionCard + SectionHeader so it
           matches the look-and-feel of other Understand-tab sections
@@ -1097,7 +1248,7 @@ function UnderstandTab({
       {/* Self-confirmation — drives the dashboard's Understand progress
           AND the tab lock. The Understand tab is read-only deep-dive
           content, so a deliberate YES is the cleanest completion signal
-          we can capture, and it's also the only thing that unlocks Grow. */}
+          we can capture, and it's also the only thing that unlocks Clarity. */}
       <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
 
       {/* Next — gated on the confirmation above. Clicking without
@@ -1114,7 +1265,7 @@ function UnderstandTab({
           )}
           title={isUnderstandConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
         >
-          Grow <ArrowRight className="h-4 w-4" />
+          Clarity <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -1143,42 +1294,23 @@ function DiscoverConfirmCard({
   };
 
   return (
-    <div className="rounded-xl border border-teal-500/20 bg-teal-500/[0.04] px-5 py-4">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-foreground/85">
-            Have you explored what this role is about?
-          </p>
-          <p className="text-[11px] text-muted-foreground/60 mt-0.5">
-            Your answer marks Discover as complete on your dashboard.
-          </p>
-        </div>
-        <div className="flex gap-2 shrink-0">
-          <button
-            onClick={() => choose(true)}
-            className={cn(
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
-              confirmed
-                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-emerald-500/40 hover:text-emerald-300',
-            )}
-            aria-pressed={confirmed}
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => choose(false)}
-            className={cn(
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
-              !confirmed
-                ? 'bg-muted/30 border-border/40 text-foreground/60'
-                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-border/60',
-            )}
-            aria-pressed={!confirmed}
-          >
-            Not yet
-          </button>
-        </div>
+    <div className="rounded-lg border border-teal-500/15 bg-teal-500/[0.03] px-4 py-2">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] text-muted-foreground/70 min-w-0">
+          Have you explored what this role is about?
+        </p>
+        <button
+          onClick={() => choose(!confirmed)}
+          className={cn(
+            'px-3 py-1 rounded-md text-[11px] font-medium transition-colors border shrink-0',
+            confirmed
+              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-emerald-500/40 hover:text-emerald-300',
+          )}
+          aria-pressed={confirmed}
+        >
+          {confirmed ? 'Yes' : 'Mark as explored'}
+        </button>
       </div>
     </div>
   );
@@ -1189,7 +1321,7 @@ function UnderstandConfirmCard({
   onChange,
 }: {
   careerTitle: string | null;
-  /** Notifies the parent page so the tab bar can re-lock/unlock Grow
+  /** Notifies the parent page so the tab bar can re-lock/unlock Clarity
    *  immediately when the user toggles their answer. */
   onChange?: (confirmed: boolean) => void;
 }) {
@@ -1206,42 +1338,23 @@ function UnderstandConfirmCard({
   };
 
   return (
-    <div className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] px-5 py-4">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-foreground/85">
-            Did you understand the role in more detail?
-          </p>
-          <p className="text-[11px] text-muted-foreground/60 mt-0.5">
-            Your answer marks Understand as complete on your dashboard.
-          </p>
-        </div>
-        <div className="flex gap-2 shrink-0">
-          <button
-            onClick={() => choose(true)}
-            className={cn(
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
-              confirmed
-                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-emerald-500/40 hover:text-emerald-300',
-            )}
-            aria-pressed={confirmed}
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => choose(false)}
-            className={cn(
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors border',
-              !confirmed
-                ? 'bg-muted/30 border-border/40 text-foreground/60'
-                : 'bg-background/40 border-border/40 text-foreground/70 hover:border-border/60',
-            )}
-            aria-pressed={!confirmed}
-          >
-            Not yet
-          </button>
-        </div>
+    <div className="rounded-lg border border-blue-500/15 bg-blue-500/[0.03] px-4 py-2">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] text-muted-foreground/70 min-w-0">
+          Did you understand the role in more detail?
+        </p>
+        <button
+          onClick={() => choose(!confirmed)}
+          className={cn(
+            'px-3 py-1 rounded-md text-[11px] font-medium transition-colors border shrink-0',
+            confirmed
+              ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+              : 'bg-background/40 border-border/40 text-foreground/60 hover:border-emerald-500/40 hover:text-emerald-300',
+          )}
+          aria-pressed={confirmed}
+        >
+          {confirmed ? 'Yes' : 'Mark as understood'}
+        </button>
       </div>
     </div>
   );
@@ -1449,16 +1562,18 @@ function CareerNotes({ careerTitle, collapsed, onToggle }: { careerTitle: string
   );
 }
 
-// ─── GROW TAB ────────────────────────────────────────────────────────────────
+// ─── CLARITY TAB ──────────────────────────────────────────────────────────────
 
 
-function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
+function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: Career | null }) {
   const { data: detailsData } = useCareerDetails(career?.id ?? null);
   const { data: storiesData } = useCareerStories(career?.id ?? null);
+  const { data: contributedData } = useContributedPaths(career?.id ?? null);
   const details = detailsData?.details ?? null;
   const careerStories = storiesData?.stories ?? [];
+  const contributedPaths = contributedData?.paths ?? [];
 
-  // Education context — drives the foundation gate for Play and Grow completion.
+  // Education context — drives the foundation gate for Play and Clarity completion.
   const { data: eduCtxData } = useQuery<{ educationContext: { stage?: string } | null }>({
     queryKey: ['education-context'],
     queryFn: async () => {
@@ -1508,8 +1623,8 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   // voice-guided roadmap experience inside PersonalCareerTimeline.
   const [simulationPlay, setSimulationPlay] = useState<(() => void) | null>(null);
 
-  // Grow accordion — only one section open at a time
-  const [growSection, setGrowSection] = useState<string | null>('actions');
+  // Clarity accordion — only one section open at a time
+  const [claritySection, setClaritySection] = useState<string | null>('actions');
 
   // Build contextual actions from real career data
   const topSkills = details?.topSkills ?? career?.keySkills ?? [];
@@ -1571,7 +1686,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
     return subjects;
   }, [career?.keySkills]);
 
-  const toggleGrow = (id: string) => setGrowSection(prev => prev === id ? null : id);
+  const toggleClarity = (id: string) => setClaritySection(prev => prev === id ? null : id);
 
   // Build a contextual career consideration summary
   const careerConsideration = useMemo(() => {
@@ -1898,7 +2013,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
       {/* 2. Momentum — suggested + your own progressive steps.
           The state machinery (load/save/sync to /api/journey/goal-data,
           status cycling, reflections) is declared above; this block is
-          the rendered surface. Adding a personal step also marks Grow
+          the rendered surface. Adding a personal step also marks Clarity
           complete on the dashboard's progress card. */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
         <button
@@ -2192,8 +2307,59 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
         </SectionCard>
       )}
 
-      {/* ── Grow completion — auto-derived from foundation + momentum ── */}
-      <GrowCompletionCard
+      {/* 4. Real Paths — community-contributed career timelines */}
+      {contributedPaths.length > 0 && (
+        <SectionCard>
+          <SectionHeader
+            icon={Users}
+            title="Real Paths from Real People"
+            badge={<span className="text-[10px] text-muted-foreground/30">{contributedPaths.length} path{contributedPaths.length !== 1 ? 's' : ''}</span>}
+            tooltip="Real career timelines contributed by parents and professionals — showing that there is more than one way to get here."
+          />
+          <div className="p-4 space-y-3">
+            {contributedPaths.map((path) => (
+              <div key={path.id} className="rounded-lg border border-border/20 bg-background/20 p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                    {path.displayName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium text-foreground/90 truncate">{path.displayName}</p>
+                    <p className="text-[10px] text-muted-foreground/60 truncate">
+                      {path.currentTitle} · {path.country}
+                      {!path.didAttendUniversity && ' · No university'}
+                      {path.yearsOfExperience ? ` · ${path.yearsOfExperience} yrs` : ''}
+                    </p>
+                  </div>
+                </div>
+                {path.headline && (
+                  <p className="text-[10px] text-foreground/60 italic mb-2">&ldquo;{path.headline}&rdquo;</p>
+                )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1">
+                  {(path.steps as { age: number; label: string }[]).map((s, i) => (
+                    <div key={i} className="flex items-center gap-1.5 text-[10px]">
+                      <span className="text-muted-foreground/50 tabular-nums w-5 text-right">{s.age}</span>
+                      <div className="h-1 w-1 rounded-full bg-primary/30" />
+                      <span className="text-foreground/70">{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+                {path.advice && (
+                  <p className="text-[10px] text-primary/60 mt-2 pt-2 border-t border-border/10">
+                    &ldquo;{path.advice}&rdquo;
+                  </p>
+                )}
+              </div>
+            ))}
+            <p className="text-[10px] text-muted-foreground/30 text-center pt-1">
+              Know someone whose path could inspire? <a href="/contribute" className="text-primary/60 hover:text-primary transition-colors">Share a career path</a>
+            </p>
+          </div>
+        </SectionCard>
+      )}
+
+      {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
+      <ClarityCompletionCard
         careerTitle={goalTitle}
         hasFoundation={hasFoundation}
         hasMomentum={actions.length > 0}
@@ -2203,7 +2369,7 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
   );
 }
 
-function GrowCompletionCard({
+function ClarityCompletionCard({
   careerTitle,
   hasFoundation,
   hasMomentum,
@@ -2212,27 +2378,27 @@ function GrowCompletionCard({
   hasFoundation: boolean;
   hasMomentum: boolean;
 }) {
-  const growComplete = hasFoundation && hasMomentum;
+  const clarityComplete = hasFoundation && hasMomentum;
 
-  // Auto-mark Grow as active on the dashboard when both conditions are met.
+  // Auto-mark Clarity as active on the dashboard when both conditions are met.
   useEffect(() => {
-    if (growComplete && careerTitle) {
-      markGrowActive(careerTitle);
+    if (clarityComplete && careerTitle) {
+      markClarityActive(careerTitle);
     }
-  }, [growComplete, careerTitle]);
+  }, [clarityComplete, careerTitle]);
 
   return (
     <div className={cn(
       'rounded-xl border px-5 py-4',
-      growComplete
+      clarityComplete
         ? 'border-emerald-500/25 bg-emerald-500/[0.04]'
         : 'border-border/30 bg-card/30',
     )}>
       <p className={cn(
         'text-sm font-semibold mb-3',
-        growComplete ? 'text-emerald-400' : 'text-foreground/85',
+        clarityComplete ? 'text-emerald-400' : 'text-foreground/85',
       )}>
-        {growComplete ? 'Grow complete' : 'Complete Grow'}
+        {clarityComplete ? 'Clarity complete' : 'Complete Clarity'}
       </p>
       <div className="space-y-2.5">
         <div className="flex items-center gap-2.5">
@@ -2282,7 +2448,7 @@ function GrowCompletionCard({
           </div>
         </div>
       </div>
-      {growComplete && (
+      {clarityComplete && (
         <div className="mt-4 rounded-xl border-2 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent p-4 text-center">
           <p className="text-2xl mb-2">🎉</p>
           <p className="text-sm font-bold text-emerald-400 mb-1">
@@ -2353,7 +2519,7 @@ export default function MyJourneyPage() {
   const [activeTab, setActiveTab] = useState<V2Tab>('discover');
 
   // ── Tab gating ─────────────────────────────────────────────────────
-  // The three tabs are Discover → Understand → Grow, and the user MUST
+  // The three tabs are Discover → Understand → Clarity, and the user MUST
   // answer the YES/NOT-YET confirmation at the bottom of each content
   // tab before the next one unlocks. This is enforced at three places:
   //
@@ -2380,7 +2546,7 @@ export default function MyJourneyPage() {
     (id: V2Tab) => {
       if (id === 'discover') return false;
       if (id === 'understand') return !discoverConfirmedState;
-      if (id === 'grow') return !understandConfirmedState;
+      if (id === 'clarity') return !understandConfirmedState;
       return false;
     },
     [discoverConfirmedState, understandConfirmedState],
@@ -2400,7 +2566,7 @@ export default function MyJourneyPage() {
   // tab instead of honouring the hash.
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') as V2Tab;
-    if (!['discover', 'understand', 'grow'].includes(hash)) return;
+    if (!['discover', 'understand', 'clarity'].includes(hash)) return;
     if (isTabLocked(hash)) {
       // Don't honour a hash that points at a locked tab.
       setActiveTab('discover');
@@ -2419,7 +2585,7 @@ export default function MyJourneyPage() {
   // Discover via the dashboard), bounce them back to the earliest
   // unlocked tab so they can never sit on content they haven't earned.
   useEffect(() => {
-    if (activeTab === 'grow' && isTabLocked('grow')) {
+    if (activeTab === 'clarity' && isTabLocked('clarity')) {
       setActiveTab(isTabLocked('understand') ? 'discover' : 'understand');
     } else if (activeTab === 'understand' && isTabLocked('understand')) {
       setActiveTab('discover');
@@ -2428,11 +2594,18 @@ export default function MyJourneyPage() {
 
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
+  // Subtle hint — "This is your path" on first journey visit
+  const journeyHint = useSubtleHint({
+    hintKey: "journey-path",
+    enabled: !!goalTitle,
+    delayMs: 2500,
+    durationMs: 3500,
+  });
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
     { id: 'discover', label: 'Discover', subtitle: 'Explore the career', icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: 'Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.', lockedTooltip: '' },
     { id: 'understand', label: 'Understand', subtitle: 'The reality, education & skills', icon: Globe, color: 'text-blue-400', glow: 'rgba(59,130,246,0.25)', tooltip: 'Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.', lockedTooltip: 'Answer the confirmation at the bottom of Discover to unlock Understand' },
-    { id: 'grow', label: 'Grow', subtitle: 'Take action', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'Play through your personal roadmap step by step, explore live opportunities, and build momentum toward your career goal.', lockedTooltip: 'Answer the confirmation at the bottom of Understand to unlock Grow' },
+    { id: 'clarity', label: 'Clarity', subtitle: 'See your full journey', icon: Rocket, color: 'text-amber-400', glow: 'rgba(245,158,11,0.25)', tooltip: 'This section brings everything together — showing you the full journey, timeline, and what it takes to become this.', lockedTooltip: 'Answer the confirmation at the bottom of Understand to unlock Clarity' },
   ];
 
   // While goals are loading, show a skeleton to avoid flashing the onboarding
@@ -2463,7 +2636,7 @@ export default function MyJourneyPage() {
               My Journey
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
-              Pick a career to explore in depth, and we&rsquo;ll walk you from curiosity to a real plan &mdash; one step at a time.
+              Choose a Primary Goal &mdash; the career you want to explore properly first. We&rsquo;ll walk you from curiosity to a real plan, one step at a time. You can change it anytime.
             </p>
           </div>
 
@@ -2483,9 +2656,9 @@ export default function MyJourneyPage() {
               },
               {
                 n: 3,
-                title: "Grow",
-                subtitle: "Build your roadmap",
-                body: "Map your path, set concrete next steps, and track your progress.",
+                title: "Clarity",
+                subtitle: "See your full journey",
+                body: "See the full timeline, milestones, and what it takes to get there.",
               },
             ].map((stage) => (
               <div
@@ -2516,14 +2689,14 @@ export default function MyJourneyPage() {
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold transition-colors"
             >
               <Target className="h-4 w-4" />
-              Pick a career to explore
+              Choose your Primary Goal
             </button>
             <a
               href="/careers/radar"
               className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border bg-background hover:bg-muted/50 text-sm font-medium transition-colors"
             >
               <Sparkles className="h-4 w-4 text-teal-500" />
-              Or browse your matches first
+              Or explore careers in Career Radar first
             </a>
           </div>
         </div>
@@ -2552,7 +2725,7 @@ export default function MyJourneyPage() {
               <span className="text-muted-foreground/50">My Journey to </span>
               {goalTitle}
             </h1>
-            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change goal">
+            <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change Primary Goal">
               <Pencil className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -2628,6 +2801,11 @@ export default function MyJourneyPage() {
           })}
         </div>
 
+        {/* Journey hint — first visit */}
+        <div className="flex justify-center mb-2">
+          <SpotlightHint visible={journeyHint.visible} text="This is your path" placement="bottom" />
+        </div>
+
         {/* Tab content */}
         <AnimatePresence mode="wait">
           <motion.div
@@ -2649,16 +2827,22 @@ export default function MyJourneyPage() {
               <UnderstandTab
                 career={career}
                 goalTitle={goalTitle}
-                onContinue={() => goToTab('grow')}
+                onContinue={() => goToTab('clarity')}
                 onConfirmChange={setUnderstandConfirmedState}
               />
             )}
-            {activeTab === 'grow' && (
-              <GrowTab goalTitle={goalTitle} career={career} />
+            {activeTab === 'clarity' && (
+              <ClarityTab goalTitle={goalTitle} career={career} />
             )}
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <ReflectionPanel
+        careerSlug={career?.id ?? null}
+        phase={activeTab}
+        careerTitle={career?.title}
+      />
 
       <GoalSelectionSheet
         open={goalSheetOpen}

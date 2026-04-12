@@ -72,17 +72,19 @@ export function MobileSheet({
   return (
     <AnimatePresence>
       {open && (
-        <>
-          {/* Backdrop */}
+          /* Backdrop — also serves as the centering container on desktop */
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            className={cn(
+              "fixed inset-0 bg-black/40 backdrop-blur-sm z-50",
+              !showAsSheet && "flex items-center justify-center p-4"
+            )}
             onClick={handleBackdropClick}
             aria-hidden="true"
-          />
+          >
 
           {/* Sheet/Dialog */}
           <motion.div
@@ -104,19 +106,19 @@ export function MobileSheet({
             }
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={cn(
-              "fixed z-50 bg-background shadow-xl",
+              "bg-background shadow-xl",
               showAsSheet ? [
-                "bottom-0 left-0 right-0",
+                "fixed z-50 bottom-0 left-0 right-0",
                 "rounded-t-3xl border-t",
                 "max-h-[90vh]"
               ] : [
-                "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+                "relative z-50",
                 "rounded-2xl border",
-                "w-full max-w-md mx-4",
-                `max-h-[${maxHeightPercent}vh]`
+                "w-full max-w-md",
               ]
             )}
             style={!showAsSheet ? { maxHeight: `${maxHeightPercent}vh` } : undefined}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Handle bar for mobile */}
             {showAsSheet && (
@@ -169,7 +171,7 @@ export function MobileSheet({
               {children}
             </div>
           </motion.div>
-        </>
+          </motion.div>
       )}
     </AnimatePresence>
   );

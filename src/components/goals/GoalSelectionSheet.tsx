@@ -105,7 +105,7 @@ export function GoalSelectionSheet({
       );
       if (slot === "primary") {
         syncGuidanceGoal(variables.title);
-        // Pre-generate the career roadmap so it's cached before the user reaches Grow
+        // Pre-generate the career roadmap so it's cached before the user reaches Clarity
         fetch("/api/journey/generate-timeline", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -195,8 +195,8 @@ export function GoalSelectionSheet({
       <MobileSheet
         open={open}
         onClose={onClose}
-        title="Set your goal"
-        description="Search for a career to set as your goal"
+        title="Set your Primary Goal"
+        description="Choose the career you want to explore properly first"
       >
         {/* Search Input */}
         <div className="relative mb-4">

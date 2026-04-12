@@ -50,8 +50,8 @@ function TheGapSection() {
         Endeavrly addresses this with a structured journey:{" "}
         <strong className="text-foreground">Discover</strong> (understand yourself),{" "}
         <strong className="text-foreground">Understand</strong> (explore what&apos;s out there), and{" "}
-        <strong className="text-foreground">Grow</strong> (take action and grow) — so young people
-        can build career clarity through experience, not guesswork.
+        <strong className="text-foreground">Clarity</strong> (see your full journey) — so young people
+        can build career confidence through understanding, not guesswork.
       </p>
 
       <div className="mt-4">
@@ -110,7 +110,7 @@ export default function AboutPage() {
         {/* The Framework */}
         <div className="mt-16 pt-10 border-t border-border">
           <h2 className="text-xl font-semibold text-foreground mb-4">
-            The framework: Discover, Understand, Grow
+            The framework: Discover, Understand, Clarity
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
             Everything in Endeavrly is built around three lenses. They&apos;re sequential on purpose —
@@ -143,11 +143,11 @@ export default function AboutPage() {
             <div className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30">
               <div className="flex items-center gap-2 mb-1">
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">3</span>
-                <h3 className="font-semibold text-foreground">Grow — Build your roadmap</h3>
+                <h3 className="font-semibold text-foreground">Clarity — See your full journey</h3>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed ml-8">
-                Map your path toward this career, set concrete next steps, track your progress over time, and build
-                momentum — turning curiosity into a plan you can actually follow.
+                See the complete timeline, milestones, and progression for this career — so you can move forward with
+                confidence, knowing exactly what the journey involves.
               </p>
             </div>
           </div>
@@ -233,8 +233,8 @@ export default function AboutPage() {
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Endeavrly doesn&apos;t ask you to pick a career. It asks you to explore. Set a goal
-              if you want, change it whenever you need to, or leave it blank and just try things.
+              Endeavrly doesn&apos;t ask you to pick a career forever. It asks you to explore. Set a Primary Goal
+              to focus on one career first, change it whenever you need to, or just browse and try things.
               There are no rankings, no leaderboards, and no algorithm telling you what to become.
               Your progress is personal and private. The only person it needs to make sense to is you.
             </p>

@@ -134,5 +134,5 @@ export const ONBOARDING_SUGGESTIONS: SuggestedAction[] = [
   { id: "2", text: "Explore different careers", icon: "compass", href: "/careers" },
   { id: "3", text: "Take the career quiz", icon: "clipboard", href: "/growth/explore" },
   { id: "4", text: "Browse available jobs", icon: "briefcase", href: "/jobs" },
-  { id: "5", text: "Set your first career goal", icon: "target", href: "/careers" },
+  { id: "5", text: "Set your first Primary Goal", icon: "target", href: "/careers" },
 ];

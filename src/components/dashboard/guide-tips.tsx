@@ -9,8 +9,8 @@
  * available as a subtle icon the user can tap any time.
  *
  * Tips are ordered to match the natural flow:
- *   1. Pick a career to explore
- *   2. Explore your journey (Discover / Understand / Grow)
+ *   1. Choose your Primary Goal
+ *   2. Explore your journey (Discover / Understand / Clarity)
  *   3. Play through your roadmap
  *   4. Sharpen your match (Career Radar)
  *   5. Find real opportunities (Momentum)
@@ -39,23 +39,23 @@ const TIPS = [
   {
     icon: Compass,
     color: "text-teal-400",
-    title: "Pick a career to explore",
+    title: "Choose your Primary Goal",
     description:
-      "Head to Explore Careers, find something that sparks your interest, and set it as your goal. Everything else — your journey, roadmap, and opportunities — builds from that choice.",
+      "Head to Career Radar, find something that sparks your interest, and set it as your Primary Goal \u2014 the career you want to explore properly first. Everything else builds from that choice. You can change it anytime.",
   },
   {
     icon: Route,
     color: "text-blue-400",
     title: "Explore your journey",
     description:
-      "My Journey has three tabs you can visit in any order. Discover shows what a day in the role looks like. Understand breaks down education paths and entry requirements. Grow is where it all comes together.",
+      "My Journey has three tabs you can visit in any order. Discover shows what a day in the role looks like. Understand breaks down education paths and entry requirements. Clarity brings everything together — showing your full journey and timeline.",
   },
   {
     icon: Rocket,
     color: "text-amber-400",
     title: "Play through your roadmap",
     description:
-      "In the Grow tab, hit Play Journey to hear your personalised roadmap narrated step by step — from where you are now to a senior role. It's built around your age and education automatically.",
+      "In the Clarity tab, hit Play Journey to hear your personalised roadmap narrated step by step — from where you are now to a senior role. It's built around your age and education automatically.",
   },
   {
     icon: Radar,
@@ -69,7 +69,7 @@ const TIPS = [
     color: "text-emerald-400",
     title: "Find real opportunities",
     description:
-      "The Momentum section in Grow surfaces live jobs, courses, and programmes relevant to your career — plus a personal action list to track your next moves.",
+      "The Momentum section in Clarity surfaces live jobs, courses, and programmes relevant to your career — plus a personal action list to track your next moves.",
   },
 ] as const;
 

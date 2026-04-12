@@ -354,10 +354,10 @@ export function CareerDetailSheet({
                 {/* Journey nudge */}
                 <div className="rounded-lg border border-teal-500/20 bg-teal-500/5 p-3">
                   <p className="text-xs font-medium text-teal-700 dark:text-teal-400">
-                    Set this as your goal to explore it in depth
+                    Set this as your Primary Goal to explore it properly
                   </p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">
-                    My Journey gives you the full picture — daily tasks, entry criteria, typical week, personality fit, and more.
+                    Your Primary Goal is the career you focus on first. My Journey gives you the full picture \u2014 and you can change it anytime.
                   </p>
                 </div>
 

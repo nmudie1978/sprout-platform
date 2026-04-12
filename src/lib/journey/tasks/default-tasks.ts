@@ -55,9 +55,9 @@ export const DEFAULT_TASKS: DefaultTaskDefinition[] = [
   {
     stageId: 'foundation',
     mode: 'act',
-    title: 'Set your primary career goal',
-    tooltipTitle: 'Choose a direction',
-    tooltipBody: 'Having a goal gives your journey structure. You can always change it later.',
+    title: 'Set your Primary Goal',
+    tooltipTitle: 'Focus on one career first',
+    tooltipBody: 'Your Primary Goal is the career you want to explore properly. You can change it anytime.',
   },
 
   // ============================================

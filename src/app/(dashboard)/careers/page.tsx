@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
-import { CareerCardV2, type ViewMode } from "@/components/career-card-v2";
+import { CareerCardV2, LIST_GRID, type ViewMode } from "@/components/career-card-v2";
 import { CareerScoreCard } from "@/components/careers/career-score-card";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { CareerFilterBar } from "@/components/careers/career-filter-bar";
@@ -63,22 +63,9 @@ function CareersPageContent() {
   // Track previous filter state to detect changes
   const prevFiltersRef = useRef<string>("");
 
-  // Load view preference from localStorage
-  const [viewMode, setViewMode] = useState<ViewMode>(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("careerViewMode") as ViewMode) || "list";
-    }
-    return "list";
-  });
+  const viewMode: ViewMode = "list";
 
   const isYouth = session?.user?.role === "YOUTH";
-
-  // Persist view preference
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("careerViewMode", viewMode);
-    }
-  }, [viewMode]);
 
   // Fetch career insights for personalised match scores
   const { data: insightsData } = useQuery({
@@ -215,6 +202,16 @@ function CareersPageContent() {
     [updateFilter]
   );
 
+  const handleSectorChange = useCallback(
+    (sector: "all" | "public" | "private") => updateFilter("sector", sector),
+    [updateFilter]
+  );
+
+  const handleAcademicDemandChange = useCallback(
+    (demand: "all" | "low" | "moderate" | "strong" | "very-strong") => updateFilter("academicDemand", demand),
+    [updateFilter]
+  );
+
   const handleSalaryChange = useCallback(
     (range: typeof filters.salaryRange) => updateFilter("salaryRange", range),
     [updateFilter]
@@ -259,10 +256,12 @@ function CareersPageContent() {
         gradientText="Careers"
         description="Learn what different jobs are really like before deciding anything"
         icon={Compass}
+        centered
+        infoTooltip="Browse careers by category, search by name, or filter by salary, growth and more. Click any career to see a full breakdown including a typical day, education paths and salary info."
       />
 
       {/* Quick Stats */}
-      <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
         {[
           { icon: Briefcase, label: "Careers", value: getAllCareers().length, color: "text-primary" },
           { icon: Search, label: "Showing", value: totalItems, color: "text-teal-500" },
@@ -281,17 +280,14 @@ function CareersPageContent() {
         filters={filters}
         categoryCounts={categoryCounts}
         hasActiveFilters={hasActiveFilters}
-        advancedFilterCount={advancedFilterCount}
-        showAdvancedFilters={showAdvancedFilters}
-        viewMode={viewMode}
         salaryBounds={salaryBounds}
         onCategoryChange={handleCategoryChange}
         onSearchChange={handleSearchChange}
         onGrowthChange={handleGrowthChange}
+        onSectorChange={handleSectorChange}
+        onAcademicDemandChange={handleAcademicDemandChange}
         onSalaryChange={handleSalaryChange}
-        onToggleAdvanced={handleToggleAdvanced}
         onClearAll={clearAllFilters}
-        onViewModeChange={setViewMode}
         selectedNatures={filters.careerNatures}
         onNatureToggle={handleNatureToggle}
       />
@@ -320,7 +316,7 @@ function CareersPageContent() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-3 mt-4">
+      <div className="flex items-center justify-center gap-3 mb-3 mt-4">
         <p className="text-xs text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>
@@ -356,10 +352,13 @@ function CareersPageContent() {
               right. Needs `grid` (not `inline-grid`) for mx-auto to take
               effect — inline-level elements ignore auto horizontal margin. */}
           {viewMode === "list" && (
-            <div className="grid grid-cols-[18rem_6rem_4rem_5rem_8rem] items-center gap-x-6 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit mx-auto">
+            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit mx-auto`}>
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
+              <span className="text-center">Sector</span>
+              <span className="text-center">Path</span>
+              <span className="text-center">Demand</span>
               <span className="text-center">Match</span>
               <span>Learn more</span>
             </div>
@@ -464,7 +463,7 @@ function CareersPageContent() {
             <div className="flex items-center gap-2 mb-4">
               <Heart className="h-5 w-5 text-pink-500" />
               <h2 className="text-lg font-semibold">Recommended for You</h2>
-              <span className="text-xs text-muted-foreground">Based on your primary goal</span>
+              <span className="text-xs text-muted-foreground">Based on your Primary Goal</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {topRecs.map((rec: any) => {

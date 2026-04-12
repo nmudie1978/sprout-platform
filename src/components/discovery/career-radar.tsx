@@ -8,6 +8,8 @@ import {
   getAllCareers,
   getCareersFromDiscovery,
   getMatchReasons,
+  getSectorForCareer,
+  measureSignalStrength,
   type Career,
   type CareerCategory,
   type DiscoveryPreferences,
@@ -28,14 +30,14 @@ const RADAR_TIPS = [
     color: "text-teal-400",
     title: "Tap any dot to explore",
     description:
-      "Each dot is a career that matches your interests. Tap one to see salary, skills, and growth outlook — and set it as your goal if it sparks something.",
+      "Each dot is a career that matches your interests. Tap one to see salary, skills, and growth outlook \u2014 and set it as your Primary Goal if it sparks something.",
   },
   {
     icon: Target,
     color: "text-pink-400",
     title: "Closer to centre = stronger match",
     description:
-      "The radar places your best matches near the centre. Pink glowing dots are your top matches. Your active goal always has a gold ring around it.",
+      "The radar places your best matches near the centre. Pink glowing dots are your top matches. Your Primary Goal always has a gold ring around it.",
   },
   {
     icon: Layers,
@@ -252,11 +254,18 @@ const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.25;
 
-// Fixed band sizes — Strong is always the top 10, Good is the next 20.
-// Anything beyond that is dropped from the radar entirely (the previous
-// "Worth a look" tier is gone — too noisy, diluted the signal).
-const STRONG_BAND_SIZE = 10;
-const GOOD_BAND_SIZE = 20;
+// Band sizes scale with signal strength to avoid clutter.
+// Weak signal → fewer dots so the radar isn't pretending to have
+// matches it can't meaningfully rank. Strong signal → full picture.
+function bandSizes(signalStrength: number): { strong: number; good: number; total: number } {
+  if (signalStrength <= 1)   return { strong: 3, good: 5, total: 8 };
+  if (signalStrength < 2.5)  return { strong: 5, good: 10, total: 15 };
+  return                            { strong: 7, good: 13, total: 20 };
+}
+
+// Legacy constants kept for placeDots ring assignment
+const STRONG_BAND_SIZE = 7;
+const GOOD_BAND_SIZE = 13;
 
 /**
  * Build a 2-letter monogram from a career title for the Initials view.
@@ -274,17 +283,17 @@ function careerInitials(title: string): string {
 function placeDots(
   careers: Career[],
   primaryGoalId?: string | null,
-  secondaryGoalId?: string | null
+  secondaryGoalId?: string | null,
+  strongSize: number = STRONG_BAND_SIZE,
+  totalSize: number = STRONG_BAND_SIZE + GOOD_BAND_SIZE,
 ): PlacedDot[] {
   if (careers.length === 0) return [];
 
-  // Cap to Strong + Good only — anything beyond is dropped entirely.
-  const TOTAL_VISIBLE = STRONG_BAND_SIZE + GOOD_BAND_SIZE;
-  const visibleCareers = careers.slice(0, TOTAL_VISIBLE);
+  const visibleCareers = careers.slice(0, totalSize);
 
   // Bucket into 2 relevance rings by absolute rank position.
   const ringFor = (idx: number): 0 | 1 | 2 => {
-    if (idx < STRONG_BAND_SIZE) return 0;
+    if (idx < strongSize) return 0;
     return 1;
   };
 
@@ -369,6 +378,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const ALL_TIERS: Tier[] = ["top", "strong", "good"];
   const [activeTiers, setActiveTiers] = useState<Set<Tier>>(new Set(ALL_TIERS));
   const [filterOpen, setFilterOpen] = useState(false);
+  type SectorFilter = "all" | "public" | "private";
+  const [sectorFilter, setSectorFilter] = useState<SectorFilter>("all");
   const toggleTier = (t: Tier) => {
     setActiveTiers((prev) => {
       const next = new Set(prev);
@@ -422,16 +433,17 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
   const zoomReset = () => setZoom(1);
 
+  const signalStrength = useMemo(() => measureSignalStrength(preferences), [preferences]);
+  const bands = useMemo(() => bandSizes(signalStrength), [signalStrength]);
+
   const matched = useMemo(() => {
     if (!preferences) return [];
-    // 30 dots = 10 Strong + 20 Good. The legacy "Worth a look" tier was
-    // dropped, so we no longer fetch the long tail.
-    return getCareersFromDiscovery(preferences, 30);
-  }, [preferences]);
+    return getCareersFromDiscovery(preferences, bands.total);
+  }, [preferences, bands.total]);
 
   const dots = useMemo(
-    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId),
-    [matched, primaryGoalCareerId, secondaryGoalCareerId]
+    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, bands.total),
+    [matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, bands.total]
   );
 
   // Filter applied to both the radar dots and the matches report list.
@@ -443,9 +455,16 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       if (d.ring === 0) return "strong";
       return "good";
     };
-    if (allTiersOn) return dots;
-    return dots.filter((d) => activeTiers.has(tierOf(d)) || d.isActiveGoal);
-  }, [dots, activeTiers, allTiersOn]);
+    return dots.filter((d) => {
+      if (d.isActiveGoal) return true;
+      if (!allTiersOn && !activeTiers.has(tierOf(d))) return false;
+      if (sectorFilter !== "all") {
+        const s = getSectorForCareer(d.career.id);
+        if (s !== sectorFilter && s !== "mixed") return false;
+      }
+      return true;
+    });
+  }, [dots, activeTiers, allTiersOn, sectorFilter]);
 
   const hasPrefs =
     !!preferences &&
@@ -462,8 +481,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </div>
         <h3 className="text-sm font-semibold mb-1">Your Career Radar is empty</h3>
         <p className="text-xs text-muted-foreground mb-3 max-w-sm mx-auto">
-          Tell us what subjects you enjoy and how you like to work — we&apos;ll
-          map careers across every path, including ones you&apos;ve never heard of.
+          Tell us what subjects you enjoy and how you like to work \u2014 we&apos;ll
+          map careers across every path so you can find your first Primary Goal.
         </p>
         <Button
           size="sm"
@@ -497,6 +516,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     <>
     <div className="rounded-2xl border bg-card overflow-hidden">
       <RadarGuideTips />
+
+      {/* Signal-strength hint — encourages adding more preferences */}
+      {signalStrength < 2.5 && (
+        <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/[0.04]">
+          <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
+            {signalStrength <= 1
+              ? "Add your work style and people preference to see careers that genuinely fit you."
+              : "Adding more preferences will sharpen your matches."}
+          </p>
+          <Button size="sm" variant="ghost" onClick={onEditPreferences} className="h-6 px-2 text-[10px] text-teal-500 shrink-0">
+            What I like
+          </Button>
+        </div>
+      )}
+
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <span className="text-[11px] text-muted-foreground">
@@ -607,12 +641,23 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     );
                   })}
                   <div className="border-t mt-1 pt-1 px-2 pb-0.5 text-[9px] text-muted-foreground">
-                    Your active goal is always shown.
+                    Your Primary Goal is always shown.
                   </div>
                 </div>
               </>
             )}
           </div>
+          {/* Sector filter */}
+          <select
+            value={sectorFilter}
+            onChange={(e) => { setSectorFilter(e.target.value as SectorFilter); setCarouselIdx(0); }}
+            className="h-7 px-2 rounded-md border bg-background text-[10px]"
+            title="Filter by public or private sector"
+          >
+            <option value="all">All Sectors</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
         </div>
         <div className="flex items-center gap-1">
           {/* Zoom controls */}
@@ -964,8 +1009,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               {hovered.isActiveGoal && (
                 <div className="mt-1 text-[10px] text-amber-500 font-medium">
                   {hovered.goalSlot === "secondary"
-                    ? "Your current secondary goal"
-                    : "Your current primary goal"}
+                    ? "Your Secondary Goal"
+                    : "Your Primary Goal"}
                 </div>
               )}
             </div>
@@ -991,7 +1036,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-full border-[1.5px] border-amber-400" />
-            Active goal
+            Primary Goal
           </span>
         </div>
         <span>Inner ring = strongest match</span>

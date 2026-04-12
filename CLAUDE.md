@@ -138,10 +138,10 @@ Never store:
 
 ## Overview
 
-My Journey has three tabs — **Discover**, **Understand**, **Grow** —
+My Journey has three tabs — **Discover**, **Understand**, **Clarity** —
 presented as a linear progression. The student must answer the
 YES confirmation at the bottom of Discover before Understand unlocks,
-and the YES confirmation at the bottom of Understand before Grow
+and the YES confirmation at the bottom of Understand before Clarity
 unlocks. This forces them to deliberately consider each stage before
 moving on, and gives the product a controllable completion signal for
 each section.
@@ -162,7 +162,7 @@ state machine. Do NOT reintroduce any of the following:
     `src/lib/journey/orchestrator.ts` or
     `src/lib/journey/state-machine.ts`.
 
-Real progression inside Grow still happens via the roadmap's per-step
+Real progression inside Clarity still happens via the roadmap's per-step
 progress cycling — that local sequential-unlock behaviour is unchanged.
 
 ## How the tab gating works
@@ -181,7 +181,7 @@ React state and uses them to:
      tooltip explaining why it's locked).
   2. Block programmatic jumps via a `goToTab` guard — so stale URL
      hashes, `onContinue` callbacks, and the dashboard's "jump to
-     Grow" deep links can't bypass the gate.
+     Clarity" deep links can't bypass the gate.
   3. Auto-rewind the user if they're sitting on a tab that becomes
      locked (e.g. they click "Not yet" on the previous tab's card).
 
@@ -202,7 +202,7 @@ courses & certifications, entry requirements, industry outlook. Real
 Norwegian programmes via `getNorwayProgrammes` and certifications via
 `getCertificationPath`. Optional personal notes.
 
-### 3. Grow — Build your roadmap
+### 3. Clarity — Build your roadmap
 The action surface. Composed of:
 
   a. **Foundation Card** — diagnostic of the user's starting point
@@ -247,7 +247,7 @@ journey state. Editing in either surface invalidates
 ## Hard rules
 
 - Tab navigation IS gated — but only by the single confirmation card
-  at the bottom of each tab (Discover → Understand, Understand → Grow).
+  at the bottom of each tab (Discover → Understand, Understand → Clarity).
   No multi-step gates, no completion ladders, no DB journey state, no
   orchestrator. The gate is one boolean per tab, stored in
   localStorage, mirrored into React state via the parent page so the
@@ -266,12 +266,12 @@ journey state. Editing in either surface invalidates
   `src/components/journey/timeline/`. This is the only progression
   machine in the app.
 - The dashboard surfaces roadmap progress for the active goal via
-  `markGrowActive` / lightweight per-goal signals — not via
+  `markClarityActive` / lightweight per-goal signals — not via
   `computeLensProgress` over the legacy state machine.
 
 ### Voice-Guided Roadmap Simulation
 
-The Grow tab's roadmap has a "Play Journey" mode that narrates the
+The Clarity tab's roadmap has a "Play Journey" mode that narrates the
 user's career path step-by-step using OpenAI TTS. When playing:
 
   - The roadmap enters read-only mode (no progress cycling)
@@ -322,10 +322,10 @@ If not, it should not exist.
 ## Summary
 
 Three tabs, single-predicate confirmation gating. The student cannot
-jump between Discover / Understand / Grow without answering the YES
+jump between Discover / Understand / Clarity without answering the YES
 confirmation at the bottom of each content tab — this forces
 deliberate consideration of each stage and gives us a clean per-tab
-completion signal. Grow is the simulation + exploration surface — the
+completion signal. Clarity is the simulation + exploration surface — the
 user plays through their roadmap narration, explores real
 opportunities, and builds momentum with concrete next moves. The
 voice-guided simulation is the primary experience; the static roadmap

@@ -36,6 +36,9 @@ import { motion } from "framer-motion";
 // Lightweight components loaded eagerly
 import { WeeklyFactNudge } from "@/components/insights/weekly-fact-nudge";
 import { PageContext } from "@/components/ui/page-context";
+import { InsightUpdateToast } from "@/components/insights/insight-update-toast";
+import { RecentInsightUpdates } from "@/components/insights/recent-insight-updates";
+import { useInsightUpdates } from "@/hooks/use-insight-updates";
 
 // Heavy components loaded lazily - these are below the fold or data-dependent
 const JobMarketStatsCarousel = dynamic(
@@ -137,6 +140,9 @@ export default function IndustryInsightsPage() {
     });
   }, []);
 
+  // Live insight updates (toast + history)
+  const { activeToast, dismissToast, recentUpdates } = useInsightUpdates();
+
   // Fetch insights modules verification status
   const { data: modulesData } = useQuery({
     queryKey: ["insights-modules-meta"],
@@ -153,6 +159,11 @@ export default function IndustryInsightsPage() {
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
+      {/* Live insight update toast — top-right, non-blocking */}
+      <div className="fixed top-20 right-4 z-50 pointer-events-none">
+        <InsightUpdateToast update={activeToast} onDismiss={dismissToast} />
+      </div>
+
       <PageContext
         pageKey="insights"
         purpose="Real data about careers, industries, and the job market — designed to help you make informed decisions."
@@ -164,6 +175,8 @@ export default function IndustryInsightsPage() {
         gradientText={t("pageTitleGradient")}
         description={t("pageDescription")}
         icon={TrendingUp}
+        centered
+        infoTooltip="Explore real data about careers, industries, and the job market. Browse global trends, youth-specific insights, and curated articles and videos to help you make informed decisions."
       />
 
       {/* Trust line + section guide */}
@@ -171,12 +184,12 @@ export default function IndustryInsightsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="mb-8"
+        className="mb-8 text-center"
       >
         <p className="text-sm text-muted-foreground">
           {t("trustLine")}
         </p>
-        <div className="flex flex-wrap items-center gap-2 mt-3">
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
           <span className="text-[11px] text-muted-foreground/40">Jump to:</span>
           <a href="#global-lens" className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
             <Globe2 className="h-3 w-3" /> Global Lens
@@ -414,6 +427,9 @@ export default function IndustryInsightsPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Recent detected updates (quiet history) */}
+      <RecentInsightUpdates updates={recentUpdates} />
 
       {/* Verification Status Footer */}
       <div className="mt-4 flex items-center justify-center gap-3 text-xs text-muted-foreground">

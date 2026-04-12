@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { Career, CareerCategory } from "@/lib/career-pathways";
-import { CAREER_PATHWAYS, getAllCareers } from "@/lib/career-pathways";
+import { CAREER_PATHWAYS, getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
+import { getAcademicProfile, getDemandLabel, demandAtMost } from "@/lib/education/academic-readiness";
 import type {
   CareerFilterState,
   ActiveFilterChip,
@@ -133,6 +134,12 @@ export function useCareerFilters(
       case "growth":
         setFilters((prev) => ({ ...prev, growthFilter: "all" }));
         break;
+      case "sector":
+        setFilters((prev) => ({ ...prev, sector: "all" }));
+        break;
+      case "academic":
+        setFilters((prev) => ({ ...prev, academicDemand: "all" }));
+        break;
       case "salary":
         setFilters((prev) => ({ ...prev, salaryRange: null }));
         break;
@@ -183,6 +190,22 @@ export function useCareerFilters(
         type: "growth",
         label: growthLabels[filters.growthFilter] || filters.growthFilter,
         value: filters.growthFilter,
+      });
+    }
+
+    if (filters.sector !== "all") {
+      chips.push({
+        type: "sector",
+        label: filters.sector === "public" ? "Public sector" : "Private sector",
+        value: filters.sector,
+      });
+    }
+
+    if (filters.academicDemand !== "all") {
+      chips.push({
+        type: "academic",
+        label: `Up to ${getDemandLabel(filters.academicDemand).toLowerCase()} demand`,
+        value: filters.academicDemand,
       });
     }
 
@@ -251,6 +274,23 @@ export function useCareerFilters(
       );
     }
 
+    // Apply sector filter — "mixed" careers appear in both public and private
+    if (filters.sector !== "all") {
+      careers = careers.filter((career) => {
+        const s = getSectorForCareer(career.id);
+        return s === filters.sector || s === "mixed";
+      });
+    }
+
+    // Apply academic demand filter — "at most" logic so selecting
+    // "moderate" shows low + moderate, not just moderate.
+    if (filters.academicDemand !== "all") {
+      careers = careers.filter((career) => {
+        const profile = getAcademicProfile(career);
+        return demandAtMost(profile.demand, filters.academicDemand);
+      });
+    }
+
     // Apply salary range filter
     if (filters.salaryRange) {
       careers = careers.filter((career) =>
@@ -295,6 +335,8 @@ export function useCareerFilters(
       filters.category !== "ALL" ||
       filters.searchQuery.trim() !== "" ||
       filters.growthFilter !== "all" ||
+      filters.sector !== "all" ||
+      filters.academicDemand !== "all" ||
       filters.salaryRange !== null ||
       filters.educationLevels.length > 0 ||
       filters.skills.length > 0 ||

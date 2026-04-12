@@ -110,7 +110,7 @@ export async function POST() {
       pathCourses: (summary.pathCourses as string[]) || [],
       pathRequirements: (summary.pathRequirements as string[]) || [],
       actionPlan: actionPlan || null,
-      // Grow
+      // Clarity
       alignedActions: ((summary.alignedActions as { type: string; title: string }[]) || []),
       reflections: ((summary.alignedActionReflections as { response: string }[]) || []).map((r) => r.response),
       // School

@@ -11782,51 +11782,6 @@
       ]
     }
   },
-  "general-practitioner": {
-    "levels": [
-      {
-        "level": "entry",
-        "title": "Medical Intern",
-        "yearsExperience": "0-2 years",
-        "salaryRange": "450-600k kr"
-      },
-      {
-        "level": "mid",
-        "title": "General Practitioner",
-        "yearsExperience": "2-5 years",
-        "salaryRange": "900-1,200k kr"
-      },
-      {
-        "level": "senior",
-        "title": "Senior General Practitioner",
-        "yearsExperience": "5-10 years",
-        "salaryRange": "1,200-1,600k kr"
-      },
-      {
-        "level": "lead",
-        "title": "Head of General Practice",
-        "yearsExperience": "10+ years",
-        "salaryRange": "1,600-2,000k kr"
-      }
-    ],
-    "paths": {
-      "entry": [
-        "Medical Intern",
-        "Resident Doctor",
-        "Clinical Assistant"
-      ],
-      "core": [
-        "General Practitioner",
-        "Family Medicine Specialist"
-      ],
-      "next": [
-        "Consultant Physician",
-        "Medical Director",
-        "Specialist in Family Medicine",
-        "Professor of Medicine"
-      ]
-    }
-  },
   "general-surgeon": {
     "levels": [
       {

@@ -259,7 +259,7 @@ export interface JourneyReportData {
     midTermMilestone?: string;
     skillToBuild?: string;
   } | null;
-  // Grow
+  // Clarity
   alignedActions: { type: string; title: string }[];
   reflections: string[];
   // School
@@ -267,7 +267,7 @@ export interface JourneyReportData {
   schoolName: string | null;
   subjects: string[];
   expectedCompletion: string | null;
-  // Education Roadmap (from Grow section)
+  // Education Roadmap (from Clarity section)
   roadmapItems: RoadmapItem[];
   schoolTrack: SchoolTrackItem[];
   roadmapCareer: string | null;
@@ -885,7 +885,7 @@ function SummaryPage({ data }: { data: JourneyReportData }) {
         </View>
         <View>
           <View style={{ flexDirection: "row" as const, justifyContent: "space-between" as const, marginBottom: 2 }}>
-            <Text style={{ fontSize: 8.5, fontWeight: 500, color: c.amber }}>Grow</Text>
+            <Text style={{ fontSize: 8.5, fontWeight: 500, color: c.amber }}>Clarity</Text>
             <Text style={{ fontSize: 7.5, color: c.subtle }}>
               {totalActions > 0 ? "Active" : "Not started"}
             </Text>
@@ -1204,11 +1204,11 @@ function EducationRoadmapPages({ data }: { data: JourneyReportData }) {
             </Text>
           </View>
           <Text style={{ fontSize: 9, color: c.muted }}>
-            from the Grow Section
+            from the Clarity Section
           </Text>
         </View>
 
-        <EmptyState message="Your education roadmap will appear here once you set a primary career goal and generate your personalised timeline in the Grow section." />
+        <EmptyState message="Your education roadmap will appear here once you set a Primary Goal and generate your personalised timeline in the Clarity section." />
 
         <Text style={s.footer}>Endeavrly  |  My Journey Report</Text>
         <Text style={s.pageNumber}>4</Text>
@@ -1269,7 +1269,7 @@ function EducationRoadmapPages({ data }: { data: JourneyReportData }) {
               <Text style={{ fontSize: 9.5, color: c.muted, lineHeight: 1.5 }}>
                 {data.roadmapCareer
                   ? `Your personalised pathway to becoming a ${data.roadmapCareer}. This roadmap maps key milestones, learning stages, and actions from where you are now to your career goal.`
-                  : "Your personalised education and career pathway, generated from your Grow section data."}
+                  : "Your personalised education and career pathway, generated from your Clarity section data."}
               </Text>
             </View>
           )}
@@ -1403,9 +1403,9 @@ function EducationRoadmapPages({ data }: { data: JourneyReportData }) {
   );
 }
 
-// ── Page: Grow — Actions & Reflections ───────────────────────────
+// ── Page: Clarity — Actions & Reflections ───────────────────────────
 
-function GrowPage({
+function ClarityPage({
   data,
   pageNum,
 }: {
@@ -1414,7 +1414,7 @@ function GrowPage({
 }) {
   return (
     <Page size="A4" style={s.page}>
-      <StageBadge stage={3} label="Grow — Actions & Reflections" />
+      <StageBadge stage={3} label="Clarity — Actions & Reflections" />
 
       <Text style={{ fontSize: 9, color: c.muted, marginBottom: 16, lineHeight: 1.5 }}>
         Real growth comes from doing. This section captures the real-world actions you have taken and what you learned from them.
@@ -1455,7 +1455,7 @@ function GrowPage({
           ))}
         </Section>
       ) : (
-        <EmptyState message="No actions recorded yet. Complete your first aligned action in the Grow stage to see it here." />
+        <EmptyState message="No actions recorded yet. Complete your first aligned action in the Clarity stage to see it here." />
       )}
 
       {data.reflections.length > 0 && (
@@ -1549,7 +1549,7 @@ function RecommendationsPage({
   if (data.roadmapItems.length === 0 && data.goalTitle) {
     recommendations.push({
       priority: "MEDIUM",
-      text: "Generate your personalised education roadmap in the Grow section to see a clear path from where you are to where you want to be.",
+      text: "Generate your personalised education roadmap in the Clarity section to see a clear path from where you are to where you want to be.",
       color: c.amber,
       bgColor: c.amberLight,
     });
@@ -1670,11 +1670,11 @@ function RecommendationsPage({
 // ── Main Document ────────────────────────────────────────────────
 
 export function MyJourneyPdfDocument({ data }: { data: JourneyReportData }) {
-  // Calculate the page number for Grow and Recommendations
-  // Cover (no number) + Summary (1) + Discover (2) + Understand (3) + Roadmap pages (4+) + Grow + Recs
+  // Calculate the page number for Clarity and Recommendations
+  // Cover (no number) + Summary (1) + Discover (2) + Understand (3) + Roadmap pages (4+) + Clarity + Recs
   const roadmapPageCount = Math.max(1, Math.ceil(data.roadmapItems.length / 5));
-  const growPageNum = 4 + roadmapPageCount;
-  const recsPageNum = growPageNum + 1;
+  const clarityPageNum = 4 + roadmapPageCount;
+  const recsPageNum = clarityPageNum + 1;
 
   return (
     <Document>
@@ -1683,7 +1683,7 @@ export function MyJourneyPdfDocument({ data }: { data: JourneyReportData }) {
       <DiscoverPage data={data} />
       <UnderstandPage data={data} />
       <EducationRoadmapPages data={data} />
-      <GrowPage data={data} pageNum={growPageNum} />
+      <ClarityPage data={data} pageNum={clarityPageNum} />
       <RecommendationsPage data={data} pageNum={recsPageNum} />
     </Document>
   );

@@ -7,19 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import {
   Search,
-  SlidersHorizontal,
   X,
-  LayoutGrid,
-  List,
-  Square,
   ChevronDown,
   Check,
 } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
-import type { CareerFilterState, CareerNature, SalaryRange } from "@/lib/career-filters/types";
+import type { CareerFilterState, CareerNature, SalaryRange, SectorFilter, AcademicDemandFilter } from "@/lib/career-filters/types";
 import { CAREER_NATURE_LABELS, CAREER_NATURE_EMOJIS } from "@/lib/career-filters/types";
 import { formatSalary } from "@/lib/career-filters/utils";
-import type { ViewMode } from "@/components/career-card-v2";
 
 const categoryConfig: Record<string, { label: string; emoji: string }> = {
   ALL: { label: "All", emoji: "\u{1F31F}" },
@@ -82,7 +77,8 @@ function FilterDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border bg-background text-xs hover:bg-muted/80 transition-colors whitespace-nowrap"
+        className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border bg-background text-xs hover:bg-muted/80 transition-colors whitespace-nowrap overflow-hidden max-w-[180px]"
+        title={typeof label === "string" ? label : undefined}
       >
         {label}
         {badge !== undefined && badge > 0 && (
@@ -133,17 +129,14 @@ interface CareerFilterBarProps {
   filters: CareerFilterState;
   categoryCounts: Record<string, number>;
   hasActiveFilters: boolean;
-  advancedFilterCount: number;
-  showAdvancedFilters: boolean;
-  viewMode: ViewMode;
   salaryBounds: SalaryRange;
   onCategoryChange: (category: string) => void;
   onSearchChange: (query: string) => void;
   onGrowthChange: (growth: string) => void;
+  onSectorChange: (sector: SectorFilter) => void;
+  onAcademicDemandChange: (demand: AcademicDemandFilter) => void;
   onSalaryChange: (range: SalaryRange | null) => void;
-  onToggleAdvanced: () => void;
   onClearAll: () => void;
-  onViewModeChange: (mode: ViewMode) => void;
   selectedNatures: CareerNature[];
   onNatureToggle: (nature: CareerNature) => void;
 }
@@ -152,17 +145,14 @@ export function CareerFilterBar({
   filters,
   categoryCounts,
   hasActiveFilters,
-  advancedFilterCount,
-  showAdvancedFilters,
-  viewMode,
   salaryBounds,
   onCategoryChange,
   onSearchChange,
   onGrowthChange,
+  onSectorChange,
+  onAcademicDemandChange,
   onSalaryChange,
-  onToggleAdvanced,
   onClearAll,
-  onViewModeChange,
   selectedNatures,
   onNatureToggle,
 }: CareerFilterBarProps) {
@@ -198,8 +188,8 @@ export function CareerFilterBar({
       : categoryConfig[filters.category]?.label || "Category";
 
   return (
-    <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-background/95 backdrop-blur-sm border-b mb-4">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-background/80 backdrop-blur-md border-b border-border/40 mb-4">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         {/* Search */}
         <div className="relative w-full sm:flex-1 sm:w-auto sm:min-w-[160px] sm:max-w-xs">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
@@ -267,6 +257,32 @@ export function CareerFilterBar({
           ))}
         </select>
 
+        {/* Sector */}
+        <select
+          value={filters.sector}
+          onChange={(e) => onSectorChange(e.target.value as SectorFilter)}
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
+          title="Filter by public or private sector"
+        >
+          <option value="all">All Sectors</option>
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+
+        {/* Academic Demand */}
+        <select
+          value={filters.academicDemand}
+          onChange={(e) => onAcademicDemandChange(e.target.value as AcademicDemandFilter)}
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
+          title="Filter by academic demand level (Norwegian 1–6 grading)"
+        >
+          <option value="all">Any demand</option>
+          <option value="low">Up to lower</option>
+          <option value="moderate">Up to moderate</option>
+          <option value="strong">Up to strong</option>
+          <option value="very-strong">All levels</option>
+        </select>
+
         {/* Salary */}
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-muted-foreground whitespace-nowrap">Salary</span>
@@ -291,25 +307,6 @@ export function CareerFilterBar({
           </span>
         </div>
 
-        {/* More Filters */}
-        <Button
-          variant={showAdvancedFilters ? "secondary" : "outline"}
-          size="sm"
-          onClick={onToggleAdvanced}
-          className="h-8 px-2 text-xs gap-1"
-        >
-          <SlidersHorizontal className="h-3 w-3" />
-          <span className="hidden sm:inline">Filters</span>
-          {advancedFilterCount > 0 && (
-            <Badge
-              variant="secondary"
-              className="h-4 px-1 text-[9px] bg-primary text-primary-foreground"
-            >
-              {advancedFilterCount}
-            </Badge>
-          )}
-        </Button>
-
         {/* Clear */}
         {hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={onClearAll} className="h-8 px-2 text-xs">
@@ -318,36 +315,6 @@ export function CareerFilterBar({
           </Button>
         )}
 
-        {/* View Mode Toggle */}
-        <div className="flex items-center border rounded-md p-0.5 bg-background ml-auto">
-          <Button
-            variant={viewMode === "list" ? "secondary" : "ghost"}
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => onViewModeChange("list")}
-            title="List view"
-          >
-            <List className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant={viewMode === "small" ? "secondary" : "ghost"}
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => onViewModeChange("small")}
-            title="Small cards"
-          >
-            <LayoutGrid className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant={viewMode === "large" ? "secondary" : "ghost"}
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => onViewModeChange("large")}
-            title="Large cards"
-          >
-            <Square className="h-3.5 w-3.5" />
-          </Button>
-        </div>
       </div>
     </div>
   );

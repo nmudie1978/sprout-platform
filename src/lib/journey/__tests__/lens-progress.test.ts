@@ -111,8 +111,8 @@ describe('computeLensProgress (Issue 1)', () => {
     expect(p.growDone).toBe(false);
     expect(p.completedCount).toBe(2);
     expect(p.highestStage).toBe('understand');
-    // currentLens should now point at the first real gap (Grow)
-    expect(p.currentLens).toBe('grow');
+    // currentLens should now point at the first real gap (Clarity)
+    expect(p.currentLens).toBe('clarity');
   });
 
   it('Grow complete cascades down to Understand AND Discover done', () => {
@@ -125,16 +125,16 @@ describe('computeLensProgress (Issue 1)', () => {
     expect(p.understandDone).toBe(true); // cascaded
     expect(p.discoverDone).toBe(true); // cascaded
     expect(p.completedCount).toBe(3);
-    expect(p.highestStage).toBe('grow');
+    expect(p.highestStage).toBe('clarity');
   });
 
-  it('all three checkpoints explicitly set → completedCount 3, highestStage grow', () => {
+  it('all three checkpoints explicitly set → completedCount 3, highestStage clarity', () => {
     setDiscoverConfirmed('Chef', true);
     setUnderstandConfirmed('Chef', true);
     markGrowActive('Chef');
     const p = computeLensProgress({ hasPrimaryGoal: false, careerTitle: 'Chef' });
     expect(p.completedCount).toBe(3);
-    expect(p.highestStage).toBe('grow');
+    expect(p.highestStage).toBe('clarity');
   });
 
   it('setDiscoverConfirmed(false) clears the flag', () => {
@@ -263,18 +263,18 @@ describe('journeyStageLabel (Issue 1)', () => {
     markGrowActive('Chef');
     expect(journeyStageLabel('Chef')).toEqual({
       label: 'Complete',
-      highest: 'grow',
+      highest: 'clarity',
     });
   });
 
   it('returns "Complete" when all three checkpoints are explicitly reached', () => {
-    // Same outcome as Grow alone, via the explicit path.
+    // Same outcome as Clarity alone, via the explicit path.
     setDiscoverConfirmed('Chef', true);
     setUnderstandConfirmed('Chef', true);
     markGrowActive('Chef');
     expect(journeyStageLabel('Chef')).toEqual({
       label: 'Complete',
-      highest: 'grow',
+      highest: 'clarity',
     });
   });
 

@@ -54,13 +54,13 @@ export default function InfoPage() {
 
       {/* Framework */}
       <div className="pt-6 border-t border-border mb-8">
-        <h2 className="text-lg font-semibold mb-3">Discover, Understand, Grow</h2>
+        <h2 className="text-lg font-semibold mb-3">Discover, Understand, Clarity</h2>
         <p className="text-sm text-muted-foreground mb-4">Three lenses, sequential on purpose — each gives you what you need for the next.</p>
         <div className="space-y-3">
           {[
             { n: "1", title: "Discover — Explore the career", desc: "See what a career looks like at a glance — salary, growth, typical day, and the school subjects you need. Enough to know if it sparks your interest.", color: "teal" },
             { n: "2", title: "Understand — Know the reality", desc: "Go deeper into education paths, real entry requirements, university programmes, and honest reality checks. This is where curiosity becomes clarity.", color: "emerald" },
-            { n: "3", title: "Grow — Experience your future", desc: "Your personalised roadmap is generated automatically. Play a voice-guided narration of your path, explore live opportunities, and toggle through different university and employer scenarios.", color: "amber" },
+            { n: "3", title: "Clarity — See your full journey", desc: "Everything comes together here — your personalised roadmap, voice-guided narration of your path, live opportunities, and the full timeline of what it takes to get there.", color: "amber" },
           ].map((l) => (
             <div key={l.n} className={`p-3 rounded-lg bg-${l.color}-50/50 dark:bg-${l.color}-950/20 border border-${l.color}-200/50 dark:border-${l.color}-800/30`}>
               <div className="flex items-center gap-2 mb-1">
