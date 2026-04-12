@@ -1052,7 +1052,7 @@ function UnderstandTab({
         const essentialSubjects = ap.subjects.filter(s => s.importance === 'essential');
         return (
           <SectionCard>
-            <SectionHeader icon={GraduationCap} title="School Readiness" centered collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
+            <SectionHeader icon={GraduationCap} title="School Readiness" collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
             {!uCollapsed('u-school-readiness') && (
               <div className="px-4 py-3 space-y-1.5 text-[11px]">
                 <div className="flex items-baseline gap-4">

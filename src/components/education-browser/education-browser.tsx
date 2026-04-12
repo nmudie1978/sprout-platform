@@ -102,7 +102,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   }, [allProgrammes, foundation]);
 
   type ViewMode = 'list' | 'cards';
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const viewMode: ViewMode = 'list';
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
@@ -280,29 +280,6 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
             <> &middot; alignment based on {foundation.currentSubjects.length} subject{foundation.currentSubjects.length !== 1 ? 's' : ''}</>
           )}
         </p>
-        <div className="inline-flex items-center gap-0.5 rounded-md border border-border/40 bg-background/40 p-0.5">
-          {([
-            { id: 'list' as const, icon: AlignJustify, label: 'List' },
-            { id: 'cards' as const, icon: LayoutGrid, label: 'Cards' },
-          ]).map(({ id, icon: Icon, label }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setViewMode(id)}
-              title={label}
-              aria-label={`${label} view`}
-              aria-pressed={viewMode === id}
-              className={cn(
-                'inline-flex items-center justify-center rounded h-6 w-6 transition-colors',
-                viewMode === id
-                  ? 'bg-teal-500/15 text-teal-300'
-                  : 'text-muted-foreground/55 hover:text-foreground/85 hover:bg-muted/20',
-              )}
-            >
-              <Icon className="h-3 w-3" />
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ── Institution cards ─────────────────────────────────────── */}
