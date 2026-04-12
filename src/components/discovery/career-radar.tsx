@@ -518,19 +518,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     <div className="rounded-2xl border bg-card overflow-hidden">
       <RadarGuideTips />
 
-      {/* Signal-strength hint — encourages adding more preferences */}
-      {signalStrength < 2.5 && (
-        <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/[0.04]">
-          <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
-            {signalStrength <= 1
-              ? "Add your work style and people preference to see careers that genuinely fit you."
-              : "Adding more preferences will sharpen your matches."}
-          </p>
-          <Button size="sm" variant="ghost" onClick={onEditPreferences} className="h-6 px-2 text-[10px] text-teal-500 shrink-0">
-            What I like
-          </Button>
-        </div>
-      )}
 
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
