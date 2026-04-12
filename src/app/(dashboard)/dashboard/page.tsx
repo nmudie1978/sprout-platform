@@ -1021,29 +1021,28 @@ export default function DashboardPage() {
                 <Search className="h-3.5 w-3.5 text-teal-500" />
                 <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
               </div>
-              {/* Day in the Life — YouTube thumbnail */}
+              {/* Day in the Life — compact row with small thumbnail */}
               <a
                 href={`https://www.youtube.com/results?search_query=day+in+the+life+${encodeURIComponent(goalCareer.title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-lg overflow-hidden border border-border/20 hover:border-border/40 transition-all group mb-3"
+                className="flex items-center gap-3 rounded-lg border border-border/20 px-2.5 py-2 hover:bg-muted/20 hover:border-border/40 transition-all group mb-3"
               >
-                <div className="relative aspect-video bg-muted/20">
+                <div className="relative h-10 w-16 rounded-md overflow-hidden bg-muted/30 shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`https://img.youtube.com/vi/${encodeURIComponent(goalCareer.id)}/0.jpg`}
-                    alt={`Day in the life of a ${goalCareer.title}`}
-                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    src={`https://img.youtube.com/vi/${encodeURIComponent(goalCareer.id)}/default.jpg`}
+                    alt=""
+                    className="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-10 w-10 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm">
-                      <PlayCircle className="h-5 w-5 text-white" />
-                    </div>
+                    <PlayCircle className="h-4 w-4 text-white/80" />
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-2.5">
-                    <p className="text-[10px] font-medium text-white/90">Day in the Life &mdash; {goalCareer.title}</p>
-                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-foreground/70 group-hover:text-foreground/90 transition-colors">Day in the Life</p>
+                  <p className="text-[10px] text-muted-foreground/40 truncate">{goalCareer.title} on YouTube</p>
                 </div>
               </a>
 
@@ -1378,14 +1377,9 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            <div className="rounded-lg bg-muted/40 border border-border/40 p-3 mb-4 space-y-1">
-              <p className="text-[10px] font-medium text-muted-foreground/70">What happens:</p>
-              <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
-                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> Your journey for {goalTitle || 'your current goal'} is saved</li>
-                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">Previously Explored Journeys</span> on your dashboard</li>
-                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> All data — roadmap, foundation, preferences — is preserved</li>
-              </ul>
-            </div>
+            <p className="text-[10px] text-muted-foreground/50 mb-4">
+              Your journey for {goalTitle || 'your current goal'} will be saved in Previously Explored Journeys. You can switch back anytime.
+            </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setSwitchConfirm(null)}
