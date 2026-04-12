@@ -85,7 +85,7 @@ function GlassCard({
       </div>
       <div
         className={cn(
-          "relative bg-card/90 backdrop-blur-sm border border-border/40 rounded-2xl",
+          "relative bg-card border border-border/40 rounded-2xl",
           "shadow-[0_0_12px_rgba(20,184,166,0.04),0_0_24px_rgba(20,184,166,0.02)]",
           "group-hover/glow:shadow-[0_0_16px_rgba(20,184,166,0.06),0_0_32px_rgba(20,184,166,0.03)]",
           "transition-shadow duration-500",
