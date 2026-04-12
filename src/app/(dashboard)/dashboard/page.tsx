@@ -14,6 +14,7 @@ import { toast } from "sonner";
  */
 
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
@@ -138,6 +139,7 @@ function LibraryCard({
   items: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
   total: number;
 }) {
+  const t = useTranslations();
   const [view, setView] = useState<'list' | 'grid'>('list');
   const [libPage, setLibPage] = useState(0);
   const PAGE_SIZE = 5;
@@ -265,7 +267,7 @@ function LibraryCard({
           </div>
         )
       ) : (
-        <p className="text-xs text-muted-foreground/50 mt-1">Your library is empty.</p>
+        <p className="text-xs text-muted-foreground/50 mt-1">{t('library.emptyState')}</p>
       )}
     </GlassCard>
   );
@@ -386,6 +388,7 @@ function DidYouKnowCard() {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const t = useTranslations();
   // Onboarding walkthrough
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
   const isReplayRef = useRef(false);
@@ -527,10 +530,10 @@ export default function DashboardPage() {
       // career in depth. The toast stays for 8s and has a clickable
       // action that navigates directly.
       toast.success(`${goalTitle} set as your Primary Goal`, {
-        description: "Your previous journey is saved in Previously Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring your new Primary Goal.",
+        description: t('switchGoal.toastDescription'),
         duration: 8000,
         action: {
-          label: "Go to My Journey",
+          label: t('switchGoal.goToJourney'),
           onClick: () => window.location.assign("/my-journey#discover"),
         },
       });
@@ -679,7 +682,7 @@ export default function DashboardPage() {
     month: "short",
   });
   const hour = today.getHours();
-  const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const timeGreeting = hour < 12 ? t('greeting.morning') : hour < 17 ? t('greeting.afternoon') : t('greeting.evening');
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
@@ -714,7 +717,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5">
             <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
               {isFirstLogin ? (
-                <>Welcome, <span className="text-foreground">{displayName}</span></>
+                <>{t('greeting.welcome')}, <span className="text-foreground">{displayName}</span></>
               ) : (
                 <><span className="text-muted-foreground/70 font-normal">{timeGreeting}</span>{' '}<span className="text-muted-foreground/70 font-normal">{displayName}</span></>
               )}
@@ -823,10 +826,10 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h2 className="text-lg font-semibold text-foreground mb-1.5">
-                          New here? Take a quick look around
+                          {t('firstLogin.cardTitle')}
                         </h2>
                         <p className="text-sm text-muted-foreground/70 leading-relaxed mb-4 max-w-md">
-                          A short walkthrough that shows you what each part of the platform does &mdash; takes about 30 seconds.
+                          {t('firstLogin.cardDescription')}
                         </p>
                         <button
                           onClick={() => {
@@ -835,7 +838,7 @@ export default function DashboardPage() {
                           }}
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground/90 hover:bg-foreground text-background text-sm font-medium transition-colors"
                         >
-                          Show me around
+                          {t('firstLogin.startWalkthrough')}
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       </div>
@@ -863,10 +866,10 @@ export default function DashboardPage() {
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
                   {goalTitle ? (
                     <>
-                      My Journey &mdash; {goalTitle}
+                      {t('journey.cardTitle')} &mdash; {goalTitle}
                     </>
                   ) : (
-                    'My Journey'
+                    t('journey.cardTitle')
                   )}
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
@@ -875,11 +878,11 @@ export default function DashboardPage() {
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowGoalSheet(true); }}
                       className="text-[9px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
                     >
-                      change
+                      {t('common.change')}
                     </button>
                   ) : (
                     <Link href="/careers/radar" data-spotlight="choose-goal" className="text-teal-500/70 hover:text-teal-500 transition-colors" onClick={(e) => e.stopPropagation()}>
-                      Choose a Primary Goal to start &rarr;
+                      {t('journey.chooseGoalPrompt')} &rarr;
                     </Link>
                   )}
                 </p>
@@ -947,7 +950,7 @@ export default function DashboardPage() {
             {completedLensCount === 3 && (
               <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
                 <CheckCircle2 className="h-3 w-3 shrink-0" />
-                <span>Journey complete</span>
+                <span>{t('journey.completeIndicator')}</span>
               </div>
             )}
 
@@ -994,10 +997,10 @@ export default function DashboardPage() {
         )}
 
         {/* ── 3. Career Snapshot + Explored Journeys ──────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start mb-6">
           {/* Career Snapshot */}
           {goalCareer ? (
-            <GlassCard className="p-4 h-full">
+            <GlassCard className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <Search className="h-3.5 w-3.5 text-teal-500 cursor-help" title="Key facts about your chosen career — salary, growth, sector, and pension." />
                 <h3 className="text-xs font-semibold">Career Snapshot</h3>
@@ -1066,7 +1069,7 @@ export default function DashboardPage() {
                     <Target className="h-3.5 w-3.5 text-teal-500" />
                     <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
                   </div>
-                  <p className="text-xs text-muted-foreground/50 mt-1">No journeys yet.</p>
+                  <p className="text-xs text-muted-foreground/50 mt-1">{t('exploredJourneys.emptyState')}</p>
                 </GlassCard>
               );
             }
@@ -1246,7 +1249,7 @@ export default function DashboardPage() {
                 )}
               </>
             ) : (
-              <p className="text-xs text-muted-foreground/50 mt-1">No saved careers yet.</p>
+              <p className="text-xs text-muted-foreground/50 mt-1">{t('savedCareers.emptyState')}</p>
             )}
           </GlassCard>
         </div>
@@ -1272,10 +1275,10 @@ export default function DashboardPage() {
               </div>
               <div className="grid grid-cols-4 gap-1 text-center">
                 {[
-                  { label: "Applied", value: appStats.applied },
-                  { label: "Waiting", value: appStats.waiting },
-                  { label: "Accepted", value: appStats.accepted },
-                  { label: "Done", value: appStats.done },
+                  { label: t('smallJobs.applied'), value: appStats.applied },
+                  { label: t('smallJobs.waiting'), value: appStats.waiting },
+                  { label: t('smallJobs.accepted'), value: appStats.accepted },
+                  { label: t('smallJobs.done'), value: appStats.done },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <p className="text-xs font-semibold text-foreground/70 tabular-nums">
