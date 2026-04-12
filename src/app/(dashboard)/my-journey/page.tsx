@@ -40,7 +40,6 @@ import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
 import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
-import { CareerPresenceCard } from '@/components/journey/career-presence-card';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import { getCertificationPath, getCareerRequirements } from '@/lib/education';
@@ -857,7 +856,6 @@ function UnderstandTab({
 
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [carouselTab, setCarouselTab] = useState<'presence' | 'tools'>('presence');
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-school-readiness', 'u-study-path', 'u-notes', 'u-career-paths']);
 
@@ -1056,32 +1054,30 @@ function UnderstandTab({
           <SectionCard>
             <SectionHeader icon={GraduationCap} title="School Readiness" centered collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
             {!uCollapsed('u-school-readiness') && (
-              <div className="p-4 space-y-3">
-                {/* Summary row */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Demand</p>
-                    <p className="text-xs font-semibold text-foreground/80">{getDemandLabel(ap.demand)}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Pathway</p>
-                    <p className="text-xs font-semibold text-foreground/80">{getPathwayLabel(ap.pathwayType)}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-0.5">Competition</p>
-                    <p className="text-xs font-semibold text-foreground/80">{getCompetitivenessLabel(ap.competitiveness)}</p>
-                  </div>
+              <div className="px-4 py-3 space-y-1.5 text-[11px]">
+                <div className="flex items-baseline gap-4">
+                  <span className="text-muted-foreground/50 w-24 shrink-0">Demand</span>
+                  <span className="text-foreground/80 font-medium">{getDemandLabel(ap.demand)}</span>
                 </div>
-
-                {/* Key subjects — single line */}
+                <div className="flex items-baseline gap-4">
+                  <span className="text-muted-foreground/50 w-24 shrink-0">Pathway</span>
+                  <span className="text-foreground/80 font-medium">{getPathwayLabel(ap.pathwayType)}</span>
+                </div>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-muted-foreground/50 w-24 shrink-0">Competition</span>
+                  <span className="text-foreground/80 font-medium">{getCompetitivenessLabel(ap.competitiveness)}</span>
+                </div>
                 {essentialSubjects.length > 0 && (
-                  <p className="text-[10px] text-foreground/60 text-center">
-                    <span className="text-muted-foreground/45">Key subjects: </span>
-                    {essentialSubjects.map(s => s.name).join(', ')}
-                    {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
-                      <span className="text-muted-foreground/40"> · Typical grades: {ap.grade.gradeMin}–{ap.grade.gradeMax}</span>
-                    )}
-                  </p>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-muted-foreground/50 w-24 shrink-0">Key subjects</span>
+                    <span className="text-foreground/70">{essentialSubjects.map(s => s.name).join(', ')}</span>
+                  </div>
+                )}
+                {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-muted-foreground/50 w-24 shrink-0">Typical grades</span>
+                    <span className="text-foreground/70">{ap.grade.gradeMin}–{ap.grade.gradeMax} on the 1–6 scale</span>
+                  </div>
                 )}
               </div>
             )}
@@ -1110,78 +1106,32 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── BOTTOM: Tabbed carousel — Career Presence, Tools ── */}
+      {/* ── Tools of the Trade ── */}
       <SectionCard>
-        <SectionHeader icon={Globe} title="Career Presence & Tools" tooltip="How available this career is across Norway and nearby countries, and the tools professionals use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
+        <SectionHeader icon={Wrench} title="Tools of the Trade" tooltip="The software, equipment, and tools professionals in this role use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
         {!uCollapsed('u-career-paths') && (
-          <>
-            {/* Tab bar — coloured pills. Career Presence is the first
-                tab, Tools of the Trade is second. The former "Real
-                Career Paths" tab was removed entirely — that content
-                now lives elsewhere on the Understand tab. */}
-            <div className="flex gap-2 p-3 bg-muted/5 border-b border-border/20">
-              {([
-                { id: 'presence' as const, label: 'Career Presence', icon: Globe, color: 'text-sky-400', bg: 'bg-sky-500/10', activeBorder: 'border-sky-500/30', activeBg: 'bg-sky-500/15', tooltip: 'How available this career is in Norway compared to nearby countries. Combines job postings, employer presence, industry ecosystem, study paths and remote viability into a directional availability signal.' },
-                { id: 'tools' as const, label: 'Tools of the Trade', icon: Wrench, color: 'text-amber-400', bg: 'bg-amber-500/10', activeBorder: 'border-amber-500/30', activeBg: 'bg-amber-500/15', tooltip: 'The software, equipment, and tools professionals in this role use every day.' },
-              ]).map((tab) => {
-                const TabIcon = tab.icon;
-                const active = carouselTab === tab.id;
-                return (
-                  <button key={tab.id} onClick={() => setCarouselTab(tab.id)}
-                    className={cn(
-                      'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border',
-                      active
-                        ? `${tab.activeBg} ${tab.activeBorder} ${tab.color}`
-                        : 'border-transparent text-muted-foreground/40 hover:text-muted-foreground/60 hover:bg-muted/10'
-                    )}
-                  >
-                    <TabIcon className={cn('h-3.5 w-3.5', active ? tab.color : '')} />
-                    {tab.label}
-                    <TooltipProvider delayDuration={150}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-3 w-3 text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="max-w-[240px] text-[11px] leading-snug">
-                          {tab.tooltip}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Tab content */}
-            <div className="p-4">
-              {carouselTab === 'presence' && (
-                <CareerPresenceCard careerId={career?.id ?? ''} careerTitle={goalTitle ?? ''} />
-              )}
-
-              {carouselTab === 'tools' && (() => {
-                if (!details?.typicalDay.tools?.length) return <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>;
-                return (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {details.typicalDay.tools.map((tool, i) => {
-                      const info = getToolInfo(tool);
-                      return (
-                        <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
-                          className="group flex items-center gap-3 rounded-lg border border-border/30 bg-background/40 px-3.5 py-2.5 hover:border-amber-500/40 hover:bg-amber-500/[0.04] transition-colors">
-                          <Wrench className="h-4 w-4 text-amber-400/70 group-hover:text-amber-400 shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-foreground group-hover:text-foreground">{tool}</p>
-                            {info && <p className="text-[11px] text-foreground/65 mt-0.5">{info.description}</p>}
-                          </div>
-                          <ExternalLink className="h-3 w-3 text-muted-foreground/40 group-hover:text-amber-400 shrink-0" />
-                        </a>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
-
-            </div>
-          </>
+          <div className="p-4">
+            {!details?.typicalDay.tools?.length ? (
+              <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {details.typicalDay.tools.map((tool, i) => {
+                  const info = getToolInfo(tool);
+                  return (
+                    <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
+                      className="group flex items-center gap-3 rounded-lg border border-border/30 bg-background/40 px-3.5 py-2.5 hover:border-border/50 transition-colors">
+                      <Wrench className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground group-hover:text-foreground">{tool}</p>
+                        {info && <p className="text-[11px] text-foreground/65 mt-0.5">{info.description}</p>}
+                      </div>
+                      <ExternalLink className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
       </SectionCard>
 
