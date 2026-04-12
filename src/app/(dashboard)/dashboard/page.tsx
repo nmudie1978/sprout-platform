@@ -512,7 +512,7 @@ export default function DashboardPage() {
       // career in depth. The toast stays for 8s and has a clickable
       // action that navigates directly.
       toast.success(`${goalTitle} set as your Primary Goal`, {
-        description: "Your previous journey is saved in My Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring your new Primary Goal.",
+        description: "Your previous journey is saved in Previously Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring your new Primary Goal.",
         duration: 8000,
         action: {
           label: "Go to My Journey",
@@ -751,8 +751,8 @@ export default function DashboardPage() {
                 className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors flex items-center justify-center"
               >
                 <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-muted-foreground/50 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-muted-foreground/60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400/50 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-400/60" />
                 </span>
               </Link>
             )}
@@ -775,9 +775,6 @@ export default function DashboardPage() {
                   className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors group"
                 >
                   <User className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />
-                  {pct < 100 && (
-                    <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-muted-foreground/50 border-2 border-background" />
-                  )}
                 </Link>
               );
             })()}
@@ -844,38 +841,15 @@ export default function DashboardPage() {
             );
           }
 
-          // No goal yet — nudge toward choosing a Primary Goal
-          return (
-            <div className="mb-6">
-              <GlassCard className="relative overflow-hidden border-teal-500/15">
-                <div className="p-5 sm:p-6">
-                  <h2 className="text-lg font-semibold text-foreground mb-1">
-                    Choose your Primary Goal
-                  </h2>
-                  <p className="text-sm text-muted-foreground/70 mb-4 max-w-md">
-                    Pick one career to explore properly. You can always change it later.
-                  </p>
-                  <div className="relative inline-flex flex-col items-start gap-1.5" id="explore-careers-cta">
-                    <Link
-                      href="/careers/radar"
-                      onClick={dashboardHint.dismiss}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
-                    >
-                      Explore Careers
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                    <SpotlightHint visible={dashboardHint.visible} text="Start here" placement="bottom" />
-                  </div>
-                </div>
-              </GlassCard>
-            </div>
-          );
+          // No separate guidance card — the My Journey card below handles
+          // the "Choose a Primary Goal" nudge directly.
+          return null;
         })()}
 
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard className={cn("p-5 sm:p-6 border-border/40 transition-all duration-300", goalTitle && "hover:border-border/60")}>
+          <GlassCard className={cn("p-5 sm:p-6 transition-all duration-300 border-teal-500/30 shadow-[0_0_30px_rgba(20,184,166,0.15),0_0_60px_rgba(20,184,166,0.06)] ring-1 ring-teal-500/15", goalTitle ? "hover:border-teal-500/45 hover:shadow-[0_0_40px_rgba(20,184,166,0.2),0_0_80px_rgba(20,184,166,0.08)]" : "hover:border-teal-500/35")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -966,6 +940,27 @@ export default function DashboardPage() {
               <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
                 <CheckCircle2 className="h-3 w-3 shrink-0" />
                 <span>Journey complete</span>
+              </div>
+            )}
+
+            {/* No goal CTA — replaces the removed standalone guidance card */}
+            {!goalTitle && (
+              <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                <Link
+                  href="/careers/radar"
+                  data-spotlight="explore-careers"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-foreground/90 hover:bg-foreground text-background text-sm font-medium transition-colors"
+                >
+                  Explore Careers
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <button
+                  onClick={() => setShowGoalSheet(true)}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border/50 hover:bg-muted/50 text-sm font-medium text-muted-foreground transition-colors"
+                >
+                  <Target className="h-3.5 w-3.5" />
+                  Search careers
+                </button>
               </div>
             )}
           </GlassCard>
@@ -1060,7 +1055,7 @@ export default function DashboardPage() {
             </GlassCard>
           )}
 
-          {/* My Explored Journeys */}
+          {/* Previously Explored Journeys */}
           {(() => {
             // Snapshot visibility is governed by a single predicate:
             // `isJourneySnapshotWorthy` (see src/lib/journey/lens-progress.ts).
@@ -1079,10 +1074,10 @@ export default function DashboardPage() {
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
-                <GlassCard className="p-4 h-full">
+                <GlassCard className="p-4 h-full border-teal-500/10">
                   <div className="flex items-center gap-2 mb-2">
-                    <Target className="h-3.5 w-3.5 text-violet-500" />
-                    <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journey snapshots <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                    <Target className="h-3.5 w-3.5 text-teal-500" />
+                    <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   </div>
                   <p className="text-xs text-muted-foreground/50 mt-1">No journeys yet.</p>
                 </GlassCard>
@@ -1102,10 +1097,10 @@ export default function DashboardPage() {
             const pageGoals = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
             return (
-              <GlassCard className="p-3 h-full flex flex-col">
+              <GlassCard className="p-3 h-full flex flex-col border-teal-500/10">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journey snapshots <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
                   <span className="text-[10px] text-muted-foreground/40">{exploredGoals.length}</span>
                   <span className="flex-1" />
                   {totalPages > 1 && (
@@ -1359,7 +1354,7 @@ export default function DashboardPage() {
               <p className="text-[10px] font-medium text-muted-foreground/70">What happens:</p>
               <ul className="text-[10px] text-muted-foreground/50 space-y-0.5 ml-3">
                 <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> Your journey for {goalTitle || 'your current goal'} is saved</li>
-                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">My Explored Journeys</span> on your dashboard</li>
+                <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> You can reload it from <span className="font-medium text-foreground/70">Previously Explored Journeys</span> on your dashboard</li>
                 <li className="flex items-start gap-1.5"><span className="text-muted-foreground/60 mt-px">&#10003;</span> All data — roadmap, foundation, preferences — is preserved</li>
               </ul>
             </div>
@@ -1383,6 +1378,14 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Spotlight — guides new users to Explore Careers CTA */}
+      <SpotlightHint
+        visible={dashboardHint.visible}
+        onDismiss={dashboardHint.dismiss}
+        text="Start here — explore careers and choose your goal"
+        targetSelector='[data-spotlight="explore-careers"]'
+      />
     </div>
   );
 }
