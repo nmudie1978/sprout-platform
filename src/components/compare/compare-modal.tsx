@@ -11,17 +11,15 @@
  * primary goal and routes to /my-journey.
  */
 
-import { X, ArrowRight, Sparkles, Clock, Trophy, Download, GraduationCap } from 'lucide-react';
+import { X, ArrowRight, Sparkles, Download } from 'lucide-react';
 import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
 import {
   getFitDimensions,
-  estimateTimeToGetThere,
-  estimateCompetitiveness,
   shortDayToDay,
   whyItMightSuitYou,
 } from '@/lib/compare/fit-dimensions';
 import { getValueSignals } from '@/lib/compare/value-signals';
-import { getAcademicProfile, getDemandLabel, getPathwayLabel } from '@/lib/education/academic-readiness';
+import { getAcademicProfile, getPathwayLabel } from '@/lib/education/academic-readiness';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -133,14 +131,11 @@ interface CompareCardProps {
 
 function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const dims = getFitDimensions(career);
-  const time = estimateTimeToGetThere(career);
-  const comp = estimateCompetitiveness(career);
   const tasks = shortDayToDay(career);
   const why = whyItMightSuitYou(career, preferences);
   const signals = getValueSignals(career);
   const academic = getAcademicProfile(career);
   const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
-  const importantSubjects = academic.subjects.filter(s => s.importance === 'important');
 
   const titleClass = 'text-xs font-semibold uppercase tracking-wider text-emerald-500/80';
 
@@ -233,9 +228,9 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         )}
       </div>
 
-      {/* Study path & readiness — row 6 */}
-      <div className="p-4 space-y-2.5">
-        <p className={cn(titleClass, 'mb-1')}>Study path &amp; readiness</p>
+      {/* Study path & subjects — row 6 */}
+      <div className="p-4 space-y-2">
+        <p className={cn(titleClass, 'mb-1')}>Study paths &amp; school subjects</p>
         <div className="space-y-1.5">
           <div className="flex items-start gap-2 text-[10px]">
             <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
@@ -245,65 +240,20 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
             <span className="text-foreground/75 leading-snug">{career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()}</span>
           </div>
-          <div className="flex items-center gap-2 pt-1">
-            <RealityPill icon={Clock} label="Time" value={time} />
-            <RealityPill icon={Trophy} label="Compete" value={comp} />
-            <RealityPill icon={GraduationCap} label="Demand" value={getDemandLabel(academic.demand)} />
-          </div>
           {academic.grade.hasCutoff && academic.grade.gradeMin !== null && (
             <p className="text-[9px] text-muted-foreground/50">
               Typical grades: {academic.grade.gradeMin}&ndash;{academic.grade.gradeMax} (Norwegian 1&ndash;6)
             </p>
           )}
         </div>
-        {(essentialSubjects.length > 0 || importantSubjects.length > 0) && (
-          <div className="space-y-1.5 pt-1">
-            {essentialSubjects.length > 0 && (
-              <div>
-                <p className="text-[9px] font-semibold text-muted-foreground/50 mb-1">Key subjects</p>
-                <div className="flex flex-wrap gap-1">
-                  {essentialSubjects.map(s => (
-                    <span key={s.name} className="rounded border border-border/20 bg-muted/10 px-1.5 py-0.5 text-[9px] text-foreground/65">{s.name}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {importantSubjects.length > 0 && (
-              <div>
-                <p className="text-[9px] font-semibold text-muted-foreground/50 mb-1">Also useful</p>
-                <div className="flex flex-wrap gap-1">
-                  {importantSubjects.map(s => (
-                    <span key={s.name} className="rounded border border-border/15 bg-muted/5 px-1.5 py-0.5 text-[9px] text-muted-foreground/55">{s.name}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+        {essentialSubjects.length > 0 && (
+          <p className="text-[10px] text-foreground/65">
+            <span className="text-muted-foreground/50">Key subjects: </span>
+            {essentialSubjects.map(s => s.name).join(', ')}
+          </p>
         )}
       </div>
     </div>
-  );
-}
-
-// ── Reality pill ────────────────────────────────────────────────────
-// Neutral by design — only the bars and titles carry colour. The pill
-// just shows label + value in muted tones so cards stay scannable.
-
-function RealityPill({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof Clock;
-  label: string;
-  value: string;
-}) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-muted/20 text-foreground/75 px-2 py-0.5 text-[9px] font-medium">
-      <Icon className="h-2.5 w-2.5 text-muted-foreground/55" />
-      <span className="text-muted-foreground/55">{label}:</span>
-      {value}
-    </span>
   );
 }
 
@@ -329,8 +279,6 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
   const cardsHtml = careers
     .map((career) => {
       const dims = getFitDimensions(career);
-      const time = estimateTimeToGetThere(career);
-      const comp = estimateCompetitiveness(career);
       const tasks = shortDayToDay(career);
       const why = whyItMightSuitYou(career, preferences);
       const signals = getValueSignals(career);
@@ -366,7 +314,7 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
           <h3>Reality check</h3>
           <p class="path">${escapeHtml(signals[0] || 'Talk to someone in the role if you can.')}</p>
 
-          <h3>Study path</h3>
+          <h3>Study paths &amp; school subjects</h3>
           <p class="path">→ ${escapeHtml(getPathwayLabel(ap.pathwayType))}</p>
           <p class="path">→ ${escapeHtml(career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim())}</p>
           ${ap.subjects.filter(s => s.importance === 'essential').length > 0 ? `<p class="meta">Key subjects: <strong>${ap.subjects.filter(s => s.importance === 'essential').map(s => escapeHtml(s.name)).join(', ')}</strong></p>` : ''}
