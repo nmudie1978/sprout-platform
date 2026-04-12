@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import type { Career, DiscoveryPreferences } from "@/lib/career-pathways";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
+import { useTranslations } from "next-intl";
 
 
 function CareerRadarPageContent() {
@@ -23,6 +24,7 @@ function CareerRadarPageContent() {
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
 
   const isYouth = session?.user?.role === "YOUTH";
+  const t = useTranslations();
 
   const { data: profileData, isLoading: profileLoading } = useQuery({
     queryKey: ["my-profile"],
@@ -63,9 +65,9 @@ function CareerRadarPageContent() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-start justify-between gap-4">
           <PageHeader
-            title="My"
-            gradientText="Career Radar"
-            description="Careers matched to your interests, work style, and strengths. The closer a dot is to the centre, the stronger the match. Tap any dot to explore that career in detail."
+            title={t('radar.titlePrefix')}
+            gradientText={t('radar.titleGradient')}
+            description={t('radar.description')}
             icon={Sparkles}
           />
           <RadarGuideTips />
@@ -76,7 +78,7 @@ function CareerRadarPageContent() {
         <div className="mt-4 max-w-3xl mx-auto relative">
           {profileLoading ? (
             <div className="rounded-2xl border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
-              Loading your radar…
+              {t('radar.loading')}
             </div>
           ) : (
             <CareerRadar

@@ -141,6 +141,10 @@ const config: Config = {
           "0%": { transform: "translate(-50%, -50%) rotate(0deg)" },
           "100%": { transform: "translate(-50%, -50%) rotate(360deg)" },
         },
+        "glow-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -153,6 +157,7 @@ const config: Config = {
         "slide-up": "slide-up 0.5s ease-out",
         grid: "grid 15s linear infinite",
         shine: "shine var(--duration) infinite linear",
+        "glow-spin": "glow-spin 12s linear infinite",
       },
     },
   },

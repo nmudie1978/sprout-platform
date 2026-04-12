@@ -1,6 +1,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import {
   Star,
@@ -104,7 +105,8 @@ const CONTRASTS = [
 // PAGE
 // ============================================
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations();
   return (
     <div className="min-h-screen bg-slate-950">
       {/* ============================================ */}
@@ -159,14 +161,14 @@ export default function LandingPage() {
               {/* Context label */}
               <FadeReveal delay={0} className="mb-12 sm:mb-16">
                 <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600">
-                  For 15–23 year olds
+                  {t('landing.hero.ageRange')}
                 </p>
               </FadeReveal>
 
               {/* Headline */}
               <h1 className="text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight leading-snug text-white mb-10 sm:mb-12">
                 <WordRevealLine
-                  text="Your future is yours to explore."
+                  text={t('landing.hero.title')}
                   startDelay={300}
                 />
               </h1>
@@ -175,19 +177,12 @@ export default function LandingPage() {
               <div className="space-y-5 mb-12 sm:mb-14 max-w-lg">
                 <FadeReveal delay={1400}>
                   <p className="text-base sm:text-[17px] text-neutral-400 leading-relaxed">
-                    But right now, the world of work is almost invisible. Job titles
-                    you don&apos;t understand. Qualifications you can&apos;t picture.
-                    Career advice that all sounds the same. Nobody shows you what
-                    these paths actually feel like — or whether they&apos;d suit the
-                    person you&apos;re becoming.
+                    {t('landing.hero.problem')}
                   </p>
                 </FadeReveal>
                 <FadeReveal delay={1800}>
                   <p className="text-base sm:text-[17px] text-neutral-300 leading-relaxed">
-                    Endeavrly gives you what&apos;s been missing. Real careers. Honest
-                    information. A space to reflect on who you are and try things
-                    for yourself — so when you do choose a direction, it&apos;s yours.
-                    No quizzes. No pressure. Just clarity.
+                    {t('landing.hero.solution')}
                   </p>
                 </FadeReveal>
               </div>
@@ -198,7 +193,7 @@ export default function LandingPage() {
                   href="#how-it-works"
                   className="inline-flex items-center gap-2 text-sm text-emerald-400/80 hover:text-emerald-300 transition-colors group"
                 >
-                  Explore Endeavrly
+                  {t('landing.hero.cta')}
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </a>
               </FadeReveal>
@@ -231,12 +226,10 @@ export default function LandingPage() {
           {/* Section header */}
           <div className="text-center mb-14 sm:mb-18">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-5 text-white">
-              Three lenses.{" "}
-              <span className="text-emerald-400">One journey.</span>
+              {t('landing.framework.title')}
             </h2>
             <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-              Each step builds on the last. Curiosity becomes clarity, clarity
-              becomes direction — at your own pace, on your own terms.
+              {t('landing.framework.subtitle')}
             </p>
           </div>
 
@@ -245,25 +238,25 @@ export default function LandingPage() {
             {[
               {
                 step: "1",
-                title: "Discover",
-                subtitle: "Explore the career",
-                description: "Get a high-level view of any career — what it is, who does it, salary range, and whether it's worth a closer look.",
+                title: t('journey.discover.label'),
+                subtitle: t('journey.discover.subtitle'),
+                description: t('journey.discover.description'),
                 subtitleClass: "text-teal-400",
                 accent: "from-teal-500 to-teal-600",
               },
               {
                 step: "2",
-                title: "Understand",
-                subtitle: "Know the reality",
-                description: "Go deeper into what the role actually involves day to day — the qualifications, the hard parts, and what it takes to qualify.",
+                title: t('journey.understand.label'),
+                subtitle: t('journey.understand.subtitle'),
+                description: t('journey.understand.description'),
                 subtitleClass: "text-emerald-400",
                 accent: "from-emerald-500 to-teal-600",
               },
               {
                 step: "3",
-                title: "Clarity",
-                subtitle: "See your full journey",
-                description: "See the complete timeline, milestones, and what it takes to pursue this career — so you can move forward with confidence.",
+                title: t('journey.clarity.label'),
+                subtitle: t('journey.clarity.subtitle'),
+                description: t('journey.clarity.description'),
                 subtitleClass: "text-amber-400",
                 accent: "from-amber-500 to-orange-600",
               },
@@ -497,17 +490,17 @@ export default function LandingPage() {
       <section className="border-t border-slate-800/60">
         <div className="mx-auto max-w-2xl px-5 py-28 sm:py-36 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-5">
-            Get started.
+            {t('landing.cta.title')}
           </h2>
           <p className="text-base sm:text-lg text-neutral-500 mb-12 sm:mb-14">
-            Free. No credit card. No commitments.
+            {t('landing.cta.subtitle')}
           </p>
           <Button
             size="lg"
             asChild
             className="h-14 px-10 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-base font-medium transition-colors"
           >
-            <Link href="/auth/signup">Sign up free</Link>
+            <Link href="/auth/signup">{t('landing.cta.button')}</Link>
           </Button>
         </div>
       </section>
@@ -531,48 +524,47 @@ export default function LandingPage() {
                 href="/about"
                 className="hover:text-white transition-colors"
               >
-                About
+                {t('nav.about')}
               </Link>
               <Link
                 href="/about/research"
                 className="hover:text-white transition-colors"
               >
-                Research
+                {t('footer.research')}
               </Link>
               <Link
                 href="/legal/terms"
                 className="hover:text-white transition-colors"
               >
-                Terms
+                {t('footer.terms')}
               </Link>
               <Link
                 href="/legal/privacy"
                 className="hover:text-white transition-colors"
               >
-                Privacy
+                {t('footer.privacy')}
               </Link>
               <Link
                 href="/legal/safety"
                 className="hover:text-white transition-colors"
               >
-                Safety
+                {t('footer.safety')}
               </Link>
               <Link
                 href="/legal/eligibility"
                 className="hover:text-white transition-colors"
               >
-                Eligibility
+                {t('footer.eligibility')}
               </Link>
               <Link
                 href="/legal/disclaimer"
                 className="hover:text-white transition-colors"
               >
-                Disclaimer
+                {t('footer.disclaimer')}
               </Link>
             </div>
             <p className="text-xs text-neutral-600">
-              &copy; {new Date().getFullYear()} Endeavrly. Helping young people
-              build life skills and grow in confidence.
+              {t('footer.copyright', { year: new Date().getFullYear() })}
             </p>
           </div>
         </div>

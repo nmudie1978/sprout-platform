@@ -42,9 +42,9 @@ const RADAR_TIPS = [
   {
     icon: Layers,
     color: "text-violet-400",
-    title: "Switch views and filter",
+    title: "Filter by match strength",
     description:
-      "Toggle between Dots and Pulse to change how careers are shown — Pulse animates each dot with a radiating halo. Use the filter to focus on specific match tiers: Top, Strong, or Good.",
+      "Use the filter to focus on specific match tiers: Top, Strong, or Good. Each dot is colour-coded so you can see at a glance how well a career fits.",
   },
   {
     icon: Settings2,
@@ -258,9 +258,10 @@ const ZOOM_STEP = 0.25;
 // Weak signal → fewer dots so the radar isn't pretending to have
 // matches it can't meaningfully rank. Strong signal → full picture.
 function bandSizes(signalStrength: number): { strong: number; good: number; total: number } {
-  if (signalStrength <= 1)   return { strong: 3, good: 5, total: 8 };
-  if (signalStrength < 2.5)  return { strong: 5, good: 10, total: 15 };
-  return                            { strong: 7, good: 13, total: 20 };
+  if (signalStrength <= 0.5) return { strong: 4, good: 8, total: 12 };
+  if (signalStrength <= 1)   return { strong: 5, good: 10, total: 15 };
+  if (signalStrength < 2.5)  return { strong: 7, good: 13, total: 20 };
+  return                            { strong: 8, good: 16, total: 24 };
 }
 
 // Legacy constants kept for placeDots ring assignment
@@ -370,8 +371,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
-  type ViewMode = "dots" | "pulse";
-  const [viewMode, setViewMode] = useState<ViewMode>("dots");
   // Multi-select tier filter — start with everything visible.
   // The active goal is always shown regardless of which tiers are toggled.
   type Tier = "top" | "strong" | "good";
@@ -524,29 +523,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="text-[11px] text-muted-foreground">
             {visibleDots.length} of {dots.length} match{dots.length !== 1 ? "es" : ""}
           </span>
-          {/* View mode toggle */}
-          <div className="flex items-center rounded-md border bg-background text-[10px]">
-            {([
-              { id: "dots" as const, label: "Dots" },
-              { id: "pulse" as const, label: "Pulse" },
-            ]).map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setViewMode(id)}
-                className={cn(
-                  "h-7 px-3 transition-colors first:rounded-l-md last:rounded-r-md",
-                  viewMode === id
-                    ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold"
-                    : "hover:bg-muted text-muted-foreground"
-                )}
-                aria-pressed={viewMode === id}
-                title={`Switch to ${label} view`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
           {/* Tier filter — multi-select dropdown.
               Drives both the radar and the matches report.
               The active goal is always shown regardless of selection. */}
@@ -868,62 +844,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                   </text>
                 </>
               )}
-              {viewMode === "dots" && (
-                <circle
-                  cx={d.cx}
-                  cy={d.cy}
-                  r={3}
-                  className={cn(
-                    "transition-all duration-150 radar-dot-circle",
-                    d.topMatch
-                      ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                      : d.ring === 0
-                      ? "fill-teal-500 group-hover:fill-teal-400"
-                      : d.ring === 1
-                      ? "fill-sky-400/70 group-hover:fill-sky-300"
-                      : "fill-amber-400/70 group-hover:fill-amber-300"
-                  )}
-                />
-              )}
-              {/* Pulse — small dot with an animated halo radiating out.
-                  Top match pulses faster + brighter. */}
-              {viewMode === "pulse" && (
-                <>
-                  <circle
-                    cx={d.cx}
-                    cy={d.cy}
-                    r={d.topMatch ? 9 : 7}
-                    fill="none"
-                    strokeWidth={1}
-                    className={cn(
-                      "radar-pulse-halo pointer-events-none",
-                      d.topMatch
-                        ? "stroke-pink-400/70"
-                        : d.ring === 0
-                        ? "stroke-teal-400/70"
-                        : d.ring === 1
-                        ? "stroke-sky-400/60"
-                        : "stroke-amber-400/60",
-                    )}
-                    style={{ animationDuration: d.topMatch ? "1.8s" : "2.6s" }}
-                  />
-                  <circle
-                    cx={d.cx}
-                    cy={d.cy}
-                    r={2.5}
-                    className={cn(
-                      "transition-all duration-150 radar-dot-circle",
-                      d.topMatch
-                        ? "fill-pink-400"
-                        : d.ring === 0
-                        ? "fill-teal-400"
-                        : d.ring === 1
-                        ? "fill-sky-400"
-                        : "fill-amber-400",
-                    )}
-                  />
-                </>
-              )}
+              <circle
+                cx={d.cx}
+                cy={d.cy}
+                r={3}
+                className={cn(
+                  "transition-all duration-150 radar-dot-circle",
+                  d.topMatch
+                    ? "fill-pink-400 drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
+                    : d.ring === 0
+                    ? "fill-teal-500 group-hover:fill-teal-400"
+                    : d.ring === 1
+                    ? "fill-sky-400/70 group-hover:fill-sky-300"
+                    : "fill-amber-400/70 group-hover:fill-amber-300"
+                )}
+              />
             </g>
           ))}
         </svg>
@@ -950,21 +885,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             transform-box: fill-box;
             transform-origin: center;
           }
-          /* Pulse view — radiating halo for the "Pulse" view mode */
-          @keyframes radar-pulse-out {
-            0%   { opacity: 0.7; transform: scale(0.5); }
-            70%  { opacity: 0;   transform: scale(2.2); }
-            100% { opacity: 0;   transform: scale(2.2); }
-          }
-          .radar-pulse-halo {
-            animation: radar-pulse-out 2.4s ease-out infinite;
-            transform-box: fill-box;
-            transform-origin: center;
-          }
           @media (prefers-reduced-motion: reduce) {
             .radar-dot { animation: none; }
             .radar-top-halo { animation: none; }
-            .radar-pulse-halo { animation: none; }
           }
         `}</style>
 

@@ -8685,8 +8685,12 @@ function precomputeScoring(prefs: DiscoveryPreferences) {
 export function measureSignalStrength(prefs: DiscoveryPreferences | null | undefined): number {
   if (!prefs) return 0;
   let dims = 0;
-  if (prefs.subjects && prefs.subjects.length >= 2) dims++;
-  else if (prefs.subjects && prefs.subjects.length === 1) dims += 0.5;
+  // Subject count matters: 3+ subjects is a meaningfully stronger signal
+  // than 1–2 and should unlock more radar results.
+  const subjectCount = prefs.subjects?.length ?? 0;
+  if (subjectCount >= 3) dims += 1.5;
+  else if (subjectCount >= 2) dims += 1;
+  else if (subjectCount === 1) dims += 0.5;
   if (prefs.workStyles && prefs.workStyles.length > 0) dims++;
   if (prefs.peoplePref) dims++;
   return dims;

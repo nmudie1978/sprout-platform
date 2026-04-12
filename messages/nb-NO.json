@@ -4,9 +4,17 @@
     "cancel": "Avbryt",
     "close": "Lukk",
     "loading": "Laster…",
+    "change": "endre",
+    "yes": "Ja",
+    "set": "Sett",
+    "delete": "Slett",
+    "error": "Feil",
     "showOriginal": "Vis original",
     "translateToNorwegian": "Oversett til norsk",
-    "translating": "Oversetter…"
+    "translating": "Oversetter…",
+    "noResults": "Ingen resultater funnet",
+    "previousPage": "Forrige side",
+    "nextPage": "Neste side"
   },
   "nav": {
     "dashboard": "Oversikt",
@@ -14,7 +22,298 @@
     "insights": "Bransjeanalyse",
     "myJourney": "Min reise",
     "explore": "Utforsk karrierer",
-    "feedback": "Tilbakemelding"
+    "feedback": "Tilbakemelding",
+    "about": "Om oss"
+  },
+  "greeting": {
+    "morning": "God morgen",
+    "afternoon": "God ettermiddag",
+    "evening": "God kveld",
+    "welcome": "Velkommen"
+  },
+  "dashboard": {
+    "pageContext": "Et overblikk over reisene, aktiviteten og det lagrede innholdet ditt.",
+    "replayWalkthrough": "Spill av gjennomgangen på nytt",
+    "guardianPending": "Venter på bekreftelse fra foresatt — trykk for å sende på nytt eller endre",
+    "profileComplete": "Profil fullført",
+    "profilePercent": "Profil {pct}% fullført",
+    "startHint": "Start her"
+  },
+  "journey": {
+    "title": "Min reise",
+    "cardTitle": "Min reise",
+    "cardTitleWithGoal": "Min reise mot å bli",
+    "chooseGoalPrompt": "Velg et hovedmål for å starte",
+    "completeIndicator": "Reise fullført",
+    "progressTooltip": "Reisen din følger fremgangen gjennom Utforsk, Forstå og Klarhet — slik at du ser hele bildet av en karrierevei.",
+    "hint": "Dette er din vei",
+    "discover": {
+      "label": "Utforsk",
+      "subtitle": "Utforsk karrieren",
+      "description": "Få et overordnet blikk: hva det er, hvem som gjør det, lønnsområde og om det er verdt å se nærmere på.",
+      "tooltip": "Få en følelse for karrieren — hvordan en typisk dag ser ut, lønn, vekstutsikter og de viktigste ferdighetene.",
+      "confirmQuestion": "Har du utforsket hva denne rollen handler om?",
+      "confirmYes": "Ja",
+      "confirmNotYet": "Ja",
+      "videoSection": "En dag i livet",
+      "overviewSection": "Karriereoversikt",
+      "annualSalary": "Årslønn",
+      "growth": "Vekst",
+      "sector": "Sektor",
+      "pension": "Pensjon"
+    },
+    "understand": {
+      "label": "Forstå",
+      "subtitle": "Virkeligheten, utdanning og ferdigheter",
+      "description": "Gå dypere inn i det daglige arbeidet, kvalifikasjoner og de vanskelige sidene.",
+      "tooltip": "Gå dypere inn i hva rollen faktisk innebærer — reelle utdanningsveier, opptakskrav, kurs og ærlige realitetsvurderinger.",
+      "lockedTooltip": "Svar på bekreftelsen nederst på Utforsk for å låse opp Forstå",
+      "confirmQuestion": "Forsto du rollen bedre?",
+      "confirmYes": "Ja",
+      "confirmNotYet": "Ja",
+      "tasksSection": "Hva du faktisk gjør",
+      "tasksTooltip": "Kjerneoppgavene og de daglige gjøremålene som definerer denne rollen — det du faktisk ville brukt tiden din på.",
+      "realitySection": "Virkeligheten",
+      "realityTooltip": "Et ærlig blikk på hvordan denne karrieren virkelig er — utfordringene, avveiningene og hva som gjør noen egnet.",
+      "typicalDaySection": "En typisk dag",
+      "typicalDayTooltip": "Hvordan en virkelig arbeidsdag ser ut i denne rollen — morgen, midt på dagen og ettermiddag — slik at du kan se deg selv i den.",
+      "schoolReadiness": "Skoleberedskap",
+      "studyPath": "Studievei",
+      "studyPathTooltip": "Virkelige universiteter, høyskoler og fagskoler som leder til denne karrieren — filtrert etter din plassering og fag.",
+      "careerPresence": "Karrieretilgjengelighet og verktøy",
+      "careerPresenceTooltip": "Hvor tilgjengelig denne karrieren er i Norge og nærliggende land, og verktøyene fagfolk bruker daglig."
+    },
+    "clarity": {
+      "label": "Klarhet",
+      "subtitle": "Se hele reisen din",
+      "description": "Se hele tidslinjen, milepælene og hva som kreves for å komme dit.",
+      "tooltip": "Denne delen bringer alt sammen — viser deg hele reisen, tidslinjen og hva som skal til for å bli dette.",
+      "lockedTooltip": "Svar på bekreftelsen nederst på Forstå for å låse opp Klarhet",
+      "addMomentumStep": "Legg til dette som et av dine neste steg",
+      "deleteStep": "Slett steg",
+      "addStepPlaceholder": "Legg til et steg…",
+      "addFirstStepPlaceholder": "Legg til ditt første steg…"
+    },
+    "notes": {
+      "title": "Dine notater",
+      "placeholder": "Legg til et notat..."
+    },
+    "fromField": {
+      "title": "Ekte veier fra ekte mennesker",
+      "sectionTitle": "Fra feltet",
+      "tooltip": "Ekte karrieretidslinjer bidratt av foreldre og fagfolk — som viser at det finnes mer enn én vei hit."
+    },
+    "empty": {
+      "description": "Velg et hovedmål — karrieren du vil utforske skikkelig først. Vi leder deg fra nysgjerrighet til en ekte plan, steg for steg. Du kan endre det når som helst.",
+      "choosePrimary": "Velg ditt hovedmål",
+      "exploreRadar": "Eller utforsk karrierer i Karriereradaren først"
+    }
+  },
+  "careers": {
+    "titlePrefix": "Utforsk",
+    "titleGradient": "Karrierer",
+    "description": "Lær hva ulike jobber virkelig innebærer før du bestemmer deg",
+    "infoTooltip": "Bla gjennom karrierer etter kategori, søk etter navn, eller filtrer etter lønn, vekst og mer. Klikk på en karriere for å se en fullstendig oversikt inkludert en typisk dag, utdanningsveier og lønnsinformasjon.",
+    "stats": {
+      "careers": "Karrierer",
+      "showing": "Viser",
+      "categories": "Kategorier"
+    },
+    "table": {
+      "career": "Karriere",
+      "salary": "Lønn",
+      "growth": "Vekst",
+      "sector": "Sektor",
+      "path": "Vei",
+      "demand": "Etterspørsel",
+      "match": "Match",
+      "learnMore": "Les mer"
+    },
+    "personalised": "Personlig tilpasset",
+    "empty": {
+      "title": "Ingen karrierer funnet",
+      "description": "Prøv å justere søket eller filtrene dine",
+      "clearFilters": "Fjern filtre"
+    },
+    "recommended": {
+      "title": "Anbefalt for deg",
+      "subtitle": "Basert på ditt hovedmål"
+    },
+    "loading": "Laster karrierer...",
+    "pagination": {
+      "showing": "Viser {start}–{end} av {total}",
+      "total": "{total} karrierer"
+    }
+  },
+  "radar": {
+    "titlePrefix": "Min",
+    "titleGradient": "Karriereradar",
+    "description": "Karrierer som matcher interessene, arbeidsstilen og styrkene dine. Jo nærmere en prikk er sentrum, desto sterkere er matchen. Trykk på en prikk for å utforske karrieren i detalj.",
+    "loading": "Laster radaren din…",
+    "notYouth": "Logg inn med en ungdomskonto for å bruke Karriereradaren.",
+    "hint": "Trykk på en karriere for å utforske den"
+  },
+  "careerSnapshot": {
+    "title": "Karriereoversikt",
+    "tooltip": "Nøkkelfakta om din valgte karriere — lønn, vekst, sektor og pensjon.",
+    "salary": "Lønn",
+    "growth": "Vekst",
+    "sector": "Sektor",
+    "pension": "Pensjon",
+    "emptyState": "Velg et hovedmål for å se karriereinformasjon"
+  },
+  "exploredJourneys": {
+    "title": "Tidligere utforskede reiser",
+    "tooltip": "Hver reise du starter lagres her. Bytt mellom dem når som helst.",
+    "emptyState": "Ingen reiser ennå.",
+    "career": "Karriere",
+    "stage": "Fase",
+    "status": "Status",
+    "primaryGoal": "Hovedmål",
+    "saved": "Lagret"
+  },
+  "savedCareers": {
+    "title": "Lagrede karrierer",
+    "tooltip": "Karrierer du har lagret fra Utforsk karrierer.",
+    "emptyState": "Ingen lagrede karrierer ennå."
+  },
+  "smallJobs": {
+    "title": "Mine småjobber",
+    "tooltip": "Småjobber du har søkt på i virkeligheten. Hver enkelt bygger erfaring, ansvar og selvtillit.",
+    "applied": "Søkt",
+    "waiting": "Venter",
+    "accepted": "Godkjent",
+    "done": "Ferdig"
+  },
+  "library": {
+    "title": "Mitt bibliotek",
+    "tooltip": "Artikler, videoer og ressurser du har lagret fra Bransjeanalyse.",
+    "emptyState": "Biblioteket ditt er tomt.",
+    "listView": "Listevisning",
+    "gridView": "Rutenettvisning"
+  },
+  "switchGoal": {
+    "title": "Bytte hovedmål til {goalTitle}?",
+    "description": "Den nåværende fremgangen din blir lagret. Du kan bytte tilbake når som helst.",
+    "whatHappens": "Hva som skjer:",
+    "journeySaved": "Reisen din for {currentGoal} er lagret",
+    "canReload": "Du kan laste den inn igjen fra Tidligere utforskede reiser på oversikten din",
+    "dataPreserved": "Alle data — veikart, grunnlag, preferanser — er bevart",
+    "confirm": "Bytt hovedmål",
+    "toastDescription": "Din forrige reise er lagret i Tidligere utforskede reiser og kan lastes inn igjen når som helst. Gå til Min reise for å begynne å utforske ditt nye hovedmål.",
+    "goToJourney": "Gå til Min reise"
+  },
+  "dyk": {
+    "header": "Visste du?",
+    "nextFact": "Vis et nytt faktum"
+  },
+  "firstLogin": {
+    "cardTitle": "Ny her? Ta en rask titt rundt",
+    "cardDescription": "En kort gjennomgang som viser deg hva hver del av plattformen gjør — tar omtrent 30 sekunder.",
+    "startWalkthrough": "Vis meg rundt"
+  },
+  "profile": {
+    "title": "Profil",
+    "youthOnly": "Bare ungdomsbrukere kan se profiler.",
+    "loading": "Laster profil...",
+    "firstName": "Fornavn",
+    "surname": "Etternavn",
+    "age": "Alder",
+    "yearsOld": "år gammel",
+    "born": "Født",
+    "dobNote": "Fødselsdato · satt ved registrering",
+    "dobNotSet": "Fødselsdato ikke satt",
+    "bio": "Om meg",
+    "bioPlaceholder": "Fortell arbeidsgivere litt om deg selv...",
+    "phone": "Telefon",
+    "city": "By",
+    "guardianEmail": "Foresattes e-post",
+    "saveButton": "Lagre profil",
+    "savingButton": "Lagrer...",
+    "savedToast": "Profil lagret!",
+    "savedToastDesc": "Profilen din er oppdatert.",
+    "careerDirection": "Karriereretning",
+    "primaryGoal": "Hovedmål",
+    "secondaryGoal": "Sekundærmål",
+    "noGoalSet": "Ingen karrieremål satt ennå",
+    "noBackupGoal": "Ingen reservemål satt",
+    "availability": {
+      "title": "Jobbtilgjengelighet",
+      "available": "Tilgjengelig",
+      "busy": "Opptatt",
+      "notLooking": "Søker ikke"
+    },
+    "privacy": {
+      "visibility": "Profilsynlighet",
+      "visibilityPublic": "Arbeidsgivere kan se profilen din",
+      "visibilityPrivate": "Profilen din er privat",
+      "dnd": "Ikke forstyrr",
+      "dndEnabled": "Andre kan ikke starte nye samtaler",
+      "dndDisabled": "Andre kan sende deg meldinger"
+    },
+    "deleteAccount": "Slett konto permanent",
+    "deleting": "Sletter..."
+  },
+  "landing": {
+    "hero": {
+      "ageRange": "For 15–23 åringer",
+      "title": "Fremtiden din er din å utforske.",
+      "problem": "Men akkurat nå er arbeidslivet nesten usynlig. Stillingstitler du ikke forstår. Kvalifikasjoner du ikke kan se for deg. Karriereråd som høres likt ut. Ingen viser deg hvordan disse veiene faktisk føles — eller om de passer til den du er i ferd med å bli.",
+      "solution": "Endeavrly gir deg det som har manglet. Ekte karrierer. Ærlig informasjon. Et sted å reflektere over hvem du er og prøve ting selv — slik at når du velger en retning, er den din. Ingen tester. Ikke noe press. Bare klarhet.",
+      "cta": "Utforsk Endeavrly"
+    },
+    "framework": {
+      "title": "Tre linser. Én reise.",
+      "subtitle": "Hvert steg bygger på det forrige. Nysgjerrighet blir klarhet, klarhet blir retning — i ditt eget tempo, på dine egne vilkår."
+    },
+    "timeline": {
+      "label": "Din tidslinje",
+      "title": "Din reise, ditt tempo.",
+      "subtitle": "Alle vokser forskjellig. Se fremgangen din som en forsiktig utfoldelse, ikke et kappløp."
+    },
+    "contrast": {
+      "notThis": "Ikke dette",
+      "thisInstead": "Heller dette",
+      "not1": "En karrieretest som forteller deg hva du skal bli.",
+      "instead1": "Et sted å finne ut ting selv — gjennom ekte opplevelser og ærlig refleksjon.",
+      "not2": "En motivasjonsapp som hyper deg opp.",
+      "instead2": "Rett-fram informasjon om hvordan ulike veier faktisk er.",
+      "not3": "En plattform som sporer, scorer eller rangerer fremtiden din.",
+      "instead3": "Et privat sted å utforske, prøve ting og vokse i det tempoet som føles riktig."
+    },
+    "trust": {
+      "noAds": "Ingen reklame",
+      "noTracking": "Ingen sporing",
+      "noPayments": "Ingen betalinger",
+      "noPublicProfiles": "Ingen offentlige profiler",
+      "safetyByDesign": "Sikkerhet innebygd"
+    },
+    "cta": {
+      "title": "Kom i gang.",
+      "subtitle": "Gratis. Ingen kredittkort. Ingen forpliktelser.",
+      "button": "Registrer deg gratis"
+    }
+  },
+  "footer": {
+    "research": "Forskning",
+    "terms": "Vilkår",
+    "privacy": "Personvern",
+    "safety": "Sikkerhet",
+    "eligibility": "Kvalifisering",
+    "disclaimer": "Ansvarsfraskrivelse",
+    "copyright": "© {year} Endeavrly. Hjelper unge med å bygge livsferdigheter og vokse i selvtillit."
+  },
+  "signup": {
+    "firstName": "Fornavn",
+    "surname": "Etternavn",
+    "email": "Din e-post",
+    "password": "Passord",
+    "guardianEmail": "E-post til foresatt",
+    "createAccount": "Opprett konto",
+    "creating": "Oppretter kontoen din…",
+    "alreadyHaveAccount": "Har du allerede en konto?",
+    "signIn": "Logg inn",
+    "acceptTerms": "Jeg godtar vilkårene og personvernreglene"
   },
   "insights": {
     "pageTitle": "Bransje",

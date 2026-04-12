@@ -1084,39 +1084,6 @@ export default function DashboardPage() {
 
           {/* My Library — under Career Snapshot */}
           <LibraryCard items={savedItemsList} total={savedSummary.total} />
-
-          {/* My Small Jobs — under Library */}
-          {(() => {
-            const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
-            const inner = (
-              <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title={t('smallJobs.tooltip')} />
-                  <h3 className="text-xs font-semibold">{t('smallJobs.title')}</h3>
-                  <span className="flex-1" />
-                  {totalJobs > 0 && (
-                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">{totalJobs}</span>
-                  )}
-                </div>
-                <div className="grid grid-cols-4 gap-1 text-center">
-                  {[
-                    { label: t('smallJobs.applied'), value: appStats.applied },
-                    { label: t('smallJobs.waiting'), value: appStats.waiting },
-                    { label: t('smallJobs.accepted'), value: appStats.accepted },
-                    { label: t('smallJobs.done'), value: appStats.done },
-                  ].map((stat) => (
-                    <div key={stat.label}>
-                      <p className="text-xs font-semibold text-foreground/70 tabular-nums">{stat.value}</p>
-                      <p className="text-[9px] text-muted-foreground/40 leading-tight">{stat.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-            );
-            return totalJobs > 0 ? (
-              <Link href="/applications" className="block group">{inner}</Link>
-            ) : inner;
-          })()}
           </div>
 
           {/* Right column: Previously Explored Journeys + Saved Careers */}
@@ -1323,6 +1290,39 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground/50 mt-1">{t('savedCareers.emptyState')}</p>
             )}
           </GlassCard>
+
+          {/* My Small Jobs — under Saved Careers */}
+          {(() => {
+            const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
+            const inner = (
+              <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title={t('smallJobs.tooltip')} />
+                  <h3 className="text-xs font-semibold">{t('smallJobs.title')}</h3>
+                  <span className="flex-1" />
+                  {totalJobs > 0 && (
+                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">{totalJobs}</span>
+                  )}
+                </div>
+                <div className="grid grid-cols-4 gap-1 text-center">
+                  {[
+                    { label: t('smallJobs.applied'), value: appStats.applied },
+                    { label: t('smallJobs.waiting'), value: appStats.waiting },
+                    { label: t('smallJobs.accepted'), value: appStats.accepted },
+                    { label: t('smallJobs.done'), value: appStats.done },
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <p className="text-xs font-semibold text-foreground/70 tabular-nums">{stat.value}</p>
+                      <p className="text-[9px] text-muted-foreground/40 leading-tight">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            );
+            return totalJobs > 0 ? (
+              <Link href="/applications" className="block group">{inner}</Link>
+            ) : inner;
+          })()}
           </div>
         </div>
 

@@ -4,9 +4,17 @@
     "cancel": "Cancel",
     "close": "Close",
     "loading": "Loading…",
+    "change": "change",
+    "yes": "Yes",
+    "set": "Set",
+    "delete": "Delete",
+    "error": "Error",
     "showOriginal": "Show original",
     "translateToNorwegian": "Translate to Norwegian",
-    "translating": "Translating…"
+    "translating": "Translating…",
+    "noResults": "No results found",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -14,7 +22,298 @@
     "insights": "Industry Insights",
     "myJourney": "My Journey",
     "explore": "Explore Careers",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "about": "About"
+  },
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "welcome": "Welcome"
+  },
+  "dashboard": {
+    "pageContext": "A snapshot of your journeys, activity, and saved content.",
+    "replayWalkthrough": "Replay app walkthrough",
+    "guardianPending": "Waiting for guardian confirmation — tap to resend or change",
+    "profileComplete": "Profile complete",
+    "profilePercent": "Profile {pct}% complete",
+    "startHint": "Start here"
+  },
+  "journey": {
+    "title": "My Journey",
+    "cardTitle": "My Journey",
+    "cardTitleWithGoal": "My Journey to becoming a",
+    "chooseGoalPrompt": "Choose a Primary Goal to start",
+    "completeIndicator": "Journey complete",
+    "progressTooltip": "Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path.",
+    "hint": "This is your path",
+    "discover": {
+      "label": "Discover",
+      "subtitle": "Explore the career",
+      "description": "Get a high-level view: what it is, who does it, salary range, and whether it's worth a closer look.",
+      "tooltip": "Get a feel for the career — what a typical day looks like, salary, growth outlook, and the key skills involved.",
+      "confirmQuestion": "Have you explored what this role is about?",
+      "confirmYes": "Yes",
+      "confirmNotYet": "Yes",
+      "videoSection": "A Day in the Life",
+      "overviewSection": "Career Overview",
+      "annualSalary": "Annual Salary",
+      "growth": "Growth",
+      "sector": "Sector",
+      "pension": "Pension"
+    },
+    "understand": {
+      "label": "Understand",
+      "subtitle": "The reality, education & skills",
+      "description": "Go deeper into day-to-day work, qualifications, and the hard parts.",
+      "tooltip": "Go deeper into what the role actually involves — real education paths, entry requirements, courses, and honest reality checks.",
+      "lockedTooltip": "Answer the confirmation at the bottom of Discover to unlock Understand",
+      "confirmQuestion": "Did you understand the role in more detail?",
+      "confirmYes": "Yes",
+      "confirmNotYet": "Yes",
+      "tasksSection": "What You'll Actually Do",
+      "tasksTooltip": "The core responsibilities and daily tasks that define this role — what you'd actually spend your time doing.",
+      "realitySection": "The Reality",
+      "realityTooltip": "An honest look at what this career is really like — the challenges, trade-offs, and what makes someone a good fit.",
+      "typicalDaySection": "A Typical Day",
+      "typicalDayTooltip": "What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it.",
+      "schoolReadiness": "School Readiness",
+      "studyPath": "Study Path",
+      "studyPathTooltip": "Real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects.",
+      "careerPresence": "Career Presence & Tools",
+      "careerPresenceTooltip": "How available this career is across Norway and nearby countries, and the tools professionals use every day."
+    },
+    "clarity": {
+      "label": "Clarity",
+      "subtitle": "See your full journey",
+      "description": "See the full timeline, milestones, and what it takes to get there.",
+      "tooltip": "This section brings everything together — showing you the full journey, timeline, and what it takes to become this.",
+      "lockedTooltip": "Answer the confirmation at the bottom of Understand to unlock Clarity",
+      "addMomentumStep": "Add this as one of your momentum steps",
+      "deleteStep": "Delete step",
+      "addStepPlaceholder": "Add a step…",
+      "addFirstStepPlaceholder": "Add your first step…"
+    },
+    "notes": {
+      "title": "Your Notes",
+      "placeholder": "Add a note..."
+    },
+    "fromField": {
+      "title": "Real Paths from Real People",
+      "sectionTitle": "From the Field",
+      "tooltip": "Real career timelines contributed by parents and professionals — showing that there is more than one way to get here."
+    },
+    "empty": {
+      "description": "Choose a Primary Goal — the career you want to explore properly first. We'll walk you from curiosity to a real plan, one step at a time. You can change it anytime.",
+      "choosePrimary": "Choose your Primary Goal",
+      "exploreRadar": "Or explore careers in Career Radar first"
+    }
+  },
+  "careers": {
+    "titlePrefix": "Explore",
+    "titleGradient": "Careers",
+    "description": "Learn what different jobs are really like before deciding anything",
+    "infoTooltip": "Browse careers by category, search by name, or filter by salary, growth and more. Click any career to see a full breakdown including a typical day, education paths and salary info.",
+    "stats": {
+      "careers": "Careers",
+      "showing": "Showing",
+      "categories": "Categories"
+    },
+    "table": {
+      "career": "Career",
+      "salary": "Salary",
+      "growth": "Growth",
+      "sector": "Sector",
+      "path": "Path",
+      "demand": "Demand",
+      "match": "Match",
+      "learnMore": "Learn more"
+    },
+    "personalised": "Personalised",
+    "empty": {
+      "title": "No careers found",
+      "description": "Try adjusting your search or filters",
+      "clearFilters": "Clear Filters"
+    },
+    "recommended": {
+      "title": "Recommended for You",
+      "subtitle": "Based on your Primary Goal"
+    },
+    "loading": "Loading careers...",
+    "pagination": {
+      "showing": "Showing {start}–{end} of {total}",
+      "total": "{total} careers"
+    }
+  },
+  "radar": {
+    "titlePrefix": "My",
+    "titleGradient": "Career Radar",
+    "description": "Careers matched to your interests, work style, and strengths. The closer a dot is to the centre, the stronger the match. Tap any dot to explore that career in detail.",
+    "loading": "Loading your radar…",
+    "notYouth": "Sign in as a youth account to use the Career Radar.",
+    "hint": "Tap a career to explore it"
+  },
+  "careerSnapshot": {
+    "title": "Career Snapshot",
+    "tooltip": "Key facts about your chosen career — salary, growth, sector, and pension.",
+    "salary": "Salary",
+    "growth": "Growth",
+    "sector": "Sector",
+    "pension": "Pension",
+    "emptyState": "Choose a Primary Goal to see career info"
+  },
+  "exploredJourneys": {
+    "title": "Previously Explored Journeys",
+    "tooltip": "Every journey you start is saved here. Switch between them anytime.",
+    "emptyState": "No journeys yet.",
+    "career": "Career",
+    "stage": "Stage",
+    "status": "Status",
+    "primaryGoal": "Primary Goal",
+    "saved": "Saved"
+  },
+  "savedCareers": {
+    "title": "Saved careers",
+    "tooltip": "Careers you've saved from Explore Careers.",
+    "emptyState": "No saved careers yet."
+  },
+  "smallJobs": {
+    "title": "My Small Jobs",
+    "tooltip": "Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence.",
+    "applied": "Applied",
+    "waiting": "Waiting",
+    "accepted": "Accepted",
+    "done": "Done"
+  },
+  "library": {
+    "title": "My Library",
+    "tooltip": "Articles, videos, and resources you've saved from Industry Insights.",
+    "emptyState": "Your library is empty.",
+    "listView": "List view",
+    "gridView": "Grid view"
+  },
+  "switchGoal": {
+    "title": "Switch Primary Goal to {goalTitle}?",
+    "description": "Your current progress will be saved. You can switch back anytime.",
+    "whatHappens": "What happens:",
+    "journeySaved": "Your journey for {currentGoal} is saved",
+    "canReload": "You can reload it from Previously Explored Journeys on your dashboard",
+    "dataPreserved": "All data — roadmap, foundation, preferences — is preserved",
+    "confirm": "Switch Primary Goal",
+    "toastDescription": "Your previous journey is saved in Previously Explored Journeys and can be reloaded anytime. Head to My Journey to start exploring your new Primary Goal.",
+    "goToJourney": "Go to My Journey"
+  },
+  "dyk": {
+    "header": "Did you know?",
+    "nextFact": "Show another fact"
+  },
+  "firstLogin": {
+    "cardTitle": "New here? Take a quick look around",
+    "cardDescription": "A short walkthrough that shows you what each part of the platform does — takes about 30 seconds.",
+    "startWalkthrough": "Show me around"
+  },
+  "profile": {
+    "title": "Profile",
+    "youthOnly": "Only youth users can access profiles.",
+    "loading": "Loading profile...",
+    "firstName": "First name",
+    "surname": "Surname",
+    "age": "Age",
+    "yearsOld": "years old",
+    "born": "Born",
+    "dobNote": "Date of birth · set at sign-up",
+    "dobNotSet": "Date of birth not set",
+    "bio": "About Me",
+    "bioPlaceholder": "Tell job posters a bit about yourself...",
+    "phone": "Phone",
+    "city": "City",
+    "guardianEmail": "Guardian Email",
+    "saveButton": "Save Profile",
+    "savingButton": "Saving...",
+    "savedToast": "Profile saved!",
+    "savedToastDesc": "Your profile has been updated successfully.",
+    "careerDirection": "Career Direction",
+    "primaryGoal": "Primary Goal",
+    "secondaryGoal": "Secondary Goal",
+    "noGoalSet": "No career goal set yet",
+    "noBackupGoal": "No backup goal set",
+    "availability": {
+      "title": "Job Availability",
+      "available": "Available",
+      "busy": "Busy",
+      "notLooking": "Not Looking"
+    },
+    "privacy": {
+      "visibility": "Profile Visibility",
+      "visibilityPublic": "Job posters can view your profile",
+      "visibilityPrivate": "Your profile is private",
+      "dnd": "Do Not Disturb",
+      "dndEnabled": "Others cannot start new conversations",
+      "dndDisabled": "Others can message you"
+    },
+    "deleteAccount": "Permanently Delete Account",
+    "deleting": "Deleting..."
+  },
+  "landing": {
+    "hero": {
+      "ageRange": "For 15–23 year olds",
+      "title": "Your future is yours to explore.",
+      "problem": "But right now, the world of work is almost invisible. Job titles you don't understand. Qualifications you can't picture. Career advice that all sounds the same. Nobody shows you what these paths actually feel like — or whether they'd suit the person you're becoming.",
+      "solution": "Endeavrly gives you what's been missing. Real careers. Honest information. A space to reflect on who you are and try things for yourself — so when you do choose a direction, it's yours. No quizzes. No pressure. Just clarity.",
+      "cta": "Explore Endeavrly"
+    },
+    "framework": {
+      "title": "Three lenses. One journey.",
+      "subtitle": "Each step builds on the last. Curiosity becomes clarity, clarity becomes direction — at your own pace, on your own terms."
+    },
+    "timeline": {
+      "label": "Your Timeline",
+      "title": "Your journey, your pace.",
+      "subtitle": "Everyone grows differently. See your progress as a gentle unfolding, not a race."
+    },
+    "contrast": {
+      "notThis": "Not this",
+      "thisInstead": "This instead",
+      "not1": "A career quiz that tells you what to be.",
+      "instead1": "A space to work things out for yourself — through real experiences and honest reflection.",
+      "not2": "A motivational app that hypes you up.",
+      "instead2": "Straightforward information about what different paths are actually like.",
+      "not3": "A platform that tracks, scores, or ranks your future.",
+      "instead3": "A private place to explore, try things, and grow at whatever pace feels right."
+    },
+    "trust": {
+      "noAds": "No ads",
+      "noTracking": "No tracking",
+      "noPayments": "No payments",
+      "noPublicProfiles": "No public profiles",
+      "safetyByDesign": "Safety by design"
+    },
+    "cta": {
+      "title": "Get started.",
+      "subtitle": "Free. No credit card. No commitments.",
+      "button": "Sign up free"
+    }
+  },
+  "footer": {
+    "research": "Research",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "safety": "Safety",
+    "eligibility": "Eligibility",
+    "disclaimer": "Disclaimer",
+    "copyright": "© {year} Endeavrly. Helping young people build life skills and grow in confidence."
+  },
+  "signup": {
+    "firstName": "First name",
+    "surname": "Surname",
+    "email": "Your email",
+    "password": "Password",
+    "guardianEmail": "Parent or guardian email",
+    "createAccount": "Create account",
+    "creating": "Creating your account…",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "acceptTerms": "I accept the Terms and Privacy Policy"
   },
   "insights": {
     "pageTitle": "Industry",

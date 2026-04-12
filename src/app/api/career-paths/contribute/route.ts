@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         currentTitle: currentTitle.trim(),
         country: country.trim(),
         city: city?.trim() || null,
-        steps: steps as unknown as import("@prisma/client").Prisma.JsonArray,
+        steps: JSON.parse(JSON.stringify(steps)),
         careerTags: careerTags.map((t: string) => t.trim().toLowerCase()),
         didAttendUniversity: !!didAttendUniversity,
         yearsOfExperience: yearsOfExperience ? Number(yearsOfExperience) : null,

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, Suspense, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,6 +34,7 @@ const PAGE_SIZE = 7;
 
 function CareersPageContent() {
   const { data: session } = useSession();
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -252,20 +254,20 @@ function CareersPageContent() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
 
       <PageHeader
-        title="Explore"
-        gradientText="Careers"
-        description="Learn what different jobs are really like before deciding anything"
+        title={t('careers.titlePrefix')}
+        gradientText={t('careers.titleGradient')}
+        description={t('careers.description')}
         icon={Compass}
         centered
-        infoTooltip="Browse careers by category, search by name, or filter by salary, growth and more. Click any career to see a full breakdown including a typical day, education paths and salary info."
+        infoTooltip={t('careers.infoTooltip')}
       />
 
       {/* Quick Stats */}
       <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
         {[
-          { icon: Briefcase, label: "Careers", value: getAllCareers().length, color: "text-primary" },
-          { icon: Search, label: "Showing", value: totalItems, color: "text-teal-500" },
-          { icon: Layers, label: "Categories", value: Object.keys(CAREER_PATHWAYS).length, color: "text-blue-500" },
+          { icon: Briefcase, label: t('careers.stats.careers'), value: getAllCareers().length, color: "text-primary" },
+          { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-teal-500" },
+          { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(CAREER_PATHWAYS).length, color: "text-blue-500" },
         ].map((stat) => (
           <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-card/80 border border-border/40 rounded-xl px-2 sm:px-3 py-1.5 shrink-0">
             <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
