@@ -48,7 +48,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
-import { SectionWhy } from "@/components/ui/section-why";
 import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
@@ -149,8 +148,8 @@ function LibraryCard({
   return (
     <GlassCard className="p-3">
       <div className="flex items-center gap-2 mb-2">
-        <BookmarkCheck className="h-3.5 w-3.5 text-blue-500" />
-        <h3 className="text-xs font-semibold flex items-center gap-1.5">My Library <SectionWhy why="Articles, videos, and resources you've saved while exploring industry insights. Your personal research collection." /></h3>
+        <BookmarkCheck className="h-3.5 w-3.5 text-blue-500 cursor-help" title="Articles, videos, and resources you've saved from Industry Insights." />
+        <h3 className="text-xs font-semibold">My Library</h3>
         {total > 0 && (
           <span className="text-[10px] text-muted-foreground/40">{total}</span>
         )}
@@ -799,7 +798,7 @@ export default function DashboardPage() {
 
         <PageContext
           pageKey="dashboard"
-          purpose="This is your home base — a snapshot of your journey, goals, and activity."
+          purpose="A snapshot of your journeys, activity, and saved content."
         />
 
         <VerificationStatus compact />
@@ -868,7 +867,7 @@ export default function DashboardPage() {
           <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-border/30 shadow-[0_0_15px_rgba(255,255,255,0.03),0_0_30px_rgba(255,255,255,0.02)]", goalTitle && "hover:border-border/50 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_0_40px_rgba(255,255,255,0.03)]")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" title="Your journey tracks progress through Discover, Understand, and Clarity." />
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
@@ -879,7 +878,6 @@ export default function DashboardPage() {
                   ) : (
                     'My Journey'
                   )}
-                  <SectionWhy why="Your journey tracks your progress through Discover, Understand, and Clarity — helping you see the full picture of a career path." />
                 </h2>
                 <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
                   {goalTitle ? (
@@ -1011,8 +1009,8 @@ export default function DashboardPage() {
           {goalCareer ? (
             <GlassCard className="p-4 h-full">
               <div className="flex items-center gap-2 mb-3">
-                <Search className="h-3.5 w-3.5 text-teal-500" />
-                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="Key facts about your chosen career at a glance — salary, demand, sector, and pension." /></h3>
+                <Search className="h-3.5 w-3.5 text-teal-500 cursor-help" title="Key facts about your chosen career — salary, growth, sector, and pension." />
+                <h3 className="text-xs font-semibold">Career Snapshot</h3>
               </div>
               {/* Career snapshot stats */}
               {(() => {
@@ -1046,7 +1044,7 @@ export default function DashboardPage() {
             <GlassCard className="p-3 h-full">
               <div className="flex items-center gap-2 mb-1.5">
                 <Search className="h-3.5 w-3.5 text-teal-500" />
-                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
+                <h3 className="text-xs font-semibold">Career Snapshot</h3>
               </div>
               <p className="text-xs text-muted-foreground/40">
                 Choose a Primary Goal to see career info
@@ -1076,7 +1074,7 @@ export default function DashboardPage() {
                 <GlassCard className="p-4 h-full border-border/30">
                   <div className="flex items-center gap-2 mb-2">
                     <Target className="h-3.5 w-3.5 text-teal-500" />
-                    <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                    <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
                   </div>
                   <p className="text-xs text-muted-foreground/50 mt-1">No journeys yet.</p>
                 </GlassCard>
@@ -1098,8 +1096,8 @@ export default function DashboardPage() {
             return (
               <GlassCard className="p-3 h-full flex flex-col border-border/30">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Target className="h-3.5 w-3.5 text-violet-500" />
-                  <h3 className="text-xs font-semibold flex items-center gap-1.5">Previously Explored Journeys <SectionWhy why="Every career journey you start is automatically saved here. You can switch between them anytime — your progress on each one is preserved." /></h3>
+                  <Target className="h-3.5 w-3.5 text-violet-500 cursor-help" title="Every journey you start is saved here. Switch between them anytime." />
+                  <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
                   <span className="flex-1" />
                   {totalPages > 1 && (
                     <div className="flex items-center gap-1">
@@ -1201,8 +1199,8 @@ export default function DashboardPage() {
           {/* Saved Careers — promoted to row 3 in place of My Jobs */}
           <GlassCard className="p-3">
             <div className="flex items-center gap-2 mb-1.5">
-              <Heart className="h-3.5 w-3.5 text-pink-500" />
-              <h3 className="text-xs font-semibold flex items-center gap-1.5">Saved careers <SectionWhy why="Careers you've saved from Explore Careers. Tap to revisit and dig deeper." /></h3>
+              <Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" title="Careers you've saved from Explore Careers." />
+              <h3 className="text-xs font-semibold">Saved careers</h3>
             </div>
             {savedCareers.length > 0 ? (
               <>
@@ -1273,11 +1271,8 @@ export default function DashboardPage() {
           const inner = (
             <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
               <div className="flex items-center gap-2 mb-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60" />
-                <h3 className="text-xs font-semibold flex items-center gap-1.5">
-                  My Small Jobs
-                  <SectionWhy why="Real-world small jobs you've applied to. Each one builds experience, responsibility, and confidence." />
-                </h3>
+                <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title="Real-world small jobs you've applied to." />
+                <h3 className="text-xs font-semibold">My Small Jobs</h3>
                 <span className="flex-1" />
                 {totalJobs > 0 && (
                   <span className="text-[10px] text-muted-foreground/40 tabular-nums">
