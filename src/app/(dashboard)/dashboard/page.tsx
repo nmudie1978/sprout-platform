@@ -42,7 +42,7 @@ import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
-import { getAllCareers } from "@/lib/career-pathways";
+import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
@@ -1019,23 +1019,34 @@ export default function DashboardPage() {
             <GlassCard className="p-4 h-full">
               <div className="flex items-center gap-2 mb-3">
                 <Search className="h-3.5 w-3.5 text-teal-500" />
-                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="A quick look at your chosen career — what a day looks like, what you'll need, and where to start." /></h3>
+                <h3 className="text-xs font-semibold flex items-center gap-1.5">Career Snapshot <SectionWhy why="Key facts about your chosen career at a glance — salary, demand, sector, and pension." /></h3>
               </div>
               {/* Career snapshot stats */}
-              <div className="grid grid-cols-3 gap-2 mb-2">
-                <div className="text-center">
-                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
-                  <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.split(' ')[0]}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
-                  <p className="text-[11px] font-semibold text-foreground/75 capitalize">{goalCareer.growthOutlook}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Path</p>
-                  <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.entryLevel ? 'Entry-level' : goalCareer.educationPath.match(/bachelor|master|doctorate|vocational|fagbrev/i)?.[0] || 'Degree'}</p>
-                </div>
-              </div>
+              {(() => {
+                const sector = getSectorForCareer(goalCareer.id);
+                const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
+                const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
+                return (
+                  <div className="grid grid-cols-4 gap-2 mb-2">
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
+                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.split(' ')[0]}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
+                      <p className="text-[11px] font-semibold text-foreground/75 capitalize">{goalCareer.growthOutlook}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Sector</p>
+                      <p className="text-[11px] font-semibold text-foreground/75">{sectorLabel}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Pension</p>
+                      <p className="text-[11px] font-semibold text-foreground/75">{pensionLabel}</p>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Full details link */}
               <button
