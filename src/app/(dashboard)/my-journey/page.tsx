@@ -537,7 +537,7 @@ function DiscoverTab({
               {(() => {
                 const sector = getSectorForCareer(career.id);
                 const pensionNote = getPensionNote(sector);
-                const sectorLabel = sector === 'public' ? 'Public Sector' : sector === 'private' ? 'Private Sector' : 'Public & Private';
+                const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Public & Private';
                 const sectorAccent = sector === 'public' ? 'text-blue-400' : sector === 'private' ? 'text-violet-400' : 'text-muted-foreground/50';
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">

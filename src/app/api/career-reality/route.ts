@@ -86,7 +86,9 @@ const REJECT_PATTERNS = [
   /\bmov(e|ing) to\b/i, /\bmigrat/i, /\bimmigrat/i, /\bvisa\b/i, /\brelocat/i,
   /\babroad\b/i, /\bdubai\b/i, /\buk\b.*\bvisa\b/i,
   /\bprank\b/i, /\basmr\b/i, /\bcompilation\b/i, /\bmeme\b/i, /\bshorts?\b/i,
-  /\breaction\b/i, /\bchallenge\b/i, /\bunboxing\b/i,
+  /\breacts?\b/i, /\breaction\b/i, /\bchallenge\b/i, /\bunboxing\b/i,
+  /\bpounds?\b/i, /\bweight\b/i, /\bobese\b/i, /\bobesity\b/i, /\boverweight\b/i,
+  /\bdiagnos/i, /\bpatient\b/i, /\bsymptoms?\b/i, /\btreatment\b/i,
   /\bbuy now\b/i, /\bdiscount\b/i, /\bcoupon\b/i, /salary negotiation/i,
   /\bgameplay\b/i, /\btrailer\b/i, /\bmusic video\b/i,
   /\bgood morning\b/i, /\bbreaking news\b/i, /\bnews\b.*\binterview\b/i,
@@ -374,10 +376,11 @@ export async function GET(req: NextRequest) {
   const career = new URL(req.url).searchParams.get('career');
   if (!career) return NextResponse.json({ error: 'Missing career parameter' }, { status: 400 });
 
-  // v2: stricter filters (country reject, multi-word + context match).
-  // Bumping the version invalidates legacy cached entries that were
-  // produced before these filters existed.
-  const cacheKey = `career-reality:v2:${career.toLowerCase().trim()}`;
+  // v3: added reject patterns for "[Career] Reacts" format and
+  // medical/health content (weight, diagnosis, patient cases) that
+  // aren't about the career itself. Bumps version to invalidate stale
+  // cached entries that passed the old filters.
+  const cacheKey = `career-reality:v3:${career.toLowerCase().trim()}`;
 
   // Check DB cache
   try {
