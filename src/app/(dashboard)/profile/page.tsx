@@ -715,7 +715,7 @@ export default function ProfilePage() {
 
       {/* Career Direction + Discovery Interests — side by side, top of profile */}
       {profile && (
-        <div className="mb-6 grid gap-4 lg:grid-cols-2 relative z-10">
+        <div className="mb-6 relative z-10">
         <Card className="border border-primary/20 overflow-hidden relative z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
           <CardContent className="relative z-10 p-5 sm:p-6">
@@ -789,8 +789,12 @@ export default function ProfilePage() {
                   <p className="text-sm font-semibold truncate">{goalsData.primaryGoal.title}</p>
                 </div>
 
-                {/* Secondary Goal */}
-                <div className={`rounded-lg border p-3 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}>
+                {/* Secondary Goal — clickable to set/change */}
+                <button
+                  type="button"
+                  onClick={() => setShowGoalSheet(true)}
+                  className={`rounded-lg border p-3 text-left w-full transition-colors hover:bg-muted/30 ${goalsData.secondaryGoal ? 'border-border/50 bg-card/50' : 'border-dashed border-border/30 bg-transparent'}`}
+                >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-1">
                       <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50">Secondary Goal</span>
@@ -802,24 +806,22 @@ export default function ProfilePage() {
                           <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
                             <p className="font-semibold mb-1">A backup to keep on your radar</p>
                             <p className="text-muted-foreground">
-                              A placeholder for a second career you're curious about. It doesn't drive your roadmap or actions — only your <span className="text-foreground/80 font-medium">Primary Goal</span> does. Use it to remember an option for later.
+                              A placeholder for a second career you&#39;re curious about. It doesn&#39;t drive your journey — only your Primary Goal does.
                             </p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    {goalsData.secondaryGoal && (
-                      <Badge variant="secondary" className="text-[9px] h-4 bg-muted/50 text-muted-foreground/60">
-                        {goalsData.secondaryGoal.status === "committed" ? "Committed" : "Exploring"}
-                      </Badge>
-                    )}
+                    <span className="text-[10px] text-muted-foreground/40 font-medium">
+                      {goalsData.secondaryGoal ? "Change" : "Set"}
+                    </span>
                   </div>
                   {goalsData.secondaryGoal ? (
                     <p className="text-sm font-medium truncate text-muted-foreground">{goalsData.secondaryGoal.title}</p>
                   ) : (
                     <p className="text-xs text-muted-foreground/40">No backup goal set</p>
                   )}
-                </div>
+                </button>
               </div>
             ) : (
               <div className="rounded-lg border border-dashed border-emerald-500/20 p-6 flex flex-col items-center text-center">
@@ -833,259 +835,28 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Discovery Interests — moved up next to Career Direction */}
-        <Card className="border border-teal-500/20 overflow-hidden relative z-10">
-          <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-transparent to-primary/5 pointer-events-none" />
-          <CardContent className="relative z-10 p-5 sm:p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Discovery Interests</h2>
-                <TooltipProvider delayDuration={200}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent side="left" className="max-w-[260px] text-xs p-3">
-                      <p className="font-medium mb-1">Why this matters</p>
-                      <p className="text-muted-foreground">The subjects you enjoy, how you like to work, and who you like to work with — this powers <span className="font-medium">My Career Radar</span> and surfaces career matches you might not have considered.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              {(() => {
-                const dp: DiscoveryPreferences | null =
-                  (profile?.discoveryPreferences as DiscoveryPreferences) || null;
-                const has =
-                  !!dp &&
-                  ((dp.subjects && dp.subjects.length > 0) ||
-                    (dp.workStyles && dp.workStyles.length > 0) ||
-                    !!dp.peoplePref);
-                return (
-                  <Button
-                    size="sm"
-                    variant={has ? "ghost" : "default"}
-                    className={has ? "text-xs text-muted-foreground/50 hover:text-muted-foreground" : "text-xs"}
-                    onClick={() => setShowDiscoveryQuiz(true)}
-                  >
-                    <Sparkles className="h-3.5 w-3.5 mr-1" />
-                    {has ? "Edit" : "Set up"}
-                  </Button>
-                );
-              })()}
-            </div>
-
-            {(() => {
-              const dp: DiscoveryPreferences | null =
-                (profile?.discoveryPreferences as DiscoveryPreferences) || null;
-              const has =
-                !!dp &&
-                ((dp.subjects && dp.subjects.length > 0) ||
-                  (dp.workStyles && dp.workStyles.length > 0) ||
-                  !!dp.peoplePref);
-              if (!has) {
-                return (
-                  <div className="rounded-lg border border-dashed border-teal-500/20 p-6 flex flex-col items-center text-center">
-                    <Compass className="h-8 w-8 text-teal-500/30 mb-2" />
-                    <p className="text-sm font-medium text-muted-foreground">No interests set yet</p>
-                    <p className="text-xs text-muted-foreground/60 mt-1">
-                      Your interests power <span className="text-teal-500/70 font-medium">My Career Radar</span> — they surface careers you might not have considered
-                    </p>
-                  </div>
-                );
-              }
-              return (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-lg border border-teal-500/20 bg-teal-500/[0.04] p-3">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-teal-500/70">Subjects</span>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {(dp!.subjects || []).slice(0, 8).map((s) => (
-                        <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 capitalize">
-                          {s}
-                        </Badge>
-                      ))}
-                      {(!dp!.subjects || dp!.subjects.length === 0) && (
-                        <p className="text-[11px] text-muted-foreground/50">None yet</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-border/50 bg-card/50 p-3">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">Work style</span>
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {(dp!.workStyles || []).map((w) => (
-                        <Badge key={w} variant="outline" className="text-[9px] px-1.5 py-0 capitalize">
-                          {w}
-                        </Badge>
-                      ))}
-                      {(!dp!.workStyles || dp!.workStyles.length === 0) && (
-                        <p className="text-[11px] text-muted-foreground/50">None yet</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-          </CardContent>
-        </Card>
         </div>
       )}
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 relative z-10">
         {/* Main Profile Form */}
         <div className="lg:col-span-2 space-y-4 sm:space-y-6 relative z-10">
-          {/* Basic Information - Read-only summary */}
-          {profile && (
-            <Card className="border bg-card/50 backdrop-blur-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-medium text-foreground/90">Basic Information</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Identity Section */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Display Name</span>
-                    <span className="text-sm font-medium">{profile.displayName || "Not set"}</span>
-                  </div>
-                  <div className="h-px bg-border/50" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Account Type</span>
-                    <Badge variant="secondary" className="bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 font-normal">
-                      {session.user.role === "YOUTH" ? "Youth" : session.user.role === "EMPLOYER" ? "Job Poster" : session.user.role}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Age & Eligibility - Youth Only */}
-                {session.user.role === "YOUTH" && (
-                  <>
-                    <div className="h-px bg-border/30" />
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground/80">Age & Eligibility</h4>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Age Band</span>
-                        <Badge variant="outline" className="font-normal border-stone-300 dark:border-stone-600">
-                          {session.user.ageBracket === "SIXTEEN_SEVENTEEN" ? "16–17" :
-                           session.user.ageBracket === "EIGHTEEN_TWENTY" ? "18–20" : "Not verified"}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {session.user.ageBracket === "EIGHTEEN_TWENTY"
-                          ? "You are eligible to use all youth features."
-                          : session.user.ageBracket === "SIXTEEN_SEVENTEEN" && profile.guardianConsent
-                          ? "You are eligible to use all youth features."
-                          : "Some features may be restricted until verification is complete."}
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {/* Verification Status - Youth Only */}
-                {session.user.role === "YOUTH" && session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
-                  <>
-                    <div className="h-px bg-border/30" />
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground/80">Verification Status</h4>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Guardian Verification</span>
-                        {profile.guardianConsent ? (
-                          <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 font-normal">
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Verified
-                          </Badge>
-                        ) : profile.guardianEmail ? (
-                          <Badge className="bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400 border-amber-200 dark:border-amber-800 font-normal">
-                            <Clock className="h-3 w-3 mr-1" />
-                            Pending
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-stone-500 dark:text-stone-400 font-normal">
-                            Required
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        Guardian verification is required for users aged 16–17. This helps keep Endeavrly safe for young users.
-                      </p>
-                      {!profile.guardianConsent && profile.guardianEmail && (
-                        <div className="flex items-center gap-3">
-                          <button
-                            type="button"
-                            disabled={resendingGuardianEmail}
-                            onClick={async () => {
-                              if (!profile.guardianEmail) return;
-                              setResendingGuardianEmail(true);
-                              try {
-                                const res = await fetch("/api/guardian-consent", {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ guardianEmail: profile.guardianEmail }),
-                                });
-                                if (res.ok) {
-                                  toast({
-                                    title: "Email sent",
-                                    description: `We've re-sent the consent email to ${profile.guardianEmail}.`,
-                                  });
-                                } else {
-                                  const data = await res.json().catch(() => ({}));
-                                  toast({
-                                    title: "Couldn't send email",
-                                    description: data.error || "Please try again.",
-                                    variant: "destructive",
-                                  });
-                                }
-                              } catch {
-                                toast({
-                                  title: "Couldn't send email",
-                                  description: "Please try again.",
-                                  variant: "destructive",
-                                });
-                              } finally {
-                                setResendingGuardianEmail(false);
-                              }
-                            }}
-                            className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {resendingGuardianEmail ? "Sending…" : "Resend guardian email"}
-                          </button>
-                          <span className="text-[10px] text-muted-foreground/50">
-                            Sent to {profile.guardianEmail}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {/* 18-20 age band - no guardian needed */}
-                {session.user.role === "YOUTH" && session.user.ageBracket === "EIGHTEEN_TWENTY" && (
-                  <>
-                    <div className="h-px bg-border/30" />
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-medium text-foreground/80">Verification Status</h4>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Account Status</span>
-                        <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 font-normal">
-                          <CheckCircle2 className="h-3 w-3 mr-1" />
-                          Verified
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        As an adult user (18+), you have full access to all features without guardian verification.
-                      </p>
-                    </div>
-                  </>
-                )}
-
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Edit Profile Form */}
+          {/* Profile */}
           <Card className="border shadow-sm relative z-10">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Edit Your Profile</CardTitle>
-              <CardDescription className="text-xs">
-                Shown to job posters when you share your profile
-              </CardDescription>
+              <CardTitle className="text-base flex items-center gap-1.5">
+                Your Profile
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-[240px] text-[11px] p-3">
+                      Your name, location, and about section help job posters understand who you are. Only what you fill in is visible.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 relative z-10">
               {/* Identity block — avatar + name + prominent age tile */}
@@ -1130,6 +901,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
+
 
                 {/* Prominent Age tile — the user's age is the headline fact
                     here, not a footnote. Large number, DOB underneath. */}
@@ -1247,6 +1019,48 @@ export default function ProfilePage() {
                     onChange={(e) => setFormData({ ...formData, guardianEmail: e.target.value })}
                     className="h-8 mt-1 text-sm"
                   />
+                </div>
+              )}
+
+              {/* Guardian pending notice */}
+              {session?.user.role === "YOUTH" && session.user.ageBracket === "SIXTEEN_SEVENTEEN" && profile && !profile.guardianConsent && profile.guardianEmail && (
+                <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 px-3 py-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-500">
+                      <Clock className="h-3 w-3" />
+                      Guardian pending
+                    </span>
+                    <button
+                      type="button"
+                      disabled={resendingGuardianEmail}
+                      onClick={async () => {
+                        if (!profile.guardianEmail) return;
+                        setResendingGuardianEmail(true);
+                        try {
+                          const res = await fetch("/api/guardian-consent", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ guardianEmail: profile.guardianEmail }),
+                          });
+                          if (res.ok) {
+                            toast({ title: "Email sent", description: `Re-sent to ${profile.guardianEmail}.` });
+                          } else {
+                            toast({ title: "Couldn't send email", description: "Please try again.", variant: "destructive" });
+                          }
+                        } catch {
+                          toast({ title: "Couldn't send email", description: "Please try again.", variant: "destructive" });
+                        } finally {
+                          setResendingGuardianEmail(false);
+                        }
+                      }}
+                      className="text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:underline disabled:opacity-50"
+                    >
+                      {resendingGuardianEmail ? "Sending\u2026" : "Resend"}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/50 mt-1">
+                    Sent to {profile.guardianEmail}
+                  </p>
                 </div>
               )}
 
@@ -1428,7 +1242,7 @@ export default function ProfilePage() {
               <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-lg font-semibold mb-2">Change your career goal?</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Your progress for <strong>{goalsData?.primaryGoal?.title}</strong> will be saved. You can switch back anytime and pick up where you left off.
+                  <strong>{goalsData?.primaryGoal?.title}</strong> will be replaced as your Primary Goal. Any progress is saved and you can switch back anytime.
                 </p>
                 <div className="rounded-lg bg-muted/50 border border-border/50 p-3 mb-4 space-y-1.5">
                   <p className="text-[11px] font-medium text-muted-foreground/80">What happens when you switch:</p>

@@ -12,7 +12,9 @@ import { ConfirmDialog, ConfirmDialogChoice } from "@/components/mobile/ConfirmD
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { searchCareers, getAllCareers, type Career } from "@/lib/career-pathways";
+import { ArrowUp } from "lucide-react";
 import { createGoalWithMilestones, type GoalSlot, type CareerGoal } from "@/lib/goals/types";
+import { usePromoteGoal } from "@/hooks/use-goals";
 import { useDebounce } from "@/hooks/use-debounce";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 
@@ -48,6 +50,7 @@ export function GoalSelectionSheet({
   onSuccess,
 }: GoalSelectionSheetProps) {
   const queryClient = useQueryClient();
+  const promoteGoal = usePromoteGoal();
 
   // State
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,13 +143,10 @@ export function GoalSelectionSheet({
       return;
     }
 
-    // If no slots filled, default to primary
-    if (!primaryGoal) {
-      setSlotChoice("primary");
-    } else {
-      // Primary filled, secondary empty - default to secondary
-      setSlotChoice("secondary");
-    }
+    // Always default to primary — this sheet is "Set your Primary Goal"
+    // and users should be guided toward replacing their primary goal.
+    // They can manually switch to secondary if they prefer.
+    setSlotChoice("primary");
   }, [primaryGoal, secondaryGoal]);
 
   // Handle slot selection from swap dialog
@@ -218,6 +218,42 @@ export function GoalSelectionSheet({
           )}
         </div>
 
+        {/* Current goals — show when no career is selected so user can promote secondary */}
+        {!selectedCareer && secondaryGoal && (
+          <div className="mb-4 space-y-2">
+            {primaryGoal && (
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-teal-500/5 border border-teal-500/15">
+                <Star className="h-3.5 w-3.5 text-teal-500 shrink-0" />
+                <span className="text-xs font-medium flex-1 truncate">{primaryGoal.title}</span>
+                <span className="text-[9px] text-teal-500/60 font-medium">Primary</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/30 border border-border/40">
+              <Target className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+              <span className="text-xs font-medium flex-1 truncate">{secondaryGoal.title}</span>
+              <button
+                onClick={() => {
+                  promoteGoal.mutate(
+                    { currentPrimary: primaryGoal, currentSecondary: secondaryGoal },
+                    {
+                      onSuccess: () => {
+                        toast.success(`${secondaryGoal.title} is now your Primary Goal`);
+                        syncGuidanceGoal(secondaryGoal.title);
+                        onClose();
+                      },
+                    },
+                  );
+                }}
+                disabled={promoteGoal.isPending}
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium text-teal-600 dark:text-teal-400 hover:bg-teal-500/10 transition-colors"
+              >
+                <ArrowUp className="h-3 w-3" />
+                Make Primary
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Slot Toggle (when career is selected and slots available) */}
         {selectedCareer && !showSwapDialog && slotChoice && (
           <div className="mb-4 p-3 rounded-lg bg-muted/50 border">
@@ -239,13 +275,11 @@ export function GoalSelectionSheet({
               <div className="flex gap-2">
                 <button
                   onClick={() => setSlotChoice("primary")}
-                  disabled={!!primaryGoal}
                   className={cn(
                     "flex-1 p-2 rounded-lg border-2 text-center text-sm font-medium transition-colors",
                     slotChoice === "primary"
                       ? "border-teal-500 bg-teal-500/10 text-teal-700 dark:text-teal-400"
-                      : "border-transparent hover:bg-muted",
-                    primaryGoal && "opacity-50 cursor-not-allowed"
+                      : "border-transparent hover:bg-muted"
                   )}
                 >
                   <Star className="h-4 w-4 inline mr-1" />
@@ -253,13 +287,12 @@ export function GoalSelectionSheet({
                 </button>
                 <button
                   onClick={() => setSlotChoice("secondary")}
-                  disabled={!!secondaryGoal || !primaryGoal}
+                  title="A backup career to keep in mind. It won't affect your journey — just a reminder for later."
                   className={cn(
                     "flex-1 p-2 rounded-lg border-2 text-center text-sm font-medium transition-colors",
                     slotChoice === "secondary"
                       ? "border-slate-500 bg-slate-500/10 text-slate-700 dark:text-slate-400"
-                      : "border-transparent hover:bg-muted",
-                    (secondaryGoal || !primaryGoal) && "opacity-50 cursor-not-allowed"
+                      : "border-transparent hover:bg-muted"
                   )}
                 >
                   <Target className="h-4 w-4 inline mr-1" />
@@ -396,21 +429,14 @@ export function GoalSelectionSheet({
           setSelectedCareer(null);
         }}
         title="Change Primary Goal?"
-        description={`Your progress for "${primaryGoal?.title}" will be saved. You can switch back anytime and pick up where you left off.`}
+        description={`"${primaryGoal?.title}" will be replaced as your Primary Goal. Any progress you've made will be saved and you can switch back anytime.`}
         confirmText="Change Goal"
         cancelText="Cancel"
         onConfirm={handlePrimaryChangeConfirmed}
         isPending={setGoalMutation.isPending}
         icon={<Star className="h-5 w-5 text-teal-500" />}
-      >
-        <div className="rounded-lg bg-muted/50 border border-border/50 p-2.5 space-y-1">
-          <p className="text-[11px] font-medium text-muted-foreground/80">What&apos;s preserved:</p>
-          <ul className="text-[11px] text-muted-foreground/60 space-y-0.5 ml-2.5">
-            <li>&#10003; Strengths and interests carry over</li>
-            <li>&#10003; Research, actions, and roadmap saved per goal</li>
-          </ul>
-        </div>
-      </ConfirmDialog>
+      />
+
     </>
   );
 }

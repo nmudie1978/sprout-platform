@@ -1339,7 +1339,7 @@ export default function DashboardPage() {
               <div>
                 <h3 className="text-sm font-semibold">Switch Primary Goal to {switchConfirm.goalTitle}?</h3>
                 <p className="text-[11px] text-muted-foreground/60">
-                  Your current progress will be saved. You can switch back anytime.
+                  This will replace your current Primary Goal. Any progress is saved and you can switch back anytime.
                 </p>
               </div>
             </div>
