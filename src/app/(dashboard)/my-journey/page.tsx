@@ -927,27 +927,23 @@ function UnderstandTab({
                 {/* Summary */}
                 <p className="text-[11px] text-foreground/60 leading-relaxed">{realityData.realitySummary}</p>
 
-                {/* Reality points */}
-                {realityData.realityPoints.length > 0 && (
-                  <div className="space-y-1">
-                    {realityData.realityPoints.map((point, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <AlertCircle className="h-3 w-3 text-amber-400/70 shrink-0 mt-0.5" />
-                        <p className="text-[10px] text-foreground/50 leading-relaxed">{point}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Fit signal */}
-                {realityData.fitSignal && (
-                  <div className="rounded-lg border border-emerald-500/15 bg-emerald-500/5 px-3 py-2">
-                    <p className="text-[10px] text-emerald-300/70 leading-relaxed">
-                      <span className="font-medium text-emerald-300/90">Good fit: </span>
-                      {realityData.fitSignal}
-                    </p>
-                  </div>
-                )}
+                {/* Reality points — only hardships/challenges, no education references */}
+                {(() => {
+                  const hardships = realityData.realityPoints.filter(
+                    (p) => !/\b(degree|training|qualification|certif|educat|university|college|school|study|course|licence|license)\b/i.test(p)
+                  );
+                  if (hardships.length === 0) return null;
+                  return (
+                    <div className="space-y-1">
+                      {hardships.map((point, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <AlertCircle className="h-3 w-3 text-amber-400/70 shrink-0 mt-0.5" />
+                          <p className="text-[10px] text-foreground/50 leading-relaxed">{point}</p>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
 
                 {/* Video links — compact list, no thumbnails */}
                 {realityData.videos.length > 0 && (
