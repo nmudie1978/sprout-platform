@@ -1,0 +1,64 @@
+name: Validate Study Path programme URLs
+
+# Runs every Monday at 04:00 UTC, or on manual trigger.
+# Checks every programme URL in programmes.json, classifies each, and
+# opens a PR with updated programme-validation.json. The Education
+# Browser then hides any programmes classified as broken
+# (CLIENT_ERROR / DNS) at the next deploy — so users never click a
+# dead "Visit page" link on Study Path.
+#
+# Zero manual effort — just review and merge the PR.
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate programme URLs
+        run: npm run programmes:validate
+
+      # Open a PR with any changes
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh Study Path programme URL validation'
+          body: |
+            Automated weekly refresh of `programme-validation.json`.
+
+            Every programme URL in `programmes.json` was validated
+            via the `scripts/validate-programmes.ts` agent. Any
+            programmes newly classified as `CLIENT_ERROR` or `DNS`
+            will be hidden from the Study Path section at the next
+            deploy.
+
+            **Review checklist:**
+            - Spot-check any programmes that flipped to `CLIENT_ERROR`
+              — are they genuinely 404 now, or is the remote server
+              just being flaky?
+            - If > 10% of programmes flipped to broken, investigate
+              before merging (likely a network hiccup from the CI
+              runner, not real data rot)
+            - For long-term broken URLs, consider updating them in
+              `programmes.json` directly rather than filtering them out
+          branch: chore/validate-programmes
+          commit-message: 'chore: refresh Study Path programme URL validation'
+          labels: automated, data
+          delete-branch: true
