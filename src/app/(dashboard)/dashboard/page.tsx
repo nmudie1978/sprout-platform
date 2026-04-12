@@ -759,7 +759,7 @@ export default function DashboardPage() {
                 title="Waiting on parental confirmation. Go to Profile to resend."
                 className="relative flex h-2.5 w-2.5 cursor-default"
               >
-                <span className="inline-flex h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
+                <span className="inline-flex h-2.5 w-2.5 rounded-full bg-amber-500/70" />
               </span>
             )}
             {profileData && (() => {
