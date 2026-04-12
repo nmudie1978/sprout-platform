@@ -540,7 +540,7 @@ export default function DashboardPage() {
 
   // Subtle hint — shows once when user has no goal, after 3s idle
   const dashboardHint = useSubtleHint({
-    hintKey: "dashboard-goal-v2",
+    hintKey: "dashboard-goal-v3",
     enabled: !goalTitle && status !== "loading",
     delayMs: 3000,
     durationMs: 4000,
@@ -849,7 +849,7 @@ export default function DashboardPage() {
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard className={cn("p-5 sm:p-6 transition-all duration-300 border-teal-500/30 shadow-[0_0_30px_rgba(20,184,166,0.15),0_0_60px_rgba(20,184,166,0.06)] ring-1 ring-teal-500/15", goalTitle ? "hover:border-teal-500/45 hover:shadow-[0_0_40px_rgba(20,184,166,0.2),0_0_80px_rgba(20,184,166,0.08)]" : "hover:border-teal-500/35")}>
+          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-border/40", goalTitle && "hover:border-border/60")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -1367,8 +1367,8 @@ export default function DashboardPage() {
       <SpotlightHint
         visible={dashboardHint.visible}
         onDismiss={dashboardHint.dismiss}
-        text="Start here"
-        targetSelector='[data-spotlight="choose-goal"]'
+        text="Choose a career goal to start your journey"
+        targetSelector='[data-spotlight="journey-card"]'
       />
     </div>
   );
