@@ -16,6 +16,8 @@
 import institutionsData from './data/institutions.json';
 import programmesData from './data/programmes.json';
 import requirementsData from './data/career-requirements.json';
+import programmeValidationData from './data/programme-validation.json';
+import { shouldHideFromUi, type ValidationStatus } from './validate-programme-url';
 
 // ── Types ───────────────────────────────────────────────────────────
 
@@ -121,6 +123,42 @@ for (const p of programmes) {
   byCareerId.set(p.careerId, list);
 }
 
+// ── Programme URL validation — hidden set ───────────────────────────
+//
+// `programme-validation.json` is populated by the
+// `scripts/validate-programmes.ts` CLI run in CI on a weekly schedule
+// (see .github/workflows/validate-programmes.yml). It maps programme
+// IDs → { status, httpCode, checkedAt }. At module load time we
+// materialise the set of programme IDs whose last validation marks
+// them as unambiguously broken (CLIENT_ERROR or DNS) and filter those
+// out of every getProgrammesForCareer / getProgrammesByCountry call
+// below. Programmes that have never been validated are NOT hidden —
+// backwards compatible and defensive against a missing / empty
+// validation file.
+const validationResults: Record<
+  string,
+  { url: string; status: ValidationStatus; httpCode: number | null; checkedAt: string }
+> = (programmeValidationData as {
+  results: Record<
+    string,
+    { url: string; status: ValidationStatus; httpCode: number | null; checkedAt: string }
+  >;
+}).results;
+
+const hiddenProgrammeIds = new Set<string>();
+for (const [id, result] of Object.entries(validationResults)) {
+  if (shouldHideFromUi(result.status)) hiddenProgrammeIds.add(id);
+}
+
+/**
+ * Exported for unit testing — returns the set of programme IDs
+ * currently hidden by the URL validator. Empty set when the
+ * validation file is empty (first-run / fresh clone).
+ */
+export function getHiddenProgrammeIds(): ReadonlySet<string> {
+  return hiddenProgrammeIds;
+}
+
 // ── Career ID resolver ──────────────────────────────────────────────
 
 function resolveCareerId(raw: string): string | null {
@@ -221,6 +259,12 @@ export function getProgrammesForCareer(
   const id = resolveCareerId(careerIdOrTitle);
   if (!id) return [];
   let list = byCareerId.get(id) ?? [];
+  // Hide programmes whose URL was last classified as broken
+  // (CLIENT_ERROR / DNS). Programmes never validated stay visible.
+  // See hiddenProgrammeIds above.
+  if (hiddenProgrammeIds.size > 0) {
+    list = list.filter((p) => !hiddenProgrammeIds.has(p.id));
+  }
   if (filter?.country) {
     list = list.filter((p) => {
       const inst = institutionById.get(p.institutionId);
@@ -232,22 +276,30 @@ export function getProgrammesForCareer(
 }
 
 /**
- * Get a single programme by its stable ID.
+ * Get a single programme by its stable ID. Returns null for hidden
+ * (broken-URL) programmes so deep-link callers behave the same way
+ * as list-level callers.
  */
 export function getProgrammeById(id: string): ProgrammeWithInstitution | null {
+  if (hiddenProgrammeIds.has(id)) return null;
   const p = programmes.find((pr) => pr.id === id);
   if (!p) return null;
   return denormalise(p);
 }
 
 /**
- * Get all programmes for a country (all careers).
+ * Get all programmes for a country (all careers). Hidden (broken-URL)
+ * programmes are excluded.
  */
 export function getProgrammesByCountry(
   country: NordicCountry,
 ): ProgrammeWithInstitution[] {
   return programmes
-    .filter((p) => institutionById.get(p.institutionId)?.country === country)
+    .filter(
+      (p) =>
+        !hiddenProgrammeIds.has(p.id) &&
+        institutionById.get(p.institutionId)?.country === country,
+    )
     .map(denormalise);
 }
 

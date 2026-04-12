@@ -36,6 +36,7 @@ import {
 import {
   getProgrammesForCareer,
   getInstitutionById,
+  getAllInstitutions,
   getAdvancedCareerMapping,
   resolveCareer,
   getAlternativePaths,
@@ -429,29 +430,20 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   );
 }
 
-// ── Stat pill ───────────────────────────────────────────────────────
+// ── Stat detail ─────────────────────────────────────────────────────
 
-function StatPill({
+function StatDetail({
   icon: Icon,
   label,
-  accent,
 }: {
   icon: typeof Building2;
   label: string;
-  accent?: boolean;
 }) {
   return (
-    <div
-      className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5',
-        accent
-          ? 'border-emerald-500/20 bg-emerald-500/[0.06] text-emerald-400'
-          : 'border-border/15 bg-muted/[0.06] text-muted-foreground/75',
-      )}
-    >
-      <Icon className="h-3 w-3" />
+    <span className="inline-flex items-center gap-1.5 text-muted-foreground/70">
+      <Icon className="h-3 w-3 shrink-0" />
       <span className="text-[11px] font-medium">{label}</span>
-    </div>
+    </span>
   );
 }
 
@@ -493,7 +485,6 @@ function PathwayFallbackView({
 
   const programmeName = requirements?.universityPath?.programme ?? null;
   const programmeDuration = requirements?.universityPath?.duration ?? null;
-  const programmeType = requirements?.universityPath?.type ?? null;
   const applicationRoute = requirements?.universityPath?.applicationRoute ?? null;
 
   // Custom hero + outer border/glow wrapper removed. This mode is now
@@ -516,11 +507,10 @@ function PathwayFallbackView({
           main university-browser mode shows above its card grid, so the
           two modes feel like one feature. */}
       {programmeName && (
-        <div className="flex flex-wrap items-center gap-2">
-          <StatPill icon={GraduationCap} label={programmeName} accent />
-          {programmeDuration && <StatPill icon={BookOpen} label={programmeDuration} />}
-          {programmeType && <StatPill icon={Building2} label={programmeType} />}
-          {applicationRoute && <StatPill icon={Route} label={applicationRoute} />}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+          <StatDetail icon={GraduationCap} label={programmeName} />
+          {programmeDuration && <StatDetail icon={BookOpen} label={programmeDuration} />}
+          {applicationRoute && <StatDetail icon={Route} label={applicationRoute} />}
         </div>
       )}
 
@@ -543,6 +533,12 @@ function PathwayFallbackView({
             {schools.map((school) => {
               const searchQuery = programmeName ? `${school} ${programmeName}` : school;
               const url = `https://utdanning.no/sok?q=${encodeURIComponent(searchQuery)}`;
+              // Match school name against known institutions to get country flag
+              const lowerSchool = school.toLowerCase();
+              const matchedInst = getAllInstitutions().find(
+                (inst) => inst.name.toLowerCase() === lowerSchool || inst.shortName.toLowerCase() === lowerSchool
+              );
+              const flag = matchedInst ? COUNTRY_FLAGS[matchedInst.country] : '🇳🇴';
               return (
                 <a
                   key={school}
@@ -552,7 +548,7 @@ function PathwayFallbackView({
                   className="rounded-xl border border-border/40 bg-card/60 p-3.5 hover:border-teal-500/30 transition-colors group"
                 >
                   <div className="flex items-start gap-2 mb-2">
-                    <Building2 className="h-3.5 w-3.5 text-teal-400/70 mt-0.5 shrink-0" />
+                    {flag && <span className="text-sm shrink-0 mt-0.5">{flag}</span>}
                     <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2 group-hover:text-teal-300 transition-colors">
                       {school}
                     </h4>
@@ -562,11 +558,9 @@ function PathwayFallbackView({
                       {programmeName}
                     </p>
                   )}
-                  <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-muted-foreground/65">
-                    {programmeDuration && <span>{programmeDuration}</span>}
-                    {programmeDuration && programmeType && <span>·</span>}
-                    {programmeType && <span>{programmeType}</span>}
-                  </div>
+                  {programmeDuration && (
+                    <p className="text-[10px] text-muted-foreground/65">{programmeDuration}</p>
+                  )}
                   <span className="mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 group-hover:underline">
                     Visit school page →
                   </span>

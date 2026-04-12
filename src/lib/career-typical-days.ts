@@ -80,6 +80,64 @@ const defaultDetails: CareerDetails = {
 // Career-specific typical day content
 const careerDetailsMap: Record<string, CareerDetails> = {
   // ========================================
+  // SCIENCE, SPACE & EXPLORATION
+  // ========================================
+  "astronaut": {
+    typicalDay: {
+      morning: [
+        "Physical training — cardio, strength, endurance",
+        "Systems simulations (spacecraft, EVA procedures)",
+        "Science experiment briefings and prep",
+        "Language study (Russian or partner-agency language)",
+      ],
+      midday: [
+        "Mission-specific training (robotics, docking, spacewalk)",
+        "Classroom sessions on orbital mechanics or payloads",
+        "Lunch with crew — team cohesion is part of the job",
+        "Medical checks or survival training sessions",
+      ],
+      afternoon: [
+        "Underwater EVA practice in the Neutral Buoyancy Lab",
+        "Public outreach — school visits, media, lectures",
+        "Review mission timelines and procedures",
+        "Debrief and log training progress",
+      ],
+      tools: ["Spacecraft simulators", "EVA suits & underwater training gear", "Robotics arm controls", "Science lab equipment"],
+      environment: "Training centres (Houston, Cologne, Star City), then the International Space Station. Physically demanding, highly structured schedule.",
+    },
+    whatYouActuallyDo: [
+      "Train for years before a spaceflight",
+      "Conduct science experiments in microgravity",
+      "Perform spacewalks for station maintenance",
+      "Operate robotic arms and docking systems",
+      "Communicate with mission control and the public",
+      "Maintain physical fitness to a military standard",
+    ],
+    whoThisIsGoodFor: [
+      "Exceptionally driven, disciplined people",
+      "Those who thrive under pressure and isolation",
+      "Science or engineering enthusiasts with a sense of adventure",
+      "Strong team players — you live and work with your crew 24/7",
+      "People comfortable with years of preparation for short missions",
+    ],
+    topSkills: [
+      "STEM expertise (physics, engineering, medicine)",
+      "Physical fitness & resilience",
+      "Problem-solving under extreme stress",
+      "Teamwork & cross-cultural communication",
+      "Adaptability",
+      "Public speaking",
+    ],
+    entryPaths: [
+      "Master's or PhD in STEM + significant professional experience",
+      "Military flight or test-pilot background",
+      "Apply through ESA or NASA astronaut selection (runs every few years)",
+      "Alternative: aerospace engineering, mission control, or research roles",
+    ],
+    realityCheck: "Fewer than 600 people have ever been to space. Selection is extraordinarily competitive. Most of your career is training, not flying. But if exploration and pushing human limits is your purpose, nothing else compares.",
+  },
+
+  // ========================================
   // HEALTHCARE & LIFE SCIENCES
   // ========================================
   "doctor": {
@@ -4113,6 +4171,61 @@ const careerDetailsMap: Record<string, CareerDetails> = {
       "Work up through kitchen brigade",
     ],
     realityCheck: "Hot, stressful environment. Long hours on feet. Low pay at entry level. But creative fulfillment and pride in craftsmanship.",
+  },
+
+  "brewer": {
+    typicalDay: {
+      morning: [
+        "Check fermentation tanks and log readings",
+        "Inspect active brews — temperature, gravity, pH",
+        "Review production schedule for the day",
+        "Grain milling and mash preparation",
+      ],
+      midday: [
+        "Brew day: mashing, lautering, boiling, hopping",
+        "Transfer wort to fermenter and pitch yeast",
+        "Clean and sanitise equipment (CIP cycles)",
+        "Lunch break",
+      ],
+      afternoon: [
+        "Quality sampling and sensory evaluation",
+        "Packaging, kegging, or canning runs",
+        "Inventory check on raw materials",
+        "Log batch records and plan next brew",
+      ],
+      tools: ["Brewhouse control system", "Hydrometers & refractometers", "pH meters", "CIP (clean-in-place) equipment", "Kegging / canning line"],
+      environment: "Brewery floor — warm, humid, physical work with heavy lifting. Standard weekday hours but early starts common.",
+    },
+    whatYouActuallyDo: [
+      "Design and refine beer recipes",
+      "Manage the full brewing process (mash → ferment → package)",
+      "Monitor fermentation and adjust conditions",
+      "Run quality-control checks and tastings",
+      "Maintain and clean brewing equipment",
+      "Order ingredients and manage stock",
+    ],
+    whoThisIsGoodFor: [
+      "People who enjoy hands-on, physical work",
+      "Science-minded individuals who like chemistry and biology",
+      "Creative types who love experimenting with flavours",
+      "Those comfortable working in warm, wet environments",
+      "Detail-oriented people — precision matters in brewing",
+    ],
+    topSkills: [
+      "Chemistry & fermentation science",
+      "Attention to detail",
+      "Physical stamina",
+      "Sensory evaluation",
+      "Problem-solving",
+      "Hygiene & sanitation",
+    ],
+    entryPaths: [
+      "Food science or brewing-specific degree",
+      "Apprenticeship at a craft brewery",
+      "Home-brewing experience + entry-level cellar hand role",
+      "Vocational course in food technology",
+    ],
+    realityCheck: "Early mornings, heavy lifting, and a lot of cleaning. The glamour is in the finished product, not the process. But if you love the science of flavour, it's deeply satisfying creative work.",
   },
 
   "tour-guide": {

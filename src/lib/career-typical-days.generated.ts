@@ -182,6 +182,116 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The emotional weight of the job can be challenging, as you often deal with complex family situations."
   },
+  "aerospace-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to team queries.",
+              "Review project updates and timelines.",
+              "Attend a team meeting to discuss current challenges."
+          ],
+          "midday": [
+              "Work on computer-aided design (CAD) models.",
+              "Run simulations to test designs.",
+              "Collaborate with colleagues on materials selection."
+          ],
+          "afternoon": [
+              "Prepare reports on project progress.",
+              "Present findings in a team review.",
+              "Research new technologies in aerospace."
+          ],
+          "tools": [
+              "CAD software (like SolidWorks or CATIA)",
+              "simulation tools (like ANSYS or MATLAB)",
+              "project management software (like Jira or Trello)"
+          ],
+          "environment": "Mostly indoors in an office or lab, with a mix of individual work and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Design and create models for aircraft and spacecraft.",
+          "Conduct tests to ensure designs meet safety standards.",
+          "Analyse data from simulations to improve designs.",
+          "Collaborate with other engineers and scientists.",
+          "Prepare technical documentation for projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and critical thinking.",
+          "Strong interest in science and technology.",
+          "Good at working in teams and communicating ideas."
+      ],
+      "topSkills": [
+          "Proficiency in CAD software.",
+          "Strong understanding of aerodynamics.",
+          "Ability to run and interpret simulations.",
+          "Attention to detail in design work.",
+          "Good project management skills."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace Engineering.",
+          "Pursue a Bachelor's degree in a related field followed by a Master's.",
+          "Look for internships in aerospace companies during studies.",
+          "Consider relevant apprenticeships in engineering."
+      ],
+      "realityCheck": "The workload can be intense, especially when deadlines approach."
+  },
+  "affiliate-marketer": {
+      "typicalDay": {
+          "morning": [
+              "Check website and social media analytics to see performance (08:00–09:00)",
+              "Write or edit blog posts or product reviews (09:00–11:00)",
+              "Research new affiliate programs or products to promote (11:00–12:00)"
+          ],
+          "midday": [
+              "Engage with your audience on social media (12:00–13:00)",
+              "Update SEO strategies based on recent trends (13:00–14:00)"
+          ],
+          "afternoon": [
+              "Create and schedule social media posts (14:00–15:00)",
+              "Monitor affiliate links and track sales (15:00–16:00)",
+              "Plan future content based on analytics insights (16:00–17:00)"
+          ],
+          "tools": [
+              "Google Analytics",
+              "WordPress or similar website builders",
+              "SEO tools like Ahrefs or SEMrush",
+              "Social media management tools like Hootsuite",
+              "Email marketing platforms"
+          ],
+          "environment": "Mostly working from home or a quiet office, with flexible hours and a focus on digital tasks."
+      },
+      "whatYouActuallyDo": [
+          "Build and maintain niche websites or blogs.",
+          "Write engaging content that attracts visitors.",
+          "Promote products through tracked links.",
+          "Analyse website traffic and sales data.",
+          "Stay updated on SEO and marketing trends.",
+          "Engage with your audience through comments and social media.",
+          "Test different marketing strategies to see what works best."
+      ],
+      "whoThisIsGoodFor": [
+          "Self-motivated and disciplined.",
+          "Enjoys writing and creating content.",
+          "Likes to analyse data and trends.",
+          "Comfortable working independently.",
+          "Patient and willing to learn over time."
+      ],
+      "topSkills": [
+          "Understanding of SEO practices.",
+          "Ability to write clear and persuasive content.",
+          "Basic knowledge of analytics tools.",
+          "Skill in selecting profitable niches.",
+          "Patience to see results develop over time.",
+          "Creativity in marketing strategies.",
+          "Technical skills for website management."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses in SEO and copywriting.",
+          "Start a blog or website to gain experience.",
+          "Join online communities or forums related to affiliate marketing.",
+          "Learn from successful affiliate marketers through mentorship.",
+          "Explore certifications in digital marketing."
+      ],
+      "realityCheck": "You often work alone, and it may take time to see any real success or income."
+  },
   "ai-network-engineer": {
       "typicalDay": {
           "morning": [
@@ -398,6 +508,108 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The work can be very theoretical and may not always lead to immediate practical applications."
   },
+  "air-force-technician": {
+      "typicalDay": {
+          "morning": [
+              "Inspect aircraft for any issues or damage.",
+              "Review maintenance logs from previous shifts.",
+              "Gather tools and materials needed for repairs."
+          ],
+          "midday": [
+              "Perform scheduled maintenance on aircraft engines.",
+              "Test and troubleshoot avionics systems.",
+              "Document any repairs or findings in the maintenance log."
+          ],
+          "afternoon": [
+              "Assist in repairing weapons systems if needed.",
+              "Conduct safety checks on completed work.",
+              "Prepare aircraft for upcoming missions."
+          ],
+          "tools": [
+              "Wrenches and screwdrivers",
+              "Diagnostic testing equipment",
+              "Safety gear such as helmets and goggles"
+          ],
+          "environment": "Mostly indoors in a hangar, working alongside a team, with a focus on safety and precision."
+      },
+      "whatYouActuallyDo": [
+          "Inspect and test aircraft systems for functionality.",
+          "Repair engines and avionics as needed.",
+          "Keep detailed records of maintenance and repairs.",
+          "Work with other technicians to solve complex problems.",
+          "Follow strict safety protocols in all tasks."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with hands and tools.",
+          "Good at solving technical problems.",
+          "Able to follow detailed instructions carefully."
+      ],
+      "topSkills": [
+          "Mechanical aptitude for understanding how machines work.",
+          "Strong attention to detail to ensure safety and accuracy.",
+          "Ability to diagnose issues quickly and effectively.",
+          "Good documentation skills for record-keeping.",
+          "Teamwork skills for collaborating with other technicians."
+      ],
+      "entryPaths": [
+          "Complete a military technical school programme.",
+          "Obtain an aircraft systems certification.",
+          "Join as an apprentice under experienced technicians."
+      ],
+      "realityCheck": "You will spend a lot of time on routine maintenance tasks, which can feel repetitive."
+  },
+  "air-traffic-controller": {
+      "typicalDay": {
+          "morning": [
+              "Check weather reports and flight schedules.",
+              "Communicate with pilots about flight plans.",
+              "Monitor aircraft movements on radar."
+          ],
+          "midday": [
+              "Direct landings and take-offs at the airport.",
+              "Update flight information for other controllers.",
+              "Handle any emergency situations that arise."
+          ],
+          "afternoon": [
+              "Coordinate with ground staff for safe aircraft movement.",
+              "Ensure flights are on time and adjust schedules if needed.",
+              "Debrief with colleagues about any incidents or changes."
+          ],
+          "tools": [
+              "Radar systems for tracking aircraft.",
+              "Communication headsets for talking to pilots.",
+              "Flight management software for scheduling."
+          ],
+          "environment": "Mostly indoors in a control tower or radar centre, focused on monitoring and directing aircraft."
+      },
+      "whatYouActuallyDo": [
+          "Guide pilots during take-off and landing.",
+          "Ensure safe distances between aircraft.",
+          "Respond quickly to any changes in flight paths.",
+          "Communicate clearly with pilots and ground staff.",
+          "Keep track of multiple flights at once."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at multitasking.",
+          "Strong communicator.",
+          "Detail-oriented and organised."
+      ],
+      "topSkills": [
+          "Spatial awareness to track aircraft positions.",
+          "Fast decision-making in high-pressure situations.",
+          "Effective communication with pilots and teams.",
+          "Discipline to follow strict protocols.",
+          "Ability to remain calm during emergencies."
+      ],
+      "entryPaths": [
+          "Complete a three-year programme at Avinor Air Navigation College.",
+          "Gain experience through on-the-job training.",
+          "Consider internships or summer jobs in aviation.",
+          "Look for apprenticeships with Avinor or other aviation companies."
+      ],
+      "realityCheck": "The training period can be intense and requires a lot of focus and practice to handle real-life situations."
+  },
   "airline-pilot": {
       "typicalDay": {
           "morning": [
@@ -447,6 +659,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Accumulate over 1,500 flight hours, often through apprenticeships or internships."
       ],
       "realityCheck": "The training is long and requires a lot of dedication, with many hours spent learning and flying before you can pilot commercial flights."
+  },
+  "airport-shuttle-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the shuttle bus for any issues before starting the shift.",
+              "Review the schedule for pick-up and drop-off times.",
+              "Load luggage into the shuttle for the first passengers."
+          ],
+          "midday": [
+              "Drive to the airport to pick up arriving passengers.",
+              "Assist passengers with their luggage.",
+              "Ensure passengers are comfortable and informed during the ride."
+          ],
+          "afternoon": [
+              "Drop off passengers at their hotels or other destinations.",
+              "Perform routine checks on the bus between trips.",
+              "Communicate with dispatch about any delays or issues."
+          ],
+          "tools": [
+              "Shuttle bus or van",
+              "GPS navigation system",
+              "Luggage carts"
+          ],
+          "environment": "Mostly driving around urban areas, with a mix of waiting at airports and interacting with passengers."
+      },
+      "whatYouActuallyDo": [
+          "Drive passengers between the airport and hotels.",
+          "Handle and load luggage for passengers.",
+          "Follow a strict schedule to ensure timely arrivals.",
+          "Communicate with passengers about their travel plans.",
+          "Keep the shuttle bus clean and well-maintained."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at managing time and schedules.",
+          "Likes helping people and providing good service."
+      ],
+      "topSkills": [
+          "Safe driving skills with a Class D1/D licence.",
+          "Ability to handle luggage efficiently.",
+          "Strong customer service skills to interact with passengers.",
+          "Good navigation skills to find the best routes.",
+          "Calmness under pressure during busy times."
+      ],
+      "entryPaths": [
+          "Obtain a Class D1/D driving licence.",
+          "Complete customer service training courses.",
+          "Look for job openings with shuttle service companies."
+      ],
+      "realityCheck": "The job can be stressful during peak travel times, especially with tight schedules and heavy traffic."
   },
   "anesthesiologist": {
       "typicalDay": {
@@ -551,6 +813,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Internships at animation studios to gain experience."
       ],
       "realityCheck": "Many animators spend a lot of time on repetitive tasks and perfecting small details."
+  },
+  "app-developer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from team members.",
+              "Review project progress and set daily goals.",
+              "Write code for new app features."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss project updates.",
+              "Test the app for bugs and issues.",
+              "Make adjustments based on feedback from testers."
+          ],
+          "afternoon": [
+              "Work on UI design and user experience improvements.",
+              "Integrate APIs for new functionalities.",
+              "Prepare the app for release in app stores."
+          ],
+          "tools": [
+              "Xcode for iOS development.",
+              "Android Studio for Android development.",
+              "Git for version control.",
+              "Figma for UI design.",
+              "Postman for API testing."
+          ],
+          "environment": "Mostly indoors at a tech office or remote, with a mix of teamwork and focused coding time."
+      },
+      "whatYouActuallyDo": [
+          "Design app features based on user needs.",
+          "Write and test code for mobile applications.",
+          "Fix bugs and improve app performance.",
+          "Collaborate with designers and other developers.",
+          "Prepare documentation for app usage and updates."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving problems with logic.",
+          "Creative with an eye for design.",
+          "Likes working on projects for long periods.",
+          "Open to feedback and learning new skills."
+      ],
+      "topSkills": [
+          "Proficiency in programming languages like Swift or Kotlin.",
+          "Experience with frameworks like React Native or Flutter.",
+          "Ability to design user-friendly interfaces.",
+          "Knowledge of APIs and how to integrate them.",
+          "Strong testing and debugging skills."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Computer Science or a related field.",
+          "Self-taught with a strong portfolio of apps.",
+          "Participate in coding bootcamps or workshops.",
+          "Apply for internships at tech companies.",
+          "Join online coding communities and contribute to open-source projects."
+      ],
+      "realityCheck": "You will spend a lot of time debugging code and solving unexpected problems."
   },
   "ar-rep": {
       "typicalDay": {
@@ -716,6 +1033,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The role often involves balancing creative vision with client demands, which can be challenging."
   },
+  "artillery-officer": {
+      "typicalDay": {
+          "morning": [
+              "Review mission plans and objectives for the day.",
+              "Conduct briefings with artillery teams.",
+              "Check and maintain equipment readiness."
+          ],
+          "midday": [
+              "Calculate firing solutions for upcoming missions.",
+              "Coordinate with other units for support.",
+              "Participate in training exercises."
+          ],
+          "afternoon": [
+              "Analyse data from previous missions to improve accuracy.",
+              "Lead team drills to practice coordination.",
+              "Debrief with team members on performance."
+          ],
+          "tools": [
+              "Artillery computers",
+              "GPS systems",
+              "Communication radios",
+              "Ballistic calculators",
+              "Range finders"
+          ],
+          "environment": "Mostly outdoors in military training areas, with a focus on teamwork and strategy."
+      },
+      "whatYouActuallyDo": [
+          "Lead and manage artillery units during operations.",
+          "Calculate the trajectory and range for artillery fire.",
+          "Communicate with other military branches for coordination.",
+          "Train team members on equipment and procedures.",
+          "Evaluate mission outcomes and adapt strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong in mathematics and problem-solving.",
+          "Enjoys leading and motivating others.",
+          "Comfortable making quick decisions under pressure."
+      ],
+      "topSkills": [
+          "Mathematical calculations for trajectories.",
+          "Effective communication with team and command.",
+          "Leadership in high-stress situations.",
+          "Attention to detail for mission planning.",
+          "Ability to analyse and improve tactics."
+      ],
+      "entryPaths": [
+          "Complete Krigsskolen for officer training.",
+          "Join the military and specialise in artillery.",
+          "Participate in relevant military exercises and training.",
+          "Gain experience through apprenticeships in military roles."
+      ],
+      "realityCheck": "The job involves a lot of responsibility and can be stressful during live operations."
+  },
   "assistant-coach": {
       "typicalDay": {
           "morning": [
@@ -767,6 +1137,62 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider an apprenticeship in sports coaching."
       ],
       "realityCheck": "You spend a lot of time supporting others and may not get the spotlight as much as the head coach."
+  },
+  "astrophysicist": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to colleagues and collaborators.",
+              "Review recent data from telescopes or satellites.",
+              "Attend a team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Work on data analysis using Python to identify patterns.",
+              "Read scientific papers to stay updated on new findings.",
+              "Write notes or reports summarising research progress."
+          ],
+          "afternoon": [
+              "Develop theoretical models to explain observations.",
+              "Prepare presentations for upcoming conferences.",
+              "Collaborate with other scientists on joint research projects."
+          ],
+          "tools": [
+              "Telescopes for observation.",
+              "Python for data analysis.",
+              "Software for modelling (e.g., MATLAB or Mathematica).",
+              "Research databases for academic papers.",
+              "Presentation software (e.g., PowerPoint)."
+          ],
+          "environment": "Mostly indoors in a research lab or university, with a mix of individual work and collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Analyse data collected from telescopes and satellites.",
+          "Create models to understand cosmic phenomena.",
+          "Write reports and research papers based on findings.",
+          "Collaborate with other scientists on projects.",
+          "Present research at conferences and seminars."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about the universe and how it works.",
+          "Strong in maths and science subjects.",
+          "Enjoys solving complex problems.",
+          "Good at working independently and in teams.",
+          "Persistent and detail-oriented."
+      ],
+      "topSkills": [
+          "Advanced knowledge of physics and astronomy.",
+          "Proficiency in data analysis and programming (Python).",
+          "Ability to write clear and concise research papers.",
+          "Strong analytical and critical thinking skills.",
+          "Experience with modelling software."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Physics or Astronomy.",
+          "Pursue a master's degree in Astrophysics or a related field.",
+          "Obtain a PhD in Astrophysics or Physics.",
+          "Look for internships or research assistant positions at universities.",
+          "Apply for research positions at institutions like the Norwegian Institute for Space Activities."
+      ],
+      "realityCheck": "The path to becoming an astrophysicist requires many years of study and can be quite competitive."
   },
   "athletic-trainer": {
       "typicalDay": {
@@ -883,6 +1309,220 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend a lot of time on repetitive tasks like editing, which can be less exciting than the final product."
   },
+  "aviation-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to project queries.",
+              "Attend team meetings to discuss project progress.",
+              "Review design specifications and make necessary adjustments."
+          ],
+          "midday": [
+              "Work on computer-aided design (CAD) software to create aircraft models.",
+              "Collaborate with colleagues on engineering challenges.",
+              "Conduct tests on materials or systems to ensure safety standards."
+          ],
+          "afternoon": [
+              "Prepare reports on design changes and testing results.",
+              "Meet with suppliers to discuss component specifications.",
+              "Update project timelines and deliverables."
+          ],
+          "tools": [
+              "CAD/CAE software (like SolidWorks or CATIA)",
+              "testing equipment for materials",
+              "project management software",
+              "simulation tools for aerodynamics",
+              "standard engineering handbooks"
+          ],
+          "environment": "Mostly indoors in an office or engineering lab, with a mix of teamwork and independent tasks."
+      },
+      "whatYouActuallyDo": [
+          "Design aircraft systems and components using CAD software.",
+          "Test and evaluate materials for safety and performance.",
+          "Collaborate with other engineers to solve technical problems.",
+          "Ensure designs meet regulatory safety standards.",
+          "Prepare documentation for certification processes.",
+          "Communicate with suppliers about parts and materials.",
+          "Assist in the development of prototypes and conduct flight tests."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Strong attention to detail.",
+          "Good at working in teams.",
+          "Comfortable with technical software.",
+          "Curious about how things work."
+      ],
+      "topSkills": [
+          "Proficiency in CAD/CAE software.",
+          "Understanding of aerodynamics and flight principles.",
+          "Ability to conduct safety assessments.",
+          "Strong analytical and problem-solving skills.",
+          "Good communication skills for teamwork.",
+          "Knowledge of materials and their properties.",
+          "Project management skills to keep tasks on track."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace or Mechanical Engineering.",
+          "Gain practical experience through internships with aviation companies.",
+          "Consider an apprenticeship in engineering after videregående.",
+          "Look for entry-level positions at companies like Kongsberg or Airbus.",
+          "Participate in engineering competitions to build skills and network."
+      ],
+      "realityCheck": "You will spend a lot of time on detailed design work and testing, which can be repetitive."
+  },
+  "baker": {
+      "typicalDay": {
+          "morning": [
+              "Prepare dough for bread and pastries.",
+              "Set up baking stations and ovens.",
+              "Mix ingredients for cakes and pastries."
+          ],
+          "midday": [
+              "Bake bread and pastries, monitoring oven temperatures.",
+              "Decorate cakes and prepare them for display.",
+              "Clean workstations and organise ingredients for the next day."
+          ],
+          "afternoon": [
+              "Serve customers and take orders.",
+              "Restock shelves with freshly baked goods.",
+              "Plan next day's baking schedule."
+          ],
+          "tools": [
+              "Oven",
+              "Mixer",
+              "Baking trays",
+              "Measuring scales",
+              "Rolling pins"
+          ],
+          "environment": "Mostly indoors in a bakery, with a fast-paced rhythm and a warm, inviting atmosphere."
+      },
+      "whatYouActuallyDo": [
+          "Mix and knead dough for various baked goods.",
+          "Monitor baking times to ensure everything is cooked perfectly.",
+          "Decorate cakes and pastries with icing and toppings.",
+          "Keep the bakery clean and organised.",
+          "Serve customers and handle cash or card payments."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working early in the morning.",
+          "Has a passion for cooking and baking.",
+          "Can handle heat and long hours on your feet."
+      ],
+      "topSkills": [
+          "Dough handling and kneading.",
+          "Time management to ensure everything is ready on time.",
+          "Attention to detail for precise measurements.",
+          "Stamina to work long shifts.",
+          "Creativity in designing cakes and pastries."
+      ],
+      "entryPaths": [
+          "Complete a Baker fagbrev through vocational training.",
+          "Apply for an apprenticeship in a local bakery.",
+          "Attend culinary schools that offer baking courses."
+      ],
+      "realityCheck": "The early mornings can be tough, and the work is physically demanding."
+  },
+  "bariatric-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and surgical plans for the day",
+              "Meet with the surgical team to discuss the cases",
+              "Prepare the operating room and equipment for surgeries"
+          ],
+          "midday": [
+              "Perform weight-loss surgeries, such as gastric bypass",
+              "Monitor patients' vital signs during recovery",
+              "Consult with patients about post-operative care"
+          ],
+          "afternoon": [
+              "Conduct follow-up appointments with patients",
+              "Update medical records and document surgeries",
+              "Collaborate with nutritionists and psychologists for patient care"
+          ],
+          "tools": [
+              "Surgical instruments for laparoscopic surgery",
+              "Patient monitoring equipment",
+              "Electronic health record software"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform weight-loss surgeries on patients with severe obesity.",
+          "Counsel patients on the benefits and risks of surgery.",
+          "Work with a team of doctors, nurses, and dietitians.",
+          "Monitor patients' recovery and adjust care plans as needed.",
+          "Educate patients about nutrition and lifestyle changes."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise in work.",
+          "Comfortable working in high-pressure situations.",
+          "Enjoys helping people improve their health."
+      ],
+      "topSkills": [
+          "Laparoscopic surgery techniques.",
+          "Knowledge of metabolic medicine.",
+          "Strong communication skills for patient counselling.",
+          "Ability to work in a team with other healthcare professionals.",
+          "Understanding of nutrition and dietary needs."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a fellowship in bariatric surgery.",
+          "Gain experience in a hospital or surgical centre that offers bariatric procedures."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of education and practice before you can operate independently."
+  },
+  "barista": {
+      "typicalDay": {
+          "morning": [
+              "Set up the coffee machine and prepare the café for opening.",
+              "Grind coffee beans and prepare pastries for display.",
+              "Take inventory of supplies and restock as needed."
+          ],
+          "midday": [
+              "Take customer orders and make drinks efficiently.",
+              "Serve food items and ensure the display looks appealing.",
+              "Engage with customers and build rapport with regulars."
+          ],
+          "afternoon": [
+              "Clean the coffee machines and workstations.",
+              "Handle cash and process payments.",
+              "Prepare for closing by cleaning and organising the café."
+          ],
+          "tools": [
+              "Espresso machine",
+              "Coffee grinder",
+              "Milk steamer",
+              "Cash register",
+              "Dishwasher"
+          ],
+          "environment": "Mostly indoors in a busy café, standing for long periods and interacting with customers throughout the day."
+      },
+      "whatYouActuallyDo": [
+          "Prepare various coffee drinks and ensure quality.",
+          "Serve pastries and snacks to customers.",
+          "Maintain cleanliness and organisation of the café.",
+          "Handle customer complaints and feedback.",
+          "Keep track of inventory and order supplies."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working in a fast-paced environment.",
+          "Likes talking to different people every day.",
+          "Has a good sense of taste and attention to detail."
+      ],
+      "topSkills": [
+          "Espresso technique for making quality coffee.",
+          "Milk steaming to create the perfect foam.",
+          "Speed in serving drinks during busy hours.",
+          "Customer service skills to make customers feel welcome.",
+          "Consistency in drink preparation to meet standards."
+      ],
+      "entryPaths": [
+          "On-the-job training at a local café.",
+          "Specialty coffee courses from the Specialty Coffee Association (SCA).",
+          "Applying for part-time jobs while studying at videregående."
+      ],
+      "realityCheck": "The job can be physically demanding, especially during busy hours when you have to keep up with many orders."
+  },
   "beatmaker": {
       "typicalDay": {
           "morning": [
@@ -993,6 +1633,124 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participate in coding bootcamps that focus on blockchain development."
       ],
       "realityCheck": "Many projects require long hours of coding and debugging, which can be repetitive and challenging."
+  },
+  "brand-ambassador": {
+      "typicalDay": {
+          "morning": [
+              "Check social media for brand mentions and respond to comments.",
+              "Plan content for the day, including posts and engagements.",
+              "Attend a morning meeting with the brand team to discuss upcoming events."
+          ],
+          "midday": [
+              "Post updates on social media platforms about the brand.",
+              "Engage with followers through comments and direct messages.",
+              "Attend a product launch event and interact with attendees."
+          ],
+          "afternoon": [
+              "Create and edit content, such as photos or videos, for future posts.",
+              "Research trends in the industry to keep content relevant.",
+              "Follow up with potential partners or influencers for collaborations."
+          ],
+          "tools": [
+              "Social media platforms (Instagram, Facebook, TikTok)",
+              "Photo and video editing software (Canva, Adobe Spark)",
+              "Communication tools (Slack, email)"
+          ],
+          "environment": "Mostly working from home or on location at events, with flexible hours depending on brand activities."
+      },
+      "whatYouActuallyDo": [
+          "Promote products through social media posts and stories.",
+          "Interact with customers and answer their questions about the brand.",
+          "Attend events and represent the brand in person.",
+          "Create engaging content that reflects the brand's values.",
+          "Build relationships with followers and other brands.",
+          "Monitor social media trends and adapt content accordingly.",
+          "Collaborate with the marketing team to align on campaigns."
+      ],
+      "whoThisIsGoodFor": [
+          "Outgoing and sociable with a knack for connecting with others.",
+          "Creative and enjoys making visually appealing content.",
+          "Self-motivated and can work independently.",
+          "Good at managing time and meeting deadlines.",
+          "Passionate about the brand and its products."
+      ],
+      "topSkills": [
+          "Strong communication skills for engaging with the audience.",
+          "Ability to create and edit visual content.",
+          "Understanding of social media trends and algorithms.",
+          "Reliability in attending events and meeting commitments.",
+          "Ability to build and maintain relationships.",
+          "Presentation skills for representing the brand confidently.",
+          "Good organisational skills for planning content and events."
+      ],
+      "entryPaths": [
+          "Develop a personal brand on social media and build a following.",
+          "Participate in internships or volunteer roles related to marketing.",
+          "Network with local businesses and offer to promote their products.",
+          "Consider taking short courses in marketing or social media management.",
+          "Look for entry-level positions with marketing agencies or brands."
+      ],
+      "realityCheck": "You often have to create your own opportunities and hustle to get noticed in a crowded space."
+  },
+  "breast-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and imaging results",
+              "Conduct pre-operative assessments",
+              "Prepare the operating room",
+              "Perform surgeries on scheduled patients",
+              "Meet with the surgical team to discuss cases"
+          ],
+          "midday": [
+              "Check in on post-operative patients",
+              "Document surgical outcomes and notes",
+              "Attend a team meeting to discuss ongoing cases"
+          ],
+          "afternoon": [
+              "Consult with new patients about their conditions",
+              "Provide counselling on treatment options",
+              "Follow up with patients via phone or email",
+              "Participate in training or workshops",
+              "Collaborate with oncologists and radiologists"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Ultrasound machines",
+              "Medical imaging software",
+              "Patient management systems",
+              "Anesthesia equipment"
+          ],
+          "environment": "Mostly indoors in a hospital or clinic, with a mix of surgeries and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to remove tumours or affected breast tissue.",
+          "Assess patients' health and discuss treatment plans.",
+          "Work with a team of doctors, nurses, and specialists.",
+          "Interpret imaging results to guide surgery.",
+          "Provide emotional support and counselling to patients."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and careful.",
+          "Good at working under pressure.",
+          "Comfortable communicating with patients.",
+          "Able to work in a team.",
+          "Interested in medical science and surgery."
+      ],
+      "topSkills": [
+          "Oncoplastic techniques for breast surgery.",
+          "Ability to interpret imaging results accurately.",
+          "Patient counselling and support skills.",
+          "Strong teamwork and collaboration.",
+          "Precision and attention to detail in surgery."
+      ],
+      "entryPaths": [
+          "Complete a Medical Degree followed by a residency in General Surgery.",
+          "Pursue a Breast Surgery Fellowship for specialised training.",
+          "Consider volunteering or shadowing in surgical departments.",
+          "Look for internships in hospitals with breast cancer programmes.",
+          "Explore opportunities in medical research related to breast health."
+      ],
+      "realityCheck": "The training is long and demanding, with many years before you can operate independently."
   },
   "bricklayer": {
       "typicalDay": {
@@ -1106,6 +1864,117 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves a lot of paperwork and detailed reports, which can be time-consuming."
   },
+  "bus-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the bus for safety and cleanliness before starting the route.",
+              "Review the schedule for the day and plan the route.",
+              "Pick up the first passengers and greet them as they board."
+          ],
+          "midday": [
+              "Make scheduled stops to pick up and drop off passengers.",
+              "Assist passengers with questions about routes and tickets.",
+              "Take a break at designated stops to rest and refuel."
+          ],
+          "afternoon": [
+              "Continue the scheduled route, ensuring timely arrivals.",
+              "Handle any unexpected delays or detours calmly.",
+              "Complete paperwork or log details of the day's service."
+          ],
+          "tools": [
+              "Bus",
+              "Ticket machine",
+              "GPS navigation system",
+              "Radio for communication",
+              "Safety equipment"
+          ],
+          "environment": "Mostly indoors in the bus, with a mix of driving on roads and interacting with passengers."
+      },
+      "whatYouActuallyDo": [
+          "Drive the bus along set routes and schedules.",
+          "Ensure passenger safety by following traffic rules.",
+          "Help passengers board and exit the bus.",
+          "Manage ticket sales and check passes.",
+          "Keep the bus clean and well-maintained."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at staying calm under pressure.",
+          "Likes meeting new people every day."
+      ],
+      "topSkills": [
+          "Safe driving skills.",
+          "Strong customer service abilities.",
+          "Good time management.",
+          "Patience with passengers.",
+          "Ability to handle unexpected situations."
+      ],
+      "entryPaths": [
+          "Obtain a Class D driving licence.",
+          "Complete yrkessjåførkompetanse (CPC) training.",
+          "Look for apprenticeships with local bus companies.",
+          "Consider vocational programmes that include driving experience."
+      ],
+      "realityCheck": "You spend a lot of time alone on the road, and some days can be long and tiring."
+  },
+  "business-owner": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to customer inquiries",
+              "Review daily sales and expenses",
+              "Meet with staff to discuss daily tasks"
+          ],
+          "midday": [
+              "Handle customer service issues",
+              "Order supplies or inventory as needed",
+              "Conduct a brief team meeting to assess progress"
+          ],
+          "afternoon": [
+              "Plan marketing strategies or promotions",
+              "Review financial reports and adjust budgets",
+              "Network with other local businesses or attend community events"
+          ],
+          "tools": [
+              "Point of sale system",
+              "Accounting software",
+              "Communication apps like Slack or WhatsApp"
+          ],
+          "environment": "Typically works indoors in a small shop or office, balancing between customer interaction and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Manage daily operations of the business",
+          "Oversee staff and delegate tasks",
+          "Handle customer complaints and feedback",
+          "Keep track of finances and budgets",
+          "Develop marketing strategies to attract new customers",
+          "Make decisions on product offerings and pricing",
+          "Build relationships with suppliers and partners"
+      ],
+      "whoThisIsGoodFor": [
+          "Self-motivated and organised",
+          "Good at solving problems quickly",
+          "Enjoys interacting with a variety of people",
+          "Comfortable taking risks and making decisions",
+          "Able to manage stress and stay calm under pressure"
+      ],
+      "topSkills": [
+          "Basic accounting and financial management",
+          "Strong communication skills",
+          "Ability to lead and motivate a team",
+          "Time management and prioritisation",
+          "Customer service skills",
+          "Problem-solving and critical thinking",
+          "Marketing and sales knowledge"
+      ],
+      "entryPaths": [
+          "Start with a vocational programme in business management",
+          "Gain experience through an apprenticeship in a related field",
+          "Consider a bachelor’s degree in business or entrepreneurship",
+          "Learn through online courses about starting a business",
+          "Work in a small business to learn the ropes before starting your own"
+      ],
+      "realityCheck": "Running a business often means long hours and dealing with unexpected challenges."
+  },
   "busker": {
       "typicalDay": {
           "morning": [
@@ -1155,6 +2024,222 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Use social media to showcase your performances and build a following."
       ],
       "realityCheck": "You need to be prepared for days with few tips and unpredictable weather."
+  },
+  "butcher": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the shop and check inventory of meat.",
+              "Clean and prepare the work area.",
+              "Cut and portion meat for display.",
+              "Serve customers and take orders.",
+              "Restock shelves and displays."
+          ],
+          "midday": [
+              "Continue serving customers during lunch hours.",
+              "Prepare special meat cuts for orders.",
+              "Check and maintain food safety standards.",
+              "Clean tools and equipment used in the morning.",
+              "Assist in training new staff if needed."
+          ],
+          "afternoon": [
+              "Finish any remaining customer orders.",
+              "Break down larger cuts of meat into smaller portions.",
+              "Prepare meat products for the next day.",
+              "Clean the workspace and tools after use.",
+              "Take inventory of supplies and order more if needed."
+          ],
+          "tools": [
+              "Knives and cutting tools.",
+              "Meat saws.",
+              "Scales for weighing meat.",
+              "Refrigeration units.",
+              "Protective clothing like aprons and gloves."
+          ],
+          "environment": "Mostly indoors in a butcher shop, standing for long periods, with a focus on customer interaction and food preparation."
+      },
+      "whatYouActuallyDo": [
+          "Cut and prepare various types of meat.",
+          "Serve customers and answer their questions.",
+          "Ensure all meat is stored safely and hygienically.",
+          "Maintain tools and equipment in good condition.",
+          "Keep the shop clean and organised."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with their hands.",
+          "Comfortable with physical work and standing for long hours.",
+          "Good at interacting with customers.",
+          "Has an interest in food and cooking.",
+          "Can handle working in a fast-paced environment."
+      ],
+      "topSkills": [
+          "Knife skills for cutting meat accurately.",
+          "Knowledge of different meat cuts and their uses.",
+          "Understanding of food safety regulations.",
+          "Physical stamina to work long shifts.",
+          "Customer service skills to engage with shoppers."
+      ],
+      "entryPaths": [
+          "Complete a vocational training programme for Slakter / Kjøttskjærer fagbrev.",
+          "Apply for an apprenticeship in a local butcher shop.",
+          "Gain experience working in a supermarket meat department.",
+          "Consider courses in food safety and hygiene.",
+          "Look for job openings at local butchers or supermarkets."
+      ],
+      "realityCheck": "The work can be physically demanding and involves long hours on your feet."
+  },
+  "camera-operator": {
+      "typicalDay": {
+          "morning": [
+              "Arrive on set and set up the camera equipment.",
+              "Check the shot list and discuss with the director.",
+              "Test the camera and lenses to ensure they are working."
+          ],
+          "midday": [
+              "Shoot scenes as directed, adjusting angles and framing.",
+              "Communicate with the director about any changes needed.",
+              "Take breaks to review footage and make adjustments."
+          ],
+          "afternoon": [
+              "Continue shooting scenes, ensuring smooth camera movements.",
+              "Pack up equipment after the day's shooting is done.",
+              "Help with the setup for the next day's shoot."
+          ],
+          "tools": [
+              "Digital cameras",
+              "Tripods",
+              "Camera stabilisers",
+              "Lenses",
+              "Monitors"
+          ],
+          "environment": "Mostly outdoors or on set in studios, working closely with a crew and following a shooting schedule."
+      },
+      "whatYouActuallyDo": [
+          "Set up and test camera equipment before shooting.",
+          "Follow the director's instructions for shots and movements.",
+          "Adjust camera settings based on lighting and scene requirements.",
+          "Collaborate with the director of photography on framing.",
+          "Monitor the camera feed for quality during filming."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working in a team environment.",
+          "Has a good eye for detail and composition.",
+          "Can handle physical work and long hours.",
+          "Is adaptable to changing plans on set."
+      ],
+      "topSkills": [
+          "Understanding camera technology and settings.",
+          "Framing shots effectively for storytelling.",
+          "Stamina for carrying equipment and long shooting days.",
+          "Quick responsiveness to directorial changes.",
+          "Teamwork to coordinate with crew members."
+      ],
+      "entryPaths": [
+          "Complete a film school programme focusing on camera work.",
+          "Start as a camera assistant and learn on the job.",
+          "Gain experience through internships with production companies.",
+          "Participate in local film projects or student films."
+      ],
+      "realityCheck": "The job often involves long hours on set, and you may spend a lot of time waiting around between shots."
+  },
+  "cardiac-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and surgical plans for the day",
+              "Meet with the surgical team to discuss cases",
+              "Prepare the operating room and equipment"
+          ],
+          "midday": [
+              "Perform surgeries, focusing on heart operations",
+              "Monitor patients' vital signs during procedures",
+              "Communicate with the anaesthetist about patient status"
+          ],
+          "afternoon": [
+              "Conduct post-operative rounds to check on recovery",
+              "Meet with families to discuss surgery outcomes",
+              "Document surgeries and patient progress in medical records"
+          ],
+          "tools": [
+              "Surgical instruments for heart surgery",
+              "Heart-lung machine",
+              "Medical imaging equipment"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, working closely with a surgical team under high pressure."
+      },
+      "whatYouActuallyDo": [
+          "Perform heart surgeries like bypass grafts and valve replacements.",
+          "Use a heart-lung machine to manage blood flow during operations.",
+          "Make quick decisions during surgeries to handle unexpected issues.",
+          "Communicate with patients and families about procedures and recovery.",
+          "Work long hours, especially during surgeries and on-call shifts."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Detail-oriented and precise.",
+          "Strong in teamwork and collaboration."
+      ],
+      "topSkills": [
+          "Managing the heart-lung machine effectively.",
+          "Performing microsurgery with great precision.",
+          "Making crisis decisions quickly.",
+          "Enduring long hours in the operating room.",
+          "Communicating clearly with medical staff and patients."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a specialisation in cardiac surgery.",
+          "Consider medical internships in hospitals to gain experience.",
+          "Participate in research projects related to cardiology."
+      ],
+      "realityCheck": "The training is very long and intense, with many years of study and practice before you can operate independently."
+  },
+  "cardiothoracic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and discuss cases with the surgical team.",
+              "Prepare the operating room with necessary instruments.",
+              "Perform morning surgeries, including heart bypasses or valve repairs."
+          ],
+          "midday": [
+              "Meet with patients and their families to discuss surgery outcomes.",
+              "Attend a team meeting to plan upcoming surgeries.",
+              "Conduct follow-up rounds in the intensive care unit."
+          ],
+          "afternoon": [
+              "Perform additional surgeries as scheduled.",
+              "Document patient progress and update medical records.",
+              "Consult with other specialists about complex cases."
+          ],
+          "tools": [
+              "Surgical instruments like scalpels and forceps.",
+              "Cardiopulmonary bypass machine.",
+              "Medical imaging equipment such as X-rays and MRIs."
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre, with a fast-paced rhythm and a focus on teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform complex surgeries on the heart and lungs.",
+          "Manage patient care before and after surgery.",
+          "Collaborate with nurses and anaesthetists during procedures.",
+          "Stay updated with the latest surgical techniques.",
+          "Educate patients about their conditions and recovery."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Strong attention to detail.",
+          "Excellent problem-solving skills."
+      ],
+      "topSkills": [
+          "Advanced surgical skills and techniques.",
+          "Ability to work long hours and maintain stamina.",
+          "Crisis management in high-stress situations.",
+          "Effective communication with patients and team members.",
+          "Teamwork and collaboration in a medical setting."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in general surgery.",
+          "Pursue a cardiothoracic surgery specialisation after residency.",
+          "Gain experience through internships in hospitals."
+      ],
+      "realityCheck": "The training is long and rigorous, often requiring over a decade of education and practice before you become fully qualified."
   },
   "care-assistant": {
       "typicalDay": {
@@ -1209,6 +2294,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Volunteering in care settings for experience."
       ],
       "realityCheck": "The job can be physically demanding and emotionally challenging, especially when dealing with clients' needs."
+  },
+  "career-coach": {
+      "typicalDay": {
+          "morning": [
+              "Meet with clients to discuss their career goals and challenges.",
+              "Review and give feedback on clients' CVs and cover letters.",
+              "Prepare materials for upcoming coaching sessions."
+          ],
+          "midday": [
+              "Conduct mock interviews to help clients practise their responses.",
+              "Research job market trends and opportunities in various fields.",
+              "Follow up with clients via email to check on their progress."
+          ],
+          "afternoon": [
+              "Create personalised action plans for clients based on their needs.",
+              "Host workshops on job search strategies or networking.",
+              "Reflect on coaching sessions and plan for improvements."
+          ],
+          "tools": [
+              "Laptop for writing and research.",
+              "Video conferencing software for remote sessions.",
+              "Career assessment tools to help clients identify strengths."
+          ],
+          "environment": "Mostly indoors in a quiet office or co-working space, with a mix of client meetings and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Help clients identify their skills and interests.",
+          "Guide clients in writing effective CVs and cover letters.",
+          "Prepare clients for job interviews with practice questions.",
+          "Research different career paths and industries for clients.",
+          "Support clients in setting realistic career goals.",
+          "Provide ongoing encouragement and feedback throughout their job search."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at listening and understanding others' feelings.",
+          "Enjoys helping people and seeing them succeed.",
+          "Patient and able to explain things clearly.",
+          "Comfortable giving constructive feedback.",
+          "Organised and able to manage multiple clients at once."
+      ],
+      "topSkills": [
+          "Strong communication skills for effective coaching.",
+          "Empathy to understand clients' perspectives.",
+          "Knowledge of job market trends and career paths.",
+          "Ability to create structured plans for clients.",
+          "Questioning skills to help clients explore their options."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Psychology, HR, or Education.",
+          "Obtain a coaching certification from an accredited body (like ICF).",
+          "Gain experience in HR or career services through internships.",
+          "Consider volunteering in career guidance programmes.",
+          "Look for entry-level positions in coaching or HR support roles."
+      ],
+      "realityCheck": "It can take time to build a client base and establish your reputation in the field."
   },
   "caregiver": {
       "typicalDay": {
@@ -1316,6 +2456,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be emotionally challenging as you work with people in difficult situations."
   },
+  "catering-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check inventory and order supplies needed for the day.",
+              "Meet with the kitchen team to discuss the day's menu.",
+              "Review event schedules and confirm details with clients."
+          ],
+          "midday": [
+              "Monitor food preparation and ensure quality standards.",
+              "Handle any issues that arise during service.",
+              "Update budget sheets based on current expenses."
+          ],
+          "afternoon": [
+              "Plan menus for upcoming events and adjust based on client feedback.",
+              "Conduct staff training on food safety and hygiene.",
+              "Evaluate vendor performance and negotiate contracts."
+          ],
+          "tools": [
+              "Budgeting software",
+              "Inventory management systems",
+              "Kitchen equipment like ovens and mixers",
+              "Communication tools for team coordination",
+              "Food safety checklists"
+          ],
+          "environment": "Mostly indoors in a busy kitchen or catering facility, with a mix of hands-on work and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Plan and create menus for various events and clients.",
+          "Lead and manage kitchen staff during food preparation and service.",
+          "Ensure compliance with food safety regulations.",
+          "Manage budgets and control costs for catering operations.",
+          "Communicate with clients to understand their needs and preferences."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys organising and planning events.",
+          "Good at leading and motivating a team.",
+          "Handles pressure well in busy environments."
+      ],
+      "topSkills": [
+          "Strong organisational skills for managing multiple events.",
+          "Budgeting skills to keep costs under control.",
+          "Leadership skills to manage kitchen staff effectively.",
+          "Knowledge of food safety regulations.",
+          "Ability to adapt menus based on dietary requirements."
+      ],
+      "entryPaths": [
+          "Complete a hospitality management qualification.",
+          "Gain experience as a chef and then move into management.",
+          "Look for apprenticeships in catering or hospitality.",
+          "Work in entry-level catering roles to learn the business.",
+          "Consider vocational programmes in culinary arts."
+      ],
+      "realityCheck": "You spend a lot of time managing logistics and budgets, which can be less exciting than cooking."
+  },
   "chartered-surveyor": {
       "typicalDay": {
           "morning": [
@@ -1365,6 +2559,68 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider internships or apprenticeships with surveying firms."
       ],
       "realityCheck": "You may spend a lot of time outdoors in various weather conditions, which can be challenging."
+  },
+  "chauffeur": {
+      "typicalDay": {
+          "morning": [
+              "Check the car for cleanliness and fuel level",
+              "Review the day's schedule and routes",
+              "Confirm bookings with clients",
+              "Prepare for any special requests from clients",
+              "Ensure all necessary items (water, snacks) are stocked in the car"
+          ],
+          "midday": [
+              "Pick up clients from their locations",
+              "Drive clients to meetings or events",
+              "Maintain communication with clients about their schedule",
+              "Handle any changes in plans or routes",
+              "Ensure the car remains clean and presentable"
+          ],
+          "afternoon": [
+              "Drop off clients at their destinations",
+              "Assist clients with luggage or special needs",
+              "Prepare for the next client or trip",
+              "Perform routine checks on the vehicle",
+              "Submit any necessary reports or logs"
+          ],
+          "tools": [
+              "Luxury vehicle (e.g., Mercedes, BMW)",
+              "GPS navigation system",
+              "Mobile phone for communication",
+              "Cleaning supplies for the car",
+              "Client management software"
+          ],
+          "environment": "Mostly in a luxury vehicle, driving around cities or rural areas, with a focus on client comfort and safety."
+      },
+      "whatYouActuallyDo": [
+          "Drive clients to various locations in a safe and timely manner.",
+          "Maintain the cleanliness and upkeep of the vehicle.",
+          "Communicate with clients about their needs and preferences.",
+          "Adapt to changes in schedules or routes quickly.",
+          "Provide a professional and courteous service at all times."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and has good road sense.",
+          "Likes meeting new people and providing service.",
+          "Is punctual and reliable.",
+          "Can stay calm under pressure.",
+          "Values professionalism in appearance and behaviour."
+      ],
+      "topSkills": [
+          "Excellent driving skills with a clean record.",
+          "Ability to navigate using GPS and maps.",
+          "Strong communication skills for interacting with clients.",
+          "Attention to detail in maintaining the vehicle.",
+          "Discretion and respect for client privacy."
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Complete chauffeur training programmes.",
+          "Gain experience by working for a limousine or chauffeur service.",
+          "Build a good driving record with no accidents.",
+          "Look for job opportunities with private transport companies."
+      ],
+      "realityCheck": "You spend a lot of time waiting for clients, which can be less exciting than it sounds."
   },
   "child-protection-officer": {
       "typicalDay": {
@@ -1473,6 +2729,124 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for internships or placements during studies for practical experience."
       ],
       "realityCheck": "Building a patient base takes time, and you may spend a lot of time on paperwork."
+  },
+  "cinematographer": {
+      "typicalDay": {
+          "morning": [
+              "Review the shot list with the director and discuss visual ideas.",
+              "Set up cameras and lighting for the first scene.",
+              "Conduct tests for lighting and camera angles."
+          ],
+          "midday": [
+              "Film the first scenes as per the shot list.",
+              "Adjust lighting and camera settings based on feedback.",
+              "Collaborate with the director and crew to ensure shots align with the vision."
+          ],
+          "afternoon": [
+              "Continue filming scenes, making adjustments as needed.",
+              "Oversee the camera crew and ensure everyone knows their tasks.",
+              "Review footage with the director to assess the day's work."
+          ],
+          "tools": [
+              "Cameras (e.g., RED, ARRI)",
+              "Lighting equipment (e.g., LED panels, softboxes)",
+              "Editing software (e.g., Adobe Premiere, DaVinci Resolve)",
+              "Tripods and stabilisers",
+              "Lenses of various types"
+          ],
+          "environment": "Mostly on location or in studios, working closely with a team and adapting to different filming conditions."
+      },
+      "whatYouActuallyDo": [
+          "Decide on camera angles and movements for each shot.",
+          "Set up and adjust lighting for different scenes.",
+          "Work with the director to achieve the desired visual style.",
+          "Supervise the camera crew during filming.",
+          "Review and select takes that best capture the scene.",
+          "Maintain equipment and troubleshoot issues on set.",
+          "Collaborate with other departments like art and costume to ensure a cohesive look."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative with a strong visual sense.",
+          "Good at problem-solving on the spot.",
+          "Enjoys teamwork and leading a group.",
+          "Able to work under pressure and meet deadlines.",
+          "Passionate about storytelling through visuals."
+      ],
+      "topSkills": [
+          "Mastery of camera operation and settings.",
+          "Strong understanding of lighting techniques.",
+          "Ability to compose visually appealing shots.",
+          "Leadership skills to manage a crew.",
+          "Effective communication with directors and team members.",
+          "Attention to detail in every shot.",
+          "Technical knowledge of film equipment."
+      ],
+      "entryPaths": [
+          "Complete a three-year film school programme.",
+          "Build a portfolio of work showcasing your skills.",
+          "Start as a camera assistant or intern on film sets.",
+          "Network with professionals in the industry.",
+          "Look for apprenticeships with production companies."
+      ],
+      "realityCheck": "The job often involves long hours on set and can be very demanding, especially during busy shoots."
+  },
+  "civil-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from clients and contractors.",
+              "Review project plans and schedules.",
+              "Attend a team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Visit construction sites to monitor progress.",
+              "Meet with contractors to solve any issues.",
+              "Update project documentation and reports."
+          ],
+          "afternoon": [
+              "Work on design plans using CAD software.",
+              "Conduct site inspections for safety compliance.",
+              "Prepare presentations for stakeholders."
+          ],
+          "tools": [
+              "CAD software (like AutoCAD or Revit)",
+              "project management tools (like Microsoft Project)",
+              "surveying equipment (like total stations)",
+              "calculators for structural analysis",
+              "safety gear (like hard hats and boots)"
+          ],
+          "environment": "Mostly indoors in an office, with regular visits to construction sites."
+      },
+      "whatYouActuallyDo": [
+          "Design infrastructure projects like roads and bridges.",
+          "Ensure projects meet safety and environmental regulations.",
+          "Manage budgets and timelines for construction.",
+          "Collaborate with architects and other engineers.",
+          "Inspect sites to ensure work is done correctly.",
+          "Prepare reports and documentation for clients.",
+          "Solve problems that arise during construction."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving practical problems.",
+          "Good at working in teams.",
+          "Likes being outdoors and visiting construction sites."
+      ],
+      "topSkills": [
+          "Understanding structural analysis.",
+          "Using CAD software effectively.",
+          "Planning and managing projects.",
+          "Communicating clearly with clients and teams.",
+          "Paying attention to safety regulations.",
+          "Analysing data and making decisions.",
+          "Being organised and detail-oriented."
+      ],
+      "entryPaths": [
+          "Complete a Master’s in Civil Engineering.",
+          "Start with a Bachelor’s degree in Engineering.",
+          "Look for internships with construction companies.",
+          "Consider an apprenticeship in civil engineering.",
+          "Apply for positions at engineering firms or government agencies."
+      ],
+      "realityCheck": "You will spend a lot of time dealing with paperwork and regulations, not just designing."
   },
   "civil-servant": {
       "typicalDay": {
@@ -1626,6 +3000,164 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve long hours in tough weather, which can be physically and mentally demanding."
   },
+  "color-grading-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review footage from previous day and make notes on colour adjustments needed.",
+              "Set up colour grading software and calibrate monitors.",
+              "Meet with the director to discuss the vision for the project."
+          ],
+          "midday": [
+              "Begin colour grading on selected scenes.",
+              "Make precise adjustments to colour balance and contrast.",
+              "Save progress and document changes made for future reference."
+          ],
+          "afternoon": [
+              "Present graded scenes to the team for feedback.",
+              "Make any final adjustments based on feedback.",
+              "Organise files and prepare for the next day's work."
+          ],
+          "tools": [
+              "DaVinci Resolve",
+              "Baselight",
+              "calibrated monitors",
+              "colour wheels",
+              "LUTs (Look-Up Tables)"
+          ],
+          "environment": "Mostly indoors in a dark editing suite, focused on screens with a quiet atmosphere."
+      },
+      "whatYouActuallyDo": [
+          "Adjust colours in film to create the desired mood.",
+          "Match colours between different shots for consistency.",
+          "Work closely with directors and cinematographers.",
+          "Use software to enhance visual storytelling.",
+          "Create colour presets for specific styles."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Enjoys working with visual art.",
+          "Good at taking feedback and making changes.",
+          "Able to focus for long periods.",
+          "Comfortable using technology."
+      ],
+      "topSkills": [
+          "Understanding of colour theory.",
+          "Proficiency in DaVinci Resolve.",
+          "Attention to detail in colour matching.",
+          "Strong communication with clients and team.",
+          "Ability to work under tight deadlines."
+      ],
+      "entryPaths": [
+          "Complete a specialist colour course in DaVinci Resolve.",
+          "Build a portfolio of colour grading work.",
+          "Gain experience through internships at film studios.",
+          "Consider a bachelor's degree in film or media.",
+          "Look for apprenticeships in post-production houses."
+      ],
+      "realityCheck": "The job can involve long hours in front of a screen, and you may need to make many revisions based on client feedback."
+  },
+  "colorectal-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries",
+              "Meet with the surgical team to discuss the day's procedures",
+              "Perform morning rounds to check on patients recovering from surgery"
+          ],
+          "midday": [
+              "Conduct surgeries, focusing on colorectal procedures",
+              "Assist in endoscopic examinations for patients",
+              "Consult with patients and their families about treatment plans"
+          ],
+          "afternoon": [
+              "Complete surgical documentation and update patient records",
+              "Attend meetings with other medical staff to discuss cases",
+              "Prepare for upcoming surgeries and review patient histories"
+          ],
+          "tools": [
+              "Surgical instruments for laparoscopic and open surgery",
+              "Endoscopy equipment",
+              "Patient management software"
+          ],
+          "environment": "Mostly indoors in a hospital, working in operating rooms and patient wards with a busy and structured schedule."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the colon, rectum, and anus.",
+          "Diagnose conditions like cancer and inflammatory bowel disease.",
+          "Communicate with patients about their conditions and treatments.",
+          "Work with a team of nurses and other surgeons during operations.",
+          "Monitor patients' recovery and manage post-operative care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise",
+          "Able to handle high-pressure situations",
+          "Good at communicating with patients and families"
+      ],
+      "topSkills": [
+          "Laparoscopic surgical techniques",
+          "Oncological surgery knowledge",
+          "Effective patient communication",
+          "Attention to detail in surgical procedures",
+          "Ability to work in a team"
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a colorectal fellowship after general surgery training.",
+          "Consider volunteering or shadowing in hospitals to gain experience."
+      ],
+      "realityCheck": "The training path is long and demanding, often taking over a decade to become fully qualified."
+  },
+  "combat-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Prepare equipment and tools for the day’s tasks.",
+              "Attend a briefing on the day’s operations.",
+              "Conduct maintenance on machinery and vehicles."
+          ],
+          "midday": [
+              "Work on building or repairing fortifications.",
+              "Practice demolition techniques in a controlled environment.",
+              "Clear obstacles or mines from a designated area."
+          ],
+          "afternoon": [
+              "Participate in team drills and exercises.",
+              "Review safety protocols for using explosives.",
+              "Debrief with the team on the day’s progress."
+          ],
+          "tools": [
+              "Excavators",
+              "Explosives and detonators",
+              "Hand tools (hammers, drills)",
+              "Protective gear (helmets, vests)",
+              "Communication radios"
+          ],
+          "environment": "Mostly outdoors in various terrains, often in teams, with a focus on practical tasks and safety."
+      },
+      "whatYouActuallyDo": [
+          "Build bridges and other structures for military operations.",
+          "Clear paths of mines and other hazards.",
+          "Demolish obstacles when needed.",
+          "Maintain and repair engineering equipment.",
+          "Work closely with other military units for coordinated efforts."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys hands-on work and physical challenges.",
+          "Able to think quickly and improvise solutions.",
+          "Comfortable working in a team and following orders."
+      ],
+      "topSkills": [
+          "Understanding of construction techniques.",
+          "Knowledge of explosives and safety procedures.",
+          "Ability to operate heavy machinery.",
+          "Strong problem-solving skills in the field.",
+          "Good communication skills for teamwork."
+      ],
+      "entryPaths": [
+          "Complete military service with an engineering focus.",
+          "Attend a military technical school.",
+          "Gain experience through apprenticeships in construction or engineering."
+      ],
+      "realityCheck": "The job can be physically demanding and requires a strong focus on safety at all times."
+  },
   "commercial-real-estate-agent": {
       "typicalDay": {
           "morning": [
@@ -1677,6 +3209,123 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Join local real estate associations for networking opportunities."
       ],
       "realityCheck": "You spend a lot of time building relationships before seeing significant sales."
+  },
+  "commercial-video-producer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to client messages.",
+              "Hold a team meeting to discuss the day's tasks.",
+              "Review the production schedule and make any necessary adjustments."
+          ],
+          "midday": [
+              "Meet with clients to discuss project details and expectations.",
+              "Coordinate with the crew on set to ensure everyone knows their roles.",
+              "Review footage from previous shoots and provide feedback."
+          ],
+          "afternoon": [
+              "Work on budgeting and managing expenses for ongoing projects.",
+              "Plan upcoming shoots by scouting locations and arranging equipment.",
+              "Edit video content or oversee the editing process with the team."
+          ],
+          "tools": [
+              "Video editing software (e.g., Adobe Premiere Pro, Final Cut Pro)",
+              "Budgeting tools (e.g., Excel, Google Sheets)",
+              "Communication platforms (e.g., Slack, Zoom)",
+              "Camera equipment (e.g., DSLR, lighting gear)",
+              "Project management software (e.g., Trello, Asana)"
+          ],
+          "environment": "Mostly indoors in a studio or office, with some time spent on location shoots."
+      },
+      "whatYouActuallyDo": [
+          "Plan video projects from start to finish.",
+          "Manage the crew and ensure everyone is on task.",
+          "Communicate with clients to understand their vision.",
+          "Keep track of the budget and expenses.",
+          "Organise shooting schedules and locations.",
+          "Edit and review video content before delivery.",
+          "Troubleshoot problems that arise during production."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and organised individuals.",
+          "Good at multitasking and managing time.",
+          "Able to communicate clearly with different people.",
+          "Enjoys working in a team and leading projects."
+      ],
+      "topSkills": [
+          "Strong organisational skills for managing schedules.",
+          "Good communication skills for liaising with clients and crew.",
+          "Budget management to keep projects on track financially.",
+          "Creative thinking for developing engaging video content.",
+          "Technical skills in video editing and production equipment."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Film, Media, or a related field.",
+          "Gain production experience through internships or entry-level jobs.",
+          "Complete a vocational programme in film production.",
+          "Build a portfolio of work to showcase your skills.",
+          "Consider applying for apprenticeships with production companies."
+      ],
+      "realityCheck": "You spend a lot of time on logistics and problem-solving, not just being creative."
+  },
+  "commodities-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check global market news and updates.",
+              "Review positions and assess risks.",
+              "Communicate with suppliers and buyers."
+          ],
+          "midday": [
+              "Analyse market trends and data.",
+              "Negotiate prices with clients.",
+              "Update trading software with new information."
+          ],
+          "afternoon": [
+              "Monitor ongoing trades and adjust strategies.",
+              "Prepare reports on market performance.",
+              "Meet with team to discuss trading strategies."
+          ],
+          "tools": [
+              "Trading software",
+              "Market analysis tools",
+              "Communication platforms",
+              "Excel spreadsheets",
+              "Financial news websites"
+          ],
+          "environment": "Mostly indoors in a fast-paced office setting, with a focus on data analysis and communication."
+      },
+      "whatYouActuallyDo": [
+          "Trade commodities like oil, gas, and metals.",
+          "Monitor global market conditions and news.",
+          "Negotiate deals with clients and suppliers.",
+          "Manage risks associated with trades.",
+          "Prepare reports on trading performance.",
+          "Collaborate with other traders and analysts.",
+          "Use software to track prices and trends."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical thinker who enjoys numbers.",
+          "Good at negotiating and persuading others.",
+          "Able to work under pressure and make quick decisions.",
+          "Detail-oriented and organised.",
+          "Enjoys following global economic trends."
+      ],
+      "topSkills": [
+          "Understanding supply and demand dynamics.",
+          "Strong negotiation skills.",
+          "Ability to analyse market data.",
+          "Risk management techniques.",
+          "Good stamina for long hours.",
+          "Proficiency in trading software.",
+          "Effective communication skills."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Finance, Economics, or Engineering.",
+          "Gain experience through a trading internship.",
+          "Consider specialised trading courses or certifications.",
+          "Look for entry-level positions in trading firms.",
+          "Network with professionals in the commodities market."
+      ],
+      "realityCheck": "The job can involve long hours and a lot of pressure to make quick decisions."
   },
   "community-development-worker": {
       "typicalDay": {
@@ -1991,6 +3640,111 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time solving unexpected problems on site, which can be stressful."
   },
+  "construction-worker": {
+      "typicalDay": {
+          "morning": [
+              "Arrive on site and check in with the foreman.",
+              "Set up tools and equipment for the day's work.",
+              "Review the plans for the day's tasks with the team."
+          ],
+          "midday": [
+              "Take a break for lunch with the crew.",
+              "Continue with building tasks such as mixing concrete.",
+              "Assist skilled tradespeople, like electricians or plumbers."
+          ],
+          "afternoon": [
+              "Clean up the work area and store tools properly.",
+              "Finish any remaining tasks for the day.",
+              "Attend a brief meeting to discuss progress and plans for tomorrow."
+          ],
+          "tools": [
+              "Power tools like drills and saws.",
+              "Mixers for concrete.",
+              "Safety gear such as helmets and gloves."
+          ],
+          "environment": "Mostly outdoors on construction sites, working in a team, with a mix of physical labour and tool operation."
+      },
+      "whatYouActuallyDo": [
+          "Help build structures like houses or roads.",
+          "Mix and pour concrete for foundations.",
+          "Use tools to cut and shape materials.",
+          "Follow safety protocols to keep yourself and others safe.",
+          "Work closely with skilled tradespeople to support their tasks."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys physical work and being outdoors.",
+          "Good at following instructions and safety rules.",
+          "Likes working as part of a team."
+      ],
+      "topSkills": [
+          "Ability to use various construction tools.",
+          "Strong physical stamina for lifting and moving materials.",
+          "Attention to detail for following plans accurately.",
+          "Reliability to show up on time and complete tasks.",
+          "Basic maths skills for measuring and calculating materials."
+      ],
+      "entryPaths": [
+          "Complete a vocational programme in construction.",
+          "Get on-the-job training as an apprentice.",
+          "Take a safety course (HMS) to understand workplace safety."
+      ],
+      "realityCheck": "The work can be physically demanding and weather conditions can be tough."
+  },
+  "consultant": {
+      "typicalDay": {
+          "morning": [
+              "Review emails and messages from clients and team members.",
+              "Prepare for client meetings by gathering relevant data.",
+              "Create presentation slides for upcoming discussions."
+          ],
+          "midday": [
+              "Meet with clients to discuss their challenges and needs.",
+              "Brainstorm solutions with your team.",
+              "Research industry trends that could impact your client's business."
+          ],
+          "afternoon": [
+              "Draft reports summarising findings and recommendations.",
+              "Follow up on action items from client meetings.",
+              "Plan next steps for project timelines and deliverables."
+          ],
+          "tools": [
+              "Microsoft PowerPoint for presentations.",
+              "Excel for data analysis.",
+              "Collaboration tools like Slack or Teams."
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of client meetings and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Meet clients to understand their problems.",
+          "Analyse data to find trends and insights.",
+          "Develop strategies to help clients improve.",
+          "Create presentations to share findings.",
+          "Work with a team to brainstorm solutions.",
+          "Write reports that explain your recommendations.",
+          "Stay updated on industry news and changes."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Good at explaining things clearly.",
+          "Likes working with different people.",
+          "Can handle pressure and tight deadlines."
+      ],
+      "topSkills": [
+          "Strong analytical skills to interpret data.",
+          "Effective communication for client interactions.",
+          "Problem-solving to develop actionable solutions.",
+          "Time management to juggle multiple projects.",
+          "Teamwork to collaborate with colleagues.",
+          "Presentation skills to convey ideas clearly."
+      ],
+      "entryPaths": [
+          "Obtain a Master's degree in business or a related field.",
+          "Gain experience through internships at consulting firms.",
+          "Consider starting in a related role, like project management.",
+          "Look for apprenticeships or trainee programmes at consulting companies."
+      ],
+      "realityCheck": "The job often involves long hours and can be stressful, especially when deadlines approach."
+  },
   "copywriter": {
       "typicalDay": {
           "morning": [
@@ -2041,6 +3795,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time revising your work based on client feedback, which can be challenging."
   },
+  "corporate-videographer": {
+      "typicalDay": {
+          "morning": [
+              "Review project briefs and plan the day's shoots.",
+              "Set up equipment for video shoots.",
+              "Meet with clients to discuss their video needs."
+          ],
+          "midday": [
+              "Film interviews or events as planned.",
+              "Capture B-roll footage for projects.",
+              "Check and organise footage from the morning."
+          ],
+          "afternoon": [
+              "Edit video content using editing software.",
+              "Share drafts with clients for feedback.",
+              "Prepare final videos for delivery."
+          ],
+          "tools": [
+              "Camera equipment (DSLR or mirrorless)",
+              "Tripods and stabilisers",
+              "Editing software (like Adobe Premiere Pro or Final Cut Pro)"
+          ],
+          "environment": "Mostly working in various business settings, both indoors and outdoors, with a mix of filming and editing time."
+      },
+      "whatYouActuallyDo": [
+          "Create video content for different business needs.",
+          "Film interviews with employees or clients.",
+          "Edit video footage to create polished final products.",
+          "Communicate with clients to understand their vision.",
+          "Manage video projects from start to finish."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and visual thinkers.",
+          "Good at communicating with different people.",
+          "Enjoys storytelling through video."
+      ],
+      "topSkills": [
+          "Filming techniques and camera operation.",
+          "Video editing skills.",
+          "Understanding of lighting and sound.",
+          "Client communication and relationship management.",
+          "Project management and organisation."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and practice.",
+          "Vocational training in media or film.",
+          "Building a portfolio with freelance projects."
+      ],
+      "realityCheck": "You often need to work with tight deadlines and manage multiple projects at once."
+  },
   "corrections-officer": {
       "typicalDay": {
           "morning": [
@@ -2090,6 +3894,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience through volunteer work in social services."
       ],
       "realityCheck": "The job can be emotionally challenging, as you deal with difficult situations and complex behaviours daily."
+  },
+  "cosmetic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Consult with patients about their desired procedures",
+              "Perform minor procedures or injections"
+          ],
+          "midday": [
+              "Conduct surgeries for scheduled patients",
+              "Monitor patients in recovery after surgery",
+              "Check in with nursing staff about patient care"
+          ],
+          "afternoon": [
+              "Meet with new patients for consultations",
+              "Update medical records and document procedures",
+              "Plan upcoming surgeries and manage the schedule"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Anaesthesia equipment",
+              "Patient management software"
+          ],
+          "environment": "Mostly indoors in a surgical clinic or hospital, with a focus on patient care and surgical procedures."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to enhance appearance, like facelifts and rhinoplasties.",
+          "Consult with patients to understand their goals and explain options.",
+          "Administer injectables like Botox or fillers.",
+          "Monitor patients during recovery to ensure their safety.",
+          "Keep detailed records of surgeries and patient interactions."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise in their work.",
+          "Able to handle high-pressure situations calmly.",
+          "Good at communicating with patients and understanding their needs."
+      ],
+      "topSkills": [
+          "Strong aesthetic judgement for visual outcomes.",
+          "Ability to perform minimally invasive techniques.",
+          "Effective patient consultation skills.",
+          "Knowledge of business management for running a practice.",
+          "Strong manual dexterity for surgical procedures."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a plastic surgery specialisation.",
+          "Pursue an aesthetic fellowship after specialisation.",
+          "Gain experience through internships in surgical settings."
+      ],
+      "realityCheck": "The training is long and demanding, often taking over a decade to become fully qualified."
   },
   "counsellor": {
       "typicalDay": {
@@ -2149,6 +4003,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The emotional weight of clients' stories can be challenging and requires strong self-care practices."
   },
+  "courier": {
+      "typicalDay": {
+          "morning": [
+              "Check delivery schedule and plan route",
+              "Load parcels into the vehicle or organise items for biking",
+              "Pick up the first batch of deliveries"
+          ],
+          "midday": [
+              "Deliver parcels to customers in the area",
+              "Communicate with customers about delivery times",
+              "Take a short break to rest and hydrate"
+          ],
+          "afternoon": [
+              "Continue delivering remaining parcels",
+              "Return to the depot to pick up more deliveries if needed",
+              "Complete paperwork or digital logs of deliveries"
+          ],
+          "tools": [
+              "Delivery van or bicycle",
+              "GPS navigation app",
+              "Mobile phone for communication"
+          ],
+          "environment": "Mostly outdoors, navigating through streets and interacting with customers."
+      },
+      "whatYouActuallyDo": [
+          "Plan your delivery route to be as efficient as possible.",
+          "Load and unload parcels from your vehicle or bike.",
+          "Deliver packages to homes or businesses.",
+          "Communicate with customers to confirm deliveries.",
+          "Handle any issues like missed deliveries or wrong addresses."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being active and working outdoors.",
+          "Good at managing time and staying organised.",
+          "Likes helping people and providing good service."
+      ],
+      "topSkills": [
+          "Fast navigation and route planning.",
+          "Physical stamina for long hours on the move.",
+          "Reliable and punctual in meeting delivery times.",
+          "Good customer service skills for dealing with clients.",
+          "Ability to lift and carry heavy parcels."
+      ],
+      "entryPaths": [
+          "Get a driving licence for van couriers or start as a bike courier without one.",
+          "On-the-job training provided by delivery companies.",
+          "Look for apprenticeships or entry-level positions with local courier services."
+      ],
+      "realityCheck": "You spend a lot of time on the move, and weather can make deliveries challenging."
+  },
   "crisis-intervention-specialist": {
       "typicalDay": {
           "morning": [
@@ -2207,6 +4111,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be emotionally draining, and you often deal with very serious situations."
   },
+  "crypto-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check market news and updates",
+              "Review overnight price movements",
+              "Set up trading charts and indicators"
+          ],
+          "midday": [
+              "Analyse market trends using technical analysis",
+              "Adjust trading strategies based on current data",
+              "Communicate with other traders for insights"
+          ],
+          "afternoon": [
+              "Execute trades based on analysis",
+              "Monitor open positions and manage risks",
+              "Document trades and outcomes for future reference"
+          ],
+          "tools": [
+              "Trading platforms like Binance or Coinbase",
+              "Charting software like TradingView",
+              "News aggregators for market updates"
+          ],
+          "environment": "Mostly indoors, working at a computer with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Trade cryptocurrencies on various exchanges.",
+          "Use technical charts to predict price movements.",
+          "Manage your own risk and set stop-loss orders.",
+          "Stay updated on market news and trends.",
+          "Communicate with other traders for advice and tips."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys analysing data and trends.",
+          "Can stay calm under pressure.",
+          "Has a strong interest in technology and finance."
+      ],
+      "topSkills": [
+          "Understanding technical analysis and charts.",
+          "Managing risk effectively.",
+          "Being disciplined in trading decisions.",
+          "Stamina to monitor markets for long hours.",
+          "Ability to adapt strategies quickly."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and resources.",
+          "Start with a demo trading account to practice.",
+          "Join online trading communities for support."
+      ],
+      "realityCheck": "The market can be very volatile, and losses are common, especially when starting out."
+  },
   "customs-officer": {
       "typicalDay": {
           "morning": [
@@ -2256,6 +4210,106 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a relevant vocational programme in customs or law enforcement."
       ],
       "realityCheck": "You spend a lot of time dealing with paperwork and regulations, which can be less exciting than it sounds."
+  },
+  "cyber-warfare-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review security reports and alerts from the previous night.",
+              "Conduct routine checks on network security systems.",
+              "Participate in briefings with team members about ongoing operations."
+          ],
+          "midday": [
+              "Develop and test scripts for automating security tasks.",
+              "Collaborate with other departments to address vulnerabilities.",
+              "Engage in training exercises to improve offensive tactics."
+          ],
+          "afternoon": [
+              "Monitor network traffic for suspicious activity.",
+              "Document findings and prepare reports for superiors.",
+              "Participate in strategy meetings to plan future operations."
+          ],
+          "tools": [
+              "Network monitoring software",
+              "Scripting languages (e.g. Python, Bash)",
+              "Security Information and Event Management (SIEM) tools"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on teamwork and problem-solving under pressure."
+      },
+      "whatYouActuallyDo": [
+          "Protect military networks from cyber threats.",
+          "Launch simulated attacks to test network security.",
+          "Write scripts to automate security processes.",
+          "Analyse data to identify weaknesses in systems.",
+          "Collaborate with other specialists to improve strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and analytical thinkers.",
+          "Calm under pressure and able to focus for long periods.",
+          "Enjoys problem-solving and working with technology."
+      ],
+      "topSkills": [
+          "Understanding of network security principles.",
+          "Ability to write and debug scripts.",
+          "Knowledge of operational security (OPSEC).",
+          "Strong analytical skills for data analysis.",
+          "Teamwork and communication skills for collaboration."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Computer Science or Cybersecurity.",
+          "Military training through Cyberforsvaret.",
+          "Relevant internships or apprenticeships in cybersecurity."
+      ],
+      "realityCheck": "The job often involves long hours of monitoring and can be very stressful during cyber incidents."
+  },
+  "day-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check global market news and updates.",
+              "Review overnight price movements of stocks.",
+              "Set up trading platform and tools."
+          ],
+          "midday": [
+              "Monitor stock prices and market trends.",
+              "Execute trades based on analysis.",
+              "Adjust strategies based on market conditions."
+          ],
+          "afternoon": [
+              "Review trades made during the day.",
+              "Analyse performance and document results.",
+              "Prepare for the next trading day."
+          ],
+          "tools": [
+              "Trading platform software.",
+              "Technical analysis tools.",
+              "News aggregation websites."
+          ],
+          "environment": "Mostly indoors at a home office or trading desk, with a focus on screens and market data."
+      },
+      "whatYouActuallyDo": [
+          "Buy and sell stocks or other securities throughout the day.",
+          "Analyse charts and market data to make quick decisions.",
+          "Keep track of multiple trades at once.",
+          "Stay updated on financial news that affects the market.",
+          "Manage risks by setting stop-loss orders."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys fast-paced decision making.",
+          "Has strong emotional control under pressure.",
+          "Likes working independently."
+      ],
+      "topSkills": [
+          "Technical analysis to evaluate stock trends.",
+          "Discipline to stick to a trading plan.",
+          "Risk management to minimise losses.",
+          "Patience to wait for the right trading opportunities.",
+          "Emotional control to handle market fluctuations."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and resources.",
+          "Practice with demo trading accounts.",
+          "Join trading communities for support and tips."
+      ],
+      "realityCheck": "Many day traders lose money, and it takes time to develop a successful strategy."
   },
   "dental-assistant": {
       "typicalDay": {
@@ -2310,6 +4364,190 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time doing routine tasks, which can feel repetitive."
   },
+  "derivatives-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check market news and updates.",
+              "Review positions and risk exposure.",
+              "Prepare trading strategies based on market analysis."
+          ],
+          "midday": [
+              "Execute trades based on market movements.",
+              "Monitor trading performance and adjust strategies.",
+              "Communicate with team members about market trends."
+          ],
+          "afternoon": [
+              "Analyse the day's trading results.",
+              "Research upcoming economic events.",
+              "Plan for the next trading day."
+          ],
+          "tools": [
+              "Trading platforms like Bloomberg or Reuters.",
+              "Excel for modelling and analysis.",
+              "Risk management software."
+          ],
+          "environment": "Typically indoors in a fast-paced office environment, with a focus on screens and constant communication."
+      },
+      "whatYouActuallyDo": [
+          "Buy and sell derivatives like options and futures.",
+          "Manage and assess risk for your trades.",
+          "Develop models to predict market behaviour.",
+          "Make quick decisions in response to market changes.",
+          "Collaborate with other traders and analysts.",
+          "Keep up to date with financial news and trends.",
+          "Prepare reports on trading performance."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical and enjoys numbers.",
+          "Good at staying calm under pressure.",
+          "Comfortable making quick decisions.",
+          "Enjoys working in a team.",
+          "Interested in global financial markets."
+      ],
+      "topSkills": [
+          "Understanding derivatives pricing.",
+          "Strong risk management abilities.",
+          "Proficient in financial modelling.",
+          "Ability to make fast decisions.",
+          "Discipline in following trading strategies.",
+          "Good communication skills for team collaboration.",
+          "Attention to detail in market analysis."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's in Finance, Maths, or Physics.",
+          "Gain experience through internships at banks or trading firms.",
+          "Consider trading competitions or simulations.",
+          "Look for entry-level positions on trading desks.",
+          "Pursue relevant certifications in finance or trading."
+      ],
+      "realityCheck": "The job requires constant focus and can be stressful, especially during volatile market conditions."
+  },
+  "dermatologic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Perform surgeries on patients with skin cancers",
+              "Conduct follow-up consultations with patients",
+              "Meet with the surgical team to discuss cases",
+              "Update patient records after each procedure"
+          ],
+          "midday": [
+              "Perform minor surgical procedures or biopsies",
+              "Attend meetings with other specialists for case discussions",
+              "Check in with nursing staff about patient care",
+              "Review lab results from pathology",
+              "Take a short break to recharge"
+          ],
+          "afternoon": [
+              "Perform additional surgeries or cosmetic procedures",
+              "Consult with patients about treatment options",
+              "Educate patients on skin care post-surgery",
+              "Participate in training sessions or workshops",
+              "Complete administrative tasks like scheduling"
+          ],
+          "tools": [
+              "Surgical instruments for excisions",
+              "Dermoscopy for skin examinations",
+              "Surgical sutures and staples",
+              "Medical imaging equipment",
+              "Electronic health record software"
+          ],
+          "environment": "Mostly indoors in a surgical clinic or hospital, working closely with a medical team and interacting with patients."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to remove skin cancers and cysts.",
+          "Use specialised tools to examine skin conditions.",
+          "Closely monitor patients during recovery.",
+          "Educate patients on skin health and post-surgery care.",
+          "Collaborate with dermatologists and other surgeons.",
+          "Review and interpret pathology reports.",
+          "Keep detailed records of surgeries and patient progress."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Calm under pressure.",
+          "Good at communicating with patients.",
+          "Enjoys working in a team.",
+          "Has a strong interest in medicine and surgery."
+      ],
+      "topSkills": [
+          "Expertise in Mohs surgery techniques.",
+          "Ability to perform skin flap closures.",
+          "Knowledge of dermatological pathology.",
+          "Strong communication skills for patient interactions.",
+          "Attention to detail in surgical procedures.",
+          "Ability to work in a fast-paced environment.",
+          "Teamwork skills for collaborating with medical staff."
+      ],
+      "entryPaths": [
+          "Complete a medical degree in Norway.",
+          "Specialise in dermatology through a residency programme.",
+          "Pursue a fellowship in surgical dermatology.",
+          "Gain experience in a hospital or clinic setting.",
+          "Consider volunteering or internships in dermatology."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of study and practice required before you can perform surgeries independently."
+  },
+  "detective": {
+      "typicalDay": {
+          "morning": [
+              "Review case files and notes from previous investigations",
+              "Meet with team members to discuss ongoing cases",
+              "Interview witnesses or victims to gather more information"
+          ],
+          "midday": [
+              "Visit crime scenes to collect evidence",
+              "Write reports on interviews and findings",
+              "Consult with forensic specialists about evidence analysis"
+          ],
+          "afternoon": [
+              "Follow up with leads and check in with informants",
+              "Attend court hearings to support prosecution",
+              "Plan next steps for ongoing investigations"
+          ],
+          "tools": [
+              "Police radio for communication",
+              "Laptop for report writing",
+              "Camera for documenting crime scenes",
+              "Evidence collection kits",
+              "Interview recording devices"
+          ],
+          "environment": "Mostly indoors in an office setting, with time spent out in the field at crime scenes."
+      },
+      "whatYouActuallyDo": [
+          "Investigate serious crimes by gathering evidence.",
+          "Interview witnesses and victims to get their accounts.",
+          "Write detailed reports about findings and interviews.",
+          "Work with forensic teams to analyse physical evidence.",
+          "Collaborate with other police officers and departments.",
+          "Prepare cases for court and support in legal proceedings.",
+          "Follow up on leads and maintain communication with informants."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about solving puzzles and mysteries.",
+          "Good at staying calm in stressful situations.",
+          "Enjoys talking to people and asking questions.",
+          "Patient and persistent in finding answers.",
+          "Able to think critically and analyse information."
+      ],
+      "topSkills": [
+          "Strong analytical thinking for solving cases.",
+          "Effective interviewing skills to gather information.",
+          "Attention to detail when collecting evidence.",
+          "Good report writing for documenting findings.",
+          "Knowledge of laws and legal procedures.",
+          "Communication skills for working with others.",
+          "Problem-solving skills to navigate complex cases."
+      ],
+      "entryPaths": [
+          "Complete a Police College programme (3 years).",
+          "Gain investigative experience while working in the police force.",
+          "Pursue specialist training in criminal investigation.",
+          "Consider internships or volunteer roles in law enforcement.",
+          "Look for job openings in local police departments."
+      ],
+      "realityCheck": "The job can involve long hours and dealing with difficult situations."
+  },
   "dietitian": {
       "typicalDay": {
           "morning": [
@@ -2362,6 +4600,57 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships in hospitals or clinics."
       ],
       "realityCheck": "You often have to deal with patients who struggle to follow dietary plans, which can be challenging."
+  },
+  "digital-creator": {
+      "typicalDay": {
+          "morning": [
+              "Check social media for trends and inspiration",
+              "Plan content ideas for the week",
+              "Respond to comments and messages"
+          ],
+          "midday": [
+              "Create and edit a video or graphic",
+              "Collaborate with other creators online",
+              "Schedule posts for the week"
+          ],
+          "afternoon": [
+              "Review analytics to see what works",
+              "Experiment with new content formats",
+              "Engage with your audience through live sessions"
+          ],
+          "tools": [
+              "Video editing software (e.g. Adobe Premiere, Final Cut Pro)",
+              "Graphic design tools (e.g. Canva, Photoshop)",
+              "Social media management apps (e.g. Hootsuite, Buffer)"
+          ],
+          "environment": "Mostly working from home or a shared studio, with a flexible schedule and lots of creative freedom."
+      },
+      "whatYouActuallyDo": [
+          "Create videos, posts, or artwork for social media.",
+          "Edit and polish your content before sharing.",
+          "Engage with your audience by replying to comments.",
+          "Stay updated on trends and adapt your content.",
+          "Collaborate with other creators to reach new audiences.",
+          "Analyse performance metrics to improve future content."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and imaginative individuals.",
+          "Self-motivated and disciplined workers.",
+          "Those who enjoy experimenting with new ideas."
+      ],
+      "topSkills": [
+          "Proficiency in digital editing software.",
+          "Strong storytelling abilities.",
+          "Understanding of social media algorithms.",
+          "Ability to analyse audience engagement.",
+          "Time management for consistent content creation."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and tutorials.",
+          "Building a portfolio on platforms like Instagram or YouTube.",
+          "Participating in online communities or forums for creators."
+      ],
+      "realityCheck": "It takes time to build an audience and see results, so patience and persistence are key."
   },
   "disability-support-worker": {
       "typicalDay": {
@@ -2526,6 +4815,66 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a reputation takes time, and you may need to play for free or at low-paying gigs initially."
   },
+  "documentary-filmmaker": {
+      "typicalDay": {
+          "morning": [
+              "Research topics for upcoming projects",
+              "Contact potential interview subjects",
+              "Review footage from previous shoots"
+          ],
+          "midday": [
+              "Conduct interviews with subjects",
+              "Attend meetings with producers or collaborators",
+              "Plan shooting schedules and locations"
+          ],
+          "afternoon": [
+              "Edit footage using video editing software",
+              "Review and organise raw footage",
+              "Work on grant applications for funding"
+          ],
+          "tools": [
+              "Camera equipment",
+              "Audio recording devices",
+              "Video editing software (e.g. Adobe Premiere Pro)",
+              "Storyboarding tools",
+              "Research databases"
+          ],
+          "environment": "Mostly indoors in an office or editing suite, with some time spent on location filming."
+      },
+      "whatYouActuallyDo": [
+          "Research and develop documentary topics that are relevant and engaging.",
+          "Interview people to gather personal stories and insights.",
+          "Film interviews and other relevant footage on location.",
+          "Edit video footage to create a compelling narrative.",
+          "Apply for grants and funding to support film projects.",
+          "Collaborate with other filmmakers and producers.",
+          "Manage project timelines and budgets."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative with a passion for storytelling.",
+          "Curious about the world and different cultures.",
+          "Good at communicating with various people.",
+          "Detail-oriented and organised.",
+          "Comfortable working independently and in teams."
+      ],
+      "topSkills": [
+          "Strong research abilities to find compelling stories.",
+          "Interviewing skills to connect with subjects.",
+          "Editing skills to create a cohesive film.",
+          "Time management to meet deadlines.",
+          "Fundraising skills to secure project funding.",
+          "Technical skills with cameras and editing software.",
+          "Story structure knowledge to build engaging narratives."
+      ],
+      "entryPaths": [
+          "Attend a film school with a focus on documentary filmmaking.",
+          "Complete a bachelor's degree in film or media studies.",
+          "Gain experience through internships at production companies.",
+          "Participate in workshops or courses on grant writing.",
+          "Start with smaller projects or volunteer for local documentaries."
+      ],
+      "realityCheck": "Many projects require long hours and can be unpredictable, especially when it comes to securing funding."
+  },
   "dog-groomer": {
       "typicalDay": {
           "morning": [
@@ -2626,6 +4975,170 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often deal with heavy emotional situations, which can be challenging and draining."
   },
+  "drone-operator-uav": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and prepare drones for flight.",
+              "Review mission objectives and flight paths.",
+              "Conduct pre-flight safety checks."
+          ],
+          "midday": [
+              "Pilot drone missions for surveillance or reconnaissance.",
+              "Monitor live feeds and data from the drone.",
+              "Communicate with team members about findings."
+          ],
+          "afternoon": [
+              "Analyse data collected during missions.",
+              "Attend briefings to discuss mission outcomes.",
+              "Perform maintenance on drones as needed."
+          ],
+          "tools": [
+              "Drone flight control software",
+              "GPS and mapping tools",
+              "Communication headsets",
+              "Data analysis software",
+              "Maintenance tools for drones"
+          ],
+          "environment": "Mostly indoors in a control room, with periods of outdoor drone operation."
+      },
+      "whatYouActuallyDo": [
+          "Pilot drones to gather data for various missions.",
+          "Ensure drones are safe and ready for flight.",
+          "Monitor drone performance during missions.",
+          "Communicate with team members about mission status.",
+          "Analyse video and data collected from flights.",
+          "Maintain and repair drones as needed."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at following detailed instructions.",
+          "Enjoys technology and gadgets.",
+          "Able to work as part of a team.",
+          "Keen interest in aviation or robotics."
+      ],
+      "topSkills": [
+          "Operating flight controls accurately.",
+          "Maintaining situational awareness during missions.",
+          "Calm focus in high-pressure situations.",
+          "Operating sensors and cameras on drones.",
+          "Effective communication with team members."
+      ],
+      "entryPaths": [
+          "Complete military service and obtain UAV pilot certification.",
+          "Attend a vocational programme in drone technology.",
+          "Gain experience through internships with drone companies.",
+          "Seek apprenticeships with companies that operate drones.",
+          "Look for job openings with governmental agencies using drones."
+      ],
+      "realityCheck": "The job requires intense concentration and can involve long hours of monitoring without much action."
+  },
+  "drone-videographer": {
+      "typicalDay": {
+          "morning": [
+              "Check weather conditions and plan the shoot location.",
+              "Charge drone batteries and prepare equipment.",
+              "Review the shoot brief with clients or team."
+          ],
+          "midday": [
+              "Set up the drone and test flight controls.",
+              "Capture aerial footage and photos as per the brief.",
+              "Communicate with clients to ensure satisfaction with shots."
+          ],
+          "afternoon": [
+              "Download and back up footage to a computer.",
+              "Edit video and photos using editing software.",
+              "Send initial edits to clients for feedback."
+          ],
+          "tools": [
+              "Drone with camera",
+              "Editing software (like Adobe Premiere or Final Cut Pro)",
+              "Laptop or tablet for editing and planning",
+              "Tripod for ground shots",
+              "GPS device for navigation"
+          ],
+          "environment": "Mostly outdoors at various locations, with a mix of client interaction and solo work."
+      },
+      "whatYouActuallyDo": [
+          "Fly drones to capture video and photos from the air.",
+          "Plan shoots based on client needs and weather conditions.",
+          "Edit and enhance footage for final delivery.",
+          "Ensure compliance with local drone regulations.",
+          "Communicate with clients about their vision and feedback."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative with a good eye for composition.",
+          "Tech-savvy and enjoys working with gadgets.",
+          "Comfortable working outdoors in different weather.",
+          "Good at managing time and meeting deadlines."
+      ],
+      "topSkills": [
+          "Drone piloting and control.",
+          "Understanding of camera settings and techniques.",
+          "Knowledge of local drone regulations.",
+          "Video editing skills.",
+          "Ability to plan and organise shoots."
+      ],
+      "entryPaths": [
+          "Obtain a drone pilot certification (RO1/RO2) in Norway.",
+          "Take courses in photography or videography.",
+          "Gain experience through internships or assisting established videographers.",
+          "Build a portfolio by shooting for friends or local events."
+      ],
+      "realityCheck": "You will spend a lot of time editing footage, which can be tedious compared to the excitement of flying the drone."
+  },
+  "dropshipper": {
+      "typicalDay": {
+          "morning": [
+              "Check sales and order status from the previous day.",
+              "Respond to customer inquiries and messages.",
+              "Review ad performance and adjust budgets."
+          ],
+          "midday": [
+              "Research new products and trends in the market.",
+              "Update product listings and descriptions on the website.",
+              "Communicate with suppliers about stock levels."
+          ],
+          "afternoon": [
+              "Create and schedule social media posts for marketing.",
+              "Monitor website traffic and customer behaviour.",
+              "Plan future advertising campaigns based on analytics."
+          ],
+          "tools": [
+              "E-commerce platforms like Shopify or WooCommerce.",
+              "Advertising tools like Facebook Ads Manager or Google Ads.",
+              "Analytics tools like Google Analytics."
+          ],
+          "environment": "Mostly remote work, flexible hours, with a focus on online communication and marketing."
+      },
+      "whatYouActuallyDo": [
+          "Set up and manage an online store without holding stock.",
+          "Find reliable suppliers who can ship products directly to customers.",
+          "Create and run online advertisements to attract customers.",
+          "Respond to customer queries and handle any issues with orders.",
+          "Monitor sales data and adjust strategies to improve performance.",
+          "Research market trends to identify popular products.",
+          "Update product listings and ensure they are appealing to customers."
+      ],
+      "whoThisIsGoodFor": [
+          "Self-motivated and disciplined.",
+          "Enjoys problem-solving and finding creative solutions.",
+          "Comfortable with technology and online tools."
+      ],
+      "topSkills": [
+          "Product research to find trending items.",
+          "Creating effective online advertisements.",
+          "Managing customer relationships and communications.",
+          "Analysing sales data for decision making.",
+          "Building and maintaining an online store.",
+          "Negotiating with suppliers for better deals."
+      ],
+      "entryPaths": [
+          "Start with self-learning through online courses and resources.",
+          "Join dropshipping communities for support and advice.",
+          "Experiment with small-scale dropshipping to gain experience."
+      ],
+      "realityCheck": "Many dropshippers struggle at first, and it can take time to find what works."
+  },
   "early-childhood-educator": {
       "typicalDay": {
           "morning": [
@@ -2675,6 +5188,123 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience through volunteer work in child care settings."
       ],
       "realityCheck": "The job can be emotionally demanding, as you often support children through various challenges."
+  },
+  "ecommerce-seller": {
+      "typicalDay": {
+          "morning": [
+              "Check emails for customer inquiries and order updates.",
+              "Update product listings with new photos or descriptions.",
+              "Review inventory levels and restock if necessary."
+          ],
+          "midday": [
+              "Pack and ship orders that need to go out.",
+              "Research new products or trends to consider for the store.",
+              "Engage with customers on social media or through email."
+          ],
+          "afternoon": [
+              "Plan and schedule marketing posts for the week.",
+              "Analyse sales data to see what products are performing well.",
+              "Respond to customer feedback and resolve any issues."
+          ],
+          "tools": [
+              "E-commerce platform (like Shopify or WooCommerce)",
+              "Inventory management software",
+              "Social media tools (like Hootsuite or Buffer)",
+              "Shipping software",
+              "Photo editing tools (like Canva or Photoshop)"
+          ],
+          "environment": "Mostly indoors, working from home or a small office, with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Source products from suppliers or manufacturers.",
+          "Create and manage product listings on the website.",
+          "Fulfil customer orders and handle shipping.",
+          "Market products through social media and online ads.",
+          "Respond to customer inquiries and provide support.",
+          "Monitor sales and adjust strategies based on performance.",
+          "Keep track of inventory and manage stock levels."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative problem-solver",
+          "Self-motivated and organised",
+          "Good at communicating with customers",
+          "Comfortable learning new technology",
+          "Enjoys working independently"
+      ],
+      "topSkills": [
+          "Product sourcing and negotiation",
+          "Creating appealing product listings",
+          "Understanding of digital marketing",
+          "Logistics and order fulfilment",
+          "Customer service and communication",
+          "Data analysis for sales trends",
+          "Time management and organisation"
+      ],
+      "entryPaths": [
+          "Start by selling items on platforms like Finn.no or Tise.",
+          "Take online courses in e-commerce and digital marketing.",
+          "Join a vocational programme in business or marketing.",
+          "Gain experience through internships at e-commerce companies.",
+          "Learn from self-taught resources and build your own store."
+      ],
+      "realityCheck": "You often wear many hats, managing everything from sourcing to customer service, which can be overwhelming at times."
+  },
+  "educational-content-creator": {
+      "typicalDay": {
+          "morning": [
+              "Research topics for new content",
+              "Write scripts for videos or articles",
+              "Plan the day's filming schedule"
+          ],
+          "midday": [
+              "Film video segments or record audio",
+              "Edit video clips or articles",
+              "Review and revise content for clarity"
+          ],
+          "afternoon": [
+              "Upload videos or articles to platforms",
+              "Engage with audience comments and feedback",
+              "Collaborate with other creators or educators"
+          ],
+          "tools": [
+              "Video editing software (e.g. Adobe Premiere Pro)",
+              "Screen recording tools (e.g. OBS Studio)",
+              "Writing software (e.g. Google Docs)",
+              "Social media platforms for sharing",
+              "Camera equipment for filming"
+          ],
+          "environment": "Mostly indoors, working from home or a studio, with a flexible schedule that allows for creativity."
+      },
+      "whatYouActuallyDo": [
+          "Create educational videos on various subjects.",
+          "Write engaging articles to explain concepts.",
+          "Research topics to ensure accuracy and relevance.",
+          "Edit videos to make them clear and professional.",
+          "Respond to viewers' questions and comments.",
+          "Collaborate with other educators to share ideas.",
+          "Plan content based on audience needs and trends."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys storytelling.",
+          "Good at explaining complex ideas simply.",
+          "Self-motivated and can work independently.",
+          "Comfortable using technology and social media.",
+          "Passionate about a particular subject."
+      ],
+      "topSkills": [
+          "Strong writing skills for clear communication.",
+          "Video production skills for creating engaging content.",
+          "Research skills to gather accurate information.",
+          "Editing skills for refining videos and articles.",
+          "Ability to connect with an audience online."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses in video production and writing.",
+          "Building a portfolio of content on platforms like YouTube or blogs.",
+          "Taking relevant courses in media or education at videregående.",
+          "Networking with other content creators for collaboration opportunities."
+      ],
+      "realityCheck": "Creating content takes a lot of time and effort, and it can be challenging to grow an audience."
   },
   "emergency-dispatcher": {
       "typicalDay": {
@@ -2787,6 +5417,112 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be emotionally challenging, as you often see people in difficult situations."
   },
+  "endocrine-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and surgical plans",
+              "Meet with the surgical team to discuss the day's procedures",
+              "Prepare the operating room and ensure all instruments are ready"
+          ],
+          "midday": [
+              "Perform surgeries on patients with gland issues",
+              "Monitor patient vitals during operations",
+              "Communicate with anaesthetists about patient care"
+          ],
+          "afternoon": [
+              "Conduct post-operative checks on patients",
+              "Document surgical notes and patient progress",
+              "Consult with patients about their recovery and follow-up care"
+          ],
+          "tools": [
+              "Surgical instruments for dissection",
+              "Ultrasound machines for guidance",
+              "Nerve monitoring equipment"
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre, with a focus on patient care and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the thyroid, parathyroid, and adrenal glands.",
+          "Use ultrasound to locate glands during operations.",
+          "Monitor nerves to avoid damage during surgery.",
+          "Work with a team of nurses and anaesthetists during procedures.",
+          "Consult with patients before and after surgery about their conditions."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Calm under pressure.",
+          "Good at working with a team."
+      ],
+      "topSkills": [
+          "Fine dissection techniques.",
+          "Knowledge of endocrinology and hormone functions.",
+          "Ability to use ultrasound guidance accurately.",
+          "Nerve monitoring skills.",
+          "Strong communication with patients and staff."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue an endocrine surgery fellowship after general surgery training.",
+          "Gain experience in surgical settings through internships or shadowing."
+      ],
+      "realityCheck": "The training is long and demanding, with many years required before you can operate independently."
+  },
+  "eod-technician": {
+      "typicalDay": {
+          "morning": [
+              "Review the day's tasks and check equipment readiness.",
+              "Conduct safety briefings with the team.",
+              "Inspect and prepare tools for disposal operations."
+          ],
+          "midday": [
+              "Respond to reports of suspicious items or explosives.",
+              "Set up a safe perimeter around the disposal site.",
+              "Communicate with local authorities about ongoing operations."
+          ],
+          "afternoon": [
+              "Carry out controlled detonations of explosives.",
+              "Document the disposal process and any findings.",
+              "Attend team debriefings to discuss the day's operations."
+          ],
+          "tools": [
+              "Bomb disposal robots",
+              "Explosive ordnance disposal suits",
+              "Detonators and safety equipment",
+              "Communication devices",
+              "Diagnostic tools for explosives"
+          ],
+          "environment": "Mostly outdoors in varied locations, often in high-stress situations with a focus on safety and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Identify and assess explosive threats in the field.",
+          "Safely dispose of bombs and other explosives.",
+          "Work closely with military and local authorities.",
+          "Maintain and inspect disposal equipment regularly.",
+          "Provide training and support to less experienced team members."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Detail-oriented and precise.",
+          "Strong problem-solving skills.",
+          "Team player who can also work independently.",
+          "Physically fit and able to handle demanding situations."
+      ],
+      "topSkills": [
+          "In-depth knowledge of explosives and their behaviour.",
+          "Ability to remain calm in high-stress environments.",
+          "Precision in handling and disposing of dangerous materials.",
+          "Strong diagnostic skills for identifying threats.",
+          "Excellent communication skills for coordinating with teams."
+      ],
+      "entryPaths": [
+          "Complete military service followed by EOD training.",
+          "Attend a military academy with a focus on explosives.",
+          "Participate in specialised EOD courses after basic training.",
+          "Gain experience in related fields like engineering or safety.",
+          "Look for apprenticeships in military or security services."
+      ],
+      "realityCheck": "The job involves a lot of waiting and preparation before the actual disposal, which can be mentally challenging."
+  },
   "epidemiologist": {
       "typicalDay": {
           "morning": [
@@ -2892,6 +5628,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Apprenticeships in sports management or facility maintenance."
       ],
       "realityCheck": "You spend a lot of time on tasks that seem small but are crucial for the team's success."
+  },
+  "equity-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Review financial news and updates about companies.",
+              "Analyse stock performance from the previous day.",
+              "Meet with team members to discuss market trends."
+          ],
+          "midday": [
+              "Conduct detailed financial analysis on specific companies.",
+              "Prepare valuation models using Excel.",
+              "Draft reports summarising findings."
+          ],
+          "afternoon": [
+              "Present analysis and recommendations to fund managers.",
+              "Attend meetings with clients to discuss investment strategies.",
+              "Update research notes based on feedback received."
+          ],
+          "tools": [
+              "Excel for financial modelling.",
+              "Bloomberg Terminal for market data.",
+              "PowerPoint for presentations."
+          ],
+          "environment": "Mostly indoors in an office setting, with a fast-paced rhythm and a focus on teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Research companies and their financial health.",
+          "Build financial models to predict future performance.",
+          "Write reports that analyse stock recommendations.",
+          "Stay updated on industry trends and news.",
+          "Communicate findings to clients and colleagues."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with numbers and data.",
+          "Good at analysing complex information.",
+          "Comfortable making presentations to groups."
+      ],
+      "topSkills": [
+          "Financial analysis and modelling.",
+          "Report writing and communication.",
+          "Understanding of market trends.",
+          "Attention to detail in data interpretation.",
+          "Ability to work under pressure and meet deadlines."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Finance or Economics.",
+          "Pursue the CFA (Chartered Financial Analyst) certification.",
+          "Look for internships with investment firms or banks."
+      ],
+      "realityCheck": "The job can be intense, with long hours and tight deadlines, especially during earnings seasons."
   },
   "escrow-officer": {
       "typicalDay": {
@@ -3153,6 +5939,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in relevant areas like facilities management."
       ],
       "realityCheck": "You often spend more time on paperwork and budgets than on the exciting parts of estate management."
+  },
+  "event-photographer": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and prepare for the event.",
+              "Review the event schedule and plan key shots.",
+              "Arrive early to set up and scout locations."
+          ],
+          "midday": [
+              "Capture photos of speakers or activities.",
+              "Engage with attendees to get candid shots.",
+              "Adjust settings for changing light conditions."
+          ],
+          "afternoon": [
+              "Continue shooting key moments and interactions.",
+              "Back up photos to ensure no loss of work.",
+              "Start editing a selection of images on-site if possible."
+          ],
+          "tools": [
+              "DSLR or mirrorless camera",
+              "Lenses for different situations",
+              "Editing software like Lightroom or Photoshop",
+              "Tripod or stabiliser for video",
+              "External flash for low-light situations"
+          ],
+          "environment": "Mostly outdoors or in event venues, moving around a lot to capture different angles and moments."
+      },
+      "whatYouActuallyDo": [
+          "Take photos at various events like weddings, concerts, and conferences.",
+          "Edit and process photos to prepare for delivery.",
+          "Communicate with clients to understand their needs.",
+          "Manage equipment and ensure everything is in working order.",
+          "Deliver photos quickly to meet client expectations."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and visual thinkers",
+          "Comfortable working in busy environments",
+          "Good at interacting with different people",
+          "Able to work under pressure during events"
+      ],
+      "topSkills": [
+          "Fast shooting to capture fleeting moments",
+          "Strong editing skills for quick turnaround",
+          "Good communication to connect with clients",
+          "Ability to adapt to different lighting conditions",
+          "Reliability to meet deadlines"
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and practice",
+          "Attend a photography school for formal training",
+          "Build a strong portfolio to showcase your work",
+          "Gain experience through internships or assisting other photographers",
+          "Participate in local events to network and find opportunities"
+      ],
+      "realityCheck": "You often have to work long hours on your feet and deal with unpredictable situations at events."
   },
   "facilities-manager": {
       "typicalDay": {
@@ -3480,6 +6321,706 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The process can be slow, and often you spend a lot of time revising based on feedback before finalising your work."
   },
+  "film-director": {
+      "typicalDay": {
+          "morning": [
+              "Review the day's shooting schedule with the crew.",
+              "Meet with the cinematographer to discuss camera angles.",
+              "Rehearse scenes with actors before filming."
+          ],
+          "midday": [
+              "Watch the footage from the morning shoot.",
+              "Provide feedback to the actors and crew.",
+              "Plan adjustments for the next scene."
+          ],
+          "afternoon": [
+              "Direct the filming of key scenes.",
+              "Collaborate with the sound team on audio.",
+              "Hold a wrap-up meeting to discuss the day's progress."
+          ],
+          "tools": [
+              "Camera equipment",
+              "Script software",
+              "Storyboarding tools",
+              "Editing software",
+              "Communication devices"
+          ],
+          "environment": "Mostly outdoors or on set, with a fast-paced rhythm and a lot of collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Create a vision for the film from the script.",
+          "Guide actors in their performances.",
+          "Make decisions on camera shots and angles.",
+          "Work closely with the crew to ensure everything runs smoothly.",
+          "Edit footage and provide input on post-production.",
+          "Attend meetings with producers and writers.",
+          "Solve problems that arise during filming."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative thinker with a strong vision.",
+          "Confident in leading a team.",
+          "Good at communicating ideas clearly.",
+          "Able to handle stress and tight deadlines.",
+          "Passionate about storytelling and film."
+      ],
+      "topSkills": [
+          "Strong storytelling ability.",
+          "Leadership and team management.",
+          "Visual thinking for shot composition.",
+          "Decision-making under pressure.",
+          "Actor direction and coaching.",
+          "Problem-solving skills.",
+          "Time management for scheduling shoots."
+      ],
+      "entryPaths": [
+          "Attend a film school or university programme in film studies.",
+          "Build a portfolio through short films or projects.",
+          "Gain experience by working on film sets in various roles.",
+          "Consider internships with production companies.",
+          "Network with industry professionals at film festivals."
+      ],
+      "realityCheck": "The path to directing can be long and requires a lot of experience in smaller roles before you get to lead a project."
+  },
+  "financial-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Check financial news and market updates.",
+              "Review reports from the previous day.",
+              "Update financial models in Excel."
+          ],
+          "midday": [
+              "Attend meetings with team members to discuss findings.",
+              "Prepare presentations for stakeholders.",
+              "Respond to queries from other departments."
+          ],
+          "afternoon": [
+              "Conduct in-depth analysis on specific financial data.",
+              "Build forecasts based on current trends.",
+              "Draft reports summarising your analysis."
+          ],
+          "tools": [
+              "Excel",
+              "financial modelling software",
+              "presentation tools like PowerPoint",
+              "data analysis tools",
+              "financial databases"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of individual work and team meetings."
+      },
+      "whatYouActuallyDo": [
+          "Analyse financial data to assess business performance.",
+          "Build and maintain financial models to predict future outcomes.",
+          "Prepare reports for management and stakeholders.",
+          "Collaborate with other departments to gather necessary data.",
+          "Present findings and recommendations to decision-makers."
+      ],
+      "whoThisIsGoodFor": [
+          "Good with numbers and data.",
+          "Detail-oriented and organised.",
+          "Enjoys problem-solving and critical thinking."
+      ],
+      "topSkills": [
+          "Advanced Excel skills for financial modelling.",
+          "Strong analytical skills to interpret data.",
+          "Effective communication for presenting findings.",
+          "Attention to detail in data accuracy.",
+          "Ability to work under pressure and meet deadlines."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Finance or Economics.",
+          "Relevant internships in finance or banking.",
+          "Courses in Excel and financial modelling.",
+          "Entry-level positions in finance departments."
+      ],
+      "realityCheck": "You may spend a lot of time on data entry and analysis before getting to the more strategic parts of the job."
+  },
+  "fitness-influencer": {
+      "typicalDay": {
+          "morning": [
+              "Record a workout video or live session.",
+              "Engage with followers on social media.",
+              "Plan content for the week."
+          ],
+          "midday": [
+              "Create and edit content for posts or stories.",
+              "Respond to messages and comments from followers.",
+              "Research new fitness trends or nutrition tips."
+          ],
+          "afternoon": [
+              "Collaborate with brands or other influencers.",
+              "Coach clients online or in-person.",
+              "Review analytics to see what content performs best."
+          ],
+          "tools": [
+              "Camera or smartphone for filming.",
+              "Video editing software.",
+              "Social media platforms (Instagram, TikTok, YouTube)."
+          ],
+          "environment": "Mostly working from home or a gym, with a flexible schedule that varies day to day."
+      },
+      "whatYouActuallyDo": [
+          "Create and share workout videos on social media.",
+          "Write captions and posts about fitness and nutrition.",
+          "Interact with followers and answer their questions.",
+          "Coach clients through online sessions or in-person.",
+          "Collaborate with brands for sponsored content.",
+          "Track your performance and adjust your strategy.",
+          "Stay updated on fitness trends to keep content fresh."
+      ],
+      "whoThisIsGoodFor": [
+          "Outgoing and enjoys being in front of a camera.",
+          "Passionate about fitness and healthy living.",
+          "Creative and likes making engaging content."
+      ],
+      "topSkills": [
+          "Knowledge of fitness and nutrition.",
+          "Ability to create engaging videos and posts.",
+          "Strong communication skills for coaching.",
+          "Consistency in posting and engaging with followers.",
+          "Basic knowledge of social media analytics."
+      ],
+      "entryPaths": [
+          "Obtain a personal training certification.",
+          "Learn content creation skills through online courses.",
+          "Start building a personal brand on social media.",
+          "Gain experience by coaching friends or local clients."
+      ],
+      "realityCheck": "Building a following takes time and effort; not every post will go viral."
+  },
+  "flight-dynamics-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from team members and clients.",
+              "Review simulation results from previous day.",
+              "Attend a team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Work on trajectory calculations for upcoming missions.",
+              "Run simulations using MATLAB or Python.",
+              "Document findings and update project reports."
+          ],
+          "afternoon": [
+              "Collaborate with other engineers to refine mission plans.",
+              "Prepare presentations for stakeholders.",
+              "Research new methods in orbital mechanics."
+          ],
+          "tools": [
+              "MATLAB",
+              "Python",
+              "simulation software",
+              "computers",
+              "data analysis tools"
+          ],
+          "environment": "Mostly indoors in an office or lab, with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Calculate spacecraft trajectories for different missions.",
+          "Run simulations to predict orbital behaviour.",
+          "Collaborate with other engineers on mission designs.",
+          "Refine manoeuvres based on simulation data.",
+          "Prepare reports and presentations for team meetings."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong in maths and physics.",
+          "Enjoys solving complex problems.",
+          "Detail-oriented and precise.",
+          "Good at working in teams.",
+          "Curious about space and technology."
+      ],
+      "topSkills": [
+          "Understanding of orbital mechanics.",
+          "Proficiency in MATLAB and Python.",
+          "Ability to run and interpret simulations.",
+          "Strong analytical skills.",
+          "Precision in calculations and modelling."
+      ],
+      "entryPaths": [
+          "Complete a Master's or PhD in Aerospace Engineering or Astrodynamics.",
+          "Look for internships at aerospace companies.",
+          "Consider a relevant bachelor's degree followed by further studies.",
+          "Explore research assistant positions at universities.",
+          "Participate in aerospace-related projects or competitions."
+      ],
+      "realityCheck": "The work can be very technical and requires a lot of attention to detail, which can be challenging."
+  },
+  "flight-engineer-space": {
+      "typicalDay": {
+          "morning": [
+              "Review spacecraft systems and check for any issues.",
+              "Conduct pre-launch system diagnostics.",
+              "Attend briefings with the mission control team."
+          ],
+          "midday": [
+              "Monitor life support systems and make adjustments as needed.",
+              "Perform routine maintenance checks on propulsion systems.",
+              "Communicate with the crew and mission control about system status."
+          ],
+          "afternoon": [
+              "Assist with spacewalk preparations and equipment checks.",
+              "Update system logs and reports for mission tracking.",
+              "Participate in team debriefs to discuss any challenges."
+          ],
+          "tools": [
+              "Diagnostic software for spacecraft systems.",
+              "Communication devices for contact with mission control.",
+              "Maintenance tools for spacecraft hardware."
+          ],
+          "environment": "Working in a spacecraft, often in a confined space, with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Operate various spacecraft systems during missions.",
+          "Perform diagnostics to identify and fix problems.",
+          "Maintain life support systems to ensure crew safety.",
+          "Coordinate with mission control for system updates.",
+          "Prepare for and assist with spacewalks as required."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure when facing technical issues.",
+          "Enjoys working as part of a team.",
+          "Strong problem-solving skills and attention to detail."
+      ],
+      "topSkills": [
+          "Systems engineering knowledge specific to spacecraft.",
+          "Ability to perform diagnostics quickly and accurately.",
+          "Experience with EVA (extravehicular activity) operations.",
+          "Strong communication skills for team coordination.",
+          "Ability to remain calm under stressful situations."
+      ],
+      "entryPaths": [
+          "Obtain a Master's degree in Aerospace Engineering.",
+          "Complete astronaut training through a space agency.",
+          "Gain experience in engineering roles related to aerospace."
+      ],
+      "realityCheck": "The training and preparation can take years, and the work can be highly technical and demanding."
+  },
+  "food-blogger": {
+      "typicalDay": {
+          "morning": [
+              "Plan and test new recipes.",
+              "Take photos of finished dishes.",
+              "Write blog posts or social media updates."
+          ],
+          "midday": [
+              "Visit local markets or restaurants for inspiration.",
+              "Engage with followers on social media.",
+              "Edit photos and videos for content."
+          ],
+          "afternoon": [
+              "Collaborate with brands or other bloggers.",
+              "Attend food events or tastings.",
+              "Research food trends and topics."
+          ],
+          "tools": [
+              "Camera for food photography.",
+              "Photo editing software.",
+              "Blogging platform or website builder.",
+              "Social media apps.",
+              "Recipe development tools."
+          ],
+          "environment": "Mostly working from home or cafés, with a flexible schedule and a mix of creative and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Create and test new recipes in your kitchen.",
+          "Take appealing photos of food for your blog.",
+          "Write engaging articles about food and dining.",
+          "Review restaurants and share your experiences.",
+          "Interact with your audience on social media.",
+          "Collaborate with brands for sponsored content.",
+          "Stay updated on food trends and new products."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys cooking.",
+          "Comfortable sharing personal experiences online.",
+          "Good at taking photos and editing them.",
+          "Interested in food culture and trends."
+      ],
+      "topSkills": [
+          "Recipe development and cooking techniques.",
+          "Food photography and editing.",
+          "Writing clearly and engagingly.",
+          "Building a personal brand and online presence.",
+          "Social media management."
+      ],
+      "entryPaths": [
+          "Start a food blog or social media account to showcase your work.",
+          "Take online courses in cooking, photography, and writing.",
+          "Network with other food bloggers and attend workshops.",
+          "Self-taught skills through practice and experimentation."
+      ],
+      "realityCheck": "Building a following takes time and effort; it can be slow before you see significant results."
+  },
+  "food-delivery-rider": {
+      "typicalDay": {
+          "morning": [
+              "Check your phone for delivery orders.",
+              "Pick up food from the restaurant.",
+              "Navigate to the customer's address."
+          ],
+          "midday": [
+              "Deliver food to customers.",
+              "Handle any customer questions or issues.",
+              "Return to the restaurant for more orders."
+          ],
+          "afternoon": [
+              "Keep track of completed deliveries.",
+              "Update your location on the delivery app.",
+              "Take breaks when needed to stay refreshed."
+          ],
+          "tools": [
+              "Smartphone for delivery app.",
+              "Bike or e-bike.",
+              "Insulated delivery bag."
+          ],
+          "environment": "Mostly outdoors, cycling around the city in various weather conditions."
+      },
+      "whatYouActuallyDo": [
+          "Pick up food orders from restaurants.",
+          "Deliver food to customers on time.",
+          "Communicate with customers if there are delays.",
+          "Navigate through traffic and find the best routes.",
+          "Maintain your bike or e-bike for safety."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being active and cycling.",
+          "Good at managing time and staying organised.",
+          "Comfortable interacting with different people."
+      ],
+      "topSkills": [
+          "Fast cycling to ensure timely deliveries.",
+          "Good navigation skills to find addresses quickly.",
+          "Stamina to handle long hours of cycling.",
+          "Customer service skills for positive interactions.",
+          "Weather tolerance to work in various conditions."
+      ],
+      "entryPaths": [
+          "Start working as a delivery rider with no formal requirements.",
+          "Use your own bike or moped.",
+          "Apply directly to companies like Foodora or Wolt."
+      ],
+      "realityCheck": "You need to be prepared for all kinds of weather and long hours on the bike."
+  },
+  "food-product-developer": {
+      "typicalDay": {
+          "morning": [
+              "Review market trends and consumer feedback on existing products",
+              "Brainstorm ideas for new food products with the team",
+              "Prepare ingredients and set up for recipe testing"
+          ],
+          "midday": [
+              "Conduct taste tests and gather feedback from colleagues",
+              "Adjust recipes based on testing results",
+              "Document changes and update product specifications"
+          ],
+          "afternoon": [
+              "Meet with marketing to discuss product launch strategies",
+              "Research suppliers for ingredients and packaging",
+              "Finalise prototypes for presentation to clients"
+          ],
+          "tools": [
+              "Recipe management software",
+              "Sensory evaluation tools",
+              "Kitchen equipment like mixers and ovens",
+              "Market research databases",
+              "Presentation software for client meetings"
+          ],
+          "environment": "Mostly indoors in a lab or kitchen setting, with a mix of hands-on cooking and office work."
+      },
+      "whatYouActuallyDo": [
+          "Develop and test new recipes for food products.",
+          "Work with chefs and food scientists to refine flavours.",
+          "Analyse consumer preferences and market trends.",
+          "Collaborate with marketing teams on product branding.",
+          "Ensure products meet safety and quality standards.",
+          "Present new ideas and prototypes to clients.",
+          "Manage timelines and project details throughout development."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative thinkers who enjoy experimenting with flavours.",
+          "Detail-oriented people who can follow and adjust recipes.",
+          "Team players who like collaborating with others.",
+          "Curious individuals who love learning about food science.",
+          "Organised folks who can manage multiple projects at once."
+      ],
+      "topSkills": [
+          "Recipe development and testing",
+          "Understanding of food safety regulations",
+          "Ability to analyse consumer data",
+          "Strong communication for team collaboration",
+          "Project management to keep timelines on track",
+          "Creativity in product design and flavour combinations",
+          "Sensory analysis to evaluate taste and texture"
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Food Science, Nutrition, or Culinary Arts.",
+          "Internships with food companies or product development teams.",
+          "Fagbrev in culinary arts or food production.",
+          "Entry-level positions in food labs or restaurants.",
+          "Networking with professionals in the food industry."
+      ],
+      "realityCheck": "The job often involves long hours in the kitchen and many trials before a product is ready for market."
+  },
+  "food-safety-inspector": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the office and check emails regarding inspection schedules.",
+              "Prepare inspection forms and gather necessary equipment.",
+              "Travel to the first food business for inspection."
+          ],
+          "midday": [
+              "Conduct on-site inspections of restaurants or food factories.",
+              "Take notes on hygiene practices and food storage.",
+              "Discuss findings with restaurant managers or staff."
+          ],
+          "afternoon": [
+              "Complete inspection reports and document any violations.",
+              "Follow up with any businesses that need additional guidance.",
+              "Plan for the next day's inspections and review regulations."
+          ],
+          "tools": [
+              "Inspection forms and checklists",
+              "Thermometers for checking food temperatures",
+              "Digital camera for documenting issues",
+              "Laptop for report writing",
+              "Personal protective equipment (PPE)"
+          ],
+          "environment": "Mostly outdoors and indoors in various food businesses, with a mix of travel and office work."
+      },
+      "whatYouActuallyDo": [
+          "Inspect food businesses for compliance with hygiene and safety regulations.",
+          "Check food storage practices and temperatures.",
+          "Review labelling on food products to ensure it meets legal standards.",
+          "Write detailed reports on inspection findings.",
+          "Provide advice to businesses on improving food safety practices."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and observant.",
+          "Enjoys working independently.",
+          "Comfortable communicating with different people.",
+          "Able to remain calm under pressure."
+      ],
+      "topSkills": [
+          "Knowledge of food safety regulations and standards.",
+          "Strong attention to detail.",
+          "Good written and verbal communication skills.",
+          "Ability to analyse and interpret data.",
+          "Independence in managing time and tasks."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Food Science, Public Health, or Environmental Health.",
+          "Complete training with Mattilsynet.",
+          "Consider internships or apprenticeships in food safety.",
+          "Look for entry-level positions in local food safety agencies."
+      ],
+      "realityCheck": "You often deal with businesses that may not want to hear about their violations, which can be challenging."
+  },
+  "food-scientist": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to queries from colleagues or clients.",
+              "Prepare samples for analysis in the lab.",
+              "Conduct experiments to test food properties."
+          ],
+          "midday": [
+              "Analyse data from morning experiments.",
+              "Meet with team members to discuss findings.",
+              "Write reports on the results of analyses."
+          ],
+          "afternoon": [
+              "Conduct further experiments based on morning results.",
+              "Review literature on new food technologies.",
+              "Prepare presentations for upcoming meetings."
+          ],
+          "tools": [
+              "Laboratory equipment like centrifuges and spectrophotometers.",
+              "Software for data analysis like Excel or specific lab software.",
+              "Safety gear such as lab coats and gloves."
+          ],
+          "environment": "Mostly indoors in a laboratory, with a focus on experiments and data analysis."
+      },
+      "whatYouActuallyDo": [
+          "Test food samples for nutritional content and safety.",
+          "Conduct experiments to understand how food ingredients interact.",
+          "Analyse results and write reports on findings.",
+          "Collaborate with other scientists on research projects.",
+          "Stay updated on food safety regulations and standards."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about how food is made and processed.",
+          "Enjoys working with numbers and data.",
+          "Likes conducting experiments and solving problems."
+      ],
+      "topSkills": [
+          "Understanding food chemistry and microbiology.",
+          "Ability to perform lab analyses accurately.",
+          "Strong research and analytical skills.",
+          "Good report writing and communication skills.",
+          "Attention to detail in experiments."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's or Master's degree in Food Science or Food Technology.",
+          "Look for internships in food companies or research institutions.",
+          "Consider vocational programmes related to food technology."
+      ],
+      "realityCheck": "You will spend a lot of time in the lab, which can be repetitive and requires a lot of attention to detail."
+  },
+  "food-technologist": {
+      "typicalDay": {
+          "morning": [
+              "Review production reports from the previous day.",
+              "Check raw materials for quality and safety.",
+              "Meet with production staff to discuss any issues."
+          ],
+          "midday": [
+              "Conduct tests on food samples for quality control.",
+              "Update production process documentation.",
+              "Collaborate with the quality assurance team."
+          ],
+          "afternoon": [
+              "Develop new recipes or improve existing ones.",
+              "Troubleshoot any production problems on the line.",
+              "Prepare presentations for management on process improvements."
+          ],
+          "tools": [
+              "Food safety testing equipment",
+              "Recipe management software",
+              "Quality control checklists",
+              "Production line monitoring systems",
+              "Technical writing software"
+          ],
+          "environment": "Mostly indoors in a food manufacturing facility, with a mix of lab work and collaboration with factory staff."
+      },
+      "whatYouActuallyDo": [
+          "Ensure that food products meet safety and quality standards.",
+          "Design and improve production processes for efficiency.",
+          "Test food samples to check for consistency and safety.",
+          "Write reports and documentation for production processes.",
+          "Work with different teams to solve production issues."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical.",
+          "Enjoys problem-solving and analytical thinking.",
+          "Comfortable working in a team environment.",
+          "Interested in science and food production.",
+          "Good at following strict guidelines and regulations."
+      ],
+      "topSkills": [
+          "Understanding food safety regulations.",
+          "Ability to conduct quality control tests.",
+          "Strong problem-solving skills for production issues.",
+          "Technical writing for process documentation.",
+          "Knowledge of food production processes."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Food Technology or Food Science.",
+          "Apply for internships in food manufacturing companies.",
+          "Consider vocational training in food production.",
+          "Look for apprenticeships in food technology.",
+          "Join relevant organisations for networking and job opportunities."
+      ],
+      "realityCheck": "You may spend a lot of time on quality control and documentation, which can feel repetitive."
+  },
+  "footballer": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the training ground and warm up with stretching exercises.",
+              "Participate in skill drills focusing on passing and shooting.",
+              "Engage in tactical discussions with coaches about upcoming matches."
+          ],
+          "midday": [
+              "Have a team lunch and discuss strategies with teammates.",
+              "Take part in a fitness session to improve endurance and strength.",
+              "Review video footage of previous matches for learning."
+          ],
+          "afternoon": [
+              "Play practice matches to simulate game conditions.",
+              "Cool down with stretching and recovery exercises.",
+              "Meet with coaches for feedback on performance."
+          ],
+          "tools": [
+              "Football boots",
+              "Training equipment (cones, goals)",
+              "Fitness tracking apps",
+              "Video analysis software",
+              "Tactical boards"
+          ],
+          "environment": "Mostly outdoors on a football pitch, with a mix of training and match days."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve skills and fitness.",
+          "Attend team meetings and strategy sessions.",
+          "Play in matches and compete against other teams.",
+          "Work on individual techniques, like dribbling and shooting.",
+          "Collaborate with teammates during training and matches."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about football and sports.",
+          "Able to handle pressure during matches.",
+          "Willing to commit to a rigorous training schedule."
+      ],
+      "topSkills": [
+          "Strong football technique for dribbling and passing.",
+          "High fitness level to endure long training sessions.",
+          "Good tactical awareness to understand game strategies.",
+          "Mental resilience to cope with wins and losses.",
+          "Ability to work well in a team."
+      ],
+      "entryPaths": [
+          "Join a youth academy to develop skills and gain exposure.",
+          "Play for local clubs to build experience.",
+          "Participate in trials for professional clubs."
+      ],
+      "realityCheck": "The competition is fierce, and only a small number of players make it to professional levels."
+  },
+  "forex-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check global market news and updates.",
+              "Review overnight currency movements.",
+              "Analyse economic indicators scheduled for the day."
+          ],
+          "midday": [
+              "Monitor open positions and adjust strategies.",
+              "Engage in discussions with other traders online.",
+              "Execute trades based on market analysis."
+          ],
+          "afternoon": [
+              "Review performance of trades made earlier.",
+              "Prepare for the next trading day by studying charts.",
+              "Read reports on central bank policies and their impact."
+          ],
+          "tools": [
+              "Trading platforms like MetaTrader or TradingView.",
+              "Economic calendars for tracking events.",
+              "Charting software for technical analysis."
+          ],
+          "environment": "Mostly indoors, often at a desk, with a focus on screens and data."
+      },
+      "whatYouActuallyDo": [
+          "Analyse currency trends and market news.",
+          "Make quick decisions on buying or selling currency pairs.",
+          "Manage risks to protect your capital.",
+          "Keep a trading journal to track your strategies and outcomes.",
+          "Stay updated on global economic events that affect currencies."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working with numbers and data.",
+          "Able to handle stress and make quick decisions.",
+          "Has a strong interest in finance and global markets."
+      ],
+      "topSkills": [
+          "Understanding of macroeconomic factors.",
+          "Ability to analyse price charts and patterns.",
+          "Strong risk management skills.",
+          "Discipline to stick to trading plans.",
+          "Stamina to stay focused during long trading hours."
+      ],
+      "entryPaths": [
+          "Self-taught through online resources and courses.",
+          "Finance-related degree or coursework.",
+          "Starting with a demo trading account to practice."
+      ],
+      "realityCheck": "The market can be unpredictable, and losses are part of the learning process."
+  },
   "foster-care-coordinator": {
       "typicalDay": {
           "morning": [
@@ -3536,6 +7077,110 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The emotional weight of the job can be challenging, as you often deal with difficult family situations."
   },
+  "freelance-photographer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to client inquiries",
+              "Plan shoots and locations for the week",
+              "Set up equipment and prepare for the first shoot"
+          ],
+          "midday": [
+              "Conduct a photo shoot for a client",
+              "Review and back up images taken",
+              "Edit and process photos from previous shoots"
+          ],
+          "afternoon": [
+              "Meet with clients to discuss project details",
+              "Update social media with recent work",
+              "Network with other creatives or attend events"
+          ],
+          "tools": [
+              "Camera and lenses",
+              "Editing software like Adobe Lightroom or Photoshop",
+              "Tripod and lighting equipment",
+              "Computer for editing and client communication",
+              "Website for portfolio and bookings"
+          ],
+          "environment": "Work is mostly outdoors or at various client locations, with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Take photographs for different types of clients and events.",
+          "Edit photos to enhance quality and meet client needs.",
+          "Manage client relationships and expectations.",
+          "Promote your work through social media and networking.",
+          "Organise your schedule and equipment for shoots."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and artistic individuals",
+          "Self-motivated and organised people",
+          "Good communicators who enjoy meeting new clients"
+      ],
+      "topSkills": [
+          "Mastery of camera settings and techniques",
+          "Understanding of lighting and composition",
+          "Strong editing skills using software",
+          "Ability to manage client expectations",
+          "Self-promotion and marketing skills"
+      ],
+      "entryPaths": [
+          "Build a strong portfolio through self-taught projects",
+          "Attend a photography school or course",
+          "Start as an assistant to an established photographer",
+          "Join photography clubs or online communities",
+          "Use social media to showcase your work and attract clients"
+      ],
+      "realityCheck": "Finding clients and steady work can take time, and you often handle all aspects of the business."
+  },
+  "freight-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the vehicle for any issues before departure.",
+              "Load freight onto the vehicle and secure it properly.",
+              "Plan the route using a navigation system."
+          ],
+          "midday": [
+              "Take scheduled breaks to rest and eat.",
+              "Complete necessary paperwork for the freight.",
+              "Communicate with the haulage company about the delivery status."
+          ],
+          "afternoon": [
+              "Continue driving to the destination.",
+              "Refuel the vehicle when necessary.",
+              "Unload freight at the delivery point."
+          ],
+          "tools": [
+              "Heavy goods vehicle (HGV)",
+              "Navigation system or GPS",
+              "Loading equipment like pallet jacks"
+          ],
+          "environment": "Mostly on the road, driving long distances with periods of rest and paperwork."
+      },
+      "whatYouActuallyDo": [
+          "Drive long distances across Norway and Europe.",
+          "Load and unload freight safely.",
+          "Maintain accurate records of deliveries.",
+          "Follow traffic laws and regulations.",
+          "Manage your own schedule and breaks."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being on the road for long hours.",
+          "Good at planning and navigation.",
+          "Able to work independently for extended periods."
+      ],
+      "topSkills": [
+          "Heavy vehicle handling skills.",
+          "Strong endurance for long drives.",
+          "Good navigation skills.",
+          "Attention to detail for documentation.",
+          "Self-reliance in managing time and tasks."
+      ],
+      "entryPaths": [
+          "Obtain a Class C/CE licence.",
+          "Complete yrkessjåførkompetanse training.",
+          "Get ADR certification for transporting hazardous goods."
+      ],
+      "realityCheck": "Long hours on the road can be tiring, and you often spend days away from home."
+  },
   "game-composer": {
       "typicalDay": {
           "morning": [
@@ -3587,6 +7232,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in music or sound design."
       ],
       "realityCheck": "Many projects involve a lot of trial and error, and it can take time to get your music just right for the game."
+  },
+  "gaming-streamer": {
+      "typicalDay": {
+          "morning": [
+              "Check notifications and respond to messages from fans.",
+              "Review game updates and patch notes.",
+              "Plan content for the day or week."
+          ],
+          "midday": [
+              "Set up streaming equipment and test audio/video.",
+              "Stream gameplay for a few hours.",
+              "Engage with viewers through chat."
+          ],
+          "afternoon": [
+              "Edit and upload highlights from the stream.",
+              "Collaborate with other streamers for joint sessions.",
+              "Research trends and popular games."
+          ],
+          "tools": [
+              "Streaming software (like OBS or Streamlabs)",
+              "Microphone and camera",
+              "Gaming console or PC"
+          ],
+          "environment": "Mostly indoors, often at home, with a casual and flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Play video games live while talking to your audience.",
+          "Entertain viewers with your personality and insights.",
+          "Interact with chat and respond to comments.",
+          "Create and upload video highlights for social media.",
+          "Build a community around your channel."
+      ],
+      "whoThisIsGoodFor": [
+          "Confident and outgoing",
+          "Enjoys gaming and sharing experiences",
+          "Good at multitasking",
+          "Comfortable with technology",
+          "Creative and engaging"
+      ],
+      "topSkills": [
+          "Strong gaming skills in popular titles",
+          "Ability to entertain and engage viewers",
+          "Technical knowledge of streaming setups",
+          "Good communication and social skills",
+          "Consistency in streaming schedule"
+      ],
+      "entryPaths": [
+          "Start streaming on platforms like Twitch or YouTube.",
+          "Build a following through social media.",
+          "Join gaming communities and participate in events.",
+          "Learn from successful streamers and adapt their strategies."
+      ],
+      "realityCheck": "Building a large audience takes time and effort; it’s not an overnight success."
   },
   "gardener": {
       "typicalDay": {
@@ -3696,6 +7394,110 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The training is long and demanding, with many years before you can work independently."
   },
+  "general-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and surgical schedules for the day.",
+              "Participate in morning meetings with the surgical team.",
+              "Prepare surgical instruments and ensure they are sterile."
+          ],
+          "midday": [
+              "Perform surgeries on scheduled patients.",
+              "Monitor patients in recovery after surgery.",
+              "Communicate with patients and their families about post-operative care."
+          ],
+          "afternoon": [
+              "Conduct follow-up appointments with patients.",
+              "Document surgical procedures and patient progress.",
+              "Attend training sessions or conferences to stay updated on new techniques."
+          ],
+          "tools": [
+              "Surgical instruments like scalpels and forceps.",
+              "Anaesthesia machines.",
+              "Surgical sutures and staples."
+          ],
+          "environment": "Mostly indoors in an operating room, with a fast-paced rhythm and a focus on teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on various conditions.",
+          "Consult with patients before and after surgery.",
+          "Work closely with anaesthetists and nurses during operations.",
+          "Keep detailed records of surgeries and patient care.",
+          "Stay on call for emergency surgeries."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at working in a team.",
+          "Detail-oriented and precise."
+      ],
+      "topSkills": [
+          "Advanced surgical techniques.",
+          "Strong decision-making skills.",
+          "Excellent manual dexterity.",
+          "Ability to work long hours.",
+          "Effective communication with patients and staff."
+      ],
+      "entryPaths": [
+          "Complete a Medical Degree followed by a General Surgery Specialisation.",
+          "Participate in internships at hospitals during medical training.",
+          "Gain experience through a residency in surgery."
+      ],
+      "realityCheck": "The long training period can be exhausting, and the hours are often unpredictable."
+  },
+  "ground-control-operator": {
+      "typicalDay": {
+          "morning": [
+              "Check spacecraft telemetry for any issues.",
+              "Attend team briefing to discuss mission status.",
+              "Review incoming data from overnight operations."
+          ],
+          "midday": [
+              "Communicate with spacecraft to send commands.",
+              "Update mission logs with telemetry data.",
+              "Coordinate with other team members on any anomalies."
+          ],
+          "afternoon": [
+              "Monitor spacecraft systems for performance.",
+              "Participate in training exercises.",
+              "Prepare reports for upcoming missions."
+          ],
+          "tools": [
+              "Telemetry software",
+              "Radio communication systems",
+              "Mission control consoles",
+              "Data analysis tools",
+              "Documentation systems"
+          ],
+          "environment": "Mostly indoors in a high-tech control room, with a focus on teamwork and constant communication."
+      },
+      "whatYouActuallyDo": [
+          "Monitor spacecraft systems to ensure they are functioning properly.",
+          "Send commands to spacecraft based on mission requirements.",
+          "Analyse telemetry data to identify any issues.",
+          "Work shifts to provide 24/7 coverage for spacecraft operations.",
+          "Collaborate with engineers and scientists on mission planning."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Enjoys problem-solving and analysis.",
+          "Good at working in a team.",
+          "Comfortable with shift work and irregular hours."
+      ],
+      "topSkills": [
+          "Telemetry analysis skills.",
+          "Effective communication through radio.",
+          "Attention to detail in monitoring systems.",
+          "Ability to follow strict procedures.",
+          "Technical understanding of spacecraft systems."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Aerospace, Engineering, or Physics.",
+          "Internships with space agencies or aerospace companies.",
+          "On-the-job training at ground control centres.",
+          "Relevant certifications in aerospace operations."
+      ],
+      "realityCheck": "The job often involves long hours and can be very demanding during critical missions."
+  },
   "groundskeeper": {
       "typicalDay": {
           "morning": [
@@ -3749,6 +7551,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience through summer jobs or volunteering in parks or sports facilities."
       ],
       "realityCheck": "You will often work early mornings or late evenings, especially before matches, which can be tiring."
+  },
+  "hand-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Meet with the surgical team to discuss the day's cases",
+              "Perform hand surgeries, focusing on accuracy and precision"
+          ],
+          "midday": [
+              "Check in on post-operative patients to monitor recovery",
+              "Attend a team meeting to discuss ongoing cases",
+              "Plan rehabilitation strategies for patients"
+          ],
+          "afternoon": [
+              "Perform additional surgeries or procedures as needed",
+              "Update patient records and document surgical outcomes",
+              "Consult with other specialists regarding complex cases"
+          ],
+          "tools": [
+              "Surgical instruments for hand surgery",
+              "Microscope for microsurgery",
+              "Ultrasound for diagnosing conditions"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a focus on precision and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on hands, wrists, and forearms.",
+          "Repair tendons and nerves that are damaged.",
+          "Treat fractures and other injuries.",
+          "Work with physiotherapists to create recovery plans.",
+          "Consult with patients about their conditions and treatment options."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable working in high-pressure situations.",
+          "Good at problem-solving and critical thinking."
+      ],
+      "topSkills": [
+          "Microsurgery techniques for delicate procedures.",
+          "Ability to communicate effectively with patients.",
+          "Strong hand-eye coordination for precise movements.",
+          "Teamwork skills for collaborating with medical staff.",
+          "Knowledge of rehabilitation processes after surgery."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in orthopaedic or plastic surgery.",
+          "Pursue a hand surgery fellowship after residency.",
+          "Gain experience through internships in hospitals or clinics."
+      ],
+      "realityCheck": "The training is long and intense, often taking over a decade to become fully qualified."
   },
   "head-of-bss": {
       "typicalDay": {
@@ -3978,6 +7830,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time managing data and ensuring compliance, which can be less exciting than direct patient care."
   },
+  "hedge-fund-manager": {
+      "typicalDay": {
+          "morning": [
+              "Review market news and trends for the day.",
+              "Analyse performance of current investments.",
+              "Meet with analysts to discuss potential trades."
+          ],
+          "midday": [
+              "Make buy or sell decisions based on market movements.",
+              "Communicate with investors about fund performance.",
+              "Monitor risk levels of the portfolio."
+          ],
+          "afternoon": [
+              "Attend meetings with the investment team to strategise.",
+              "Prepare reports on fund performance for clients.",
+              "Evaluate new investment opportunities."
+          ],
+          "tools": [
+              "Financial analysis software (e.g. Bloomberg, Reuters)",
+              "Spreadsheets for tracking investments",
+              "Risk management tools",
+              "Presentation software for client updates"
+          ],
+          "environment": "Mostly indoors in an office setting, with a fast-paced rhythm and frequent meetings."
+      },
+      "whatYouActuallyDo": [
+          "Make decisions on buying and selling assets.",
+          "Manage the portfolio to maximise returns for clients.",
+          "Communicate with clients about their investments.",
+          "Analyse financial data to identify trends.",
+          "Work with a team to develop investment strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical thinker who enjoys numbers.",
+          "Confident in making decisions under pressure.",
+          "Good at explaining complex ideas simply."
+      ],
+      "topSkills": [
+          "Strong analytical skills for market analysis.",
+          "Ability to make quick decisions based on data.",
+          "Leadership skills to manage a team.",
+          "Effective communication for client relations.",
+          "Understanding of risk management principles."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Finance or a related field.",
+          "Master's degree for advanced knowledge.",
+          "Internships in finance or investment firms.",
+          "Entry-level positions as an analyst in hedge funds.",
+          "Networking with professionals in the industry."
+      ],
+      "realityCheck": "The job involves long hours and high pressure, especially during market fluctuations."
+  },
   "helicopter-pilot": {
       "typicalDay": {
           "morning": [
@@ -4032,6 +7937,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for entry-level positions with emergency services."
       ],
       "realityCheck": "The training is long and intense, and you spend a lot of time studying before you can fly."
+  },
+  "hepatobiliary-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and imaging results",
+              "Meet with the surgical team to discuss the day's cases",
+              "Prepare the operating theatre and instruments"
+          ],
+          "midday": [
+              "Perform surgeries on patients with liver or gallbladder issues",
+              "Monitor patients in recovery after surgery",
+              "Consult with other specialists about patient care"
+          ],
+          "afternoon": [
+              "Follow up with patients in the ward",
+              "Document surgical procedures and patient progress",
+              "Attend meetings to discuss ongoing research projects"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Imaging equipment (like MRI or CT scanners)",
+              "Electronic health record systems"
+          ],
+          "environment": "Mostly indoors in a hospital, with time spent in the operating room and patient wards."
+      },
+      "whatYouActuallyDo": [
+          "Conduct surgeries on the liver, gallbladder, and pancreas.",
+          "Assess patients to determine the need for surgery.",
+          "Work with a team of nurses and anaesthetists during operations.",
+          "Provide post-operative care and monitor recovery.",
+          "Engage in research to improve surgical techniques and patient outcomes."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Able to stay calm under pressure.",
+          "Strong interest in anatomy and medical science."
+      ],
+      "topSkills": [
+          "Understanding complex anatomy.",
+          "Performing intricate surgical procedures.",
+          "Effective communication with patients and healthcare teams.",
+          "Research and analysis skills for improving practices.",
+          "Ability to make quick decisions during surgery."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a fellowship in hepatobiliary surgery.",
+          "Gain experience through internships or clerkships in surgical departments."
+      ],
+      "realityCheck": "The training is long and demanding, often taking over a decade before you can operate independently."
   },
   "homelessness-support-worker": {
       "typicalDay": {
@@ -4407,6 +8362,166 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will often deal with emotionally charged situations and must remain impartial."
   },
+  "infantry-officer": {
+      "typicalDay": {
+          "morning": [
+              "Conduct physical training with soldiers",
+              "Review mission plans and objectives",
+              "Hold a briefing with the unit on the day's tasks"
+          ],
+          "midday": [
+              "Supervise training exercises",
+              "Meet with other officers to discuss strategy",
+              "Check equipment and supplies for upcoming missions"
+          ],
+          "afternoon": [
+              "Lead a tactical drill in the field",
+              "Provide feedback to soldiers on their performance",
+              "Plan future training sessions based on current needs"
+          ],
+          "tools": [
+              "Radio communication devices",
+              "Maps and navigation tools",
+              "Fitness equipment",
+              "Weapons and tactical gear",
+              "Computer software for planning"
+          ],
+          "environment": "Mostly outdoors in various terrains, with a mix of training and operational activities."
+      },
+      "whatYouActuallyDo": [
+          "Lead and motivate soldiers during training and missions.",
+          "Plan and execute tactical operations.",
+          "Assess the performance of soldiers and provide guidance.",
+          "Coordinate with other military units and officers.",
+          "Manage logistics and ensure equipment is ready for use."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong sense of responsibility",
+          "Enjoys physical challenges",
+          "Good at making quick decisions",
+          "Comfortable leading a team",
+          "Able to stay calm under pressure"
+      ],
+      "topSkills": [
+          "Leadership and team management",
+          "Strategic planning and tactics",
+          "Physical fitness and endurance",
+          "Effective communication skills",
+          "Problem-solving in high-pressure situations"
+      ],
+      "entryPaths": [
+          "Complete Krigsskolen (Norwegian Military Academy) for officer training.",
+          "Join the military as a soldier and apply for officer training later.",
+          "Participate in military cadet programmes during videregående.",
+          "Consider relevant vocational training in related fields."
+      ],
+      "realityCheck": "The job requires a lot of physical training and can involve long hours in challenging conditions."
+  },
+  "instagram-influencer": {
+      "typicalDay": {
+          "morning": [
+              "Check notifications and respond to comments and messages.",
+              "Plan content ideas for the week ahead.",
+              "Take photos or videos for upcoming posts."
+          ],
+          "midday": [
+              "Edit photos and videos using apps.",
+              "Post content during peak engagement times.",
+              "Engage with followers by liking and commenting on their posts."
+          ],
+          "afternoon": [
+              "Research trends and popular hashtags.",
+              "Collaborate with brands or other influencers on content.",
+              "Attend events or photoshoots if scheduled."
+          ],
+          "tools": [
+              "Instagram app",
+              "Photo editing software (e.g., Lightroom, VSCO)",
+              "Scheduling tools (e.g., Later, Hootsuite)",
+              "Camera or smartphone with a good camera",
+              "Analytics tools to track engagement"
+          ],
+          "environment": "Mostly working from home or in various locations for photoshoots, with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Create and post engaging photos and videos on Instagram.",
+          "Interact with followers to build a community.",
+          "Negotiate deals with brands for partnerships.",
+          "Stay updated on social media trends and changes.",
+          "Analyse post performance to improve future content."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and visually driven individuals.",
+          "People who enjoy social media and connecting with others.",
+          "Self-motivated and disciplined individuals.",
+          "Those comfortable with public speaking and presenting themselves."
+      ],
+      "topSkills": [
+          "Photography and photo editing skills.",
+          "Understanding of social media algorithms.",
+          "Strong communication and negotiation skills.",
+          "Ability to create a personal brand.",
+          "Consistency in posting and engaging."
+      ],
+      "entryPaths": [
+          "Start by building your own Instagram account and experimenting with content.",
+          "Take online courses in photography and social media marketing.",
+          "Collaborate with friends or local businesses to gain experience.",
+          "Join influencer networks to connect with brands.",
+          "Use your personal interests to create niche content."
+      ],
+      "realityCheck": "Building a substantial following takes time and consistent effort, and not every post will go viral."
+  },
+  "investment-banker": {
+      "typicalDay": {
+          "morning": [
+              "Review financial news and market updates.",
+              "Meet with team to discuss ongoing projects.",
+              "Prepare materials for client meetings."
+          ],
+          "midday": [
+              "Work on financial models for client proposals.",
+              "Conduct valuation analyses for potential mergers.",
+              "Call clients to discuss project progress."
+          ],
+          "afternoon": [
+              "Present findings to senior bankers or clients.",
+              "Attend meetings with clients to pitch ideas.",
+              "Update spreadsheets and documentation for ongoing deals."
+          ],
+          "tools": [
+              "Microsoft Excel for financial modelling.",
+              "PowerPoint for presentations.",
+              "Bloomberg Terminal for market data."
+          ],
+          "environment": "Mostly indoors in a fast-paced office, with long hours and frequent meetings."
+      },
+      "whatYouActuallyDo": [
+          "Build and analyse financial models for companies.",
+          "Evaluate the worth of companies and their assets.",
+          "Prepare presentations for client meetings.",
+          "Advise clients on buying or merging with other companies.",
+          "Research market trends to inform client strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical thinkers who enjoy numbers.",
+          "People who can handle pressure and long hours.",
+          "Strong communicators who can present ideas clearly."
+      ],
+      "topSkills": [
+          "Advanced financial modelling skills.",
+          "Ability to conduct detailed valuations.",
+          "Stamina for long working hours.",
+          "Strong client management abilities.",
+          "Effective presentation skills."
+      ],
+      "entryPaths": [
+          "Bachelor's or Master's degree in Finance or Economics.",
+          "Complete an analyst programme at a financial firm.",
+          "Internships in investment banks or financial institutions."
+      ],
+      "realityCheck": "The hours can be very long and the work can be intense, especially when deadlines are approaching."
+  },
   "journalist": {
       "typicalDay": {
           "morning": [
@@ -4573,6 +8688,63 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time outdoors in various weather, and the work can be physically demanding."
   },
+  "launch-operations-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check the status of the launch vehicle and systems.",
+              "Review the launch countdown checklist with the team.",
+              "Conduct a safety briefing with all team members."
+          ],
+          "midday": [
+              "Coordinate with engineers on vehicle integration.",
+              "Test communication systems with ground control.",
+              "Monitor weather conditions and assess any risks."
+          ],
+          "afternoon": [
+              "Lead the final countdown rehearsal.",
+              "Ensure all safety protocols are followed.",
+              "Prepare for the launch by confirming all systems are go."
+          ],
+          "tools": [
+              "Launch countdown software",
+              "Communication headsets",
+              "Safety monitoring equipment",
+              "Checklists and protocols",
+              "Weather monitoring tools"
+          ],
+          "environment": "Mostly outdoors at a launch site, with a mix of team collaboration and focused individual tasks."
+      },
+      "whatYouActuallyDo": [
+          "Lead the team during launch countdowns.",
+          "Check all systems and equipment before launch.",
+          "Make quick decisions in high-pressure situations.",
+          "Communicate with various teams to ensure safety.",
+          "Document all processes and any issues that arise.",
+          "Train new team members on procedures and protocols."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at following detailed instructions.",
+          "Enjoys working in a team environment.",
+          "Strong problem-solving skills.",
+          "Able to adapt to changing situations."
+      ],
+      "topSkills": [
+          "Attention to detail in safety checks.",
+          "Ability to manage stress during critical moments.",
+          "Strong coordination skills for team tasks.",
+          "Experience with technical systems and equipment.",
+          "Effective communication with diverse teams."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Aerospace Engineering.",
+          "Master's degree in a related field.",
+          "Internships at aerospace companies or launch sites.",
+          "Participating in relevant student projects or competitions.",
+          "Entry-level positions in engineering or operations at launch facilities."
+      ],
+      "realityCheck": "The job can involve long hours and high stress, especially close to launch time."
+  },
   "leasing-agent": {
       "typicalDay": {
           "morning": [
@@ -4674,6 +8846,162 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time dealing with paperwork and administrative tasks, not just showing properties."
   },
+  "lifestyle-influencer": {
+      "typicalDay": {
+          "morning": [
+              "Check social media notifications and respond to comments",
+              "Plan content for the day or week ahead",
+              "Take photos for upcoming posts"
+          ],
+          "midday": [
+              "Edit photos and create captions for social media",
+              "Engage with followers by sharing stories or live videos",
+              "Collaborate with brands to discuss upcoming campaigns"
+          ],
+          "afternoon": [
+              "Attend events or meetings with brands",
+              "Research trends in fashion or beauty",
+              "Create and schedule posts for the next few days"
+          ],
+          "tools": [
+              "Smartphone for photography",
+              "Photo editing apps like Lightroom or VSCO",
+              "Social media platforms like Instagram and TikTok"
+          ],
+          "environment": "Mostly working from home or on location, flexible hours, often alone but engaging with an online community."
+      },
+      "whatYouActuallyDo": [
+          "Take and edit photos that reflect your personal style",
+          "Post regularly to keep your audience engaged",
+          "Collaborate with brands for sponsored content",
+          "Respond to comments and messages from followers",
+          "Stay updated on trends in lifestyle, fashion, and beauty"
+      ],
+      "whoThisIsGoodFor": [
+          "Creative with a strong visual sense",
+          "Comfortable in front of the camera",
+          "Good at building and maintaining relationships online"
+      ],
+      "topSkills": [
+          "Photography and photo editing",
+          "Understanding social media algorithms",
+          "Negotiating brand deals",
+          "Creating engaging content",
+          "Building a personal brand"
+      ],
+      "entryPaths": [
+          "Start a personal blog or social media account to showcase your style",
+          "Take online courses in photography or social media marketing",
+          "Join influencer networks to connect with brands"
+      ],
+      "realityCheck": "Building a following takes time and consistency; it may feel slow at first."
+  },
+  "lighting-technician": {
+      "typicalDay": {
+          "morning": [
+              "Arrive on set and check the lighting plan.",
+              "Set up lighting equipment according to the gaffer's instructions.",
+              "Test all lights to ensure they are working properly."
+          ],
+          "midday": [
+              "Make adjustments to the lighting based on the director's feedback.",
+              "Assist with rigging new lights for different scenes.",
+              "Take a break and discuss the day's schedule with the crew."
+          ],
+          "afternoon": [
+              "Operate lighting during filming, following cues from the director.",
+              "Pack up equipment after shooting is done for the day.",
+              "Help maintain the lighting gear and report any issues."
+          ],
+          "tools": [
+              "Lighting kits (LEDs, spotlights, etc.)",
+              "Cables and connectors",
+              "Rigging equipment (stands, clamps)",
+              "Control boards",
+              "Safety gear (gloves, helmets)"
+          ],
+          "environment": "Mostly outdoors or on set in studios, working with a team in a fast-paced atmosphere."
+      },
+      "whatYouActuallyDo": [
+          "Set up and operate various lighting equipment for shoots.",
+          "Follow instructions from the gaffer and director.",
+          "Ensure all lights are safe and properly rigged.",
+          "Adjust lighting based on scene requirements.",
+          "Pack and maintain lighting equipment after use."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working in a team environment.",
+          "Has a good eye for detail and colour.",
+          "Is physically fit and can handle heavy equipment.",
+          "Is flexible and can adapt to changes quickly."
+      ],
+      "topSkills": [
+          "Knowledge of lighting techniques and equipment.",
+          "Ability to work under pressure and meet deadlines.",
+          "Strong communication skills for collaborating with the crew.",
+          "Basic electrical knowledge for troubleshooting.",
+          "Good organisational skills for managing equipment."
+      ],
+      "entryPaths": [
+          "Complete a vocational film school programme.",
+          "Apply for an apprenticeship on a film or TV set.",
+          "Gain experience through volunteer work on local productions.",
+          "Look for entry-level positions with production companies."
+      ],
+      "realityCheck": "You may spend long hours setting up equipment and working in various weather conditions."
+  },
+  "live-streamer": {
+      "typicalDay": {
+          "morning": [
+              "Set up streaming equipment and check internet connection.",
+              "Plan content for the day and create a schedule.",
+              "Engage with followers on social media."
+          ],
+          "midday": [
+              "Start live stream and interact with viewers.",
+              "Play games or perform activities while streaming.",
+              "Monitor chat and respond to comments."
+          ],
+          "afternoon": [
+              "Wrap up the live stream and thank viewers.",
+              "Edit and upload highlights or clips from the stream.",
+              "Review analytics to understand viewer engagement."
+          ],
+          "tools": [
+              "Streaming software (like OBS or Streamlabs)",
+              "Gaming console or PC",
+              "Microphone and camera",
+              "Chat moderation tools",
+              "Social media platforms"
+          ],
+          "environment": "Mostly at home or a dedicated studio, often sitting for long periods while interacting with viewers."
+      },
+      "whatYouActuallyDo": [
+          "Stream live content on platforms like Twitch or YouTube.",
+          "Engage with your audience through chat and comments.",
+          "Create and edit video content for social media.",
+          "Set up and troubleshoot technical equipment.",
+          "Plan and organise events or themed streams."
+      ],
+      "whoThisIsGoodFor": [
+          "Outgoing and charismatic individuals.",
+          "Creative thinkers who enjoy improvisation.",
+          "Tech-savvy people who like setting up equipment."
+      ],
+      "topSkills": [
+          "Strong communication skills for engaging with viewers.",
+          "Technical skills for setting up and managing streaming equipment.",
+          "Ability to improvise and think on your feet during streams.",
+          "Stamina to maintain energy during long streaming sessions.",
+          "Familiarity with social media for promoting content."
+      ],
+      "entryPaths": [
+          "Start streaming as a hobby and build an audience.",
+          "Learn through online tutorials and communities.",
+          "Join gaming or content creation groups for support."
+      ],
+      "realityCheck": "Building a loyal audience takes time and consistent effort, and not every stream will be successful."
+  },
   "loan-officer": {
       "typicalDay": {
           "morning": [
@@ -4724,6 +9052,221 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Entry-level positions in customer service at financial firms."
       ],
       "realityCheck": "You spend a lot of time reviewing documents and dealing with regulations, which can be tedious."
+  },
+  "logistics-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the delivery schedule and plan the route.",
+              "Inspect the vehicle for safety and maintenance issues.",
+              "Load goods onto the vehicle."
+          ],
+          "midday": [
+              "Drive to the first delivery point.",
+              "Unpack and deliver goods to the retailer.",
+              "Complete delivery paperwork and get signatures."
+          ],
+          "afternoon": [
+              "Continue to the next delivery points.",
+              "Handle any issues with deliveries, like missing items.",
+              "Return to the warehouse and unload any remaining goods."
+          ],
+          "tools": [
+              "Delivery van or lorry",
+              "GPS navigation system",
+              "Handheld scanner for tracking deliveries",
+              "Loading equipment like dollies or pallet jacks"
+          ],
+          "environment": "Mostly driving around town, spending time in the vehicle and interacting with warehouse staff and retailers."
+      },
+      "whatYouActuallyDo": [
+          "Drive a vehicle to deliver goods on a set route.",
+          "Load and unload products safely.",
+          "Ensure goods are delivered on time.",
+          "Complete delivery documentation accurately.",
+          "Communicate with warehouse staff and retailers."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at following directions and maps.",
+          "Likes working independently and managing time."
+      ],
+      "topSkills": [
+          "Safe driving skills.",
+          "Ability to handle and secure loads.",
+          "Good navigation skills.",
+          "Strong punctuality and time management.",
+          "Attention to detail for documentation."
+      ],
+      "entryPaths": [
+          "Obtain a Class C driving licence.",
+          "Complete yrkessjåførkompetanse training.",
+          "Look for apprenticeships with logistics companies.",
+          "Apply for entry-level driving jobs at local distribution centres."
+      ],
+      "realityCheck": "You spend a lot of time driving alone, which can be isolating."
+  },
+  "logistics-officer": {
+      "typicalDay": {
+          "morning": [
+              "Check inventory levels and prepare supply orders.",
+              "Coordinate with transport units for delivery schedules.",
+              "Review logistical plans for upcoming missions."
+          ],
+          "midday": [
+              "Meet with team leaders to discuss supply needs.",
+              "Inspect storage facilities for equipment and supplies.",
+              "Update logistics software with current data."
+          ],
+          "afternoon": [
+              "Resolve any supply chain issues that arise.",
+              "Plan routes for transport vehicles.",
+              "Prepare reports on logistics performance."
+          ],
+          "tools": [
+              "Logistics management software",
+              "Communication radios",
+              "Inventory tracking systems",
+              "Transport vehicles",
+              "Maps and GPS devices"
+          ],
+          "environment": "Mostly indoors in an office setting, with occasional outdoor inspections and coordination with transport units."
+      },
+      "whatYouActuallyDo": [
+          "Plan how to get supplies to military units.",
+          "Manage the storage of equipment and ammunition.",
+          "Coordinate transport for troops and supplies.",
+          "Solve problems when supplies are delayed or lost.",
+          "Work with other officers to ensure missions run smoothly."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at planning and organising tasks.",
+          "Able to stay calm under pressure.",
+          "Enjoys working as part of a team.",
+          "Strong problem-solver.",
+          "Comfortable using technology and software."
+      ],
+      "topSkills": [
+          "Logistics planning and management",
+          "Effective communication",
+          "Problem-solving under pressure",
+          "Team leadership",
+          "Attention to detail",
+          "Knowledge of military operations"
+      ],
+      "entryPaths": [
+          "Complete Krigsskolen and specialise in logistics.",
+          "Join the military and apply for logistics training.",
+          "Gain experience in supply chain management in civilian roles.",
+          "Participate in military exercises to understand logistics needs.",
+          "Consider vocational programmes related to logistics and supply chain."
+      ],
+      "realityCheck": "You may spend a lot of time dealing with unexpected issues that can disrupt plans."
+  },
+  "marine": {
+      "typicalDay": {
+          "morning": [
+              "Participate in physical fitness training sessions.",
+              "Check and maintain equipment and weapons.",
+              "Attend briefings on the day's operations."
+          ],
+          "midday": [
+              "Conduct swimming drills or amphibious tactics training.",
+              "Practice teamwork exercises with fellow marines.",
+              "Review maps and plans for upcoming missions."
+          ],
+          "afternoon": [
+              "Engage in tactical simulations or field exercises.",
+              "Complete paperwork related to training and operations.",
+              "Debrief with team members on the day's activities."
+          ],
+          "tools": [
+              "Personal flotation devices",
+              "Weapons and ammunition",
+              "Communication devices",
+              "Maps and navigation tools",
+              "Fitness equipment"
+          ],
+          "environment": "Mostly outdoors in varied terrains, with a mix of physical training and tactical operations."
+      },
+      "whatYouActuallyDo": [
+          "Train in swimming and physical fitness regularly.",
+          "Learn and practice amphibious landing techniques.",
+          "Work as part of a team during exercises and missions.",
+          "Maintain and check your equipment and weapons.",
+          "Participate in drills that simulate real-life operations."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys physical challenges and staying fit.",
+          "Works well in a team environment.",
+          "Has a strong sense of discipline and responsibility."
+      ],
+      "topSkills": [
+          "Strong swimming ability",
+          "Knowledge of amphibious tactics",
+          "Fitness and endurance",
+          "Weapons handling skills",
+          "Teamwork and communication"
+      ],
+      "entryPaths": [
+          "Complete military service in the Norwegian Armed Forces.",
+          "Attend training for amphibious and coastal operations.",
+          "Consider joining a military academy or training programme."
+      ],
+      "realityCheck": "The training is physically demanding and requires a lot of commitment and discipline."
+  },
+  "market-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Check overnight market movements and news updates.",
+              "Prepare daily market reports for traders.",
+              "Analyse key financial data and trends."
+          ],
+          "midday": [
+              "Attend team meetings to discuss market insights.",
+              "Update charts and graphs for presentations.",
+              "Respond to queries from traders about market conditions."
+          ],
+          "afternoon": [
+              "Write articles or reports on market trends.",
+              "Review and analyse data from various sources.",
+              "Prepare for the next day's market activities."
+          ],
+          "tools": [
+              "Excel for data analysis.",
+              "Financial news platforms like Bloomberg.",
+              "Presentation software like PowerPoint.",
+              "Statistical software for deeper analysis.",
+              "Market databases for historical data."
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on data analysis and communication with team members."
+      },
+      "whatYouActuallyDo": [
+          "Monitor financial markets and track price changes.",
+          "Gather and analyse data from different sources.",
+          "Write reports explaining market trends.",
+          "Present findings to traders and stakeholders.",
+          "Provide insights on economic events affecting markets."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical thinkers who enjoy working with numbers.",
+          "Good communicators who can explain complex ideas simply.",
+          "Detail-oriented individuals who like research.",
+          "People who stay calm under pressure."
+      ],
+      "topSkills": [
+          "Strong analytical skills for data interpretation.",
+          "Ability to write clearly and concisely.",
+          "Presentation skills for sharing findings.",
+          "Understanding of financial markets and instruments.",
+          "Quick decision-making in a fast-paced environment."
+      ],
+      "entryPaths": [
+          "Obtain a Bachelor's degree in Finance or Economics.",
+          "Complete internships at financial firms or banks.",
+          "Pursue relevant certifications in finance or data analysis.",
+          "Look for graduate programmes at financial institutions."
+      ],
+      "realityCheck": "The job often involves long hours of data analysis and can be quite repetitive at times."
   },
   "medical-secretary": {
       "typicalDay": {
@@ -4943,6 +9486,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be emotionally intense, as you witness both joyful and challenging moments in families' lives."
   },
+  "military-intelligence-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Review intelligence reports and updates from overnight.",
+              "Attend briefings to discuss current operations and threats.",
+              "Conduct research on specific regions or topics."
+          ],
+          "midday": [
+              "Analyse data from various sources, like satellite images.",
+              "Write reports summarising findings for military leaders.",
+              "Collaborate with team members to share insights."
+          ],
+          "afternoon": [
+              "Prepare presentations for upcoming missions.",
+              "Update databases with new intelligence.",
+              "Engage in training exercises to improve analytical skills."
+          ],
+          "tools": [
+              "Intelligence analysis software",
+              "Geospatial mapping tools",
+              "Database management systems",
+              "Communication platforms",
+              "Office software for report writing"
+          ],
+          "environment": "Mostly indoors in a secure military facility, working at a desk with periods of collaboration and briefings."
+      },
+      "whatYouActuallyDo": [
+          "Collect intelligence from various sources like satellites and human informants.",
+          "Analyse data to identify patterns and threats.",
+          "Write clear reports for military decision-makers.",
+          "Present findings in meetings to explain risks and opportunities.",
+          "Stay updated on global events that could impact military operations."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and analytical thinkers.",
+          "Strong communicators who can explain complex ideas simply.",
+          "People who enjoy research and problem-solving."
+      ],
+      "topSkills": [
+          "Strong analytical skills to interpret data effectively.",
+          "Research skills to gather information from diverse sources.",
+          "Proficiency in writing clear and concise reports.",
+          "Ability to work under pressure and meet tight deadlines.",
+          "Security awareness to handle sensitive information responsibly."
+      ],
+      "entryPaths": [
+          "Complete military service followed by intelligence training.",
+          "Pursue a Bachelor's or Master's degree in relevant fields.",
+          "Consider internships or roles within military intelligence units."
+      ],
+      "realityCheck": "You may spend a lot of time on data entry and reports before getting to the more exciting analysis."
+  },
   "military-officer": {
       "typicalDay": {
           "morning": [
@@ -4994,6 +9589,177 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a university degree in a relevant field before applying."
       ],
       "realityCheck": "The training is intense and requires a strong commitment to both physical and mental challenges."
+  },
+  "military-pilot": {
+      "typicalDay": {
+          "morning": [
+              "Attend a briefing to discuss the day's missions and objectives.",
+              "Conduct pre-flight checks on the aircraft.",
+              "Review flight plans and weather conditions.",
+              "Practice flight manoeuvres in a simulator.",
+              "Engage in physical training or fitness activities."
+          ],
+          "midday": [
+              "Fly training missions or operational sorties.",
+              "Communicate with ground control and other pilots during flights.",
+              "Debrief with the team after flights to discuss performance.",
+              "Complete paperwork related to flight operations.",
+              "Participate in tactical discussions with fellow pilots."
+          ],
+          "afternoon": [
+              "Continue flying training or operational missions.",
+              "Conduct equipment checks and maintenance on aircraft.",
+              "Attend additional briefings or training sessions.",
+              "Review and analyse flight data for improvement.",
+              "Engage in team-building activities with squadron members."
+          ],
+          "tools": [
+              "Flight simulator software",
+              "Navigation and communication equipment",
+              "Aircraft maintenance tools",
+              "Emergency response gear",
+              "Flight planning software"
+          ],
+          "environment": "Mostly in the cockpit of an aircraft, with time spent in training facilities and the airbase."
+      },
+      "whatYouActuallyDo": [
+          "Fly various types of military aircraft during training and missions.",
+          "Perform pre-flight and post-flight checks for safety.",
+          "Work closely with ground crew and other pilots.",
+          "Make quick decisions during flights based on changing conditions.",
+          "Participate in training exercises to improve skills.",
+          "Maintain physical fitness and readiness for missions.",
+          "Keep up with technical knowledge about aircraft systems."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and enjoys challenges.",
+          "Strong focus and discipline.",
+          "Good at making quick decisions.",
+          "Comfortable working in a team.",
+          "Able to handle high-pressure situations."
+      ],
+      "topSkills": [
+          "Advanced flight skills and aircraft operation.",
+          "Spatial awareness for navigation and manoeuvring.",
+          "Rapid decision-making in dynamic environments.",
+          "Strong communication skills for teamwork.",
+          "Technical knowledge of aircraft systems.",
+          "Physical fitness for demanding flight conditions.",
+          "Ability to analyse and learn from flight data."
+      ],
+      "entryPaths": [
+          "Complete videregående education with a focus on science and maths.",
+          "Apply to Luftkrigsskolen (Air Force Academy) for training.",
+          "Participate in military recruitment programmes.",
+          "Consider joining the Norwegian Air Force as a cadet.",
+          "Complete flight training and obtain necessary certifications."
+      ],
+      "realityCheck": "The training is intense and can be very demanding, both physically and mentally."
+  },
+  "military-police": {
+      "typicalDay": {
+          "morning": [
+              "Attend morning briefings and receive daily assignments.",
+              "Inspect equipment and ensure readiness for the day.",
+              "Patrol the base and check security measures."
+          ],
+          "midday": [
+              "Conduct investigations on reported incidents or misconduct.",
+              "Provide security for personnel during lunch breaks.",
+              "Write reports on patrol activities and incidents."
+          ],
+          "afternoon": [
+              "Engage in physical training to maintain fitness levels.",
+              "Assist in securing installations for special events.",
+              "Review and update security protocols as needed."
+          ],
+          "tools": [
+              "Radio communication devices",
+              "Patrol vehicles",
+              "Computer for report writing",
+              "Surveillance equipment",
+              "Standard issue weaponry"
+          ],
+          "environment": "Mostly indoors and outdoors on a military base, with a mix of patrol duties and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Enforce military laws and regulations.",
+          "Investigate incidents of misconduct among personnel.",
+          "Secure military installations and ensure safety.",
+          "Provide protection for convoys and important personnel.",
+          "Write detailed reports on incidents and patrol activities."
+      ],
+      "whoThisIsGoodFor": [
+          "Disciplined and organised individuals.",
+          "Those who enjoy physical fitness and outdoor activities.",
+          "People who can stay calm under pressure."
+      ],
+      "topSkills": [
+          "Strong investigative skills for handling incidents.",
+          "Ability to write clear and concise reports.",
+          "Physical fitness for patrolling and emergency situations.",
+          "Knowledge of military law and regulations.",
+          "Effective communication skills for working with others."
+      ],
+      "entryPaths": [
+          "Complete military service and undergo MP training.",
+          "Consider joining the military as a recruit.",
+          "Look for apprenticeships or internships within military roles."
+      ],
+      "realityCheck": "The job can be demanding physically and mentally, requiring strong discipline and resilience."
+  },
+  "mission-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Check mission data and review experiment protocols.",
+              "Conduct pre-launch equipment tests.",
+              "Attend briefings with mission control."
+          ],
+          "midday": [
+              "Run scientific experiments in microgravity.",
+              "Monitor equipment and systems for any issues.",
+              "Communicate findings with the team on Earth."
+          ],
+          "afternoon": [
+              "Document results and prepare reports.",
+              "Participate in training simulations.",
+              "Collaborate with other crew members on ongoing tasks."
+          ],
+          "tools": [
+              "Scientific instruments for experiments.",
+              "Computer systems for data analysis.",
+              "Communication devices for liaising with mission control."
+          ],
+          "environment": "Working in a spacecraft, mostly indoors, with a focus on experiments and collaboration with the crew."
+      },
+      "whatYouActuallyDo": [
+          "Run experiments to gather data in space.",
+          "Operate and maintain scientific equipment.",
+          "Work with mission control to ensure experiments go smoothly.",
+          "Document findings and prepare reports for analysis.",
+          "Train for various scenarios and emergencies."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about science and technology.",
+          "Good at problem-solving under pressure.",
+          "Enjoys teamwork and collaboration.",
+          "Comfortable with complex systems and equipment."
+      ],
+      "topSkills": [
+          "Strong understanding of scientific principles.",
+          "Ability to operate complex machinery.",
+          "Excellent communication skills for reporting results.",
+          "Attention to detail when conducting experiments.",
+          "Ability to work in a team and support others."
+      ],
+      "entryPaths": [
+          "Complete a PhD in a relevant STEM field.",
+          "Apply to space agencies like ESA or NASA.",
+          "Participate in astronaut selection programmes.",
+          "Gain experience in research or engineering roles.",
+          "Complete relevant training courses in aerospace."
+      ],
+      "realityCheck": "The selection process is highly competitive, with many qualified candidates not making it through."
   },
   "mortgage-advisor": {
       "typicalDay": {
@@ -5098,6 +9864,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience in a related field like banking or real estate."
       ],
       "realityCheck": "You often have to deal with difficult clients and tight deadlines, which can be stressful."
+  },
+  "motion-graphics-designer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to client feedback.",
+              "Review project briefs and plan tasks for the day.",
+              "Start working on animations or graphics for current projects."
+          ],
+          "midday": [
+              "Attend a team meeting to discuss project progress.",
+              "Make revisions based on feedback from the team.",
+              "Research new design trends and techniques."
+          ],
+          "afternoon": [
+              "Finish animations and export final files for review.",
+              "Create presentation materials for clients.",
+              "Organise and archive completed projects."
+          ],
+          "tools": [
+              "Adobe After Effects",
+              "Cinema 4D",
+              "Adobe Illustrator",
+              "Adobe Photoshop",
+              "Wacom tablet"
+          ],
+          "environment": "Mostly indoors in a creative studio, working at a desk with a computer and collaborating with other designers."
+      },
+      "whatYouActuallyDo": [
+          "Create animated graphics for videos and presentations.",
+          "Develop visual effects to enhance video content.",
+          "Design titles and lower thirds for video projects.",
+          "Collaborate with clients to understand their vision.",
+          "Revise designs based on client and team feedback.",
+          "Keep up to date with industry trends and software updates."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and imaginative thinkers.",
+          "Detail-oriented individuals who enjoy visual storytelling.",
+          "People who like working on multiple projects at once."
+      ],
+      "topSkills": [
+          "Proficiency in Adobe After Effects and Cinema 4D.",
+          "Strong understanding of design principles and typography.",
+          "Ability to work under tight deadlines.",
+          "Good communication skills for client interactions.",
+          "Problem-solving skills for technical challenges."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Design or Animation.",
+          "Self-taught with a strong portfolio of work.",
+          "Internships or apprenticeships with design studios.",
+          "Online courses focusing on motion graphics.",
+          "Freelance projects to build experience and reputation."
+      ],
+      "realityCheck": "The job often involves long hours in front of a computer, and feedback can be subjective and challenging to navigate."
   },
   "music-content-creator": {
       "typicalDay": {
@@ -5648,6 +10469,124 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a career in music takes time and persistence, with many ups and downs along the way."
   },
+  "naval-officer": {
+      "typicalDay": {
+          "morning": [
+              "Conduct a briefing with the crew about the day's operations.",
+              "Check and maintain navigation equipment.",
+              "Review the ship's maintenance logs.",
+              "Plan the route and ensure all supplies are ready.",
+              "Hold a safety drill with the crew."
+          ],
+          "midday": [
+              "Supervise training exercises for the crew.",
+              "Coordinate with other ships or units for joint operations.",
+              "Inspect the ship's systems and equipment.",
+              "Meet with department heads to discuss progress.",
+              "Review reports from the previous day."
+          ],
+          "afternoon": [
+              "Lead a tactical exercise to test decision-making skills.",
+              "Communicate with command about mission status.",
+              "Conduct performance evaluations for crew members.",
+              "Plan for upcoming missions or deployments.",
+              "Ensure all safety protocols are being followed."
+          ],
+          "tools": [
+              "Navigation systems",
+              "Communication equipment",
+              "Safety gear",
+              "Ship maintenance tools",
+              "Operational manuals"
+          ],
+          "environment": "Mostly aboard a navy ship, with a structured routine and a mix of hands-on leadership and technical tasks."
+      },
+      "whatYouActuallyDo": [
+          "Lead the crew in performing daily operations.",
+          "Make quick decisions during drills or real situations.",
+          "Ensure the ship is seaworthy and well-maintained.",
+          "Train new officers and crew members.",
+          "Communicate with other ships and command centres.",
+          "Plan and execute tactical missions.",
+          "Monitor the wellbeing and performance of the crew."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong leader who can make quick decisions.",
+          "Enjoys working in a team under pressure.",
+          "Adventurous and willing to spend time at sea.",
+          "Good at navigating and understanding maps.",
+          "Able to stay calm in challenging situations."
+      ],
+      "topSkills": [
+          "Leadership in high-pressure situations.",
+          "Navigation and map reading.",
+          "Seamanship and ship handling.",
+          "Tactical planning and execution.",
+          "Effective communication with diverse teams.",
+          "Problem-solving in unexpected scenarios.",
+          "Physical fitness and endurance."
+      ],
+      "entryPaths": [
+          "Attend Sjøkrigsskolen (Naval Academy) for three years.",
+          "Complete a relevant bachelor's degree in maritime studies.",
+          "Join the navy as a recruit and work your way up.",
+          "Gain experience through internships on naval vessels.",
+          "Participate in naval cadet programmes."
+      ],
+      "realityCheck": "The training is intense, and you spend a lot of time away from home during deployments."
+  },
+  "neurosurgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and imaging results before surgery.",
+              "Conduct pre-operative consultations with patients.",
+              "Prepare the operating room and surgical instruments."
+          ],
+          "midday": [
+              "Perform surgeries on patients with neurological conditions.",
+              "Monitor patients' vital signs during procedures.",
+              "Document surgical procedures and outcomes."
+          ],
+          "afternoon": [
+              "Meet with the surgical team to discuss cases and outcomes.",
+              "Attend to post-operative patients in recovery.",
+              "Plan follow-up care and rehabilitation for patients."
+          ],
+          "tools": [
+              "Surgical instruments for microsurgery.",
+              "Imaging technology like MRI and CT scans.",
+              "Patient monitoring equipment."
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a focus on precision and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Perform complex surgeries on the brain and spine.",
+          "Diagnose neurological conditions through imaging and tests.",
+          "Work closely with anaesthetists and nurses during surgeries.",
+          "Manage patient care before and after operations.",
+          "Educate patients and families about procedures and recovery."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Able to stay calm under pressure.",
+          "Strong problem-solving skills."
+      ],
+      "topSkills": [
+          "Advanced surgical techniques and microsurgery.",
+          "Knowledge of neuroanatomy and brain function.",
+          "Ability to interpret medical imaging.",
+          "Effective communication with patients and teams.",
+          "Crisis management in high-stress situations."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a neurosurgery residency.",
+          "Consider a bachelor in health sciences or biology as a starting point.",
+          "Participate in internships or shadowing opportunities in hospitals.",
+          "Apply through Samordna opptak for medical school.",
+          "Pursue relevant certifications in surgical techniques."
+      ],
+      "realityCheck": "The training is long and intense, with many years of studying and practical experience before you can operate independently."
+  },
   "nlp-engineer": {
       "typicalDay": {
           "morning": [
@@ -5810,6 +10749,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve a lot of paperwork and client follow-ups, which may not seem exciting."
   },
+  "obstetric-gynaecological-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries scheduled for the day",
+              "Meet with the surgical team to discuss the day's procedures",
+              "Perform morning surgeries, such as caesarean sections or hysterectomies"
+          ],
+          "midday": [
+              "Conduct patient consultations and answer their questions",
+              "Perform follow-up checks on patients who had surgery earlier",
+              "Attend meetings with other specialists to discuss complex cases"
+          ],
+          "afternoon": [
+              "Perform additional surgeries or procedures as needed",
+              "Document surgery outcomes and update patient records",
+              "Participate in training sessions or workshops to improve skills"
+          ],
+          "tools": [
+              "Surgical instruments like scalpels and forceps",
+              "Laparoscopic equipment for minimally invasive procedures",
+              "Electronic medical records systems"
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the female reproductive system.",
+          "Counsel patients about their health and treatment options.",
+          "Work with other medical staff to ensure patient safety.",
+          "Manage obstetric emergencies when they arise.",
+          "Keep detailed records of surgeries and patient progress."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure during emergencies.",
+          "Strong attention to detail in surgical procedures.",
+          "Good at communicating with patients and their families."
+      ],
+      "topSkills": [
+          "Laparoscopic surgery techniques.",
+          "Ability to handle obstetric emergencies.",
+          "Knowledge of fertility procedures.",
+          "Skills in oncological gynaecology.",
+          "Patient counselling and support."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a specialisation in Obstetrics and Gynaecology.",
+          "Participate in a residency programme in a hospital.",
+          "Gain experience through internships in women's health clinics."
+      ],
+      "realityCheck": "The training is long and demanding, with many years spent in education and practice before you can operate independently."
+  },
   "occupational-therapist": {
       "typicalDay": {
           "morning": [
@@ -5859,6 +10848,223 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider volunteering or internships in healthcare settings"
       ],
       "realityCheck": "The job can be emotionally challenging, as you often work with clients facing significant difficulties."
+  },
+  "oncological-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and imaging results",
+              "Conduct pre-operative consultations with patients",
+              "Prepare surgical instruments and the operating room"
+          ],
+          "midday": [
+              "Perform surgeries to remove tumours",
+              "Collaborate with anaesthetists and nursing staff during procedures",
+              "Document surgical notes and post-operative care plans"
+          ],
+          "afternoon": [
+              "Meet with the oncology team to discuss patient cases",
+              "Follow up with patients in recovery",
+              "Attend multidisciplinary team meetings"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Imaging equipment (e.g., MRI, CT scans)",
+              "Electronic health record systems"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Remove cancerous tumours from patients through surgery.",
+          "Work with a team of doctors to plan treatment for cancer patients.",
+          "Perform pre-operative assessments to ensure patients are ready for surgery.",
+          "Use imaging technology to locate tumours accurately.",
+          "Provide post-operative care and follow-up for patients."
+      ],
+      "whoThisIsGoodFor": [
+          "Comfortable working under pressure.",
+          "Detail-oriented and methodical.",
+          "Strong communicator with patients and colleagues."
+      ],
+      "topSkills": [
+          "Surgical skills for tumour resection.",
+          "Knowledge of cancer staging and treatment options.",
+          "Ability to work in a team with other medical professionals.",
+          "Competence in minimally invasive surgical techniques.",
+          "Strong problem-solving skills during surgeries."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a fellowship in surgical oncology after residency.",
+          "Gain experience through internships in hospitals with oncology departments."
+      ],
+      "realityCheck": "The training is long and demanding, and the job can involve difficult conversations with patients and families."
+  },
+  "online-coach": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to client messages.",
+              "Plan and schedule video calls for the day.",
+              "Create or update content for online courses."
+          ],
+          "midday": [
+              "Conduct video coaching sessions with clients.",
+              "Record short videos or write posts for social media.",
+              "Review client progress and adjust plans as needed."
+          ],
+          "afternoon": [
+              "Engage with the online community, answering questions.",
+              "Work on marketing strategies to attract new clients.",
+              "Take time for personal development, such as reading or courses."
+          ],
+          "tools": [
+              "Video conferencing software (like Zoom or Skype).",
+              "Social media platforms (like Instagram or Facebook).",
+              "Course creation tools (like Teachable or Kajabi).",
+              "Email marketing software (like Mailchimp).",
+              "Fitness tracking apps (if coaching fitness)."
+          ],
+          "environment": "Mostly working from home, with a flexible schedule and a mix of client interaction and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Coach clients through video calls on their goals.",
+          "Create workout plans or personal development strategies.",
+          "Provide feedback and support to help clients improve.",
+          "Market your services to attract new clients.",
+          "Engage with clients in online forums or social media.",
+          "Track client progress and adjust plans accordingly.",
+          "Stay updated on trends and techniques in your area of expertise."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at communicating and explaining concepts clearly.",
+          "Empathetic and able to understand clients' feelings.",
+          "Self-motivated and able to work independently.",
+          "Enjoys helping others achieve their goals.",
+          "Comfortable using technology for communication."
+      ],
+      "topSkills": [
+          "Strong communication skills for video calls.",
+          "Ability to create engaging content for clients.",
+          "Knowledge of fitness, mindset, or business strategies.",
+          "Basic marketing skills to promote your services.",
+          "Empathy to connect with clients and understand their needs.",
+          "Time management to balance coaching and admin tasks.",
+          "Adaptability to work with different clients and their goals."
+      ],
+      "entryPaths": [
+          "Build subject expertise through self-study or courses.",
+          "Obtain a coaching certification, which is often optional.",
+          "Start with a part-time job or internship in coaching.",
+          "Use social media to build a personal brand and attract clients.",
+          "Network with other coaches or join online coaching communities."
+      ],
+      "realityCheck": "Building a client base can take time and requires consistent marketing efforts."
+  },
+  "online-personality": {
+      "typicalDay": {
+          "morning": [
+              "Check social media for messages and comments.",
+              "Plan content ideas for the week.",
+              "Record a short video or podcast segment."
+          ],
+          "midday": [
+              "Edit and upload content to platforms.",
+              "Engage with followers through comments and messages.",
+              "Collaborate with other creators on ideas."
+          ],
+          "afternoon": [
+              "Review analytics to see what content works best.",
+              "Attend a virtual meeting with brand partners.",
+              "Brainstorm new content themes or series."
+          ],
+          "tools": [
+              "Video editing software (like Adobe Premiere Pro).",
+              "Streaming platforms (like Twitch or YouTube).",
+              "Social media management tools (like Hootsuite)."
+          ],
+          "environment": "Mostly at home or a studio, often working alone but engaging with an online audience."
+      },
+      "whatYouActuallyDo": [
+          "Create and share videos, podcasts, or live streams.",
+          "Interact with your audience through comments and social media.",
+          "Develop a personal brand that reflects your interests.",
+          "Collaborate with other creators to expand your reach.",
+          "Negotiate deals with brands for sponsorships."
+      ],
+      "whoThisIsGoodFor": [
+          "Outgoing and confident in front of a camera.",
+          "Creative and enjoys brainstorming new ideas.",
+          "Comfortable managing your own schedule and tasks."
+      ],
+      "topSkills": [
+          "Strong communication skills for engaging an audience.",
+          "Editing skills for creating polished content.",
+          "Ability to analyse data to improve content strategy.",
+          "Negotiation skills for working with brands.",
+          "Consistency in posting and interacting with followers."
+      ],
+      "entryPaths": [
+          "Start by creating content on platforms like YouTube or TikTok.",
+          "Build a following through social media engagement.",
+          "Attend workshops or online courses on content creation."
+      ],
+      "realityCheck": "Building a loyal audience takes time and effort, and not every piece of content will be a hit."
+  },
+  "ophthalmic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries",
+              "Perform pre-operative assessments",
+              "Conduct morning surgeries on scheduled patients"
+          ],
+          "midday": [
+              "Meet with patients for post-operative check-ups",
+              "Attend team meetings to discuss cases",
+              "Prepare equipment and tools for afternoon surgeries"
+          ],
+          "afternoon": [
+              "Perform additional surgeries as scheduled",
+              "Document surgical procedures and patient progress",
+              "Consult with other specialists about complex cases"
+          ],
+          "tools": [
+              "Surgical microscopes",
+              "Laser equipment",
+              "Retinal imaging devices",
+              "Surgical instruments",
+              "Patient management software"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a structured schedule of surgeries and consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform eye surgeries to treat various conditions.",
+          "Use advanced technology for precise operations.",
+          "Communicate with patients about their conditions and treatment plans.",
+          "Collaborate with other healthcare professionals.",
+          "Keep detailed records of surgeries and patient outcomes.",
+          "Stay updated on new surgical techniques and technologies."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable working in high-pressure situations.",
+          "Good at explaining complex information to patients.",
+          "Strong problem-solving skills.",
+          "Able to work well in a team."
+      ],
+      "topSkills": [
+          "Microsurgery techniques for delicate operations.",
+          "Laser surgery skills for modern treatments.",
+          "Ability to analyse retinal images accurately.",
+          "Excellent communication with patients.",
+          "Strong hand-eye coordination."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in ophthalmology.",
+          "Pursue a specialised fellowship in eye surgery.",
+          "Gain experience through internships in hospitals.",
+          "Consider volunteering in healthcare settings to gain insight.",
+          "Apply for positions in clinics that focus on eye care."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of education and practice before becoming fully independent."
   },
   "ophthalmologist": {
       "typicalDay": {
@@ -5911,6 +11117,118 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider volunteering in healthcare settings to build skills."
       ],
       "realityCheck": "The training is long and demanding, with many years of study and practice before you become fully qualified."
+  },
+  "options-trader": {
+      "typicalDay": {
+          "morning": [
+              "Check market news and updates",
+              "Review open positions and adjust strategies",
+              "Analyse pre-market data for trends"
+          ],
+          "midday": [
+              "Execute trades based on market movements",
+              "Monitor volatility and adjust positions",
+              "Communicate with team about market changes"
+          ],
+          "afternoon": [
+              "Review performance of trades made during the day",
+              "Prepare reports on trading activities",
+              "Plan strategies for the next trading day"
+          ],
+          "tools": [
+              "Trading software (e.g., Bloomberg, MetaTrader)",
+              "Analytical tools (e.g., Excel, Python)",
+              "Market data feeds"
+          ],
+          "environment": "Mostly indoors at a trading desk, with a fast-paced rhythm and constant market updates."
+      },
+      "whatYouActuallyDo": [
+          "Trade options contracts based on market analysis.",
+          "Monitor and assess market volatility.",
+          "Develop and implement trading strategies.",
+          "Communicate with other traders about market conditions.",
+          "Keep detailed records of trades and performance.",
+          "Adjust positions based on risk assessment.",
+          "Stay updated on financial news and economic events."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical and detail-oriented",
+          "Able to stay calm under pressure",
+          "Enjoys working with numbers and data",
+          "Good at making quick decisions",
+          "Comfortable with risk and uncertainty"
+      ],
+      "topSkills": [
+          "Understanding of market dynamics",
+          "Ability to analyse financial data",
+          "Strong mathematical skills",
+          "Risk management and assessment",
+          "Discipline in following strategies",
+          "Effective communication with team members"
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Finance, Maths, or Physics",
+          "Internships at financial firms or trading desks",
+          "Networking with professionals in the trading industry",
+          "Participating in trading competitions or simulations"
+      ],
+      "realityCheck": "The job can be stressful, especially during volatile market conditions, and requires a strong focus on detail."
+  },
+  "oral-maxillofacial-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient cases and prepare for surgeries",
+              "Consult with patients about their conditions",
+              "Perform surgical procedures on scheduled patients"
+          ],
+          "midday": [
+              "Continue with surgeries or assist in operating theatre",
+              "Meet with the surgical team to discuss ongoing cases",
+              "Document patient progress and update medical records"
+          ],
+          "afternoon": [
+              "Conduct follow-up appointments with post-surgery patients",
+              "Participate in team meetings to discuss treatment plans",
+              "Plan upcoming surgeries and coordinate with other specialists"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "3D imaging software",
+              "Anaesthesia equipment",
+              "Medical record software",
+              "X-ray machines"
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the face, jaws, and mouth.",
+          "Assess and diagnose patients with oral and maxillofacial issues.",
+          "Collaborate with dentists and other medical professionals.",
+          "Use 3D imaging for surgical planning.",
+          "Manage patient recovery and follow-up care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise in work.",
+          "Comfortable working in high-pressure situations.",
+          "Good at solving complex problems.",
+          "Able to communicate clearly with patients.",
+          "Interested in both medicine and surgery."
+      ],
+      "topSkills": [
+          "Expertise in jaw reconstruction techniques.",
+          "Knowledge of dental implantology.",
+          "Ability to repair facial fractures.",
+          "Experience with tumour surgery.",
+          "Proficient in 3D surgical planning."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a dental degree.",
+          "Specialise in maxillofacial surgery through a residency programme.",
+          "Gain experience in oral surgery during dental training.",
+          "Apply for positions in hospitals with maxillofacial departments.",
+          "Consider additional certifications in surgical techniques."
+      ],
+      "realityCheck": "The training path is long and requires years of education and hands-on experience before you can operate independently."
   },
   "orchestra-member": {
       "typicalDay": {
@@ -5965,6 +11283,108 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Audition for positions in local orchestras."
       ],
       "realityCheck": "Winning an audition is highly competitive, and you may face many rejections before securing a position."
+  },
+  "orthopaedic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries",
+              "Meet with the surgical team to discuss the day's procedures",
+              "Perform morning surgeries or procedures"
+          ],
+          "midday": [
+              "Continue with surgeries or assist in procedures",
+              "Meet with patients for post-operative check-ups",
+              "Document patient progress and update medical records"
+          ],
+          "afternoon": [
+              "Consult with patients about treatment plans",
+              "Conduct follow-up appointments for recovery",
+              "Attend meetings to discuss cases with colleagues"
+          ],
+          "tools": [
+              "Surgical instruments for operations",
+              "X-ray machines for imaging",
+              "Computer software for patient records"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a mix of surgery, patient consultations, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on bones and joints.",
+          "Treat fractures and sports injuries.",
+          "Replace damaged joints with artificial ones.",
+          "Create rehabilitation plans for patients.",
+          "Consult with patients about their treatment options.",
+          "Work with a team of nurses and other doctors.",
+          "Keep detailed records of surgeries and patient progress."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable working long hours.",
+          "Able to handle high-pressure situations."
+      ],
+      "topSkills": [
+          "Fracture fixation techniques.",
+          "Joint replacement procedures.",
+          "Arthroscopy skills.",
+          "Understanding of biomechanics.",
+          "Rehabilitation planning."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in orthopaedic surgery.",
+          "Pursue a specialisation in orthopaedics after medical school.",
+          "Gain experience through internships in hospitals."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of education and practical experience before you can operate independently."
+  },
+  "otolaryngologist": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Perform morning rounds to check on post-operative patients",
+              "Consult with colleagues about complex cases"
+          ],
+          "midday": [
+              "Conduct surgeries on patients with ear, nose, or throat issues",
+              "Meet with patients for follow-up appointments",
+              "Document patient progress and update medical records"
+          ],
+          "afternoon": [
+              "Perform additional surgeries or procedures as scheduled",
+              "Participate in team meetings to discuss patient care",
+              "Research new techniques or treatments in ENT"
+          ],
+          "tools": [
+              "Surgical instruments for ENT procedures",
+              "Endoscope for minimally invasive surgeries",
+              "Medical imaging equipment for diagnostics"
+          ],
+          "environment": "Mostly indoors in a hospital, spending time in the operating room and consulting with patients."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the ear, nose, and throat.",
+          "Diagnose and treat patients with hearing loss or sinus issues.",
+          "Manage patients with head and neck cancers.",
+          "Conduct examinations and interpret medical tests.",
+          "Work with audiologists to help patients with hearing aids."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable in high-pressure situations.",
+          "Good at problem-solving and critical thinking."
+      ],
+      "topSkills": [
+          "Endoscopic surgery techniques.",
+          "Microsurgery proficiency.",
+          "Knowledge of head and neck oncology.",
+          "Ability to manage airways during surgery.",
+          "Strong communication skills with patients."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by an ENT specialisation.",
+          "Apply for a residency in otolaryngology after medical school.",
+          "Consider internships or assistant roles in hospitals to gain experience."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of study and practice before you become fully qualified."
   },
   "outdoor-instructor": {
       "typicalDay": {
@@ -6070,6 +11490,61 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often face rejection and challenging behaviours, which can be tough but is part of the job."
   },
+  "paediatric-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries",
+              "Meet with the surgical team for morning briefing",
+              "Perform surgeries on scheduled patients"
+          ],
+          "midday": [
+              "Check on post-operative patients in recovery",
+              "Consult with parents about their child's condition",
+              "Attend a team meeting to discuss ongoing cases"
+          ],
+          "afternoon": [
+              "Perform additional surgeries if scheduled",
+              "Document surgical procedures and patient progress",
+              "Plan for upcoming surgeries and patient care"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Anaesthesia equipment",
+              "Ultrasound machines",
+              "Patient monitoring systems",
+              "Electronic health record software"
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre and paediatric ward, with a fast-paced rhythm and a focus on teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Operate on children with various medical conditions.",
+          "Communicate with families about treatment options.",
+          "Monitor patients during recovery.",
+          "Collaborate with other medical professionals.",
+          "Educate families about post-operative care."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Good at problem-solving",
+          "Strong communicator with children and families",
+          "Detail-oriented and precise",
+          "Able to work long hours"
+      ],
+      "topSkills": [
+          "Advanced surgical techniques for paediatrics",
+          "Effective communication with children and parents",
+          "Ability to handle emergencies",
+          "Team collaboration in a surgical setting",
+          "Time management during surgeries"
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a fellowship in paediatric surgery after general surgery training.",
+          "Consider volunteering in healthcare settings to gain experience.",
+          "Look for internships or shadowing opportunities in paediatric departments."
+      ],
+      "realityCheck": "The training is long and intense, with many years of study and practice before you can operate independently."
+  },
   "painter-decorator": {
       "typicalDay": {
           "morning": [
@@ -6130,6 +11605,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can be physically demanding and requires a lot of preparation work before you get to the fun part of painting."
   },
+  "pastry-chef": {
+      "typicalDay": {
+          "morning": [
+              "Prepare doughs and batters for pastries and cakes.",
+              "Set up the workstation with tools and ingredients.",
+              "Check inventory and order supplies if needed."
+          ],
+          "midday": [
+              "Bake pastries and cakes, monitoring oven temperatures.",
+              "Decorate finished products with icing and chocolate.",
+              "Clean and organise the kitchen area."
+          ],
+          "afternoon": [
+              "Plan new dessert recipes and experiment with flavours.",
+              "Package desserts for customers or events.",
+              "Assist in training junior staff or apprentices."
+          ],
+          "tools": [
+              "Ovens and mixers",
+              "Piping bags and nozzles",
+              "Silicone mats and baking trays",
+              "Thermometers and scales"
+          ],
+          "environment": "Mostly indoors in a busy kitchen, with a focus on creativity and attention to detail."
+      },
+      "whatYouActuallyDo": [
+          "Create a variety of desserts and pastries each day.",
+          "Follow recipes precisely to ensure quality.",
+          "Experiment with new flavours and techniques.",
+          "Decorate cakes and pastries to make them visually appealing.",
+          "Work with a team to meet customer orders and demands."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being creative and artistic.",
+          "Has a keen eye for detail.",
+          "Is patient and can handle repetitive tasks.",
+          "Works well under pressure during busy times."
+      ],
+      "topSkills": [
+          "Mastering pastry techniques and baking methods.",
+          "Creativity in designing new desserts.",
+          "Precision in measuring ingredients and decorating.",
+          "Time management to meet deadlines.",
+          "Good communication with kitchen staff."
+      ],
+      "entryPaths": [
+          "Complete a Konditor fagbrev through a vocational school.",
+          "Apply for apprenticeships in bakeries or patisseries.",
+          "Attend culinary programmes focusing on pastry arts.",
+          "Gain experience in a café or restaurant kitchen."
+      ],
+      "realityCheck": "The work can be physically demanding, with long hours on your feet and tight deadlines."
+  },
   "pathologist": {
       "typicalDay": {
           "morning": [
@@ -6179,6 +11707,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for research assistant roles in pathology departments."
       ],
       "realityCheck": "Much of the work involves long hours of focused analysis, which can feel isolating."
+  },
+  "payload-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review mission objectives and payload requirements.",
+              "Check and prepare equipment for the day's experiments.",
+              "Attend a briefing with the mission team."
+          ],
+          "midday": [
+              "Conduct experiments using the payload.",
+              "Document results and observations in a log.",
+              "Communicate with the ground control team about findings."
+          ],
+          "afternoon": [
+              "Analyse data collected from experiments.",
+              "Prepare reports on experiment outcomes.",
+              "Participate in debriefing sessions with the team."
+          ],
+          "tools": [
+              "Specialised scientific instruments related to the payload.",
+              "Data analysis software.",
+              "Communication devices for contact with ground control."
+          ],
+          "environment": "Often in a spacecraft or controlled environment, focused on scientific tasks with high levels of teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Operate scientific equipment during missions.",
+          "Design and plan experiments for specific objectives.",
+          "Record data and ensure it is accurate.",
+          "Work closely with engineers and scientists.",
+          "Adapt to unexpected challenges during missions."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Enjoys working in high-pressure situations.",
+          "Strong problem-solving skills.",
+          "Good at working with a team.",
+          "Fascinated by science and technology."
+      ],
+      "topSkills": [
+          "Expertise in a specific scientific field.",
+          "Ability to design experiments.",
+          "Strong documentation skills.",
+          "Patience for long and complex tasks.",
+          "Flexibility to adapt to changing conditions."
+      ],
+      "entryPaths": [
+          "Complete a PhD in a relevant science field.",
+          "Gain experience through internships in aerospace or research.",
+          "Participate in mission-specific training programmes.",
+          "Work with organisations like the Norwegian Space Agency.",
+          "Network with professionals in the aerospace industry."
+      ],
+      "realityCheck": "The role requires extensive training and preparation, often with long hours and high stress during missions."
   },
   "performance-analyst": {
       "typicalDay": {
@@ -6239,6 +11821,116 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Entry-level positions in sports analytics companies."
       ],
       "realityCheck": "You will spend a lot of time analysing data and may not always be on the field with athletes."
+  },
+  "peripheral-nerve-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and medical histories.",
+              "Prepare surgical instruments and equipment.",
+              "Consult with the surgical team about the day's procedures."
+          ],
+          "midday": [
+              "Perform surgeries on patients with nerve injuries.",
+              "Monitor patients in recovery after surgery.",
+              "Document surgical outcomes and patient progress."
+          ],
+          "afternoon": [
+              "Meet with patients to discuss rehabilitation plans.",
+              "Conduct follow-up assessments on previous patients.",
+              "Attend team meetings to discuss case management."
+          ],
+          "tools": [
+              "Microsurgical instruments",
+              "Electrodiagnostic machines",
+              "Surgical microscopes",
+              "Anatomical models",
+              "Patient management software"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to repair damaged nerves.",
+          "Use specialised tools to work on tiny nerves under a microscope.",
+          "Assess patient conditions before and after surgery.",
+          "Develop rehabilitation plans to help patients recover.",
+          "Collaborate with other medical professionals on patient care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Able to stay calm in high-pressure situations.",
+          "Enjoys working with their hands and using fine motor skills.",
+          "Good at solving complex problems.",
+          "Strong communicator with patients and colleagues."
+      ],
+      "topSkills": [
+          "Microsurgery techniques",
+          "Understanding of human anatomy",
+          "Nerve grafting procedures",
+          "Patient assessment skills",
+          "Rehabilitation planning"
+      ],
+      "entryPaths": [
+          "Complete a medical degree and become a licensed doctor.",
+          "Pursue a residency in neurosurgery or plastic surgery.",
+          "Complete a fellowship in peripheral nerve surgery.",
+          "Gain experience in a hospital or surgical centre.",
+          "Participate in relevant workshops or training programmes."
+      ],
+      "realityCheck": "The training is long and intense, and the work can be very demanding both physically and mentally."
+  },
+  "personal-driver": {
+      "typicalDay": {
+          "morning": [
+              "Pick up the client from home and drive them to school or work.",
+              "Check the vehicle for any issues before starting the day.",
+              "Plan the best routes to avoid traffic."
+          ],
+          "midday": [
+              "Drive the client to appointments or errands as needed.",
+              "Ensure the client is comfortable and has everything they need.",
+              "Keep the vehicle clean and tidy during breaks."
+          ],
+          "afternoon": [
+              "Pick up the client from school or work and take them home.",
+              "Assist with loading or unloading shopping or bags.",
+              "Communicate any changes in schedule to the client."
+          ],
+          "tools": [
+              "Personal vehicle",
+              "GPS navigation system",
+              "Mobile phone for communication"
+          ],
+          "environment": "Mostly in a personal vehicle, spending time on the road and waiting at various locations."
+      },
+      "whatYouActuallyDo": [
+          "Drive clients to their destinations safely and on time.",
+          "Maintain the vehicle to ensure it is in good condition.",
+          "Plan routes and manage time effectively.",
+          "Keep the client informed about any delays or changes.",
+          "Respect the client's privacy and maintain discretion."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Is reliable and punctual.",
+          "Values privacy and confidentiality.",
+          "Can adapt to changing schedules.",
+          "Is comfortable interacting with different people."
+      ],
+      "topSkills": [
+          "Smooth driving skills",
+          "Clean driving record",
+          "Strong communication skills",
+          "Ability to manage time well",
+          "Attention to detail in vehicle maintenance"
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Build a good driving record with no accidents.",
+          "Gather positive references from previous employers.",
+          "Look for job listings on platforms like Finn.no.",
+          "Consider working for a driving service or agency for experience."
+      ],
+      "realityCheck": "The job can involve long hours with unpredictable schedules."
   },
   "personal-trainer": {
       "typicalDay": {
@@ -6345,6 +12037,166 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time on routine tasks and may not always be involved in the more exciting parts of pharmacy work."
   },
+  "photojournalist": {
+      "typicalDay": {
+          "morning": [
+              "Check news updates and plan the day's assignments",
+              "Gather equipment and prepare for shoots",
+              "Contact sources for interviews or locations"
+          ],
+          "midday": [
+              "Attend events or press conferences to capture images",
+              "Edit photos taken earlier in the day",
+              "Submit images to editors for review"
+          ],
+          "afternoon": [
+              "Conduct interviews with subjects for stories",
+              "Meet with editors to discuss upcoming assignments",
+              "Research background information for future shoots"
+          ],
+          "tools": [
+              "Digital camera",
+              "Lenses and lighting equipment",
+              "Photo editing software (e.g., Adobe Photoshop)",
+              "Voice recorder for interviews",
+              "Laptop for editing and submissions"
+          ],
+          "environment": "Mostly working outdoors or at events, often on the move, with a mix of solo work and collaboration with journalists."
+      },
+      "whatYouActuallyDo": [
+          "Capture images that tell a story for newspapers and websites.",
+          "Attend various events like sports matches or protests.",
+          "Edit and select the best photos for publication.",
+          "Interview people to get their stories and perspectives.",
+          "Stay updated on current events and trends in news."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about the world and current events.",
+          "Enjoys storytelling through visuals.",
+          "Comfortable working under pressure and tight deadlines."
+      ],
+      "topSkills": [
+          "Strong photography skills and technical knowledge of cameras.",
+          "Ability to work quickly and efficiently in busy environments.",
+          "Good communication skills for interviewing subjects.",
+          "Critical thinking to capture the essence of a story.",
+          "Ethical understanding of reporting and privacy."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Journalism or Photojournalism.",
+          "Build a strong portfolio of photography work.",
+          "Consider internships with news agencies or newspapers.",
+          "Participate in workshops or courses related to photography.",
+          "Look for apprenticeships or freelance opportunities."
+      ],
+      "realityCheck": "You often have to work long hours and adapt quickly to changing situations, which can be challenging."
+  },
+  "plastic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Conduct pre-operative consultations",
+              "Assist in setting up the operating room"
+          ],
+          "midday": [
+              "Perform surgeries, focusing on reconstruction or aesthetic procedures",
+              "Meet with surgical team to discuss ongoing cases",
+              "Document procedures and update patient records"
+          ],
+          "afternoon": [
+              "Conduct post-operative check-ups with patients",
+              "Discuss recovery plans and follow-up appointments",
+              "Attend meetings to review patient care and outcomes"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Microscope for microsurgery",
+              "Computer for patient records",
+              "3D imaging software",
+              "Sterilisation equipment"
+          ],
+          "environment": "Mostly indoors in a hospital or surgical clinic, with a fast-paced rhythm during surgeries and quieter moments for consultations."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to correct physical defects or injuries.",
+          "Consult with patients to understand their needs and expectations.",
+          "Plan surgeries and prepare patients for procedures.",
+          "Work with a team of nurses and anaesthetists during operations.",
+          "Monitor patients during recovery and provide follow-up care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Calm under pressure.",
+          "Good at problem-solving.",
+          "Empathetic and good at communicating with patients."
+      ],
+      "topSkills": [
+          "Microsurgery techniques.",
+          "Flap reconstruction methods.",
+          "Aesthetic judgement for cosmetic procedures.",
+          "Hand surgery expertise.",
+          "Knowledge of burn management."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a plastic surgery specialisation.",
+          "Gain experience through internships in surgical departments.",
+          "Consider working as a surgical assistant during training.",
+          "Apply for fellowships in plastic surgery after specialisation."
+      ],
+      "realityCheck": "The training is long and demanding, requiring many years of education and hands-on experience before becoming a fully qualified surgeon."
+  },
+  "podcast-host": {
+      "typicalDay": {
+          "morning": [
+              "Research potential guests and topics for upcoming episodes.",
+              "Plan the structure of the next podcast episode.",
+              "Record voiceovers or segments for the episode."
+          ],
+          "midday": [
+              "Conduct interviews with guests, either in person or online.",
+              "Edit recorded audio to improve sound quality.",
+              "Write show notes or summaries for the episode."
+          ],
+          "afternoon": [
+              "Promote the latest episode on social media.",
+              "Engage with listeners through comments or messages.",
+              "Network with other podcasters or industry professionals."
+          ],
+          "tools": [
+              "Microphone for recording audio.",
+              "Audio editing software like Audacity or GarageBand.",
+              "Social media platforms for promotion."
+          ],
+          "environment": "Mostly indoors at a home studio or office, with a mix of recording and editing time."
+      },
+      "whatYouActuallyDo": [
+          "Interview guests to gather interesting stories and insights.",
+          "Edit audio files to create a polished final episode.",
+          "Research topics to ensure content is relevant and engaging.",
+          "Promote episodes to grow your audience on social media.",
+          "Engage with listeners to build a community around your podcast."
+      ],
+      "whoThisIsGoodFor": [
+          "Outgoing and enjoys talking to new people.",
+          "Curious and loves learning about different topics.",
+          "Self-motivated and can work independently."
+      ],
+      "topSkills": [
+          "Strong interviewing skills to get the best stories from guests.",
+          "Basic audio production skills for editing and sound quality.",
+          "Good research skills to find relevant topics and guests.",
+          "Creativity to develop unique content ideas.",
+          "Consistency in producing episodes regularly."
+      ],
+      "entryPaths": [
+          "Start your own podcast with basic recording equipment.",
+          "Take online courses in audio production or storytelling.",
+          "Join a local podcasting group or community for networking.",
+          "Gain experience by volunteering for existing podcasts.",
+          "Use platforms like Samordna opptak to explore media studies."
+      ],
+      "realityCheck": "Building a loyal audience takes time and effort; it can be slow at first."
+  },
   "podiatrist": {
       "typicalDay": {
           "morning": [
@@ -6394,6 +12246,64 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships or internships in healthcare settings."
       ],
       "realityCheck": "You spend a lot of time on your feet, and some patients can be challenging to work with."
+  },
+  "post-production-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Review footage from previous day and organise files",
+              "Edit video clips according to the project brief",
+              "Communicate with the director about any changes needed"
+          ],
+          "midday": [
+              "Apply colour grading to selected scenes",
+              "Work on sound design, adding effects or music",
+              "Attend a team meeting to discuss project progress"
+          ],
+          "afternoon": [
+              "Create and integrate visual effects as needed",
+              "Prepare final files for delivery to the client",
+              "Check delivery specifications to ensure everything meets standards"
+          ],
+          "tools": [
+              "Adobe Premiere Pro",
+              "DaVinci Resolve",
+              "Avid Media Composer",
+              "Adobe After Effects",
+              "Pro Tools"
+          ],
+          "environment": "Mostly indoors in a studio or office setting, with a focus on individual tasks but occasional team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Edit raw footage into a coherent video.",
+          "Add sound effects and music to enhance the final product.",
+          "Adjust colours to create the desired mood.",
+          "Work on visual effects to make scenes more engaging.",
+          "Ensure the final video meets technical delivery standards.",
+          "Communicate regularly with directors and producers for feedback.",
+          "Organise and manage files for easy access during projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Creative with a good sense of visual storytelling.",
+          "Able to work independently for long periods.",
+          "Enjoys problem-solving and troubleshooting technical issues."
+      ],
+      "topSkills": [
+          "Proficient in video editing software.",
+          "Strong understanding of sound design.",
+          "Ability to colour grade effectively.",
+          "Basic knowledge of visual effects techniques.",
+          "Attention to detail in file management.",
+          "Good communication skills for team collaboration.",
+          "Time management to meet project deadlines."
+      ],
+      "entryPaths": [
+          "Complete a relevant vocational programme in post-production.",
+          "Attend a film school with a focus on editing and post-production.",
+          "Apply for internships with production companies to gain experience.",
+          "Consider an apprenticeship in a media-related field."
+      ],
+      "realityCheck": "You often spend long hours in front of a computer, and the work can be repetitive and detail-focused."
   },
   "private-music-tutor": {
       "typicalDay": {
@@ -7208,6 +13118,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider relevant courses or certifications in health promotion."
       ],
       "realityCheck": "You often spend a lot of time on paperwork and data analysis, which can feel tedious."
+  },
+  "quality-assurance-food": {
+      "typicalDay": {
+          "morning": [
+              "Check lab test results from the previous day.",
+              "Review documentation for compliance with safety standards.",
+              "Conduct a morning meeting with the production team."
+          ],
+          "midday": [
+              "Perform quality audits on the production line.",
+              "Run tests on samples of food products.",
+              "Update records and reports based on findings."
+          ],
+          "afternoon": [
+              "Investigate any quality issues reported by the team.",
+              "Meet with suppliers to discuss quality standards.",
+              "Prepare training materials for staff on quality protocols."
+          ],
+          "tools": [
+              "Lab testing equipment",
+              "Quality management software",
+              "Documentation tools like spreadsheets"
+          ],
+          "environment": "Mostly indoors in a food production facility, with a mix of lab work and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Test food samples to ensure they meet safety standards.",
+          "Conduct regular audits of the production process.",
+          "Document all findings and update quality assurance records.",
+          "Investigate any complaints about food quality.",
+          "Train staff on quality control procedures."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Good at problem-solving.",
+          "Enjoys working in a team."
+      ],
+      "topSkills": [
+          "Understanding of HACCP principles.",
+          "Ability to conduct audits effectively.",
+          "Experience with lab testing methods.",
+          "Strong documentation skills.",
+          "Analytical thinking to solve quality issues."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Food Science or Quality Management.",
+          "Relevant internships in food production companies.",
+          "Fagbrev in food production or quality control."
+      ],
+      "realityCheck": "You may spend a lot of time on paperwork and compliance checks, which can feel tedious."
   },
   "quantity-surveyor": {
       "typicalDay": {
@@ -8065,6 +14025,63 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve a lot of paperwork and data analysis, which may not be as exciting as it sounds."
   },
+  "reconstructive-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries",
+              "Conduct pre-operative assessments",
+              "Meet with the surgical team to discuss the day's procedures"
+          ],
+          "midday": [
+              "Perform surgeries, focusing on reconstructive techniques",
+              "Monitor patients in recovery after surgery",
+              "Consult with other specialists about patient care"
+          ],
+          "afternoon": [
+              "Document surgical outcomes and patient progress",
+              "Plan future surgeries based on patient needs",
+              "Attend team meetings to discuss cases and improvements"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Microscope for microsurgery",
+              "3D imaging software",
+              "Sutures and graft materials",
+              "Patient management software"
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with a structured schedule and a focus on patient care."
+      },
+      "whatYouActuallyDo": [
+          "Perform complex surgeries to restore body parts.",
+          "Use advanced techniques like microsurgery and tissue engineering.",
+          "Create detailed surgical plans using 3D imaging.",
+          "Collaborate with other medical professionals.",
+          "Monitor and support patients through their recovery.",
+          "Educate patients about their conditions and treatment options."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Able to handle high-pressure situations.",
+          "Strong communicator with patients and colleagues.",
+          "Comfortable working long hours.",
+          "Passionate about helping others."
+      ],
+      "topSkills": [
+          "Microsurgery expertise.",
+          "Ability to design and implement flap techniques.",
+          "Strong analytical skills for planning surgeries.",
+          "Teamwork and collaboration.",
+          "Excellent communication with patients and staff."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a plastic surgery specialisation.",
+          "Pursue a reconstructive surgery fellowship after specialisation.",
+          "Gain experience through internships in hospitals.",
+          "Consider volunteering in medical settings for exposure.",
+          "Look for positions in hospitals known for reconstructive surgery."
+      ],
+      "realityCheck": "The training is long and demanding, requiring years of study and practice before you can perform surgeries independently."
+  },
   "referee": {
       "typicalDay": {
           "morning": [
@@ -8379,6 +14396,116 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves a lot of driving and irregular hours to meet clients' schedules."
   },
+  "restaurant-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check inventory and order supplies if needed",
+              "Review reservations and prepare for lunch service",
+              "Hold a staff briefing to discuss the day's goals"
+          ],
+          "midday": [
+              "Oversee lunch service and ensure customers are satisfied",
+              "Handle any customer complaints or issues",
+              "Update the staff rota for the upcoming week"
+          ],
+          "afternoon": [
+              "Meet with suppliers to discuss orders and pricing",
+              "Review financial reports and track daily sales",
+              "Plan upcoming events or promotions for the restaurant"
+          ],
+          "tools": [
+              "Point of Sale (POS) system",
+              "Inventory management software",
+              "Scheduling software",
+              "Budgeting spreadsheets",
+              "Communication tools (like WhatsApp or email)"
+          ],
+          "environment": "Mostly indoors in a busy restaurant, working with staff and customers in a fast-paced setting."
+      },
+      "whatYouActuallyDo": [
+          "Manage staff schedules and ensure enough coverage for shifts",
+          "Train new employees on service standards and procedures",
+          "Monitor food quality and presentation before serving",
+          "Handle cash and manage daily financial records",
+          "Create a welcoming atmosphere for customers",
+          "Resolve conflicts between staff or with customers",
+          "Plan and organise events or special promotions"
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys leading and motivating a team",
+          "Can stay calm in stressful situations",
+          "Likes working in a lively environment",
+          "Has a passion for food and customer service"
+      ],
+      "topSkills": [
+          "Strong leadership and team management",
+          "Excellent communication with staff and customers",
+          "Budgeting and financial management",
+          "Problem-solving and conflict resolution",
+          "Time management and organisation"
+      ],
+      "entryPaths": [
+          "Start as a waiter or chef and work your way up",
+          "Complete a fagbrev in restaurant management or hospitality",
+          "Pursue a bachelor's degree in hospitality management",
+          "Gain experience through internships in restaurants",
+          "Look for apprenticeships with local restaurants"
+      ],
+      "realityCheck": "The job can be very demanding, especially during busy service hours when you need to juggle many tasks at once."
+  },
+  "restaurant-owner": {
+      "typicalDay": {
+          "morning": [
+              "Check inventory and order supplies",
+              "Meet with the chef to discuss the menu for the day",
+              "Review staff schedules and confirm shifts"
+          ],
+          "midday": [
+              "Oversee lunch service and ensure everything runs smoothly",
+              "Handle customer feedback and resolve any issues",
+              "Update social media with daily specials"
+          ],
+          "afternoon": [
+              "Plan for the dinner service and prepare the kitchen",
+              "Meet with suppliers to discuss orders",
+              "Manage finances and track daily sales"
+          ],
+          "tools": [
+              "Point of sale (POS) system",
+              "Inventory management software",
+              "Social media platforms",
+              "Kitchen equipment",
+              "Accounting software"
+          ],
+          "environment": "A busy restaurant, often filled with the sounds of cooking and customer chatter, requiring both management and hands-on work."
+      },
+      "whatYouActuallyDo": [
+          "Create and update the restaurant menu based on trends and customer preferences.",
+          "Hire and train staff to provide great service.",
+          "Manage daily operations to ensure everything runs smoothly.",
+          "Handle customer complaints and feedback to improve the experience.",
+          "Keep track of finances, including costs and profits."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being around people and creating a welcoming atmosphere.",
+          "Good at multitasking and staying calm under pressure.",
+          "Has a passion for food and hospitality."
+      ],
+      "topSkills": [
+          "Strong leadership to guide the team.",
+          "Basic accounting to manage finances.",
+          "Creativity to design appealing menus.",
+          "Good communication to interact with staff and customers.",
+          "Time management to handle busy service times."
+      ],
+      "entryPaths": [
+          "Gain experience by working in different roles at a restaurant.",
+          "Consider a vocational programme in hospitality.",
+          "Look for apprenticeships in restaurant management.",
+          "Start with a fagbrev in restaurant and food processing."
+      ],
+      "realityCheck": "Running a restaurant involves long hours and can be very stressful, especially during busy times."
+  },
   "retail-assistant": {
       "typicalDay": {
           "morning": [
@@ -8432,6 +14559,159 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a vocational programme in retail management."
       ],
       "realityCheck": "The job can be repetitive, and busy periods can be stressful with lots of customers to serve."
+  },
+  "ride-hailing-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the app for ride requests and plan your route.",
+              "Ensure the car is clean and fuelled up.",
+              "Put on your seatbelt and start driving to pick up your first passenger."
+          ],
+          "midday": [
+              "Drop off passengers at their destinations.",
+              "Respond to any messages or notifications from the app.",
+              "Take a short break to eat or rest if there's downtime."
+          ],
+          "afternoon": [
+              "Continue accepting ride requests and navigating to pick-ups.",
+              "Maintain a friendly conversation with passengers.",
+              "Log any issues or feedback from rides for future reference."
+          ],
+          "tools": [
+              "Smartphone with the ride-hailing app.",
+              "GPS navigation system.",
+              "Car maintenance tools and cleaning supplies."
+          ],
+          "environment": "Mostly driving around the city, in and out of the car, with varied interactions with passengers."
+      },
+      "whatYouActuallyDo": [
+          "Drive to pick up passengers who request rides through the app.",
+          "Navigate using GPS to find the best routes.",
+          "Keep the car clean and in good condition.",
+          "Communicate with passengers and provide good customer service.",
+          "Handle payments through the app after each ride."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at staying calm in traffic.",
+          "Likes meeting new people and chatting."
+      ],
+      "topSkills": [
+          "Safe driving and knowledge of traffic rules.",
+          "Using navigation apps effectively.",
+          "Good communication and customer service skills.",
+          "Patience when dealing with difficult passengers.",
+          "Flexibility to work different hours, including evenings and weekends."
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Get a kjøreseddel (taxi licence) through local authorities.",
+          "Apply to work with ride-hailing companies like Uber or Bolt."
+      ],
+      "realityCheck": "You spend a lot of time alone in the car, and some passengers may not be very friendly."
+  },
+  "rideshare-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the app for ride requests.",
+              "Ensure the car is clean and fuelled.",
+              "Plan a route based on demand."
+          ],
+          "midday": [
+              "Pick up passengers and drive them to their destinations.",
+              "Communicate with passengers about their ride.",
+              "Take breaks between rides to rest."
+          ],
+          "afternoon": [
+              "Continue accepting ride requests.",
+              "Monitor app notifications for surge pricing.",
+              "Fill up petrol if needed."
+          ],
+          "tools": [
+              "Smartphone with the rideshare app.",
+              "GPS navigation system.",
+              "Car for transportation."
+          ],
+          "environment": "Mostly on the road, driving around the city, with a mix of passenger interactions and waiting times."
+      },
+      "whatYouActuallyDo": [
+          "Drive passengers to their destinations safely.",
+          "Keep the car clean and well-maintained.",
+          "Use the rideshare app to accept rides.",
+          "Communicate with passengers during the trip.",
+          "Manage your own schedule and hours."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at handling different types of people.",
+          "Flexible with working hours."
+      ],
+      "topSkills": [
+          "Safe driving practices.",
+          "Excellent customer service.",
+          "Ability to navigate efficiently.",
+          "Patience during traffic or difficult situations.",
+          "Basic app management skills."
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Get a taxi licence (kjøreseddel).",
+          "Sign up with rideshare companies like Bolt or Uber."
+      ],
+      "realityCheck": "You often spend long hours waiting for ride requests, which can be frustrating."
+  },
+  "risk-analyst": {
+      "typicalDay": {
+          "morning": [
+              "Check emails for updates on risk assessments.",
+              "Gather data from various sources for analysis.",
+              "Attend a team meeting to discuss ongoing projects."
+          ],
+          "midday": [
+              "Create risk reports using Excel.",
+              "Review regulatory changes that may impact the business.",
+              "Collaborate with colleagues on risk frameworks."
+          ],
+          "afternoon": [
+              "Present findings to management.",
+              "Update risk assessment models based on new data.",
+              "Plan for upcoming risk analysis projects."
+          ],
+          "tools": [
+              "Excel",
+              "statistical software (like R or SAS)",
+              "risk management frameworks",
+              "presentation software (like PowerPoint)",
+              "regulatory guidelines"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of independent work and team collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Analyse data to identify potential risks.",
+          "Develop models to quantify risks in different areas.",
+          "Prepare reports detailing risk findings.",
+          "Monitor changes in regulations and their effects.",
+          "Work with other departments to manage risk effectively."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and analytical.",
+          "Enjoys working with numbers and data.",
+          "Good at communicating complex ideas simply."
+      ],
+      "topSkills": [
+          "Statistical analysis and modelling.",
+          "Proficiency in Excel for data manipulation.",
+          "Strong report writing skills.",
+          "Understanding of risk management frameworks.",
+          "Ability to interpret regulations."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Finance, Maths, or Statistics.",
+          "Pursue FRM or PRM certifications.",
+          "Look for internships in finance or risk management.",
+          "Apply for entry-level positions in banks or financial institutions."
+      ],
+      "realityCheck": "The job often involves a lot of data crunching and may not always feel exciting."
   },
   "robotics-engineer": {
       "typicalDay": {
@@ -8489,6 +14769,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time debugging code and fixing issues before you see your designs come to life."
   },
+  "rocket-scientist": {
+      "typicalDay": {
+          "morning": [
+              "Review research data from previous experiments.",
+              "Attend team meetings to discuss project progress.",
+              "Conduct simulations of rocket propulsion systems."
+          ],
+          "midday": [
+              "Collaborate with engineers to design components.",
+              "Test materials for durability and performance.",
+              "Update project documentation and reports."
+          ],
+          "afternoon": [
+              "Analyse results from experiments and simulations.",
+              "Present findings to the team for feedback.",
+              "Plan next steps for ongoing projects."
+          ],
+          "tools": [
+              "Computational fluid dynamics software",
+              "Lab equipment for testing materials",
+              "3D modelling software"
+          ],
+          "environment": "Mostly indoors in a lab or office setting, with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Design rocket engines and propulsion systems.",
+          "Conduct experiments to test new materials.",
+          "Run simulations to predict performance.",
+          "Collaborate with other scientists and engineers.",
+          "Analyse data to improve designs."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Has a strong interest in physics and engineering.",
+          "Likes working in teams on challenging projects."
+      ],
+      "topSkills": [
+          "Understanding combustion physics.",
+          "Strong analytical skills for data analysis.",
+          "Ability to use engineering software.",
+          "Knowledge of thermodynamics principles.",
+          "Hands-on skills for conducting experiments."
+      ],
+      "entryPaths": [
+          "Complete a bachelor’s degree in Aerospace, Mechanical, or Chemical Engineering.",
+          "Pursue a master’s degree or PhD for advanced positions.",
+          "Look for internships at aerospace companies like Kongsberg or Nammo."
+      ],
+      "realityCheck": "The work can be very technical and requires a lot of patience and attention to detail."
+  },
   "safeguarding-officer": {
       "typicalDay": {
           "morning": [
@@ -8543,6 +14873,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in health and social care for practical experience."
       ],
       "realityCheck": "You often deal with difficult and emotional situations, which can be challenging."
+  },
+  "satellite-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check satellite systems and monitor performance data.",
+              "Attend team meetings to discuss project progress.",
+              "Review design specifications and make necessary adjustments."
+          ],
+          "midday": [
+              "Collaborate with colleagues on troubleshooting issues.",
+              "Conduct tests on satellite components in the lab.",
+              "Update project documentation and reports."
+          ],
+          "afternoon": [
+              "Work on simulations to predict satellite behaviour.",
+              "Prepare presentations for stakeholders about project updates.",
+              "Coordinate with suppliers for parts and materials."
+          ],
+          "tools": [
+              "CAD software for design work.",
+              "Simulation software for orbital mechanics.",
+              "Testing equipment for electronic components."
+          ],
+          "environment": "Mostly indoors in an engineering office or laboratory, with a structured routine and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Design satellite systems for communication or observation.",
+          "Build and test satellite components.",
+          "Monitor satellite performance after launch.",
+          "Troubleshoot technical issues with satellite systems.",
+          "Collaborate with other engineers and scientists on projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys solving complex problems.",
+          "Strong interest in technology and space.",
+          "Good at working in teams.",
+          "Detail-oriented and methodical.",
+          "Comfortable with maths and physics."
+      ],
+      "topSkills": [
+          "Understanding of RF engineering principles.",
+          "Knowledge of orbital mechanics.",
+          "Experience with embedded systems.",
+          "Ability to conduct thorough testing.",
+          "Skills in thermal control systems."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace, Electronics, or Telecom Engineering.",
+          "Pursue internships with companies in the aerospace sector.",
+          "Attend relevant vocational programmes in engineering.",
+          "Consider an apprenticeship with satellite manufacturers.",
+          "Look for positions at organisations like ESA or local tech firms."
+      ],
+      "realityCheck": "The work can involve long hours and intense problem-solving, especially close to launch dates."
   },
   "scaffolder": {
       "typicalDay": {
@@ -8704,6 +15088,110 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves long hours of watching footage and analysing data, which can be repetitive."
   },
+  "search-and-rescue-operator": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and ensure readiness for deployment.",
+              "Attend a briefing on the day's missions and weather conditions.",
+              "Perform physical training to maintain fitness levels."
+          ],
+          "midday": [
+              "Conduct practice drills for various rescue scenarios.",
+              "Review maps and routes for potential rescue operations.",
+              "Coordinate with team members on communication protocols."
+          ],
+          "afternoon": [
+              "Respond to emergency calls and prepare for deployment.",
+              "Assist in actual rescue missions if required.",
+              "Debrief with the team after any missions to discuss outcomes."
+          ],
+          "tools": [
+              "Helicopter or boat for transport.",
+              "Rescue gear like ropes and harnesses.",
+              "Medical kits for first aid."
+          ],
+          "environment": "Work is mostly outdoors in various weather conditions, often in remote or challenging locations."
+      },
+      "whatYouActuallyDo": [
+          "Rescue people from dangerous situations like drowning or avalanches.",
+          "Perform first aid on injured individuals.",
+          "Work as part of a team to plan and execute rescue missions.",
+          "Maintain and check all rescue equipment regularly.",
+          "Train continuously to improve skills and fitness."
+      ],
+      "whoThisIsGoodFor": [
+          "Physically fit and enjoys outdoor activities.",
+          "Calm under pressure and can make quick decisions.",
+          "Team player who communicates well with others."
+      ],
+      "topSkills": [
+          "Strong swimming ability for water rescues.",
+          "Knowledge of first aid and medical procedures.",
+          "Ability to navigate and use maps in various terrains.",
+          "Skill in rope rescue techniques.",
+          "Physical endurance for demanding situations."
+      ],
+      "entryPaths": [
+          "Complete military rescue training or courses at Redningsselskapet.",
+          "Obtain a medical or first responder certification.",
+          "Participate in volunteer rescue organisations for experience."
+      ],
+      "realityCheck": "The job can involve long hours in tough conditions, and you must be ready for anything at a moment's notice."
+  },
+  "security-guard": {
+      "typicalDay": {
+          "morning": [
+              "Check in at the security office and receive the day's briefing.",
+              "Conduct a patrol of the premises to ensure everything is secure.",
+              "Monitor CCTV feeds for any unusual activity."
+          ],
+          "midday": [
+              "Perform another round of patrols, checking for safety hazards.",
+              "Assist visitors with directions or questions.",
+              "Complete incident reports for any unusual occurrences."
+          ],
+          "afternoon": [
+              "Continue monitoring CCTV and respond to any alarms.",
+              "Engage with staff and visitors to maintain a visible presence.",
+              "Review and organise reports from the day."
+          ],
+          "tools": [
+              "CCTV monitoring equipment",
+              "Two-way radios",
+              "Incident report forms",
+              "Patrol car or bicycle",
+              "Flashlight"
+          ],
+          "environment": "Mostly indoors and outdoors at various sites, with a mix of walking, standing, and sitting."
+      },
+      "whatYouActuallyDo": [
+          "Patrol assigned areas to ensure safety.",
+          "Monitor CCTV cameras for suspicious activities.",
+          "Respond to alarms and incidents quickly.",
+          "Help people with questions or directions.",
+          "Write reports on any incidents or observations."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Good at observing details",
+          "Reliable and punctual",
+          "Enjoys working alone as well as with others"
+      ],
+      "topSkills": [
+          "Strong observation skills",
+          "Ability to stay calm in emergencies",
+          "Good communication skills",
+          "Physical fitness for patrolling",
+          "Attention to detail"
+      ],
+      "entryPaths": [
+          "Complete Vekterskolen for security guard certification.",
+          "Apply for apprenticeships in security companies.",
+          "Look for entry-level positions in shopping centres or events.",
+          "Pursue vocational training in security services."
+      ],
+      "realityCheck": "The job can be repetitive, with long hours spent on patrol or monitoring."
+  },
   "session-musician": {
       "typicalDay": {
           "morning": [
@@ -8753,6 +15241,59 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participate in local bands or ensembles to gain experience."
       ],
       "realityCheck": "It can be challenging to find consistent work, especially at the start of your career."
+  },
+  "short-form-video-creator": {
+      "typicalDay": {
+          "morning": [
+              "Check social media for trending topics and challenges",
+              "Plan video ideas based on current trends",
+              "Gather any props or materials needed for filming"
+          ],
+          "midday": [
+              "Film short videos, focusing on engaging hooks",
+              "Edit videos using mobile editing apps",
+              "Post videos at optimal times for maximum views"
+          ],
+          "afternoon": [
+              "Engage with followers by responding to comments",
+              "Analyse video performance metrics",
+              "Brainstorm new content ideas based on feedback"
+          ],
+          "tools": [
+              "Smartphone with a good camera",
+              "Mobile editing apps like InShot or CapCut",
+              "Social media platforms like TikTok and Instagram"
+          ],
+          "environment": "Mostly working from home or a flexible location, with a mix of filming, editing, and online engagement."
+      },
+      "whatYouActuallyDo": [
+          "Create short videos that grab attention quickly.",
+          "Edit videos to ensure they are fast-paced and fun.",
+          "Stay updated on social media trends and challenges.",
+          "Interact with your audience through comments and messages.",
+          "Collaborate with brands for sponsored content.",
+          "Experiment with different video styles to see what works.",
+          "Track how well your videos perform and adjust accordingly."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys making videos.",
+          "Good at thinking on your feet and adapting quickly.",
+          "Comfortable with technology and social media.",
+          "Enjoys experimenting with different ideas and formats."
+      ],
+      "topSkills": [
+          "Mobile video editing skills.",
+          "Ability to create engaging hooks in videos.",
+          "Understanding of pacing to keep viewers interested.",
+          "Awareness of current trends and challenges.",
+          "Strong communication skills for audience interaction."
+      ],
+      "entryPaths": [
+          "Self-taught through online tutorials and practice.",
+          "Building a portfolio by creating videos for fun.",
+          "Networking with other creators to learn and collaborate."
+      ],
+      "realityCheck": "Success takes time and consistency; not all videos will go viral."
   },
   "site-manager": {
       "typicalDay": {
@@ -8867,6 +15408,114 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend a lot of time on routine tasks before getting to work on exciting projects."
   },
+  "sniper": {
+      "typicalDay": {
+          "morning": [
+              "Conduct physical training to maintain fitness.",
+              "Review mission objectives and maps.",
+              "Check and clean equipment and weapons."
+          ],
+          "midday": [
+              "Practice shooting skills at the range.",
+              "Engage in team briefings to discuss tactics.",
+              "Perform reconnaissance in assigned areas."
+          ],
+          "afternoon": [
+              "Set up and test equipment for upcoming missions.",
+              "Participate in team exercises and drills.",
+              "Debrief after training sessions to improve skills."
+          ],
+          "tools": [
+              "Rifles with scopes",
+              "Binoculars",
+              "GPS devices",
+              "Communication radios",
+              "Camouflage gear"
+          ],
+          "environment": "Mostly outdoors in varied terrains, often in remote locations, with a focus on teamwork and stealth."
+      },
+      "whatYouActuallyDo": [
+          "Train regularly to improve shooting accuracy and physical fitness.",
+          "Plan and execute reconnaissance missions to gather intelligence.",
+          "Work closely with a small team to coordinate operations.",
+          "Set up and maintain equipment for precision shooting.",
+          "Communicate effectively with team members during missions."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Highly disciplined and focused",
+          "Enjoys working in small teams",
+          "Strong problem-solving skills",
+          "Adaptable to changing situations"
+      ],
+      "topSkills": [
+          "Advanced marksmanship",
+          "Fieldcraft and camouflage techniques",
+          "Navigation and map reading",
+          "Team communication",
+          "Physical fitness and endurance"
+      ],
+      "entryPaths": [
+          "Complete military service in the Norwegian Armed Forces.",
+          "Apply for sniper school after demonstrating marksmanship skills.",
+          "Participate in advanced marksmanship courses.",
+          "Gain experience through field operations.",
+          "Seek roles in specialised military units."
+      ],
+      "realityCheck": "The training is intense and requires a high level of commitment and discipline."
+  },
+  "social-media-influencer": {
+      "typicalDay": {
+          "morning": [
+              "Check notifications and respond to comments on posts.",
+              "Plan content ideas and brainstorm new trends.",
+              "Review analytics from previous posts to see what worked."
+          ],
+          "midday": [
+              "Film or edit videos for social media platforms.",
+              "Take photos for upcoming posts or campaigns.",
+              "Engage with other influencers or brands online."
+          ],
+          "afternoon": [
+              "Schedule posts for the week using a content calendar.",
+              "Research trending topics and hashtags.",
+              "Attend meetings or calls with potential sponsors."
+          ],
+          "tools": [
+              "Smartphone for filming and editing.",
+              "Photo editing apps like Lightroom or VSCO.",
+              "Social media management tools like Hootsuite."
+          ],
+          "environment": "Mostly working from home or in various locations, with a flexible schedule."
+      },
+      "whatYouActuallyDo": [
+          "Create and share engaging content on social media.",
+          "Build and maintain a personal brand that resonates with followers.",
+          "Collaborate with brands for sponsored posts.",
+          "Monitor and analyse engagement metrics to improve content.",
+          "Stay updated on social media trends and platform changes."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys expressing themselves visually.",
+          "Good at communicating and connecting with others online.",
+          "Self-motivated and able to work independently.",
+          "Adaptable to changing trends and feedback."
+      ],
+      "topSkills": [
+          "Content creation and editing.",
+          "Understanding of social media algorithms.",
+          "Negotiation skills for brand deals.",
+          "Consistency in posting and engagement.",
+          "Trend awareness to stay relevant."
+      ],
+      "entryPaths": [
+          "Start by building a personal account and posting regularly.",
+          "Learn through online courses on content creation.",
+          "Collaborate with friends or local businesses for exposure.",
+          "Participate in social media challenges to gain visibility."
+      ],
+      "realityCheck": "Success takes time and effort; not every post will go viral, and building an audience can be slow."
+  },
   "social-services-manager": {
       "typicalDay": {
           "morning": [
@@ -8926,6 +15575,106 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for positions in local municipalities or NGOs."
       ],
       "realityCheck": "The role involves a lot of administrative work and can be quite stressful, especially when managing multiple cases and budgets."
+  },
+  "soldier": {
+      "typicalDay": {
+          "morning": [
+              "Wake up and do physical training exercises.",
+              "Attend a briefing on the day's tasks.",
+              "Clean and maintain your weapon."
+          ],
+          "midday": [
+              "Participate in tactical drills or exercises.",
+              "Have lunch with your unit.",
+              "Attend a workshop on first aid or survival skills."
+          ],
+          "afternoon": [
+              "Engage in weapon handling practice.",
+              "Complete paperwork or training logs.",
+              "Debrief with your unit on the day's activities."
+          ],
+          "tools": [
+              "Rifles and other weapons.",
+              "Tactical gear and uniforms.",
+              "Communication devices like radios."
+          ],
+          "environment": "Mostly outdoors in various terrains, working closely with your team in a structured and disciplined setting."
+      },
+      "whatYouActuallyDo": [
+          "Train in physical fitness and combat techniques.",
+          "Learn to handle and maintain various weapons.",
+          "Participate in team exercises and drills.",
+          "Follow orders from superiors and work as part of a unit.",
+          "Complete daily administrative tasks and reports."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys physical challenges and staying active.",
+          "Works well in a team and follows instructions.",
+          "Is disciplined and can handle stressful situations."
+      ],
+      "topSkills": [
+          "Strong physical fitness and stamina.",
+          "Ability to work as part of a team.",
+          "Resilience in challenging environments.",
+          "Weapon handling and maintenance skills.",
+          "Basic first aid knowledge."
+      ],
+      "entryPaths": [
+          "Complete Førstegangstjeneste (initial service) for 12 months.",
+          "Apply for further training as a career soldier.",
+          "Join the army through a recruitment programme."
+      ],
+      "realityCheck": "The training can be tough and requires a lot of commitment and discipline from the start."
+  },
+  "sommelier": {
+      "typicalDay": {
+          "morning": [
+              "Check wine stock and organise the cellar.",
+              "Plan wine pairings for the day's menu.",
+              "Meet with the kitchen staff to discuss specials."
+          ],
+          "midday": [
+              "Assist in setting up the dining area with wine selections.",
+              "Train staff on wine knowledge and service techniques.",
+              "Prepare for lunch service by tasting wines and making notes."
+          ],
+          "afternoon": [
+              "Advise guests on wine choices during lunch.",
+              "Conduct a tasting session for staff.",
+              "Update the wine list based on current stock and new arrivals."
+          ],
+          "tools": [
+              "Wine cellar management software.",
+              "Tasting glasses and decanters.",
+              "Wine lists and pairing guides."
+          ],
+          "environment": "Mostly indoors in a restaurant, busy during service times, with a mix of customer interaction and behind-the-scenes work."
+      },
+      "whatYouActuallyDo": [
+          "Select wines that match the restaurant's menu.",
+          "Train waitstaff on wine service and recommendations.",
+          "Help guests choose wines that fit their tastes.",
+          "Conduct wine tastings for staff and guests.",
+          "Manage the wine inventory and order new stock."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys learning about different wines.",
+          "Good at remembering details and flavours.",
+          "Likes talking to people and sharing stories."
+      ],
+      "topSkills": [
+          "Strong knowledge of different wine regions and types.",
+          "Ability to taste and describe wines accurately.",
+          "Good customer service and communication skills.",
+          "Organisational skills for managing stock.",
+          "Ability to train and mentor others."
+      ],
+      "entryPaths": [
+          "Complete a WSET or Court of Master Sommeliers certification.",
+          "Gain experience working in restaurants or wine shops.",
+          "Consider an apprenticeship under an experienced sommelier."
+      ],
+      "realityCheck": "You spend a lot of time on your feet and dealing with busy service times, which can be stressful."
   },
   "songwriter": {
       "typicalDay": {
@@ -9032,6 +15781,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for internships in hospitals or clinics to gain experience."
       ],
       "realityCheck": "You spend a lot of time on your feet and must be comfortable working closely with patients."
+  },
+  "sound-editor": {
+      "typicalDay": {
+          "morning": [
+              "Review the footage and sound files from the previous day.",
+              "Organise audio files for easy access.",
+              "Edit dialogue tracks for clarity and flow."
+          ],
+          "midday": [
+              "Create sound effects to match specific scenes.",
+              "Collaborate with the director to discuss sound vision.",
+              "Attend a team meeting to share progress and feedback."
+          ],
+          "afternoon": [
+              "Mix and balance sound levels for different audio tracks.",
+              "Add ambience and background sounds to enhance scenes.",
+              "Finalise edits and prepare tracks for the next stage."
+          ],
+          "tools": [
+              "Digital Audio Workstation (DAW) software like Pro Tools or Logic Pro.",
+              "Microphones for recording Foley.",
+              "Audio plugins for sound effects and mixing."
+          ],
+          "environment": "Mostly indoors in a sound studio, working with a mix of technology and creative collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Edit dialogue to make it sound natural and clear.",
+          "Create and record sound effects that fit the visuals.",
+          "Mix different audio tracks to ensure a balanced sound.",
+          "Work closely with directors to understand their sound vision.",
+          "Attend screenings to see how sound impacts the final product."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and patient with audio tasks.",
+          "Creative and able to think outside the box.",
+          "Enjoys working in a team but can focus alone."
+      ],
+      "topSkills": [
+          "Proficient in using DAW software.",
+          "Strong understanding of sound design principles.",
+          "Ability to edit dialogue effectively.",
+          "Skills in Foley recording and sound effects creation.",
+          "Attention to detail in mixing and balancing audio levels."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Sound or Audio Engineering.",
+          "Vocational training in sound design or audio production.",
+          "Apprenticeships with film or TV production companies."
+      ],
+      "realityCheck": "The job often involves long hours of detailed editing, which can be repetitive at times."
   },
   "sound-engineer": {
       "typicalDay": {
@@ -9143,6 +15942,340 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often work long hours, especially during events, and can be on your feet for most of the day."
   },
+  "space-mission-planner": {
+      "typicalDay": {
+          "morning": [
+              "Review mission timelines and update schedules based on new data.",
+              "Meet with engineers to discuss spacecraft readiness.",
+              "Check in with the crew to confirm their training progress."
+          ],
+          "midday": [
+              "Analyse potential risks and develop contingency plans.",
+              "Coordinate with different departments to ensure everyone is aligned.",
+              "Prepare reports on mission status for senior management."
+          ],
+          "afternoon": [
+              "Attend briefings about upcoming launches and missions.",
+              "Update mission plans based on feedback from simulations.",
+              "Collaborate with scientists to integrate new instruments into the mission."
+          ],
+          "tools": [
+              "Mission planning software",
+              "Data analysis tools",
+              "Scheduling applications",
+              "Communication platforms",
+              "Simulation software"
+          ],
+          "environment": "Mostly indoors in an office setting, with a focus on teamwork and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Plan the entire mission from start to finish.",
+          "Create schedules for crew training and equipment checks.",
+          "Assess risks and develop backup plans.",
+          "Work closely with engineers to ensure mission feasibility.",
+          "Communicate with various teams to keep everyone updated.",
+          "Review and adjust plans based on new information.",
+          "Prepare documentation for mission approval."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and organised.",
+          "Enjoys solving complex problems.",
+          "Good at working in teams and communicating.",
+          "Able to handle stress and tight deadlines.",
+          "Interested in space and technology."
+      ],
+      "topSkills": [
+          "Understanding of orbital mechanics.",
+          "Strong scheduling abilities.",
+          "Risk analysis and management.",
+          "Effective communication skills.",
+          "Coordination among multiple teams.",
+          "Proficient in using mission planning software.",
+          "Ability to adapt plans based on changing circumstances."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace Engineering or Astrodynamics.",
+          "Gain experience through internships at space agencies or aerospace companies.",
+          "Pursue relevant certifications in mission operations.",
+          "Look for apprenticeships in related fields.",
+          "Engage in projects or competitions related to space exploration."
+      ],
+      "realityCheck": "You will spend a lot of time on detailed planning and coordination, which can be repetitive and time-consuming."
+  },
+  "space-robotics-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and updates from team members about ongoing projects.",
+              "Review data from recent tests of robotic prototypes.",
+              "Attend a team meeting to discuss project timelines."
+          ],
+          "midday": [
+              "Work on coding for robot navigation systems.",
+              "Test robotic components in a simulation environment.",
+              "Collaborate with mechanical engineers on design adjustments."
+          ],
+          "afternoon": [
+              "Prepare reports on testing results for presentation.",
+              "Participate in troubleshooting sessions for any issues found during tests.",
+              "Research new technologies and methods in space robotics."
+          ],
+          "tools": [
+              "Robotic Operating System (ROS)",
+              "3D modelling software (e.g., SolidWorks)",
+              "Simulation tools (e.g., Gazebo)",
+              "Programming languages (e.g., Python, C++)",
+              "Testing equipment for robotics"
+          ],
+          "environment": "Mostly indoors in an engineering lab, with a focus on collaboration and problem-solving."
+      },
+      "whatYouActuallyDo": [
+          "Design and build robots for space missions.",
+          "Write and test code for robot control systems.",
+          "Work with a team to solve technical problems.",
+          "Conduct experiments to improve robot performance.",
+          "Communicate findings and updates to project stakeholders."
+      ],
+      "whoThisIsGoodFor": [
+          "Curious about technology and how things work.",
+          "Enjoys solving complex problems.",
+          "Good at working in teams but also enjoys independent tasks."
+      ],
+      "topSkills": [
+          "Strong understanding of robotics and control systems.",
+          "Proficiency in programming languages like Python or C++.",
+          "Ability to work with simulation and modelling software.",
+          "Good analytical skills for troubleshooting.",
+          "Effective communication for team collaboration."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Robotics, Mechatronics, or Aerospace.",
+          "Pursue relevant internships at space agencies or tech companies.",
+          "Engage in projects during university that focus on robotics.",
+          "Look for apprenticeships in engineering firms that specialise in robotics."
+      ],
+      "realityCheck": "The work can be highly technical and requires a lot of patience and attention to detail."
+  },
+  "space-systems-engineer": {
+      "typicalDay": {
+          "morning": [
+              "Review project requirements and specifications",
+              "Attend team meetings to discuss progress",
+              "Check on the status of system integration tests"
+          ],
+          "midday": [
+              "Work on simulations to model spacecraft performance",
+              "Collaborate with other engineers on design changes",
+              "Document findings and updates in project reports"
+          ],
+          "afternoon": [
+              "Troubleshoot issues found in tests or simulations",
+              "Prepare presentations for stakeholders",
+              "Plan upcoming tasks and set priorities for the next day"
+          ],
+          "tools": [
+              "CAD software for design",
+              "Simulation tools like MATLAB or Simulink",
+              "Project management software",
+              "Documentation tools for reports",
+              "Communication tools for team collaboration"
+          ],
+          "environment": "Mostly indoors in an office or lab setting, with a mix of teamwork and focused individual work."
+      },
+      "whatYouActuallyDo": [
+          "Design spacecraft systems to meet mission requirements.",
+          "Integrate different systems like power and propulsion.",
+          "Run tests to ensure everything works together.",
+          "Troubleshoot problems that arise during testing.",
+          "Communicate with other engineers and stakeholders about progress.",
+          "Document designs and testing results.",
+          "Stay updated on new technologies and methods in aerospace."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and analytical thinkers.",
+          "Enjoys solving complex problems.",
+          "Good at working in teams and communicating ideas.",
+          "Curious about space and technology.",
+          "Able to manage multiple tasks at once."
+      ],
+      "topSkills": [
+          "Understanding of systems engineering principles.",
+          "Ability to use simulation and design software.",
+          "Strong problem-solving skills.",
+          "Good communication skills for teamwork.",
+          "Attention to detail in testing and documentation.",
+          "Project management abilities.",
+          "Knowledge of aerospace technologies."
+      ],
+      "entryPaths": [
+          "Complete a Master's in Aerospace or Systems Engineering.",
+          "Participate in internships at aerospace companies.",
+          "Consider relevant apprenticeships in engineering.",
+          "Engage in projects or competitions related to space technology.",
+          "Look for entry-level positions at companies like Kongsberg or Airbus."
+      ],
+      "realityCheck": "The work can be very technical and requires a lot of focus, especially during complex projects."
+  },
+  "spacecraft-pilot": {
+      "typicalDay": {
+          "morning": [
+              "Review mission plans and check spacecraft systems",
+              "Conduct pre-launch checks and simulations",
+              "Attend briefing with mission control"
+          ],
+          "midday": [
+              "Participate in training exercises or simulations",
+              "Monitor spacecraft systems during operations",
+              "Communicate with ground control about status"
+          ],
+          "afternoon": [
+              "Practice emergency procedures and decision-making drills",
+              "Debrief with the crew after training",
+              "Prepare reports on any issues encountered"
+          ],
+          "tools": [
+              "Flight control systems",
+              "Simulation software",
+              "Communication equipment",
+              "Navigation tools",
+              "Emergency response manuals"
+          ],
+          "environment": "Mostly indoors in a training facility or spacecraft, with high-pressure situations and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Pilot the spacecraft during launches and landings.",
+          "Monitor and manage spacecraft systems throughout the mission.",
+          "Communicate with mission control for updates and instructions.",
+          "Train regularly to stay sharp on procedures and emergency protocols.",
+          "Work closely with the crew to ensure everyone's safety."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Strong problem-solver",
+          "Good at teamwork",
+          "Detail-oriented",
+          "Comfortable with technology"
+      ],
+      "topSkills": [
+          "Advanced flight skills",
+          "Rapid decision-making in stressful situations",
+          "Understanding spacecraft systems",
+          "Effective communication with ground control",
+          "Ability to stay focused during long missions"
+      ],
+      "entryPaths": [
+          "Complete a military pilot training programme.",
+          "Earn a Master's degree in a STEM field.",
+          "Gain experience as a test pilot.",
+          "Apply to space agencies like ESA or NASA for selection.",
+          "Participate in relevant internships or training programmes."
+      ],
+      "realityCheck": "The training is intense and can take years before you actually pilot a spacecraft."
+  },
+  "spacewalk-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and tools for the day's tasks",
+              "Review mission plans and procedures",
+              "Conduct physical training exercises"
+          ],
+          "midday": [
+              "Practice simulations of spacewalks in a neutral buoyancy pool",
+              "Attend briefings with mission control",
+              "Test new tools or equipment for EVA"
+          ],
+          "afternoon": [
+              "Perform mock spacewalks to refine techniques",
+              "Document findings and improvements from simulations",
+              "Participate in team discussions about upcoming missions"
+          ],
+          "tools": [
+              "EVA suits",
+              "Specialised tools for repairs",
+              "Simulation software",
+              "Communication devices",
+              "Safety equipment"
+          ],
+          "environment": "Mostly indoors in a training facility, with periods of intense physical activity and teamwork."
+      },
+      "whatYouActuallyDo": [
+          "Train for spacewalks and practice using tools in simulated environments.",
+          "Repair and install equipment during spacewalks.",
+          "Work closely with other astronauts and mission control.",
+          "Maintain physical fitness for the demands of space.",
+          "Follow strict safety protocols during all activities."
+      ],
+      "whoThisIsGoodFor": [
+          "Highly focused and calm under pressure.",
+          "Physically fit and enjoys challenging workouts.",
+          "Good at problem-solving and thinking on your feet."
+      ],
+      "topSkills": [
+          "Understanding EVA procedures and protocols.",
+          "Handling specialised tools with precision.",
+          "Maintaining spatial awareness in three dimensions.",
+          "Staying calm in stressful situations.",
+          "Working effectively in a team."
+      ],
+      "entryPaths": [
+          "Complete a relevant bachelor's degree in engineering or science.",
+          "Join the Norwegian Air Force for pilot training.",
+          "Pursue astronaut training programmes offered by space agencies.",
+          "Obtain EVA specialist certification through recognised training.",
+          "Gain experience in technical roles at organisations like ESA."
+      ],
+      "realityCheck": "The training is long and demanding, and you may spend years preparing before your first spacewalk."
+  },
+  "special-forces-operator": {
+      "typicalDay": {
+          "morning": [
+              "Physical training session to build strength and endurance.",
+              "Weapon maintenance and cleaning.",
+              "Briefing on mission objectives and roles."
+          ],
+          "midday": [
+              "Tactical drills and simulations with your team.",
+              "Language training to improve communication skills.",
+              "Review of intelligence reports and mission planning."
+          ],
+          "afternoon": [
+              "More physical training or skills practice.",
+              "Team debriefing to discuss tactics and outcomes.",
+              "Preparation of equipment and gear for upcoming missions."
+          ],
+          "tools": [
+              "Firearms and ammunition.",
+              "Communication devices like radios.",
+              "Survival gear and tactical equipment."
+          ],
+          "environment": "Mostly outdoors in various terrains, with a mix of physical training and strategic planning."
+      },
+      "whatYouActuallyDo": [
+          "Participate in rigorous physical training to stay fit.",
+          "Engage in tactical exercises to improve teamwork.",
+          "Plan and execute high-risk missions with precision.",
+          "Maintain and operate advanced weaponry and equipment.",
+          "Communicate effectively with team members during missions.",
+          "Adapt quickly to changing situations in the field."
+      ],
+      "whoThisIsGoodFor": [
+          "Highly disciplined and physically fit individuals.",
+          "People who thrive in high-pressure situations.",
+          "Team players who can also work independently."
+      ],
+      "topSkills": [
+          "Elite physical fitness and stamina.",
+          "Expertise in marksmanship and weapon handling.",
+          "Ability to stay calm under extreme stress.",
+          "Strong teamwork and communication skills.",
+          "Knowledge of survival tactics and first aid."
+      ],
+      "entryPaths": [
+          "Complete a military service in the Norwegian Armed Forces.",
+          "Pass the selection process for Forsvarets Spesialkommando (FSK).",
+          "Undergo multi-year specialist training after selection."
+      ],
+      "realityCheck": "The selection process is extremely tough and only a small percentage make it through."
+  },
   "special-needs-assistant": {
       "typicalDay": {
           "morning": [
@@ -9245,6 +16378,58 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in a related field for experience."
       ],
       "realityCheck": "You will spend a lot of time documenting progress and planning sessions, which can feel repetitive."
+  },
+  "spinal-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and imaging results.",
+              "Conduct pre-operative assessments.",
+              "Perform surgical procedures on scheduled patients."
+          ],
+          "midday": [
+              "Meet with the surgical team to discuss cases.",
+              "Attend to post-operative patients in recovery.",
+              "Document surgical outcomes and update patient records."
+          ],
+          "afternoon": [
+              "Consult with patients about their spine health.",
+              "Participate in team meetings to discuss treatment plans.",
+              "Plan upcoming surgeries and coordinate with staff."
+          ],
+          "tools": [
+              "Surgical instruments for spine surgery.",
+              "Neuroimaging software for analysing scans.",
+              "Patient monitoring equipment."
+          ],
+          "environment": "Mostly indoors in a hospital operating room and clinic, with a focus on patient care and surgical procedures."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to correct spine issues.",
+          "Assess patients' conditions and recommend treatment.",
+          "Work with a team of nurses and other doctors.",
+          "Keep detailed records of surgeries and patient progress.",
+          "Educate patients about recovery and rehabilitation."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable making quick decisions in surgery.",
+          "Able to handle high-pressure situations.",
+          "Good at communicating with patients and families."
+      ],
+      "topSkills": [
+          "Surgical skills specific to spine procedures.",
+          "Understanding of neuroimaging techniques.",
+          "Ability to assess and diagnose spine-related conditions.",
+          "Strong teamwork and collaboration skills.",
+          "Good communication for explaining complex information."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in orthopaedics or neurosurgery.",
+          "Pursue a spine fellowship for specialised training.",
+          "Consider internships or shadowing opportunities in hospitals.",
+          "Look for mentorship from experienced spinal surgeons."
+      ],
+      "realityCheck": "The training is long and intense, with many years of education and practice before you become fully qualified."
   },
   "sponsorship-manager": {
       "typicalDay": {
@@ -9828,6 +17013,115 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You spend a lot of time on data and reports, not just creative tasks."
   },
+  "sports-medicine-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient files and prepare for surgeries.",
+              "Meet with the surgical team to discuss the day's procedures.",
+              "Perform surgical procedures on patients with sports injuries."
+          ],
+          "midday": [
+              "Check in on patients in recovery after surgery.",
+              "Consult with physiotherapists about rehabilitation plans.",
+              "Attend meetings with other specialists to discuss patient care."
+          ],
+          "afternoon": [
+              "Conduct follow-up appointments with patients.",
+              "Update patient records and document surgeries.",
+              "Research the latest techniques in sports medicine."
+          ],
+          "tools": [
+              "Surgical instruments for arthroscopy.",
+              "Imaging equipment like MRI and X-ray machines.",
+              "Patient management software."
+          ],
+          "environment": "Mostly indoors in a hospital or surgical clinic, with a mix of surgery, consultations, and administrative tasks."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries to repair injuries like ACL tears and rotator cuff issues.",
+          "Create rehabilitation plans to help athletes recover.",
+          "Communicate with patients about their injuries and treatment options.",
+          "Work with a team of physiotherapists and other doctors.",
+          "Stay updated on new techniques and treatments in sports medicine."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Good at solving problems under pressure.",
+          "Strong communicator with patients and colleagues."
+      ],
+      "topSkills": [
+          "Expertise in arthroscopy techniques.",
+          "Ability to plan and manage rehabilitation programmes.",
+          "Strong knowledge of sports science.",
+          "Excellent patient communication skills.",
+          "Ability to work well in a surgical team."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in orthopaedic surgery.",
+          "Pursue a fellowship in sports medicine after residency.",
+          "Consider internships or shadowing opportunities in sports clinics."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of education and practical experience required before you can operate independently."
+  },
+  "sports-nutritionist": {
+      "typicalDay": {
+          "morning": [
+              "Review client progress and update their nutrition plans.",
+              "Meet with a new client to discuss their goals.",
+              "Prepare educational materials on nutrition."
+          ],
+          "midday": [
+              "Conduct a workshop on meal planning for athletes.",
+              "Analyse data on clients' dietary habits.",
+              "Follow up with clients via email or phone."
+          ],
+          "afternoon": [
+              "Create personalised meal plans based on clients' needs.",
+              "Research the latest trends in sports nutrition.",
+              "Attend a meeting with a sports team to discuss nutrition strategies."
+          ],
+          "tools": [
+              "Nutrition analysis software",
+              "Data tracking apps",
+              "Recipe databases",
+              "Presentation software",
+              "Client management systems"
+          ],
+          "environment": "Mostly indoors in an office or clinic, with a mix of client meetings and research work."
+      },
+      "whatYouActuallyDo": [
+          "Help athletes understand their nutritional needs.",
+          "Create tailored meal plans for different sports.",
+          "Monitor clients' progress and adjust plans as needed.",
+          "Educate clients about the importance of hydration.",
+          "Provide advice on supplements and recovery foods.",
+          "Work with coaches to align nutrition with training schedules.",
+          "Stay updated on the latest nutrition research."
+      ],
+      "whoThisIsGoodFor": [
+          "Interested in health and fitness.",
+          "Good at listening and communicating.",
+          "Enjoys working with diverse people.",
+          "Passionate about sports and performance.",
+          "Detail-oriented and organised."
+      ],
+      "topSkills": [
+          "Understanding of nutrition science and dietary guidelines.",
+          "Ability to coach and motivate clients.",
+          "Skill in meal planning and recipe development.",
+          "Knowledge of exercise physiology.",
+          "Competence in data analysis and tracking.",
+          "Strong communication and interpersonal skills."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Nutrition.",
+          "Obtain a Sports Nutrition certification (e.g. ISSN).",
+          "Gain experience through internships or volunteering in sports settings.",
+          "Consider a fagbrev in a related field like health or fitness.",
+          "Look for apprenticeships with established nutritionists."
+      ],
+      "realityCheck": "Building a client base takes time, and you may start with a lot of admin work before seeing results."
+  },
   "sports-photographer": {
       "typicalDay": {
           "morning": [
@@ -10103,6 +17397,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You may spend a lot of time on admin tasks and not just working directly with athletes."
   },
+  "stockbroker": {
+      "typicalDay": {
+          "morning": [
+              "Check market news and updates.",
+              "Review client portfolios and performance.",
+              "Prepare reports for client meetings."
+          ],
+          "midday": [
+              "Meet with clients to discuss investment strategies.",
+              "Execute trades based on client instructions.",
+              "Monitor stock prices and market trends."
+          ],
+          "afternoon": [
+              "Analyse market data to identify new opportunities.",
+              "Communicate with team members about market changes.",
+              "Prepare follow-up reports and emails for clients."
+          ],
+          "tools": [
+              "Trading platforms like Bloomberg or Eikon.",
+              "Spreadsheet software like Excel.",
+              "Communication tools like email and video calls."
+          ],
+          "environment": "Mostly indoors in an office, fast-paced with a focus on client interactions and market movements."
+      },
+      "whatYouActuallyDo": [
+          "Buy and sell stocks for clients based on their goals.",
+          "Advise clients on investment options and strategies.",
+          "Build and maintain strong relationships with clients.",
+          "Monitor and analyse market trends and data.",
+          "Prepare and present performance reports to clients."
+      ],
+      "whoThisIsGoodFor": [
+          "Analytical and detail-oriented.",
+          "Enjoys working under pressure.",
+          "Good at building relationships.",
+          "Comfortable with numbers and data.",
+          "Strong communicator."
+      ],
+      "topSkills": [
+          "Understanding of financial markets.",
+          "Ability to analyse and interpret data.",
+          "Strong client service skills.",
+          "Good communication and presentation skills.",
+          "Risk assessment and management."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Finance or Economics.",
+          "Obtain a Finansforetaket licence.",
+          "Consider internships at financial firms.",
+          "Look for entry-level positions in investment firms.",
+          "Network with professionals in the industry."
+      ],
+      "realityCheck": "The job can be stressful, especially during market fluctuations, and building a client base takes time."
+  },
   "strength-conditioning-coach": {
       "typicalDay": {
           "morning": [
@@ -10154,6 +17502,120 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships with established strength coaches."
       ],
       "realityCheck": "You spend a lot of time analysing data and making adjustments, which can be less exciting than coaching in the moment."
+  },
+  "studio-photographer": {
+      "typicalDay": {
+          "morning": [
+              "Set up lighting and equipment for the day's shoots.",
+              "Review the shoot schedule and prepare props or backgrounds.",
+              "Check and organise the camera gear and lenses."
+          ],
+          "midday": [
+              "Conduct portrait or product shoots with clients.",
+              "Direct models or subjects to get the right poses.",
+              "Take test shots and adjust lighting as needed."
+          ],
+          "afternoon": [
+              "Edit and retouch photos from the morning shoots.",
+              "Prepare images for client review or social media.",
+              "Clean and pack up studio equipment after the day's work."
+          ],
+          "tools": [
+              "DSLR or mirrorless cameras",
+              "Studio lights and modifiers",
+              "Photo editing software like Adobe Photoshop or Lightroom"
+          ],
+          "environment": "Mostly indoors in a photography studio, with a mix of creative and technical tasks."
+      },
+      "whatYouActuallyDo": [
+          "Set up lighting and backgrounds for each shoot.",
+          "Take high-quality photos of people or products.",
+          "Direct models to achieve the desired look.",
+          "Edit images to enhance quality and style.",
+          "Communicate with clients to understand their vision.",
+          "Maintain and organise studio equipment.",
+          "Build and change sets for different shoots."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and artistic individuals",
+          "Good at working with people and directing them",
+          "Detail-oriented and patient with editing work"
+      ],
+      "topSkills": [
+          "Understanding of studio lighting techniques",
+          "Ability to direct and communicate with subjects",
+          "Photo editing skills using software",
+          "Set-building and organisation skills",
+          "Time management to meet client deadlines",
+          "Problem-solving for technical issues"
+      ],
+      "entryPaths": [
+          "Complete a vocational programme in photography.",
+          "Attend a photo school to build technical skills.",
+          "Create a strong portfolio showcasing studio work.",
+          "Consider internships with established photographers.",
+          "Look for apprenticeships in photography studios."
+      ],
+      "realityCheck": "Building a solid portfolio takes time and effort, and early jobs may be less glamorous than expected."
+  },
+  "submarine-officer": {
+      "typicalDay": {
+          "morning": [
+              "Check and maintain navigation systems.",
+              "Review mission plans with the crew.",
+              "Conduct equipment tests."
+          ],
+          "midday": [
+              "Participate in training drills.",
+              "Monitor sonar and communication systems.",
+              "Update mission logs."
+          ],
+          "afternoon": [
+              "Coordinate with team on operational readiness.",
+              "Prepare for underwater navigation exercises.",
+              "Conduct equipment inspections."
+          ],
+          "tools": [
+              "Sonar systems",
+              "Navigation software",
+              "Communication devices",
+              "Diving equipment",
+              "Control panels"
+          ],
+          "environment": "Confined space aboard a submarine, working closely with a small team in a quiet and focused atmosphere."
+      },
+      "whatYouActuallyDo": [
+          "Operate and monitor submarine systems.",
+          "Navigate underwater using various tools.",
+          "Conduct drills and training exercises.",
+          "Work with the crew to ensure safety.",
+          "Keep detailed logs of missions and activities.",
+          "Respond to emergencies and equipment failures.",
+          "Maintain discretion during missions."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Good at working in small teams",
+          "Detail-oriented",
+          "Able to stay focused for long periods",
+          "Comfortable in confined spaces"
+      ],
+      "topSkills": [
+          "Understanding of navigation systems",
+          "Ability to work in silence",
+          "Strong teamwork skills",
+          "Problem-solving in emergencies",
+          "Technical knowledge of submarine operations",
+          "Discretion and confidentiality"
+      ],
+      "entryPaths": [
+          "Attend the Naval Academy for officer training.",
+          "Complete submarine school after the academy.",
+          "Gain qualifications through sea service.",
+          "Consider apprenticeships with the Norwegian Navy.",
+          "Explore related roles in maritime operations."
+      ],
+      "realityCheck": "You spend a lot of time in a small space, and the job can be quite intense and demanding."
   },
   "substance-abuse-counsellor": {
       "typicalDay": {
@@ -10573,6 +18035,122 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves a lot of travel and long hours at games, which can be tiring."
   },
+  "tank-commander": {
+      "typicalDay": {
+          "morning": [
+              "Conduct morning briefings with the crew.",
+              "Check and maintain the vehicle's equipment.",
+              "Review maps and plan the day's exercises."
+          ],
+          "midday": [
+              "Lead tactical drills with the crew.",
+              "Practice gunnery skills at the range.",
+              "Evaluate performance and provide feedback."
+          ],
+          "afternoon": [
+              "Coordinate with other units for joint exercises.",
+              "Debrief the crew and discuss improvements.",
+              "Attend strategy meetings with higher command."
+          ],
+          "tools": [
+              "Armoured fighting vehicle",
+              "Radio communication equipment",
+              "Navigation tools (GPS, maps)",
+              "Gunnery systems",
+              "Safety gear"
+          ],
+          "environment": "Mostly outdoors in military training areas, with a mix of driving, shooting, and team discussions."
+      },
+      "whatYouActuallyDo": [
+          "Lead a crew in operating an armoured vehicle.",
+          "Direct manoeuvres during training exercises.",
+          "Manage communication between crew members.",
+          "Ensure the vehicle is ready for operations.",
+          "Make decisions based on tactical situations.",
+          "Conduct training sessions for new crew members.",
+          "Evaluate and improve team performance."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong leader with good decision-making skills.",
+          "Enjoys working in a team under pressure.",
+          "Comfortable with physical challenges and outdoor work."
+      ],
+      "topSkills": [
+          "Leadership in high-pressure situations.",
+          "Understanding of armoured tactics.",
+          "Ability to operate and maintain military vehicles.",
+          "Good communication skills.",
+          "Strong problem-solving skills."
+      ],
+      "entryPaths": [
+          "Complete military service in the Norwegian Armed Forces.",
+          "Attend armour school for specialised training.",
+          "Pursue NCO or officer training programmes.",
+          "Look for apprenticeships within the military.",
+          "Participate in cadet programmes for early exposure."
+      ],
+      "realityCheck": "The training can be intense and demanding, requiring both physical fitness and mental resilience."
+  },
+  "taxi-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the car for any issues before starting the shift.",
+              "Review the booking app for any pre-scheduled pickups.",
+              "Drive to a busy area to wait for passengers."
+          ],
+          "midday": [
+              "Pick up passengers from various locations.",
+              "Assist passengers with their bags if needed.",
+              "Navigate to the destination using GPS."
+          ],
+          "afternoon": [
+              "Drop off passengers and collect payment.",
+              "Refuel the car if necessary.",
+              "Clean the interior of the taxi between rides."
+          ],
+          "tools": [
+              "GPS navigation system",
+              "payment processing machine",
+              "radio for communication",
+              "taxi app for bookings",
+              "first aid kit"
+          ],
+          "environment": "Mostly driving around the city, with time spent waiting at ranks or in busy areas."
+      },
+      "whatYouActuallyDo": [
+          "Drive passengers to their destinations safely.",
+          "Pick up passengers from designated spots or app requests.",
+          "Handle cash and card payments.",
+          "Maintain the cleanliness of the taxi.",
+          "Follow traffic laws and local regulations.",
+          "Provide good customer service and engage with passengers.",
+          "Know the best routes and shortcuts in the city."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at staying calm under pressure.",
+          "Likes meeting new people.",
+          "Has a strong sense of direction.",
+          "Is patient and friendly."
+      ],
+      "topSkills": [
+          "Safe driving skills.",
+          "Good local knowledge of the area.",
+          "Effective communication with passengers.",
+          "Ability to use navigation tools.",
+          "Time management for efficient routes.",
+          "Customer service skills.",
+          "Problem-solving for unexpected situations."
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Get a kjøreseddel (taxi licence) from the local authority.",
+          "Complete a vocational driving course.",
+          "Look for apprenticeship opportunities with local taxi companies.",
+          "Gain experience through driving jobs in other sectors."
+      ],
+      "realityCheck": "The hours can be long and unpredictable, especially during busy times or late nights."
+  },
   "team-manager": {
       "typicalDay": {
           "morning": [
@@ -10626,6 +18204,57 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Fagbrev in related fields like event management."
       ],
       "realityCheck": "You spend a lot of time managing details and logistics, which can be less exciting than being on the field."
+  },
+  "tech-reviewer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from brands or viewers",
+              "Research the latest tech news and products",
+              "Plan which products to review next"
+          ],
+          "midday": [
+              "Unbox and set up new gadgets for testing",
+              "Take notes on features and performance",
+              "Record video footage of the product in use"
+          ],
+          "afternoon": [
+              "Edit video content and write review articles",
+              "Post reviews on your website or social media",
+              "Engage with viewers' comments and questions"
+          ],
+          "tools": [
+              "Video camera or smartphone for recording",
+              "Editing software like Adobe Premiere or Final Cut Pro",
+              "Microphone for clear audio"
+          ],
+          "environment": "Mostly indoors at home or a studio, working at your own pace with a mix of testing and content creation."
+      },
+      "whatYouActuallyDo": [
+          "Test new tech products like phones and laptops.",
+          "Write detailed reviews based on your experience.",
+          "Create videos showing how the products work.",
+          "Share your honest opinions with viewers.",
+          "Respond to comments and questions from your audience."
+      ],
+      "whoThisIsGoodFor": [
+          "Passionate about technology and gadgets.",
+          "Enjoys expressing opinions clearly.",
+          "Comfortable working independently.",
+          "Likes experimenting with new products."
+      ],
+      "topSkills": [
+          "Product testing and evaluation.",
+          "Video production and editing.",
+          "Clear and engaging writing.",
+          "Understanding of technology and trends.",
+          "Ability to communicate fairly and honestly."
+      ],
+      "entryPaths": [
+          "Start a tech blog or YouTube channel to showcase your reviews.",
+          "Take online courses in video production and editing.",
+          "Build a portfolio of reviews to demonstrate your skills."
+      ],
+      "realityCheck": "Building a following takes time and consistent effort, and not every product will be exciting to review."
   },
   "technical-architect": {
       "typicalDay": {
@@ -13117,6 +20746,65 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job can involve long hours of problem-solving and technical detail, which may not be as exciting as it sounds."
   },
+  "tennis-player": {
+      "typicalDay": {
+          "morning": [
+              "Wake up early and have a healthy breakfast.",
+              "Do a fitness workout focusing on strength and conditioning.",
+              "Practice serving and returning on the court."
+          ],
+          "midday": [
+              "Take a break for lunch and hydrate.",
+              "Have a training session with a coach to work on techniques.",
+              "Review match footage to analyse performance."
+          ],
+          "afternoon": [
+              "Play practice matches with other players.",
+              "Do cool-down exercises and stretches.",
+              "Plan the next day's training and rest schedule."
+          ],
+          "tools": [
+              "Tennis racket",
+              "Tennis balls",
+              "Fitness tracker",
+              "Video analysis software",
+              "Hydration gear"
+          ],
+          "environment": "Mostly outdoors on tennis courts, with a mix of training, matches, and travel."
+      },
+      "whatYouActuallyDo": [
+          "Train daily to improve skills and fitness.",
+          "Compete in tournaments to earn ranking points.",
+          "Work with coaches to develop strategies for matches.",
+          "Manage travel and schedules for competitions.",
+          "Maintain a healthy diet and lifestyle.",
+          "Review and analyse performance to identify areas for improvement.",
+          "Engage with fans and media during events."
+      ],
+      "whoThisIsGoodFor": [
+          "Highly motivated and disciplined.",
+          "Enjoys competition and pushing personal limits.",
+          "Able to handle pressure and setbacks.",
+          "Good at managing time and schedules.",
+          "Passionate about tennis and sports."
+      ],
+      "topSkills": [
+          "Advanced tennis techniques and skills.",
+          "Physical fitness and endurance.",
+          "Mental resilience to cope with stress.",
+          "Tactical understanding of the game.",
+          "Self-management and organisation.",
+          "Communication skills for working with coaches and sponsors."
+      ],
+      "entryPaths": [
+          "Start in junior competitions and local clubs.",
+          "Participate in ITF events to gain experience.",
+          "Consider a sports academy for intensive training.",
+          "Seek sponsorships or support from tennis federations.",
+          "Work with a coach to develop a personalised training plan."
+      ],
+      "realityCheck": "The path to becoming a professional player is long and requires significant financial investment."
+  },
   "test-automation-engineer": {
       "typicalDay": {
           "morning": [
@@ -13177,6 +20865,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You might spend a lot of time debugging and refining tests before seeing the results of your work."
   },
+  "thoracic-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries.",
+              "Meet with the surgical team to discuss the day's cases.",
+              "Conduct pre-operative evaluations for patients."
+          ],
+          "midday": [
+              "Perform surgeries, such as lung resections or repairs.",
+              "Monitor patients in recovery after surgery.",
+              "Consult with other medical professionals about patient care."
+          ],
+          "afternoon": [
+              "Document surgical procedures and patient progress.",
+              "Meet with patients and families to discuss recovery plans.",
+              "Attend meetings to discuss treatment protocols and outcomes."
+          ],
+          "tools": [
+              "Surgical instruments for thoracic procedures.",
+              "Anesthesia machines.",
+              "Imaging equipment like X-rays and CT scans."
+          ],
+          "environment": "Primarily in a hospital operating room, with time spent in patient recovery areas and consulting rooms."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the lungs and chest area.",
+          "Evaluate patients before and after operations.",
+          "Work closely with anaesthetists and nurses during procedures.",
+          "Keep detailed records of surgeries and patient outcomes.",
+          "Educate patients about their conditions and recovery."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical.",
+          "Able to work under pressure in high-stakes situations.",
+          "Good at communicating complex information clearly."
+      ],
+      "topSkills": [
+          "Expertise in thoracic surgical techniques.",
+          "Ability to manage patient airways.",
+          "Strong teamwork skills in a surgical setting.",
+          "Competence in interpreting medical imaging.",
+          "Excellent problem-solving abilities."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a residency in general surgery.",
+          "Specialise in thoracic surgery through a fellowship (7+ years total).",
+          "Participate in internships at hospitals with thoracic surgery departments."
+      ],
+      "realityCheck": "The training is long and demanding, with many hours spent in surgery and on call."
+  },
   "ticketing-manager": {
       "typicalDay": {
           "morning": [
@@ -13226,6 +20964,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Gain experience in customer service roles."
       ],
       "realityCheck": "The job often requires long hours during events and busy sales periods."
+  },
+  "tiktok-creator": {
+      "typicalDay": {
+          "morning": [
+              "Check TikTok for trending videos and sounds.",
+              "Plan content ideas based on trends.",
+              "Set up filming equipment and location."
+          ],
+          "midday": [
+              "Film several short videos.",
+              "Edit videos to fit TikTok's style.",
+              "Engage with followers by replying to comments."
+          ],
+          "afternoon": [
+              "Post videos at peak times for more views.",
+              "Analyse video performance and audience engagement.",
+              "Brainstorm new ideas for future content."
+          ],
+          "tools": [
+              "Smartphone for filming.",
+              "Video editing apps like CapCut or InShot.",
+              "Lighting equipment for better video quality."
+          ],
+          "environment": "Mostly works from home or a chosen location, with a flexible schedule that allows for creativity."
+      },
+      "whatYouActuallyDo": [
+          "Create and film short videos that fit current trends.",
+          "Edit videos to make them engaging and fun.",
+          "Post videos at the right time for maximum views.",
+          "Interact with followers to build a community.",
+          "Stay updated on TikTok trends and challenges.",
+          "Collaborate with other creators for new ideas.",
+          "Monitor video performance and adjust content strategy."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys making videos.",
+          "Good at spotting trends quickly.",
+          "Comfortable in front of a camera.",
+          "Self-motivated and likes working independently."
+      ],
+      "topSkills": [
+          "Video editing skills to create polished content.",
+          "Strong understanding of TikTok trends.",
+          "Good communication skills for engaging with followers.",
+          "Time management to balance filming, editing, and posting.",
+          "Ability to adapt content based on audience feedback."
+      ],
+      "entryPaths": [
+          "Start creating videos on TikTok without formal education.",
+          "Learn video editing through online tutorials.",
+          "Follow other creators to understand what works.",
+          "Participate in TikTok challenges to gain visibility."
+      ],
+      "realityCheck": "Building a following takes time and consistency; not every video will go viral."
   },
   "title-officer": {
       "typicalDay": {
@@ -13338,6 +21130,332 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider volunteering at music festivals to learn the ropes"
       ],
       "realityCheck": "You often work long hours and may need to deal with unexpected problems, which can be tiring."
+  },
+  "trader": {
+      "typicalDay": {
+          "morning": [
+              "Check global market news and updates.",
+              "Review overnight trading performance.",
+              "Set up trading platform for the day."
+          ],
+          "midday": [
+              "Monitor ongoing trades and adjust strategies.",
+              "Communicate with team about market trends.",
+              "Analyse new investment opportunities."
+          ],
+          "afternoon": [
+              "Execute trades based on market analysis.",
+              "Prepare reports on daily trading results.",
+              "Plan strategies for the next trading day."
+          ],
+          "tools": [
+              "Trading software (e.g., Bloomberg Terminal)",
+              "Market analysis tools (e.g., Reuters)",
+              "Spreadsheets for tracking trades"
+          ],
+          "environment": "Mostly indoors in a fast-paced office, with a focus on screens and data analysis."
+      },
+      "whatYouActuallyDo": [
+          "Buy and sell financial instruments like stocks and currencies.",
+          "Analyse market trends to make informed decisions.",
+          "Manage risk by setting limits on trades.",
+          "Keep up with economic news that affects markets.",
+          "Work closely with a team to discuss strategies."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys working under pressure.",
+          "Good at maths and numbers.",
+          "Able to make quick decisions."
+      ],
+      "topSkills": [
+          "Strong analytical skills for market analysis.",
+          "Ability to stay calm in stressful situations.",
+          "Discipline to stick to trading plans.",
+          "Effective communication with team members.",
+          "Understanding of financial instruments."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Finance or Mathematics.",
+          "Gain experience through a trading internship.",
+          "Consider a master's degree for advanced roles."
+      ],
+      "realityCheck": "The job can be very stressful, especially during market fluctuations."
+  },
+  "transplant-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient cases and test results from overnight.",
+              "Attend morning rounds with the surgical team.",
+              "Prepare for any scheduled transplant surgeries."
+          ],
+          "midday": [
+              "Perform transplant surgeries, focusing on precision and teamwork.",
+              "Consult with other specialists about patient care.",
+              "Document patient progress and update medical records."
+          ],
+          "afternoon": [
+              "Meet with families to discuss patient status and recovery.",
+              "Participate in training or teaching sessions for junior doctors.",
+              "Plan for upcoming surgeries and coordinate with the transplant team."
+          ],
+          "tools": [
+              "Surgical instruments and tools for transplantation.",
+              "Medical imaging software for diagnostics.",
+              "Electronic health record systems for patient management."
+          ],
+          "environment": "Mostly indoors in a hospital operating room, with high-pressure situations and a focus on patient outcomes."
+      },
+      "whatYouActuallyDo": [
+          "Perform complex surgeries to transplant organs.",
+          "Assess donor organs and ensure they are suitable for transplant.",
+          "Work closely with a team of doctors, nurses, and specialists.",
+          "Monitor patients closely before and after surgery.",
+          "Educate patients and their families about the transplant process.",
+          "Stay on-call for emergency transplant situations.",
+          "Keep up with the latest medical research and techniques."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Strong problem-solving skills.",
+          "Good at working in a team.",
+          "Detail-oriented and precise.",
+          "Able to handle long hours and irregular schedules."
+      ],
+      "topSkills": [
+          "Advanced surgical skills and techniques.",
+          "Strong knowledge of immunology and organ rejection.",
+          "Ability to coordinate with multiple medical teams.",
+          "Excellent communication with patients and families.",
+          "Quick decision-making in critical situations.",
+          "Ability to manage stress and fatigue."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a fellowship in transplant surgery after residency.",
+          "Gain experience through internships in hospitals with transplant programmes.",
+          "Participate in research projects related to transplant medicine.",
+          "Consider working in a related field like critical care or emergency medicine."
+      ],
+      "realityCheck": "The hours can be long and unpredictable, with many nights on-call for emergencies."
+  },
+  "trauma-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient cases and prepare for surgeries",
+              "Conduct morning rounds to check on patients",
+              "Attend briefings with the surgical team"
+          ],
+          "midday": [
+              "Perform surgeries on trauma patients",
+              "Monitor vital signs and adjust treatment as needed",
+              "Communicate with family members about patient status"
+          ],
+          "afternoon": [
+              "Continue with surgeries or assist in other operations",
+              "Document patient progress and update medical records",
+              "Participate in team debriefs to discuss cases"
+          ],
+          "tools": [
+              "Surgical instruments",
+              "Monitoring equipment",
+              "Medical imaging tools (like X-ray or CT scans)"
+          ],
+          "environment": "Fast-paced hospital operating room with a focus on teamwork and critical decision-making."
+      },
+      "whatYouActuallyDo": [
+          "Operate on patients with severe injuries from accidents or violence.",
+          "Make quick decisions during emergencies to save lives.",
+          "Work closely with nurses and other doctors in the operating room.",
+          "Manage multiple injuries in one patient at a time.",
+          "Provide updates and support to patients' families."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Strong problem solver",
+          "Good at working in teams",
+          "Able to handle emotional situations",
+          "Detail-oriented and precise"
+      ],
+      "topSkills": [
+          "Emergency decision-making",
+          "Surgical skills and techniques",
+          "Ability to work long hours",
+          "Resilience in high-stress situations",
+          "Strong communication skills"
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a general surgery residency.",
+          "Pursue a trauma fellowship after general surgery training.",
+          "Gain experience through internships in emergency medicine."
+      ],
+      "realityCheck": "The hours can be long and unpredictable, especially when emergencies arise."
+  },
+  "travel-vlogger": {
+      "typicalDay": {
+          "morning": [
+              "Plan the day's itinerary and research locations to film",
+              "Check and charge camera equipment",
+              "Review footage from previous days"
+          ],
+          "midday": [
+              "Film video segments at chosen locations",
+              "Take photos for social media and blog",
+              "Engage with followers online, responding to comments and messages"
+          ],
+          "afternoon": [
+              "Edit video clips and organise content for future uploads",
+              "Scout new locations for filming or activities",
+              "Network with local businesses or other creators"
+          ],
+          "tools": [
+              "Camera (DSLR or mirrorless)",
+              "Editing software (like Adobe Premiere Pro)",
+              "Tripod and stabiliser",
+              "Laptop for editing",
+              "Social media platforms (Instagram, YouTube)"
+          ],
+          "environment": "Mostly outdoors in various locations, with a flexible schedule that changes based on travel plans."
+      },
+      "whatYouActuallyDo": [
+          "Film and edit videos of your travels.",
+          "Take photos to share on social media.",
+          "Create engaging stories about places and cultures.",
+          "Plan trips and manage travel logistics.",
+          "Collaborate with brands or tourism boards for promotions.",
+          "Engage with your audience and build a community.",
+          "Keep up with trends in vlogging and content creation."
+      ],
+      "whoThisIsGoodFor": [
+          "Adventurous and loves exploring new places.",
+          "Good at storytelling and capturing moments.",
+          "Comfortable being in front of a camera.",
+          "Enjoys connecting with people online.",
+          "Resilient and adaptable to changing situations."
+      ],
+      "topSkills": [
+          "Filmmaking and video editing.",
+          "Strong storytelling abilities.",
+          "Good logistical planning for travel.",
+          "Basic photography skills.",
+          "Fluency in multiple languages.",
+          "Stamina for long travel days.",
+          "Social media savvy."
+      ],
+      "entryPaths": [
+          "Start a YouTube channel or Instagram account.",
+          "Learn video editing through online courses.",
+          "Network with other travel creators for tips.",
+          "Build a portfolio of your content.",
+          "Consider attending workshops or travel expos."
+      ],
+      "realityCheck": "The income can be unpredictable, and it often takes time to build a following and secure brand deals."
+  },
+  "tutor": {
+      "typicalDay": {
+          "morning": [
+              "Prepare lesson plans for the day",
+              "Review student progress and notes",
+              "Set up a quiet space for tutoring"
+          ],
+          "midday": [
+              "Meet with a student for a one-on-one session",
+              "Assess the student's understanding of the material",
+              "Provide targeted exercises for practice"
+          ],
+          "afternoon": [
+              "Meet with another student for tutoring",
+              "Adjust teaching methods based on student feedback",
+              "Record notes on student performance and areas to improve"
+          ],
+          "tools": [
+              "Whiteboard and markers",
+              "Textbooks and workbooks",
+              "Online resources and educational apps"
+          ],
+          "environment": "Usually indoors, in a quiet space, with a focus on individual learning."
+      },
+      "whatYouActuallyDo": [
+          "Teach specific subjects to students one-on-one.",
+          "Identify areas where students struggle.",
+          "Create personalised lesson plans.",
+          "Help students with homework and exam preparation.",
+          "Encourage and motivate students to improve.",
+          "Track student progress over time.",
+          "Communicate with parents about student development."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and understanding with others.",
+          "Enjoys explaining complex topics simply.",
+          "Good at adapting to different learning styles."
+      ],
+      "topSkills": [
+          "Strong knowledge in specific subjects.",
+          "Ability to explain concepts clearly.",
+          "Patience when working with struggling students.",
+          "Good listening skills to understand student needs.",
+          "Flexibility to change teaching methods.",
+          "Organisational skills for planning lessons.",
+          "Empathy to connect with students emotionally."
+      ],
+      "entryPaths": [
+          "Pursue a relevant subject degree at university.",
+          "Become a tutor while studying at university.",
+          "Complete a fagbrev in education or a related field.",
+          "Join tutoring companies or platforms for experience.",
+          "Offer tutoring services independently."
+      ],
+      "realityCheck": "Finding enough students to maintain a steady income can be challenging."
+  },
+  "uber-driver": {
+      "typicalDay": {
+          "morning": [
+              "Check the Uber app for ride requests and accept trips.",
+              "Ensure the car is clean and fuelled.",
+              "Navigate to the pick-up location."
+          ],
+          "midday": [
+              "Drive passengers to their destinations.",
+              "Engage with passengers and provide good customer service.",
+              "Monitor the app for new ride requests."
+          ],
+          "afternoon": [
+              "Drop off passengers and rate them after the trip.",
+              "Take breaks as needed to rest and recharge.",
+              "Continue accepting new ride requests."
+          ],
+          "tools": [
+              "Smartphone with the Uber app",
+              "GPS navigation system",
+              "Car for transportation"
+          ],
+          "environment": "Mostly driving around the city, with time spent waiting for ride requests in various locations."
+      },
+      "whatYouActuallyDo": [
+          "Drive passengers to their requested destinations.",
+          "Keep your car clean and well-maintained.",
+          "Use the app to navigate and communicate with passengers.",
+          "Manage your schedule and decide when to work.",
+          "Provide a friendly and safe experience for passengers."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys driving and being on the road.",
+          "Good at staying calm in traffic.",
+          "Likes meeting new people.",
+          "Flexible with working hours."
+      ],
+      "topSkills": [
+          "Safe driving practices.",
+          "Good customer service skills.",
+          "Ability to navigate using maps.",
+          "Time management for efficient trips.",
+          "Patience when dealing with traffic or difficult passengers."
+      ],
+      "entryPaths": [
+          "Obtain a Class B driving licence.",
+          "Get a Norwegian taxi licence (kjøreseddel).",
+          "Sign up with Uber after meeting their requirements."
+      ],
+      "realityCheck": "You may spend a lot of time waiting for ride requests, especially during off-peak hours."
   },
   "ui-designer": {
       "typicalDay": {
@@ -13496,6 +21614,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The job often involves a lot of meetings and paperwork, which can be less exciting than the actual planning work."
   },
+  "urological-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and prepare for surgeries.",
+              "Meet with the surgical team to discuss the day's procedures.",
+              "Perform morning rounds to check on patients post-surgery."
+          ],
+          "midday": [
+              "Conduct surgeries on patients with kidney stones or prostate issues.",
+              "Assist in endoscopic procedures.",
+              "Consult with patients and their families about treatment options."
+          ],
+          "afternoon": [
+              "Continue with surgeries or procedures as scheduled.",
+              "Document surgical notes and update patient records.",
+              "Attend meetings with other specialists to discuss complex cases."
+          ],
+          "tools": [
+              "Surgical instruments for urology procedures.",
+              "Robotic surgery systems.",
+              "Endoscopy equipment."
+          ],
+          "environment": "Primarily in a hospital operating theatre, with time spent in patient consultation rooms."
+      },
+      "whatYouActuallyDo": [
+          "Perform surgeries on the urinary tract and male reproductive system.",
+          "Diagnose conditions related to kidney stones and prostate disease.",
+          "Manage post-operative care and recovery for patients.",
+          "Consult with patients to explain diagnoses and treatment plans.",
+          "Collaborate with other medical professionals for comprehensive care."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and focused on precision.",
+          "Comfortable making quick decisions in high-pressure situations.",
+          "Strong communicator, able to explain complex medical terms simply."
+      ],
+      "topSkills": [
+          "Robotic and laparoscopic surgery techniques.",
+          "Endoscopy skills for minimally invasive procedures.",
+          "Strong problem-solving abilities during surgeries.",
+          "Ability to work long hours and handle emergencies.",
+          "Excellent hand-eye coordination."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a urology specialisation.",
+          "Consider a bachelor's degree in health sciences as a foundation.",
+          "Participate in internships or shadowing at hospitals during studies."
+      ],
+      "realityCheck": "The training is long and intense, with many years of education and practice required before you can operate independently."
+  },
   "ux-researcher": {
       "typicalDay": {
           "morning": [
@@ -13545,6 +21713,231 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider a fagbrev in a related area for practical experience."
       ],
       "realityCheck": "You might spend a lot of time on data analysis and report writing, which can be less exciting than the interviews."
+  },
+  "vascular-surgeon": {
+      "typicalDay": {
+          "morning": [
+              "Review patient charts and imaging results before surgery.",
+              "Prepare the operating room and surgical instruments.",
+              "Meet with the surgical team to discuss the day's procedures."
+          ],
+          "midday": [
+              "Perform surgeries on patients with vascular issues.",
+              "Monitor patients' vital signs during surgery.",
+              "Document the procedures and any complications encountered."
+          ],
+          "afternoon": [
+              "Conduct follow-up consultations with patients post-surgery.",
+              "Participate in team meetings to discuss patient care.",
+              "Update patient records and plan future treatments."
+          ],
+          "tools": [
+              "Surgical instruments and tools for vascular procedures.",
+              "Imaging equipment like ultrasound and CT scanners.",
+              "Electronic health record systems for patient documentation."
+          ],
+          "environment": "Mostly indoors in a hospital operating theatre, with a mix of surgery and patient consultations."
+      },
+      "whatYouActuallyDo": [
+          "Operate on patients to treat problems with blood vessels.",
+          "Use imaging techniques to diagnose vascular conditions.",
+          "Manage emergency situations during surgeries.",
+          "Collaborate with other medical professionals for patient care.",
+          "Educate patients about their conditions and treatment options."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Able to stay calm under pressure.",
+          "Good at working in a team.",
+          "Strong problem-solving skills.",
+          "Comfortable with long hours and intense situations."
+      ],
+      "topSkills": [
+          "Proficiency in endovascular techniques.",
+          "Ability to interpret medical imaging.",
+          "Skilled in open vascular surgery.",
+          "Competence in emergency management.",
+          "Strong communication skills with patients and staff."
+      ],
+      "entryPaths": [
+          "Complete a medical degree followed by a surgical residency.",
+          "Specialise in vascular surgery after general surgery training.",
+          "Participate in fellowships for advanced vascular techniques.",
+          "Gain experience in a hospital setting with a focus on surgery.",
+          "Consider volunteering or internships in healthcare settings."
+      ],
+      "realityCheck": "The training is long and demanding, with many years of education and practice before becoming fully qualified."
+  },
+  "video-content-producer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and respond to client feedback.",
+              "Plan the day's shoot or editing schedule.",
+              "Set up equipment for filming."
+          ],
+          "midday": [
+              "Film interviews or b-roll footage.",
+              "Review footage and take notes on edits needed.",
+              "Have a quick lunch break."
+          ],
+          "afternoon": [
+              "Edit video content using software.",
+              "Add graphics and sound to the video.",
+              "Upload finished videos to platforms and check analytics."
+          ],
+          "tools": [
+              "Camera equipment (DSLR or mirrorless)",
+              "Editing software (like Adobe Premiere Pro or Final Cut Pro)",
+              "Tripod and lighting equipment",
+              "Microphones for audio capture",
+              "Social media platforms for distribution"
+          ],
+          "environment": "Mostly indoors in a studio or office, with a mix of filming on location and editing at a desk."
+      },
+      "whatYouActuallyDo": [
+          "Create video concepts based on client needs.",
+          "Film various types of content, like interviews or events.",
+          "Edit raw footage into polished final videos.",
+          "Select music and sound effects to enhance videos.",
+          "Publish videos on social media and websites.",
+          "Monitor video performance and engagement metrics.",
+          "Collaborate with clients and team members on projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys storytelling through visuals.",
+          "Comfortable using technology and learning new software.",
+          "Good at managing time and meeting deadlines."
+      ],
+      "topSkills": [
+          "Strong video editing skills using software.",
+          "Ability to operate camera equipment effectively.",
+          "Good communication skills for client interactions.",
+          "Attention to detail in editing and production.",
+          "Basic understanding of social media trends and analytics."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Media or Film.",
+          "Self-taught with a strong portfolio of work.",
+          "Internships at production companies or agencies.",
+          "Vocational programmes in media production.",
+          "Freelance work to build experience and connections."
+      ],
+      "realityCheck": "You spend a lot of time behind a computer screen editing, which can be tedious but is essential for great content."
+  },
+  "videographer": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and pack for the shoot",
+              "Meet with the client to discuss the day's plan",
+              "Set up camera and lighting at the location"
+          ],
+          "midday": [
+              "Film the main events or scenes as planned",
+              "Adjust lighting and camera angles as needed",
+              "Take breaks to review footage and make notes"
+          ],
+          "afternoon": [
+              "Continue filming until all necessary shots are captured",
+              "Pack up equipment and ensure nothing is left behind",
+              "Start basic editing of the footage if time allows"
+          ],
+          "tools": [
+              "Camera (DSLR or mirrorless)",
+              "Tripod and stabiliser",
+              "Lighting equipment",
+              "Editing software (like Adobe Premiere or Final Cut Pro)",
+              "Microphones for audio capture"
+          ],
+          "environment": "Mostly outdoors or at event venues, working on your feet and interacting with clients and guests."
+      },
+      "whatYouActuallyDo": [
+          "Film events like weddings, parties, or corporate functions.",
+          "Set up and adjust lighting to create the best atmosphere.",
+          "Plan shots and angles to tell a story visually.",
+          "Edit video footage to create a final product.",
+          "Communicate with clients to understand their vision.",
+          "Manage equipment and ensure everything is in working order.",
+          "Deliver the final video on time and in the agreed format."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and visual thinkers",
+          "Good at problem-solving on the spot",
+          "Enjoys working in varied environments",
+          "Comfortable interacting with different people",
+          "Able to work independently and manage time well"
+      ],
+      "topSkills": [
+          "Camera operation and handling",
+          "Basic video editing skills",
+          "Lighting techniques for different settings",
+          "Good communication with clients",
+          "Attention to detail when framing shots",
+          "Ability to work under pressure during events",
+          "Time management for tight schedules"
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and practice",
+          "Vocational film or photography school",
+          "Building a portfolio by filming for friends or local events",
+          "Internships with production companies",
+          "Freelancing for small projects to gain experience"
+      ],
+      "realityCheck": "You often spend long hours on your feet and the editing process can be time-consuming."
+  },
+  "vlogger": {
+      "typicalDay": {
+          "morning": [
+              "Plan video content for the day",
+              "Set up camera and equipment",
+              "Record morning routines or activities"
+          ],
+          "midday": [
+              "Film travel or experiences",
+              "Engage with followers on social media",
+              "Edit footage from the morning"
+          ],
+          "afternoon": [
+              "Upload videos and write descriptions",
+              "Respond to comments and messages",
+              "Research trends and ideas for future videos"
+          ],
+          "tools": [
+              "Camera",
+              "Tripod",
+              "Editing software (e.g. Adobe Premiere, Final Cut Pro)",
+              "Microphone",
+              "Social media platforms (e.g. YouTube, Instagram)"
+          ],
+          "environment": "Mostly indoors or outdoors, flexible hours, often alone or with friends."
+      },
+      "whatYouActuallyDo": [
+          "Record daily activities and experiences on video.",
+          "Edit videos to create a cohesive story.",
+          "Engage with your audience through comments and social media.",
+          "Plan future content based on viewer feedback.",
+          "Stay updated on trends in vlogging and social media.",
+          "Manage your own schedule to ensure regular uploads."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and expressive individuals",
+          "Comfortable being in front of a camera",
+          "Self-motivated and disciplined",
+          "Enjoys interacting with an online community"
+      ],
+      "topSkills": [
+          "Camera operation and framing",
+          "Video editing and post-production",
+          "Storytelling and narrative development",
+          "Time management for consistent uploads",
+          "Social media engagement"
+      ],
+      "entryPaths": [
+          "Start a YouTube channel and learn as you go.",
+          "Take online courses in video editing and production.",
+          "Join local vlogging or content creation groups.",
+          "Build a portfolio of videos to showcase your skills."
+      ],
+      "realityCheck": "Building an audience takes time and consistency; it can be slow at first."
   },
   "vocal-coach": {
       "typicalDay": {
@@ -13720,6 +22113,278 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The work can be repetitive and physically demanding, especially during busy periods."
   },
+  "wealth-manager": {
+      "typicalDay": {
+          "morning": [
+              "Check market updates and client portfolios.",
+              "Prepare reports for client meetings.",
+              "Respond to client emails and calls."
+          ],
+          "midday": [
+              "Meet with clients to discuss their financial goals.",
+              "Research investment opportunities.",
+              "Collaborate with tax advisors on client cases."
+          ],
+          "afternoon": [
+              "Review and adjust investment strategies.",
+              "Attend team meetings to discuss client needs.",
+              "Update financial plans based on market changes."
+          ],
+          "tools": [
+              "Financial analysis software",
+              "Spreadsheet programs",
+              "Communication tools like email and video conferencing"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of client meetings and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Help clients set financial goals and plans.",
+          "Advise on investments and asset allocation.",
+          "Monitor market trends and adjust strategies.",
+          "Communicate regularly with clients about their portfolios.",
+          "Coordinate with other financial professionals like tax advisors."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at building relationships with clients.",
+          "Enjoys numbers and financial analysis.",
+          "Can keep information private and confidential."
+      ],
+      "topSkills": [
+          "Understanding of investment products and markets.",
+          "Strong communication skills for explaining complex topics.",
+          "Attention to detail in financial planning.",
+          "Ability to analyse and interpret financial data.",
+          "Problem-solving skills for client issues."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in Finance or Economics.",
+          "Pursue a CFP (Certified Financial Planner) certification.",
+          "Look for internships at wealth management firms.",
+          "Gain experience in finance-related roles before applying."
+      ],
+      "realityCheck": "Building trust with clients takes time and effort, and not every meeting will lead to immediate results."
+  },
+  "weapons-specialist": {
+      "typicalDay": {
+          "morning": [
+              "Inspect and clean weapons systems to ensure they are functional.",
+              "Perform routine maintenance on small arms and crew-served weapons.",
+              "Prepare teaching materials for training sessions."
+          ],
+          "midday": [
+              "Conduct hands-on training with soldiers on weapon handling.",
+              "Diagnose issues with malfunctioning weapons.",
+              "Document maintenance and training activities."
+          ],
+          "afternoon": [
+              "Repair damaged weapons and replace faulty parts.",
+              "Test weapons after repairs to ensure they are safe to use.",
+              "Attend briefings on new weapons systems and procedures."
+          ],
+          "tools": [
+              "Wrenches and screwdrivers for repairs.",
+              "Diagnostic tools for checking weapon functionality.",
+              "Safety gear such as goggles and gloves."
+          ],
+          "environment": "Mostly indoors in a military workshop, with some outdoor training and testing."
+      },
+      "whatYouActuallyDo": [
+          "Maintain and repair a variety of military weapons.",
+          "Teach soldiers how to safely use and handle weapons.",
+          "Inspect weapons for safety and functionality.",
+          "Keep detailed records of repairs and maintenance.",
+          "Work with a team to solve complex weapon issues."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and precise.",
+          "Comfortable working under pressure.",
+          "Enjoys hands-on technical work."
+      ],
+      "topSkills": [
+          "In-depth knowledge of various weapon systems.",
+          "Ability to diagnose and fix mechanical problems.",
+          "Strong communication skills for teaching others.",
+          "Attention to detail in inspections and repairs.",
+          "Commitment to safety protocols."
+      ],
+      "entryPaths": [
+          "Complete military service and apply for weapons specialist roles.",
+          "Attend an armourer course after basic training.",
+          "Gain experience through apprenticeships in military workshops."
+      ],
+      "realityCheck": "The work can be repetitive, and you spend a lot of time on maintenance tasks rather than exciting fieldwork."
+  },
+  "web-developer": {
+      "typicalDay": {
+          "morning": [
+              "Check emails and messages from team members or clients.",
+              "Review code from the previous day and make necessary adjustments.",
+              "Plan tasks for the day and set priorities."
+          ],
+          "midday": [
+              "Write and test new code for website features.",
+              "Attend a team meeting to discuss project progress.",
+              "Collaborate with designers on layout and user experience."
+          ],
+          "afternoon": [
+              "Debug issues reported by users or team members.",
+              "Update project documentation with changes made.",
+              "Research new tools or techniques to improve coding skills."
+          ],
+          "tools": [
+              "Text editor (like VSCode or Sublime Text)",
+              "Version control system (like Git)",
+              "Web browser for testing (like Chrome or Firefox)",
+              "Frameworks (like React or Vue)",
+              "Design tools (like Figma or Adobe XD)"
+          ],
+          "environment": "Mostly indoors in an office or home office, working at a computer with a mix of individual and team tasks."
+      },
+      "whatYouActuallyDo": [
+          "Build and maintain websites and web applications.",
+          "Write code using HTML, CSS, and JavaScript.",
+          "Fix bugs and troubleshoot issues on websites.",
+          "Collaborate with designers to create user-friendly interfaces.",
+          "Test websites on different devices to ensure they work well.",
+          "Keep up with new web technologies and trends.",
+          "Document your code and processes for future reference."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys problem-solving and logical thinking.",
+          "Likes working with technology and computers.",
+          "Has a good eye for design and detail.",
+          "Is self-motivated and can work independently.",
+          "Enjoys learning new skills and keeping up with trends."
+      ],
+      "topSkills": [
+          "Proficiency in HTML and CSS for web design.",
+          "Strong JavaScript skills for interactive features.",
+          "Experience with frameworks like React or Vue.",
+          "Ability to debug and troubleshoot code issues.",
+          "Understanding of responsive design for different devices.",
+          "Familiarity with version control tools like Git.",
+          "Good communication skills for team collaboration."
+      ],
+      "entryPaths": [
+          "Complete a bachelor's degree in computer science.",
+          "Attend a coding bootcamp or vocational programme.",
+          "Get a fagbrev in IT or web development.",
+          "Build a strong portfolio with personal projects.",
+          "Look for internships or apprenticeships with tech companies."
+      ],
+      "realityCheck": "You will spend a lot of time debugging and fixing problems, which can be frustrating but is part of the learning process."
+  },
+  "wedding-videographer": {
+      "typicalDay": {
+          "morning": [
+              "Arrive at the wedding venue and set up equipment.",
+              "Meet with the couple to discuss the day's schedule.",
+              "Check lighting and sound in key locations."
+          ],
+          "midday": [
+              "Film the ceremony from multiple angles.",
+              "Capture candid moments during the reception.",
+              "Interview guests for personal messages."
+          ],
+          "afternoon": [
+              "Record speeches and toasts.",
+              "Film the couple's first dance.",
+              "Pack up equipment after the event."
+          ],
+          "tools": [
+              "Camera (DSLR or mirrorless)",
+              "Tripod and stabiliser",
+              "Audio recorder",
+              "Editing software (like Adobe Premiere Pro)",
+              "External microphones"
+          ],
+          "environment": "Usually outdoors or in venues, moving around to capture different moments throughout the day."
+      },
+      "whatYouActuallyDo": [
+          "Film the wedding ceremony and reception events.",
+          "Edit video footage into a highlight reel.",
+          "Communicate with the couple about their vision.",
+          "Capture audio for speeches and vows.",
+          "Manage and maintain all video equipment.",
+          "Deliver final videos in a timely manner.",
+          "Attend meetings with clients to discuss details."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and visual thinkers.",
+          "Good at staying calm under pressure.",
+          "Enjoys working with people and building relationships."
+      ],
+      "topSkills": [
+          "Candid camera work to capture genuine moments.",
+          "Video editing skills to create polished films.",
+          "Strong communication for client interactions.",
+          "Technical knowledge of camera and audio equipment.",
+          "Attention to detail for capturing important moments."
+      ],
+      "entryPaths": [
+          "Build a strong portfolio by filming friends' weddings.",
+          "Take vocational courses in film or media.",
+          "Learn through online tutorials and practice.",
+          "Consider internships with established videographers.",
+          "Network with wedding planners and venues."
+      ],
+      "realityCheck": "The job often involves long hours and unpredictable schedules, especially on weekends."
+  },
+  "wildlife-photographer": {
+      "typicalDay": {
+          "morning": [
+              "Set up camera equipment and check settings.",
+              "Scout locations for wildlife activity.",
+              "Observe animal behaviour quietly."
+          ],
+          "midday": [
+              "Wait in a hide or a good vantage point for animals to appear.",
+              "Take notes on animal movements.",
+              "Adjust camera settings based on light conditions."
+          ],
+          "afternoon": [
+              "Capture photographs of animals in their natural habitat.",
+              "Review and edit photos taken during the day.",
+              "Pack up equipment and prepare for the next outing."
+          ],
+          "tools": [
+              "Digital camera with long lenses",
+              "Tripod",
+              "Field notebook",
+              "Binoculars",
+              "Laptop for editing photos"
+          ],
+          "environment": "Often outdoors in various weather conditions, with long periods of waiting and observing."
+      },
+      "whatYouActuallyDo": [
+          "Find and track wildlife in their natural habitats.",
+          "Set up and maintain camera equipment.",
+          "Wait patiently for animals to show up.",
+          "Take high-quality photographs.",
+          "Edit and organise photos for clients or personal portfolios."
+      ],
+      "whoThisIsGoodFor": [
+          "Patient and observant.",
+          "Enjoys being outdoors for long periods.",
+          "Good at working independently.",
+          "Has a keen interest in wildlife and nature."
+      ],
+      "topSkills": [
+          "Fieldcraft to understand animal behaviour.",
+          "Patience to wait for the right moment.",
+          "Technical skills in using cameras and lenses.",
+          "Knowledge of biology to identify species.",
+          "Stamina to endure long hours in various conditions."
+      ],
+      "entryPaths": [
+          "Self-taught through online courses and practice.",
+          "Studying biology or environmental science at university.",
+          "Assisting established wildlife photographers.",
+          "Participating in photography workshops.",
+          "Building a portfolio through local wildlife projects."
+      ],
+      "realityCheck": "Many days involve waiting and not getting the perfect shot, which can be frustrating."
+  },
   "yoga-instructor": {
       "typicalDay": {
           "morning": [
@@ -13826,5 +22491,117 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Apprenticeships in social services or community work."
       ],
       "realityCheck": "You will often deal with difficult situations and must remain calm and supportive, which can be emotionally challenging."
+  },
+  "youtube-video-editor": {
+      "typicalDay": {
+          "morning": [
+              "Review footage from previous shoots and select the best clips.",
+              "Organise video files and create a project folder.",
+              "Set up editing software and prepare the timeline."
+          ],
+          "midday": [
+              "Edit the main video, focusing on pacing and transitions.",
+              "Add captions and graphics to enhance the video.",
+              "Collaborate with the creator to discuss changes and feedback."
+          ],
+          "afternoon": [
+              "Finalise the video by adding sound design and music.",
+              "Export the video and upload it to the creator's channel.",
+              "Monitor comments and viewer feedback on the latest video."
+          ],
+          "tools": [
+              "Adobe Premiere Pro",
+              "Final Cut Pro",
+              "After Effects",
+              "Audacity",
+              "Google Drive"
+          ],
+          "environment": "Mostly indoors at a home office or studio, working independently with occasional video calls."
+      },
+      "whatYouActuallyDo": [
+          "Edit video clips to create a smooth and engaging final product.",
+          "Add graphics and text overlays to support the video's message.",
+          "Work closely with the creator to understand their vision.",
+          "Adjust audio levels and add sound effects to enhance the viewing experience.",
+          "Keep up with trends in video editing and YouTube content."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative with a good eye for detail.",
+          "Enjoys working with technology and software.",
+          "Good at taking feedback and making changes.",
+          "Self-motivated and can manage time well.",
+          "Passionate about video content and storytelling."
+      ],
+      "topSkills": [
+          "Proficient in video editing software like Premiere Pro or Final Cut Pro.",
+          "Understanding of pacing and how to keep viewers engaged.",
+          "Ability to create motion graphics and visual effects.",
+          "Strong audio editing skills for sound design.",
+          "Good communication skills for collaborating with creators."
+      ],
+      "entryPaths": [
+          "Complete a vocational editing course or online tutorials.",
+          "Build a portfolio by editing videos for friends or local creators.",
+          "Gain experience through internships or apprenticeships in media companies.",
+          "Start a YouTube channel to practice and showcase your editing skills.",
+          "Network with content creators to find freelance opportunities."
+      ],
+      "realityCheck": "The work can be repetitive, and it often takes time to develop your style and skills."
+  },
+  "youtuber": {
+      "typicalDay": {
+          "morning": [
+              "Check comments and messages from viewers",
+              "Plan video content and script ideas",
+              "Review analytics to understand audience engagement"
+          ],
+          "midday": [
+              "Film video segments based on planned content",
+              "Set up lighting and camera equipment",
+              "Record voiceovers or additional audio"
+          ],
+          "afternoon": [
+              "Edit video footage using software",
+              "Create thumbnails and titles for videos",
+              "Upload videos and optimise descriptions for SEO"
+          ],
+          "tools": [
+              "Camera equipment",
+              "Video editing software (like Adobe Premiere Pro or Final Cut Pro)",
+              "Microphone for clear audio",
+              "Lighting equipment",
+              "Social media platforms for promotion"
+          ],
+          "environment": "Mostly indoors at home or a studio, with a flexible schedule that varies daily."
+      },
+      "whatYouActuallyDo": [
+          "Create video content that is engaging and interesting.",
+          "Edit videos to make them polished and professional.",
+          "Research trends and topics that attract viewers.",
+          "Interact with your audience through comments and social media.",
+          "Monitor video performance and adjust content strategy accordingly."
+      ],
+      "whoThisIsGoodFor": [
+          "Creative and enjoys storytelling.",
+          "Comfortable in front of a camera.",
+          "Self-motivated and disciplined.",
+          "Open to feedback and improving skills.",
+          "Enjoys learning new technology and software."
+      ],
+      "topSkills": [
+          "Video production and filming techniques.",
+          "Editing skills using software.",
+          "Understanding of SEO for video.",
+          "Ability to analyse audience data.",
+          "Strong communication and presentation skills."
+      ],
+      "entryPaths": [
+          "Start a YouTube channel and learn through trial and error.",
+          "Take online courses in video editing and production.",
+          "Join online communities for feedback and support.",
+          "Collaborate with other YouTubers to gain exposure.",
+          "Use social media to build an audience alongside your channel."
+      ],
+      "realityCheck": "Building a successful channel takes time and consistency, and it can be hard to grow an audience."
   }
 };

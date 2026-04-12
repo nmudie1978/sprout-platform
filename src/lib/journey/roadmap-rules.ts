@@ -146,7 +146,38 @@ export const ROADMAP_RULES: RoadmapRule[] = [
       'Roadmap content must never contain emails, phone numbers, social-media handles, payment terms, or instructions to contact people outside the platform. Items containing unsafe content are scrubbed; if the title becomes empty, the item is dropped.',
     enforcedAt: ['client'],
   },
+  {
+    id: 'no-university-before-18',
+    title: 'University and higher education cannot start before age 18',
+    description:
+      "In Norway, university (universitet/høgskole), bachelor's, master's, profesjonsstudium and fagskole all require a completed videregående and admission only opens from age 18. Roadmap steps that begin or apply for higher education MUST have startAge >= 18, even if the user's current age is lower or they finish school the same calendar year. If the user is 15-17, model a wait until 18 — never put 'Begin university studies' or 'Apply for university' at age 17 or younger. Apprenticeships (læretid) and vocational fagbrev are exempt — they can start at 17.",
+    enforcedAt: ['prompt', 'fallback', 'client'],
+  },
 ];
+
+// ────────────────────────────────────────────────────────────────────
+// Higher-education minimum age (rule: no-university-before-18)
+// ────────────────────────────────────────────────────────────────────
+
+export const HIGHER_EDUCATION_MIN_AGE = 18;
+
+/**
+ * Matches roadmap step titles that represent entering or applying for
+ * higher education (university, bachelor, master, fagskole, etc.).
+ *
+ * The trailing `\w*` allows Norwegian definite/plural inflections
+ * (universitet → universitetet → universitetene; høgskole → høgskolen;
+ * fagskole → fagskolen; bachelor → bachelorgrad). Without it the regex
+ * would skip "Begin studies at universitetet" because the boundary
+ * between "universitet" and "et" is not a word boundary.
+ *
+ * Intentionally does NOT match: "apprenticeship", "vocational training",
+ * "fagbrev", "læretid" — those are 17+ pathways that should not be clamped.
+ * Also does NOT match "graduation" / "complete" steps since those happen
+ * AFTER higher ed and naturally fall well past 18.
+ */
+export const HIGHER_EDUCATION_RE =
+  /\b(?:university|universitet|h[øo]y?gskole|fagskole|bachelor|master|profesjonsstudium|undergraduate|postgraduate|higher\s+education)\w*/i;
 
 // ────────────────────────────────────────────────────────────────────
 // Age bands per stage (rule: realistic-age-bands)
@@ -385,6 +416,143 @@ function enforceAgeRules(items: JourneyItem[]): JourneyItem[] {
 }
 
 // ────────────────────────────────────────────────────────────────────
+// Finish-year anchoring (rule: anchored-to-user-age)
+// ────────────────────────────────────────────────────────────────────
+
+/**
+ * Optional context the client can pass to `sanitizeJourney` so the
+ * sanitiser can authoritatively anchor the timeline to the user's
+ * stated foundation finish year. Without this, AI-generated timelines
+ * that ignore the prompt's "anchor to finish year" instruction would
+ * leak through unchanged.
+ */
+export interface SanitizeContext {
+  /** User's current age in years. Defaults to no shift if absent. */
+  currentAge?: number;
+  /** Current calendar year. Defaults to new Date().getFullYear(). */
+  currentYear?: number;
+  /**
+   * Free-text year string from the Foundation card's expectedCompletion
+   * field. Accepts "2027", "June 2027", "Spring 2027", "2027-06" — any
+   * string containing a 4-digit 20xx year is parsed.
+   */
+  expectedFinishYear?: string | null;
+}
+
+/** Extract the first 20xx year from a free-text completion field. */
+function parseFinishYear(s: string | null | undefined): number | null {
+  if (!s) return null;
+  const match = s.match(/(20\d{2})/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+/**
+ * Shift the first post-foundation step so its startAge equals the user's
+ * age at the foundation's expected-finish year, then cascade the same
+ * delta through every subsequent step. The Apply→Begin pair stays locked
+ * (apply moves with begin) because both share the same start age and
+ * both get the same delta.
+ *
+ * Why this matters: the Foundation card holds the user's expected finish
+ * year (e.g. "I finish videregående in 2034"). The AI prompt asks the
+ * model to anchor the first post-foundation step to the same year, but
+ * AI compliance is unreliable — gpt-4o-mini frequently ignores the
+ * instruction and emits the first step at the user's CURRENT age.
+ * Without an authoritative client-side anchor, a 17-year-old who said
+ * "I finish in 2034" would still see "Begin university studies" at 17.
+ *
+ * Earlier (foundation-stage) items keep their ages — only the first
+ * non-foundation step and everything after it gets shifted.
+ */
+function enforceFinishYearAnchor(
+  items: JourneyItem[],
+  ctx: SanitizeContext | undefined,
+): JourneyItem[] {
+  if (!ctx || items.length === 0) return items;
+  if (typeof ctx.currentAge !== 'number') return items;
+  const finishYear = parseFinishYear(ctx.expectedFinishYear);
+  if (finishYear === null) return items;
+
+  const currentYear = ctx.currentYear ?? new Date().getFullYear();
+  const ageAtFinish = ctx.currentAge + (finishYear - currentYear);
+  // Sanity bounds — ignore obviously broken inputs (past dates, far future)
+  if (ageAtFinish < ctx.currentAge || ageAtFinish > 80) return items;
+
+  // The first post-foundation step is the anchor target. Foundation-stage
+  // items (if any sneaked through) keep their ages.
+  const targetIdx = items.findIndex((it) => it.stage !== 'foundation');
+  if (targetIdx === -1) return items;
+
+  const firstStep = items[targetIdx];
+  const shift = ageAtFinish - firstStep.startAge;
+  if (shift === 0) return items;
+
+  return items.map((it, i) => {
+    if (i < targetIdx) return it;
+    return {
+      ...it,
+      startAge: it.startAge + shift,
+      endAge:
+        it.endAge !== undefined && it.endAge !== null
+          ? it.endAge + shift
+          : it.endAge,
+    };
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Higher-education minimum-age enforcement
+// (rule: no-university-before-18)
+// ────────────────────────────────────────────────────────────────────
+
+/**
+ * Find the first step that represents entering higher education and, if
+ * it starts before 18, shift it (and the matching "Apply for…" step
+ * before it, plus every subsequent step) forward so the first higher-ed
+ * step starts at age 18 or later.
+ *
+ * Why we shift everything after — not just the higher-ed step itself —
+ * the roadmap is a strict sequence (rule: no-overlapping-steps). If we
+ * only bumped the higher-ed step, the next step (e.g. graduation) might
+ * end up before it. Cascading the same delta keeps the sequence intact.
+ *
+ * Earlier non-higher-ed steps (foundation, gap-year transitions) keep
+ * their original ages — we only shift forward from the higher-ed step
+ * (and its preceding apply-pair) onward.
+ */
+function enforceHigherEdMinAge(items: JourneyItem[]): JourneyItem[] {
+  if (items.length === 0) return items;
+  const idx = items.findIndex((it) => HIGHER_EDUCATION_RE.test(it.title));
+  if (idx === -1) return items;
+
+  const firstHigherEd = items[idx];
+  if (firstHigherEd.startAge >= HIGHER_EDUCATION_MIN_AGE) return items;
+
+  const shift = HIGHER_EDUCATION_MIN_AGE - firstHigherEd.startAge;
+
+  // The Apply→Begin pair shares an age (rule: apply-and-accept-same-year),
+  // so if the step immediately before is the matching "Apply for…", shift
+  // it too. Otherwise it would dangle at age 17 while begin moves to 18.
+  const priorIsPair =
+    idx > 0 &&
+    /^apply\b/i.test(items[idx - 1].title) &&
+    FORMAL_OPP_RE.test(items[idx - 1].title);
+
+  return items.map((it, i) => {
+    const shouldShift = i >= idx || (priorIsPair && i === idx - 1);
+    if (!shouldShift) return it;
+    return {
+      ...it,
+      startAge: it.startAge + shift,
+      endAge:
+        it.endAge !== undefined && it.endAge !== null
+          ? it.endAge + shift
+          : it.endAge,
+    };
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────
 // Sequential gating (rule: sequential-gating)
 // ────────────────────────────────────────────────────────────────────
 
@@ -404,8 +572,18 @@ export function isStepLocked(
 // Single-pass sanitiser
 // ────────────────────────────────────────────────────────────────────
 
-/** Apply every client-side rule to a Journey in one pass. */
-export function sanitizeJourney(journey: Journey): Journey {
+/**
+ * Apply every client-side rule to a Journey in one pass.
+ *
+ * Optional `ctx` lets the caller pass the user's current age + expected
+ * finish year so the sanitiser can authoritatively anchor the timeline
+ * to the foundation's stated end date — necessary because AI-generated
+ * timelines frequently ignore the prompt's anchoring instruction.
+ */
+export function sanitizeJourney(
+  journey: Journey,
+  ctx?: SanitizeContext,
+): Journey {
   const careerRe = buildCareerRegex(journey.career || '');
 
   // Stage 1: text rules — scrub, verb-lead, drop foundation duplicates,
@@ -425,10 +603,26 @@ export function sanitizeJourney(journey: Journey): Journey {
     })
     .filter((it) => it.title.length > 0);
 
-  // Stage 2: structural rules — Apply→Begin pairing, age band clamping,
-  // monotonic ages.
+  // Stage 2: structural rules in fixed order:
+  //
+  //   1. Apply→Begin pairing — synthesise the missing apply step so
+  //      every entry into a formal opportunity has its application step.
+  //      Must run BEFORE any age shift so the apply step gets shifted
+  //      alongside its matching begin step.
+  //
+  //   2. Finish-year anchor — shift the first post-foundation step (and
+  //      everything after) to the user's age at their stated finish
+  //      year. AI output bypasses the fallback's internal shift, so we
+  //      do it here authoritatively.
+  //
+  //   3. Higher-ed minimum age — bump any university/bachelor/master
+  //      step that still starts before 18 up to 18, cascading.
+  //
+  //   4. Final age band clamps + non-overlap.
   const paired = ensureApplyBeforeBegin(cleaned);
-  const aged = enforceAgeRules(paired);
+  const anchored = enforceFinishYearAnchor(paired, ctx);
+  const ageSafe = enforceHigherEdMinAge(anchored);
+  const aged = enforceAgeRules(ageSafe);
 
   return { ...journey, items: aged };
 }

@@ -38,7 +38,7 @@ JSON SHAPE: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"founda
 
 OUTPUT REQUIREMENTS:
 - Generate 7-8 items + 4 schoolTrack items.
-- The first item must have startAge equal to the user's current age.
+- The first item must have startAge equal to the user's current age — UNLESS that first item represents entering higher education (university/bachelor/master/profesjonsstudium/fagskole), in which case it MUST have startAge >= 18 even if the user is currently 15, 16 or 17. In Norway, university admission opens only from age 18 — model a brief wait if needed. Apprenticeships and fagbrev (læretid) are exempt and may start at 17.
 - KEEP SUBTITLES TO ONE SHORT LINE OR OMIT THEM. Subtitles must never repeat the career name either.
 - Be encouraging but honest about time commitment.`;
 
@@ -141,12 +141,14 @@ export async function POST(req: NextRequest) {
     })();
 
     // Check per-user cache first — must match career, age, stage,
-    // foundation completion AND expected finish year, otherwise
-    // changing the finish year on the Foundation card wouldn't
-    // visibly change the roadmap.
+    // foundation completion, expected finish year AND version. The
+    // version stamp invalidates old cached timelines when roadmap
+    // rules change (currently v2 = no-university-before-18).
+    const ROADMAP_CACHE_VERSION = 'v2';
     if (profile?.generatedTimeline) {
-      const cached = profile.generatedTimeline as { career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
+      const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
       if (
+        (cached.version ?? 'v1') === ROADMAP_CACHE_VERSION &&
         cached.career?.toLowerCase() === career.toLowerCase() &&
         cached.journey &&
         cached.journey.startAge === userAge &&
@@ -158,8 +160,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Check global cache — same career + age + stage + completion + finish year = same timeline
-    const globalCacheKey = `timeline:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
+    // Check global cache — same career + age + stage + completion + finish year = same timeline.
+    // The version suffix invalidates old caches when roadmap rules change
+    // (e.g. v2 = no-university-before-18 enforcement). Bump on rule changes
+    // that alter timeline shape in ways the client sanitiser cannot fix
+    // retroactively.
+    const globalCacheKey = `timeline:v2:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
@@ -264,10 +270,10 @@ export async function POST(req: NextRequest) {
       journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
     }
 
-    // Cache result (non-blocking) — stamp the stage, completion AND
-    // finish year so future requests cleanly miss the cache when any
-    // of them changes.
-    const cacheData = JSON.parse(JSON.stringify({ career, stage: stageKey, complete: completeKey, finish: finishYearKey, generatedAt: new Date().toISOString(), journey }));
+    // Cache result (non-blocking) — stamp the version, stage,
+    // completion AND finish year so future requests cleanly miss the
+    // cache when any of them changes.
+    const cacheData = JSON.parse(JSON.stringify({ version: ROADMAP_CACHE_VERSION, career, stage: stageKey, complete: completeKey, finish: finishYearKey, generatedAt: new Date().toISOString(), journey }));
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },

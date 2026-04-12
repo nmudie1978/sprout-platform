@@ -14,8 +14,10 @@
  */
 
 import type { CareerPresenceSignals, CountryCode } from './types';
+import generatedSignals from './signals.generated.json';
 
 type SignalMap = Record<CountryCode, CareerPresenceSignals>;
+const generated = generatedSignals as Record<string, SignalMap>;
 
 /**
  * Curated signals. Each career maps to 4 countries.
@@ -208,10 +210,14 @@ const SEED_DATA: Record<string, SignalMap> = {
  */
 export function getCareerSignals(careerId: string): SignalMap | null {
   const slug = careerId.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  return SEED_DATA[slug] ?? SEED_DATA[careerId] ?? null;
+  // 1. Curated seed data
+  const curated = SEED_DATA[slug] ?? SEED_DATA[careerId];
+  if (curated) return curated;
+  // 2. AI-generated signals
+  return generated[slug] ?? generated[careerId] ?? null;
 }
 
-/** List all career IDs with seed data. */
+/** List all career IDs with signal data (curated + generated). */
 export function getAvailableCareers(): string[] {
-  return Object.keys(SEED_DATA);
+  return [...new Set([...Object.keys(SEED_DATA), ...Object.keys(generated)])];
 }

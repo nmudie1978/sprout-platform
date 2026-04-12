@@ -27,6 +27,7 @@ import {
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
+  Building2, Shield,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -36,7 +37,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn, slugify } from '@/lib/utils';
 import { useGoals } from '@/hooks/use-goals';
-import { getAllCareers, type Career } from '@/lib/career-pathways';
+import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '@/lib/career-pathways';
 import type { CareerDetails } from '@/lib/career-typical-days';
 import { CareerPresenceCard } from '@/components/journey/career-presence-card';
 import type { CareerProgression } from '@/lib/career-progressions';
@@ -533,15 +534,25 @@ function DiscoverTab({
           <SectionCard>
             <SectionHeader icon={BarChart3} title="Career Overview" centered collapsed={dCollapsed('d-overview')} onToggle={() => dToggle('d-overview')} />
             {!dCollapsed('d-overview') && <div className="p-4 flex flex-col items-center gap-3">
-              <div className="grid grid-cols-2 gap-3 w-full max-w-md">
-                <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
-                <StatCard
-                  label="Growth"
-                  value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
-                  icon={TrendingUp}
-                  accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
-                />
-              </div>
+              {(() => {
+                const sector = getSectorForCareer(career.id);
+                const pensionNote = getPensionNote(sector);
+                const sectorLabel = sector === 'public' ? 'Public Sector' : sector === 'private' ? 'Private Sector' : 'Public & Private';
+                const sectorAccent = sector === 'public' ? 'text-blue-400' : sector === 'private' ? 'text-violet-400' : 'text-muted-foreground/50';
+                return (
+                  <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+                    <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
+                    <StatCard
+                      label="Growth"
+                      value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
+                      icon={TrendingUp}
+                      accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
+                    />
+                    <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={`Most ${career.title} roles in Norway are in the ${sector} sector.`} />
+                    <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-emerald-400' : 'text-amber-400'} tooltip={pensionNote} />
+                  </div>
+                );
+              })()}
               {/* What You Need — compact horizontal chain for Discover.
                   Each step is one small pill with full detail in its
                   native tooltip. Keeps the card tight and scannable. */}
@@ -550,7 +561,7 @@ function DiscoverTab({
                 if (!reqs) {
                   return (
                     <div className="w-full max-w-md rounded-lg border border-border/20 bg-muted/5 p-3">
-                      <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex items-center justify-center gap-2 mb-1.5">
                         <GraduationCap className="h-3.5 w-3.5 text-emerald-400/60" />
                         <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">Education Path</span>
                       </div>
@@ -1928,9 +1939,33 @@ function GrowTab({ goalTitle, career }: { goalTitle: string | null; career: Care
               conversations, hands-on exposure). */}
           {(() => {
               const allSuggestions = [
-                {
-                  icon: Users,
-                  color: 'text-blue-400',
+                career.pathType === 'military' ? {
+                  icon: Users, color: 'text-green-400',
+                  title: 'Explore careers at Forsvaret',
+                  descriptor: 'Norwegian Armed Forces — career paths, requirements, and application',
+                  url: 'https://www.forsvaret.no/karriere',
+                } : career.pathType === 'police' ? {
+                  icon: Users, color: 'text-blue-400',
+                  title: 'Politihøgskolen — Start your application',
+                  descriptor: 'Requirements, deadlines, and how to apply',
+                  url: 'https://www.politihogskolen.no/opptak/',
+                } : career.pathType === 'firefighter' ? {
+                  icon: Users, color: 'text-red-400',
+                  title: 'Norges brannskole — Training programme',
+                  descriptor: 'How to qualify and apply for firefighter training',
+                  url: 'https://www.nbsk.no/',
+                } : career.pathType === 'space' ? {
+                  icon: Users, color: 'text-indigo-400',
+                  title: 'ESA Careers — Space agency opportunities',
+                  descriptor: 'European Space Agency vacancies, internships, and Young Graduate Trainee programme',
+                  url: 'https://jobs.esa.int/',
+                } : career.pathType === 'elite-sport' ? {
+                  icon: Users, color: 'text-amber-400',
+                  title: 'Olympiatoppen — Elite sport programmes',
+                  descriptor: 'Norwegian Olympic training system and talent pathways',
+                  url: 'https://www.olympiatoppen.no/',
+                } : {
+                  icon: Users, color: 'text-blue-400',
                   title: `People in ${career.title} roles`,
                   descriptor: 'Find professionals on LinkedIn and read their journeys',
                   url: `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(career.title)}`,

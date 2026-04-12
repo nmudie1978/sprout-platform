@@ -123,7 +123,7 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
 
 describe('EducationBrowser content (Issue 4 — positive tests)', () => {
   it('renders stat pills for programme metadata (pathway structure)', () => {
-    expect(EDUCATION_BROWSER_SOURCE).toMatch(/<StatPill[\s\S]+?\/>/);
+    expect(EDUCATION_BROWSER_SOURCE).toMatch(/<StatDetail[\s\S]+?\/>/);
   });
 
   it('renders institution cards in the fallback mode', () => {

@@ -215,7 +215,13 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
 
       return res.json();
     },
-    enabled: !!primaryGoalTitle,
+    // Gate on having education context + user age loaded so the query
+    // fires with the correct key (including finish year). Without this,
+    // the query fires with 'none' as the finish-year key, the result
+    // arrives un-anchored, and briefly overwrites the correctly-anchored
+    // fallback before the education context resolves and triggers a
+    // second query — visible as a "flash" of wrong ages.
+    enabled: !!primaryGoalTitle && educationContextData !== undefined && userAge !== undefined,
     staleTime: 30 * 60 * 1000,
     retry: 1,
     // Show fallback roadmap instantly while AI version loads
@@ -225,11 +231,27 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const rawJourney = overrideJourney ?? data?.journey ?? null;
 
   // Apply the shared roadmap rules engine — strips career name,
-  // duration phrases, restated foundation steps, and forces verb-led
-  // titles in one pass. See src/lib/journey/roadmap-rules.ts.
+  // duration phrases, restated foundation steps, forces verb-led
+  // titles, AND anchors the timeline to the user's stated finish year.
+  // See src/lib/journey/roadmap-rules.ts.
+  //
+  // Passing the foundation context lets the sanitiser shift the first
+  // post-foundation step (and everything after) to the user's age at
+  // their expectedCompletion year. Without this, AI-generated timelines
+  // that ignore the prompt's "anchor to finish year" instruction would
+  // leak through unchanged — which is exactly what was happening when a
+  // user set finish year to 2034 and saw university still starting at
+  // their current age.
   const journey = useMemo<Journey | null>(
-    () => (rawJourney ? sanitizeJourney(rawJourney) : null),
-    [rawJourney]
+    () =>
+      rawJourney
+        ? sanitizeJourney(rawJourney, {
+            currentAge: userAge,
+            currentYear: new Date().getFullYear(),
+            expectedFinishYear: expectedCompletion,
+          })
+        : null,
+    [rawJourney, userAge, expectedCompletion]
   );
 
   const careerName = journey?.career ?? '';

@@ -261,7 +261,6 @@ function LibraryCard({
           category="direction"
           variant="hint"
           message="Your library is empty."
-          submessage="Save articles and videos from Insights — they'll show up here so you can come back to them later."
           dismissible={false}
         />
       )}
@@ -1200,14 +1199,14 @@ export default function DashboardPage() {
                         // defensive only.
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
-                        const stageColor =
+                        const stageDotColor =
                           stageLabel === 'Complete'
-                            ? 'text-emerald-400 bg-emerald-500/10'
+                            ? 'bg-emerald-400'
                             : stageLabel === 'Grow'
-                              ? 'text-amber-400 bg-amber-500/10'
+                              ? 'bg-amber-400'
                               : stageLabel === 'Understand'
-                                ? 'text-blue-400 bg-blue-500/10'
-                                : 'text-teal-400 bg-teal-500/10';
+                                ? 'bg-blue-400'
+                                : 'bg-teal-400';
                         return (
                           <tr
                             key={goal.goalId}
@@ -1228,9 +1227,7 @@ export default function DashboardPage() {
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className={cn("text-[8px] font-semibold px-1.5 py-0.5 rounded-full", stageColor)}>
-                                {stageLabel}
-                              </span>
+                              <span className={cn("inline-block h-2 w-2 rounded-full", stageDotColor)} title={stageLabel} />
                             </td>
                             <td className="px-2 py-1.5 text-center">
                               {isCurrentGoal ? (
@@ -1322,7 +1319,6 @@ export default function DashboardPage() {
                 category="direction"
                 variant="hint"
                 message="No saved careers yet."
-                submessage="Tap the heart on any career in Explore Careers to bookmark it for later."
                 dismissible={false}
               />
             )}

@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "AI-generated from career data + Nordic education context",
-    "lastUpdated": "2026-04-10",
+    "lastUpdated": "2026-04-12",
     "note": "Regenerate with: npx tsx scripts/generate-career-requirements.ts"
   },
   "requirements": {
@@ -149,6 +149,47 @@
         "immediate": "Adoption Caseworker",
         "withExperience": "Senior Social Worker",
         "seniorPath": "Team Leader in Adoption Services"
+      },
+      "specialisationNote": null
+    },
+    "aerospace-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Technology"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Engineering",
+          "Design"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master in Aerospace Engineering",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "Chalmers",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Aerospace Engineer",
+        "description": "This role involves working on design and analysis under supervision.",
+        "whatYouNeed": "Completed master's degree in Aerospace Engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Aerospace Engineer",
+        "withExperience": "Senior Aerospace Engineer",
+        "seniorPath": "Lead Aerospace Engineer"
       },
       "specialisationNote": null
     },
@@ -381,6 +422,79 @@
       },
       "specialisationNote": null
     },
+    "air-force-technician": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Chemistry"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Technical Training",
+        "duration": "2 years",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets høgskole",
+          "Norwegian Air Force Technical School"
+        ],
+        "applicationRoute": "Direct application to military recruitment",
+        "competitiveness": "Entry can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Air Force Technician Trainee",
+        "description": "This position involves hands-on training in aircraft maintenance and repair.",
+        "whatYouNeed": "Completion of military technical training and aircraft systems certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Air Force Technician",
+        "withExperience": "Senior Air Force Technician",
+        "seniorPath": "Technical Supervisor or Chief Technician"
+      },
+      "specialisationNote": null
+    },
+    "air-traffic-controller": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Geography",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and science subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Air Traffic Control",
+        "duration": "3 years",
+        "type": "vocational",
+        "examples": [
+          "Avinor Air Navigation College",
+          "Norwegian School of Economics"
+        ],
+        "applicationRoute": "Direct application to Avinor Air Navigation College",
+        "competitiveness": "Admission can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Air Traffic Controller Trainee",
+        "description": "This step involves practical training under supervision at an air traffic control facility.",
+        "whatYouNeed": "Completed air traffic control programme + medical fitness assessment."
+      },
+      "qualifiesFor": {
+        "immediate": "Air Traffic Controller",
+        "withExperience": "Senior Air Traffic Controller",
+        "seniorPath": "Air Traffic Control Supervisor"
+      },
+      "specialisationNote": null
+    },
     "aircraft-maintenance-engineer": {
       "schoolSubjects": {
         "required": [
@@ -602,6 +716,45 @@
         "immediate": "Junior Animator",
         "withExperience": "Senior Animator or Animation Director",
         "seniorPath": "Lead Animator or Creative Director"
+      },
+      "specialisationNote": null
+    },
+    "app-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Physics",
+          "Art",
+          "Information Technology"
+        ],
+        "minimumGrade": "Good grades in mathematics and computer science, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "HVL",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Entry can be competitive, especially at top universities."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior App Developer",
+        "description": "Assist in developing and testing mobile applications.",
+        "whatYouNeed": "Completed degree in computer science or a strong portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior App Developer",
+        "withExperience": "Senior App Developer",
+        "seniorPath": "Lead App Developer or Technical Architect"
       },
       "specialisationNote": null
     },
@@ -836,6 +989,43 @@
       },
       "specialisationNote": null
     },
+    "artillery-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Norwegian",
+          "English"
+        ],
+        "recommended": [
+          "History",
+          "Geography"
+        ],
+        "minimumGrade": "Top grades in mathematics and physics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Military Academy (Krigsskolen)",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Krigsskolen",
+          "Forsvarets Høgskole"
+        ],
+        "applicationRoute": "Direct application to the military academy",
+        "competitiveness": "Entry is competitive due to limited spots and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Artillery Officer Cadet",
+        "description": "This step involves training to lead artillery units and manage fire missions.",
+        "whatYouNeed": "Completed military academy programme and successful completion of artillery branch training."
+      },
+      "qualifiesFor": {
+        "immediate": "Artillery Officer",
+        "withExperience": "Senior Artillery Officer",
+        "seniorPath": "Artillery Battalion Commander"
+      },
+      "specialisationNote": null
+    },
     "asset-management-director": {
       "schoolSubjects": {
         "required": [
@@ -910,6 +1100,86 @@
         "immediate": "Assistant Coach",
         "withExperience": "Head Coach or Sports Manager",
         "seniorPath": "Director of Coaching or Sports Program Director"
+      },
+      "specialisationNote": null
+    },
+    "astronaut": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Biology",
+          "Geography",
+          "Technology"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master's in Engineering or Science",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Chalmers",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Very competitive with limited spots available."
+      },
+      "entryLevelRequirements": {
+        "title": "Astronaut Candidate",
+        "description": "Participate in rigorous training programs and evaluations.",
+        "whatYouNeed": "Master's degree in a STEM field and relevant flight or military experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Astronaut Candidate",
+        "withExperience": "Mission Specialist",
+        "seniorPath": "Commander"
+      },
+      "specialisationNote": null
+    },
+    "astrophysicist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Astronomy",
+          "Statistics"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "PhD in Astrophysics or Physics",
+        "duration": "3-5 years",
+        "type": "master | integrated",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Uppsala University",
+          "University of Helsinki"
+        ],
+        "applicationRoute": "Direct application to the university",
+        "competitiveness": "It is quite competitive to get into a PhD program in this field."
+      },
+      "entryLevelRequirements": {
+        "title": "Research Assistant",
+        "description": "Support research projects and assist in data collection and analysis.",
+        "whatYouNeed": "Completed master's degree in Physics or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Postdoctoral researcher",
+        "withExperience": "Senior researcher or lecturer",
+        "seniorPath": "Lead astrophysicist or research group leader"
       },
       "specialisationNote": null
     },
@@ -1137,6 +1407,47 @@
       },
       "specialisationNote": null
     },
+    "aviation-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Technology"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Design",
+          "Electronics"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master's in Aerospace Engineering",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Entry is competitive due to high demand and limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Engineer",
+        "description": "This step involves working on engineering projects under supervision.",
+        "whatYouNeed": "Completed master's degree in aerospace or mechanical engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Aviation Engineer",
+        "withExperience": "Senior Aviation Engineer",
+        "seniorPath": "Lead Engineer or Engineering Manager"
+      },
+      "specialisationNote": null
+    },
     "avionics-technician": {
       "schoolSubjects": {
         "required": [
@@ -1249,6 +1560,43 @@
         "immediate": "Junior Distributed Systems Engineer",
         "withExperience": "Senior Distributed Systems Engineer",
         "seniorPath": "Lead Distributed Systems Architect"
+      },
+      "specialisationNote": null
+    },
+    "baker": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Chemistry",
+          "English"
+        ],
+        "recommended": [
+          "Home Economics",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Baker fagbrev",
+        "duration": "2 years school + 2 years apprenticeship",
+        "type": "vocational",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Bergen Vocational School",
+          "Stavanger Technical School"
+        ],
+        "applicationRoute": "Apply through local vocational schools or apprenticeship programs",
+        "competitiveness": "Moderately competitive, with many opportunities available."
+      },
+      "entryLevelRequirements": {
+        "title": "Apprentice Baker",
+        "description": "Work under experienced bakers to learn the trade hands-on.",
+        "whatYouNeed": "Completed vocational training and a passion for baking."
+      },
+      "qualifiesFor": {
+        "immediate": "Baker",
+        "withExperience": "Head Baker",
+        "seniorPath": "Bakery Manager"
       },
       "specialisationNote": null
     },
@@ -1599,6 +1947,44 @@
       },
       "specialisationNote": "Breast Surgeon is a specialisation of General Surgery, requiring additional fellowship training."
     },
+    "brewer": {
+      "schoolSubjects": {
+        "required": [
+          "Chemistry",
+          "Biology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Physics",
+          "Business",
+          "Food Science"
+        ],
+        "minimumGrade": "Good grades in science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Science or Brewing",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Food and Wine",
+          "University of Copenhagen",
+          "Aarhus University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), kvote.dk (Denmark)",
+        "competitiveness": "Moderately competitive due to limited spots in specialised programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Brewer's Assistant",
+        "description": "Assists in the brewing process and learns the trade under supervision.",
+        "whatYouNeed": "Completed relevant degree or brewing-specific course + apprenticeship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Brewer's Assistant",
+        "withExperience": "Brewmaster",
+        "seniorPath": "Head Brewer"
+      },
+      "specialisationNote": null
+    },
     "bricklayer": {
       "schoolSubjects": {
         "required": [
@@ -1671,6 +2057,42 @@
         "immediate": "Building Surveyor Assistant",
         "withExperience": "Senior Building Surveyor",
         "seniorPath": "Chief Building Surveyor"
+      },
+      "specialisationNote": null
+    },
+    "bus-driver": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Norwegian",
+          "Social Studies"
+        ],
+        "recommended": [
+          "English",
+          "Physical Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Class D licence and yrkessjåførkompetanse",
+        "duration": "Varies, typically a few months for training",
+        "type": "vocational",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Bergen Maritime Academy"
+        ],
+        "applicationRoute": "Contact local driving schools or vocational training centres.",
+        "competitiveness": "Entry is generally accessible with some training required."
+      },
+      "entryLevelRequirements": {
+        "title": "Bus Driver Trainee",
+        "description": "Learn to operate a bus under supervision while gaining experience.",
+        "whatYouNeed": "Class D licence and completion of yrkessjåførkompetanse."
+      },
+      "qualifiesFor": {
+        "immediate": "Bus Driver",
+        "withExperience": "Senior Bus Driver or Route Supervisor",
+        "seniorPath": "Transport Manager or Fleet Operations Manager"
       },
       "specialisationNote": null
     },
@@ -1790,6 +2212,84 @@
       },
       "specialisationNote": null
     },
+    "butcher": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Biology",
+          "Food and Health"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Slakter / Kjøttskjærer fagbrev",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Viken Fagskole",
+          "Rogaland Fagskole"
+        ],
+        "applicationRoute": "Direct application to vocational schools or via apprenticeship programs.",
+        "competitiveness": "Entry is generally accessible with a strong interest in the field."
+      },
+      "entryLevelRequirements": {
+        "title": "Apprentice Butcher",
+        "description": "Work under supervision to learn the trade and develop skills.",
+        "whatYouNeed": "Completed relevant vocational training or apprenticeship program."
+      },
+      "qualifiesFor": {
+        "immediate": "Butcher",
+        "withExperience": "Senior Butcher or Meat Department Manager",
+        "seniorPath": "Head of Butchery or Meat Processing Plant Manager"
+      },
+      "specialisationNote": null
+    },
+    "camera-operator": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Photography",
+          "Art",
+          "English",
+          "Physics"
+        ],
+        "recommended": [
+          "Drama",
+          "Technology",
+          "Design"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, typically 3-4 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Television Production",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "University of Bergen",
+          "Stockholm University",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Entry can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Camera Assistant",
+        "description": "Support the camera crew by managing equipment and assisting with shots.",
+        "whatYouNeed": "Relevant education in film production or experience on set."
+      },
+      "qualifiesFor": {
+        "immediate": "Camera Operator",
+        "withExperience": "Director of Photography",
+        "seniorPath": "Head of Cinematography"
+      },
+      "specialisationNote": null
+    },
     "cardiac-surgeon": {
       "schoolSubjects": {
         "required": [
@@ -1905,6 +2405,45 @@
       },
       "specialisationNote": null
     },
+    "career-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Psychology",
+          "Sociology",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Communication",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Psychology",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "UiB"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Admission can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Career Coach Assistant",
+        "description": "Support career coaches in providing guidance and resources to clients.",
+        "whatYouNeed": "Bachelor's degree in Psychology or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Career Coach",
+        "withExperience": "Senior Career Coach",
+        "seniorPath": "Director of Career Services"
+      },
+      "specialisationNote": null
+    },
     "caregiver": {
       "schoolSubjects": {
         "required": [
@@ -2010,6 +2549,42 @@
         "immediate": "Case Worker",
         "withExperience": "Senior Case Worker",
         "seniorPath": "Team Leader or Case Management Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "catering-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Business Studies",
+          "Food Science"
+        ],
+        "recommended": [
+          "English",
+          "Art",
+          "Health Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Hospitality Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Stavanger, Høyskolen Kristiania"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a focus on relevant experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Catering Assistant",
+        "description": "Support catering operations by assisting in food preparation and service.",
+        "whatYouNeed": "Basic culinary skills and a hospitality qualification or experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Catering Supervisor",
+        "withExperience": "Operations Manager",
+        "seniorPath": "Catering Director"
       },
       "specialisationNote": null
     },
@@ -2393,6 +2968,44 @@
       },
       "specialisationNote": null
     },
+    "cinematographer": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Art",
+          "Photography"
+        ],
+        "recommended": [
+          "Drama",
+          "English",
+          "Design"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film Production",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "Stockholm Academy of Dramatic Arts",
+          "University of the Arts Helsinki"
+        ],
+        "applicationRoute": "Direct application to the film school",
+        "competitiveness": "Entry can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Cinematographer",
+        "description": "Support the cinematographer in camera and lighting tasks on set.",
+        "whatYouNeed": "Completed film degree or relevant experience plus a strong portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Cinematographer",
+        "withExperience": "Cinematographer",
+        "seniorPath": "Director of Photography"
+      },
+      "specialisationNote": null
+    },
     "cio": {
       "schoolSubjects": {
         "required": [
@@ -2429,6 +3042,47 @@
         "immediate": "IT Manager",
         "withExperience": "Director of IT",
         "seniorPath": "Chief Information Officer"
+      },
+      "specialisationNote": null
+    },
+    "civil-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Geography"
+        ],
+        "recommended": [
+          "Technology",
+          "Art",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master in Civil Engineering",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "Chalmers",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Engineer",
+        "description": "This role involves assisting in project design and management under senior engineers.",
+        "whatYouNeed": "Completed master's degree in civil engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Civil Engineer",
+        "withExperience": "Project Manager",
+        "seniorPath": "Senior Civil Engineer"
       },
       "specialisationNote": null
     },
@@ -2774,6 +3428,42 @@
       },
       "specialisationNote": null
     },
+    "color-grading-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media Studies",
+          "Photography"
+        ],
+        "recommended": [
+          "Design",
+          "Computer Science"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Specialist Colour Course",
+        "duration": "Varies",
+        "type": "vocational",
+        "examples": [
+          "Norwegian Film School",
+          "Stockholm Academy of Dramatic Arts"
+        ],
+        "applicationRoute": "Direct application to the course provider.",
+        "competitiveness": "Entry can be competitive, especially for well-known programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Colour Grading Assistant",
+        "description": "Assist in colour grading projects under the supervision of senior specialists.",
+        "whatYouNeed": "Portfolio showcasing colour grading work and familiarity with software like DaVinci Resolve."
+      },
+      "qualifiesFor": {
+        "immediate": "Colour Grading Assistant",
+        "withExperience": "Senior Colour Grading Specialist",
+        "seniorPath": "Lead Colourist"
+      },
+      "specialisationNote": null
+    },
     "colorectal-surgeon": {
       "schoolSubjects": {
         "required": [
@@ -2812,6 +3502,43 @@
         "seniorPath": "Colorectal Surgeon"
       },
       "specialisationNote": "Colorectal surgery is a specialisation of general surgery that requires additional fellowship training."
+    },
+    "combat-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Geography"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Engineering Training",
+        "duration": "Varies based on military programme",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høgskole",
+          "Krigsskolen"
+        ],
+        "applicationRoute": "Apply through the Norwegian Armed Forces recruitment portal",
+        "competitiveness": "Entry can be competitive due to limited spots in military training."
+      },
+      "entryLevelRequirements": {
+        "title": "Combat Engineer Trainee",
+        "description": "Participate in training exercises and learn essential combat engineering skills.",
+        "whatYouNeed": "Completion of basic military training and acceptance into the engineering branch."
+      },
+      "qualifiesFor": {
+        "immediate": "Combat Engineer",
+        "withExperience": "Senior Combat Engineer",
+        "seniorPath": "Combat Engineering Officer"
+      },
+      "specialisationNote": null
     },
     "commercial-director": {
       "schoolSubjects": {
@@ -2924,6 +3651,47 @@
       },
       "specialisationNote": null
     },
+    "commercial-video-producer": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Art",
+          "English",
+          "Communication",
+          "Business"
+        ],
+        "recommended": [
+          "Photography",
+          "Drama",
+          "Design"
+        ],
+        "minimumGrade": "Good grades in creative subjects, typically 4-5 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Media",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "University of Bergen",
+          "Stockholm University",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on creative portfolios."
+      },
+      "entryLevelRequirements": {
+        "title": "Production Assistant",
+        "description": "Assist in various production tasks and support the production team.",
+        "whatYouNeed": "Relevant degree or experience in film production."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Video Producer",
+        "withExperience": "Senior Video Producer",
+        "seniorPath": "Head of Production"
+      },
+      "specialisationNote": null
+    },
     "commissioning-contractor": {
       "schoolSubjects": {
         "required": [
@@ -2961,6 +3729,43 @@
         "immediate": "Commissioning Engineer",
         "withExperience": "Senior Commissioning Engineer",
         "seniorPath": "Commissioning Manager"
+      },
+      "specialisationNote": null
+    },
+    "commodities-trader": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Geography",
+          "Statistics"
+        ],
+        "minimumGrade": "Good grades in mathematics and economics, typically 4-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "UiO",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Trader",
+        "description": "Assist in trading activities and market analysis.",
+        "whatYouNeed": "Completed bachelor's degree in finance or economics + relevant internship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Trader",
+        "withExperience": "Senior Trader",
+        "seniorPath": "Head of Trading"
       },
       "specialisationNote": null
     },
@@ -3381,6 +4186,46 @@
       },
       "specialisationNote": null
     },
+    "consultant": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "English",
+          "Social Studies",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Statistics",
+          "Psychology",
+          "Philosophy"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Master in Business Administration",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Aalto University",
+          "Copenhagen Business School"
+        ],
+        "applicationRoute": "Direct application to the university through their website.",
+        "competitiveness": "It's moderately competitive, especially at top institutions."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Consultant",
+        "description": "Assist in research and analysis for client projects.",
+        "whatYouNeed": "Completed bachelor's degree in business or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Consultant",
+        "withExperience": "Senior Consultant",
+        "seniorPath": "Partner or Director in a consulting firm"
+      },
+      "specialisationNote": null
+    },
     "consulting-partner": {
       "schoolSubjects": {
         "required": [
@@ -3686,6 +4531,43 @@
         "immediate": "Corporate Trainer",
         "withExperience": "Learning and Development Manager",
         "seniorPath": "Director of Training and Development"
+      },
+      "specialisationNote": null
+    },
+    "corporate-videographer": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Art",
+          "English"
+        ],
+        "recommended": [
+          "Photography",
+          "Digital Design"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Media Production",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Bergen",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, with a focus on creative portfolios."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Videographer",
+        "description": "Assist in video production and editing for various projects.",
+        "whatYouNeed": "Portfolio showcasing video work and basic technical skills."
+      },
+      "qualifiesFor": {
+        "immediate": "Corporate Videographer",
+        "withExperience": "Senior Videographer or Video Producer",
+        "seniorPath": "Head of Video Production"
       },
       "specialisationNote": null
     },
@@ -4298,6 +5180,46 @@
       },
       "specialisationNote": null
     },
+    "cyber-warfare-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Information Technology",
+          "Programming",
+          "Electronics"
+        ],
+        "minimumGrade": "Top grades in mathematics and science subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Cybersecurity",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University",
+          "KTH Royal Institute of Technology"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive to gain admission due to high demand."
+      },
+      "entryLevelRequirements": {
+        "title": "Cybersecurity Analyst",
+        "description": "This step involves monitoring and defending networks against cyber threats.",
+        "whatYouNeed": "Completed bachelor's degree in Computer Science or Cybersecurity."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Cyber Warfare Specialist",
+        "withExperience": "Cybersecurity Consultant",
+        "seniorPath": "Cyber Warfare Operations Lead"
+      },
+      "specialisationNote": null
+    },
     "cybersecurity-analyst": {
       "schoolSubjects": {
         "required": [
@@ -4754,6 +5676,44 @@
       },
       "specialisationNote": null
     },
+    "derivatives-trader": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Statistics",
+          "Business Management"
+        ],
+        "recommended": [
+          "Physics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "BI Norwegian Business School",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to the popularity of finance programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Trader",
+        "description": "Assist in trading operations and learn from experienced traders.",
+        "whatYouNeed": "Completed bachelor's degree in finance or related field + internship experience"
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Trader",
+        "withExperience": "Senior Trader",
+        "seniorPath": "Head of Trading"
+      },
+      "specialisationNote": null
+    },
     "dermatologic-surgeon": {
       "schoolSubjects": {
         "required": [
@@ -4794,6 +5754,41 @@
         "seniorPath": "Lead dermatologic surgeon"
       },
       "specialisationNote": "Dermatologic surgery is a specialisation of dermatology, requiring additional training and fellowships."
+    },
+    "detective": {
+      "schoolSubjects": {
+        "required": [
+          "Social Studies",
+          "Norwegian",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Psychology",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Police Studies",
+        "duration": "3 years",
+        "type": "vocational",
+        "examples": [
+          "Politihøgskolen"
+        ],
+        "applicationRoute": "Direct application to the Police College.",
+        "competitiveness": "Entry can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Police Officer",
+        "description": "Begin your career in law enforcement, responding to incidents and assisting investigations.",
+        "whatYouNeed": "Completed Police Studies degree and passing the police entrance exam."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Detective",
+        "withExperience": "Senior Detective",
+        "seniorPath": "Detective Chief"
+      },
+      "specialisationNote": null
     },
     "devops-engineer": {
       "schoolSubjects": {
@@ -4905,6 +5900,44 @@
         "immediate": "Clinical Dietitian",
         "withExperience": "Nutrition Consultant",
         "seniorPath": "Head of Nutrition Services"
+      },
+      "specialisationNote": null
+    },
+    "digital-creator": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media Studies",
+          "Information Technology"
+        ],
+        "recommended": [
+          "Business Studies",
+          "English",
+          "Graphic Design"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Digital Media",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Bergen",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on portfolio."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Digital Creator",
+        "description": "Assist in creating content and managing online presence.",
+        "whatYouNeed": "Basic knowledge of digital tools and a portfolio of work."
+      },
+      "qualifiesFor": {
+        "immediate": "Content Creator",
+        "withExperience": "Senior Digital Creator",
+        "seniorPath": "Creative Director"
       },
       "specialisationNote": null
     },
@@ -5215,6 +6248,43 @@
       },
       "specialisationNote": "After completing the medical degree, additional training is required for specialisation."
     },
+    "documentary-filmmaker": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Art",
+          "History"
+        ],
+        "recommended": [
+          "Sociology",
+          "Photography",
+          "Drama"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Media Studies",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Film, University of Gothenburg, Aalto University, Copenhagen School of Design and Technology"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Entry can be competitive, especially for popular programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Documentary Producer",
+        "description": "Assist in the production of documentaries by conducting research and supporting filming.",
+        "whatYouNeed": "Completed degree in film studies or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Documentary Assistant",
+        "withExperience": "Documentary Producer",
+        "seniorPath": "Executive Producer"
+      },
+      "specialisationNote": null
+    },
     "dog-groomer": {
       "schoolSubjects": {
         "required": [
@@ -5326,6 +6396,43 @@
       },
       "specialisationNote": null
     },
+    "drone-operator-uav": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Geography",
+          "Technology",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "UAV Pilot Certification",
+        "duration": "Varies",
+        "type": "vocational",
+        "examples": [
+          "Norwegian Armed Forces",
+          "Forsvarets Høyskole"
+        ],
+        "applicationRoute": "Direct application to military training programs",
+        "competitiveness": "Entry can be competitive due to limited spots in military programs."
+      },
+      "entryLevelRequirements": {
+        "title": "UAV Pilot Trainee",
+        "description": "Assist in flying drones under supervision while gaining practical experience.",
+        "whatYouNeed": "Completed military service and UAV pilot certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Drone Operator",
+        "withExperience": "Senior UAV Pilot",
+        "seniorPath": "Chief Drone Operations Officer"
+      },
+      "specialisationNote": null
+    },
     "dynamic-positioning-operator": {
       "schoolSubjects": {
         "required": [
@@ -5396,6 +6503,43 @@
         "immediate": "Early Childhood Educator",
         "withExperience": "Lead Educator or Coordinator in a kindergarten",
         "seniorPath": "Director of a kindergarten or educational institution"
+      },
+      "specialisationNote": null
+    },
+    "educational-content-creator": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Art",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Media and Communication",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Educational Content Creator",
+        "description": "Assist in creating educational materials under supervision.",
+        "whatYouNeed": "Relevant degree or experience in content creation."
+      },
+      "qualifiesFor": {
+        "immediate": "Educational Content Creator",
+        "withExperience": "Senior Educational Content Creator",
+        "seniorPath": "Content Strategy Lead"
       },
       "specialisationNote": null
     },
@@ -6050,6 +7194,43 @@
       },
       "specialisationNote": null
     },
+    "eod-technician": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Technology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "EOD Technician Training",
+        "duration": "Varies by military branch",
+        "type": "vocational",
+        "examples": [
+          "Norwegian Armed Forces",
+          "Swedish Armed Forces",
+          "Danish Defence"
+        ],
+        "applicationRoute": "Direct application to military recruitment",
+        "competitiveness": "Selection is competitive due to the nature of the role."
+      },
+      "entryLevelRequirements": {
+        "title": "EOD Technician Trainee",
+        "description": "Assist experienced technicians in bomb disposal operations.",
+        "whatYouNeed": "Completed military service and passed EOD school selection."
+      },
+      "qualifiesFor": {
+        "immediate": "EOD Technician",
+        "withExperience": "Senior EOD Technician",
+        "seniorPath": "EOD Operations Manager"
+      },
+      "specialisationNote": null
+    },
     "epidemiologist": {
       "schoolSubjects": {
         "required": [
@@ -6085,6 +7266,46 @@
         "immediate": "Epidemiologist",
         "withExperience": "Senior Epidemiologist",
         "seniorPath": "Director of Epidemiology"
+      },
+      "specialisationNote": null
+    },
+    "equity-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies",
+          "English",
+          "Statistics"
+        ],
+        "recommended": [
+          "Accounting",
+          "Computer Science",
+          "Social Studies"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Norwegian School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive, especially at top institutions."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Equity Analyst",
+        "description": "Assist in researching and analysing companies under the guidance of senior analysts.",
+        "whatYouNeed": "Completed bachelor's degree in finance or economics."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Equity Analyst",
+        "withExperience": "Senior Equity Analyst",
+        "seniorPath": "Portfolio Manager"
       },
       "specialisationNote": null
     },
@@ -6344,6 +7565,43 @@
         "immediate": "Estate Manager Assistant",
         "withExperience": "Senior Estate Manager",
         "seniorPath": "Director of Estate Management"
+      },
+      "specialisationNote": null
+    },
+    "event-photographer": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media Studies",
+          "Photography"
+        ],
+        "recommended": [
+          "English",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Photography",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Gothenburg",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Photographer",
+        "description": "Assist in capturing events and editing photos under supervision.",
+        "whatYouNeed": "Portfolio showcasing photography skills and basic technical knowledge."
+      },
+      "qualifiesFor": {
+        "immediate": "Event Photographer",
+        "withExperience": "Senior Event Photographer or Photo Editor",
+        "seniorPath": "Creative Director or Photography Studio Owner"
       },
       "specialisationNote": null
     },
@@ -6646,6 +7904,44 @@
       },
       "specialisationNote": null
     },
+    "film-director": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Art",
+          "Drama"
+        ],
+        "recommended": [
+          "Photography",
+          "Graphic Design"
+        ],
+        "minimumGrade": "Good grades in creative subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Television",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "University of Gothenburg",
+          "Aalto University"
+        ],
+        "applicationRoute": "Direct application to the institution.",
+        "competitiveness": "It's quite competitive, requiring a strong portfolio and creative vision."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Director",
+        "description": "Support the director in managing the production and coordinating the crew.",
+        "whatYouNeed": "Relevant film school education and some crew experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Film Director",
+        "withExperience": "Senior Film Director",
+        "seniorPath": "Creative Director or Producer"
+      },
+      "specialisationNote": null
+    },
     "finance-director": {
       "schoolSubjects": {
         "required": [
@@ -6720,6 +8016,44 @@
       },
       "specialisationNote": null
     },
+    "financial-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business",
+          "English"
+        ],
+        "recommended": [
+          "Statistics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive, especially at top institutions."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Financial Analyst",
+        "description": "Support senior analysts in data analysis and reporting.",
+        "whatYouNeed": "Completed bachelor's degree in finance or economics."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Financial Analyst",
+        "withExperience": "Senior Financial Analyst",
+        "seniorPath": "Finance Manager"
+      },
+      "specialisationNote": null
+    },
     "firefighter": {
       "schoolSubjects": {
         "required": [
@@ -6753,6 +8087,44 @@
         "immediate": "Firefighter",
         "withExperience": "Senior Firefighter",
         "seniorPath": "Fire Chief"
+      },
+      "specialisationNote": null
+    },
+    "fitness-influencer": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Health"
+        ],
+        "recommended": [
+          "Media Studies",
+          "Business",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Personal Trainer Certification",
+        "duration": "6 months to 1 year",
+        "type": "vocational",
+        "examples": [
+          "Norges Idrettshøgskole",
+          "Kursagenten",
+          "Fagskolen Oslo"
+        ],
+        "applicationRoute": "Direct application to training providers",
+        "competitiveness": "Entry is generally accessible with various training options available."
+      },
+      "entryLevelRequirements": {
+        "title": "Certified Personal Trainer",
+        "description": "Work with clients to improve their fitness and health.",
+        "whatYouNeed": "Completed personal training certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Fitness Coach",
+        "withExperience": "Fitness Consultant",
+        "seniorPath": "Head of Fitness Programs"
       },
       "specialisationNote": null
     },
@@ -6828,6 +8200,274 @@
         "immediate": "Flight Attendant",
         "withExperience": "Senior Flight Attendant",
         "seniorPath": "Cabin Crew Manager"
+      },
+      "specialisationNote": null
+    },
+    "flight-dynamics-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Technology",
+          "Statistics"
+        ],
+        "minimumGrade": "Top grades in mathematics and physics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Master in Aerospace Engineering",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive to get in due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Flight Dynamics Engineer",
+        "description": "Assist in trajectory calculations and mission planning under supervision.",
+        "whatYouNeed": "Completed master's degree in Aerospace Engineering or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Flight Dynamics Engineer",
+        "withExperience": "Senior Flight Dynamics Engineer",
+        "seniorPath": "Lead Flight Dynamics Engineer"
+      },
+      "specialisationNote": null
+    },
+    "flight-engineer-space": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Technology",
+          "Engineering"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master in Aerospace Engineering",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into these programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Flight Engineer",
+        "description": "Assist in the operation and monitoring of spacecraft systems.",
+        "whatYouNeed": "Completed master's degree in Aerospace Engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Flight Engineer",
+        "withExperience": "Senior Flight Engineer",
+        "seniorPath": "Chief Flight Engineer"
+      },
+      "specialisationNote": null
+    },
+    "food-product-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Mathematics",
+          "English"
+        ],
+        "recommended": [
+          "Home Economics",
+          "Business Studies"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NMBU",
+          "UiT",
+          "University of Copenhagen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive, especially for popular universities."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Food Product Developer",
+        "description": "Assist in creating and testing new food products.",
+        "whatYouNeed": "Completed bachelor's degree in Food Science or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Food Product Developer",
+        "withExperience": "Senior Food Product Developer",
+        "seniorPath": "Head of Product Development"
+      },
+      "specialisationNote": null
+    },
+    "food-safety-inspector": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Mathematics",
+          "English"
+        ],
+        "recommended": [
+          "Health Science",
+          "Social Studies"
+        ],
+        "minimumGrade": "Good grades in science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NMBU, UiT, University of Copenhagen"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a focus on relevant subjects."
+      },
+      "entryLevelRequirements": {
+        "title": "Food Safety Inspector Trainee",
+        "description": "Assist in inspections and learn about food safety regulations.",
+        "whatYouNeed": "Completed bachelor's degree in a relevant field."
+      },
+      "qualifiesFor": {
+        "immediate": "Food Safety Inspector",
+        "withExperience": "Senior Food Safety Inspector",
+        "seniorPath": "Food Safety Manager"
+      },
+      "specialisationNote": null
+    },
+    "food-scientist": {
+      "schoolSubjects": {
+        "required": [
+          "Chemistry",
+          "Biology",
+          "Mathematics",
+          "Physics"
+        ],
+        "recommended": [
+          "Health Science",
+          "Food Studies"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University",
+          "Aarhus University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Food Scientist",
+        "description": "This role involves assisting in food research and analysis.",
+        "whatYouNeed": "Completed relevant degree in Food Science or Food Technology."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Food Scientist",
+        "withExperience": "Food Quality Assurance Specialist",
+        "seniorPath": "Lead Food Scientist"
+      },
+      "specialisationNote": null
+    },
+    "food-technologist": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Mathematics",
+          "Physics"
+        ],
+        "recommended": [
+          "Home Economics",
+          "Business Studies"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Technology",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NMBU",
+          "UiT",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), opintopolku.fi (Finland)",
+        "competitiveness": "It is moderately competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Food Technologist",
+        "description": "This role involves assisting in the development and testing of food products.",
+        "whatYouNeed": "Completed food technology degree"
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Food Technologist",
+        "withExperience": "Senior Food Technologist",
+        "seniorPath": "Food Technology Manager"
+      },
+      "specialisationNote": null
+    },
+    "forex-trader": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Statistics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Forex Trader",
+        "description": "Assist in trading activities and analysis under supervision.",
+        "whatYouNeed": "Basic understanding of forex markets and some trading experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Forex Trader",
+        "withExperience": "Senior Forex Trader",
+        "seniorPath": "Trading Manager"
       },
       "specialisationNote": null
     },
@@ -6975,6 +8615,77 @@
         "immediate": "Software Engineer",
         "withExperience": "Technical Lead",
         "seniorPath": "Chief Technology Officer (CTO)"
+      },
+      "specialisationNote": null
+    },
+    "freelance-photographer": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media",
+          "Photography"
+        ],
+        "recommended": [
+          "Business",
+          "Marketing"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "None required, but photography courses are beneficial",
+        "duration": "Varies",
+        "type": "vocational",
+        "examples": [
+          "Norwegian School of Photography",
+          "Stockholm School of Photography"
+        ],
+        "applicationRoute": "Directly to the school or institution offering courses",
+        "competitiveness": "Entry is generally open, but a strong portfolio is essential."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Photographer",
+        "description": "Assist in various photography projects and build a portfolio.",
+        "whatYouNeed": "Basic photography skills and a portfolio showcasing your work."
+      },
+      "qualifiesFor": {
+        "immediate": "Freelance Photographer",
+        "withExperience": "Senior Photographer or Studio Manager",
+        "seniorPath": "Creative Director or Photography Business Owner"
+      },
+      "specialisationNote": null
+    },
+    "freight-driver": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Geography",
+          "Physical Education"
+        ],
+        "recommended": [
+          "English",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "N/A",
+        "duration": "N/A",
+        "type": "vocational",
+        "examples": [
+          "N/A"
+        ],
+        "applicationRoute": "N/A",
+        "competitiveness": "N/A"
+      },
+      "entryLevelRequirements": {
+        "title": "Freight Driver",
+        "description": "Drive heavy goods vehicles for haulage companies.",
+        "whatYouNeed": "Class C/CE licence, yrkessjåførkompetanse, and ADR certification for hazardous goods."
+      },
+      "qualifiesFor": {
+        "immediate": "Freight Driver",
+        "withExperience": "Transport Manager",
+        "seniorPath": "Logistics Director"
       },
       "specialisationNote": null
     },
@@ -7678,6 +9389,45 @@
         "immediate": "Junior Grid Engineer",
         "withExperience": "Project Manager for grid modernisation",
         "seniorPath": "Grid Transformation Lead"
+      },
+      "specialisationNote": null
+    },
+    "ground-control-operator": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Technology",
+          "Electronics"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Aerospace Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive to get in due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Ground Control Operator",
+        "description": "This role involves assisting in monitoring and commanding spacecraft operations.",
+        "whatYouNeed": "Completed relevant bachelor's degree and on-site training."
+      },
+      "qualifiesFor": {
+        "immediate": "Ground Control Operator",
+        "withExperience": "Senior Ground Control Operator",
+        "seniorPath": "Ground Control Operations Manager"
       },
       "specialisationNote": null
     },
@@ -8471,6 +10221,44 @@
         "immediate": "Heavy Equipment Mechanic",
         "withExperience": "Senior Heavy Equipment Mechanic or Field Service Technician",
         "seniorPath": "Workshop Manager or Service Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "hedge-fund-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies",
+          "English"
+        ],
+        "recommended": [
+          "Statistics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Admission is competitive, especially for top institutions."
+      },
+      "entryLevelRequirements": {
+        "title": "Investment Analyst",
+        "description": "Assist in research and analysis of investment opportunities.",
+        "whatYouNeed": "Bachelor's degree in finance or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Investment Analyst",
+        "withExperience": "Portfolio Manager",
+        "seniorPath": "Hedge Fund Manager"
       },
       "specialisationNote": null
     },
@@ -9449,6 +11237,42 @@
       },
       "specialisationNote": null
     },
+    "infantry-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Norwegian",
+          "Physical Education",
+          "Social Studies"
+        ],
+        "recommended": [
+          "English",
+          "History"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Krigsskolen (Norwegian Military Academy)",
+        "duration": "3 years",
+        "type": "vocational",
+        "examples": [
+          "Krigsskolen"
+        ],
+        "applicationRoute": "Direct application to the Norwegian Armed Forces.",
+        "competitiveness": "Entry is competitive due to limited spots and high physical standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Infantry Officer",
+        "description": "Lead and manage infantry units during training and operations.",
+        "whatYouNeed": "Completed Krigsskolen and received military commission."
+      },
+      "qualifiesFor": {
+        "immediate": "Infantry Officer",
+        "withExperience": "Platoon Commander",
+        "seniorPath": "Battalion Commander"
+      },
+      "specialisationNote": null
+    },
     "infrastructure-architect": {
       "schoolSubjects": {
         "required": [
@@ -9712,6 +11536,44 @@
         "immediate": "Investment Analyst",
         "withExperience": "Senior Investment Analyst",
         "seniorPath": "Portfolio Manager"
+      },
+      "specialisationNote": null
+    },
+    "investment-banker": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business",
+          "English"
+        ],
+        "recommended": [
+          "Statistics",
+          "Accounting"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "BI Norwegian Business School",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It is quite competitive to get into finance programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Analyst",
+        "description": "Assist in financial analysis and support senior bankers in transactions.",
+        "whatYouNeed": "Completed bachelor's degree in finance or economics."
+      },
+      "qualifiesFor": {
+        "immediate": "Investment Banking Analyst",
+        "withExperience": "Associate Investment Banker",
+        "seniorPath": "Vice President of Investment Banking"
       },
       "specialisationNote": null
     },
@@ -10021,6 +11883,46 @@
       },
       "specialisationNote": null
     },
+    "launch-operations-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Technology",
+          "Engineering"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Aerospace Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be quite competitive to get into aerospace programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Launch Operations Engineer",
+        "description": "Assist in launch operations and support the countdown process.",
+        "whatYouNeed": "Completed degree in aerospace engineering or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Launch Operations Engineer",
+        "withExperience": "Senior Launch Operations Engineer",
+        "seniorPath": "Launch Operations Manager"
+      },
+      "specialisationNote": null
+    },
     "lawyer": {
       "schoolSubjects": {
         "required": [
@@ -10214,6 +12116,42 @@
       },
       "specialisationNote": null
     },
+    "lighting-technician": {
+      "schoolSubjects": {
+        "required": [
+          "Physics",
+          "Art",
+          "Technology"
+        ],
+        "recommended": [
+          "Drama",
+          "Media Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Fagbrev in Lighting Technology",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Norwegian Film School"
+        ],
+        "applicationRoute": "Direct application to vocational schools or apprenticeships",
+        "competitiveness": "Entry can be competitive depending on the school and demand."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Lighting Technician",
+        "description": "Assist in setting up and operating lighting equipment on set.",
+        "whatYouNeed": "Completed fagbrev or relevant apprenticeship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Lighting Technician",
+        "withExperience": "Senior Lighting Technician",
+        "seniorPath": "Head of Lighting Department"
+      },
+      "specialisationNote": null
+    },
     "loan-officer": {
       "schoolSubjects": {
         "required": [
@@ -10286,6 +12224,80 @@
         "immediate": "Logistics Coordinator",
         "withExperience": "Supply Chain Manager",
         "seniorPath": "Director of Logistics"
+      },
+      "specialisationNote": null
+    },
+    "logistics-driver": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "English",
+          "Geography"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Physical Education"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Not applicable",
+        "duration": "Not applicable",
+        "type": "vocational",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Bergen Maritime Academy"
+        ],
+        "applicationRoute": "Local vocational training centres",
+        "competitiveness": "Entry is generally straightforward with the right qualifications."
+      },
+      "entryLevelRequirements": {
+        "title": "Logistics Driver",
+        "description": "Transport goods to various locations as part of a local route.",
+        "whatYouNeed": "Class C driving licence and yrkessjåførkompetanse certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Logistics Driver",
+        "withExperience": "Transport Coordinator",
+        "seniorPath": "Logistics Manager"
+      },
+      "specialisationNote": null
+    },
+    "logistics-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Social Studies",
+          "English",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Geography",
+          "History"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Military Logistics",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Krigsskolen",
+          "Norwegian School of Economics",
+          "University of Bergen"
+        ],
+        "applicationRoute": "Direct application to Krigsskolen.",
+        "competitiveness": "Entry is competitive due to limited spots and high demand."
+      },
+      "entryLevelRequirements": {
+        "title": "Logistics Officer Trainee",
+        "description": "Assist in planning and executing logistics operations in military settings.",
+        "whatYouNeed": "Completed military officer training at Krigsskolen."
+      },
+      "qualifiesFor": {
+        "immediate": "Logistics Officer",
+        "withExperience": "Senior Logistics Officer",
+        "seniorPath": "Logistics Manager"
       },
       "specialisationNote": null
     },
@@ -10517,6 +12529,43 @@
       },
       "specialisationNote": null
     },
+    "marine": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Geography",
+          "History"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Training Programme",
+        "duration": "Varies based on service",
+        "type": "vocational",
+        "examples": [
+          "Norwegian Armed Forces",
+          "Swedish Armed Forces",
+          "Danish Defence"
+        ],
+        "applicationRoute": "Direct application to military recruitment",
+        "competitiveness": "Entry can be competitive due to physical and mental testing."
+      },
+      "entryLevelRequirements": {
+        "title": "Marine Recruit",
+        "description": "Initial training phase focusing on physical fitness and basic military skills.",
+        "whatYouNeed": "Completion of military recruitment process and fitness assessments."
+      },
+      "qualifiesFor": {
+        "immediate": "Marine Soldier",
+        "withExperience": "Team Leader in amphibious operations",
+        "seniorPath": "Marine Operations Commander"
+      },
+      "specialisationNote": null
+    },
     "marine-electrician": {
       "schoolSubjects": {
         "required": [
@@ -10587,6 +12636,44 @@
         "immediate": "Marine Engineer",
         "withExperience": "Senior Marine Engineer",
         "seniorPath": "Chief Engineer"
+      },
+      "specialisationNote": null
+    },
+    "market-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "English",
+          "Statistics"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive, especially at top institutions."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Market Analyst",
+        "description": "Assist in analyzing market trends and preparing reports.",
+        "whatYouNeed": "Completed bachelor's degree in finance or economics."
+      },
+      "qualifiesFor": {
+        "immediate": "Market Research Assistant",
+        "withExperience": "Senior Market Analyst",
+        "seniorPath": "Market Research Manager"
       },
       "specialisationNote": null
     },
@@ -10969,6 +13056,44 @@
       },
       "specialisationNote": "Midwifery is a specialisation of nursing, requiring additional training after the nursing degree."
     },
+    "military-intelligence-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "English",
+          "Social Studies",
+          "Foreign Language"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Physics"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Military Studies or related field",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Forsvarets Høgskole",
+          "UiO",
+          "NTNU"
+        ],
+        "applicationRoute": "Direct application to military academies or universities",
+        "competitiveness": "Entry can be competitive due to limited spots and high demand."
+      },
+      "entryLevelRequirements": {
+        "title": "Military Intelligence Analyst Trainee",
+        "description": "This role involves initial training and support in intelligence operations.",
+        "whatYouNeed": "Completion of military service and relevant training courses."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Intelligence Analyst",
+        "withExperience": "Senior Intelligence Analyst",
+        "seniorPath": "Intelligence Officer"
+      },
+      "specialisationNote": null
+    },
     "military-officer": {
       "schoolSubjects": {
         "required": [
@@ -11007,6 +13132,78 @@
       },
       "specialisationNote": null
     },
+    "military-pilot": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English"
+        ],
+        "recommended": [
+          "Geography",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and physics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Luftkrigsskolen (Air Force Academy)",
+        "duration": "3 years",
+        "type": "vocational",
+        "examples": [
+          "Luftkrigsskolen",
+          "Forsvarets høgskole"
+        ],
+        "applicationRoute": "Apply directly through the Norwegian Armed Forces recruitment process.",
+        "competitiveness": "Entry is highly competitive due to limited spots and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Pilot Officer",
+        "description": "Initial role involving training and operational flying tasks.",
+        "whatYouNeed": "Completed training at Luftkrigsskolen and passed flight training."
+      },
+      "qualifiesFor": {
+        "immediate": "Military Pilot",
+        "withExperience": "Squadron Leader",
+        "seniorPath": "Wing Commander"
+      },
+      "specialisationNote": null
+    },
+    "military-police": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Social Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "English",
+          "Norwegian",
+          "History"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Police Training",
+        "duration": "1 year",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høgskole"
+        ],
+        "applicationRoute": "Apply through the Norwegian Armed Forces recruitment process",
+        "competitiveness": "Entry can be competitive due to limited positions."
+      },
+      "entryLevelRequirements": {
+        "title": "Military Police Trainee",
+        "description": "This step involves completing basic military training and specialized police training.",
+        "whatYouNeed": "Completed military service and acceptance into the Military Police training program."
+      },
+      "qualifiesFor": {
+        "immediate": "Military Police Officer",
+        "withExperience": "Senior Military Police Officer",
+        "seniorPath": "Military Police Chief"
+      },
+      "specialisationNote": null
+    },
     "millwright": {
       "schoolSubjects": {
         "required": [
@@ -11042,6 +13239,47 @@
         "immediate": "Millwright",
         "withExperience": "Senior Millwright or Maintenance Technician",
         "seniorPath": "Lead Millwright or Maintenance Manager"
+      },
+      "specialisationNote": null
+    },
+    "mission-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "Biology",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Geography",
+          "Technology"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "PhD in a STEM field",
+        "duration": "3-5 years",
+        "type": "master | doctoral",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Chalmers",
+          "Aalto University"
+        ],
+        "applicationRoute": "Direct application to universities or through research programmes",
+        "competitiveness": "Very competitive due to limited spots and high qualifications required"
+      },
+      "entryLevelRequirements": {
+        "title": "Research Scientist or Engineer",
+        "description": "This step involves conducting research or engineering tasks relevant to space missions.",
+        "whatYouNeed": "Completed PhD in a STEM field and selection by a space agency"
+      },
+      "qualifiesFor": {
+        "immediate": "Mission Specialist",
+        "withExperience": "Senior Research Scientist or Lead Engineer",
+        "seniorPath": "Chief Scientist or Director of Space Operations"
       },
       "specialisationNote": null
     },
@@ -11194,6 +13432,43 @@
         "immediate": "Mortgage Broker",
         "withExperience": "Senior Mortgage Consultant",
         "seniorPath": "Branch Manager or Head of Mortgage Services"
+      },
+      "specialisationNote": null
+    },
+    "motion-graphics-designer": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Media Studies",
+          "Design",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Mathematics",
+          "English",
+          "Photography"
+        ],
+        "minimumGrade": "Good grades in creative subjects, typically 4-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Design",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on portfolio quality."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Motion Graphics Designer",
+        "description": "Assist in creating animated graphics and visual effects for various media.",
+        "whatYouNeed": "Completed design degree or strong portfolio showcasing relevant skills."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Motion Graphics Designer",
+        "withExperience": "Senior Motion Graphics Designer",
+        "seniorPath": "Creative Director"
       },
       "specialisationNote": null
     },
@@ -11502,6 +13777,45 @@
         "immediate": "Nail Technician",
         "withExperience": "Senior Nail Technician or Nail Art Specialist",
         "seniorPath": "Salon Manager or Nail Studio Owner"
+      },
+      "specialisationNote": null
+    },
+    "naval-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English",
+          "Norwegian"
+        ],
+        "recommended": [
+          "History",
+          "Geography",
+          "Physical Education"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Naval Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Sjøkrigsskolen",
+          "Norwegian School of Economics",
+          "UiT The Arctic University of Norway"
+        ],
+        "applicationRoute": "Direct application to Sjøkrigsskolen",
+        "competitiveness": "Entry is competitive due to limited spots and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Naval Officer Cadet",
+        "description": "This role involves training and learning to operate navy vessels.",
+        "whatYouNeed": "Completed naval academy programme and required sea time."
+      },
+      "qualifiesFor": {
+        "immediate": "Naval Officer Cadet",
+        "withExperience": "Senior Naval Officer",
+        "seniorPath": "Commander"
       },
       "specialisationNote": null
     },
@@ -12256,6 +14570,43 @@
       },
       "specialisationNote": "Surgical oncologist is a specialisation of general surgery, requiring additional fellowship training."
     },
+    "online-coach": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Psychology",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Health Science",
+          "Sociology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "No formal degree required, but courses in coaching or related fields are beneficial",
+        "duration": "Varies",
+        "type": "vocational",
+        "examples": [
+          "Norges Idrettshøgskole",
+          "BI Norwegian Business School",
+          "OsloMet"
+        ],
+        "applicationRoute": "Direct application to courses or certifications",
+        "competitiveness": "Entry is generally accessible, depending on the specific course or certification."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Online Coach",
+        "description": "Assist clients under the guidance of experienced coaches.",
+        "whatYouNeed": "Knowledge in a specific coaching area and a basic understanding of online tools."
+      },
+      "qualifiesFor": {
+        "immediate": "Online Coach",
+        "withExperience": "Senior Online Coach or Specialist Coach",
+        "seniorPath": "Head Coach or Coaching Director"
+      },
+      "specialisationNote": null
+    },
     "operations-director": {
       "schoolSubjects": {
         "required": [
@@ -12406,6 +14757,44 @@
         "immediate": "Optician",
         "withExperience": "Senior Optician",
         "seniorPath": "Optometry Practice Manager"
+      },
+      "specialisationNote": null
+    },
+    "options-trader": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Statistics",
+          "English"
+        ],
+        "recommended": [
+          "Physics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive due to the popularity of finance programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Trader",
+        "description": "Assist in executing trades and managing risk under supervision.",
+        "whatYouNeed": "Completed finance degree and some trading internship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Options Trader",
+        "withExperience": "Senior Trader",
+        "seniorPath": "Head of Trading"
       },
       "specialisationNote": null
     },
@@ -12901,6 +15290,43 @@
       },
       "specialisationNote": null
     },
+    "pastry-chef": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Home Economics",
+          "Art"
+        ],
+        "recommended": [
+          "Biology",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Konditor fagbrev",
+        "duration": "2 years",
+        "type": "fagbrev",
+        "examples": [
+          "Oslo Metropolitan University",
+          "Bergen Maritime University",
+          "Norwegian School of Hotel Management"
+        ],
+        "applicationRoute": "Apply directly to vocational schools or through regional apprenticeship programs",
+        "competitiveness": "Entry is generally accessible, but competition can vary by location."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Pastry Chef",
+        "description": "Assist in the preparation and decoration of pastries and desserts under supervision.",
+        "whatYouNeed": "Completed Konditor fagbrev or equivalent vocational training."
+      },
+      "qualifiesFor": {
+        "immediate": "Pastry Chef Assistant",
+        "withExperience": "Head Pastry Chef",
+        "seniorPath": "Executive Pastry Chef"
+      },
+      "specialisationNote": null
+    },
     "pathologist": {
       "schoolSubjects": {
         "required": [
@@ -12941,6 +15367,45 @@
         "seniorPath": "Chief pathologist"
       },
       "specialisationNote": "Pathology is a specialisation of medicine requiring additional training after the medical degree."
+    },
+    "payload-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "Biology"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Geography"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "PhD in relevant scientific field",
+        "duration": "3-5 years",
+        "type": "master | doctorate",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Chalmers",
+          "Aalto University"
+        ],
+        "applicationRoute": "Direct application to universities",
+        "competitiveness": "Admission can be competitive, especially for top programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Research Scientist",
+        "description": "This role involves conducting experiments and analyses in a specific scientific area.",
+        "whatYouNeed": "Completed relevant PhD and research experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Payload Specialist",
+        "withExperience": "Lead Researcher",
+        "seniorPath": "Chief Scientist"
+      },
+      "specialisationNote": null
     },
     "perf-test-engineer": {
       "schoolSubjects": {
@@ -13323,6 +15788,42 @@
       },
       "specialisationNote": null
     },
+    "photojournalist": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Photography",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "History",
+          "Graphic Design"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Journalism",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, Jönköping University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, with many applicants for limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Photojournalist",
+        "description": "Assist in capturing and editing news photographs for publication.",
+        "whatYouNeed": "Completed journalism degree and a strong portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Photojournalist for local news outlets",
+        "withExperience": "Senior Photojournalist or Photo Editor",
+        "seniorPath": "Chief Photographer or Editorial Director"
+      },
+      "specialisationNote": null
+    },
     "physiotherapist": {
       "schoolSubjects": {
         "required": [
@@ -13665,6 +16166,44 @@
       },
       "specialisationNote": null
     },
+    "podcast-host": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Communication",
+          "English"
+        ],
+        "recommended": [
+          "Journalism",
+          "Theatre",
+          "Music Production"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Media and Communication",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Helsinki University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderate competition for entry."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Podcast Producer",
+        "description": "Assist in producing podcast episodes and managing content.",
+        "whatYouNeed": "Basic knowledge of audio editing and content creation."
+      },
+      "qualifiesFor": {
+        "immediate": "Podcast Host",
+        "withExperience": "Senior Podcast Producer",
+        "seniorPath": "Creative Director of Media Productions"
+      },
+      "specialisationNote": null
+    },
     "podiatrist": {
       "schoolSubjects": {
         "required": [
@@ -13812,6 +16351,44 @@
         "immediate": "Junior Project Manager",
         "withExperience": "Senior Project Manager",
         "seniorPath": "Portfolio Director"
+      },
+      "specialisationNote": null
+    },
+    "post-production-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Art",
+          "English",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Photography"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Media Production",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "University of Bergen",
+          "Stockholm University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Post-Production Assistant",
+        "description": "Assist in various post-production tasks under supervision.",
+        "whatYouNeed": "Relevant degree or vocational training in film production."
+      },
+      "qualifiesFor": {
+        "immediate": "Post-Production Assistant",
+        "withExperience": "Post-Production Supervisor",
+        "seniorPath": "Head of Post-Production"
       },
       "specialisationNote": null
     },
@@ -15192,6 +17769,43 @@
       },
       "specialisationNote": null
     },
+    "quality-assurance-food": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Physics",
+          "Business Studies"
+        ],
+        "minimumGrade": "Good grades in science subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Food Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NMBU",
+          "UiT",
+          "Høyskolen i Oslo og Akershus"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a solid number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Quality Assurance Technician",
+        "description": "This role involves conducting tests and ensuring compliance with quality standards.",
+        "whatYouNeed": "Completed bachelor's degree in Food Science or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Quality Assurance Technician",
+        "withExperience": "Senior Quality Assurance Specialist",
+        "seniorPath": "Quality Assurance Manager"
+      },
+      "specialisationNote": null
+    },
     "quant-developer": {
       "schoolSubjects": {
         "required": [
@@ -16359,6 +18973,43 @@
       },
       "specialisationNote": null
     },
+    "restaurant-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Business studies",
+          "Mathematics",
+          "English",
+          "Hospitality management"
+        ],
+        "recommended": [
+          "Food science",
+          "Communication",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Hospitality Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiT, University of Bergen, Copenhagen Business School"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Restaurant Manager",
+        "description": "Support the restaurant manager in daily operations and staff management.",
+        "whatYouNeed": "Experience in the restaurant industry, often starting as a waiter or cook."
+      },
+      "qualifiesFor": {
+        "immediate": "Restaurant Manager",
+        "withExperience": "Area Manager for multiple restaurants",
+        "seniorPath": "Director of Operations"
+      },
+      "specialisationNote": null
+    },
     "retail-manager": {
       "schoolSubjects": {
         "required": [
@@ -16469,6 +19120,44 @@
         "immediate": "Rig Instrumentation Technician",
         "withExperience": "Senior Instrumentation Technician",
         "seniorPath": "Instrumentation Engineering Manager"
+      },
+      "specialisationNote": null
+    },
+    "risk-analyst": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Statistics",
+          "English"
+        ],
+        "recommended": [
+          "Business Studies",
+          "Computer Science"
+        ],
+        "minimumGrade": "Strong grades in mathematics and statistics, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "BI Norwegian Business School",
+          "NTNU"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive with a good number of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Risk Analyst",
+        "description": "Assist in identifying and assessing risks under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in finance, maths, or statistics."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Risk Analyst",
+        "withExperience": "Senior Risk Analyst",
+        "seniorPath": "Risk Management Director"
       },
       "specialisationNote": null
     },
@@ -16588,6 +19277,47 @@
         "immediate": "Junior Robotics Engineer",
         "withExperience": "Senior Robotics Engineer",
         "seniorPath": "Lead Robotics Engineer"
+      },
+      "specialisationNote": null
+    },
+    "rocket-scientist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Advanced Mathematics",
+          "Technology",
+          "Engineering"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "PhD in Aerospace Engineering",
+        "duration": "3-5 years",
+        "type": "master | integrated",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Direct application to universities or through national admission services",
+        "competitiveness": "It is quite competitive to gain admission due to high demand and limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Engineer",
+        "description": "Assist in the design and testing of rocket systems under supervision.",
+        "whatYouNeed": "Completed master's degree in Aerospace, Mechanical, or Chemical Engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Engineer",
+        "withExperience": "Senior Engineer",
+        "seniorPath": "Lead Rocket Scientist"
       },
       "specialisationNote": null
     },
@@ -16891,6 +19621,47 @@
       },
       "specialisationNote": null
     },
+    "satellite-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Technology",
+          "Electronics",
+          "Advanced Mathematics"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master in Aerospace Engineering",
+        "duration": "5 years",
+        "type": "integrated",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into this programme."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Engineer",
+        "description": "This role involves supporting the design and testing of satellite systems.",
+        "whatYouNeed": "Completed master's degree in Aerospace, Electronics, or Telecom Engineering."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Satellite Engineer",
+        "withExperience": "Senior Satellite Engineer",
+        "seniorPath": "Lead Satellite Systems Engineer"
+      },
+      "specialisationNote": null
+    },
     "saturation-diver": {
       "schoolSubjects": {
         "required": [
@@ -17117,6 +19888,44 @@
       },
       "specialisationNote": null
     },
+    "search-and-rescue-operator": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Biology",
+          "Health and Care",
+          "Geography"
+        ],
+        "recommended": [
+          "Mathematics",
+          "English",
+          "Norwegian"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military rescue training or Redningsselskapet training",
+        "duration": "Varies by program",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets høgskole",
+          "Redningsselskapet"
+        ],
+        "applicationRoute": "Direct application to training institutions",
+        "competitiveness": "Entry can be competitive due to physical and mental demands."
+      },
+      "entryLevelRequirements": {
+        "title": "Search and Rescue Trainee",
+        "description": "This role involves training under experienced operators in various rescue scenarios.",
+        "whatYouNeed": "Completion of relevant training program and first aid certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Search and Rescue Operator",
+        "withExperience": "Senior Search and Rescue Operator",
+        "seniorPath": "Rescue Team Leader"
+      },
+      "specialisationNote": null
+    },
     "secondary-teacher": {
       "schoolSubjects": {
         "required": [
@@ -17231,6 +20040,43 @@
         "immediate": "Junior Security Engineer",
         "withExperience": "Security Analyst or Penetration Tester",
         "seniorPath": "Lead Security Engineer or Security Architect"
+      },
+      "specialisationNote": null
+    },
+    "security-guard": {
+      "schoolSubjects": {
+        "required": [
+          "Norwegian",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Health",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Security Guard Certification",
+        "duration": "Approximately 150 hours",
+        "type": "vocational",
+        "examples": [
+          "Vekterskolen",
+          "Oslo Metropolitan University"
+        ],
+        "applicationRoute": "Direct application to training institutions",
+        "competitiveness": "Entry is generally accessible with no strict requirements."
+      },
+      "entryLevelRequirements": {
+        "title": "Security Guard",
+        "description": "This role involves monitoring premises and responding to security incidents.",
+        "whatYouNeed": "Completed security guard certification and a clean criminal record."
+      },
+      "qualifiesFor": {
+        "immediate": "Security Guard",
+        "withExperience": "Senior Security Officer",
+        "seniorPath": "Security Manager"
       },
       "specialisationNote": null
     },
@@ -17887,6 +20733,43 @@
       },
       "specialisationNote": null
     },
+    "sniper": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Mathematics",
+          "Geography"
+        ],
+        "recommended": [
+          "Physics",
+          "Psychology"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Training Programme",
+        "duration": "2 years",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høgskole",
+          "Svenska Försvarshögskolan",
+          "Danish Defence Academy"
+        ],
+        "applicationRoute": "Apply through the national military recruitment process",
+        "competitiveness": "Entry can be competitive due to limited positions and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Soldier",
+        "description": "Initial role involving basic military training and duties.",
+        "whatYouNeed": "Completed military service and selection for advanced training."
+      },
+      "qualifiesFor": {
+        "immediate": "Sniper",
+        "withExperience": "Team leader or advanced marksman",
+        "seniorPath": "Sniper instructor or tactical operations leader"
+      },
+      "specialisationNote": null
+    },
     "social-services-manager": {
       "schoolSubjects": {
         "required": [
@@ -18035,6 +20918,42 @@
       },
       "specialisationNote": null
     },
+    "soldier": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Social Studies",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Health",
+          "English"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Førstegangstjeneste (Initial Service)",
+        "duration": "12 months",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høgskole",
+          "Norwegian Army School"
+        ],
+        "applicationRoute": "Apply directly through the Norwegian Armed Forces recruitment portal.",
+        "competitiveness": "Entry can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Soldier",
+        "description": "Complete basic training and serve in a military unit.",
+        "whatYouNeed": "Successful completion of Førstegangstjeneste."
+      },
+      "qualifiesFor": {
+        "immediate": "Soldier",
+        "withExperience": "Team leader or specialist roles within the army.",
+        "seniorPath": "Officer or senior non-commissioned officer."
+      },
+      "specialisationNote": null
+    },
     "solutions-architect": {
       "schoolSubjects": {
         "required": [
@@ -18072,6 +20991,44 @@
       },
       "specialisationNote": null
     },
+    "sommelier": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Mathematics"
+        ],
+        "recommended": [
+          "Business Studies",
+          "English",
+          "Hospitality"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "WSET Diploma in Wines",
+        "duration": "1-2 years",
+        "type": "diploma",
+        "examples": [
+          "Norwegian School of Hotel Management",
+          "Copenhagen Business School",
+          "Helsinki Business School"
+        ],
+        "applicationRoute": "Direct application to the institution.",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sommelier",
+        "description": "Assisting the head sommelier in wine selection and service.",
+        "whatYouNeed": "WSET Level 1 certification and some restaurant experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Sommelier",
+        "withExperience": "Head Sommelier",
+        "seniorPath": "Wine Director"
+      },
+      "specialisationNote": null
+    },
     "sonographer": {
       "schoolSubjects": {
         "required": [
@@ -18105,6 +21062,44 @@
         "immediate": "Junior Sonographer",
         "withExperience": "Senior Sonographer",
         "seniorPath": "Lead Sonographer or Ultrasound Manager"
+      },
+      "specialisationNote": null
+    },
+    "sound-editor": {
+      "schoolSubjects": {
+        "required": [
+          "Music",
+          "Media Studies",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Art",
+          "Drama"
+        ],
+        "minimumGrade": "Good grades in relevant subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Sound and Audio Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian School of Creative Studies",
+          "University of Bergen",
+          "Oslo Metropolitan University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Entry can be competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sound Editor",
+        "description": "Assist in editing sound for various media projects.",
+        "whatYouNeed": "Completed degree in Sound and Audio Engineering or relevant vocational training."
+      },
+      "qualifiesFor": {
+        "immediate": "Sound Editor",
+        "withExperience": "Senior Sound Editor",
+        "seniorPath": "Sound Design Supervisor"
       },
       "specialisationNote": null
     },
@@ -18180,6 +21175,242 @@
         "immediate": "Sound Technician at events",
         "withExperience": "Senior Sound Technician or Audio Engineer",
         "seniorPath": "Head of Audio Production or Sound Designer"
+      },
+      "specialisationNote": null
+    },
+    "space-mission-planner": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Geography"
+        ],
+        "minimumGrade": "Top grades in mathematics and physics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master in Aerospace Engineering",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into these programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Space Mission Planner",
+        "description": "Assist in planning and executing space missions under supervision.",
+        "whatYouNeed": "Completed master's degree in aerospace engineering or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Space Mission Planner",
+        "withExperience": "Senior Space Mission Planner",
+        "seniorPath": "Mission Operations Manager"
+      },
+      "specialisationNote": null
+    },
+    "space-robotics-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Chemistry",
+          "Design",
+          "Electronics"
+        ],
+        "minimumGrade": "Top grades in science and mathematics subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master's in Robotics or Mechatronics",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into these programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Space Robotics Engineer",
+        "description": "This role involves assisting in the design and testing of robotic systems for space applications.",
+        "whatYouNeed": "Completed master's degree in Robotics or a related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Space Robotics Engineer",
+        "withExperience": "Senior Robotics Engineer",
+        "seniorPath": "Lead Robotics Engineer or Project Manager"
+      },
+      "specialisationNote": null
+    },
+    "space-systems-engineer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Technology",
+          "Design",
+          "Advanced Mathematics"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Master's in Aerospace Engineering",
+        "duration": "5 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into these programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Graduate Space Systems Engineer",
+        "description": "This role involves assisting in the design and integration of spacecraft systems.",
+        "whatYouNeed": "Completed Master's degree in Aerospace Engineering or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Space Systems Engineer",
+        "withExperience": "Senior Space Systems Engineer",
+        "seniorPath": "Lead Space Systems Engineer"
+      },
+      "specialisationNote": null
+    },
+    "spacecraft-pilot": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Computer Science"
+        ],
+        "recommended": [
+          "Engineering",
+          "Chemistry"
+        ],
+        "minimumGrade": "Top grades in science and mathematics subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Master's in Aerospace Engineering",
+        "duration": "2 years",
+        "type": "master",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH Royal Institute of Technology",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Admission is very competitive due to limited spots and high demand."
+      },
+      "entryLevelRequirements": {
+        "title": "Test Pilot or Military Pilot",
+        "description": "This step involves gaining flight experience and skills in piloting advanced aircraft.",
+        "whatYouNeed": "Completed relevant pilot training and a Master's degree in a STEM field."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Spacecraft Pilot",
+        "withExperience": "Senior Spacecraft Pilot",
+        "seniorPath": "Chief Pilot or Spacecraft Operations Manager"
+      },
+      "specialisationNote": null
+    },
+    "spacewalk-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Chemistry",
+          "English"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Biology"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Aerospace Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "NTNU",
+          "UiO",
+          "KTH",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It is quite competitive to get into aerospace engineering programs."
+      },
+      "entryLevelRequirements": {
+        "title": "Astronaut Candidate",
+        "description": "Candidates undergo rigorous training and evaluation before becoming astronauts.",
+        "whatYouNeed": "Bachelor's degree in engineering, science, or mathematics plus relevant experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Astronaut",
+        "withExperience": "Mission Specialist",
+        "seniorPath": "Lead Astronaut"
+      },
+      "specialisationNote": null
+    },
+    "special-forces-operator": {
+      "schoolSubjects": {
+        "required": [
+          "Physical Education",
+          "Mathematics",
+          "English",
+          "Social Studies"
+        ],
+        "recommended": [
+          "Biology",
+          "History",
+          "Norwegian"
+        ],
+        "minimumGrade": "Good grades in core subjects, typically 4-6 in the Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Military Training Programme",
+        "duration": "Varies based on selection and training",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høgskole",
+          "Norwegian Armed Forces"
+        ],
+        "applicationRoute": "Direct application to the Norwegian Armed Forces",
+        "competitiveness": "Very competitive with a rigorous selection process."
+      },
+      "entryLevelRequirements": {
+        "title": "Special Forces Candidate",
+        "description": "Initial phase of training for aspiring Special Forces Operators.",
+        "whatYouNeed": "Strong physical fitness and successful completion of the selection process."
+      },
+      "qualifiesFor": {
+        "immediate": "Special Forces Operator",
+        "withExperience": "Team Leader in Special Operations",
+        "seniorPath": "Special Operations Commander"
       },
       "specialisationNote": null
     },
@@ -18839,6 +22070,43 @@
       },
       "specialisationNote": "This career is a specialisation of doctor, requiring additional training in orthopaedic surgery and a fellowship in sports medicine."
     },
+    "sports-nutritionist": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Chemistry",
+          "Physical Education"
+        ],
+        "recommended": [
+          "Mathematics",
+          "Health Science"
+        ],
+        "minimumGrade": "Top grades in science subjects, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Nutrition",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "Uppsala University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive due to limited spots and high interest."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Sports Nutritionist",
+        "description": "Assist clients in developing tailored nutrition plans and strategies.",
+        "whatYouNeed": "Completed nutrition degree and relevant certification."
+      },
+      "qualifiesFor": {
+        "immediate": "Sports Nutritionist",
+        "withExperience": "Senior Sports Nutritionist",
+        "seniorPath": "Head of Nutrition Services"
+      },
+      "specialisationNote": null
+    },
     "sports-photographer": {
       "schoolSubjects": {
         "required": [
@@ -19140,6 +22408,44 @@
       },
       "specialisationNote": null
     },
+    "stockbroker": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Statistics",
+          "English",
+          "Social Studies"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive to get into top business schools."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Stockbroker",
+        "description": "Assist in buying and selling stocks while learning from experienced brokers.",
+        "whatYouNeed": "Completed finance degree and Finansforetaket licensing."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Stockbroker",
+        "withExperience": "Senior Stockbroker",
+        "seniorPath": "Portfolio Manager"
+      },
+      "specialisationNote": null
+    },
     "strategic-account-executive": {
       "schoolSubjects": {
         "required": [
@@ -19332,6 +22638,79 @@
         "immediate": "Junior Producer",
         "withExperience": "Senior Producer or Project Manager",
         "seniorPath": "Studio Director"
+      },
+      "specialisationNote": null
+    },
+    "studio-photographer": {
+      "schoolSubjects": {
+        "required": [
+          "Art",
+          "Photography",
+          "Media Studies"
+        ],
+        "recommended": [
+          "Design",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in relevant subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Photography",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Bergen, Stockholm University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on portfolio quality."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Studio Photographer",
+        "description": "Assisting in studio shoots and learning from senior photographers.",
+        "whatYouNeed": "Completed photography degree or vocational training plus a strong portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Studio Assistant Photographer",
+        "withExperience": "Senior Studio Photographer",
+        "seniorPath": "Creative Director or Photography Studio Manager"
+      },
+      "specialisationNote": null
+    },
+    "submarine-officer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "English",
+          "Norwegian"
+        ],
+        "recommended": [
+          "Computer Science",
+          "Geography"
+        ],
+        "minimumGrade": "Top grades in science and mathematics subjects, typically 5-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Naval Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Sjøkrigsskolen (Norwegian Naval Academy)",
+          "KTH Royal Institute of Technology",
+          "Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be quite competitive due to limited spots."
+      },
+      "entryLevelRequirements": {
+        "title": "Submarine Officer Trainee",
+        "description": "This step involves training and learning to operate submarine systems.",
+        "whatYouNeed": "Completed naval science degree and passed the submarine qualification course."
+      },
+      "qualifiesFor": {
+        "immediate": "Submarine Officer",
+        "withExperience": "Senior Submarine Officer",
+        "seniorPath": "Submarine Commanding Officer"
       },
       "specialisationNote": null
     },
@@ -19945,6 +23324,44 @@
         "immediate": "Talent Scout",
         "withExperience": "Senior Talent Scout or Scout Manager",
         "seniorPath": "Director of Scouting"
+      },
+      "specialisationNote": null
+    },
+    "tank-commander": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Norwegian",
+          "English"
+        ],
+        "recommended": [
+          "Physical Education",
+          "History"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Officer Training",
+        "duration": "2 years",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets høgskole",
+          "Svenska Försvarshögskolan",
+          "Danish Defence Academy"
+        ],
+        "applicationRoute": "Direct application to military academies",
+        "competitiveness": "Entry can be competitive due to limited spots and high standards."
+      },
+      "entryLevelRequirements": {
+        "title": "Tank Commander Trainee",
+        "description": "This role involves training to lead a tank crew and operate armoured vehicles.",
+        "whatYouNeed": "Completed military service and basic officer training"
+      },
+      "qualifiesFor": {
+        "immediate": "Tank Commander",
+        "withExperience": "Armoured Unit Leader",
+        "seniorPath": "Battalion Commander"
       },
       "specialisationNote": null
     },
@@ -23118,6 +26535,79 @@
       },
       "specialisationNote": null
     },
+    "tour-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Business Studies",
+          "English",
+          "Geography"
+        ],
+        "recommended": [
+          "Music",
+          "Communication",
+          "Event Management"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Event Management",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, Høyskolen Kristiania, Uppsala University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a decent number of spots available."
+      },
+      "entryLevelRequirements": {
+        "title": "Assistant Tour Manager",
+        "description": "Support the tour manager in logistics and coordination tasks.",
+        "whatYouNeed": "Experience in event planning or logistics, ideally with a focus on live events."
+      },
+      "qualifiesFor": {
+        "immediate": "Tour Coordinator",
+        "withExperience": "Senior Tour Manager",
+        "seniorPath": "Tour Director"
+      },
+      "specialisationNote": null
+    },
+    "trader": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "Statistics",
+          "Computer Science"
+        ],
+        "minimumGrade": "Top grades in mathematics and economics, typically 5-6 in Norwegian scale"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Stockholm School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive to get into top finance programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Trader",
+        "description": "Assist in trading activities and market analysis under supervision.",
+        "whatYouNeed": "Completed finance degree + relevant internship experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Trader",
+        "withExperience": "Senior Trader",
+        "seniorPath": "Head of Trading"
+      },
+      "specialisationNote": null
+    },
     "transformation-consultant": {
       "schoolSubjects": {
         "required": [
@@ -23425,6 +26915,43 @@
         "immediate": "Tunnelling Technician",
         "withExperience": "Senior Tunnelling Technician",
         "seniorPath": "Tunnelling Project Manager"
+      },
+      "specialisationNote": null
+    },
+    "tutor": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "English",
+          "Norwegian"
+        ],
+        "recommended": [
+          "Science",
+          "Social Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Education",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "UIB"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Tutor",
+        "description": "Assist students in understanding specific subjects through one-on-one sessions.",
+        "whatYouNeed": "Subject expertise, often as a university student or graduate."
+      },
+      "qualifiesFor": {
+        "immediate": "Private tutor",
+        "withExperience": "Educational consultant",
+        "seniorPath": "Director of tutoring services"
       },
       "specialisationNote": null
     },
@@ -23882,6 +27409,44 @@
       },
       "specialisationNote": null
     },
+    "video-content-producer": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "English",
+          "Art",
+          "Information Technology"
+        ],
+        "recommended": [
+          "Photography",
+          "Graphic Design"
+        ],
+        "minimumGrade": "Good grades in creative subjects, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Media Production",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Oslo Metropolitan University",
+          "University of Bergen",
+          "University of Gothenburg"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive with a focus on creative portfolios."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Video Producer",
+        "description": "Assist in producing video content under supervision.",
+        "whatYouNeed": "Completed bachelor's degree in media or a strong portfolio."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Video Producer",
+        "withExperience": "Senior Video Producer",
+        "seniorPath": "Creative Director"
+      },
+      "specialisationNote": null
+    },
     "video-editor": {
       "schoolSubjects": {
         "required": [
@@ -23918,6 +27483,43 @@
         "immediate": "Video Editor",
         "withExperience": "Senior Video Editor",
         "seniorPath": "Lead Editor or Post-Production Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "videographer": {
+      "schoolSubjects": {
+        "required": [
+          "Media and Communication",
+          "Art",
+          "Photography"
+        ],
+        "recommended": [
+          "English",
+          "Business Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Film and Media",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "Norwegian Film School",
+          "University of Bergen",
+          "Stockholm University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "It can be competitive, especially for popular programmes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Videographer",
+        "description": "Assist in video shoots and basic editing tasks.",
+        "whatYouNeed": "Portfolio showcasing previous work and basic knowledge of videography."
+      },
+      "qualifiesFor": {
+        "immediate": "Videographer for events or corporate clients",
+        "withExperience": "Senior Videographer or Video Editor",
+        "seniorPath": "Creative Director or Head of Production"
       },
       "specialisationNote": null
     },
@@ -24226,6 +27828,118 @@
       },
       "specialisationNote": null
     },
+    "wealth-manager": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Economics",
+          "Business Studies"
+        ],
+        "recommended": [
+          "English",
+          "Statistics"
+        ],
+        "minimumGrade": "Good grades in mathematics and economics, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Finance",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "BI Norwegian Business School",
+          "University of Oslo",
+          "Norwegian School of Economics"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "Moderately competitive, with a good number of applicants each year."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Wealth Advisor",
+        "description": "Assist senior wealth managers in client management and investment strategies.",
+        "whatYouNeed": "Completed bachelor's degree in finance or related field."
+      },
+      "qualifiesFor": {
+        "immediate": "Wealth Advisor",
+        "withExperience": "Senior Wealth Manager",
+        "seniorPath": "Director of Wealth Management"
+      },
+      "specialisationNote": null
+    },
+    "weapons-specialist": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Physics",
+          "Technology",
+          "English"
+        ],
+        "recommended": [
+          "Physical Education",
+          "Computer Science"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Military Service and Weapons Specialist Course",
+        "duration": "Varies",
+        "type": "vocational",
+        "examples": [
+          "Forsvarets Høyskole",
+          "Norwegian Defence University College"
+        ],
+        "applicationRoute": "Direct application to military service",
+        "competitiveness": "Entry can be competitive due to limited positions in military training."
+      },
+      "entryLevelRequirements": {
+        "title": "Weapons Specialist Trainee",
+        "description": "This role involves learning to maintain and repair military weapons under supervision.",
+        "whatYouNeed": "Completed military service and weapons specialist training course."
+      },
+      "qualifiesFor": {
+        "immediate": "Weapons Specialist",
+        "withExperience": "Senior Weapons Technician",
+        "seniorPath": "Chief Armaments Officer"
+      },
+      "specialisationNote": null
+    },
+    "web-developer": {
+      "schoolSubjects": {
+        "required": [
+          "Mathematics",
+          "Computer Science",
+          "English"
+        ],
+        "recommended": [
+          "Design",
+          "Media",
+          "Physics"
+        ],
+        "minimumGrade": "Good grades in mathematics and computer science, typically 4-6 in Norwegian scale."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "UiO",
+          "NTNU",
+          "HIOA"
+        ],
+        "applicationRoute": "Samordna opptak (Norway)",
+        "competitiveness": "It can be competitive due to high interest in tech fields."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Web Developer",
+        "description": "This role involves assisting in building and maintaining websites.",
+        "whatYouNeed": "Completed degree in Computer Science or a strong portfolio if self-taught."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Web Developer",
+        "withExperience": "Web Developer",
+        "seniorPath": "Lead Web Developer"
+      },
+      "specialisationNote": null
+    },
     "welder": {
       "schoolSubjects": {
         "required": [
@@ -24335,6 +28049,42 @@
         "immediate": "Well Intervention Technician",
         "withExperience": "Senior Well Intervention Technician",
         "seniorPath": "Well Intervention Supervisor"
+      },
+      "specialisationNote": null
+    },
+    "wildlife-photographer": {
+      "schoolSubjects": {
+        "required": [
+          "Biology",
+          "Photography",
+          "Art",
+          "Environmental Science"
+        ],
+        "recommended": [
+          "Geography",
+          "Media Studies"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Bachelor in Photography or related field",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": [
+          "OsloMet, University of Gothenburg, Aalto University"
+        ],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Wildlife Photographer",
+        "description": "Assist experienced photographers and build a portfolio.",
+        "whatYouNeed": "Basic photography skills and a portfolio of work."
+      },
+      "qualifiesFor": {
+        "immediate": "Wildlife Photographer Assistant",
+        "withExperience": "Freelance Wildlife Photographer",
+        "seniorPath": "Lead Wildlife Photographer or Photojournalist"
       },
       "specialisationNote": null
     },
@@ -24522,6 +28272,44 @@
         "immediate": "Youth Support Worker",
         "withExperience": "Youth Project Coordinator",
         "seniorPath": "Youth Services Manager"
+      },
+      "specialisationNote": null
+    },
+    "youtube-video-editor": {
+      "schoolSubjects": {
+        "required": [
+          "Media Studies",
+          "Art",
+          "Computer Science"
+        ],
+        "recommended": [
+          "English",
+          "Design",
+          "Photography"
+        ],
+        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+      },
+      "universityPath": {
+        "programme": "Vocational course in Video Editing",
+        "duration": "1-2 years",
+        "type": "vocational",
+        "examples": [
+          "Norwegian Film School",
+          "Stockholm Academy of Dramatic Arts",
+          "Aalto University"
+        ],
+        "applicationRoute": "Direct application to the institution",
+        "competitiveness": "Moderately competitive, depending on the institution."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Video Editor",
+        "description": "Assist in editing videos under the supervision of senior editors.",
+        "whatYouNeed": "Portfolio showcasing editing skills and completed vocational course."
+      },
+      "qualifiesFor": {
+        "immediate": "YouTube Video Editor",
+        "withExperience": "Senior Video Editor or Content Producer",
+        "seniorPath": "Lead Video Editor or Creative Director"
       },
       "specialisationNote": null
     }

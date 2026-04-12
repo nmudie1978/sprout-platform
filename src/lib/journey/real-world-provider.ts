@@ -17,6 +17,7 @@
 import { classifyStepType } from '@/lib/education/alignment';
 import type { JourneyItem } from '@/lib/journey/career-journey-types';
 import type { RoadmapStepType } from '@/lib/education/types';
+import { getPathTypeForCareer } from '@/lib/career-pathways';
 
 // ── Data model ───────────────────────────────────────────────────────
 
@@ -239,6 +240,61 @@ function buildConnections(stepType: RoadmapStepType, career: string): RealWorldI
 // ── Default mock provider ────────────────────────────────────────────
 
 /**
+ * In-role development steps — the user is ALREADY in the job and is
+ * growing/refining/specialising within it. These steps must NOT
+ * surface job-board links (user is employed) OR study-path links
+ * (user is done with school). Instead they get courses +
+ * certifications, which is what professional development in an
+ * existing role actually looks like.
+ *
+ * Runs BEFORE every other override so career-stage "Gain experience"
+ * steps don't fall through to `buildConnections('milestone')` →
+ * `jobsFor + coursesFor` (which would show LinkedIn / Finn.no job
+ * listings to someone who already has the job).
+ */
+function inRoleDevelopmentOverride(
+  step: JourneyItem,
+  career: string,
+): RealWorldItem[] | null {
+  const text = `${step.title} ${step.subtitle || ''} ${step.description || ''}`.toLowerCase();
+  // Signals that the user is growing WITHIN their current role, not
+  // looking for a new one. Intentionally narrow — false positives
+  // here would pull job-application steps into courses-only mode.
+  //
+  //  - "gain experience" (professional experience, real experience…)
+  //  - "grow in your role" / "grow in the role"
+  //  - "refine your skills" / "refine X skills"
+  //  - "continue to grow"
+  //  - "take on (more) responsibilit(y|ies)"
+  //  - "develop in your role" / "develop your X"
+  //  - "experiment with" — creative-role development signal
+  //  - "on-the-job" — explicit learning-while-working signal
+  //  - "professional development" / "upskill" / "upskilling"
+  const inRoleSignal =
+    /\bgain(\s+professional)?\s+experience\b|\bgrow\s+in\s+(your|the)\s+role\b|\brefine\s+your\s+\w+\s+skills\b|\bcontinue\s+to\s+grow\b|\btake\s+on\s+(more|additional)\s+responsibilit/.test(
+      text,
+    ) ||
+    /\bdevelop\s+in\s+(your|the)\s+role\b|\bon[-\s]the[-\s]job\b|\bprofessional\s+development\b|\bupskill(ing)?\b|\bexperiment\s+with\s+new\b/.test(
+      text,
+    );
+  // Also catch explicit career-stage signals where the user is
+  // established — but require the step to NOT be about applying to
+  // anything (applying = job search = should still hit the job
+  // boards via applyJobOverride).
+  const isApplying = /\bapply\b|\bapplication\b|\bentry[-\s]level\b|\bfirst\s+job\b|\bgraduate\s+role\b|\bstep\s+up\s+to\s+a\s+senior\b/.test(
+    text,
+  );
+  if (!inRoleSignal || isApplying) return null;
+  // Return a curated mix of real professional-development resources:
+  // two courses, two certifications. Four items, no jobs, no study
+  // paths.
+  return [
+    ...coursesFor(career).slice(0, 2),
+    ...certificationsFor(career).slice(0, 2),
+  ];
+}
+
+/**
  * Education-focused steps — any step that mentions a school, college,
  * university, studies, programme, degree, apprenticeship, fagbrev etc.
  * — must surface *only* study-path links. A user looking at "Apply for
@@ -257,13 +313,17 @@ function studyPathOnlyOverride(
   career: string,
 ): RealWorldItem[] | null {
   const text = `${step.title} ${step.description || ''}`.toLowerCase();
-  // Broad keyword set covering academic and vocational education.
-  // The "study"/"studies" match is intentionally loose — any step
-  // talking about studying should route here. Job-board noise ("job
-  // shadowing at a school", etc.) is a theoretical false positive we
-  // accept because the alternative (showing LinkedIn on an education
-  // step) is the worse failure mode.
-  const isEducational = /school|college|universit|bachelor|master|degree|programme|program\b|studies|study|coursework|curriculum|academy|institute|enrol|enroll|admission|apprenticeship|fagbrev|vocational|culinary|trade\s+school/.test(
+  // Education keywords — generic terms that unambiguously mark a step
+  // as being about schooling. Intentionally does NOT include
+  // career-specific adjectives like "culinary", "medical", "legal",
+  // "engineering" etc. — those are career names, not education
+  // signals, and matching them would mis-route in-role development
+  // steps ("Refine your culinary skills", "Take on medical cases")
+  // to study paths.
+  //
+  // Multi-word school/programme patterns like "culinary school" or
+  // "trade school" still match via the "\bschool\b" keyword.
+  const isEducational = /\bschool\b|\bcollege\b|universit|bachelor|master|\bdegree\b|programme\b|program\b|studies\b|\bstudy\b|coursework|curriculum|\bacademy\b|\binstitute\b|enrol|enroll|admission|apprenticeship|fagbrev|vocational\b|\beducation\b|videreg[aå]ende|gymnasium/.test(
     text,
   );
   if (!isEducational) return null;
@@ -334,9 +394,84 @@ function applyJobOverride(
     : [...jobsFor(career), ...internshipsFor(career)].slice(0, 4);
 }
 
+// ── Specialist career links ─────────────────────────────────────────
+// Careers with dedicated application paths (ESA, Forsvaret, Politihøgskolen, etc.)
+// where generic LinkedIn / utdanning.no / Coursera links are misleading.
+
+function spaceCareerLinks(career: string): RealWorldItem[] {
+  return [
+    { kind: 'job', title: 'ESA Careers', descriptor: 'Current vacancies at the European Space Agency', url: 'https://jobs.esa.int/', cta: 'Browse' },
+    { kind: 'job', title: 'NASA Career Opportunities', descriptor: 'Job openings across NASA centres', url: 'https://www.nasa.gov/careers/', cta: 'Browse' },
+    { kind: 'university', title: `${career} programmes on utdanning.no`, descriptor: 'Norwegian university programmes in aerospace and space science', url: `https://utdanning.no/sok?q=${enc(career)}`, cta: 'Browse' },
+    { kind: 'platform', title: 'Norsk Romsenter', descriptor: 'Norwegian Space Agency — programmes, grants, and partnerships', url: 'https://www.romsenter.no/', cta: 'View' },
+  ];
+}
+
+function militaryCareerLinks(): RealWorldItem[] {
+  return [
+    { kind: 'job', title: 'Forsvaret — Karriere', descriptor: 'Norwegian Armed Forces careers and application portal', url: 'https://www.forsvaret.no/karriere', cta: 'Apply' },
+    { kind: 'university', title: 'Krigsskolen', descriptor: 'Norwegian Military Academy — officer training', url: 'https://www.forsvaret.no/utdanning/krigsskolen', cta: 'View' },
+    { kind: 'university', title: 'Sjøkrigsskolen', descriptor: 'Royal Norwegian Naval Academy', url: 'https://www.forsvaret.no/utdanning/sjokrigsskolen', cta: 'View' },
+    { kind: 'university', title: 'Luftkrigsskolen', descriptor: 'Royal Norwegian Air Force Academy', url: 'https://www.forsvaret.no/utdanning/luftkrigsskolen', cta: 'View' },
+  ];
+}
+
+function policeCareerLinks(): RealWorldItem[] {
+  return [
+    { kind: 'university', title: 'Politihøgskolen — Opptak', descriptor: 'Police University College — application and entry requirements', url: 'https://www.politihogskolen.no/opptak/', cta: 'Apply' },
+    { kind: 'university', title: 'Politihøgskolen — Bachelor', descriptor: 'Three-year bachelor in police studies', url: 'https://www.politihogskolen.no/studietilbud/bachelor/', cta: 'View' },
+    { kind: 'job', title: 'Politiet.no — Karriere', descriptor: 'Norwegian Police careers and vacancies', url: 'https://www.politiet.no/jobb-i-politiet/', cta: 'Browse' },
+  ];
+}
+
+function firefighterCareerLinks(): RealWorldItem[] {
+  return [
+    { kind: 'university', title: 'Norges brannskole', descriptor: 'Norwegian Fire Academy — the required training programme', url: 'https://www.nbsk.no/', cta: 'View' },
+    { kind: 'job', title: 'DSB — Brann og redning', descriptor: 'Directorate for Civil Protection — fire service info', url: 'https://www.dsb.no/lover/brannvern-brannvesen/', cta: 'View' },
+    { kind: 'job', title: 'Fire service vacancies on Finn.no', descriptor: 'Current openings at Norwegian fire departments', url: 'https://www.finn.no/job/fulltime/search.html?q=brannkonstabel', cta: 'Browse' },
+  ];
+}
+
+function eliteSportCareerLinks(career: string): RealWorldItem[] {
+  return [
+    { kind: 'platform', title: 'Olympiatoppen', descriptor: 'Norwegian Olympic and Paralympic Committee — elite sport programmes', url: 'https://www.olympiatoppen.no/', cta: 'View' },
+    { kind: 'platform', title: 'Norges idrettsforbund', descriptor: 'Norwegian Sports Federation — talent development', url: 'https://www.idrettsforbundet.no/', cta: 'View' },
+    { kind: 'university', title: `${career} on NTG`, descriptor: 'Norwegian Top Sport Gymnasium — sports-focused secondary education', url: 'https://www.ntg.no/', cta: 'View' },
+  ];
+}
+
+/**
+ * Override for specialist careers (space, military, police, firefighter,
+ * elite sport). Returns dedicated links instead of generic
+ * LinkedIn/utdanning.no/Coursera results.
+ */
+function specialistPathOverride(career: string): RealWorldItem[] | null {
+  const pathType = getPathTypeForCareer(career);
+  if (!pathType) return null;
+  switch (pathType) {
+    case 'space': return spaceCareerLinks(career);
+    case 'military': return militaryCareerLinks();
+    case 'police': return policeCareerLinks();
+    case 'firefighter': return firefighterCareerLinks();
+    case 'elite-sport': return eliteSportCareerLinks(career);
+  }
+}
+
 export const mockRealWorldProvider: RealWorldProvider = {
   getConnections({ step, career }) {
     const cleaned = cleanCareer(career, step.title);
+    // In-role development first — user is already in the job. Must
+    // run BEFORE studyPathOnlyOverride so steps like "Refine your
+    // culinary skills" / "Gain professional experience" don't get
+    // mis-routed to study-path links via partial keyword matches.
+    // Must also run before stepType classification so
+    // career-stage milestones don't fall through to jobsFor + coursesFor.
+    const inRoleOverride = inRoleDevelopmentOverride(step, cleaned);
+    if (inRoleOverride) return inRoleOverride.slice(0, 5);
+    // Specialist careers (space, military, police, etc.) with dedicated
+    // application paths — override before generic education/job links.
+    const specOverride = specialistPathOverride(cleaned);
+    if (specOverride) return specOverride.slice(0, 5);
     // Education-first: any step mentioning school/college/university/
     // studies/etc. gets ONLY study-path links. Runs before every other
     // override so milestone-flagged education steps and "Apply for

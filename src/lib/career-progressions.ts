@@ -1,3 +1,12 @@
+import generatedProgressions from './career-progressions.generated.json';
+
+// Type for the AI-generated entries (matches the script output shape)
+interface GeneratedEntry {
+  levels: Array<{ level: 'entry' | 'mid' | 'senior' | 'lead'; title: string; yearsExperience: string; salaryRange: string }>;
+  paths: { entry: string[]; core: string[]; next: string[] };
+}
+const generated = generatedProgressions as Record<string, GeneratedEntry>;
+
 export interface CareerLevel {
   level: "entry" | "mid" | "senior" | "lead";
   title: string;
@@ -188,7 +197,14 @@ export const careerProgressions: CareerProgression[] = [
 ];
 
 export function getCareerProgression(careerId: string): CareerProgression | undefined {
-  return careerProgressions.find((p) => p.careerId === careerId);
+  // 1. Curated entries
+  const curated = careerProgressions.find((p) => p.careerId === careerId);
+  if (curated) return curated;
+  // 2. AI-generated entries
+  const normalizedId = careerId.toLowerCase().replace(/\s+/g, '-');
+  const gen = generated[careerId] ?? generated[normalizedId];
+  if (gen?.levels) return { careerId, levels: gen.levels };
+  return undefined;
 }
 
 // ========================================
@@ -559,16 +575,17 @@ const careerPathProgressionMap: Record<string, CareerPathProgression> = {
  * Get simplified career path progression (entry -> core -> next roles)
  */
 export function getCareerPathProgression(careerId: string): CareerPathProgression | undefined {
-  // Try exact match first
+  // 1. Curated entries — exact match
   if (careerPathProgressionMap[careerId]) {
     return careerPathProgressionMap[careerId];
   }
-
-  // Try normalized ID (lowercase, hyphenated)
+  // 2. Curated — normalized ID
   const normalizedId = careerId.toLowerCase().replace(/\s+/g, "-");
   if (careerPathProgressionMap[normalizedId]) {
     return careerPathProgressionMap[normalizedId];
   }
-
+  // 3. AI-generated entries
+  const gen = generated[careerId] ?? generated[normalizedId];
+  if (gen?.paths) return gen.paths;
   return undefined;
 }

@@ -17,6 +17,7 @@
  */
 
 import type { Journey, JourneyItem, JourneyStage, SchoolTrackItem } from './career-journey-types';
+import { HIGHER_EDUCATION_MIN_AGE, HIGHER_EDUCATION_RE } from './roadmap-rules';
 
 export type EducationStage = 'school' | 'college' | 'university' | 'other';
 
@@ -489,10 +490,24 @@ export function generateFallbackTimeline(
   // Without this, a 16-year-old who says "I finish in 2030" would still
   // see "Begin university studies" at age 19 (the hard-coded default),
   // even though they don't actually finish until age 20.
+  //
+  // Higher-education floor (rule: no-university-before-18):
+  // Norwegian universities require completed videregående and only admit
+  // students from age 18. If the first remaining step represents starting
+  // higher education AND the user would otherwise begin it before 18,
+  // bump the desired start age up to 18 — modelling a brief wait until
+  // they're old enough to enrol. Apprenticeships and fagbrev are not
+  // affected (they can legitimately start at 17).
   if (ageAtFinish !== null && items.length > 0) {
-    // Same year as completion: if school ends in 2027 (age 17), the
-    // next step (e.g. start uni in autumn 2027) also starts at 17.
-    const desiredStartAge = ageAtFinish;
+    // Same year as completion: if school ends in 2027 (age 18), the
+    // next step (e.g. start uni in autumn 2027) also starts at 18.
+    let desiredStartAge = ageAtFinish;
+    if (
+      HIGHER_EDUCATION_RE.test(items[0].title) &&
+      desiredStartAge < HIGHER_EDUCATION_MIN_AGE
+    ) {
+      desiredStartAge = HIGHER_EDUCATION_MIN_AGE;
+    }
     const currentStartAge = items[0].startAge;
     const shift = desiredStartAge - currentStartAge;
     if (shift !== 0) {
