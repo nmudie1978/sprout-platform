@@ -488,6 +488,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           size="sm"
           onClick={onEditPreferences}
           className="bg-teal-600 hover:bg-teal-700"
+          data-spotlight="radar-cta"
         >
           <Sparkles className="h-3.5 w-3.5 mr-1.5" />
           Start Discovery
@@ -695,6 +696,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             variant="ghost"
             className="h-7 text-[11px]"
             onClick={onEditPreferences}
+            data-spotlight="radar-cta"
           >
             <Settings2 className="h-3 w-3 mr-1" />
             What I like

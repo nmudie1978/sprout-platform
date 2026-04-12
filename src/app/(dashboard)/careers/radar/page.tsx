@@ -16,20 +16,13 @@ import type { Career, DiscoveryPreferences } from "@/lib/career-pathways";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 
+
 function CareerRadarPageContent() {
   const { data: session } = useSession();
   const [showDiscoveryQuiz, setShowDiscoveryQuiz] = useState(false);
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
 
   const isYouth = session?.user?.role === "YOUTH";
-
-  // Subtle hint — "Tap a career" on first radar visit
-  const radarHint = useSubtleHint({
-    hintKey: "radar-tap",
-    enabled: isYouth,
-    delayMs: 3000,
-    durationMs: 3500,
-  });
 
   const { data: profileData, isLoading: profileLoading } = useQuery({
     queryKey: ["my-profile"],
@@ -44,6 +37,14 @@ function CareerRadarPageContent() {
 
   const discoveryPreferences: DiscoveryPreferences | null =
     (profileData?.discoveryPreferences as DiscoveryPreferences) || null;
+
+  // Spotlight — guides new users to "What I like" / "Start Discovery"
+  const radarHint = useSubtleHint({
+    hintKey: "radar-spotlight",
+    enabled: isYouth && !profileLoading,
+    delayMs: 2000,
+    durationMs: 4000,
+  });
 
   // Listen for radar dot clicks → open the existing career detail sheet
   useEffect(() => {
@@ -73,9 +74,6 @@ function CareerRadarPageContent() {
 
       {isYouth ? (
         <div className="mt-4 max-w-3xl mx-auto relative">
-          <div className="flex justify-center mb-2">
-            <SpotlightHint visible={radarHint.visible} text="Tap a career to explore it" placement="bottom" />
-          </div>
           {profileLoading ? (
             <div className="rounded-2xl border border-border/30 bg-card/40 p-8 text-center text-sm text-muted-foreground/60 animate-pulse">
               Loading your radar…
@@ -104,6 +102,14 @@ function CareerRadarPageContent() {
       <CareerDetailSheet
         career={selectedCareer}
         onClose={() => setSelectedCareer(null)}
+      />
+
+      {/* Spotlight — highlights the "What I like" / "Start Discovery" CTA */}
+      <SpotlightHint
+        visible={radarHint.visible}
+        onDismiss={radarHint.dismiss}
+        text="Tell us what you like to see your matches"
+        targetSelector='[data-spotlight="radar-cta"]'
       />
     </div>
   );
