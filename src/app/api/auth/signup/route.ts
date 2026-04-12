@@ -20,7 +20,7 @@ import { sendGuardianConsentEmail } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
-    const { firstName, lastName, email, password, role, ageBracket, dateOfBirth, guardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, surname, email, password, role, ageBracket, dateOfBirth, guardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Validate legal acceptance
     if (!acceptedTerms || !acceptedPrivacy) {
@@ -40,14 +40,14 @@ export async function POST(req: NextRequest) {
 
     // Validate name
     const trimmedFirst = (firstName || "").trim();
-    const trimmedLast = (lastName || "").trim();
-    if (!trimmedFirst || !trimmedLast) {
+    const trimmedSurname = (surname || lastName || "").trim();
+    if (!trimmedFirst) {
       return NextResponse.json(
-        { error: "First name and last name are required" },
+        { error: "First name is required" },
         { status: 400 }
       );
     }
-    const fullName = `${trimmedFirst} ${trimmedLast}`;
+    const fullName = trimmedSurname ? `${trimmedFirst} ${trimmedSurname}` : trimmedFirst;
 
     // Validate password length
     if (password.length < 8) {
@@ -182,6 +182,7 @@ export async function POST(req: NextRequest) {
         data: {
           userId: newUser.id,
           displayName: trimmedFirst,
+          surname: trimmedSurname || null,
           guardianConsent: !needsGuardianConsent,
           guardianEmail: trimmedGuardianEmail,
           guardianToken: guardianToken,
@@ -205,7 +206,7 @@ export async function POST(req: NextRequest) {
         // misconfigured. Errors are logged inside sendMail().
         sendGuardianConsentEmail({
           guardianEmail: trimmedGuardianEmail,
-          youthDisplayName: `${trimmedFirst} ${trimmedLast}`.trim(),
+          youthDisplayName: `${trimmedFirst} ${trimmedSurname}`.trim(),
           youthFirstName: trimmedFirst,
           consentToken: guardianToken,
         }).catch((err) => {

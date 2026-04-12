@@ -50,6 +50,7 @@ function SignUpForm() {
 
   // ── Form state ────────────────────────────────────────────────────
   const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [guardianEmail, setGuardianEmail] = useState("");
@@ -112,8 +113,8 @@ function SignUpForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           firstName: firstName.trim(),
-          // lastName is collected later in profile setup if needed
-          lastName: firstName.trim(),
+          surname: surname.trim(),
+          lastName: surname.trim() || firstName.trim(),
           email,
           password,
           role,
@@ -298,22 +299,39 @@ function SignUpForm() {
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-muted-foreground">
-                  First name
-                </Label>
-                <Input
-                  id="firstName"
-                  type="text"
-                  autoComplete="given-name"
-                  placeholder="What should we call you?"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  maxLength={50}
-                  className="h-11"
-                  autoFocus
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    First name
+                  </Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    autoComplete="given-name"
+                    placeholder="First name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                    maxLength={50}
+                    className="h-11"
+                    autoFocus
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="surname" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Surname
+                  </Label>
+                  <Input
+                    id="surname"
+                    type="text"
+                    autoComplete="family-name"
+                    placeholder="Surname"
+                    value={surname}
+                    onChange={(e) => setSurname(e.target.value)}
+                    maxLength={50}
+                    className="h-11"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">

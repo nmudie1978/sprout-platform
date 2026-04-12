@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const youthProfileSchema = z.object({
   displayName: z.string().min(2, "Name must be at least 2 characters").max(50),
+  surname: z.string().max(50).optional().or(z.literal("")),
   avatarId: z.string().optional(),
   phoneNumber: z.string().max(20).optional().or(z.literal("")),
   bio: z.string().max(500, "Bio must be less than 500 characters").optional(),

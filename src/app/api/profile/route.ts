@@ -306,6 +306,7 @@ export async function PATCH(req: NextRequest) {
       where: { userId: session.user.id },
       data: {
         displayName: validatedData.displayName,
+        surname: validatedData.surname || null,
         phoneNumber: validatedData.phoneNumber || null,
         bio: validatedData.bio,
         availability: validatedData.availability,

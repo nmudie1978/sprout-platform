@@ -87,6 +87,7 @@ export default function ProfilePage() {
 
   const [formData, setFormData] = useState({
     displayName: "",
+    surname: "",
     bio: "",
     availability: "",
     phoneNumber: "",
@@ -163,6 +164,7 @@ export default function ProfilePage() {
       formInitializedRef.current = true;
       setFormData({
         displayName: profile.displayName || "",
+        surname: profile.surname || "",
         bio: profile.bio || "",
         availability: profile.availability || "",
         phoneNumber: profile.phoneNumber || "",
@@ -200,6 +202,7 @@ export default function ProfilePage() {
     onSuccess: (data) => {
       setFormData({
         displayName: data.displayName || "",
+        surname: data.surname || "",
         bio: data.bio || "",
         availability: data.availability || "",
         phoneNumber: data.phoneNumber || "",
@@ -1099,16 +1102,32 @@ export default function ProfilePage() {
                         {session.user.email}
                       </p>
                     )}
-                    <Input
-                      id="displayName"
-                      placeholder="Display name"
-                      value={formData.displayName}
-                      onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                      className="h-9 text-sm"
-                    />
-                    <p className="mt-1 text-[10px] text-muted-foreground/40">
-                      Display name <span className="text-amber-500">*</span>
-                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Input
+                          id="displayName"
+                          placeholder="First name"
+                          value={formData.displayName}
+                          onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
+                          className="h-9 text-sm"
+                        />
+                        <p className="mt-1 text-[10px] text-muted-foreground/40">
+                          First name <span className="text-amber-500">*</span>
+                        </p>
+                      </div>
+                      <div>
+                        <Input
+                          id="surname"
+                          placeholder="Surname"
+                          value={formData.surname}
+                          onChange={(e) => setFormData({ ...formData, surname: e.target.value })}
+                          className="h-9 text-sm"
+                        />
+                        <p className="mt-1 text-[10px] text-muted-foreground/40">
+                          Surname
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

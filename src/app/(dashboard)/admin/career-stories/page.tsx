@@ -105,7 +105,7 @@ export default function AdminCareerStories() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-xl font-bold mb-1">Career Stories</h1>
-      <p className="text-sm text-muted-foreground mb-6">Upload short video stories from professionals — these appear in the Grow section of My Journey.</p>
+      <p className="text-sm text-muted-foreground mb-6">Upload short video stories from professionals — these appear in the Clarity section of My Journey.</p>
 
       {/* Upload form */}
       <form onSubmit={handleSubmit} className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-4 mb-8">

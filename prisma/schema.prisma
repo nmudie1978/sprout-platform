@@ -377,6 +377,7 @@ model YouthProfile {
   id                 String             @id @default(cuid())
   userId             String             @unique
   displayName        String
+  surname            String?            // Family name — stored but never shown publicly
   avatarId           String?            @default("kawaii-star") // Fun avatar identifier
   avatarUpdatedAt    DateTime? // When avatar was last changed
   phoneNumber        String? // Contact number for employers
@@ -3071,4 +3072,51 @@ model VideoCache {
 
   @@index([cacheKey])
   @@index([expiresAt])
+}
+
+// ── Real Career Path Contributions ──────────────────────────────
+// Parents, guardians, and professionals contribute their real
+// career timelines so young people can see authentic, non-linear
+// paths — not just the textbook route. MVP: community-powered,
+// moderated, available globally.
+
+enum PathContributionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CareerPathContribution {
+  id String @id @default(cuid())
+
+  // Contributor (anonymised in display)
+  displayName String  // e.g. "Nicky M." — shown to youth
+  currentTitle String // e.g. "Programme Manager"
+  country      String // e.g. "Norway", "Hungary" — makes paths globally relevant
+  city         String? // optional, e.g. "Oslo"
+
+  // Timeline — the core value: ordered career steps
+  steps Json // Array of { age: number, label: string } e.g. [{ age: 18, label: "Entry-level IT support" }, ...]
+
+  // Tagging — links path to careers in the platform
+  careerTags String[] // e.g. ["it-project-manager", "programme-manager"]
+
+  // Context
+  didAttendUniversity Boolean @default(false)
+  yearsOfExperience   Int?
+  headline            String? // e.g. "School → IT → Telco → Programme Management — no degree"
+  advice              String? // One sentence of advice for young people
+
+  // Moderation
+  status    PathContributionStatus @default(PENDING)
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  // Metadata
+  submittedByEmail String? // for follow-up only, never displayed
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([status])
+  @@index([careerTags])
 }

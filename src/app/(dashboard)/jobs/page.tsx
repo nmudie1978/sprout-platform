@@ -189,15 +189,6 @@ export default function JobsPage() {
 
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
-      {/* Background — subtle dot texture for action-oriented feel */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 pointer-events-none" />
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none opacity-[0.03] dark:opacity-[0.04]"
-        style={{
-          backgroundImage: "radial-gradient(circle, currentColor 0.5px, transparent 0.5px)",
-          backgroundSize: "16px 16px",
-        }}
-      />
 
       <PageContext
         pageKey="jobs"
