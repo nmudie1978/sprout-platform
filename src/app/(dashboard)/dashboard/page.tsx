@@ -1023,7 +1023,7 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-4 gap-2 mb-2">
                     <div className="text-center">
                       <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
-                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.replace(/\s*kr\/year\s*/i, '').trim()}</p>
+                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').replace(/(\d{3}),000/g, (_, n) => n + 'k').replace(/,000/g, 'k').trim()}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
