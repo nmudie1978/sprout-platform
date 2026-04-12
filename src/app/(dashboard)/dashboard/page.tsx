@@ -753,23 +753,14 @@ export default function DashboardPage() {
               <Clock className="h-4 w-4" />
               {dateStr}
             </span>
-            {/* Guardian-consent signal — pulsing amber dot next to the
-                profile link. Native title tooltip so there's zero
-                extra markup weight on the header. Whole element links
-                to /profile where the user can resend / change the
-                guardian email. */}
+            {/* Guardian-consent signal — static dot with tooltip */}
             {profileData && profileData.guardianEmail && !profileData.guardianConsent && (
-              <Link
-                href="/profile"
-                title="Waiting for guardian confirmation — tap to resend or change"
-                aria-label="Waiting for guardian confirmation"
-                className="relative p-1.5 rounded-lg hover:bg-muted/50 transition-colors flex items-center justify-center"
+              <span
+                title="Waiting on parental confirmation. Go to Profile to resend."
+                className="relative flex h-2.5 w-2.5 cursor-default"
               >
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400/50 opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-amber-400/60" />
-                </span>
-              </Link>
+                <span className="inline-flex h-2.5 w-2.5 rounded-full bg-muted-foreground/40" />
+              </span>
             )}
             {profileData && (() => {
               const total = 8;
