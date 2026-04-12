@@ -41,6 +41,7 @@ import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { OrientationWalkthrough } from "@/components/onboarding/orientation-walkthrough";
+import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
@@ -564,6 +565,22 @@ export default function DashboardPage() {
     durationMs: 4000,
   });
 
+  // Language prompt — show once per account, not per session
+  const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
+  const [showLangPrompt, setShowLangPrompt] = useState(false);
+  useEffect(() => {
+    if (status === "loading") return;
+    try {
+      if (!localStorage.getItem("lang-chosen")) setShowLangPrompt(true);
+    } catch { /* noop */ }
+  }, [status]);
+  const pickLanguage = (switchToNorsk: boolean) => {
+    if (switchToNorsk && currentLocale === "en-GB") toggleLocale();
+    else if (!switchToNorsk && currentLocale === "nb-NO") toggleLocale();
+    try { localStorage.setItem("lang-chosen", "1"); } catch { /* noop */ }
+    setShowLangPrompt(false);
+  };
+
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
 
@@ -659,7 +676,7 @@ export default function DashboardPage() {
   const { curiosities: savedCareers } = useCuriositySaves();
   const [savedCareersPage, setSavedCareersPage] = useState(0);
   const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
-  const savedCareersPerPage = 3;
+  const savedCareersPerPage = 5;
   const savedCareersPageCount = Math.max(1, Math.ceil(savedCareers.length / savedCareersPerPage));
   const savedCareersVisible = savedCareers.slice(
     savedCareersPage * savedCareersPerPage,
@@ -751,6 +768,24 @@ export default function DashboardPage() {
               >
                 <Compass className="h-3.5 w-3.5" />
               </button>
+            )}
+            {/* Language prompt — shown once, then saved permanently */}
+            {showLangPrompt && !isLocalePending && (
+              <div className="flex items-center gap-1 rounded-lg border border-border/30 bg-card px-2 py-1">
+                <button
+                  onClick={() => pickLanguage(false)}
+                  className={cn("px-2 py-0.5 rounded text-[10px] font-medium transition-colors", currentLocale === "en-GB" ? "bg-foreground/10 text-foreground" : "text-muted-foreground/50 hover:text-foreground")}
+                >
+                  EN
+                </button>
+                <span className="text-muted-foreground/20 text-[10px]">|</span>
+                <button
+                  onClick={() => pickLanguage(true)}
+                  className={cn("px-2 py-0.5 rounded text-[10px] font-medium transition-colors", currentLocale === "nb-NO" ? "bg-foreground/10 text-foreground" : "text-muted-foreground/50 hover:text-foreground")}
+                >
+                  NO
+                </button>
+              </div>
             )}
             <span className="text-sm text-muted-foreground/60">
               {dateStr}
@@ -857,7 +892,7 @@ export default function DashboardPage() {
         {/* ── 1. My Journey Card ─────────────────────────────── */}
         {(() => {
           const journeyCard = (
-          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-border/30 shadow-[0_0_15px_rgba(255,255,255,0.03),0_0_30px_rgba(255,255,255,0.02)]", goalTitle && "hover:border-border/50 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_0_40px_rgba(255,255,255,0.03)]")}>
+          <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-teal-500/30 shadow-[0_0_25px_rgba(20,184,166,0.12),0_0_50px_rgba(20,184,166,0.06)] ring-1 ring-teal-500/15", goalTitle ? "hover:border-teal-500/45 hover:shadow-[0_0_35px_rgba(20,184,166,0.18),0_0_70px_rgba(20,184,166,0.08)]" : "hover:border-teal-500/35")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
                 <TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" title="Your journey tracks progress through Discover, Understand, and Clarity." />
@@ -996,8 +1031,10 @@ export default function DashboardPage() {
           </Link>
         )}
 
-        {/* ── 3. Career Snapshot + Explored Journeys ──────────── */}
+        {/* ── 3. Career Snapshot + Library (left) / Explored Journeys (right) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start mb-6">
+          {/* Left column: Career Snapshot + My Library */}
+          <div className="space-y-3">
           {/* Career Snapshot */}
           {goalCareer ? (
             <GlassCard className="p-4">
@@ -1045,6 +1082,45 @@ export default function DashboardPage() {
             </GlassCard>
           )}
 
+          {/* My Library — under Career Snapshot */}
+          <LibraryCard items={savedItemsList} total={savedSummary.total} />
+
+          {/* My Small Jobs — under Library */}
+          {(() => {
+            const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
+            const inner = (
+              <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title={t('smallJobs.tooltip')} />
+                  <h3 className="text-xs font-semibold">{t('smallJobs.title')}</h3>
+                  <span className="flex-1" />
+                  {totalJobs > 0 && (
+                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">{totalJobs}</span>
+                  )}
+                </div>
+                <div className="grid grid-cols-4 gap-1 text-center">
+                  {[
+                    { label: t('smallJobs.applied'), value: appStats.applied },
+                    { label: t('smallJobs.waiting'), value: appStats.waiting },
+                    { label: t('smallJobs.accepted'), value: appStats.accepted },
+                    { label: t('smallJobs.done'), value: appStats.done },
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <p className="text-xs font-semibold text-foreground/70 tabular-nums">{stat.value}</p>
+                      <p className="text-[9px] text-muted-foreground/40 leading-tight">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
+            );
+            return totalJobs > 0 ? (
+              <Link href="/applications" className="block group">{inner}</Link>
+            ) : inner;
+          })()}
+          </div>
+
+          {/* Right column: Previously Explored Journeys + Saved Careers */}
+          <div className="space-y-3">
           {/* Previously Explored Journeys */}
           {(() => {
             // Snapshot visibility is governed by a single predicate:
@@ -1183,17 +1259,12 @@ export default function DashboardPage() {
               </GlassCard>
             );
           })()}
-        </div>
 
-        {/* ── 3. Library + Saved Careers ─────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-          <LibraryCard items={savedItemsList} total={savedSummary.total} />
-
-          {/* Saved Careers — promoted to row 3 in place of My Jobs */}
+          {/* Saved Careers — under Explored Journeys */}
           <GlassCard className="p-3">
             <div className="flex items-center gap-2 mb-1.5">
-              <Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" title="Careers you've saved from Explore Careers." />
-              <h3 className="text-xs font-semibold">Saved careers</h3>
+              <Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" title={t('savedCareers.tooltip')} />
+              <h3 className="text-xs font-semibold">{t('savedCareers.title')}</h3>
             </div>
             {savedCareers.length > 0 ? (
               <>
@@ -1229,7 +1300,7 @@ export default function DashboardPage() {
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
                       disabled={savedCareersPage === 0}
                       className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label="Previous page"
+                      aria-label={t('common.previousPage')}
                     >
                       <ChevronLeft className="h-3 w-3" />
                     </button>
@@ -1241,7 +1312,7 @@ export default function DashboardPage() {
                       onClick={() => setSavedCareersPage((p) => Math.min(savedCareersPageCount - 1, p + 1))}
                       disabled={savedCareersPage >= savedCareersPageCount - 1}
                       className="p-0.5 text-muted-foreground/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label="Next page"
+                      aria-label={t('common.nextPage')}
                     >
                       <ChevronRight className="h-3 w-3" />
                     </button>
@@ -1252,51 +1323,9 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground/50 mt-1">{t('savedCareers.emptyState')}</p>
             )}
           </GlassCard>
+          </div>
         </div>
 
-        {/* ── 4. Saved Careers + Small Jobs ────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* My Small Jobs — minimised, deliberately small footprint.
-            Career exploration is the centre of gravity now; small jobs
-            are a side surface and shouldn't compete with it visually. */}
-        {(() => {
-          const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
-          const inner = (
-            <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
-              <div className="flex items-center gap-2 mb-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title="Real-world small jobs you've applied to." />
-                <h3 className="text-xs font-semibold">My Small Jobs</h3>
-                <span className="flex-1" />
-                {totalJobs > 0 && (
-                  <span className="text-[10px] text-muted-foreground/40 tabular-nums">
-                    {totalJobs}
-                  </span>
-                )}
-              </div>
-              <div className="grid grid-cols-4 gap-1 text-center">
-                {[
-                  { label: t('smallJobs.applied'), value: appStats.applied },
-                  { label: t('smallJobs.waiting'), value: appStats.waiting },
-                  { label: t('smallJobs.accepted'), value: appStats.accepted },
-                  { label: t('smallJobs.done'), value: appStats.done },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <p className="text-xs font-semibold text-foreground/70 tabular-nums">
-                      {stat.value}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground/40 leading-tight">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </GlassCard>
-          );
-          return totalJobs > 0 ? (
-            <Link href="/applications" className="block group">{inner}</Link>
-          ) : inner;
-        })()}
-        </div>
       </div>
 
       {/* ── 5. Industry Insights Ticker ─────────────────────── */}

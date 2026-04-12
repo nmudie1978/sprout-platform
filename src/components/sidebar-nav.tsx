@@ -15,7 +15,6 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import {
@@ -311,7 +310,6 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
 export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: SidebarNavProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -419,7 +417,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             {/* YOURS — personal surfaces, physically separated at the top */}
             <NavSection title="Yours" collapsed={collapsed} accent>
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
-              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your career roadmap. Track progress, set milestones, and see your starting point in context." />
+              <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
               <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications") || isActive("/messages")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on. Includes messages with employers." />
             </NavSection>
@@ -506,21 +504,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <Moon className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:-rotate-12 group-hover/theme:text-blue-400" />
             )}
             <span>{mounted && theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-          </button>
-        )}
-
-        {/* Language toggle */}
-        {!collapsed && (
-          <button
-            type="button"
-            onClick={toggleLocale}
-            disabled={isLocalePending}
-            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 px-3 py-2 disabled:opacity-50"
-          >
-            <span className="h-[18px] w-[18px] shrink-0 flex items-center justify-center text-[11px] font-bold">
-              {currentLocale === "en-GB" ? "EN" : "NO"}
-            </span>
-            <span>{currentLocale === "en-GB" ? "Norsk" : "English"}</span>
           </button>
         )}
 
