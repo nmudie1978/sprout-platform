@@ -11,17 +11,17 @@
  * primary goal and routes to /my-journey.
  */
 
-import { X, ArrowRight, Sparkles, Clock, Trophy, Download } from 'lucide-react';
+import { X, ArrowRight, Sparkles, Clock, Trophy, Download, GraduationCap } from 'lucide-react';
 import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
 import {
   getFitDimensions,
   estimateTimeToGetThere,
   estimateCompetitiveness,
-  shortPath,
   shortDayToDay,
   whyItMightSuitYou,
 } from '@/lib/compare/fit-dimensions';
 import { getValueSignals } from '@/lib/compare/value-signals';
+import { getAcademicProfile, getDemandLabel, getPathwayLabel } from '@/lib/education/academic-readiness';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -105,7 +105,7 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
             // and use grid-rows-subgrid so a long description in one
             // card doesn't push that card's "Reality check" out of line
             // with the others.
-            'sm:grid-rows-[auto_auto_auto_auto_auto]',
+            'sm:grid-rows-[auto_auto_auto_auto_auto_auto]',
             careers.length === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
           )}
         >
@@ -135,12 +135,14 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const dims = getFitDimensions(career);
   const time = estimateTimeToGetThere(career);
   const comp = estimateCompetitiveness(career);
-  const path = shortPath(career);
   const tasks = shortDayToDay(career);
   const why = whyItMightSuitYou(career, preferences);
   const signals = getValueSignals(career);
+  const academic = getAcademicProfile(career);
+  const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
+  const importantSubjects = academic.subjects.filter(s => s.importance === 'important');
 
-  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-sky-400/80';
+  const titleClass = 'text-xs font-semibold uppercase tracking-wider text-emerald-500/80';
 
   return (
     <div
@@ -149,7 +151,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         'snap-start shrink-0 w-[85vw] mx-2 my-4',
         // Desktop: span all 5 row tracks of the parent grid so each
         // section row aligns row-by-row with sibling cards.
-        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-5',
+        'sm:w-auto sm:m-0 sm:grid sm:grid-rows-subgrid sm:row-span-6',
         // Card shell — same on both sizes
         'rounded-xl border-2 border-border/70 bg-card shadow-md overflow-hidden flex flex-col sm:flex-none',
       )}
@@ -185,7 +187,7 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             <span className="text-[10px] text-foreground/70 w-[64px] shrink-0">{d.label}</span>
             <div className="relative flex-1 h-1.5 rounded-full bg-muted/30 overflow-hidden">
               <div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-300"
+                className="absolute inset-y-0 left-0 rounded-full bg-amber-400/50 transition-all duration-300"
                 style={{ width: `${(d.score / 5) * 100}%` }}
               />
             </div>
@@ -196,15 +198,12 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
       {/* Reality check — row 3 */}
       <div className="p-4 border-b border-border/30 space-y-2">
         <p className={cn(titleClass, 'mb-1')}>Reality check</p>
-        <div className="space-y-1.5">
-          <div className="flex items-start gap-2 text-[10px]">
-            <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
-            <span className="text-foreground/75 leading-snug">{path}</span>
-          </div>
-          <div className="flex items-center gap-3 pt-1">
-            <RealityPill icon={Clock} label="Time" value={time} />
-            <RealityPill icon={Trophy} label="Compete" value={comp} />
-          </div>
+        <div className="flex items-center gap-3">
+          <RealityPill icon={Clock} label="Time" value={time} />
+          <RealityPill icon={Trophy} label="Compete" value={comp} />
+        </div>
+        <div className="flex items-center gap-3">
+          <RealityPill icon={GraduationCap} label="Demand" value={getDemandLabel(academic.demand)} />
         </div>
       </div>
 
@@ -221,9 +220,8 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </ul>
       </div>
 
-      {/* Things to consider — row 5 (always rendered so the row exists
-          on every card and the subgrid stays aligned) */}
-      <div className="p-4">
+      {/* Things to consider — row 5 */}
+      <div className="p-4 border-b border-border/30">
         {signals.length > 0 ? (
           <>
             <p className={cn(titleClass, 'mb-1.5')}>Things to consider</p>
@@ -236,7 +234,56 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
               ))}
             </ul>
           </>
-        ) : null}
+        ) : (
+          <p className={cn(titleClass)}>Things to consider</p>
+        )}
+      </div>
+
+      {/* Study path & readiness — row 6 */}
+      <div className="p-4 space-y-2.5">
+        <p className={cn(titleClass, 'mb-1')}>Study path &amp; readiness</p>
+        <div className="space-y-1.5">
+          <div className="flex items-start gap-2 text-[10px]">
+            <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
+            <span className="text-foreground/75 leading-snug">{getPathwayLabel(academic.pathwayType)}</span>
+          </div>
+          <div className="flex items-start gap-2 text-[10px]">
+            <ArrowRight className="h-3 w-3 text-muted-foreground/40 shrink-0 mt-px" />
+            <span className="text-foreground/75 leading-snug">{career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()}</span>
+          </div>
+          {academic.grade.hasCutoff && academic.grade.gradeMin !== null && (
+            <p className="text-[9px] text-muted-foreground/50">
+              Typical grades: {academic.grade.gradeMin}&ndash;{academic.grade.gradeMax} (Norwegian 1&ndash;6)
+            </p>
+          )}
+        </div>
+        {(essentialSubjects.length > 0 || importantSubjects.length > 0) && (
+          <div className="space-y-1.5 pt-1">
+            {essentialSubjects.length > 0 && (
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground/50 mb-1">Key subjects</p>
+                <div className="flex flex-wrap gap-1">
+                  {essentialSubjects.map(s => (
+                    <span key={s.name} className="rounded border border-border/20 bg-muted/10 px-1.5 py-0.5 text-[9px] text-foreground/65">{s.name}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {importantSubjects.length > 0 && (
+              <div>
+                <p className="text-[9px] font-semibold text-muted-foreground/50 mb-1">Also useful</p>
+                <div className="flex flex-wrap gap-1">
+                  {importantSubjects.map(s => (
+                    <span key={s.name} className="rounded border border-border/15 bg-muted/5 px-1.5 py-0.5 text-[9px] text-muted-foreground/55">{s.name}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        <p className="text-[8px] text-muted-foreground/35 leading-relaxed pt-0.5">
+          {academic.variabilityNote}
+        </p>
       </div>
     </div>
   );
@@ -288,10 +335,10 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
       const dims = getFitDimensions(career);
       const time = estimateTimeToGetThere(career);
       const comp = estimateCompetitiveness(career);
-      const path = shortPath(career);
       const tasks = shortDayToDay(career);
       const why = whyItMightSuitYou(career, preferences);
       const signals = getValueSignals(career);
+      const ap = getAcademicProfile(career);
 
       const dimsHtml = dims
         .map((d) => {
@@ -321,8 +368,12 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
           <div class="dims">${dimsHtml}</div>
 
           <h3>Reality check</h3>
-          <p class="path">→ ${escapeHtml(path)}</p>
-          <p class="meta">Time: <strong>${escapeHtml(time)}</strong>  ·  Competitiveness: <strong>${escapeHtml(comp)}</strong></p>
+          <p class="meta">Time: <strong>${escapeHtml(time)}</strong>  ·  Competitiveness: <strong>${escapeHtml(comp)}</strong>  ·  Demand: <strong>${escapeHtml(getDemandLabel(ap.demand))}</strong></p>
+
+          <h3>Study path</h3>
+          <p class="path">→ ${escapeHtml(getPathwayLabel(ap.pathwayType))}</p>
+          <p class="path">→ ${escapeHtml(career.educationPath.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' ').trim())}</p>
+          ${ap.subjects.filter(s => s.importance === 'essential').length > 0 ? `<p class="meta">Key subjects: <strong>${ap.subjects.filter(s => s.importance === 'essential').map(s => escapeHtml(s.name)).join(', ')}</strong></p>` : ''}
 
           <h3>Day-to-day</h3>
           <ul>${tasksHtml}</ul>
@@ -403,7 +454,7 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
   .dim { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
   .dim-label { font-size: 10px; color: #555; width: 70px; flex-shrink: 0; }
   .dim-bar { position: relative; flex: 1; height: 5px; background: #e5e5e5; border-radius: 99px; overflow: hidden; }
-  .dim-fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #fbbf24, #fb923c); border-radius: 99px; }
+  .dim-fill { position: absolute; inset: 0 auto 0 0; background: rgba(251, 191, 36, 0.5); border-radius: 99px; }
   .path { font-size: 11px; color: #444; margin: 0 0 4px 0; }
   .meta { font-size: 10px; color: #777; margin: 0 0 4px 0; }
   .meta strong { color: #1a1a1a; }
