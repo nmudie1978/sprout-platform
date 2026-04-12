@@ -57,9 +57,9 @@ const MY_JOURNEY_SOURCE = stripComments(MY_JOURNEY_SOURCE_RAW);
 
 describe('Dashboard completion indicator (Issue 2 — positive tests)', () => {
   it('renders a subtle completion indicator when all lenses are done', () => {
-    // The Dashboard now shows a small flag/icon + "Journey complete"
+    // The Dashboard now shows a small flag/icon + completion indicator
     // text instead of the full congrats banner.
-    expect(DASHBOARD_SOURCE).toMatch(/Journey complete/);
+    expect(DASHBOARD_SOURCE).toMatch(/journey\.completeIndicator|Journey complete/);
     // Uses CheckCircle2 as the subtle flag glyph.
     expect(DASHBOARD_SOURCE).toMatch(/CheckCircle2.*h-3 w-3/);
   });
@@ -99,9 +99,9 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
     // the old text-sm / text-xs font-bold from the congrats banner.
     // The `Subtle completion indicator` comment was stripped by
     // stripComments(), so we look for the adjacent literal string
-    // "Journey complete" as the anchor and verify the nearby
+    // completion indicator as the anchor and verify the nearby
     // classes are the compact ones.
-    const idx = DASHBOARD_SOURCE.indexOf('Journey complete');
+    const idx = Math.max(DASHBOARD_SOURCE.indexOf('Journey complete'), DASHBOARD_SOURCE.indexOf('completeIndicator'));
     expect(idx).toBeGreaterThan(-1);
     const surround = DASHBOARD_SOURCE.slice(Math.max(0, idx - 200), idx + 100);
     expect(surround).toMatch(/text-\[10px\]/);
