@@ -161,7 +161,7 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
         side="right"
         sideOffset={12}
         showArrow
-        className="max-w-[240px] py-2.5 border-slate-700 bg-slate-900 text-slate-100 shadow-lg shadow-black/30"
+        className="max-w-[240px] py-2.5 border-white/10 bg-white/5 text-slate-100 shadow-lg shadow-black/30"
       >
         <div className="space-y-0.5">
           <p className="text-[12px] font-medium text-slate-50">{label}</p>
@@ -274,7 +274,7 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "relative space-y-0.5 rounded-xl border border-slate-700/60 bg-slate-900/40 overflow-hidden",
+            "relative space-y-0.5 rounded-xl border border-white/10 bg-white/5 overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
@@ -388,7 +388,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         className="before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
       />
       <aside
-        className="relative flex flex-col bg-slate-950 h-full overflow-y-auto overflow-x-hidden"
+        className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden"
+        style={{ backgroundColor: 'hsl(var(--sidebar))' }}
       >
       {/* Floating ambient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -490,7 +491,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
       {/* Bottom section */}
       <div className="px-2 pb-3 mt-auto space-y-1 relative">
         {/* Subtle top fade */}
-        <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none" />
+        <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-[hsl(var(--sidebar))] to-transparent pointer-events-none" />
 
         {/* Theme toggle — hidden when collapsed to avoid icon-stack misclicks */}
         {!collapsed && (
@@ -543,7 +544,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
             "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
-            collapsed ? "justify-center px-2 py-3 ring-1 ring-slate-800/60" : "px-3 py-2"
+            collapsed ? "justify-center px-2 py-3 ring-1 ring-white/10" : "px-3 py-2"
           )}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
