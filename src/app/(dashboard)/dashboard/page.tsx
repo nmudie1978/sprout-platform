@@ -1048,13 +1048,6 @@ export default function DashboardPage() {
                 );
               })()}
 
-              {/* Full details link */}
-              <button
-                onClick={() => setShowGoalDetail(true)}
-                className="w-full text-center text-[10px] text-muted-foreground/50 hover:text-foreground/70 transition-colors py-1"
-              >
-                View full details &rarr;
-              </button>
             </GlassCard>
           ) : (
             <GlassCard className="p-3 h-full">
