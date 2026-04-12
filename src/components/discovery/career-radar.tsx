@@ -481,7 +481,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </div>
         <h3 className="text-sm font-semibold mb-1">Your Career Radar is empty</h3>
         <p className="text-xs text-muted-foreground mb-3 max-w-sm mx-auto">
-          Tell us what subjects you enjoy and how you like to work \u2014 we&apos;ll
+          Tell us what subjects you enjoy and how you like to work &mdash; we&apos;ll
           map careers across every path so you can find your first Primary Goal.
         </p>
         <Button
