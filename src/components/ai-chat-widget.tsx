@@ -14,6 +14,7 @@ import {
   Minimize2,
   Maximize2,
   Sparkles,
+  EyeOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -28,9 +29,21 @@ interface Message {
   };
 }
 
+const HIDDEN_KEY = "ai-chat-hidden";
+
 export function AiChatWidget() {
+  const [isHidden, setIsHidden] = useState(true); // start hidden until localStorage checked
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsHidden(localStorage.getItem(HIDDEN_KEY) === "1");
+    } catch {
+      setIsHidden(false);
+    }
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -49,6 +62,14 @@ export function AiChatWidget() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const hideWidget = () => {
+    setIsHidden(true);
+    setIsOpen(false);
+    try { localStorage.setItem(HIDDEN_KEY, "1"); } catch { /* ignore */ }
+  };
+
+  if (isHidden) return null;
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -120,13 +141,23 @@ export function AiChatWidget() {
 
   if (!isOpen) {
     return (
-      <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
-        size="icon"
-      >
-        <Bot className="h-6 w-6" />
-      </Button>
+      <div className="fixed bottom-6 right-6 z-40 flex items-start gap-1">
+        <button
+          type="button"
+          onClick={hideWidget}
+          className="h-5 w-5 flex items-center justify-center rounded-full bg-muted/80 border border-border/40 text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors -mr-2 -mt-1 z-10"
+          title="Hide assistant — re-enable in Profile"
+        >
+          <X className="h-3 w-3" />
+        </button>
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="h-14 w-14 rounded-full shadow-lg"
+          size="icon"
+        >
+          <Bot className="h-6 w-6" />
+        </Button>
+      </div>
     );
   }
 
@@ -150,6 +181,15 @@ export function AiChatWidget() {
           </Badge>
         </div>
         <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={hideWidget}
+            title="Hide assistant — re-enable in Profile"
+          >
+            <EyeOff className="h-4 w-4" />
+          </Button>
           <Button
             variant="ghost"
             size="icon"

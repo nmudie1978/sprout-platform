@@ -9,14 +9,12 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET(req: NextRequest) {
   const careers = req.nextUrl.searchParams.getAll("career");
-  if (careers.length === 0) {
-    return NextResponse.json({ paths: [], count: 0 });
-  }
+  const all = req.nextUrl.searchParams.get("all") === "1";
 
   const paths = await prisma.careerPathContribution.findMany({
     where: {
       status: "APPROVED",
-      careerTags: { hasSome: careers },
+      ...(careers.length > 0 && !all ? { careerTags: { hasSome: careers } } : {}),
     },
     select: {
       id: true,
@@ -30,9 +28,10 @@ export async function GET(req: NextRequest) {
       yearsOfExperience: true,
       headline: true,
       advice: true,
+      createdAt: true,
     },
     orderBy: { createdAt: "desc" },
-    take: 6,
+    ...(!all ? { take: 6 } : {}),
   });
 
   return NextResponse.json({ paths, count: paths.length });

@@ -1,4 +1,4 @@
-import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download } from "lucide-react";
+import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
@@ -260,6 +260,28 @@ export default function AboutPage() {
 
         {/* The Gap */}
         <TheGapSection />
+
+        {/* For Parents */}
+        <div className="mt-16 pt-10 border-t border-border">
+          <div className="flex items-center gap-2 mb-3">
+            <Users className="h-5 w-5 text-emerald-500" />
+            <h2 className="text-xl font-semibold text-foreground">
+              Parents and professionals
+            </h2>
+          </div>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            Your career path &mdash; the twists, the pivots, the unexpected turns &mdash; is exactly what young
+            people need to see. By sharing your real career timeline, you help them understand that there are
+            many ways to build a life, not just the ones they see around them.
+          </p>
+          <Link
+            href="/for-parents"
+            className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2.5 text-sm font-medium text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/15 hover:border-emerald-500/60 transition-colors"
+          >
+            Learn how to contribute your career path
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
 
         {/* Closing */}
         <div className="mt-16 pt-10 border-t border-border">

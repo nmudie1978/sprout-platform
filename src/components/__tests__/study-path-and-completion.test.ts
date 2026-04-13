@@ -113,7 +113,7 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
     // destroy it. The congrats JSX must still render inside the
     // Grow tab.
     expect(MY_JOURNEY_SOURCE).toMatch(
-      /Congratulations\s+—\s+you've completed your journey/,
+      /explored.*from every angle/,
     );
     expect(MY_JOURNEY_SOURCE).toMatch(/🎉/);
   });

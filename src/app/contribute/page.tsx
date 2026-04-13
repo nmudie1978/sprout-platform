@@ -229,20 +229,56 @@ export default function ContributePage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md text-center"
+          className="max-w-md"
         >
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 mb-4">
-            <Check className="h-8 w-8 text-emerald-500" />
+          <div className="text-center mb-6">
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/15 mb-4">
+              <Check className="h-8 w-8 text-emerald-500" />
+            </div>
+            <h1 className="text-2xl font-bold mb-2">Thank you</h1>
+            <p className="text-muted-foreground mb-1">
+              Your career path has been submitted for review.
+            </p>
+            <p className="text-sm text-muted-foreground/70">
+              Once approved, young people exploring similar careers will see your
+              real journey alongside the textbook route — showing them that there
+              is more than one way to get there.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Thank you</h1>
-          <p className="text-muted-foreground mb-1">
-            Your career path has been submitted for review.
-          </p>
-          <p className="text-sm text-muted-foreground/70 mb-6">
-            Once approved, young people exploring similar careers will see your
-            real journey alongside the textbook route — showing them that there
-            is more than one way to get there.
-          </p>
+
+          {/* Summary of what was submitted */}
+          <div className="rounded-xl border bg-card/50 p-4 mb-6">
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-3">What you submitted</p>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                {form.displayName.charAt(0).toUpperCase() || "?"}
+              </div>
+              <div>
+                <p className="text-sm font-medium">{form.displayName}</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {form.currentTitle} &middot; {form.country}{form.didAttendUniversity ? "" : " · No university"}
+                </p>
+              </div>
+            </div>
+            {form.headline && (
+              <p className="text-xs italic text-muted-foreground/70 mb-2">&ldquo;{form.headline}&rdquo;</p>
+            )}
+            <div className="space-y-1 mb-2">
+              {form.steps.sort((a, b) => a.age - b.age).map((s, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <span className="text-muted-foreground/50 w-6 text-right tabular-nums">{s.age}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
+                  <span className="text-foreground/70">{s.label}</span>
+                </div>
+              ))}
+            </div>
+            {form.advice && (
+              <p className="text-[10px] text-muted-foreground/60 mt-2">
+                Advice: &ldquo;{form.advice}&rdquo;
+              </p>
+            )}
+          </div>
+
           <div className="flex gap-3 justify-center">
             <Button
               variant="outline"
@@ -255,7 +291,7 @@ export default function ContributePage() {
               Submit another
             </Button>
             <Button asChild>
-              <Link href="/">Back to Endeavrly</Link>
+              <Link href="/for-parents">Back</Link>
             </Button>
           </div>
         </motion.div>

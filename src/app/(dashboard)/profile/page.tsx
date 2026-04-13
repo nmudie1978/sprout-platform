@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, Bot } from "lucide-react";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -119,6 +119,11 @@ export default function ProfilePage() {
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [aiChatHidden, setAiChatHidden] = useState(false);
+
+  useEffect(() => {
+    try { setAiChatHidden(localStorage.getItem("ai-chat-hidden") === "1"); } catch { /* ignore */ }
+  }, []);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", session?.user?.id],
@@ -1228,6 +1233,29 @@ export default function ProfilePage() {
                       </p>
                     </div>
                   )}
+                </div>
+
+                {/* AI Assistant Toggle */}
+                <div className="border-t pt-4 mt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <Label htmlFor="aiAssistant" className="cursor-pointer flex items-center gap-2">
+                        <Bot className="h-4 w-4 text-muted-foreground" />
+                        AI Career Assistant
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Show the AI assistant chat bubble on every page
+                      </p>
+                    </div>
+                    <Switch
+                      id="aiAssistant"
+                      checked={!aiChatHidden}
+                      onCheckedChange={(checked) => {
+                        setAiChatHidden(!checked);
+                        try { localStorage.setItem("ai-chat-hidden", checked ? "0" : "1"); } catch { /* ignore */ }
+                      }}
+                    />
+                  </div>
                 </div>
 
               </CardContent>

@@ -45,10 +45,10 @@ export async function GET() {
     const lastCompletion = await prisma.jobCompletion.findFirst({
       where: { youthId: userId },
       orderBy: { completedAt: 'desc' },
-      select: { completedAt: true, job: { select: { title: true } } },
+      select: { completedAt: true, job: { select: { title: true, location: true } } },
     });
     const lastCompletedJob = lastCompletion
-      ? { title: lastCompletion.job.title, completedAt: lastCompletion.completedAt.toISOString() }
+      ? { title: lastCompletion.job.title, completedAt: lastCompletion.completedAt.toISOString(), location: lastCompletion.job.location }
       : null;
 
     // Saved content (uses profileId)

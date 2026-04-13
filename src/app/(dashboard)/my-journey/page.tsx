@@ -2261,6 +2261,9 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </SectionCard>
       )}
 
+      {/* ── Real Career Paths — coming soon teaser ── */}
+      <RealPathsTeaser careerTags={career ? [career.id] : []} />
+
       {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
       <ClarityCompletionCard
         careerTitle={goalTitle}
@@ -2268,6 +2271,35 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         hasMomentum={actions.length > 0}
       />
 
+    </div>
+  );
+}
+
+function RealPathsTeaser({ careerTags }: { careerTags: string[] }) {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/career-paths?all=1")
+      .then((r) => r.json())
+      .then((data) => setCount(data.count ?? 0))
+      .catch(() => setCount(0));
+  }, []);
+
+  return (
+    <div className="mt-6 rounded-xl border border-border/40 bg-card/30 p-4 opacity-70">
+      <div className="flex items-center gap-2 mb-1.5">
+        <Users className="h-4 w-4 text-muted-foreground/50" />
+        <h3 className="text-sm font-semibold text-foreground/70">Real Career Paths</h3>
+        <span className="text-[9px] font-medium text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">Coming Soon</span>
+      </div>
+      <p className="text-xs text-muted-foreground/50 leading-relaxed max-w-md">
+        See how real people got to where you&apos;re heading &mdash; their actual timelines, pivots, and advice. No two paths are the same.
+      </p>
+      {count !== null && count > 0 && (
+        <p className="text-[10px] text-muted-foreground/30 mt-2">
+          {count} {count === 1 ? 'path' : 'paths'} shared so far
+        </p>
+      )}
     </div>
   );
 }
@@ -2355,14 +2387,13 @@ function ClarityCompletionCard({
         <div className="mt-4 rounded-xl border-2 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent p-4 text-center">
           <p className="text-2xl mb-2">🎉</p>
           <p className="text-sm font-bold text-emerald-400 mb-1">
-            Congratulations — you've completed your journey!
+            You&apos;ve explored {careerTitle || 'this career'} from every angle.
           </p>
           <p className="text-xs text-foreground/70 leading-relaxed max-w-sm mx-auto">
-            You've explored, understood, and experienced what it takes to pursue this career.
+            You now know what the role involves, what&apos;s required to get there, and what your personal roadmap looks like.
             This journey is saved in <span className="font-medium text-foreground/85">My Explored Journeys</span> on your dashboard.
-            Whether you commit to this path or explore another — you're ahead of where you started.
           </p>
-          <p className="text-[10px] text-emerald-400/60 mt-2">We wish you the very best.</p>
+          <p className="text-[10px] text-emerald-400/60 mt-2">Curious about another career? Start a new journey anytime — every one you complete makes your picture clearer.</p>
         </div>
       )}
     </div>

@@ -79,8 +79,8 @@ export function ReflectionPanel({
         className={cn(
           "fixed z-40 flex items-center gap-2 rounded-full border bg-card/95 backdrop-blur-sm shadow-lg px-4 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all",
           isMobile
-            ? "bottom-20 right-4"
-            : "bottom-6 right-6"
+            ? "bottom-20 left-4"
+            : "bottom-6 left-6"
         )}
         title="Open reflections"
       >
@@ -100,7 +100,7 @@ export function ReflectionPanel({
         "fixed z-40 flex flex-col border bg-card/95 backdrop-blur-sm shadow-xl rounded-t-xl sm:rounded-xl overflow-hidden transition-all",
         isMobile
           ? "inset-x-0 bottom-0 max-h-[55vh]"
-          : "bottom-6 right-6 w-80 max-h-[50vh]"
+          : "bottom-6 left-6 w-80 max-h-[50vh]"
       )}
     >
       {/* Header */}

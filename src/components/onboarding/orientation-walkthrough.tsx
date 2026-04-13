@@ -51,7 +51,7 @@ const STEPS: WalkthroughStep[] = [
     iconColor: "text-blue-500",
     iconBg: "bg-blue-500/10",
     title: "Dashboard",
-    body: "Your home area. See your saved journeys, track where you are, and pick up where you left off.",
+    body: "Your home area. See your current chosen career, saved journeys, saved content, and pick up where you left off.",
   },
   {
     icon: Route,

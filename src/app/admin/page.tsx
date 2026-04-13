@@ -20,6 +20,7 @@ import {
   Tag,
   Activity,
   Percent,
+  Route,
 } from "lucide-react";
 import {
   LineChart,
@@ -234,6 +235,17 @@ export default function AdminDashboardPage() {
                 </Button>
               ))}
             </div>
+
+            {/* Career Paths Review */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/admin/career-paths")}
+              className="border-slate-600"
+            >
+              <Route className="h-4 w-4 mr-2" />
+              Career Paths
+            </Button>
 
             {/* Refresh Button */}
             <Button

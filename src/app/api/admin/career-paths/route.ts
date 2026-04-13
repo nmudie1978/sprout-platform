@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { isAdminAuthenticated } from "@/lib/admin/auth";
 import { prisma } from "@/lib/prisma";
+
+/** Check either NextAuth ADMIN role or standalone admin session */
+async function isAuthorised(): Promise<boolean> {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.role === "ADMIN") return true;
+  return isAdminAuthenticated();
+}
 
 /**
  * GET /api/admin/career-paths?status=PENDING
  * List contributed paths for admin review.
  */
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") {
+  if (!(await isAuthorised())) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 403 });
   }
 
@@ -28,8 +35,7 @@ export async function GET(req: NextRequest) {
  * Approve or reject a contributed path.
  */
 export async function PATCH(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") {
+  if (!(await isAuthorised())) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 403 });
   }
 
@@ -43,7 +49,7 @@ export async function PATCH(req: NextRequest) {
     data: {
       status,
       reviewedAt: new Date(),
-      reviewedBy: session.user.id,
+      reviewedBy: "admin",
     },
   });
 
