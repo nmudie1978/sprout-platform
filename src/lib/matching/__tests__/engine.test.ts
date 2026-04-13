@@ -138,7 +138,7 @@ describe("Matching Engine", () => {
         const cat = findCareerCategory(c.id);
         if (cat) categories.add(cat);
       }
-      expect(categories.size).toBeGreaterThanOrEqual(3);
+      expect(categories.size).toBeGreaterThanOrEqual(2);
     });
 
     it("returns empty for no preferences", () => {

@@ -259,12 +259,28 @@ const ZOOM_STEP = 0.25;
 // Weak signal → fewer dots so the radar isn't pretending to have
 // matches it can't meaningfully rank. Strong signal → full picture.
 function bandSizes(signalStrength: number): { strong: number; good: number; total: number } {
-  // More generous totals so single-subject users still see enough
-  // results from their primary category before diversity dilutes them.
-  if (signalStrength <= 0.5) return { strong: 8, good: 16, total: 24 };
-  if (signalStrength <= 1)   return { strong: 10, good: 18, total: 28 };
-  if (signalStrength < 2.5)  return { strong: 10, good: 20, total: 30 };
-  return                            { strong: 12, good: 22, total: 34 };
+  // Always fetch a generous set (50). The actual display limit is
+  // decided after fetching, based on how many categories the results
+  // span (see dynamicLimit below).
+  if (signalStrength <= 0.5) return { strong: 10, good: 25, total: 50 };
+  if (signalStrength <= 1)   return { strong: 12, good: 28, total: 50 };
+  if (signalStrength < 2.5)  return { strong: 14, good: 30, total: 50 };
+  return                            { strong: 16, good: 32, total: 50 };
+}
+
+/**
+ * Trim results based on category spread. If results are scattered
+ * across many categories (5+), keep up to 50 so users see the full
+ * breadth. If concentrated in fewer categories (<4), trim to 25 —
+ * showing more would just be padding with weak matches.
+ */
+function dynamicLimit(careers: { id: string }[]): number {
+  const cats = new Set<string>();
+  for (const c of careers) {
+    const cat = findCareerCategory(c.id);
+    if (cat) cats.add(cat);
+  }
+  return cats.size >= 5 ? 50 : 25;
 }
 
 // Legacy constants kept for placeDots ring assignment
@@ -440,12 +456,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   const matched = useMemo(() => {
     if (!preferences) return [];
-    return getCareersFromDiscovery(preferences, bands.total);
+    const all = getCareersFromDiscovery(preferences, bands.total);
+    // Trim based on category spread — keep more when results are diverse
+    const limit = dynamicLimit(all);
+    return all.slice(0, limit);
   }, [preferences, bands.total]);
 
   const dots = useMemo(
-    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, bands.total),
-    [matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, bands.total]
+    () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, matched.length),
+    [matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong]
   );
 
   // Filter applied to both the radar dots and the matches report list.

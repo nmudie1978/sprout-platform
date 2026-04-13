@@ -80,7 +80,54 @@ export const MATCHING_CONFIG: MatchingConfig = {
    * even if the category weight is low.
    */
   explicitBoostFloor: 0.5,
+
+  /**
+   * Small scoring bonus (percentage points) for well-known, aspirational
+   * careers that youth commonly recognise and aspire to. Ensures these
+   * surface ahead of niche/obscure roles when scores are close.
+   * Kept small so it nudges but doesn't override genuine match quality.
+   */
+  popularityBonus: 4,
 };
+
+// ── Popular / well-known careers per category ────────────────────
+// These are the careers a typical 15-23 year old would recognise and
+// might aspire to. They get a small scoring bonus so they surface ahead
+// of niche roles like "QA Engineer" or "Food Quality Assurance Specialist".
+// This is NOT a whitelist — unpopular careers still appear if they score well.
+export const POPULAR_CAREERS: Set<string> = new Set([
+  // Healthcare
+  "doctor", "nurse", "registered-nurse", "dentist", "pharmacist", "physiotherapist",
+  "paramedic", "emt", "midwife", "veterinarian", "psychologist", "optometrist",
+  // Education
+  "primary-teacher", "secondary-teacher", "kindergarten-teacher",
+  // Tech
+  "software-developer", "game-developer", "cybersecurity-analyst", "data-scientist",
+  "ai-engineer", "ux-designer",
+  // Business & Finance
+  "accountant", "marketing-manager", "project-manager", "entrepreneur",
+  "investment-banker", "financial-analyst",
+  // Creative
+  "graphic-designer", "photographer", "journalist", "architect", "interior-designer",
+  "film-director", "animator", "actor", "musician",
+  // Trade & Construction
+  "electrician", "plumber", "carpenter", "mechanic", "welder",
+  // Public Service
+  "police-officer", "firefighter", "paramedic", "lawyer", "judge",
+  "social-worker", "diplomat",
+  // Sport
+  "personal-trainer", "sports-coach", "professional-athlete", "sports-physiotherapist",
+  "fitness-instructor",
+  // Transport & Logistics
+  "pilot", "air-traffic-controller", "ship-captain", "train-driver",
+  // Military
+  "soldier", "officer",
+  // Hospitality
+  "chef", "hotel-manager", "flight-attendant", "travel-agent",
+  // Engineering
+  "civil-engineer", "mechanical-engineer", "electrical-engineer",
+  "aerospace-engineer",
+]);
 
 // ── Work environment dimension mappings ───────────────────────────
 // How each WorkSetting maps to continuous 0-1 dimensions.

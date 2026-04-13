@@ -26,6 +26,7 @@ import {
   SUBJECT_LABELS,
   WORK_STYLE_LABELS,
   ANALYTICAL_KEYWORDS,
+  POPULAR_CAREERS,
 } from "./config";
 import {
   type Career,
@@ -343,6 +344,12 @@ export function scoreCareer(
   // Convert to 0-100 scale
   let matchPercent = Math.round(rawScore * 100);
   matchPercent += interestHits * MATCHING_CONFIG.interestBonus;
+
+  // Popularity bonus — well-known careers nudged ahead of niche roles
+  if (POPULAR_CAREERS.has(career.careerId)) {
+    matchPercent += MATCHING_CONFIG.popularityBonus;
+  }
+
   matchPercent = Math.max(0, Math.min(100, matchPercent));
 
   // Generate explanation
