@@ -1384,14 +1384,6 @@ export default function DashboardPage() {
             iconColor="text-amber-500"
             tooltip={t('smallJobs.tooltip')}
             className="mb-0"
-            action={(() => {
-              const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
-              return totalJobs > 0 ? (
-                <Link href="/applications" className="text-[10px] text-teal-500/70 hover:text-teal-500 transition-colors">
-                  View all &rarr;
-                </Link>
-              ) : undefined;
-            })()}
           >
             <div className="flex gap-2">
               {[
