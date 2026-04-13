@@ -1498,6 +1498,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // per-user via localStorage so the user's choice survives reloads.
   const [roadmapCollapsed, setRoadmapCollapsed] = useState(false);
   const [momentumCollapsed, setMomentumCollapsed] = useState(false);
+  const [claritySubTab, setClaritySubTab] = useState<'momentum' | 'real-paths'>('momentum');
   const { isCollapsed: gCollapsed, toggle: gToggle } = useSectionCollapse(['g-field']);
   useEffect(() => {
     try {
@@ -1911,35 +1912,41 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
       </SectionCard>
 
-      {/* 2. Momentum — suggested + your own progressive steps.
-          The state machinery (load/save/sync to /api/journey/goal-data,
-          status cycling, reflections) is declared above; this block is
-          the rendered surface. Adding a personal step also marks Clarity
-          complete on the dashboard's progress card. */}
+      {/* 2. Momentum + Real Career Paths — tabbed container */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
-        <button
-          type="button"
-          onClick={toggleMomentum}
-          aria-expanded={!momentumCollapsed}
-          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-amber-500/[0.04] transition-colors text-left"
-        >
-          <div className="flex items-center gap-2.5">
-            <Zap className="h-4 w-4 text-amber-400" />
-            <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Momentum</h3>
-            {actions.length > 0 && (
-              <span className="text-[10px] text-muted-foreground/55 ml-1">
-                {actions.filter((a) => statusOf(a) === 'done').length}/{actions.length} done
-              </span>
-            )}
-          </div>
-          <ChevronDown
+        {/* Tab bar */}
+        <div className="flex border-b border-border/20">
+          <button
+            type="button"
+            onClick={() => setClaritySubTab('momentum')}
             className={cn(
-              'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
-              momentumCollapsed && '-rotate-90'
+              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              claritySubTab === 'momentum'
+                ? "text-amber-400 border-b-2 border-amber-400 -mb-px"
+                : "text-muted-foreground/50 hover:text-muted-foreground"
             )}
-          />
-        </button>
-        {!momentumCollapsed && (
+          >
+            <Zap className="h-3.5 w-3.5" />
+            Momentum
+          </button>
+          <button
+            type="button"
+            onClick={() => setClaritySubTab('real-paths')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 px-4 py-3 text-xs font-medium transition-colors",
+              claritySubTab === 'real-paths'
+                ? "text-violet-400 border-b-2 border-violet-400 -mb-px"
+                : "text-muted-foreground/50 hover:text-muted-foreground"
+            )}
+          >
+            <Users className="h-3.5 w-3.5" />
+            Real Career Paths
+          </button>
+        </div>
+
+        {/* Tab content: Momentum */}
+        {claritySubTab === 'momentum' && (
+        <div>
         <div className="p-4 space-y-5">
           <p className="text-xs text-muted-foreground/50 leading-relaxed -mt-1">
             Small, concrete steps you can take right now. Pick a suggestion or add your own — even one action builds real momentum toward your goal.
@@ -2172,95 +2179,105 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             )}
           </div>
         </div>
+        </div>
+        )}
+
+        {/* Tab content: Real Career Paths */}
+        {claritySubTab === 'real-paths' && (
+        <div className="p-4 space-y-4">
+          {/* From the Field — real professional stories */}
+          {careerStories.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Video className="h-3.5 w-3.5 text-rose-400" />
+                <h4 className="text-xs font-semibold text-foreground/80">From the Field</h4>
+                <span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {careerStories.slice(0, 4).map((story) => (
+                  <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
+                    <div className="aspect-video">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${story.videoId}`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={story.headline}
+                      />
+                    </div>
+                    <div className="p-2">
+                      <p className="text-[10px] font-semibold text-foreground/80 mb-0.5 line-clamp-2 leading-tight">{story.headline}</p>
+                      <p className="text-[9px] text-muted-foreground/55 truncate">
+                        {story.name} — {story.jobTitle}
+                        {story.company ? ` at ${story.company}` : ''}
+                        {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Contributed paths */}
+          {contributedPaths.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-3.5 w-3.5 text-violet-400" />
+                <h4 className="text-xs font-semibold text-foreground/80">Real Paths from Real People</h4>
+                <span className="text-[10px] text-muted-foreground/30">{contributedPaths.length} path{contributedPaths.length !== 1 ? 's' : ''}</span>
+              </div>
+              <div className="space-y-3">
+                {contributedPaths.map((path) => (
+                  <div key={path.id} className="rounded-lg border border-border/20 bg-background/20 p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                        {path.displayName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-foreground/90 truncate">{path.displayName}</p>
+                        <p className="text-[10px] text-muted-foreground/60 truncate">
+                          {path.currentTitle} · {path.country}
+                          {!path.didAttendUniversity && ' · No university'}
+                          {path.yearsOfExperience ? ` · ${path.yearsOfExperience} yrs` : ''}
+                        </p>
+                      </div>
+                    </div>
+                    {path.headline && (
+                      <p className="text-[10px] text-foreground/60 italic mb-2">&ldquo;{path.headline}&rdquo;</p>
+                    )}
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                      {(path.steps as { age: number; label: string }[]).map((s, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-[10px]">
+                          <span className="text-muted-foreground/50 tabular-nums w-5 text-right">{s.age}</span>
+                          <div className="h-1 w-1 rounded-full bg-primary/30" />
+                          <span className="text-foreground/70">{s.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {path.advice && (
+                      <p className="text-[10px] text-primary/60 mt-2 pt-2 border-t border-border/10">
+                        &ldquo;{path.advice}&rdquo;
+                      </p>
+                    )}
+                  </div>
+                ))}
+                <p className="text-[10px] text-muted-foreground/30 text-center pt-1">
+                  Know someone whose path could inspire? <a href="/contribute" className="text-primary/60 hover:text-primary transition-colors">Share a career path</a>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Teaser — coming soon */}
+          <RealPathsTeaser careerTags={career ? [career.id] : []} />
+
+          {careerStories.length === 0 && contributedPaths.length === 0 && (
+            <p className="text-xs text-muted-foreground/40 py-4 text-center">No real career paths available for this career yet.</p>
+          )}
+        </div>
         )}
       </SectionCard>
-
-      {/* 3. From the Field — real professional stories */}
-      {careerStories.length > 0 && (
-        <SectionCard>
-          <SectionHeader icon={Video} title="From the Field" badge={<span className="text-[10px] text-muted-foreground/30">{careerStories.length} stories</span>} collapsed={gCollapsed('g-field')} onToggle={() => gToggle('g-field')} />
-          {!gCollapsed('g-field') && <div className="p-4">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {careerStories.slice(0, 4).map((story) => (
-                <div key={story.id} className="rounded-lg border border-border/20 bg-background/20 overflow-hidden">
-                  <div className="aspect-video">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${story.videoId}`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      title={story.headline}
-                    />
-                  </div>
-                  <div className="p-2">
-                    <p className="text-[10px] font-semibold text-foreground/80 mb-0.5 line-clamp-2 leading-tight">{story.headline}</p>
-                    <p className="text-[9px] text-muted-foreground/55 truncate">
-                      {story.name} — {story.jobTitle}
-                      {story.company ? ` at ${story.company}` : ''}
-                      {story.yearsInRole ? ` · ${story.yearsInRole} years` : ''}
-                    </p>
-                    {/* Takeaways hidden at compact size — visible on hover via title */}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>}
-        </SectionCard>
-      )}
-
-      {/* 4. Real Paths — community-contributed career timelines */}
-      {contributedPaths.length > 0 && (
-        <SectionCard>
-          <SectionHeader
-            icon={Users}
-            title="Real Paths from Real People"
-            badge={<span className="text-[10px] text-muted-foreground/30">{contributedPaths.length} path{contributedPaths.length !== 1 ? 's' : ''}</span>}
-            tooltip="Real career timelines contributed by parents and professionals — showing that there is more than one way to get here."
-          />
-          <div className="p-4 space-y-3">
-            {contributedPaths.map((path) => (
-              <div key={path.id} className="rounded-lg border border-border/20 bg-background/20 p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
-                    {path.displayName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-foreground/90 truncate">{path.displayName}</p>
-                    <p className="text-[10px] text-muted-foreground/60 truncate">
-                      {path.currentTitle} · {path.country}
-                      {!path.didAttendUniversity && ' · No university'}
-                      {path.yearsOfExperience ? ` · ${path.yearsOfExperience} yrs` : ''}
-                    </p>
-                  </div>
-                </div>
-                {path.headline && (
-                  <p className="text-[10px] text-foreground/60 italic mb-2">&ldquo;{path.headline}&rdquo;</p>
-                )}
-                <div className="flex flex-wrap gap-x-4 gap-y-1">
-                  {(path.steps as { age: number; label: string }[]).map((s, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-[10px]">
-                      <span className="text-muted-foreground/50 tabular-nums w-5 text-right">{s.age}</span>
-                      <div className="h-1 w-1 rounded-full bg-primary/30" />
-                      <span className="text-foreground/70">{s.label}</span>
-                    </div>
-                  ))}
-                </div>
-                {path.advice && (
-                  <p className="text-[10px] text-primary/60 mt-2 pt-2 border-t border-border/10">
-                    &ldquo;{path.advice}&rdquo;
-                  </p>
-                )}
-              </div>
-            ))}
-            <p className="text-[10px] text-muted-foreground/30 text-center pt-1">
-              Know someone whose path could inspire? <a href="/contribute" className="text-primary/60 hover:text-primary transition-colors">Share a career path</a>
-            </p>
-          </div>
-        </SectionCard>
-      )}
-
-      {/* ── Real Career Paths — coming soon teaser ── */}
-      <RealPathsTeaser careerTags={career ? [career.id] : []} />
 
       {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
       <ClarityCompletionCard
