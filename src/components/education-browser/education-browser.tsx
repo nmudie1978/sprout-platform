@@ -101,8 +101,7 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     return map;
   }, [allProgrammes, foundation]);
 
-  type ViewMode = 'list' | 'cards';
-  const viewMode: ViewMode = 'list';
+  const viewMode = 'list' as 'list' | 'cards';
 
   const [filters, setFilters] = useState<FilterState>({
     search: '',
