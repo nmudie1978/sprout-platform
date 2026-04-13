@@ -226,7 +226,7 @@ function LibraryCard({
   const t = useTranslations();
   const [view, setView] = useState<'list' | 'grid'>('list');
   const [libPage, setLibPage] = useState(0);
-  const PAGE_SIZE = 3;
+  const PAGE_SIZE = 6;
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const page = Math.min(libPage, totalPages - 1);
   const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
