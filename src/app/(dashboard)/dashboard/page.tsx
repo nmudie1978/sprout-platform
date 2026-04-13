@@ -1384,7 +1384,6 @@ export default function DashboardPage() {
             iconColor="text-amber-500"
             tooltip={t('smallJobs.tooltip')}
             className="mb-0"
-            fixedHeight="h-[180px] overflow-y-auto"
             action={(() => {
               const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
               return totalJobs > 0 ? (
