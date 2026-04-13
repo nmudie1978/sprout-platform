@@ -871,7 +871,7 @@ export default function DashboardPage() {
           <GlassCard data-spotlight="journey-card" className={cn("p-5 sm:p-6 transition-all duration-300 border-teal-500/30 shadow-[0_0_25px_rgba(20,184,166,0.12),0_0_50px_rgba(20,184,166,0.06)] ring-1 ring-teal-500/15", goalTitle ? "hover:border-teal-500/45 hover:shadow-[0_0_35px_rgba(20,184,166,0.18),0_0_70px_rgba(20,184,166,0.08)]" : "hover:border-teal-500/35")}>
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-muted/30">
-                <TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" title="Your journey tracks progress through Discover, Understand, and Clarity." />
+                <span title="Your journey tracks progress through Discover, Understand, and Clarity."><TrendingUp className="h-4 w-4 text-muted-foreground cursor-help" /></span>
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
@@ -1015,7 +1015,7 @@ export default function DashboardPage() {
           {goalCareer ? (
             <GlassCard className="p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Search className="h-3.5 w-3.5 text-teal-500 cursor-help" title="Key facts about your chosen career — salary, growth, sector, and pension." />
+                <span title="Key facts about your chosen career — salary, growth, sector, and pension."><Search className="h-3.5 w-3.5 text-teal-500 cursor-help" /></span>
                 <h3 className="text-xs font-semibold">Career Snapshot</h3>
               </div>
               {/* Career snapshot stats */}
@@ -1108,7 +1108,7 @@ export default function DashboardPage() {
             return (
               <GlassCard className="p-3 h-full flex flex-col border-border/30">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Target className="h-3.5 w-3.5 text-violet-500 cursor-help" title="Every journey you start is saved here. Switch between them anytime." />
+                  <span title="Every journey you start is saved here. Switch between them anytime."><Target className="h-3.5 w-3.5 text-violet-500 cursor-help" /></span>
                   <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
                   <span className="flex-1" />
                   {totalPages > 1 && (
@@ -1206,7 +1206,7 @@ export default function DashboardPage() {
           {/* Saved Careers — under Explored Journeys */}
           <GlassCard className="p-3">
             <div className="flex items-center gap-2 mb-1.5">
-              <Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" title={t('savedCareers.tooltip')} />
+              <span title={t('savedCareers.tooltip')}><Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" /></span>
               <h3 className="text-xs font-semibold">{t('savedCareers.title')}</h3>
             </div>
             {savedCareers.length > 0 ? (
@@ -1273,7 +1273,7 @@ export default function DashboardPage() {
             const inner = (
               <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" title={t('smallJobs.tooltip')} />
+                  <span title={t('smallJobs.tooltip')}><Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" /></span>
                   <h3 className="text-xs font-semibold">{t('smallJobs.title')}</h3>
                   <span className="flex-1" />
                   {totalJobs > 0 && (

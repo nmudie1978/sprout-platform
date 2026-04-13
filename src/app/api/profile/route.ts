@@ -32,13 +32,6 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // PROOF: Log avatar loaded from DB
-    console.log("AVATAR LOADED FROM DB:", {
-      userId: session.user.id,
-      avatarId: profile?.avatarId ?? 'NO_PROFILE',
-      profileExists: !!profile
-    });
-
     const response = NextResponse.json(profile);
     // No caching to ensure avatar changes are reflected immediately
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -227,9 +220,6 @@ export async function PATCH(req: NextRequest) {
           profileVisibility: false,
         },
       });
-
-      // PROOF: Log avatar save success
-      console.log("AVATAR SAVED TO DB:", { avatarId: profile.avatarId, profileId: profile.id });
 
       const response = NextResponse.json(profile);
       response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
