@@ -369,18 +369,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.65 }}
         className="mb-4 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-emerald-200/50 dark:border-emerald-800/30 bg-gradient-to-br from-background via-background to-emerald-50/30 dark:to-emerald-950/10 p-3 sm:p-4">
-          <SectionHeader
-            icon={Lightbulb}
-            label="Explore"
-            title="Go Further"
-            subtitle="Explore global perspectives and career possibilities beyond borders"
-            gradient="from-emerald-400 via-teal-400 to-emerald-400"
-            iconBg="bg-emerald-100 dark:bg-emerald-900/30"
-            iconColor="text-emerald-600 dark:text-emerald-400"
-            labelColor="text-emerald-500/80"
-          />
-
+        <div className="rounded-2xl border border-border/40 bg-card p-3 sm:p-4">
           <GoFurtherTabs />
         </div>
       </motion.section>
