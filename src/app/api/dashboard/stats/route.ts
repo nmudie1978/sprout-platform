@@ -41,6 +41,16 @@ export async function GET() {
       done: applications.filter((a) => ['WITHDRAWN', 'REJECTED'].includes(a.status)).length,
     };
 
+    // Last completed job
+    const lastCompletion = await prisma.jobCompletion.findFirst({
+      where: { youthId: userId },
+      orderBy: { completedAt: 'desc' },
+      select: { completedAt: true, job: { select: { title: true } } },
+    });
+    const lastCompletedJob = lastCompletion
+      ? { title: lastCompletion.job.title, completedAt: lastCompletion.completedAt.toISOString() }
+      : null;
+
     // Saved content (uses profileId)
     let savedSummary = { total: 0, byType: { articles: 0, videos: 0, podcasts: 0, shorts: 0 } };
     if (profileId) {
@@ -140,6 +150,7 @@ export async function GET() {
       appStats,
       savedSummary,
       savedItemsList,
+      lastCompletedJob,
       exploredCareers: savedIndustries.map((i) => i.industryId),
       careerInterests,
       recentActivity: recentActivity.slice(0, 5),

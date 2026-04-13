@@ -517,6 +517,7 @@ export default function DashboardPage() {
     savedItemsList: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
     exploredCareers: string[];
     careerInterests: string[];
+    lastCompletedJob: { title: string; completedAt: string } | null;
     recentActivity: { type: string; title: string; time: string }[];
   }>({
     queryKey: ["dashboard-stats"],
@@ -689,7 +690,8 @@ export default function DashboardPage() {
     session?.user?.youthProfile?.displayName ||
     session?.user?.name ||
     "";
-  const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  const firstName = rawName.split(/\s+/)[0];
+  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
 
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
@@ -1404,6 +1406,20 @@ export default function DashboardPage() {
                   <p className="text-[8px] text-muted-foreground/40 uppercase tracking-wider">{stat.label}</p>
                 </div>
               ))}
+            </div>
+            {/* Last completed job */}
+            <div className="mt-2 pt-2 border-t border-border/20">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-3 w-3 text-emerald-500/60 shrink-0" />
+                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider shrink-0">Last completed</span>
+                {dashboardStats?.lastCompletedJob ? (
+                  <span className="text-[11px] text-foreground/70 truncate ml-auto">
+                    {dashboardStats.lastCompletedJob.title}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-muted-foreground/30 ml-auto">None yet</span>
+                )}
+              </div>
             </div>
           </DashboardSection>
         </div>
