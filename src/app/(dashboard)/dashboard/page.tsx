@@ -230,27 +230,6 @@ function LibraryCard({
 
   return (
     <div>
-      {/* Pagination — only if multiple pages */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-end gap-1 mb-2">
-          <button
-            onClick={() => setLibPage((p) => Math.max(0, p - 1))}
-            disabled={page === 0}
-            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-          >
-            <ChevronLeft className="h-3 w-3" />
-          </button>
-          <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
-          <button
-            onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={page >= totalPages - 1}
-            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-          >
-            <ChevronRight className="h-3 w-3" />
-          </button>
-        </div>
-      )}
-
       {items.length > 0 ? (
         view === 'list' ? (
           <div className="space-y-1.5">
@@ -325,6 +304,13 @@ function LibraryCard({
         )
       ) : (
         <p className="text-xs text-muted-foreground/50">{t('library.emptyState')}</p>
+      )}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1 mt-2">
+          <button onClick={() => setLibPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronLeft className="h-3 w-3" /></button>
+          <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+          <button onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"><ChevronRight className="h-3 w-3" /></button>
+        </div>
       )}
     </div>
   );
