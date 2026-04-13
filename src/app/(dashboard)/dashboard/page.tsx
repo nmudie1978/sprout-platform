@@ -8,9 +8,10 @@ import { toast } from "sonner";
  * Layout:
  * 1. Greeting header with date
  * 2. My Journey card (circular progress, stage, progress bar)
- * 3. Goal cards (primary + secondary)
- * 4. Careers Explored + My Library
- * 5. Small Jobs stats + Activity
+ * 3. Career Snapshot (left) + Previously Explored Journeys (right)
+ * 4. My Library (left) + Saved Careers (right)
+ * 5. My Small Jobs (dedicated section)
+ * 6. Industry Insights Ticker
  */
 
 import { useSession } from "next-auth/react";
@@ -90,6 +91,79 @@ function GlassCard({
       >
         {children}
       </div>
+    </div>
+  );
+}
+
+// ── Dashboard Section ────────────────────────────────────────────────
+// A bordered container with a section header — provides clear visual
+// separation between dashboard areas (like the reference dashboard).
+function DashboardSection({
+  title,
+  icon: Icon,
+  iconColor = "text-muted-foreground/60",
+  tooltip,
+  action,
+  children,
+  className = "",
+}: {
+  title: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  iconColor?: string;
+  tooltip?: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mb-4", className)}>
+      <div className="flex items-center justify-between mb-2 px-0.5">
+        <div className="flex items-center gap-2">
+          {Icon && (
+            <span title={tooltip}>
+              <Icon className={cn("h-3.5 w-3.5", iconColor, tooltip && "cursor-help")} />
+            </span>
+          )}
+          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+            {title}
+          </h3>
+        </div>
+        {action}
+      </div>
+      <div className="rounded-2xl border border-border/30 bg-card/50 p-3 sm:p-4">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ── Stat Card ────────────────────────────────────────────────────────
+// Individual metric card for the top row (salary, growth, sector, etc.)
+function StatCard({
+  label,
+  value,
+  sublabel,
+  icon: Icon,
+  iconColor = "text-teal-500",
+}: {
+  label: string;
+  value: string;
+  sublabel?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  iconColor?: string;
+}) {
+  return (
+    <div className="rounded-xl border border-border/30 bg-card p-3 text-center">
+      {Icon && (
+        <div className="flex justify-center mb-1.5">
+          <Icon className={cn("h-4 w-4", iconColor)} />
+        </div>
+      )}
+      <p className="text-[9px] text-muted-foreground/50 uppercase tracking-wider mb-0.5">{label}</p>
+      <p className="text-sm font-bold text-foreground/85 leading-tight">{value}</p>
+      {sublabel && (
+        <p className="text-[9px] text-muted-foreground/40 mt-0.5">{sublabel}</p>
+      )}
     </div>
   );
 }
@@ -974,108 +1048,95 @@ export default function DashboardPage() {
           );
         })()}
 
-        {/* ── 2. Who Am I ────────────────────────────────────── */}
+        {/* ── 2. Career Snapshot — stat cards row ────────────── */}
+        <DashboardSection
+          title="Career Snapshot"
+          icon={Search}
+          iconColor="text-teal-500"
+          tooltip="Key facts about your chosen career — salary, growth, sector, and pension."
+        >
+          {goalCareer ? (
+            (() => {
+              const sector = getSectorForCareer(goalCareer.id);
+              const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
+              const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
+              return (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <StatCard
+                    label="Salary"
+                    value={goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').replace(/(\d{3}),000/g, (_, n: string) => n + 'k').replace(/,000/g, 'k').trim()}
+                    sublabel="kr / year"
+                    icon={TrendingUp}
+                  />
+                  <StatCard
+                    label="Growth"
+                    value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)}
+                    sublabel="Job outlook"
+                    icon={Rocket}
+                    iconColor="text-emerald-500"
+                  />
+                  <StatCard
+                    label="Sector"
+                    value={sectorLabel}
+                    sublabel={sector === 'public' ? 'Government funded' : sector === 'private' ? 'Commercial' : 'Both sectors'}
+                    icon={Briefcase}
+                    iconColor="text-blue-500"
+                  />
+                  <StatCard
+                    label="Pension"
+                    value={pensionLabel}
+                    sublabel={sector === 'public' ? 'Defined benefit' : 'Employer dependent'}
+                    icon={CheckCircle2}
+                    iconColor="text-violet-500"
+                  />
+                </div>
+              );
+            })()
+          ) : (
+            <p className="text-xs text-muted-foreground/40 py-2">
+              Choose a Primary Goal to see career info
+            </p>
+          )}
+        </DashboardSection>
+
+        {/* ── 3. Who Am I ────────────────────────────────────── */}
         {discoverData?.hasProfile && discoverData.summary && (
-          <Link href="/my-journey" className="block mb-6 group">
-            <GlassCard className="p-4 hover:border-border/60 transition-all">
-              <div className="flex items-start gap-3">
-                <div className="p-1.5 rounded-lg bg-muted/20 shrink-0 mt-0.5">
-                  <Sparkles className="h-3.5 w-3.5 text-muted-foreground/60" />
+          <DashboardSection
+            title="Who Am I"
+            icon={Sparkles}
+            iconColor="text-muted-foreground/60"
+          >
+            <Link href="/my-journey" className="block group">
+              <p className="text-xs text-muted-foreground/70 leading-relaxed">
+                {discoverData.summary}
+              </p>
+              {discoverData.signals?.topTags && discoverData.signals.topTags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {discoverData.signals.topTags.slice(0, 6).map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-muted/20 text-muted-foreground/60"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-1">
-                    Who Am I
-                  </p>
-                  <p className="text-xs text-muted-foreground/70 leading-relaxed">
-                    {discoverData.summary}
-                  </p>
-                  {discoverData.signals?.topTags && discoverData.signals.topTags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {discoverData.signals.topTags.slice(0, 6).map((tag) => (
-                        <span
-                          key={tag}
-                          className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-muted/20 text-muted-foreground/60"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </GlassCard>
-          </Link>
+              )}
+            </Link>
+          </DashboardSection>
         )}
 
-        {/* ── 3. Career Snapshot + Library (left) / Explored Journeys (right) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start mb-6">
-          {/* Left column: Career Snapshot + My Library */}
-          <div className="space-y-3">
-          {/* Career Snapshot */}
-          {goalCareer ? (
-            <GlassCard className="p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <span title="Key facts about your chosen career — salary, growth, sector, and pension."><Search className="h-3.5 w-3.5 text-teal-500 cursor-help" /></span>
-                <h3 className="text-xs font-semibold">Career Snapshot</h3>
-              </div>
-              {/* Career snapshot stats */}
-              {(() => {
-                const sector = getSectorForCareer(goalCareer.id);
-                const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
-                const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
-                return (
-                  <div className="grid grid-cols-4 gap-2 mb-2">
-                    <div className="text-center">
-                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Salary</p>
-                      <p className="text-[11px] font-semibold text-foreground/75">{goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').replace(/(\d{3}),000/g, (_, n) => n + 'k').replace(/,000/g, 'k').trim()}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Growth</p>
-                      <p className="text-[11px] font-semibold text-foreground/75 capitalize">{goalCareer.growthOutlook}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Sector</p>
-                      <p className="text-[11px] font-semibold text-foreground/75">{sectorLabel}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Pension</p>
-                      <p className="text-[11px] font-semibold text-foreground/75">{pensionLabel}</p>
-                    </div>
-                  </div>
-                );
-              })()}
-
-            </GlassCard>
-          ) : (
-            <GlassCard className="p-3 h-full">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Search className="h-3.5 w-3.5 text-teal-500" />
-                <h3 className="text-xs font-semibold">Career Snapshot</h3>
-              </div>
-              <p className="text-xs text-muted-foreground/40">
-                Choose a Primary Goal to see career info
-              </p>
-            </GlassCard>
-          )}
-
-          {/* My Library — under Career Snapshot */}
-          <LibraryCard items={savedItemsList} total={savedSummary.total} />
-          </div>
-
-          {/* Right column: Previously Explored Journeys + Saved Careers */}
-          <div className="space-y-3">
+        {/* ── 4. Explored Journeys + Saved Careers ────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {/* Previously Explored Journeys */}
+          <DashboardSection
+            title="Explored Journeys"
+            icon={Target}
+            iconColor="text-violet-500"
+            tooltip="Every journey you start is saved here. Switch between them anytime."
+            className="mb-0"
+          >
           {(() => {
-            // Snapshot visibility is governed by a single predicate:
-            // `isJourneySnapshotWorthy` (see src/lib/journey/lens-progress.ts).
-            // A career appears here only once it has reached one of
-            // the three approved checkpoints:
-            //   - Discover YES
-            //   - Understand YES
-            //   - Clarity 2/2 tasks complete
-            // Per-goal rows in JourneyGoalData exist for data
-            // persistence (roadmap cards, foundation mirror) but are
-            // invisible to this list until a checkpoint fires.
             const allExplored = exploredGoalsData?.goals ?? [];
             const exploredGoals = allExplored.filter((g) =>
               isJourneySnapshotWorthy(g.goalTitle),
@@ -1083,16 +1144,9 @@ export default function DashboardPage() {
             const allCareers = getAllCareers();
             if (exploredGoals.length === 0) {
               return (
-                <GlassCard className="p-4 h-full border-border/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="h-3.5 w-3.5 text-teal-500" />
-                    <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
-                  </div>
-                  <p className="text-xs text-muted-foreground/50 mt-1">{t('exploredJourneys.emptyState')}</p>
-                </GlassCard>
+                <p className="text-xs text-muted-foreground/50">{t('exploredJourneys.emptyState')}</p>
               );
             }
-            // Active goal first, then rest by most recent
             const sorted = [...exploredGoals].sort((a, b) => {
               const aActive = a.goalTitle === goalTitle;
               const bActive = b.goalTitle === goalTitle;
@@ -1106,35 +1160,8 @@ export default function DashboardPage() {
             const pageGoals = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
             return (
-              <GlassCard className="p-3 h-full flex flex-col border-border/30">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span title="Every journey you start is saved here. Switch between them anytime."><Target className="h-3.5 w-3.5 text-violet-500 cursor-help" /></span>
-                  <h3 className="text-xs font-semibold">Previously Explored Journeys</h3>
-                  <span className="flex-1" />
-                  {totalPages > 1 && (
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                        className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-                      >
-                        <ChevronLeft className="h-3 w-3" />
-                      </button>
-                      <span className="text-[9px] text-muted-foreground/30 tabular-nums">
-                        {page + 1}/{totalPages}
-                      </span>
-                      <button
-                        onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
-                        disabled={page >= totalPages - 1}
-                        className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-                      >
-                        <ChevronRight className="h-3 w-3" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                {/* Compact table */}
-                <div className="mt-1.5 rounded-lg border border-border/60 overflow-hidden">
+              <>
+                <div className="rounded-lg border border-border/60 overflow-hidden">
                   <table className="w-full text-left">
                     <thead>
                       <tr className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
@@ -1148,13 +1175,6 @@ export default function DashboardPage() {
                       {pageGoals.map((goal) => {
                         const career = allCareers.find((c) => c.title === goal.goalTitle);
                         const isCurrentGoal = goal.goalTitle === goalTitle;
-                        // Stage label derived from the highest reached
-                        // checkpoint (not the next-to-do stage). Rows
-                        // that haven't reached any checkpoint have
-                        // already been filtered out above, so
-                        // journeyStageLabel() will always return a
-                        // value here — the `?? ...` fallback is
-                        // defensive only.
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
                         const stageDotColor =
@@ -1199,19 +1219,41 @@ export default function DashboardPage() {
                     </tbody>
                   </table>
                 </div>
-              </GlassCard>
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <button
+                      onClick={() => setJourneyPage((p) => Math.max(0, p - 1))}
+                      disabled={page === 0}
+                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                    >
+                      <ChevronLeft className="h-3 w-3" />
+                    </button>
+                    <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+                    <button
+                      onClick={() => setJourneyPage((p) => Math.min(totalPages - 1, p + 1))}
+                      disabled={page >= totalPages - 1}
+                      className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+                    >
+                      <ChevronRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+              </>
             );
           })()}
+          </DashboardSection>
 
-          {/* Saved Careers — under Explored Journeys */}
-          <GlassCard className="p-3">
-            <div className="flex items-center gap-2 mb-1.5">
-              <span title={t('savedCareers.tooltip')}><Heart className="h-3.5 w-3.5 text-pink-500 cursor-help" /></span>
-              <h3 className="text-xs font-semibold">{t('savedCareers.title')}</h3>
-            </div>
+          {/* Saved Careers */}
+          <DashboardSection
+            title={t('savedCareers.title')}
+            icon={Heart}
+            iconColor="text-pink-500"
+            tooltip={t('savedCareers.tooltip')}
+            className="mb-0"
+          >
             {savedCareers.length > 0 ? (
               <>
-                <div className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10 mt-1.5">
+                <div className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10">
                   {savedCareersVisible.map((c) => (
                     <button
                       key={c.careerId}
@@ -1237,7 +1279,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
                 {savedCareersPageCount > 1 && (
-                  <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-border/30">
+                  <div className="flex items-center justify-center gap-2 mt-2">
                     <button
                       type="button"
                       onClick={() => setSavedCareersPage((p) => Math.max(0, p - 1))}
@@ -1263,48 +1305,57 @@ export default function DashboardPage() {
                 )}
               </>
             ) : (
-              <p className="text-xs text-muted-foreground/50 mt-1">{t('savedCareers.emptyState')}</p>
+              <p className="text-xs text-muted-foreground/50">{t('savedCareers.emptyState')}</p>
             )}
-          </GlassCard>
+          </DashboardSection>
+        </div>
 
-          {/* My Small Jobs — under Saved Careers */}
-          {(() => {
-            const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
-            const inner = (
-              <GlassCard className={cn("p-3", totalJobs > 0 && "hover:border-border/60 transition-all")}>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span title={t('smallJobs.tooltip')}><Briefcase className="h-3.5 w-3.5 text-muted-foreground/60 cursor-help" /></span>
-                  <h3 className="text-xs font-semibold">{t('smallJobs.title')}</h3>
-                  <span className="flex-1" />
-                  {totalJobs > 0 && (
-                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">{totalJobs}</span>
-                  )}
-                </div>
-                <div className="grid grid-cols-4 gap-1 text-center">
-                  {[
-                    { label: t('smallJobs.applied'), value: appStats.applied },
-                    { label: t('smallJobs.waiting'), value: appStats.waiting },
-                    { label: t('smallJobs.accepted'), value: appStats.accepted },
-                    { label: t('smallJobs.done'), value: appStats.done },
-                  ].map((stat) => (
-                    <div key={stat.label}>
-                      <p className="text-xs font-semibold text-foreground/70 tabular-nums">{stat.value}</p>
-                      <p className="text-[9px] text-muted-foreground/40 leading-tight">{stat.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-            );
-            return totalJobs > 0 ? (
-              <Link href="/applications" className="block group">{inner}</Link>
-            ) : inner;
-          })()}
-          </div>
+        {/* ── 5. My Library + Small Jobs ───────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <DashboardSection
+            title="My Library"
+            icon={BookmarkCheck}
+            iconColor="text-blue-500"
+            tooltip="Articles, videos, and resources you've saved from Industry Insights."
+            className="mb-0"
+            action={savedSummary.total > 0 ? (
+              <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
+            ) : undefined}
+          >
+            <LibraryCard items={savedItemsList} total={savedSummary.total} />
+          </DashboardSection>
+
+          <DashboardSection
+            title={t('smallJobs.title')}
+            icon={Briefcase}
+            iconColor="text-amber-500"
+            tooltip={t('smallJobs.tooltip')}
+            className="mb-0"
+            action={(() => {
+              const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
+              return totalJobs > 0 ? (
+                <Link href="/applications" className="text-[10px] text-teal-500/70 hover:text-teal-500 transition-colors">
+                  View all &rarr;
+                </Link>
+              ) : undefined;
+            })()}
+          >
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                { label: t('smallJobs.applied'), value: appStats.applied },
+                { label: t('smallJobs.waiting'), value: appStats.waiting },
+                { label: t('smallJobs.accepted'), value: appStats.accepted },
+                { label: t('smallJobs.done'), value: appStats.done },
+              ].map((stat) => (
+                <StatCard key={stat.label} label={stat.label} value={String(stat.value)} />
+              ))}
+            </div>
+          </DashboardSection>
         </div>
 
       </div>
 
-      {/* ── 5. Industry Insights Ticker ─────────────────────── */}
+      {/* ── 6. Industry Insights Ticker ─────────────────────── */}
       <DidYouKnowCard />
 
       {/* Career Detail Sheet */}
