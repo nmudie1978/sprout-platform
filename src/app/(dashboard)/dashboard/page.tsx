@@ -80,9 +80,9 @@ function GlassCard({
     <div className="relative">
       <div
         className={cn(
-          "relative bg-card border border-border/50 rounded-2xl",
-          "shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
-          "hover:shadow-[0_0_16px_rgba(255,255,255,0.05),0_0_32px_rgba(255,255,255,0.025)]",
+          "relative bg-card border border-border rounded-2xl",
+          "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
+          "hover:shadow-[0_0_20px_rgba(20,184,166,0.1),0_0_40px_rgba(20,184,166,0.05)]",
           "transition-shadow duration-300",
           className,
         )}
@@ -131,10 +131,8 @@ function DashboardSection({
         {action}
       </div>
       <div className={cn(
-        "rounded-2xl border border-border/50 bg-card p-3 sm:p-4",
-        "shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
-        "dark:shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
-        "light:shadow-[0_0_12px_rgba(0,0,0,0.04),0_0_24px_rgba(0,0,0,0.02)]",
+        "rounded-2xl border border-border bg-card p-3 sm:p-4",
+        "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
       )}>
         {children}
       </div>
@@ -158,7 +156,7 @@ function StatCard({
   iconColor?: string;
 }) {
   return (
-    <div className="rounded-xl border border-border/30 bg-card p-3 text-center">
+    <div className="rounded-xl border border-border bg-card p-3 text-center shadow-[0_0_10px_rgba(20,184,166,0.04)]">
       {Icon && (
         <div className="flex justify-center mb-1.5">
           <Icon className={cn("h-4 w-4", iconColor)} />
@@ -1069,7 +1067,13 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <StatCard
                     label="Salary"
-                    value={goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').replace(/(\d{3}),000/g, (_, n: string) => n + 'k').replace(/,000/g, 'k').trim()}
+                    value={goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
+                      const n = parseInt(m.replace(/,/g, ''), 10);
+                      if (isNaN(n)) return m;
+                      if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
+                      if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+                      return String(n);
+                    })}
                     sublabel="kr / year"
                     icon={TrendingUp}
                   />
