@@ -516,8 +516,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   return (
     <>
     <div className="rounded-2xl border bg-card overflow-hidden">
-      <RadarGuideTips />
-
       {/* Primary Goal indicator — always visible when a goal is set */}
       {goalsData?.primaryGoal?.title && (
         <Link
@@ -680,6 +678,16 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <Settings2 className="h-3 w-3 mr-1" />
             What I like
           </Button>
+          {/* Help — glowing icon with tooltip explaining how to use the radar */}
+          <button
+            type="button"
+            className="relative h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors group"
+            title="Tap any dot to explore a career. Dots closer to the centre are stronger matches. Pink = top match, gold ring = your Primary Goal. Use filters to focus on specific tiers."
+            aria-label="How to use Career Radar"
+          >
+            <HelpCircle className="h-3.5 w-3.5 text-teal-400" />
+            <span className="absolute inset-0 rounded-md animate-pulse bg-teal-400/10 pointer-events-none" />
+          </button>
         </div>
       </div>
 
