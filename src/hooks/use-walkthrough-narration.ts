@@ -39,7 +39,7 @@ interface StepContent {
 
 const INITIAL_STATE: WalkthroughNarrationState = {
   isPlaying: false,
-  isMuted: false,
+  isMuted: true, // starts muted — user must opt in
   isLoading: false,
   progress: 0,
   error: null,
@@ -54,7 +54,7 @@ export function useWalkthroughNarration(
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const blobCacheRef = useRef<Map<number, string>>(new Map());
   const prefetchingRef = useRef<Set<number>>(new Set());
-  const mutedRef = useRef(false);
+  const mutedRef = useRef(true); // starts muted — user must opt in
 
   // ── Cleanup ────────────────────────────────────────────────────────
 
@@ -189,15 +189,19 @@ export function useWalkthroughNarration(
     [steps, fetchAudio, prefetch],
   );
 
-  // ── Auto-play on step change ───────────────────────────────────────
+  // ── Pre-fetch on mount (silent — no auto-play) ─────────────────────
 
   useEffect(() => {
-    // Eagerly pre-fetch step 0 and 1 on mount
     prefetch(0);
     prefetch(1);
   }, [prefetch]);
 
+  // ── Play on step change only if user has opted in (unmuted) ────────
+
+  const activatedRef = useRef(false); // true once user clicks the speaker
   useEffect(() => {
+    if (!activatedRef.current) return; // never auto-play before user opts in
+    if (mutedRef.current) return;
     playStep(currentStep);
   }, [currentStep, playStep]);
 
@@ -215,13 +219,14 @@ export function useWalkthroughNarration(
         isPlaying: false,
       }));
     } else {
+      activatedRef.current = true; // user has opted in
       setState((s) => ({ ...s, isMuted: false }));
-      // Resume playing current step
       playStep(currentStep);
     }
   }, [currentStep, playStep]);
 
   const replay = useCallback(() => {
+    activatedRef.current = true;
     if (mutedRef.current) {
       mutedRef.current = false;
       setState((s) => ({ ...s, isMuted: false }));
