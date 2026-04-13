@@ -585,9 +585,9 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["education-context"] });
-      // Nudge the user toward My Journey so they start exploring the
-      // career in depth. The toast stays for 8s and has a clickable
-      // action that navigates directly.
+      queryClient.invalidateQueries({ queryKey: ["career-insights"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
       toast.success(`${goalTitle} set as your Primary Goal`, {
         description: t('switchGoal.toastDescription'),
         duration: 8000,
@@ -596,6 +596,12 @@ export default function DashboardPage() {
           onClick: () => window.location.assign("/my-journey#discover"),
         },
       });
+    },
+    onError: () => {
+      toast.error('Failed to switch goal. Please try again.');
+    },
+    onSettled: () => {
+      setSwitchConfirm(null);
     },
   });
 
@@ -1190,10 +1196,7 @@ export default function DashboardPage() {
                         const isCurrentGoal = goal.goalTitle === goalTitle;
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
-                        const stageDotColor =
-                          stageLabel === 'Complete'
-                            ? 'bg-foreground/60'
-                            : 'bg-muted-foreground/30';
+                        const stageNumber = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 3 : stageLabel === 'Understand' ? 2 : 1;
                         return (
                           <tr
                             key={goal.goalId}
@@ -1214,14 +1217,10 @@ export default function DashboardPage() {
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className={cn("inline-block h-2 w-2 rounded-full", stageDotColor)} title={stageLabel} />
+                              <span className="text-[10px] font-medium text-muted-foreground/50" title={stageLabel}>{stageNumber}</span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              {isCurrentGoal ? (
-                                <span className="text-[8px] font-medium text-foreground/70 bg-muted/40 px-1.5 py-0.5 rounded-full">Primary Goal</span>
-                              ) : (
-                                <span className="text-[8px] text-muted-foreground/40">Saved</span>
-                              )}
+                              <span className="text-[8px] text-muted-foreground/40">Saved</span>
                             </td>
                             <td className="px-2 py-1.5">
                               {!isCurrentGoal && (
@@ -1428,7 +1427,7 @@ export default function DashboardPage() {
 
       {/* Switch Journey Confirmation */}
       {switchConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSwitchConfirm(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => { if (!switchGoalMutation.isPending) setSwitchConfirm(null); }}>
           <div className="bg-card border border-border rounded-2xl p-5 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{switchConfirm.emoji}</span>
@@ -1445,18 +1444,17 @@ export default function DashboardPage() {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setSwitchConfirm(null)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors"
+                disabled={switchGoalMutation.isPending}
+                className="px-3 py-1.5 text-xs rounded-lg border border-border/50 text-muted-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  switchGoalMutation.mutate(switchConfirm.goalTitle);
-                  setSwitchConfirm(null);
-                }}
-                className="px-3 py-1.5 text-xs rounded-lg bg-foreground/90 hover:bg-foreground text-background font-medium transition-colors"
+                onClick={() => switchGoalMutation.mutate(switchConfirm.goalTitle)}
+                disabled={switchGoalMutation.isPending}
+                className="px-3 py-1.5 text-xs rounded-lg bg-foreground/90 hover:bg-foreground text-background font-medium transition-colors disabled:opacity-50"
               >
-                Switch Primary Goal
+                {switchGoalMutation.isPending ? 'Switching...' : 'Switch Primary Goal'}
               </button>
             </div>
           </div>
