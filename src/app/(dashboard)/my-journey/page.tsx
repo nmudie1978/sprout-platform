@@ -653,7 +653,7 @@ function DiscoverTab({
                   <div className="w-full rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5">
                     <div className="flex items-center justify-center gap-1.5 mb-1.5">
                       <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider text-center">
-                        Path to {career.title}
+                        Path
                         {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
                       </p>
                       {/* Info-icon tooltip matching the pattern used by
