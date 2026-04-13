@@ -8164,38 +8164,31 @@ export function getCareerPeopleIntensity(career: Career): PeopleIntensity {
 //     audit found that prior to normalisation, computing handed out
 //     9 total points while music handed out 4 — that's a 2.25× advantage
 //     to anyone picking computing, before any boost lists kicked in.
+// ── Subject → Category Weights ──────────────────────────────────────
+// Scale: 4 = core pathway, 3 = strong link, 2 = moderate, 1 = tangential.
+// MILITARY_DEFENCE should only be 1 for any subject (tangential at most)
+// unless the subject is genuinely a core military pathway (none are).
 const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, number>>> = {
-  biology:      { HEALTHCARE_LIFE_SCIENCES: 4, SOCIAL_CARE_COMMUNITY: 1, MANUFACTURING_ENGINEERING: 1, SPORT_FITNESS: 1 },
-  chemistry:    { HEALTHCARE_LIFE_SCIENCES: 3, MANUFACTURING_ENGINEERING: 2 },
-  physics:      { MANUFACTURING_ENGINEERING: 4, TECHNOLOGY_IT: 2, TELECOMMUNICATIONS: 2, MILITARY_DEFENCE: 1 },
-  math:         { FINANCE_BANKING: 4, TECHNOLOGY_IT: 2, MANUFACTURING_ENGINEERING: 2, MILITARY_DEFENCE: 1 },
-  // Computing weight reduced from 6 → 4. The cap-bypass boost list still
-  // surfaces curated tech careers, but the raw category lift is now in
-  // line with every other subject. Telecom kept at 2 (not 3) because
-  // most telecom careers also benefit from the boost list.
-  computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2, MANUFACTURING_ENGINEERING: 1, MILITARY_DEFENCE: 1 },
-  english:      { EDUCATION_TRAINING: 2, CREATIVE_MEDIA: 3, SALES_MARKETING: 2, BUSINESS_MANAGEMENT: 1 },
-  history:      { EDUCATION_TRAINING: 3, PUBLIC_SERVICE_SAFETY: 2, BUSINESS_MANAGEMENT: 1, MILITARY_DEFENCE: 2 },
-  geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 2, PUBLIC_SERVICE_SAFETY: 2, MILITARY_DEFENCE: 1 },
-  art:          { CREATIVE_MEDIA: 4, HOSPITALITY_TOURISM: 1, SALES_MARKETING: 2 },
+  biology:      { HEALTHCARE_LIFE_SCIENCES: 4, SOCIAL_CARE_COMMUNITY: 2, SPORT_FITNESS: 2, MANUFACTURING_ENGINEERING: 1 },
+  chemistry:    { HEALTHCARE_LIFE_SCIENCES: 4, MANUFACTURING_ENGINEERING: 3 },
+  physics:      { MANUFACTURING_ENGINEERING: 4, TECHNOLOGY_IT: 3, TELECOMMUNICATIONS: 2 },
+  math:         { FINANCE_BANKING: 4, TECHNOLOGY_IT: 3, MANUFACTURING_ENGINEERING: 2 },
+  computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2, MANUFACTURING_ENGINEERING: 1 },
+  english:      { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 3, SALES_MARKETING: 2, BUSINESS_MANAGEMENT: 1 },
+  history:      { EDUCATION_TRAINING: 3, PUBLIC_SERVICE_SAFETY: 3, BUSINESS_MANAGEMENT: 1 },
+  geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 3, PUBLIC_SERVICE_SAFETY: 2 },
+  art:          { CREATIVE_MEDIA: 4, SALES_MARKETING: 2, HOSPITALITY_TOURISM: 1 },
   music:        { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 2 },
-  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
-  business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 3, SALES_MARKETING: 2 },
-  languages:    { HOSPITALITY_TOURISM: 3, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
-  psychology:   { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1 },
-  // The school subject "Design & Technology" is really two distinct things
-  // glued together: a design/digital stream (CAD, product design, graphics)
-  // and a workshop/making stream (woodwork, metalwork, electronics). The
-  // discovery quiz now offers them separately so users get the right careers.
-  "design-tech":      { CREATIVE_MEDIA: 4, TECHNOLOGY_IT: 1, HOSPITALITY_TOURISM: 1 },
-  "workshop-making":  { MANUFACTURING_ENGINEERING: 4, CONSTRUCTION_TRADES: 3, HOSPITALITY_TOURISM: 1 },
-  "health-social": { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 4, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 2 },
-  drama:           { CREATIVE_MEDIA: 4, HOSPITALITY_TOURISM: 1, EDUCATION_TRAINING: 1, SALES_MARKETING: 1 },
-  // Food Tech is a four-band subject — cooking craft (Hospitality),
-  // food science / nutrition (Healthcare), industrial brewing & food
-  // production (Manufacturing), and food media / styling (Creative).
+  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1 },
+  business:     { BUSINESS_MANAGEMENT: 4, FINANCE_BANKING: 3, SALES_MARKETING: 3 },
+  languages:    { HOSPITALITY_TOURISM: 3, EDUCATION_TRAINING: 3, BUSINESS_MANAGEMENT: 2 },
+  psychology:   { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 4, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1 },
+  "design-tech":      { CREATIVE_MEDIA: 4, TECHNOLOGY_IT: 2, MANUFACTURING_ENGINEERING: 1 },
+  "workshop-making":  { MANUFACTURING_ENGINEERING: 4, CONSTRUCTION_TRADES: 3 },
+  "health-social": { SOCIAL_CARE_COMMUNITY: 4, HEALTHCARE_LIFE_SCIENCES: 3, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 2 },
+  drama:           { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 2, SALES_MARKETING: 1 },
   "food-tech":     { HOSPITALITY_TOURISM: 4, HEALTHCARE_LIFE_SCIENCES: 2, MANUFACTURING_ENGINEERING: 2, CREATIVE_MEDIA: 1 },
-  "media-studies": { CREATIVE_MEDIA: 4, SALES_MARKETING: 2, TECHNOLOGY_IT: 1 },
+  "media-studies": { CREATIVE_MEDIA: 4, SALES_MARKETING: 3, TECHNOLOGY_IT: 1 },
 };
 
 // ──────────────────────────────────────────────────────────────────────
@@ -8215,7 +8208,40 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
 // Add subjects to this map only when you have a curated list of careers
 // that genuinely belong. Generic subjects (math, english) should still
 // rely on category weighting because there's no clean career list for them.
+// ── Subject → Career Boost Lists ────────────────────────────────────
+// Careers listed here get a guaranteed minimum relevance (0.5) for the
+// subject, regardless of which category they sit in. This prevents
+// careers that span categories from being missed by category-level
+// weights alone. Only add careers with a genuine, defensible link to
+// the subject — don't pad lists for coverage.
 const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
+  biology: [
+    "registered-nurse", "nurse-practitioner", "midwife", "mental-health-nurse",
+    "dietitian", "nutritionist", "sports-nutritionist",
+    "epidemiologist", "public-health-specialist", "clinical-researcher",
+    "food-scientist", "food-technologist", "food-safety-inspector",
+    "occupational-therapist", "speech-language-therapist",
+    "sports-physiotherapist", "sports-scientist", "sports-therapist",
+    "emt", "veterinarian", "marine-biologist", "environmental-scientist",
+  ],
+  chemistry: [
+    "pharmacist", "pharmacy-technician", "food-scientist", "food-technologist",
+    "food-product-developer", "quality-assurance-food", "food-safety-inspector",
+    "clinical-researcher", "laboratory-technician", "environmental-scientist",
+    "materials-engineer", "chemical-engineer", "brewer",
+  ],
+  physics: [
+    "electrical-engineer", "mechanical-engineer", "civil-engineer",
+    "aerospace-engineer", "robotics-engineer", "network-engineer",
+    "cloud-engineer", "systems-engineer", "solutions-architect",
+    "radiographer", "sonographer", "audio-engineer", "sound-engineer",
+  ],
+  math: [
+    "data-analyst", "data-scientist", "data-engineer", "actuary",
+    "financial-analyst", "investment-banker", "accountant", "auditor",
+    "software-developer", "machine-learning-engineer", "ai-engineer",
+    "quantitative-analyst", "statistician", "economist",
+  ],
   computing: [
     // Core software & web
     "software-developer", "frontend-developer", "backend-developer",
@@ -8286,6 +8312,66 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "sports-nutritionist", "sports-marketing-manager", "nutritionist",
     // Esports
     "esports-player", "esports-coach", "esports-analyst",
+  ],
+  english: [
+    "journalist", "copywriter", "content-writer", "editor", "author",
+    "communications-specialist", "public-relations-specialist",
+    "primary-teacher", "secondary-teacher", "university-lecturer",
+    "speech-language-therapist", "translator", "interpreter",
+    "social-media-manager", "marketing-manager",
+  ],
+  psychology: [
+    "psychologist", "clinical-psychologist", "counsellor", "therapist",
+    "mental-health-nurse", "social-worker", "youth-worker",
+    "special-needs-educator", "hr-specialist", "hr-manager",
+    "sports-psychologist", "occupational-therapist",
+    "ux-designer", "ux-researcher",
+  ],
+  "health-social": [
+    "social-worker", "youth-worker", "support-worker", "care-assistant",
+    "community-worker", "mental-health-nurse", "counsellor",
+    "occupational-therapist", "speech-language-therapist",
+    "special-needs-educator", "kindergarten-teacher", "midwife",
+    "registered-nurse", "emt", "public-health-specialist",
+  ],
+  business: [
+    "accountant", "auditor", "financial-analyst", "investment-banker",
+    "management-consultant", "project-manager", "it-project-manager",
+    "hr-specialist", "hr-manager", "operations-manager",
+    "marketing-manager", "sales-manager", "entrepreneur",
+    "real-estate-agent", "property-manager", "logistics-manager",
+  ],
+  art: [
+    "graphic-designer", "illustrator", "animator", "ux-designer", "ui-designer",
+    "interior-designer", "architect", "photographer", "film-editor",
+    "art-teacher", "art-therapist", "tattoo-artist", "fashion-designer",
+    "set-designer", "gallery-curator",
+  ],
+  drama: [
+    "actor", "director", "theatre-producer", "casting-director",
+    "drama-teacher", "drama-therapist", "voice-actor",
+    "tv-presenter", "radio-presenter", "event-manager",
+    "communications-specialist", "public-relations-specialist",
+  ],
+  "media-studies": [
+    "journalist", "tv-producer", "film-director", "video-editor",
+    "social-media-manager", "content-creator", "photographer",
+    "public-relations-specialist", "communications-specialist",
+    "marketing-manager", "advertising-creative",
+    "sports-broadcaster", "sports-commentator", "sports-journalist",
+  ],
+  geography: [
+    "urban-planner", "environmental-scientist", "surveyor",
+    "logistics-manager", "supply-chain-analyst", "travel-agent",
+    "tour-guide", "park-ranger", "cartographer",
+    "civil-engineer", "transport-planner",
+  ],
+  languages: [
+    "translator", "interpreter", "diplomat", "travel-agent",
+    "tour-guide", "flight-attendant", "hotel-manager",
+    "primary-teacher", "secondary-teacher", "university-lecturer",
+    "journalist", "foreign-correspondent",
+    "import-export-specialist", "international-sales-manager",
   ],
 };
 
