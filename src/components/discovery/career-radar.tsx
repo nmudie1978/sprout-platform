@@ -14,9 +14,10 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
 
@@ -517,6 +518,21 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     <div className="rounded-2xl border bg-card overflow-hidden">
       <RadarGuideTips />
 
+      {/* Primary Goal indicator — always visible when a goal is set */}
+      {goalsData?.primaryGoal?.title && (
+        <Link
+          href="/my-journey"
+          className="flex items-center gap-2 px-4 py-2 border-b border-border/30 bg-amber-500/[0.04] hover:bg-amber-500/[0.08] transition-colors group"
+          title="Go to My Journey to explore this career in depth"
+        >
+          <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border-[1.5px] border-amber-400/60 shrink-0">
+            <Star className="h-2.5 w-2.5 text-amber-400" />
+          </span>
+          <span className="text-[11px] text-muted-foreground/60">Primary Goal:</span>
+          <span className="text-[11px] font-medium text-foreground/80">{goalsData.primaryGoal.title}</span>
+          <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
+        </Link>
+      )}
 
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
         <div className="flex items-center gap-3">
