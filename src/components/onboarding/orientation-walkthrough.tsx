@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,13 @@ import {
   Compass,
   ArrowRight,
   ArrowLeft,
+  Volume2,
+  VolumeX,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
+import { useWalkthroughNarration } from "@/hooks/use-walkthrough-narration";
 
 // ── Step data ──────────────────────────────────────────────────────
 
@@ -93,6 +97,13 @@ export function OrientationWalkthrough({
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1); // 1 = forward, -1 = back
 
+  // Narration — auto-plays each step's body text via TTS
+  const stepContents = useMemo(
+    () => STEPS.map((s) => ({ title: s.title, body: s.body })),
+    [],
+  );
+  const [narration, narrationControls] = useWalkthroughNarration(stepContents, step);
+
   const current = STEPS[step];
   const isFirst = step === 0;
   const isLast = step === STEPS.length - 1;
@@ -125,11 +136,20 @@ export function OrientationWalkthrough({
         className="sm:max-w-md p-0 gap-0 border-border/50 bg-card overflow-hidden"
       >
         {/* Progress bar */}
-        <div className="h-1 bg-muted/30">
+        <div className="h-1 bg-muted/30 relative">
           <div
             className="h-full bg-teal-500/60 transition-all duration-300"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
+          {/* Narration progress — thin overlay showing audio position */}
+          {narration.isPlaying && (
+            <div
+              className="absolute bottom-0 left-0 h-full bg-teal-400/30 transition-all duration-200"
+              style={{
+                width: `${((step + narration.progress) / STEPS.length) * 100}%`,
+              }}
+            />
+          )}
         </div>
 
         {/* Step content */}
@@ -168,8 +188,30 @@ export function OrientationWalkthrough({
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 pb-5 pt-3">
-          {/* Left: step indicator + skip */}
+          {/* Left: narration toggle + step indicator + skip */}
           <div className="flex items-center gap-3">
+            {/* Narration toggle */}
+            <button
+              type="button"
+              onClick={narrationControls.toggleMute}
+              className={cn(
+                "relative p-1 rounded-md transition-colors",
+                narration.isMuted
+                  ? "text-muted-foreground/40 hover:text-muted-foreground/70"
+                  : "text-teal-500 hover:text-teal-400"
+              )}
+              title={narration.isMuted ? "Turn on narration" : "Mute narration"}
+              aria-label={narration.isMuted ? "Turn on narration" : "Mute narration"}
+            >
+              {narration.isLoading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : narration.isMuted ? (
+                <VolumeX className="h-3.5 w-3.5" />
+              ) : (
+                <Volume2 className="h-3.5 w-3.5" />
+              )}
+            </button>
+
             <div className="flex items-center gap-1">
               {STEPS.map((_, i) => (
                 <span

@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@paper-design/shaders-react": "^0.0.74",
     "@prisma/client": "^5.18.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",

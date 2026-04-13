@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AiChatWidget } from "@/components/ai-chat-widget";
+import { LightModeShaderBackground } from "@/components/light-mode-shader-bg";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -75,7 +76,7 @@ export default async function DashboardLayout({
       />
 
       {/* Glowing divider between sidebar and main content */}
-      <div className="hidden lg:block relative w-px">
+      <div className="hidden lg:block relative z-20 w-px">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/20 to-transparent" />
         <div
           className="absolute inset-0 w-px"
@@ -86,8 +87,11 @@ export default async function DashboardLayout({
         />
       </div>
 
+      {/* Light mode shader background — behind main content, not sidebar */}
+      <LightModeShaderBackground />
+
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Main content with bottom padding for mobile nav */}
         <main className="flex-1 pb-16 lg:pb-0">{children}</main>
         <AiChatWidget />

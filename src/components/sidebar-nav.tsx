@@ -368,7 +368,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   return (
     <div
       className={cn(
-        "hidden lg:block relative sticky top-0 h-screen shrink-0 transition-all duration-300 ease-out",
+        "hidden lg:block relative z-20 sticky top-0 h-screen shrink-0 transition-all duration-300 ease-out",
         collapsed ? "w-16" : "w-56"
       )}
     >
