@@ -1,14 +1,32 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
 import type { SavedCuriosity } from '@/lib/my-journey/human-features-types';
 
-const STORAGE_KEY = 'endeavrly-curiosity-saves';
+const STORAGE_PREFIX = 'endeavrly-curiosity-saves';
 
-function load(): SavedCuriosity[] {
-  if (typeof window === 'undefined') return [];
+/** Legacy unscoped key — used for one-time migration to per-user keys */
+const LEGACY_KEY = 'endeavrly-curiosity-saves';
+
+function storageKey(userId: string) {
+  return `${STORAGE_PREFIX}:${userId}`;
+}
+
+function load(userId: string | undefined): SavedCuriosity[] {
+  if (typeof window === 'undefined' || !userId) return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    // Migrate legacy unscoped data once
+    const legacyRaw = localStorage.getItem(LEGACY_KEY);
+    const userKey = storageKey(userId);
+    if (legacyRaw && !localStorage.getItem(userKey)) {
+      localStorage.setItem(userKey, legacyRaw);
+      localStorage.removeItem(LEGACY_KEY);
+    } else if (legacyRaw && localStorage.getItem(userKey)) {
+      // Both exist — discard legacy since user already has scoped data
+      localStorage.removeItem(LEGACY_KEY);
+    }
+    const raw = localStorage.getItem(userKey);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -18,13 +36,20 @@ function load(): SavedCuriosity[] {
 }
 
 export function useCuriositySaves() {
-  const [curiosities, setCuriosities] = useState<SavedCuriosity[]>(() => load());
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const [curiosities, setCuriosities] = useState<SavedCuriosity[]>([]);
 
+  // Load when userId becomes available
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(curiosities));
-    }
-  }, [curiosities]);
+    setCuriosities(load(userId));
+  }, [userId]);
+
+  // Persist — only if we have a userId (prevents writing empty array for no user)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !userId) return;
+    localStorage.setItem(storageKey(userId), JSON.stringify(curiosities));
+  }, [curiosities, userId]);
 
   const saveCuriosity = useCallback(
     (careerId: string, careerTitle: string, careerEmoji: string) => {
