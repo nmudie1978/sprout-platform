@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import type { SavedCuriosity } from '@/lib/my-journey/human-features-types';
 
@@ -23,7 +23,6 @@ function load(userId: string | undefined): SavedCuriosity[] {
       localStorage.setItem(userKey, legacyRaw);
       localStorage.removeItem(LEGACY_KEY);
     } else if (legacyRaw && localStorage.getItem(userKey)) {
-      // Both exist — discard legacy since user already has scoped data
       localStorage.removeItem(LEGACY_KEY);
     }
     const raw = localStorage.getItem(userKey);
@@ -39,15 +38,24 @@ export function useCuriositySaves() {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const [curiosities, setCuriosities] = useState<SavedCuriosity[]>([]);
+  const loadedRef = useRef(false);
 
   // Load when userId becomes available
   useEffect(() => {
-    setCuriosities(load(userId));
+    loadedRef.current = false;
+    const data = load(userId);
+    setCuriosities(data);
+    // Mark as loaded after state update — the next persist effect
+    // will see loadedRef.current = true and write safely.
+    if (userId) {
+      // Use a microtask so the flag flips after React processes the state update
+      Promise.resolve().then(() => { loadedRef.current = true; });
+    }
   }, [userId]);
 
-  // Persist — only if we have a userId (prevents writing empty array for no user)
+  // Persist — only after initial load completes
   useEffect(() => {
-    if (typeof window === 'undefined' || !userId) return;
+    if (typeof window === 'undefined' || !userId || !loadedRef.current) return;
     localStorage.setItem(storageKey(userId), JSON.stringify(curiosities));
   }, [curiosities, userId]);
 

@@ -107,6 +107,7 @@ function DashboardSection({
   action,
   children,
   className = "",
+  fixedHeight,
 }: {
   title: string;
   icon?: React.ComponentType<{ className?: string }>;
@@ -115,6 +116,7 @@ function DashboardSection({
   action?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  fixedHeight?: string;
 }) {
   return (
     <div className={cn("mb-4", className)}>
@@ -134,6 +136,7 @@ function DashboardSection({
       <div className={cn(
         "rounded-2xl border border-border bg-card p-3 sm:p-4",
         "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
+        fixedHeight,
       )}>
         {children}
       </div>
@@ -1154,6 +1157,7 @@ export default function DashboardPage() {
             iconColor="text-violet-500"
             tooltip="Every journey you start is saved here. Switch between them anytime."
             className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
           >
           {(() => {
             const allExplored = exploredGoalsData?.goals ?? [];
@@ -1196,7 +1200,9 @@ export default function DashboardPage() {
                         const isCurrentGoal = goal.goalTitle === goalTitle;
                         const stageInfo = journeyStageLabel(goal.goalTitle);
                         const stageLabel = stageInfo?.label ?? 'Discover';
-                        const stageNumber = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 3 : stageLabel === 'Understand' ? 2 : 1;
+                        const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
+                        const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Clarity — building your roadmap' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
+                        const stageColor = stageLetter === 'C' ? 'text-emerald-400 bg-emerald-500/15' : stageLetter === 'U' ? 'text-blue-400 bg-blue-500/15' : 'text-violet-400 bg-violet-500/15';
                         return (
                           <tr
                             key={goal.goalId}
@@ -1217,7 +1223,7 @@ export default function DashboardPage() {
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className="text-[10px] font-medium text-muted-foreground/50" title={stageLabel}>{stageNumber}</span>
+                              <span className={cn("inline-flex items-center justify-center h-5 w-5 rounded-md text-[9px] font-bold cursor-help", stageColor)} title={stageTooltip}>{stageLetter}</span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
                               <span className="text-[8px] text-muted-foreground/40">Saved</span>
@@ -1275,6 +1281,7 @@ export default function DashboardPage() {
             iconColor="text-blue-500"
             tooltip="Articles, videos, and resources you've saved from Industry Insights."
             className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
             action={savedSummary.total > 0 ? (
               <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
             ) : undefined}
@@ -1292,6 +1299,7 @@ export default function DashboardPage() {
             iconColor="text-pink-500"
             tooltip={t('savedCareers.tooltip')}
             className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
           >
             {savedCareers.length > 0 ? (
               <>
@@ -1374,6 +1382,7 @@ export default function DashboardPage() {
             iconColor="text-amber-500"
             tooltip={t('smallJobs.tooltip')}
             className="mb-0"
+            fixedHeight="h-[180px] overflow-y-auto"
             action={(() => {
               const totalJobs = appStats.applied + appStats.waiting + appStats.accepted + appStats.done;
               return totalJobs > 0 ? (
@@ -1450,7 +1459,10 @@ export default function DashboardPage() {
                 Cancel
               </button>
               <button
-                onClick={() => switchGoalMutation.mutate(switchConfirm.goalTitle)}
+                onClick={() => {
+                  switchGoalMutation.reset();
+                  switchGoalMutation.mutate(switchConfirm.goalTitle);
+                }}
                 disabled={switchGoalMutation.isPending}
                 className="px-3 py-1.5 text-xs rounded-lg bg-foreground/90 hover:bg-foreground text-background font-medium transition-colors disabled:opacity-50"
               >
