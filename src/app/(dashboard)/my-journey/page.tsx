@@ -680,15 +680,15 @@ function DiscoverTab({
                         normal desktop widths. justify-center pairs
                         with the centred title above. flex-wrap remains
                         as a graceful fallback on narrow viewports. */}
-                    <div className="flex items-center justify-center gap-1 flex-wrap">
+                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide pb-0.5">
                       {steps.map((s, i) => (
                         <div key={i} className="contents">
-                          {i > 0 && <span className="text-[10px] text-muted-foreground/30">→</span>}
+                          {i > 0 && <span className="text-[10px] text-muted-foreground/30 shrink-0">→</span>}
                           <span
                             title={s.tip}
-                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors"
+                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors whitespace-nowrap"
                           >
-                            <span className="max-w-[160px] truncate">{s.label}</span>
+                            <span className="max-w-[180px] truncate">{s.label}</span>
                           </span>
                         </div>
                       ))}
