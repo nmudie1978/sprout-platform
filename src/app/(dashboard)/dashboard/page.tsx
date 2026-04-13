@@ -119,7 +119,7 @@ function DashboardSection({
   fixedHeight?: string;
 }) {
   return (
-    <div className={cn("mb-4", className)}>
+    <div className={cn("mb-4 flex flex-col", className)}>
       <div className="flex items-center justify-between mb-2 px-0.5">
         <div className="flex items-center gap-2">
           {Icon && (
@@ -134,7 +134,7 @@ function DashboardSection({
         {action}
       </div>
       <div className={cn(
-        "rounded-2xl border border-border bg-card p-3 sm:p-4",
+        "rounded-2xl border border-border bg-card p-3 sm:p-4 flex-1",
         "shadow-[0_0_15px_rgba(20,184,166,0.06),0_0_30px_rgba(20,184,166,0.03)]",
         fixedHeight,
       )}>
@@ -1293,7 +1293,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── 5. Saved Careers + Small Jobs ─────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch">
           {/* Saved Careers */}
           <DashboardSection
             title={t('savedCareers.title')}
