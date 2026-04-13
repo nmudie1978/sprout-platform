@@ -205,9 +205,6 @@ export async function PATCH(req: NextRequest) {
     if ("avatarId" in body && Object.keys(body).length === 1) {
       const avatarId = body.avatarId;
 
-      // PROOF: Log avatar save attempt
-      console.log("AVATAR SAVE ATTEMPT:", { userId: session.user.id, avatarId });
-
       // Use upsert to handle case where profile doesn't exist yet
       const profile = await prisma.youthProfile.upsert({
         where: { userId: session.user.id },
