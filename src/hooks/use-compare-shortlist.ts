@@ -47,12 +47,18 @@ export function useCompareShortlist() {
     setShortlist((prev) => prev.filter((c) => c.id !== id));
   }, []);
 
+  /** Replace the entire shortlist (used to load saved comparisons). */
+  const loadSet = useCallback((careers: Career[]) => {
+    setShortlist(careers.slice(0, MAX_COMPARE));
+  }, []);
+
   return {
     shortlist,
     toggle,
     isInShortlist,
     clear,
     remove,
+    loadSet,
     max: MAX_COMPARE,
   };
 }

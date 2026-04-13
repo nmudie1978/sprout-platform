@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   CAREER_PATHWAYS,
@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
+import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
 
@@ -519,6 +520,33 @@ function placeDots(
 export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps) {
   const compareShortlist = useCompareShortlist();
   const [compareModalOpen, setCompareModalOpen] = useState(false);
+
+  // Auto-save comparison when the modal opens with 2+ careers
+  const openCompareAndSave = useCallback(() => {
+    const list = compareShortlist.shortlist;
+    if (list.length >= 2) {
+      const { saveComparison } = require("@/components/career-radar/saved-comparisons-tray");
+      saveComparison({
+        id: crypto.randomUUID(),
+        title: list.map((c: Career) => c.title).join(" vs "),
+        careers: list.map((c: Career) => ({ id: c.id, title: c.title, emoji: c.emoji })),
+        savedAt: Date.now(),
+      });
+    }
+    setCompareModalOpen(true);
+  }, [compareShortlist.shortlist]);
+
+  // Load a saved comparison set into the shortlist
+  const loadSavedComparison = useCallback((careers: { id: string; title: string; emoji: string }[]) => {
+    const allCareers = getAllCareers();
+    const resolved = careers
+      .map((c) => allCareers.find((ac) => ac.id === c.id))
+      .filter((c): c is Career => c !== undefined);
+    if (resolved.length >= 2) {
+      compareShortlist.loadSet(resolved);
+      setCompareModalOpen(true);
+    }
+  }, [compareShortlist]);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
   // Multi-select tier filter — start with everything visible.
@@ -1138,7 +1166,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <CompareVault
           shortlist={compareShortlist.shortlist}
           max={compareShortlist.max}
-          onCompare={() => setCompareModalOpen(true)}
+          onCompare={openCompareAndSave}
           onClear={compareShortlist.clear}
           onRemove={compareShortlist.remove}
         />
@@ -1387,6 +1415,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       onClose={() => setCompareModalOpen(false)}
       onRemove={compareShortlist.remove}
     />
+
+    {/* Saved comparisons edge tray */}
+    <SavedComparisonsTray onLoadComparison={loadSavedComparison} />
   </>
   );
 }
