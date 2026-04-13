@@ -217,6 +217,19 @@ export default function ApplicationsPage() {
 
   const applications = data?.applications || [];
 
+  // Saved jobs — must be before any early returns (React hooks rules)
+  const { data: savedData } = useQuery({
+    queryKey: ["saved-jobs"],
+    queryFn: async () => {
+      const r = await fetch("/api/jobs/saved");
+      if (!r.ok) return { saved: [] };
+      return r.json();
+    },
+    enabled: session?.user.role === "YOUTH",
+  });
+  const savedJobs: { id: string; savedAt: string; job: any }[] = savedData?.saved ?? [];
+  const savedCount = savedJobs.length;
+
   if (sessionStatus === "loading" || isLoading) {
     return (
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8">
@@ -287,18 +300,6 @@ export default function ApplicationsPage() {
     },
     { all: 0, pending: 0, accepted: 0, in_progress: 0, completed: 0, rejected: 0 }
   );
-
-  // Saved jobs (separate from applications)
-  const { data: savedData } = useQuery({
-    queryKey: ["saved-jobs"],
-    queryFn: async () => {
-      const r = await fetch("/api/jobs/saved");
-      if (!r.ok) return { saved: [] };
-      return r.json();
-    },
-  });
-  const savedJobs: { id: string; savedAt: string; job: any }[] = savedData?.saved ?? [];
-  const savedCount = savedJobs.length;
 
   const filterButtons: { key: FilterType; label: string; color: string }[] = [
     { key: "all", label: "All", color: "bg-slate-500" },
