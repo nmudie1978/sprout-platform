@@ -20,10 +20,16 @@ function CacheCleaner({ queryClient }: { queryClient: QueryClient }) {
 
   useEffect(() => {
     const currentUser = session?.user?.id;
-    if (prevUserRef.current && prevUserRef.current !== currentUser) {
+    // Only clear when switching from one real user to a DIFFERENT real
+    // user. Ignore undefined → user (initial load) and user → undefined
+    // (session refresh flicker) — those are not real user switches and
+    // clearing the cache during them wipes the current user's data.
+    if (prevUserRef.current && currentUser && prevUserRef.current !== currentUser) {
       queryClient.clear();
     }
-    prevUserRef.current = currentUser;
+    if (currentUser) {
+      prevUserRef.current = currentUser;
+    }
   }, [session?.user?.id, queryClient]);
 
   return null;
