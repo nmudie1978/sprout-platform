@@ -8179,7 +8179,7 @@ const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, nu
   geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 2, PUBLIC_SERVICE_SAFETY: 2, MILITARY_DEFENCE: 1 },
   art:          { CREATIVE_MEDIA: 4, HOSPITALITY_TOURISM: 1, SALES_MARKETING: 2 },
   music:        { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 2 },
-  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 3 },
+  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
   business:     { BUSINESS_MANAGEMENT: 3, FINANCE_BANKING: 3, SALES_MARKETING: 2 },
   languages:    { HOSPITALITY_TOURISM: 3, EDUCATION_TRAINING: 2, BUSINESS_MANAGEMENT: 1, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
   psychology:   { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 3, EDUCATION_TRAINING: 1, PUBLIC_SERVICE_SAFETY: 1 },
@@ -8264,9 +8264,44 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     // Food media
     "food-blogger",
   ],
+  pe: [
+    // Fitness & training
+    "personal-trainer", "fitness-instructor", "strength-conditioning-coach",
+    "yoga-instructor", "swim-instructor", "athletic-trainer",
+    // Coaching & performance
+    "sports-coach", "assistant-coach", "professional-athlete",
+    "sports-scientist", "performance-analyst", "sports-analyst",
+    // Therapy & rehab
+    "sports-physiotherapist", "sports-therapist", "sports-psychologist",
+    // Outdoor & adventure
+    "outdoor-instructor",
+    // Sport industry
+    "sports-manager", "team-manager", "sports-agent", "talent-scout",
+    "scouting-analyst", "referee", "umpire",
+    "sports-event-manager", "sports-event-coordinator",
+    // Sport media
+    "sports-journalist", "sports-commentator", "sports-broadcaster",
+    "sports-photographer",
+    // Cross-category sport careers
+    "sports-nutritionist", "sports-marketing-manager", "nutritionist",
+    // Esports
+    "esports-player", "esports-coach", "esports-analyst",
+  ],
 };
 
 // ──────────────────────────────────────────────────────────────────────
+// ── Accessors for matching engine ──────────────────────────────────────
+
+/** Get the subject→category weight map (used by the matching engine). */
+export function getSubjectCategoryWeights(): Record<string, Partial<Record<CareerCategory, number>>> {
+  return SUBJECT_CATEGORY_WEIGHTS;
+}
+
+/** Get the subject→career boost map (used by the matching engine). */
+export function getSubjectCareerBoosts(): Record<string, string[]> {
+  return SUBJECT_CAREER_BOOSTS;
+}
+
 // Radar tuning constants
 // ──────────────────────────────────────────────────────────────────────
 //
@@ -8358,43 +8393,9 @@ export function getMatchReasons(
   career: Career,
   prefs: DiscoveryPreferences | null | undefined,
 ): string[] {
-  if (!prefs) return [];
-  const reasons: string[] = [];
-  const cat = findCareerCategory(career.id);
-
-  // Subjects: pick subjects whose weights mention this career's category
-  if (cat && prefs.subjects?.length) {
-    for (const subj of prefs.subjects) {
-      const weights = SUBJECT_CATEGORY_WEIGHTS[subj.toLowerCase()];
-      if (weights && (weights[cat] ?? 0) > 0) {
-        reasons.push(SUBJECT_DISPLAY_LABEL[subj] || subj);
-      }
-    }
-  }
-
-  // Work style: include the chosen styles that match this career's setting
-  if (prefs.workStyles?.length) {
-    const setting = getCareerWorkSetting(career);
-    for (const style of prefs.workStyles) {
-      if (style === "mixed" || setting === "mixed" || style === setting) {
-        reasons.push(WORK_STYLE_DISPLAY_LABEL[style] || style);
-      }
-    }
-  }
-
-  // People preference
-  if (prefs.peoplePref) {
-    const intensity = getCareerPeopleIntensity(career);
-    const matches =
-      prefs.peoplePref === "mixed" ||
-      (prefs.peoplePref === "with-people" && (intensity === "high" || intensity === "medium")) ||
-      (prefs.peoplePref === "mostly-alone" && (intensity === "low" || intensity === "medium"));
-    if (matches) {
-      reasons.push(PEOPLE_DISPLAY_LABEL[prefs.peoplePref] || prefs.peoplePref);
-    }
-  }
-
-  return reasons;
+  // Delegate to the new matching engine for richer, dimension-based reasons.
+  const { getMatchReasonsFromEngine } = require("@/lib/matching/engine");
+  return getMatchReasonsFromEngine(career, prefs);
 }
 
 /**
@@ -8709,146 +8710,10 @@ export function getCareersFromDiscovery(
   prefs: DiscoveryPreferences,
   limit = 80,
 ): Career[] {
-  const T = RADAR_TUNING;
-  const all = getAllCareers();
-  if (!all.length) return [];
-
-  const hasScoreableInputs =
-    (prefs.subjects && prefs.subjects.length > 0) ||
-    (prefs.interests && prefs.interests.length > 0) ||
-    (prefs.workStyles && prefs.workStyles.length > 0) ||
-    !!prefs.peoplePref;
-
-  if (!hasScoreableInputs) {
-    return []; // No signal at all — radar stays empty
-  }
-
-  const signalStrength = measureSignalStrength(prefs);
-
-  // ── Stage 1: score every career ─────────────────────────────────
-  const precomputed = precomputeScoring(prefs);
-  const scored = all.map((career) => ({
-    career,
-    breakdown: scoreCareerForPreferences(career, prefs, precomputed),
-  }));
-
-  // ── Stage 2: filter by floor + sort by score ────────────────────
-  const matched = scored
-    .filter((s) => s.breakdown.total >= T.scoreFloor || s.breakdown.isExplicitlyBoosted)
-    .sort((a, b) => b.breakdown.total - a.breakdown.total);
-
-  if (matched.length === 0) return [];
-
-  // ── Stage 3: per-category cap ───────────────────────────────────
-  // Soft cap: scales with how well the category is supported by the
-  // user's subjects, but never explodes for a single high-weight subject.
-  const capForCategory = (cat: CareerCategory): number => {
-    const catScore = precomputed.subjectCategoryScores[cat] || 0;
-    if (catScore <= 0) return T.perCategoryCapMin;
-    const raw = T.perCategoryCapBase + Math.round(catScore * T.perCategoryCapScale);
-    return Math.max(T.perCategoryCapMin, Math.min(T.perCategoryCapMax, raw));
-  };
-
-  const perCategoryCount = new Map<CareerCategory, number>();
-  const capped: typeof matched = [];
-  for (const item of matched) {
-    const cat = findCareerCategory(item.career.id);
-    if (!cat) continue;
-    if (item.breakdown.isExplicitlyBoosted) {
-      // Boosted careers still bypass the cap, but they ALSO contribute
-      // to the concentration check downstream so they can't dominate
-      // unilaterally.
-      capped.push(item);
-      continue;
-    }
-    const cap = capForCategory(cat);
-    const count = perCategoryCount.get(cat) || 0;
-    if (count >= cap) continue;
-    perCategoryCount.set(cat, count + 1);
-    capped.push(item);
-  }
-
-  // ── Stage 4: category concentration guardrail ───────────────────
-  // Check the top band — if any category claims > maxCategoryShareInTopBands
-  // of those slots, push its WEAKEST non-boosted entries to the long tail
-  // so the visible radar surface stays varied.
-  const top = capped.slice(0, T.topBandSize);
-  const tail = capped.slice(T.topBandSize);
-  const counts = new Map<CareerCategory, number>();
-  for (const item of top) {
-    const cat = findCareerCategory(item.career.id);
-    if (cat) counts.set(cat, (counts.get(cat) || 0) + 1);
-  }
-  const maxAllowed = Math.floor(T.topBandSize * T.maxCategoryShareInTopBands);
-  const demoted: typeof matched = [];
-  const survivors: typeof matched = [];
-  // Track per-category survivors so we can demote the weakest excess.
-  const survivedByCategory = new Map<CareerCategory, number>();
-  for (const item of top) {
-    const cat = findCareerCategory(item.career.id);
-    const total = (cat && counts.get(cat)) || 0;
-    if (cat && total > maxAllowed && !item.breakdown.isExplicitlyBoosted) {
-      const survivedCount = survivedByCategory.get(cat) || 0;
-      if (survivedCount >= maxAllowed) {
-        demoted.push(item);
-        continue;
-      }
-      survivedByCategory.set(cat, survivedCount + 1);
-    } else if (cat) {
-      survivedByCategory.set(cat, (survivedByCategory.get(cat) || 0) + 1);
-    }
-    survivors.push(item);
-  }
-  // Re-fill the top band from the original tail to replace demoted entries.
-  const refilled = [...survivors];
-  let tailIdx = 0;
-  while (refilled.length < T.topBandSize && tailIdx < tail.length) {
-    refilled.push(tail[tailIdx++]);
-  }
-  const finalRanked = [...refilled, ...demoted, ...tail.slice(tailIdx)];
-
-  // ── Stage 5: vocational/university interleave ───────────────────
-  // Keep the boost-list and the top of the rank in their score order,
-  // then interleave entry-level vs university-track for the remainder
-  // so vocational paths aren't buried.
-  const boostedAll = finalRanked.filter((m) => m.breakdown.isExplicitlyBoosted).map((m) => m.career);
-  const nonBoosted = finalRanked.filter((m) => !m.breakdown.isExplicitlyBoosted);
-
-  const entry: Career[] = [];
-  const rest: Career[] = [];
-  for (const m of nonBoosted) {
-    if (m.career.entryLevel) entry.push(m.career);
-    else rest.push(m.career);
-  }
-
-  const effectiveLimit = Math.max(limit, boostedAll.length + 20);
-  const interleaved: Career[] = [...boostedAll];
-  while (interleaved.length < effectiveLimit && (entry.length || rest.length)) {
-    if (entry.length) interleaved.push(entry.shift()!);
-    if (interleaved.length >= effectiveLimit) break;
-    if (rest.length) interleaved.push(rest.shift()!);
-  }
-
-  // ── Stage 6: weak-signal salary bias ───────────────────────────
-  // When the user has provided limited preference data (1 or fewer
-  // signal dimensions), bias toward lower-to-medium salary careers.
-  // This prevents aspirational high-barrier careers from dominating
-  // when there's no evidence the student aligns with them. The bias
-  // is invisible to the user — they just see more accessible, varied
-  // careers that become richer as they add preferences.
-  if (signalStrength <= 1) {
-    // Sort by salary midpoint ascending so accessible careers surface first
-    interleaved.sort((a, b) => salaryMidpoint(a.avgSalary) - salaryMidpoint(b.avgSalary));
-  } else if (signalStrength < 2) {
-    // Moderate bias — lightly penalise very high salary (>1000k midpoint)
-    // by moving them toward the end, but don't fully re-sort
-    const accessible = interleaved.filter(c => salaryMidpoint(c.avgSalary) <= 1000);
-    const high = interleaved.filter(c => salaryMidpoint(c.avgSalary) > 1000);
-    interleaved.length = 0;
-    interleaved.push(...accessible, ...high);
-  }
-
-  return interleaved;
+  // Delegate to the new hybrid matching engine.
+  // The engine handles scoring, diversity, interleaving, and weak-signal bias.
+  const { rankCareers } = require("@/lib/matching/engine");
+  return rankCareers(prefs, limit);
 }
 
 /**
