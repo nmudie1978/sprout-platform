@@ -619,9 +619,9 @@ function DiscoverTab({
                 // is lost — just compressed.
                 const reqSubjects = reqs.schoolSubjects.required;
                 const schoolSubjectsLabel =
-                  reqSubjects.length > 1
-                    ? `${reqSubjects[0]} +${reqSubjects.length - 1}`
-                    : reqSubjects[0] || 'No specific subjects';
+                  reqSubjects.length > 0
+                    ? `Key subject: ${reqSubjects[0]}${reqSubjects.length > 1 ? ` +${reqSubjects.length - 1}` : ''}`
+                    : 'No specific subjects';
 
                 // Some careers (e.g. chef) now store a full arrow-chain
                 // in `programme` / `immediate` — that belongs in the
@@ -642,8 +642,8 @@ function DiscoverTab({
                 type PathStep = { label: string; tip: string };
                 const steps: PathStep[] = [
                   { label: schoolSubjectsLabel, tip: `Key subjects: ${reqSubjects.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
-                  ...(grade.hasCutoff && gradeLabel
-                    ? [{ label: gradeLabel, tip: gradeTip || 'Typical grade requirement for this path' }]
+                  ...(grade.hasCutoff && grade.gradeMin !== null && grade.gradeMax !== null
+                    ? [{ label: `Typical grades: ${grade.gradeMin}–${grade.gradeMax}`, tip: gradeTip || 'Typical grade requirement for this path' }]
                     : []),
                   { label: programmeLabel, tip: programmeTip },
                   { label: finalSegment(reqs.entryLevelRequirements.title), tip: reqs.entryLevelRequirements.description },
@@ -651,26 +651,24 @@ function DiscoverTab({
                 ];
                 return (
                   <div className="w-full rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5">
-                    <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                      <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider text-center">
-                        Path
-                        {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
-                      </p>
-                      {/* Info-icon tooltip matching the pattern used by
-                          SectionHeader and every other "why this section"
-                          tooltip in the page. Replaces the native
-                          `title=` attribute that previously sat on the
-                          outer div and never surfaced a visible affordance. */}
-                      <TooltipProvider delayDuration={150}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-3 w-3 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
-                          </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[260px] text-[11px] leading-snug">
-                            The typical path from school to your first role in this career — school subjects, the programme or training, the entry-level job title, and the first role you qualify for.
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                    <div className="flex flex-col items-center gap-0.5 mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider text-center">
+                          How you qualify (Norway)
+                          {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
+                        </p>
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-3 w-3 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-[280px] text-[11px] leading-snug">
+                              In Norway, admission is based on grades and subjects through a centralised system (Samordna opptak). This shows the typical path from school to your first role.
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <p className="text-[9px] text-muted-foreground/35">Aligned with centralised admissions (Samordna opptak)</p>
                     </div>
                     {/* Tight horizontal chain. gap-1 + px-1.5 save
                         ~30px over the previous gap-1.5 + px-2 values,
