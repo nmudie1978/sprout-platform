@@ -62,11 +62,11 @@ export async function GET() {
     }
 
     // Actual saved items (for display)
-    let savedItemsList: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[] = [];
+    let savedItemsList: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[] = [];
     if (profileId) {
       const items = await prisma.savedItem.findMany({
         where: { profileId, deletedAt: null },
-        select: { title: true, type: true, url: true, thumbnail: true, source: true },
+        select: { id: true, title: true, type: true, url: true, thumbnail: true, source: true },
         orderBy: { savedAt: 'desc' },
         take: 30, // Enough for pagination (5-6 per page)
       });

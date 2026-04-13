@@ -35,6 +35,7 @@ import {
   User,
   PlayCircle,
   Heart,
+  X,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
@@ -124,7 +125,7 @@ function DashboardSection({
               <Icon className={cn("h-3.5 w-3.5", iconColor, tooltip && "cursor-help")} />
             </span>
           )}
-          <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-foreground/80">
             {title}
           </h3>
         </div>
@@ -163,7 +164,7 @@ function StatCard({
         </div>
       )}
       <p className="text-[9px] text-muted-foreground/50 uppercase tracking-wider mb-0.5">{label}</p>
-      <p className="text-sm font-bold text-foreground/85 leading-tight">{value}</p>
+      <p className="text-[13px] font-semibold text-muted-foreground leading-tight">{value}</p>
       {sublabel && (
         <p className="text-[9px] text-muted-foreground/40 mt-0.5">{sublabel}</p>
       )}
@@ -213,9 +214,11 @@ function countryFlagEmoji(countryName?: string | null): string | null {
 function LibraryCard({
   items,
   total,
+  onRemove,
 }: {
-  items: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
+  items: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
   total: number;
+  onRemove?: (id: string) => void;
 }) {
   const t = useTranslations();
   const [view, setView] = useState<'list' | 'grid'>('list');
@@ -226,56 +229,56 @@ function LibraryCard({
   const pageItems = items.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
-    <GlassCard className="p-3">
-      <div className="flex items-center gap-2 mb-2">
-        <span title="Articles, videos, and resources you've saved from Industry Insights."><BookmarkCheck className="h-3.5 w-3.5 text-blue-500 cursor-help" /></span>
-        <h3 className="text-xs font-semibold">My Library</h3>
-        {total > 0 && (
-          <span className="text-[10px] text-muted-foreground/40">{total}</span>
-        )}
-        <span className="flex-1" />
-        {totalPages > 1 && (
-          <div className="flex items-center gap-1 ml-1">
-            <button
-              onClick={() => setLibPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
-              className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-            >
-              <ChevronLeft className="h-3 w-3" />
-            </button>
-            <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
-            <button
-              onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={page >= totalPages - 1}
-              className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
-            >
-              <ChevronRight className="h-3 w-3" />
-            </button>
-          </div>
-        )}
-      </div>
+    <div>
+      {/* Pagination — only if multiple pages */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-end gap-1 mb-2">
+          <button
+            onClick={() => setLibPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+          >
+            <ChevronLeft className="h-3 w-3" />
+          </button>
+          <span className="text-[9px] text-muted-foreground/30 tabular-nums">{page + 1}/{totalPages}</span>
+          <button
+            onClick={() => setLibPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1}
+            className="p-0.5 rounded text-muted-foreground/30 hover:text-muted-foreground/60 disabled:opacity-30 transition-colors"
+          >
+            <ChevronRight className="h-3 w-3" />
+          </button>
+        </div>
+      )}
 
       {items.length > 0 ? (
         view === 'list' ? (
           <div className="space-y-1.5">
-            {pageItems.map((item, i) => (
-              <a
-                key={i}
-                href={safeHref(item.url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
-              >
-                <span className={cn(
-                  "text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0",
-                  item.type === 'VIDEO' ? 'bg-muted/20 text-muted-foreground/60' :
-                  item.type === 'ARTICLE' ? 'bg-muted/20 text-muted-foreground/60' :
-                  'bg-muted/20 text-muted-foreground/60'
-                )}>
-                  {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
-                </span>
-                <span className="truncate group-hover:text-foreground">{item.title}</span>
-              </a>
+            {pageItems.map((item) => (
+              <div key={item.id} className="flex items-center gap-2 text-xs text-muted-foreground group/row">
+                <a
+                  href={safeHref(item.url)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 flex-1 min-w-0 hover:text-foreground transition-colors"
+                >
+                  <span className="text-[9px] font-medium uppercase px-1.5 py-0.5 rounded shrink-0 bg-muted/20 text-muted-foreground/60">
+                    {item.type === 'VIDEO' ? '▶' : item.type === 'ARTICLE' ? '📄' : '🎙'}
+                  </span>
+                  <span className="truncate">{item.title}</span>
+                </a>
+                {onRemove && (
+                  <button
+                    type="button"
+                    onClick={() => onRemove(item.id)}
+                    className="p-0.5 rounded text-muted-foreground/0 group-hover/row:text-muted-foreground/30 hover:!text-red-400 hover:!bg-red-500/10 transition-colors shrink-0"
+                    title="Remove"
+                    aria-label={`Remove ${item.title}`}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         ) : (
@@ -321,9 +324,9 @@ function LibraryCard({
           </div>
         )
       ) : (
-        <p className="text-xs text-muted-foreground/50 mt-1">{t('library.emptyState')}</p>
+        <p className="text-xs text-muted-foreground/50">{t('library.emptyState')}</p>
       )}
-    </GlassCard>
+    </div>
   );
 }
 
@@ -522,7 +525,7 @@ export default function DashboardPage() {
   const { data: dashboardStats } = useQuery<{
     appStats: { applied: number; waiting: number; accepted: number; done: number };
     savedSummary: { total: number; byType: { articles: number; videos: number; podcasts: number; shorts: number } };
-    savedItemsList: { title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
+    savedItemsList: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
     exploredCareers: string[];
     careerInterests: string[];
     recentActivity: { type: string; title: string; time: string }[];
@@ -558,6 +561,22 @@ export default function DashboardPage() {
   });
 
   const queryClient = useQueryClient();
+
+  // ── Delete handlers ──────────────────────────────────────────────
+  const removeLibraryItem = useCallback(async (itemId: string) => {
+    await fetch(`/api/journey/saved-items?id=${itemId}`, { method: 'DELETE' });
+    queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
+  }, [queryClient]);
+
+  const removeExploredJourney = useCallback(async (goalId: string) => {
+    const res = await fetch(`/api/journey/goal-data?goalId=${goalId}`, { method: 'DELETE' });
+    if (res.ok) {
+      queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
+    } else {
+      const data = await res.json().catch(() => null);
+      toast.error(data?.error || 'Could not remove journey');
+    }
+  }, [queryClient]);
 
   const switchGoalMutation = useMutation({
     mutationFn: async (goalTitle: string) => {
@@ -726,7 +745,7 @@ export default function DashboardPage() {
   };
   const savedItemsList = dashboardStats?.savedItemsList ?? [];
   const recentActivity = dashboardStats?.recentActivity ?? [];
-  const { curiosities: savedCareers } = useCuriositySaves();
+  const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
   const [savedCareersPage, setSavedCareersPage] = useState(0);
   const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
   const savedCareersPerPage = 5;
@@ -1219,7 +1238,20 @@ export default function DashboardPage() {
                               )}
                             </td>
                             <td className="px-2 py-1.5">
-                              {!isCurrentGoal && <ArrowRight className="h-3 w-3 text-muted-foreground/20" />}
+                              {!isCurrentGoal && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeExploredJourney(goal.goalId);
+                                  }}
+                                  className="p-0.5 rounded text-muted-foreground/20 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                  title="Remove journey"
+                                  aria-label={`Remove ${goal.goalTitle}`}
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );
@@ -1262,7 +1294,7 @@ export default function DashboardPage() {
               <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
             ) : undefined}
           >
-            <LibraryCard items={savedItemsList} total={savedSummary.total} />
+            <LibraryCard items={savedItemsList} total={savedSummary.total} onRemove={removeLibraryItem} />
           </DashboardSection>
         </div>
 
@@ -1280,17 +1312,21 @@ export default function DashboardPage() {
               <>
                 <div className="divide-y divide-border/60 rounded-lg border border-border/60 overflow-hidden bg-muted/10">
                   {savedCareersVisible.map((c) => (
-                    <button
+                    <div
                       key={c.careerId}
-                      type="button"
-                      onClick={() => {
-                        const found = getAllCareers().find((x) => x.id === c.careerId);
-                        if (found) setSavedCareerDetail(found);
-                      }}
-                      className="w-full flex items-center gap-2 px-2.5 py-2 text-[11px] hover:bg-muted/40 transition-colors text-left"
+                      className="flex items-center gap-2 px-2.5 py-2 text-[11px] hover:bg-muted/40 transition-colors"
                     >
-                      <span className="shrink-0 text-sm">{c.careerEmoji}</span>
-                      <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const found = getAllCareers().find((x) => x.id === c.careerId);
+                          if (found) setSavedCareerDetail(found);
+                        }}
+                        className="flex items-center gap-2 flex-1 min-w-0 text-left"
+                      >
+                        <span className="shrink-0 text-sm">{c.careerEmoji}</span>
+                        <span className="text-muted-foreground/70 truncate flex-1">{c.careerTitle}</span>
+                      </button>
                       <span className="text-[9px] text-muted-foreground/30 shrink-0">
                         {(() => {
                           const s = Math.floor((Date.now() - new Date(c.savedAt).getTime()) / 1000);
@@ -1300,7 +1336,19 @@ export default function DashboardPage() {
                           return `${Math.floor(s / 86400)}d`;
                         })()}
                       </span>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeCuriosity(c.careerId);
+                        }}
+                        className="p-0.5 rounded text-muted-foreground/20 hover:text-red-400 hover:bg-red-500/10 transition-colors shrink-0"
+                        title="Remove"
+                        aria-label={`Remove ${c.careerTitle}`}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
                   ))}
                 </div>
                 {savedCareersPageCount > 1 && (
