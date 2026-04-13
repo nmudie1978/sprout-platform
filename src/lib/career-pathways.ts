@@ -8171,15 +8171,15 @@ export function getCareerPeopleIntensity(career: Career): PeopleIntensity {
 const SUBJECT_CATEGORY_WEIGHTS: Record<string, Partial<Record<CareerCategory, number>>> = {
   biology:      { HEALTHCARE_LIFE_SCIENCES: 4, SOCIAL_CARE_COMMUNITY: 2, SPORT_FITNESS: 2, MANUFACTURING_ENGINEERING: 1 },
   chemistry:    { HEALTHCARE_LIFE_SCIENCES: 4, MANUFACTURING_ENGINEERING: 3 },
-  physics:      { MANUFACTURING_ENGINEERING: 4, TECHNOLOGY_IT: 3, TELECOMMUNICATIONS: 2 },
+  physics:      { MANUFACTURING_ENGINEERING: 4, TECHNOLOGY_IT: 3, TELECOMMUNICATIONS: 2, MILITARY_DEFENCE: 1 },
   math:         { FINANCE_BANKING: 4, TECHNOLOGY_IT: 3, MANUFACTURING_ENGINEERING: 2 },
   computing:    { TECHNOLOGY_IT: 4, TELECOMMUNICATIONS: 2, MANUFACTURING_ENGINEERING: 1 },
   english:      { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 3, SALES_MARKETING: 2, BUSINESS_MANAGEMENT: 1 },
-  history:      { EDUCATION_TRAINING: 3, PUBLIC_SERVICE_SAFETY: 3, BUSINESS_MANAGEMENT: 1 },
-  geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 3, PUBLIC_SERVICE_SAFETY: 2 },
+  history:      { EDUCATION_TRAINING: 3, PUBLIC_SERVICE_SAFETY: 3, BUSINESS_MANAGEMENT: 1, MILITARY_DEFENCE: 1 },
+  geography:    { LOGISTICS_TRANSPORT: 3, HOSPITALITY_TOURISM: 3, PUBLIC_SERVICE_SAFETY: 2, MILITARY_DEFENCE: 1 },
   art:          { CREATIVE_MEDIA: 4, SALES_MARKETING: 2, HOSPITALITY_TOURISM: 1 },
   music:        { CREATIVE_MEDIA: 4, EDUCATION_TRAINING: 2 },
-  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1 },
+  pe:           { SPORT_FITNESS: 4, HEALTHCARE_LIFE_SCIENCES: 2, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1, MILITARY_DEFENCE: 1 },
   business:     { BUSINESS_MANAGEMENT: 4, FINANCE_BANKING: 3, SALES_MARKETING: 3 },
   languages:    { HOSPITALITY_TOURISM: 3, EDUCATION_TRAINING: 3, BUSINESS_MANAGEMENT: 2 },
   psychology:   { HEALTHCARE_LIFE_SCIENCES: 3, SOCIAL_CARE_COMMUNITY: 4, EDUCATION_TRAINING: 2, PUBLIC_SERVICE_SAFETY: 1 },
@@ -8235,6 +8235,9 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "aerospace-engineer", "robotics-engineer", "network-engineer",
     "cloud-engineer", "systems-engineer", "solutions-architect",
     "radiographer", "sonographer", "audio-engineer", "sound-engineer",
+    // Military — engineering, weapons systems, piloting
+    "military-pilot", "drone-operator-uav", "weapons-specialist",
+    "combat-engineer", "artillery-officer",
   ],
   math: [
     "data-analyst", "data-scientist", "data-engineer", "actuary",
@@ -8312,6 +8315,8 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "sports-nutritionist", "sports-marketing-manager", "nutritionist",
     // Esports
     "esports-player", "esports-coach", "esports-analyst",
+    // Military — physical fitness is core
+    "soldier", "marine", "special-forces-operator", "search-and-rescue-operator",
   ],
   english: [
     "journalist", "copywriter", "content-writer", "editor", "author",
@@ -8319,6 +8324,14 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "primary-teacher", "secondary-teacher", "university-lecturer",
     "speech-language-therapist", "translator", "interpreter",
     "social-media-manager", "marketing-manager",
+  ],
+  history: [
+    "primary-teacher", "secondary-teacher", "university-lecturer",
+    "lawyer", "judge", "diplomat", "politician",
+    "journalist", "author", "archivist", "gallery-curator",
+    // Military — strategy, leadership, geopolitics
+    "military-officer", "infantry-officer", "military-intelligence-analyst",
+    "naval-officer",
   ],
   psychology: [
     "psychologist", "clinical-psychologist", "counsellor", "therapist",
@@ -8365,6 +8378,9 @@ const SUBJECT_CAREER_BOOSTS: Record<string, string[]> = {
     "logistics-manager", "supply-chain-analyst", "travel-agent",
     "tour-guide", "park-ranger", "cartographer",
     "civil-engineer", "transport-planner",
+    // Military — navigation, terrain, logistics
+    "military-officer", "soldier", "naval-officer", "logistics-officer",
+    "search-and-rescue-operator",
   ],
   languages: [
     "translator", "interpreter", "diplomat", "travel-agent",
