@@ -56,6 +56,7 @@ import { PageContext } from "@/components/ui/page-context";
 import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
+import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -680,6 +681,14 @@ export default function DashboardPage() {
   const firstName = rawName.split(/\s+/)[0];
   const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
 
+  // Discovery preferences — extracted at component level for nudge
+  const discoveryPrefs = useMemo(() => {
+    const dp = (profileData as { discoveryPreferences?: { subjects?: string[]; starredSubjects?: string[]; workStyles?: string[]; peoplePref?: string; interests?: string[] } } | null)?.discoveryPreferences;
+    if (!dp) return null;
+    const hasData = (dp.subjects?.length ?? 0) > 0 || (dp.workStyles?.length ?? 0) > 0;
+    return hasData ? dp : null;
+  }, [profileData]);
+
   // Career detail sheet
   const [showGoalDetail, setShowGoalDetail] = useState(false);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
@@ -1138,6 +1147,15 @@ export default function DashboardPage() {
               )}
             </Link>
           </DashboardSection>
+        )}
+
+        {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
+        {discoveryPrefs && (
+          <DiscoveryNudge
+            preferences={discoveryPrefs}
+            primaryGoal={goalTitle}
+            className="mb-4"
+          />
         )}
 
         {/* ── 4. Explored Journeys + My Library ─────────────────── */}

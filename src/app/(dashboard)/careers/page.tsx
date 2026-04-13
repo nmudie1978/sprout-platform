@@ -18,6 +18,7 @@ import { MobileFilterDrawer } from "@/components/careers/mobile-filter-drawer";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { motion } from "framer-motion";
 import { Compass, Search, Sparkles, Loader2, Briefcase, Layers, TrendingUp, Heart, ArrowRight } from "lucide-react";
+import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
 import Link from "next/link";
 import {
   CAREER_PATHWAYS,
@@ -452,6 +453,14 @@ function CareersPageContent() {
             </CardContent>
           </Card>
         </motion.div>
+      )}
+
+      {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
+      {discoveryPreferences && (
+        <DiscoveryNudge
+          preferences={discoveryPreferences}
+          className="mt-6"
+        />
       )}
 
       {/* Recommended Careers (anchor for Matches pill) */}

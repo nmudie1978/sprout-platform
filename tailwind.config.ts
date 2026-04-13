@@ -145,6 +145,10 @@ const config: Config = {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        "glow-pulse": {
+          "0%, 100%": { opacity: "0.15", boxShadow: "0 0 4px 1px rgba(45,212,191,0.15)" },
+          "50%": { opacity: "0.45", boxShadow: "0 0 12px 4px rgba(45,212,191,0.35)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -158,6 +162,7 @@ const config: Config = {
         grid: "grid 15s linear infinite",
         shine: "shine var(--duration) infinite linear",
         "glow-spin": "glow-spin 12s linear infinite",
+        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
       },
     },
   },

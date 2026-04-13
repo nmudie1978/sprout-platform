@@ -147,6 +147,7 @@ export function CareerDetailSheet({
   const queryClient = useQueryClient();
   const [addedAs, setAddedAs] = useState<GoalSlot | null>(null);
   const [showSwapModal, setShowSwapModal] = useState(false);
+  const [savingSlot, setSavingSlot] = useState<GoalSlot | null>(null);
   const { saveCuriosity, removeCuriosity, isSaved: isCuriositySaved } = useCuriositySaves();
 
   const isYouth = session?.user?.role === "YOUTH";
@@ -237,6 +238,7 @@ export function CareerDetailSheet({
       return;
     }
 
+    setSavingSlot("primary");
     setGoalMutation.mutate({ slot: "primary", title: career.title });
   };
 
@@ -249,11 +251,13 @@ export function CareerDetailSheet({
       return;
     }
 
+    setSavingSlot("secondary");
     setGoalMutation.mutate({ slot: "secondary", title: career.title });
   };
 
   const handleSwap = (slot: GoalSlot) => {
     if (!career) return;
+    setSavingSlot(slot);
     setGoalMutation.mutate({ slot, title: career.title });
   };
 
@@ -383,7 +387,7 @@ export function CareerDetailSheet({
                           onClick={handleSetAsPrimary}
                           disabled={setGoalMutation.isPending}
                         >
-                          {setGoalMutation.isPending ? (
+                          {setGoalMutation.isPending && savingSlot === "primary" ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                               Setting...
@@ -406,7 +410,7 @@ export function CareerDetailSheet({
                           onClick={handleSetAsSecondary}
                           disabled={setGoalMutation.isPending}
                         >
-                          {setGoalMutation.isPending ? (
+                          {setGoalMutation.isPending && savingSlot === "secondary" ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                               Setting...

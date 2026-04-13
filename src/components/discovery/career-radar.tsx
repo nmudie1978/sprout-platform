@@ -180,6 +180,137 @@ function RadarGuideTips() {
  * Tap a dot → opens the existing CareerDetailSheet via a window event.
  */
 
+// ── Radar Preference Coach ─────────────────────────────────────────
+// Contextual, inline tip that appears when the user has a thin
+// preference profile. Helps them understand that adding more inputs
+// makes the radar richer — without being pushy.
+
+const COACH_DISMISS_KEY = "radar-coach-dismissed";
+
+interface CoachTip {
+  text: string;
+  cta: string;
+}
+
+function generateCoachTip(prefs: DiscoveryPreferences | null | undefined): CoachTip | null {
+  if (!prefs) return null;
+
+  const subjectCount = prefs.subjects?.length ?? 0;
+  const hasWorkStyle = (prefs.workStyles?.length ?? 0) > 0;
+  const hasPeople = !!prefs.peoplePref;
+
+  // Already well-filled — no tip needed
+  if (subjectCount >= 3 && hasWorkStyle && hasPeople) return null;
+
+  // No subjects at all
+  if (subjectCount === 0) {
+    return {
+      text: "Add a few subjects you enjoy to see careers that match your interests",
+      cta: "Add subjects",
+    };
+  }
+
+  // Only 1 subject — encourage broadening
+  if (subjectCount === 1) {
+    const subj = prefs.subjects![0];
+    const COMPLEMENT: Record<string, string> = {
+      math: "Try adding Physics or Computing to unlock Engineering and Tech careers",
+      physics: "Adding Math or Chemistry would open up more Science and Engineering paths",
+      chemistry: "Try adding Biology or Physics to see more Healthcare and Science careers",
+      biology: "Adding Chemistry or Psychology would broaden your Healthcare matches",
+      computing: "Try adding Math or Design & Tech to see both technical and creative paths",
+      art: "Adding Drama or Media Studies would show you more creative career options",
+      music: "Try adding Drama or Media Studies to explore the full creative industry",
+      drama: "Adding English or Media Studies could reveal more performance and media careers",
+      english: "Try adding History or Languages to unlock more communication-based careers",
+      history: "Adding Geography or Languages would broaden your public service matches",
+      geography: "Try adding PE or Biology to see outdoor and environmental careers",
+      pe: "Adding Biology or Psychology would show you Sports Science and Coaching paths",
+      business: "Try adding Math or Languages to see Finance and International Business careers",
+      psychology: "Adding Biology or Health & Social Care opens up more helping professions",
+      languages: "Try adding Business or Geography for international career paths",
+      "food-tech": "Adding Chemistry or Biology would reveal Food Science and Nutrition careers",
+      "media-studies": "Try adding Art or Computing to see the full digital and creative landscape",
+      "design-tech": "Adding Art or Computing would show you both design and technical paths",
+      "workshop-making": "Try adding Design & Tech to explore the full maker and trades spectrum",
+      "health-social": "Adding Psychology or Biology would broaden your care and health matches",
+    };
+    const tip = COMPLEMENT[subj];
+    if (tip) return { text: tip, cta: "Update preferences" };
+  }
+
+  // 2 subjects but same flavour — suggest contrast
+  if (subjectCount === 2 && !hasWorkStyle) {
+    return {
+      text: "You've picked subjects — now tell us how you like to work to sharpen your matches",
+      cta: "Add work style",
+    };
+  }
+
+  // Has subjects but no work style
+  if (subjectCount >= 2 && !hasWorkStyle) {
+    return {
+      text: "Adding a work style preference helps us match you to the right kind of roles",
+      cta: "Add work style",
+    };
+  }
+
+  // Has subjects + work style but no people pref
+  if (subjectCount >= 2 && hasWorkStyle && !hasPeople) {
+    return {
+      text: "One more thing — do you prefer working with people, solo, or a mix?",
+      cta: "Set people preference",
+    };
+  }
+
+  return null;
+}
+
+function RadarCoachTip({
+  preferences,
+  onEditPreferences,
+}: {
+  preferences: DiscoveryPreferences | null | undefined;
+  onEditPreferences: () => void;
+}) {
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    try {
+      setDismissed(localStorage.getItem(COACH_DISMISS_KEY) === "1");
+    } catch { /* noop */ }
+  }, []);
+
+  const tip = useMemo(() => generateCoachTip(preferences), [preferences]);
+
+  if (!tip || dismissed) return null;
+
+  return (
+    <div className="px-4 py-2 border-t flex items-center gap-2 text-[10px]">
+      <Sparkles className="h-3 w-3 text-teal-400/60 shrink-0" />
+      <span className="text-muted-foreground/60 leading-relaxed flex-1">
+        {tip.text}
+      </span>
+      <button
+        onClick={onEditPreferences}
+        className="shrink-0 text-teal-500 hover:text-teal-400 font-medium transition-colors whitespace-nowrap"
+      >
+        {tip.cta}
+      </button>
+      <button
+        onClick={() => {
+          setDismissed(true);
+          try { localStorage.setItem(COACH_DISMISS_KEY, "1"); } catch { /* noop */ }
+        }}
+        className="shrink-0 p-0.5 text-muted-foreground/30 hover:text-muted-foreground/50 transition-colors"
+        aria-label="Dismiss tip"
+      >
+        <X className="h-2.5 w-2.5" />
+      </button>
+    </div>
+  );
+}
+
 interface CareerRadarProps {
   preferences: DiscoveryPreferences | null | undefined;
   onEditPreferences: () => void;
@@ -988,6 +1119,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         </div>
         <span>Inner ring = strongest match</span>
       </div>
+
+      {/* ── Preference coaching tip ──────────────────────────────── */}
+      <RadarCoachTip preferences={preferences} onEditPreferences={onEditPreferences} />
 
     </div>
 
