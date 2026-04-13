@@ -743,7 +743,7 @@ export default function DashboardPage() {
   const { curiosities: savedCareers, removeCuriosity } = useCuriositySaves();
   const [savedCareersPage, setSavedCareersPage] = useState(0);
   const [savedCareerDetail, setSavedCareerDetail] = useState<ReturnType<typeof getAllCareers>[number] | null>(null);
-  const savedCareersPerPage = 5;
+  const savedCareersPerPage = 4;
   const savedCareersPageCount = Math.max(1, Math.ceil(savedCareers.length / savedCareersPerPage));
   const savedCareersVisible = savedCareers.slice(
     savedCareersPage * savedCareersPerPage,
