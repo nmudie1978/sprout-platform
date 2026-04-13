@@ -259,10 +259,12 @@ const ZOOM_STEP = 0.25;
 // Weak signal → fewer dots so the radar isn't pretending to have
 // matches it can't meaningfully rank. Strong signal → full picture.
 function bandSizes(signalStrength: number): { strong: number; good: number; total: number } {
-  if (signalStrength <= 0.5) return { strong: 4, good: 8, total: 12 };
-  if (signalStrength <= 1)   return { strong: 5, good: 10, total: 15 };
-  if (signalStrength < 2.5)  return { strong: 7, good: 13, total: 20 };
-  return                            { strong: 8, good: 16, total: 24 };
+  // More generous totals so single-subject users still see enough
+  // results from their primary category before diversity dilutes them.
+  if (signalStrength <= 0.5) return { strong: 8, good: 16, total: 24 };
+  if (signalStrength <= 1)   return { strong: 10, good: 18, total: 28 };
+  if (signalStrength < 2.5)  return { strong: 10, good: 20, total: 30 };
+  return                            { strong: 12, good: 22, total: 34 };
 }
 
 // Legacy constants kept for placeDots ring assignment
@@ -526,8 +528,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="inline-flex items-center justify-center h-5 w-5 rounded-full border-[1.5px] border-amber-400/60 shrink-0">
             <Star className="h-2.5 w-2.5 text-amber-400" />
           </span>
-          <span className="text-[11px] text-muted-foreground/60">Primary Goal:</span>
-          <span className="text-[11px] font-medium text-foreground/80">{goalsData.primaryGoal.title}</span>
+          <span className="text-[11px] text-amber-400/80">Primary Goal:</span>
+          <span className="text-[11px] font-medium text-teal-300">{goalsData.primaryGoal.title}</span>
           <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
         </Link>
       )}
@@ -678,16 +680,6 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <Settings2 className="h-3 w-3 mr-1" />
             What I like
           </Button>
-          {/* Help — glowing icon with tooltip explaining how to use the radar */}
-          <button
-            type="button"
-            className="relative h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors group"
-            title="Tap any dot to explore a career. Dots closer to the centre are stronger matches. Pink = top match, gold ring = your Primary Goal. Use filters to focus on specific tiers."
-            aria-label="How to use Career Radar"
-          >
-            <HelpCircle className="h-3.5 w-3.5 text-teal-400" />
-            <span className="absolute inset-0 rounded-md animate-pulse bg-teal-400/10 pointer-events-none" />
-          </button>
         </div>
       </div>
 
