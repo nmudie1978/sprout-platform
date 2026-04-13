@@ -53,7 +53,6 @@ import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, g
 import { EducationBrowser } from '@/components/education-browser';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
-import { useSubtleHint } from '@/hooks/use-subtle-hint';
 
 const PersonalCareerTimeline = dynamic(
   () => import('@/components/journey').then((m) => m.PersonalCareerTimeline),
@@ -737,27 +736,31 @@ function DiscoverTab({
           );
         })()}
 
-        {/* Work environment */}
-        {dDetails?.typicalDay.environment && (
-          <div className="rounded-xl border border-border/30 bg-card/50 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="h-3.5 w-3.5 text-amber-400" />
-              <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Where you&apos;ll work</span>
-            </div>
+        {/* Work environment — always visible */}
+        <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <MapPin className="h-3.5 w-3.5 text-amber-400" />
+            <span className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Where you&apos;ll work</span>
+          </div>
+          {dDetails?.typicalDay.environment ? (
             <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.typicalDay.environment}</p>
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+          )}
+        </div>
 
-        {/* Reality teaser */}
-        {dDetails?.realityCheck && (
-          <div className="rounded-xl border border-border/30 bg-card/50 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
-              <span className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider">Good to know</span>
-            </div>
-            <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.realityCheck}</p>
+        {/* Reality teaser — always visible */}
+        <div className="rounded-xl border border-border/30 bg-card/50 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
+            <span className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider">Good to know</span>
           </div>
-        )}
+          {dDetails?.realityCheck ? (
+            <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.realityCheck}</p>
+          ) : (
+            <p className="text-xs text-muted-foreground/40">No specific notes for this career yet.</p>
+          )}
+        </div>
 
         {/* Academic expectations — early signal about school readiness */}
         {(() => {
@@ -2487,13 +2490,6 @@ export default function MyJourneyPage() {
 
   const [goalSheetOpen, setGoalSheetOpen] = useState(false);
 
-  // Subtle hint — "This is your path" on first journey visit
-  const journeyHint = useSubtleHint({
-    hintKey: "journey-path",
-    enabled: !!goalTitle,
-    delayMs: 2500,
-    durationMs: 3500,
-  });
 
   const tabs: { id: V2Tab; label: string; subtitle: string; icon: typeof Search; color: string; glow: string; tooltip: string; lockedTooltip: string }[] = [
     { id: 'discover', label: t('journey.discover.label'), subtitle: t('journey.discover.subtitle'), icon: Search, color: 'text-teal-400', glow: 'rgba(20,184,166,0.25)', tooltip: t('journey.discover.tooltip'), lockedTooltip: '' },
@@ -2694,14 +2690,6 @@ export default function MyJourneyPage() {
           })}
         </div>
 
-        {/* Journey hint — first visit */}
-        {journeyHint.visible && (
-          <div className="flex justify-center mb-2">
-            <span className="text-xs font-medium text-muted-foreground/70 bg-card/90 border border-border/30 rounded-lg px-3 py-1.5 animate-pulse">
-              This is your path
-            </span>
-          </div>
-        )}
 
         {/* Tab content */}
         <AnimatePresence mode="wait">
