@@ -51,6 +51,7 @@ import { getAcademicProfile } from "@/lib/education/academic-readiness";
 import {
   getSubjectCategoryWeights,
   getSubjectCareerBoosts,
+  getInterestCareerBoosts,
 } from "@/lib/career-pathways";
 
 // ══════════════════════════════════════════════════════════════════
@@ -332,12 +333,17 @@ export function scoreCareer(
   let rawScore = 0;
   for (const d of dimensions) rawScore += d.contribution;
 
-  // Interest keyword bonus (additive, outside the weighted system)
+  // Interest boost — check if this career appears on any selected
+  // interest's boost list. Each hit adds a bonus. This is much more
+  // accurate than the old keyword-in-ID approach.
   let interestHits = 0;
   if (user.interests.length > 0) {
-    const careerText = career.careerId.replace(/-/g, " ");
+    const boosts = getInterestCareerBoosts();
     for (const interest of user.interests) {
-      if (careerText.includes(interest)) interestHits++;
+      const boostedCareers = boosts[interest];
+      if (boostedCareers && boostedCareers.includes(career.careerId)) {
+        interestHits++;
+      }
     }
   }
 

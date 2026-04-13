@@ -8404,6 +8404,123 @@ export function getSubjectCareerBoosts(): Record<string, string[]> {
   return SUBJECT_CAREER_BOOSTS;
 }
 
+// ── Interest → Career Boost Lists ──────────────────────────────────
+// Maps "things I enjoy" selections to career IDs. Works the same way
+// as subject boosts — gives listed careers a guaranteed minimum
+// relevance when the interest is selected.
+const INTEREST_CAREER_BOOSTS: Record<string, string[]> = {
+  coding: [
+    "software-developer", "game-developer", "mobile-developer", "frontend-developer",
+    "backend-developer", "full-stack-engineer", "data-scientist", "ai-engineer",
+    "cybersecurity-analyst", "devops-engineer", "robotics-engineer",
+  ],
+  gaming: [
+    "game-developer", "esports-player", "esports-coach", "esports-analyst",
+    "game-designer", "ux-designer", "streamer", "content-creator",
+    "sports-commentator", "ar-vr-developer",
+  ],
+  cooking: [
+    "chef", "pastry-chef", "baker", "restaurant-manager", "catering-manager",
+    "food-scientist", "food-technologist", "food-product-developer",
+    "nutritionist", "dietitian", "food-blogger", "brewer", "sommelier",
+  ],
+  "fixing-things": [
+    "mechanic", "electrician", "plumber", "carpenter", "welder",
+    "hvac-technician", "automotive-engineer", "maintenance-technician",
+    "robotics-engineer", "air-force-technician", "combat-engineer",
+  ],
+  adventure: [
+    "outdoor-instructor", "search-and-rescue-operator", "pilot", "military-pilot",
+    "marine", "soldier", "special-forces-operator", "park-ranger",
+    "firefighter", "paramedic", "emt", "ship-captain", "dive-instructor",
+  ],
+  animals: [
+    "veterinarian", "veterinary-assistant", "marine-biologist", "zoologist",
+    "animal-behaviourist", "dog-trainer", "wildlife-conservationist",
+    "park-ranger", "farm-manager",
+  ],
+  drawing: [
+    "graphic-designer", "illustrator", "animator", "ux-designer", "ui-designer",
+    "architect", "interior-designer", "fashion-designer", "tattoo-artist",
+    "art-teacher", "set-designer", "concept-artist",
+  ],
+  "sport-fitness": [
+    "personal-trainer", "sports-coach", "fitness-instructor", "professional-athlete",
+    "sports-physiotherapist", "sports-scientist", "athletic-trainer",
+    "strength-conditioning-coach", "yoga-instructor", "swim-instructor",
+    "outdoor-instructor", "sports-psychologist",
+  ],
+  "reading-writing": [
+    "journalist", "author", "editor", "copywriter", "content-writer",
+    "translator", "lawyer", "secondary-teacher", "university-lecturer",
+    "librarian", "publisher", "communications-specialist",
+  ],
+  science: [
+    "clinical-researcher", "laboratory-technician", "pharmacist",
+    "food-scientist", "environmental-scientist", "marine-biologist",
+    "epidemiologist", "data-scientist", "biomedical-scientist",
+    "materials-engineer", "chemical-engineer",
+  ],
+  building: [
+    "carpenter", "civil-engineer", "architect", "structural-engineer",
+    "construction-manager", "bricklayer", "electrician", "plumber",
+    "surveyor", "urban-planner", "interior-designer",
+  ],
+  performing: [
+    "actor", "musician", "vocalist", "dj", "dancer", "comedian",
+    "tv-presenter", "radio-presenter", "voice-actor", "stunt-performer",
+    "drama-teacher", "director", "theatre-producer",
+  ],
+  "helping-people": [
+    "registered-nurse", "social-worker", "counsellor", "psychologist",
+    "youth-worker", "support-worker", "midwife", "emt", "paramedic",
+    "firefighter", "police-officer", "teacher", "primary-teacher",
+    "speech-language-therapist", "occupational-therapist",
+  ],
+  "money-business": [
+    "accountant", "financial-analyst", "investment-banker", "entrepreneur",
+    "management-consultant", "real-estate-agent", "sales-manager",
+    "marketing-manager", "project-manager", "actuary",
+  ],
+  "photo-film": [
+    "photographer", "film-director", "video-editor", "cinematographer",
+    "tv-producer", "camera-operator", "sports-photographer",
+    "content-creator", "film-editor", "documentary-maker",
+  ],
+  travel: [
+    "pilot", "flight-attendant", "travel-agent", "tour-guide",
+    "diplomat", "ship-captain", "hotel-manager", "foreign-correspondent",
+    "import-export-specialist", "international-sales-manager",
+  ],
+  "music-making": [
+    "musician", "music-producer", "songwriter", "composer", "audio-engineer",
+    "sound-engineer", "dj", "session-musician", "film-composer",
+    "music-teacher", "music-therapist", "vocal-coach",
+  ],
+  fashion: [
+    "fashion-designer", "stylist", "textile-designer", "fashion-buyer",
+    "fashion-journalist", "visual-merchandiser", "model",
+    "photographer", "graphic-designer", "interior-designer",
+  ],
+  environment: [
+    "environmental-scientist", "marine-biologist", "wildlife-conservationist",
+    "park-ranger", "urban-planner", "sustainability-consultant",
+    "environmental-engineer", "renewable-energy-engineer",
+    "farm-manager", "forestry-worker",
+  ],
+  "military-defence": [
+    "military-officer", "soldier", "infantry-officer", "special-forces-operator",
+    "military-pilot", "naval-officer", "marine", "combat-engineer",
+    "military-intelligence-analyst", "cyber-warfare-specialist",
+    "drone-operator-uav", "search-and-rescue-operator", "military-police",
+    "weapons-specialist", "eod-technician",
+  ],
+};
+
+export function getInterestCareerBoosts(): Record<string, string[]> {
+  return INTEREST_CAREER_BOOSTS;
+}
+
 // Radar tuning constants
 // ──────────────────────────────────────────────────────────────────────
 //

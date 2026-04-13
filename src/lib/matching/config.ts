@@ -71,8 +71,10 @@ export const MATCHING_CONFIG: MatchingConfig = {
   /** Reserve this many slots for "discovery/stretch" matches. */
   stretchSlots: 1,
 
-  /** Bonus added per interest keyword hit (in percentage points). */
-  interestBonus: 3,
+  /** Bonus per interest match (percentage points). Higher than subject
+   *  bonus because interests are direct personal signals, not inferred
+   *  from category membership. */
+  interestBonus: 6,
 
   /**
    * Minimum subject relevance for careers on curated boost lists.

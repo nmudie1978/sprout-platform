@@ -59,6 +59,34 @@ const PEOPLE_PREFS: { id: string; label: string }[] = [
   { id: "mostly-alone", label: "Mostly on my own" },
 ];
 
+/**
+ * Interest / activity chips — things youth actually do and care about,
+ * beyond school subjects. These give the matching engine a much richer
+ * signal about what someone would enjoy doing for work.
+ */
+const INTERESTS: { id: string; label: string; emoji: string }[] = [
+  { id: "coding", label: "Coding", emoji: "💻" },
+  { id: "gaming", label: "Gaming", emoji: "🎮" },
+  { id: "cooking", label: "Cooking", emoji: "🍳" },
+  { id: "fixing-things", label: "Fixing things", emoji: "🔧" },
+  { id: "adventure", label: "Adventure / outdoors", emoji: "⛰️" },
+  { id: "animals", label: "Animals", emoji: "🐾" },
+  { id: "drawing", label: "Drawing / art", emoji: "🎨" },
+  { id: "sport-fitness", label: "Sport / fitness", emoji: "⚽" },
+  { id: "reading-writing", label: "Reading / writing", emoji: "📚" },
+  { id: "science", label: "Science experiments", emoji: "🔬" },
+  { id: "building", label: "Building things", emoji: "🏗️" },
+  { id: "performing", label: "Performing", emoji: "🎭" },
+  { id: "helping-people", label: "Helping people", emoji: "❤️" },
+  { id: "money-business", label: "Business / money", emoji: "💰" },
+  { id: "photo-film", label: "Photography / film", emoji: "📸" },
+  { id: "travel", label: "Travel", emoji: "✈️" },
+  { id: "music-making", label: "Making music", emoji: "🎵" },
+  { id: "fashion", label: "Fashion / style", emoji: "👗" },
+  { id: "environment", label: "Environment / nature", emoji: "🌍" },
+  { id: "military-defence", label: "Military / defence", emoji: "🎖️" },
+];
+
 interface DiscoveryQuizDialogProps {
   open: boolean;
   onClose: () => void;
@@ -77,6 +105,7 @@ export function DiscoveryQuizDialog({
   const [starredSubjects, setStarredSubjects] = useState<string[]>([]);
   const [workStyles, setWorkStyles] = useState<string[]>([]);
   const [peoplePref, setPeoplePref] = useState<string | undefined>(undefined);
+  const [interests, setInterests] = useState<string[]>([]);
 
   // Sync from initialValue whenever the dialog re-opens
   useEffect(() => {
@@ -85,6 +114,7 @@ export function DiscoveryQuizDialog({
       setStarredSubjects(initialValue?.starredSubjects || []);
       setWorkStyles(initialValue?.workStyles || []);
       setPeoplePref(initialValue?.peoplePref);
+      setInterests(initialValue?.interests || []);
     }
   }, [open, initialValue]);
 
@@ -128,6 +158,7 @@ export function DiscoveryQuizDialog({
         starredSubjects,
         workStyles,
         peoplePref,
+        interests,
       };
       const response = await fetch("/api/profile", {
         method: "PATCH",
@@ -150,7 +181,7 @@ export function DiscoveryQuizDialog({
     },
   });
 
-  const hasAny = subjects.length > 0 || workStyles.length > 0 || !!peoplePref;
+  const hasAny = subjects.length > 0 || workStyles.length > 0 || !!peoplePref || interests.length > 0;
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
@@ -231,6 +262,31 @@ export function DiscoveryQuizDialog({
                   )}
                 >
                   {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Interests / activities */}
+          <div>
+            <Label className="text-xs font-semibold">Things you enjoy</Label>
+            <p className="text-[10px] text-muted-foreground mb-1.5">
+              What do you like doing outside of school? Pick any that fit.
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {INTERESTS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => toggle(interests, setInterests, item.id)}
+                  className={cn(
+                    'rounded-full border px-3 py-1 text-[11px] font-medium transition-colors',
+                    interests.includes(item.id)
+                      ? 'border-violet-500/60 bg-violet-500/15 text-violet-300'
+                      : 'border-border/40 text-muted-foreground/70 hover:border-violet-500/40',
+                  )}
+                >
+                  {item.emoji} {item.label}
                 </button>
               ))}
             </div>
