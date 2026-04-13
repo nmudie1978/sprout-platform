@@ -893,12 +893,12 @@ function UnderstandTab({
 
       {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Left: What You'll Actually Do */}
-        {details && details.whatYouActuallyDo.length > 0 && (
-          <SectionCard>
-            <SectionHeader icon={Briefcase} title="What You'll Actually Do" tooltip="The core responsibilities and daily tasks that define this role — what you'd actually spend your time doing." collapsed={uCollapsed('u-tasks')} onToggle={() => uToggle('u-tasks')} />
-            {!uCollapsed('u-tasks') && (
-              <div className="p-4">
+        {/* Left: What You'll Actually Do — always visible */}
+        <SectionCard>
+          <SectionHeader icon={Briefcase} title="What You'll Actually Do" tooltip="The core responsibilities and daily tasks that define this role — what you'd actually spend your time doing." collapsed={uCollapsed('u-tasks')} onToggle={() => uToggle('u-tasks')} />
+          {!uCollapsed('u-tasks') && (
+            <div className="p-4">
+              {details && details.whatYouActuallyDo.length > 0 ? (
                 <div className="space-y-1.5">
                   {details.whatYouActuallyDo.map((task, i) => (
                     <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
@@ -909,10 +909,14 @@ function UnderstandTab({
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-          </SectionCard>
-        )}
+              ) : detailsLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+              )}
+            </div>
+          )}
+        </SectionCard>
 
         {/* Right: The Reality — dynamic reality check */}
         <SectionCard>
@@ -978,7 +982,9 @@ function UnderstandTab({
                   <p className="text-[11px] text-foreground/50 italic leading-relaxed">{details.realityCheck}</p>
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <p className="text-xs text-muted-foreground/40">Reality insights not available for this career yet.</p>
+            )}
           </div>}
         </SectionCard>
       </div>
@@ -993,7 +999,7 @@ function UnderstandTab({
       {/* ── MIDDLE: A Typical Day — horizontal timeline ── */}
       <SectionCard>
         <SectionHeader icon={Clock} title="A Typical Day" tooltip="What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
-        {uCollapsed('u-day') ? null : detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details ? (
+        {uCollapsed('u-day') ? null : detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details && details.typicalDay.morning.length > 0 ? (
           <div className="p-4 sm:p-5">
             <div className="relative">
               {/* Horizontal connector line */}
@@ -1044,7 +1050,7 @@ function UnderstandTab({
             )}
           </div>
         ) : (
-          <div className="p-4"><p className="text-xs text-muted-foreground/40">Loading...</p></div>
+          <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
         )}
       </SectionCard>
 
@@ -1057,31 +1063,33 @@ function UnderstandTab({
           <SectionCard>
             <SectionHeader icon={GraduationCap} title="School Readiness" collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
             {!uCollapsed('u-school-readiness') && (
-              <div className="px-4 py-3 space-y-1.5 text-[11px]">
-                <div className="flex items-baseline gap-4">
-                  <span className="text-muted-foreground/50 w-24 shrink-0">Demand</span>
-                  <span className="text-foreground/80 font-medium">{getDemandLabel(ap.demand)}</span>
-                </div>
-                <div className="flex items-baseline gap-4">
-                  <span className="text-muted-foreground/50 w-24 shrink-0">Pathway</span>
-                  <span className="text-foreground/80 font-medium">{getPathwayLabel(ap.pathwayType)}</span>
-                </div>
-                <div className="flex items-baseline gap-4">
-                  <span className="text-muted-foreground/50 w-24 shrink-0">Competition</span>
-                  <span className="text-foreground/80 font-medium">{getCompetitivenessLabel(ap.competitiveness)}</span>
-                </div>
-                {essentialSubjects.length > 0 && (
+              <div className="px-4 py-3 text-[11px]">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1.5">
                   <div className="flex items-baseline gap-4">
-                    <span className="text-muted-foreground/50 w-24 shrink-0">Key subjects</span>
-                    <span className="text-foreground/70">{essentialSubjects.map(s => s.name).join(', ')}</span>
+                    <span className="text-muted-foreground/50 w-24 shrink-0">Demand</span>
+                    <span className="text-foreground/80 font-medium">{getDemandLabel(ap.demand)}</span>
                   </div>
-                )}
-                {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
                   <div className="flex items-baseline gap-4">
-                    <span className="text-muted-foreground/50 w-24 shrink-0">Typical grades</span>
-                    <span className="text-foreground/70">{ap.grade.gradeMin}–{ap.grade.gradeMax} on the 1–6 scale</span>
+                    <span className="text-muted-foreground/50 w-24 shrink-0">Pathway</span>
+                    <span className="text-foreground/80 font-medium">{getPathwayLabel(ap.pathwayType)}</span>
                   </div>
-                )}
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-muted-foreground/50 w-24 shrink-0">Competition</span>
+                    <span className="text-foreground/80 font-medium">{getCompetitivenessLabel(ap.competitiveness)}</span>
+                  </div>
+                  {essentialSubjects.length > 0 && (
+                    <div className="flex items-baseline gap-4 col-span-2 sm:col-span-3">
+                      <span className="text-muted-foreground/50 w-24 shrink-0">Key subjects</span>
+                      <span className="text-foreground/70">{essentialSubjects.map(s => s.name).join(', ')}</span>
+                    </div>
+                  )}
+                  {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-muted-foreground/50 w-24 shrink-0">Typical grades</span>
+                      <span className="text-foreground/70">{ap.grade.gradeMin}–{ap.grade.gradeMax} on the 1–6 scale</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </SectionCard>
