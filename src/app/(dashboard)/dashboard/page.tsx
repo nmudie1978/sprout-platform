@@ -1406,19 +1406,11 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            {/* Last completed job */}
-            <div className="mt-2 pt-2 border-t border-border/20">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-3 w-3 text-emerald-500/60 shrink-0" />
-                <span className="text-[9px] text-muted-foreground/40 uppercase tracking-wider shrink-0">Last completed</span>
-                {dashboardStats?.lastCompletedJob ? (
-                  <span className="text-[11px] text-foreground/70 truncate ml-auto">
-                    {dashboardStats.lastCompletedJob.title}
-                  </span>
-                ) : (
-                  <span className="text-[11px] text-muted-foreground/30 ml-auto">None yet</span>
-                )}
-              </div>
+            {/* Last completed job — inline with stats */}
+            <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-border/15 text-[9px] text-muted-foreground/40">
+              <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500/50 shrink-0" />
+              <span className="uppercase tracking-wider">Last completed:</span>
+              <span className="text-foreground/60 truncate">{dashboardStats?.lastCompletedJob?.title ?? 'None yet'}</span>
             </div>
           </DashboardSection>
         </div>
