@@ -80,9 +80,9 @@ function GlassCard({
     <div className="relative">
       <div
         className={cn(
-          "relative bg-card border border-border/30 rounded-2xl",
-          "shadow-[0_0_15px_rgba(255,255,255,0.02),0_0_30px_rgba(255,255,255,0.01)]",
-          "hover:shadow-[0_0_20px_rgba(255,255,255,0.04),0_0_40px_rgba(255,255,255,0.02)]",
+          "relative bg-card border border-border/50 rounded-2xl",
+          "shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
+          "hover:shadow-[0_0_16px_rgba(255,255,255,0.05),0_0_32px_rgba(255,255,255,0.025)]",
           "transition-shadow duration-300",
           className,
         )}
@@ -130,7 +130,12 @@ function DashboardSection({
         </div>
         {action}
       </div>
-      <div className="rounded-2xl border border-border/30 bg-card/50 p-3 sm:p-4">
+      <div className={cn(
+        "rounded-2xl border border-border/50 bg-card p-3 sm:p-4",
+        "shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
+        "dark:shadow-[0_0_12px_rgba(255,255,255,0.03),0_0_24px_rgba(255,255,255,0.015)]",
+        "light:shadow-[0_0_12px_rgba(0,0,0,0.04),0_0_24px_rgba(0,0,0,0.02)]",
+      )}>
         {children}
       </div>
     </div>
@@ -1126,11 +1131,10 @@ export default function DashboardPage() {
           </DashboardSection>
         )}
 
-        {/* ── 4. Explored Journeys + Saved Careers ────────────── */}
+        {/* ── 4. Explored Journeys + My Library ─────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          {/* Previously Explored Journeys */}
           <DashboardSection
-            title="Explored Journeys"
+            title="My Explored Journeys"
             icon={Target}
             iconColor="text-violet-500"
             tooltip="Every journey you start is saved here. Switch between them anytime."
@@ -1243,6 +1247,23 @@ export default function DashboardPage() {
           })()}
           </DashboardSection>
 
+          {/* My Library */}
+          <DashboardSection
+            title="My Library"
+            icon={BookmarkCheck}
+            iconColor="text-blue-500"
+            tooltip="Articles, videos, and resources you've saved from Industry Insights."
+            className="mb-0"
+            action={savedSummary.total > 0 ? (
+              <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
+            ) : undefined}
+          >
+            <LibraryCard items={savedItemsList} total={savedSummary.total} />
+          </DashboardSection>
+        </div>
+
+        {/* ── 5. Saved Careers + Small Jobs ─────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {/* Saved Careers */}
           <DashboardSection
             title={t('savedCareers.title')}
@@ -1308,23 +1329,8 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground/50">{t('savedCareers.emptyState')}</p>
             )}
           </DashboardSection>
-        </div>
 
-        {/* ── 5. My Library + Small Jobs ───────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <DashboardSection
-            title="My Library"
-            icon={BookmarkCheck}
-            iconColor="text-blue-500"
-            tooltip="Articles, videos, and resources you've saved from Industry Insights."
-            className="mb-0"
-            action={savedSummary.total > 0 ? (
-              <span className="text-[10px] text-muted-foreground/40">{savedSummary.total}</span>
-            ) : undefined}
-          >
-            <LibraryCard items={savedItemsList} total={savedSummary.total} />
-          </DashboardSection>
-
+          {/* Small Jobs — compact */}
           <DashboardSection
             title={t('smallJobs.title')}
             icon={Briefcase}
@@ -1340,14 +1346,17 @@ export default function DashboardPage() {
               ) : undefined;
             })()}
           >
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="flex gap-2">
               {[
                 { label: t('smallJobs.applied'), value: appStats.applied },
                 { label: t('smallJobs.waiting'), value: appStats.waiting },
                 { label: t('smallJobs.accepted'), value: appStats.accepted },
                 { label: t('smallJobs.done'), value: appStats.done },
               ].map((stat) => (
-                <StatCard key={stat.label} label={stat.label} value={String(stat.value)} />
+                <div key={stat.label} className="flex-1 text-center py-1.5">
+                  <p className="text-xs font-bold text-foreground/75 tabular-nums">{stat.value}</p>
+                  <p className="text-[8px] text-muted-foreground/40 uppercase tracking-wider">{stat.label}</p>
+                </div>
               ))}
             </div>
           </DashboardSection>
