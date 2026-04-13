@@ -130,10 +130,27 @@ export function useRoadmapSimulation(
   //    segments as soon as journey data arrives, so clicking "Play
   //    Journey" starts instantly instead of waiting 3-4s for TTS. ────
 
+  // Track journey fingerprint so we regenerate the script when ages/items
+  // change (e.g. user edits their school finish year), not just when the
+  // career title changes.
+  const journeyFingerprintRef = useRef<string>('');
+
   useEffect(() => {
     if (!narrationCtx || !journey) return;
-    // Don't re-generate if we already have a script with the same career
-    if (scriptRef.current?.career === narrationCtx.careerTitle) return;
+
+    // Build a fingerprint from the journey items' ages + titles so any
+    // change to the roadmap (finish year, item order) triggers a fresh
+    // script + clears stale cached audio.
+    const fingerprint = `${narrationCtx.careerTitle}|${journey.startAge}|${journey.items.map(i => `${i.startAge}-${i.endAge}-${i.title}`).join(',')}`;
+    if (journeyFingerprintRef.current === fingerprint) return;
+    journeyFingerprintRef.current = fingerprint;
+
+    // Clear stale audio blobs from a previous generation
+    for (const url of blobCacheRef.current.values()) {
+      URL.revokeObjectURL(url);
+    }
+    blobCacheRef.current.clear();
+    prefetchingRef.current.clear();
 
     const script = generateNarrationScript(narrationCtx);
     scriptRef.current = script;
@@ -250,7 +267,13 @@ export function useRoadmapSimulation(
   const play = useCallback(() => {
     if (!narrationCtx || !journey) return;
 
-    // Generate script
+    // Always regenerate fresh + clear stale audio
+    for (const url of blobCacheRef.current.values()) {
+      URL.revokeObjectURL(url);
+    }
+    blobCacheRef.current.clear();
+    prefetchingRef.current.clear();
+
     const script = generateNarrationScript(narrationCtx);
     scriptRef.current = script;
 
