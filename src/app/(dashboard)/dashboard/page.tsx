@@ -517,7 +517,7 @@ export default function DashboardPage() {
     savedItemsList: { id: string; title: string; type: string; url: string; thumbnail: string | null; source: string | null }[];
     exploredCareers: string[];
     careerInterests: string[];
-    lastCompletedJob: { title: string; completedAt: string } | null;
+    lastCompletedJob: { title: string; completedAt: string; location: string } | null;
     recentActivity: { type: string; title: string; time: string }[];
   }>({
     queryKey: ["dashboard-stats"],
@@ -633,21 +633,8 @@ export default function DashboardPage() {
     durationMs: 4000,
   });
 
-  // Language prompt — show once per account, not per session
+  // Language toggle — always visible
   const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
-  const [showLangPrompt, setShowLangPrompt] = useState(false);
-  useEffect(() => {
-    if (status === "loading") return;
-    try {
-      if (!localStorage.getItem("lang-chosen")) setShowLangPrompt(true);
-    } catch { /* noop */ }
-  }, [status]);
-  const pickLanguage = (switchToNorsk: boolean) => {
-    if (switchToNorsk && currentLocale === "en-GB") toggleLocale();
-    else if (!switchToNorsk && currentLocale === "nb-NO") toggleLocale();
-    try { localStorage.setItem("lang-chosen", "1"); } catch { /* noop */ }
-    setShowLangPrompt(false);
-  };
 
   // Discover profile — "Who Am I" summary (generic across all goals)
   const { data: discoverData } = useDiscoverRecommendations(session?.user.role === "YOUTH");
@@ -838,18 +825,18 @@ export default function DashboardPage() {
                 <Compass className="h-3.5 w-3.5" />
               </button>
             )}
-            {/* Language prompt — shown once, then saved permanently */}
-            {showLangPrompt && !isLocalePending && (
+            {/* Language toggle — always visible */}
+            {!isLocalePending && (
               <div className="flex items-center gap-1 rounded-lg border border-border/30 bg-card px-2 py-1">
                 <button
-                  onClick={() => pickLanguage(false)}
+                  onClick={() => { if (currentLocale !== "en-GB") toggleLocale(); }}
                   className={cn("px-2 py-0.5 rounded text-[10px] font-medium transition-colors", currentLocale === "en-GB" ? "bg-foreground/10 text-foreground" : "text-muted-foreground/50 hover:text-foreground")}
                 >
                   EN
                 </button>
                 <span className="text-muted-foreground/20 text-[10px]">|</span>
                 <button
-                  onClick={() => pickLanguage(true)}
+                  onClick={() => { if (currentLocale !== "nb-NO") toggleLocale(); }}
                   className={cn("px-2 py-0.5 rounded text-[10px] font-medium transition-colors", currentLocale === "nb-NO" ? "bg-foreground/10 text-foreground" : "text-muted-foreground/50 hover:text-foreground")}
                 >
                   NO
@@ -1398,11 +1385,21 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            {/* Last completed job — inline with stats */}
-            <div className="flex items-center gap-1.5 mt-1.5 pt-1.5 border-t border-border/15 text-[9px] text-muted-foreground/40">
-              <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500/50 shrink-0" />
-              <span className="uppercase tracking-wider">Last completed:</span>
-              <span className="text-foreground/60 truncate">{dashboardStats?.lastCompletedJob?.title ?? 'None yet'}</span>
+            {/* Last completed job — row with date + location */}
+            <div className="mt-1.5 pt-1.5 border-t border-border/15">
+              <div className="flex items-center gap-1.5 text-[8px] uppercase tracking-wider text-muted-foreground/40 mb-1">
+                <CheckCircle2 className="h-2.5 w-2.5 text-emerald-500/50 shrink-0" />
+                <span>Last completed</span>
+              </div>
+              {dashboardStats?.lastCompletedJob ? (
+                <div className="flex items-center gap-3 text-[10px]">
+                  <span className="text-foreground/70 font-medium truncate flex-1">{dashboardStats.lastCompletedJob.title}</span>
+                  <span className="text-muted-foreground/40 shrink-0">{new Date(dashboardStats.lastCompletedJob.completedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span className="text-muted-foreground/40 shrink-0 truncate max-w-[100px]">{dashboardStats.lastCompletedJob.location}</span>
+                </div>
+              ) : (
+                <span className="text-[9px] text-muted-foreground/30">None yet</span>
+              )}
             </div>
           </DashboardSection>
         </div>
