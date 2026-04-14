@@ -25,79 +25,90 @@ import { toast } from "sonner";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 
 /**
- * The 50 most well-known jobs in Norway — powers the "Common jobs"
- * toggle on the Career Radar. Spread across every CareerCategory
- * slice so a youth can narrow a busy radar to the roles they'd
- * recognise on sight. Hand-curated from career-pathways.ts.
+ * The 65 most well-known jobs in Norway — powers the "Common jobs"
+ * toggle on the Career Radar. 5 per consolidated slice (13 × 5 = 65)
+ * so every radar slice gets even representation. Hand-curated from
+ * career-pathways.ts; every id is verified to exist.
  */
 const COMMON_NORWAY_JOB_IDS = new Set<string>([
-  // Health (4)
+  // Health (5)
   "doctor",
   "nurse",
   "dentist",
   "veterinarian",
-  // Education (3)
+  "pharmacist",
+  // Education (5)
   "primary-teacher",
   "secondary-teacher",
   "kindergarten-teacher",
-  // Tech (3)
+  "university-lecturer",
+  "special-needs-educator",
+  // Tech — 4 IT + 1 Telecom (5)
   "software-developer",
   "data-analyst",
   "cloud-engineer",
-  // Business (3)
+  "ux-designer",
+  "telco-network-architect",
+  // Business — 4 management + 1 real estate (5)
   "project-manager",
   "hr-specialist",
-  "lawyer",
-  // Finance (3)
+  "business-analyst",
+  "general-manager",
+  "real-estate-agent",
+  // Finance (5)
   "accountant",
   "financial-analyst",
   "investment-banker",
-  // Marketing (3)
+  "auditor",
+  "financial-advisor",
+  // Marketing (5)
   "marketing-manager",
-  "sales-representative",
   "digital-marketer",
-  // Trade / engineering (3)
-  "mechanical-engineer",
-  "electrical-engineer",
-  "auto-mechanic",
-  // Logistics (3)
-  "supply-chain-manager",
-  "truck-driver",
-  "airline-pilot",
-  // Hospitality (3)
-  "chef",
-  "hotel-manager",
-  "tour-guide",
-  // Telecom (1)
-  "telco-network-architect",
-  // Creative (4)
-  "journalist",
+  "sales-representative",
+  "content-creator",
+  "brand-manager",
+  // Creative (5)
   "graphic-designer",
   "photographer",
   "musician",
-  // Safety (3)
+  "journalist",
+  "video-editor",
+  // Public Service — 3 safety + 2 military (5)
   "police-officer",
   "firefighter",
   "social-worker",
-  // Military (2)
   "military-officer",
   "soldier",
-  // Sport (3)
+  // Sport (5)
   "sports-coach",
   "personal-trainer",
   "fitness-instructor",
-  // Property (2)
-  "real-estate-agent",
-  "property-manager",
-  // Social care (3)
+  "professional-athlete",
+  "sports-manager",
+  // Trades — 3 construction + 2 engineering (5)
+  "carpenter",
+  "electrician",
+  "plumber",
+  "mechanical-engineer",
+  "electrical-engineer",
+  // Logistics (5)
+  "truck-driver",
+  "supply-chain-manager",
+  "warehouse-manager",
+  "airline-pilot",
+  "logistics-coordinator",
+  // Hospitality (5)
+  "chef",
+  "hotel-manager",
+  "tour-guide",
+  "restaurant-manager",
+  "flight-attendant",
+  // Social Care (5)
   "youth-worker",
   "family-support-worker",
   "addiction-counsellor",
-  // Construction (4)
-  "plumber",
-  "carpenter",
-  "electrician",
-  "bricklayer",
+  "counsellor",
+  "support-worker",
 ]);
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
@@ -395,28 +406,47 @@ interface CareerRadarProps {
   onEditPreferences: () => void;
 }
 
-// Map each category to a fixed angle slice (degrees) so positioning is stable.
-// Order is the angular position around the radar, starting from the top.
-// New categories are interleaved so visually-related slices sit next to
-// each other (e.g. Sport next to Health, Creative next to Marketing).
+// Display-level consolidation: several narrow catalog categories are
+// folded into a broader sibling on the radar so the wheel shows a
+// standard 13-slice taxonomy instead of the raw 17-enum one. The
+// underlying Career.category values in career-pathways.ts stay the
+// same — only the radar visualization remaps them.
+//
+//   Telecommunications     → Tech
+//   Real Estate / Property → Business
+//   Military / Defence     → Public Service
+//   Manufacturing / Eng.   → Trades
+const CATEGORY_ALIAS: Partial<Record<CareerCategory, CareerCategory>> = {
+  TELECOMMUNICATIONS: "TECHNOLOGY_IT",
+  REAL_ESTATE_PROPERTY: "BUSINESS_MANAGEMENT",
+  MILITARY_DEFENCE: "PUBLIC_SERVICE_SAFETY",
+  MANUFACTURING_ENGINEERING: "CONSTRUCTION_TRADES",
+};
+
+/** Resolve a career's radar-display category, applying the alias map. */
+function displayCategoryFor(careerId: string): CareerCategory | null {
+  const raw = findCareerCategory(careerId);
+  if (!raw) return null;
+  return CATEGORY_ALIAS[raw] ?? raw;
+}
+
+// Angular order around the wheel. 13 slices after consolidation.
+// Related slices kept adjacent (Sport next to Health, Creative next
+// to Marketing, Trades next to Logistics, etc).
 const CATEGORY_ORDER: CareerCategory[] = [
   "HEALTHCARE_LIFE_SCIENCES",
   "SPORT_FITNESS",
   "EDUCATION_TRAINING",
   "PUBLIC_SERVICE_SAFETY",
-  "MILITARY_DEFENCE",
   "TECHNOLOGY_IT",
   "BUSINESS_MANAGEMENT",
   "FINANCE_BANKING",
   "SALES_MARKETING",
   "CREATIVE_MEDIA",
-  "MANUFACTURING_ENGINEERING",
+  "CONSTRUCTION_TRADES",
   "LOGISTICS_TRANSPORT",
   "HOSPITALITY_TOURISM",
-  "TELECOMMUNICATIONS",
-  "REAL_ESTATE_PROPERTY",
   "SOCIAL_CARE_COMMUNITY",
-  "CONSTRUCTION_TRADES",
 ];
 
 const CATEGORY_LABEL: Record<CareerCategory, string> = {
@@ -426,17 +456,22 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   BUSINESS_MANAGEMENT: "Business",
   FINANCE_BANKING: "Finance",
   SALES_MARKETING: "Marketing",
-  MANUFACTURING_ENGINEERING: "Trade",
+  // Consolidated: trades now holds engineering + construction.
+  CONSTRUCTION_TRADES: "Trades",
   LOGISTICS_TRANSPORT: "Logistics",
   HOSPITALITY_TOURISM: "Hospitality",
-  TELECOMMUNICATIONS: "Telecom",
   CREATIVE_MEDIA: "Creative",
-  PUBLIC_SERVICE_SAFETY: "Safety",
-  MILITARY_DEFENCE: "Military",
+  // Consolidated: public service now holds safety + military.
+  PUBLIC_SERVICE_SAFETY: "Public Service",
   SPORT_FITNESS: "Sport",
-  REAL_ESTATE_PROPERTY: "Property",
   SOCIAL_CARE_COMMUNITY: "Social Care",
-  CONSTRUCTION_TRADES: "Construction",
+  // The four below are aliased into a sibling above and never render
+  // on the radar; kept so the Record<CareerCategory,string> contract
+  // stays total for any non-radar caller that still labels raw enums.
+  TELECOMMUNICATIONS: "Tech",
+  REAL_ESTATE_PROPERTY: "Business",
+  MILITARY_DEFENCE: "Public Service",
+  MANUFACTURING_ENGINEERING: "Trades",
 };
 
 interface PlacedDot {
@@ -487,7 +522,7 @@ function bandSizes(signalStrength: number): { strong: number; good: number; tota
 function dynamicLimit(careers: { id: string }[]): number {
   const catCounts = new Map<string, number>();
   for (const c of careers) {
-    const cat = findCareerCategory(c.id);
+    const cat = displayCategoryFor(c.id);
     if (cat) catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
   }
   const heavyCategories = [...catCounts.values()].filter((n) => n >= 10).length;
@@ -558,7 +593,7 @@ function placeDots(
   type Pre = { career: Career; ring: 0 | 1 | 2; idx: number };
   const buckets = new Map<string, Pre[]>();
   visibleCareers.forEach((career, idx) => {
-    const cat = findCareerCategory(career.id);
+    const cat = displayCategoryFor(career.id);
     if (!cat) return;
     const ring = ringFor(idx);
     const key = `${ring}|${cat}`;
