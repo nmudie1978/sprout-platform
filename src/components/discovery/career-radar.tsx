@@ -14,7 +14,7 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight, Flag, Heart } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight, Filter, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -24,13 +24,45 @@ import { CompareModal } from "@/components/compare/compare-modal";
 import { toast } from "sonner";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 
+/* ── Preset filters ────────────────────────────────────────────── */
+
 /**
- * The 65 most well-known jobs in Norway — powers the "Common jobs"
- * toggle on the Career Radar. 5 per consolidated slice (13 × 5 = 65)
- * so every radar slice gets even representation. Hand-curated from
- * career-pathways.ts; every id is verified to exist.
+ * Keys for the preset-filter dropdown on the Career Radar. Each
+ * preset either points to a hand-curated ID set or a predicate over
+ * the Career fields (see `matchesPreset`).
  */
-const COMMON_NORWAY_JOB_IDS = new Set<string>([
+type PresetFilterKey =
+  | "common-jobs"
+  | "high-earning"
+  | "work-life-balance"
+  | "fast-growing"
+  | "low-entry"
+  | "academic"
+  | "future-proof"
+  | "no-degree"
+  | "physically-demanding"
+  | "highly-competitive";
+
+/** Menu order + labels for the Career Radar preset dropdown. */
+const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
+  { key: "common-jobs", label: "Most Common Jobs" },
+  { key: "high-earning", label: "High-Earning Careers" },
+  { key: "work-life-balance", label: "Work-Life Balance" },
+  { key: "fast-growing", label: "Fast-Growing Careers" },
+  { key: "low-entry", label: "Low Entry Barrier" },
+  { key: "academic", label: "Academic / High Study" },
+  { key: "future-proof", label: "Future-Proof Careers" },
+  { key: "no-degree", label: "No Degree Required" },
+  { key: "physically-demanding", label: "Physically Demanding Roles" },
+  { key: "highly-competitive", label: "Highly Competitive Careers" },
+];
+
+/**
+ * 65 most well-known jobs in Norway — 5 per consolidated radar slice
+ * (13 × 5) so every wheel slice gets even representation. Hand-curated
+ * from career-pathways.ts; every id verified to exist.
+ */
+const PRESET_COMMON_JOBS = new Set<string>([
   // Health (5)
   "doctor",
   "nurse",
@@ -110,6 +142,225 @@ const COMMON_NORWAY_JOB_IDS = new Set<string>([
   "counsellor",
   "support-worker",
 ]);
+
+const PRESET_HIGH_EARNING = new Set<string>([
+  "neurosurgeon",
+  "cardiothoracic-surgeon",
+  "cardiac-surgeon",
+  "hepatobiliary-surgeon",
+  "thoracic-surgeon",
+  "transplant-surgeon",
+  "anesthesiologist",
+  "radiologist",
+  "cto",
+  "chief-financial-officer",
+  "cio",
+  "chief-digital-officer",
+  "managing-director",
+  "head-of-engineering",
+  "vp-engineering",
+  "vp-product",
+  "head-of-product",
+  "principal-engineer",
+  "staff-engineer",
+  "investment-banker",
+  "quantitative-analyst",
+  "senior-management-consultant",
+  "airline-pilot",
+  "consulting-partner",
+  "cloud-architect",
+  "software-architect",
+  "director-of-engineering",
+  "business-unit-director",
+]);
+
+const PRESET_WORK_LIFE_BALANCE = new Set<string>([
+  "primary-teacher",
+  "secondary-teacher",
+  "kindergarten-teacher",
+  "accountant",
+  "auditor",
+  "registered-nurse",
+  "nurse-practitioner",
+  "physiotherapist",
+  "occupational-therapist",
+  "dental-hygienist",
+  "ux-designer",
+  "graphic-designer",
+  "data-analyst",
+  "office-administrator",
+  "civil-servant",
+  "hr-specialist",
+  "systems-administrator",
+  "database-administrator",
+  "music-teacher",
+  "hospital-administrator",
+]);
+
+const PRESET_ACADEMIC = new Set<string>([
+  "doctor",
+  "surgeon",
+  "dentist",
+  "veterinarian",
+  "pharmacist",
+  "psychologist",
+  "psychiatrist",
+  "lawyer",
+  "corporate-lawyer",
+  "architect",
+  "anesthesiologist",
+  "radiologist",
+  "pathologist",
+  "ophthalmologist",
+  "university-lecturer",
+  "clinical-researcher",
+  "astrophysicist",
+  "biomedical-scientist",
+  "epidemiologist",
+  "ai-researcher",
+  "food-scientist",
+  "civil-engineer",
+  "aviation-engineer",
+]);
+
+const PRESET_FUTURE_PROOF = new Set<string>([
+  "doctor",
+  "nurse",
+  "registered-nurse",
+  "psychologist",
+  "psychiatrist",
+  "mental-health-nurse",
+  "plumber",
+  "electrician",
+  "carpenter",
+  "welder",
+  "primary-teacher",
+  "secondary-teacher",
+  "kindergarten-teacher",
+  "special-needs-educator",
+  "renewable-energy-tech",
+  "cybersecurity-analyst",
+  "data-scientist",
+  "ai-engineer",
+  "ai-researcher",
+  "firefighter",
+  "paramedic",
+  "physiotherapist",
+  "occupational-therapist",
+  "social-worker",
+  "midwife",
+]);
+
+const PRESET_NO_DEGREE = new Set<string>([
+  "plumber",
+  "electrician",
+  "carpenter",
+  "bricklayer",
+  "auto-mechanic",
+  "truck-driver",
+  "bus-driver",
+  "delivery-driver",
+  "taxi-driver",
+  "chef",
+  "hairdresser",
+  "retail-assistant",
+  "sales-representative",
+  "restaurant-server",
+  "barista",
+  "personal-trainer",
+  "firefighter",
+  "warehouse-worker",
+  "security-guard",
+  "care-assistant",
+  "childcare-assistant",
+  "nail-technician",
+  "baker",
+  "beautician",
+]);
+
+const PRESET_PHYSICALLY_DEMANDING = new Set<string>([
+  "firefighter",
+  "police-officer",
+  "soldier",
+  "military-officer",
+  "carpenter",
+  "bricklayer",
+  "plumber",
+  "electrician",
+  "auto-mechanic",
+  "welder",
+  "construction-worker",
+  "warehouse-worker",
+  "chef",
+  "nurse",
+  "physiotherapist",
+  "personal-trainer",
+  "professional-athlete",
+  "sports-coach",
+  "gardener",
+  "delivery-driver",
+  "paramedic",
+  "offshore-wind-technician",
+  "construction-manager",
+]);
+
+const PRESET_HIGHLY_COMPETITIVE = new Set<string>([
+  "surgeon",
+  "neurosurgeon",
+  "cardiothoracic-surgeon",
+  "anesthesiologist",
+  "radiologist",
+  "psychiatrist",
+  "investment-banker",
+  "quantitative-analyst",
+  "airline-pilot",
+  "managing-director",
+  "cto",
+  "chief-financial-officer",
+  "consulting-partner",
+  "senior-management-consultant",
+  "corporate-lawyer",
+  "vp-engineering",
+  "principal-engineer",
+  "ai-researcher",
+  "professional-athlete",
+  "musician",
+  "architect",
+  "film-director",
+  "senior-data-scientist",
+  "principal-data-scientist",
+]);
+
+/** Return true if the career satisfies the chosen preset filter. */
+function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
+  switch (preset) {
+    case "common-jobs":
+      return PRESET_COMMON_JOBS.has(career.id);
+    case "high-earning":
+      return PRESET_HIGH_EARNING.has(career.id);
+    case "work-life-balance":
+      return PRESET_WORK_LIFE_BALANCE.has(career.id);
+    case "academic":
+      return PRESET_ACADEMIC.has(career.id);
+    case "future-proof":
+      return PRESET_FUTURE_PROOF.has(career.id);
+    case "no-degree":
+      return PRESET_NO_DEGREE.has(career.id);
+    case "physically-demanding":
+      return PRESET_PHYSICALLY_DEMANDING.has(career.id);
+    case "highly-competitive":
+      return PRESET_HIGHLY_COMPETITIVE.has(career.id);
+    case "fast-growing":
+      return career.growthOutlook === "high";
+    case "low-entry":
+      return career.entryLevel === true;
+  }
+}
+
+/** Return the full catalog careers that satisfy a preset. */
+function careersForPreset(preset: PresetFilterKey): Career[] {
+  return getAllCareers().filter((c) => matchesPreset(c, preset));
+}
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
 
@@ -720,7 +971,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const [filterOpen, setFilterOpen] = useState(false);
   type SectorFilter = "all" | "public" | "private";
   const [sectorFilter, setSectorFilter] = useState<SectorFilter>("all");
-  const [commonJobsOnly, setCommonJobsOnly] = useState(false);
+  const [presetFilter, setPresetFilter] = useState<PresetFilterKey | null>(null);
   const { curiosities: savedCareers } = useCuriositySaves();
   const toggleTier = (t: Tier) => {
     setActiveTiers((prev) => {
@@ -784,17 +1035,18 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     // Trim based on category spread — keep more when results are diverse
     const limit = dynamicLimit(all);
     const sliced = all.slice(0, limit);
-    if (commonJobsOnly) {
-      // Inject every common job — even those that didn't score against
-      // the user's preferences — so the toggle always shows all 30.
+    if (presetFilter) {
+      // Inject every career matching the active preset — even those
+      // that didn't score against the user's preferences — so the
+      // filter always surfaces its full curated set.
       const present = new Set(sliced.map((c) => c.id));
-      const extras = getAllCareers().filter(
-        (c) => COMMON_NORWAY_JOB_IDS.has(c.id) && !present.has(c.id),
+      const extras = careersForPreset(presetFilter).filter(
+        (c) => !present.has(c.id),
       );
       return [...sliced, ...extras];
     }
     return sliced;
-  }, [preferences, bands.total, commonJobsOnly]);
+  }, [preferences, bands.total, presetFilter]);
 
   const dots = useMemo(
     () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, matched.length),
@@ -812,7 +1064,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     };
     return dots.filter((d) => {
       if (d.isActiveGoal) return true;
-      if (commonJobsOnly && !COMMON_NORWAY_JOB_IDS.has(d.career.id)) return false;
+      if (presetFilter && !matchesPreset(d.career, presetFilter)) return false;
       if (!allTiersOn && !activeTiers.has(tierOf(d))) return false;
       if (sectorFilter !== "all") {
         const s = getSectorForCareer(d.career.id);
@@ -820,7 +1072,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       }
       return true;
     });
-  }, [dots, activeTiers, allTiersOn, sectorFilter, commonJobsOnly]);
+  }, [dots, activeTiers, allTiersOn, sectorFilter, presetFilter]);
 
   const hasPrefs =
     !!preferences &&
@@ -1027,23 +1279,39 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <option value="all">All Sectors</option>
             <option value="private">Private</option>
           </select>
-          {/* Common jobs toggle — narrows the radar to the ~30 most
-              well-known jobs in Norway (doctor, plumber, teacher…). */}
-          <button
-            type="button"
-            onClick={() => { setCommonJobsOnly((v) => !v); setCarouselIdx(0); }}
-            className={cn(
-              "h-7 px-2.5 rounded-md border text-[10px] flex items-center gap-1.5 transition-colors",
-              commonJobsOnly
-                ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold border-teal-500/30"
-                : "bg-background text-muted-foreground hover:bg-muted",
-            )}
-            aria-pressed={commonJobsOnly}
-            title="Show only the 30 most common jobs in Norway"
-          >
-            <Flag className="h-3 w-3" />
-            Common jobs
-          </button>
+          {/* Preset filter dropdown — narrows the radar to a curated
+              slice of careers (common, high-earning, work-life balance,
+              fast-growing, low-entry, academic, future-proof, no-degree,
+              physically demanding, highly competitive). */}
+          <div className="relative inline-flex items-center">
+            <Filter className={cn(
+              "h-3 w-3 absolute left-2 pointer-events-none",
+              presetFilter ? "text-teal-500 dark:text-teal-400" : "text-muted-foreground",
+            )} />
+            <select
+              value={presetFilter ?? ""}
+              onChange={(e) => {
+                const v = e.target.value;
+                setPresetFilter(v === "" ? null : (v as PresetFilterKey));
+                setCarouselIdx(0);
+              }}
+              className={cn(
+                "h-7 pl-6 pr-2 rounded-md border text-[10px] transition-colors appearance-none",
+                presetFilter
+                  ? "bg-teal-500/15 text-teal-700 dark:text-teal-400 font-semibold border-teal-500/30"
+                  : "bg-background text-muted-foreground hover:bg-muted",
+              )}
+              title="Filter by preset career type"
+              aria-label="Preset career filter"
+            >
+              <option value="">All Careers</option>
+              {PRESET_FILTER_OPTIONS.map((opt) => (
+                <option key={opt.key} value={opt.key}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="flex items-center gap-1">
           {/* Zoom controls */}
