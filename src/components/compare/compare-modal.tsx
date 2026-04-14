@@ -12,6 +12,8 @@
  */
 
 import { X, ArrowRight, Sparkles, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
 import {
   getFitDimensions,
@@ -32,7 +34,12 @@ interface CompareModalProps {
 }
 
 export function CompareModal({ open, careers, preferences, onClose, onRemove }: CompareModalProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   if (!open || careers.length === 0) return null;
+  if (!mounted) return null;
 
   const handleDownload = () => {
     try {
@@ -55,8 +62,8 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-stretch sm:items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-stretch sm:items-center justify-center">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -117,7 +124,8 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
