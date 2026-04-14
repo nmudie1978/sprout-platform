@@ -219,6 +219,32 @@ export function TimelineDetailDialog({
 
   // Foundation-specific education fields
   const [eduStage, setEduStage] = useState<'school' | 'college' | 'university' | 'other'>('school');
+  /**
+   * Sensible default finish year given the user's age + chosen stage.
+   * Used to pre-fill the dropdown and avoid anomalies like a 17-year-old
+   * selecting 2032 (which would push uni-start to age 23).
+   *
+   *   school      → age 18 (typical videregående finish)
+   *   college     → age + 2 (2-year programme)
+   *   university  → age + 3 (3-year bachelor)
+   *   other       → age + 2
+   */
+  const defaultFinishYearFor = (
+    age: number | null,
+    stage: 'school' | 'college' | 'university' | 'other',
+  ): string => {
+    if (typeof age !== 'number') return '';
+    const thisYear = new Date().getFullYear();
+    let targetAge: number;
+    switch (stage) {
+      case 'school':     targetAge = 18; break;
+      case 'college':    targetAge = age + 2; break;
+      case 'university': targetAge = age + 3; break;
+      default:           targetAge = age + 2;
+    }
+    const year = thisYear + Math.max(0, targetAge - age);
+    return String(year);
+  };
   const [schoolName, setSchoolName] = useState('');
   const [studyProgram, setStudyProgram] = useState('');
   const [expectedCompletion, setExpectedCompletion] = useState('');
@@ -290,7 +316,7 @@ export function TimelineDetailDialog({
           setEduStage(defaultStage);
           setSchoolName('');
           setStudyProgram('');
-          setExpectedCompletion('');
+          setExpectedCompletion(defaultFinishYearFor(age, defaultStage));
           setSubjects([]);
         });
       }
@@ -428,6 +454,10 @@ export function TimelineDetailDialog({
                               onClick={() => {
                                 if (isLocked) return;
                                 setEduStage(opt.value);
+                                // Refresh the finish year default for the
+                                // new stage — keeps it in sync with what the
+                                // user just picked (e.g. School → 18, Uni → age+3).
+                                setExpectedCompletion(defaultFinishYearFor(userAge, opt.value));
                                 setDirty(true);
                               }}
                               disabled={isLocked}

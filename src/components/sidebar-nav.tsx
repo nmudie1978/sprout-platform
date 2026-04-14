@@ -467,6 +467,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             <NavSection title="Admin" collapsed={collapsed}>
               <NavItem href="/admin/analytics" icon={BarChart3} label="Analytics" active={isActive("/admin/analytics")} collapsed={collapsed} />
+              <NavItem href="/admin/feedback" icon={HelpCircle} label="Feedback" active={isActive("/admin/feedback")} collapsed={collapsed} tooltip="Pilot survey results — per-question stats, distributions, clarity topics, free-text responses, CSV export." />
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
               <NavItem href="/admin/questions" icon={MessageSquare} label="Moderate Q&A" active={isActive("/admin/questions")} collapsed={collapsed} />
               <NavItem href="/insights" icon={TrendingUp} label="Insights" active={isActive("/insights")} collapsed={collapsed} />
