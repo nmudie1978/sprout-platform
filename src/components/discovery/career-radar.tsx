@@ -14,14 +14,54 @@ import {
   type CareerCategory,
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
-import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight } from "lucide-react";
+import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight, Flag, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
+import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import { CompareModal } from "@/components/compare/compare-modal";
 import { toast } from "sonner";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
+
+/**
+ * The 30 most well-known jobs in Norway — powers the "Common jobs"
+ * toggle on the Career Radar so a youth can narrow a busy radar to
+ * the roles they'd recognise on sight (doctor, plumber, teacher…).
+ * Hand-curated from the full career catalogue in career-pathways.ts.
+ */
+const COMMON_NORWAY_JOB_IDS = new Set<string>([
+  "doctor",
+  "nurse",
+  "dentist",
+  "veterinarian",
+  "accountant",
+  "personal-trainer",
+  "software-developer",
+  "it-support",
+  "auto-mechanic",
+  "plumber",
+  "carpenter",
+  "electrician",
+  "police-officer",
+  "firefighter",
+  "primary-teacher",
+  "secondary-teacher",
+  "kindergarten-teacher",
+  "chef",
+  "lawyer",
+  "architect",
+  "journalist",
+  "pharmacist",
+  "psychologist",
+  "physiotherapist",
+  "dental-hygienist",
+  "social-worker",
+  "truck-driver",
+  "bus-driver",
+  "hairdresser",
+  "midwife",
+]);
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
 
@@ -608,6 +648,8 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
   const [filterOpen, setFilterOpen] = useState(false);
   type SectorFilter = "all" | "public" | "private";
   const [sectorFilter, setSectorFilter] = useState<SectorFilter>("all");
+  const [commonJobsOnly, setCommonJobsOnly] = useState(false);
+  const { curiosities: savedCareers } = useCuriositySaves();
   const toggleTier = (t: Tier) => {
     setActiveTiers((prev) => {
       const next = new Set(prev);
@@ -688,6 +730,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     };
     return dots.filter((d) => {
       if (d.isActiveGoal) return true;
+      if (commonJobsOnly && !COMMON_NORWAY_JOB_IDS.has(d.career.id)) return false;
       if (!allTiersOn && !activeTiers.has(tierOf(d))) return false;
       if (sectorFilter !== "all") {
         const s = getSectorForCareer(d.career.id);
@@ -695,7 +738,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       }
       return true;
     });
-  }, [dots, activeTiers, allTiersOn, sectorFilter]);
+  }, [dots, activeTiers, allTiersOn, sectorFilter, commonJobsOnly]);
 
   const hasPrefs =
     !!preferences &&
@@ -761,6 +804,42 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           <span className="text-[11px] font-medium text-teal-300">{goalsData.primaryGoal.title}</span>
           <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-amber-400 transition-colors ml-auto shrink-0" />
         </Link>
+      )}
+
+      {/* Saved Careers slide — horizontal chip strip of careers the user
+          has hearted from CareerDetailSheet. Clicking a chip re-opens
+          the detail sheet via the `open-career-detail` event the parent
+          page listens for. Hidden when the user has no saves yet. */}
+      {savedCareers.length > 0 && (
+        <div className="px-4 py-3 border-b border-border/30">
+          <div className="flex items-center gap-1.5 mb-2">
+            <Heart className="h-3 w-3 text-pink-400 fill-pink-400/40" />
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Saved careers · {savedCareers.length}
+            </span>
+          </div>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5">
+            {savedCareers.map((saved) => (
+              <button
+                key={saved.careerId}
+                type="button"
+                onClick={() => {
+                  const career = getAllCareers().find((c) => c.id === saved.careerId);
+                  if (career) {
+                    window.dispatchEvent(
+                      new CustomEvent("open-career-detail", { detail: career }),
+                    );
+                  }
+                }}
+                className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-background/60 hover:bg-muted/40 hover:border-border/70 transition-colors px-2.5 py-1 text-[11px]"
+                title={`Open ${saved.careerTitle}`}
+              >
+                <span className="text-sm leading-none">{saved.careerEmoji}</span>
+                <span className="truncate max-w-[140px]">{saved.careerTitle}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="flex items-center justify-between px-4 py-3 border-b flex-wrap gap-2">
@@ -867,6 +946,23 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
             <option value="public">Public</option>
             <option value="private">Private</option>
           </select>
+          {/* Common jobs toggle — narrows the radar to the ~30 most
+              well-known jobs in Norway (doctor, plumber, teacher…). */}
+          <button
+            type="button"
+            onClick={() => { setCommonJobsOnly((v) => !v); setCarouselIdx(0); }}
+            className={cn(
+              "h-7 px-2.5 rounded-md border text-[10px] flex items-center gap-1.5 transition-colors",
+              commonJobsOnly
+                ? "bg-teal-500/15 text-teal-600 dark:text-teal-400 font-semibold border-teal-500/30"
+                : "bg-background text-muted-foreground hover:bg-muted",
+            )}
+            aria-pressed={commonJobsOnly}
+            title="Show only the 30 most common jobs in Norway"
+          >
+            <Flag className="h-3 w-3" />
+            Common jobs
+          </button>
         </div>
         <div className="flex items-center gap-1">
           {/* Zoom controls */}
