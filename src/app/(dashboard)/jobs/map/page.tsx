@@ -134,7 +134,7 @@ export default function JobsMapPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen dark:bg-gradient-to-b dark:from-background dark:to-muted/20">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Header */}
         <motion.div

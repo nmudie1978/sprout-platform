@@ -84,7 +84,7 @@ function ReviewCard({ review, featured }: { review: Review; featured?: boolean }
 export default function ReviewsPage() {
   return (
     <ReactLenis root options={{ lerp: 0.07, smoothWheel: true }}>
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen dark:bg-background">
         {/* Hero */}
         <section className="sticky top-0 z-0 h-[40vh] w-full grid place-content-center bg-gradient-to-b from-teal-500/[0.06] to-transparent">
           <div className="text-center px-6">
@@ -98,7 +98,7 @@ export default function ReviewsPage() {
         </section>
 
         {/* Sticky-scroll gallery */}
-        <section className="relative z-10 bg-background px-4 pb-20">
+        <section className="relative z-10 dark:bg-background px-4 pb-20">
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Left column — scrolls */}
             <div className="md:col-span-4 space-y-3">

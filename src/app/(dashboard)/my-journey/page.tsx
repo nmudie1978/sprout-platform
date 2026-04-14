@@ -2557,7 +2557,7 @@ export default function MyJourneyPage() {
   // screen for users who already have a career goal set.
   if (goalsLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen dark:bg-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
           <div className="h-8 w-48 rounded bg-muted/50 animate-pulse mb-4" />
           <div className="h-4 w-72 rounded bg-muted/30 animate-pulse mb-8" />
@@ -2571,7 +2571,7 @@ export default function MyJourneyPage() {
   // welcoming screen explaining the framework instead of three confused tabs.
   if (!goalTitle) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen dark:bg-background">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="text-center">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/15 mb-4">
@@ -2661,7 +2661,7 @@ export default function MyJourneyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen dark:bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6">

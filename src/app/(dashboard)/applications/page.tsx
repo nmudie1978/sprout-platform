@@ -314,7 +314,7 @@ export default function ApplicationsPage() {
   const countsWithSaved: Record<FilterType, number> = { ...(counts as Record<Exclude<FilterType, "saved">, number>), saved: savedCount };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-cyan-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30">
+    <div className="min-h-screen dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">

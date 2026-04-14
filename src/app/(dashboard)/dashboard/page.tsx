@@ -768,7 +768,7 @@ export default function DashboardPage() {
 
   if (status === "loading" || session?.user.role !== "YOUTH") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen dark:bg-background flex items-center justify-center">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/30 border-t-transparent" />
       </div>
     );

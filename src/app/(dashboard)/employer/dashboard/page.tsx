@@ -769,7 +769,7 @@ export default function EmployerDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
+    <div className="min-h-screen dark:bg-gradient-to-b dark:from-background dark:to-muted/20 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         {/* Gradient Orbs */}
