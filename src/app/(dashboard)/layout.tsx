@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AiChatWidget } from "@/components/ai-chat-widget";
-import { LightModeShaderBackground } from "@/components/light-mode-shader-bg";
+import { Glow } from "@/components/ui/glow";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -66,7 +66,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative overflow-hidden">
       {/* Sidebar — hidden on mobile, visible on lg+ */}
       <SidebarNav
         userRole={session.user.role}
@@ -87,8 +87,13 @@ export default async function DashboardLayout({
         />
       </div>
 
-      {/* Light mode shader background — behind main content, not sidebar */}
-      <LightModeShaderBackground />
+      {/* Light-mode teal glow — decorative background behind main content.
+          Two stacked glows (top + bottom) fill the viewport with soft
+          radial warmth. Hidden in dark mode. */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none dark:hidden" aria-hidden="true">
+        <Glow variant="top" className="opacity-70" />
+        <Glow variant="below" className="opacity-50" />
+      </div>
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">

@@ -389,8 +389,14 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden"
         style={{ backgroundColor: 'hsl(var(--sidebar))' }}
       >
-      {/* Floating ambient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Light-mode teal glow — only renders in light mode, subtle */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none dark:hidden opacity-50" aria-hidden="true">
+        <div className="absolute left-1/2 top-1/3 h-[400px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand-foreground)/.35)_10%,_hsla(var(--brand-foreground)/0)_65%)]" />
+        <div className="absolute left-1/2 bottom-10 h-[300px] w-[80%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand)/.20)_10%,_hsla(var(--brand-foreground)/0)_60%)]" />
+      </div>
+
+      {/* Floating ambient orbs — dark mode only (light mode uses the glow above) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block">
         <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
         <div className="absolute top-1/2 -right-10 w-32 h-32 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-medium_15s_ease-in-out_infinite]" />
         <div className="absolute -bottom-10 left-1/2 w-36 h-36 rounded-full bg-teal-500/[0.02] blur-3xl animate-[float-fast_12s_ease-in-out_infinite]" />
