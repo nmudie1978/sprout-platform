@@ -154,7 +154,7 @@ export function SavedComparisonsTray({
   return (
     <div
       ref={trayRef}
-      className={cn("fixed right-0 top-1/2 -translate-y-1/2 z-40", className)}
+      className={cn("fixed right-0 top-1/2 -translate-y-1/2 z-40 pointer-events-none", className)}
     >
       {/* ── Trigger tab ──────────────────────────────────────────── */}
       <button
@@ -164,7 +164,7 @@ export function SavedComparisonsTray({
         aria-expanded={open}
         aria-controls="saved-comparisons-panel"
         className={cn(
-          "absolute right-0 top-1/2 -translate-y-1/2 z-10",
+          "absolute right-0 top-1/2 -translate-y-1/2 z-10 pointer-events-auto",
           "flex items-center gap-1.5 py-3 pl-2 pr-1.5",
           "rounded-l-lg border border-r-0 border-teal-500/25",
           "bg-gradient-to-b from-teal-500/[0.08] via-pink-500/[0.06] to-amber-500/[0.08]",
@@ -196,7 +196,7 @@ export function SavedComparisonsTray({
           "bg-card/95 backdrop-blur-md shadow-xl",
           "flex flex-col overflow-hidden",
           "transition-transform duration-250 ease-out",
-          open ? "translate-x-0" : "translate-x-full pointer-events-none",
+          open ? "translate-x-0 pointer-events-auto" : "translate-x-full pointer-events-none",
         )}
       >
         {/* Header */}
