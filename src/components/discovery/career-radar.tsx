@@ -31,36 +31,46 @@ import { SavedComparisonsTray } from "@/components/career-radar/saved-comparison
  * Hand-curated from the full career catalogue in career-pathways.ts.
  */
 const COMMON_NORWAY_JOB_IDS = new Set<string>([
+  // Medical (6)
   "doctor",
   "nurse",
   "dentist",
   "veterinarian",
-  "accountant",
-  "personal-trainer",
-  "software-developer",
-  "it-support",
-  "auto-mechanic",
+  "pharmacist",
+  "physiotherapist",
+  // Trades (4)
   "plumber",
   "carpenter",
   "electrician",
+  "auto-mechanic",
+  // Emergency services (2)
   "police-officer",
   "firefighter",
+  // Teaching (2)
   "primary-teacher",
-  "secondary-teacher",
   "kindergarten-teacher",
-  "chef",
+  // Finance (4)
+  "accountant",
+  "financial-analyst",
+  "investment-banker",
+  "real-estate-agent",
+  // Legal (1)
   "lawyer",
+  // Tech (3)
+  "software-developer",
+  "it-support",
+  "data-analyst",
+  // Creative (4)
   "architect",
   "journalist",
-  "pharmacist",
-  "psychologist",
-  "physiotherapist",
-  "dental-hygienist",
-  "social-worker",
-  "truck-driver",
-  "bus-driver",
+  "graphic-designer",
+  "photographer",
+  // Sport / fitness (2)
+  "personal-trainer",
+  "sports-coach",
+  // Service (2)
+  "chef",
   "hairdresser",
-  "midwife",
 ]);
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
@@ -711,8 +721,18 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     const all = getCareersFromDiscovery(preferences, bands.total);
     // Trim based on category spread — keep more when results are diverse
     const limit = dynamicLimit(all);
-    return all.slice(0, limit);
-  }, [preferences, bands.total]);
+    const sliced = all.slice(0, limit);
+    if (commonJobsOnly) {
+      // Inject every common job — even those that didn't score against
+      // the user's preferences — so the toggle always shows all 30.
+      const present = new Set(sliced.map((c) => c.id));
+      const extras = getAllCareers().filter(
+        (c) => COMMON_NORWAY_JOB_IDS.has(c.id) && !present.has(c.id),
+      );
+      return [...sliced, ...extras];
+    }
+    return sliced;
+  }, [preferences, bands.total, commonJobsOnly]);
 
   const dots = useMemo(
     () => placeDots(matched, primaryGoalCareerId, secondaryGoalCareerId, bands.strong, matched.length),
@@ -935,15 +955,14 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
               </>
             )}
           </div>
-          {/* Sector filter */}
+          {/* Sector filter — "Public" category removed per product decision */}
           <select
             value={sectorFilter}
             onChange={(e) => { setSectorFilter(e.target.value as SectorFilter); setCarouselIdx(0); }}
             className="h-7 px-2 rounded-md border bg-background text-[10px]"
-            title="Filter by public or private sector"
+            title="Filter by sector"
           >
             <option value="all">All Sectors</option>
-            <option value="public">Public</option>
             <option value="private">Private</option>
           </select>
           {/* Common jobs toggle — narrows the radar to the ~30 most
