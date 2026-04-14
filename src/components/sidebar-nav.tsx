@@ -368,9 +368,10 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   return (
     <div
       className={cn(
-        "hidden lg:block relative z-20 sticky top-0 h-screen shrink-0 transition-all duration-300 ease-out",
+        "hidden lg:block relative z-20 shrink-0 self-stretch transition-all duration-300 ease-out",
         collapsed ? "w-16" : "w-56"
       )}
+      style={{ backgroundColor: 'hsl(var(--sidebar))' }}
     >
       {/* Animated shine border — dark mode only; light mode stays plain latte */}
       <div
@@ -386,8 +387,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         className="hidden dark:block before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
       />
       <aside
-        className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden"
-        style={{ backgroundColor: 'hsl(var(--sidebar))' }}
+        className="sticky top-0 flex flex-col h-screen overflow-y-auto overflow-x-hidden"
       >
       {/* Floating ambient orbs — dark mode only; light mode stays plain latte */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block">
