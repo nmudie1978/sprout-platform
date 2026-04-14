@@ -36,6 +36,7 @@ import {
   PlayCircle,
   Heart,
   X,
+  AlertTriangle,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
@@ -47,7 +48,10 @@ import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
-import { isCareerSalaryStale } from "@/lib/career-data-recency";
+import {
+  isCareerExplicitlyVerified,
+  isCareerSalaryStale,
+} from "@/lib/career-data-recency";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
@@ -1091,6 +1095,7 @@ export default function DashboardPage() {
                 return String(n);
               });
               const salaryStale = isCareerSalaryStale(goalCareer);
+              const explicitlyVerified = isCareerExplicitlyVerified(goalCareer);
               return (
                 <div className="mt-5 pt-4 border-t border-border/30">
                   <div className="flex items-center gap-1.5 mb-2">
@@ -1098,6 +1103,25 @@ export default function DashboardPage() {
                     <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                       Career snapshot
                     </p>
+                    {explicitlyVerified && (
+                      <span
+                        className="ml-auto inline-flex items-center gap-1 text-[9px] text-emerald-500/85 cursor-help"
+                        title={`Salary verified against SSB labour stats — ${goalCareer.lastVerifiedAt}`}
+                        aria-label="Salary verified against SSB"
+                      >
+                        <CheckCircle2 className="h-2.5 w-2.5" />
+                        Verified
+                      </span>
+                    )}
+                    {salaryStale && (
+                      <span
+                        className="inline-flex items-center text-amber-500/80 cursor-help"
+                        title="Salary & outlook figures may be out of date — check current SSB / NAV stats before deciding. Catalogue salaries are re-verified annually against SSB labour stats; this figure has not been refreshed in the last year, so treat as indicative."
+                        aria-label="Salary figures may be out of date"
+                      >
+                        <AlertTriangle className="h-3 w-3" />
+                      </span>
+                    )}
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <CompactStat icon={TrendingUp} iconColor="text-teal-500/80" label="Salary" value={`${salary} kr`} />
@@ -1105,14 +1129,6 @@ export default function DashboardPage() {
                     <CompactStat icon={Briefcase} iconColor="text-blue-500/80" label="Sector" value={sectorLabel} />
                     <CompactStat icon={CheckCircle2} iconColor="text-violet-500/80" label="Pension" value={pensionLabel} />
                   </div>
-                  {salaryStale && (
-                    <p
-                      className="mt-2 text-[9px] text-amber-500/70 leading-snug"
-                      title="Catalogue salaries are checked annually against SSB labour stats. This figure has not been re-verified in the last year — treat as indicative."
-                    >
-                      ⚠ Salary &amp; outlook figures may be out of date — check current SSB / NAV stats before deciding.
-                    </p>
-                  )}
                 </div>
               );
             })()}

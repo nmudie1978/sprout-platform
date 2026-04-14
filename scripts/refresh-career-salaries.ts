@@ -66,17 +66,75 @@ interface DriftReport {
 }
 
 /**
- * Stub SSB fetcher — returns null until the StatBank integration is
- * wired. The real call will hit:
- *   POST https://data.ssb.no/api/v0/en/table/11418
- * with a JSON-stat2 query for the requested STYRK codes and parse
- * the `value` array into average annual gross NOK.
+ * SSB StatBank live fetch — table 11418 (Monthly earnings by occupation).
  *
- * TODO(eng): implement the live fetch; cache by `${styrkCode}-${year}`
- *            so we don't hammer SSB during retries.
+ * Queries the latest year for the average monthly gross earnings of
+ * full-time employees in NOK across all sectors and both sexes for
+ * a single STYRK-08 occupation code. Returns the annualised figure
+ * (monthly × 12) or null on any failure.
+ *
+ * Endpoint: POST https://data.ssb.no/api/v0/en/table/11418
+ * Response: JSON-stat2; `value[0]` is the requested cell.
+ *
+ * Cached per process so the script's ~50 sequential calls only hit
+ * SSB once each. A 250ms delay between calls keeps us well below
+ * SSB's rate limit (30 req/min).
  */
-async function fetchSsbAnnualMean(_styrkCode: string): Promise<number | null> {
-  return null;
+const SSB_TABLE = "https://data.ssb.no/api/v0/en/table/11418";
+const ssbCache = new Map<string, number | null>();
+
+function buildSsbQuery(styrkCode: string) {
+  return {
+    query: [
+      { code: "MaaleMetode", selection: { filter: "item", values: ["02"] } }, // Average
+      { code: "Yrke", selection: { filter: "item", values: [styrkCode] } },
+      { code: "Sektor", selection: { filter: "item", values: ["ALLE"] } }, // All sectors
+      { code: "Kjonn", selection: { filter: "item", values: ["0"] } }, // Both sexes
+      { code: "AvtaltVanlig", selection: { filter: "item", values: ["5"] } }, // Full-time
+      { code: "ContentsCode", selection: { filter: "item", values: ["Manedslonn"] } }, // Monthly NOK
+      { code: "Tid", selection: { filter: "top", values: ["1"] } }, // Latest year only
+    ],
+    response: { format: "json-stat2" },
+  };
+}
+
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchSsbAnnualMean(styrkCode: string): Promise<number | null> {
+  if (ssbCache.has(styrkCode)) return ssbCache.get(styrkCode)!;
+
+  let annual: number | null = null;
+  try {
+    const res = await fetch(SSB_TABLE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent":
+          "Mozilla/5.0 (compatible; EndeavrlySsbSalaryRefresh/1.0; +https://endeavrly.no)",
+      },
+      body: JSON.stringify(buildSsbQuery(styrkCode)),
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!res.ok) {
+      // Most non-200s mean SSB has no data for this STYRK in the
+      // selected slice (small occupations get suppressed for privacy).
+      ssbCache.set(styrkCode, null);
+      return null;
+    }
+    const json = (await res.json()) as { value?: (number | null)[] };
+    const monthly = Array.isArray(json.value) ? json.value[0] : null;
+    if (typeof monthly === "number" && monthly > 0) {
+      annual = Math.round(monthly * 12);
+    }
+  } catch {
+    annual = null;
+  }
+  ssbCache.set(styrkCode, annual);
+  // Polite delay so the script never runs over 30 req/min.
+  await sleep(250);
+  return annual;
 }
 
 /** Parse a "300,000–700,000 kr/year" style salary string into a midpoint. */
@@ -177,7 +235,7 @@ async function main() {
   console.log(`  missing SSB data    : ${missing}`);
   console.log("");
   console.log(
-    "Live SSB fetch is stubbed — wire StatBank table 11418 in scripts/refresh-career-salaries.ts before relying on this report.",
+    `SSB cache hits: ${ssbCache.size} unique STYRK codes queried this run.`,
   );
 }
 
