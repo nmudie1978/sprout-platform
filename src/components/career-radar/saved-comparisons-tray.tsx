@@ -155,21 +155,22 @@ export function SavedComparisonsTray({
     <div
       ref={trayRef}
       className={cn("fixed right-0 top-1/2 -translate-y-1/2 z-40", className)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {/* ── Trigger tab ──────────────────────────────────────────── */}
       <button
         onClick={handleToggle}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         aria-expanded={open}
         aria-controls="saved-comparisons-panel"
         className={cn(
           "absolute right-0 top-1/2 -translate-y-1/2 z-10",
           "flex items-center gap-1.5 py-3 pl-2 pr-1.5",
-          "rounded-l-lg border border-r-0 border-border/40",
-          "bg-card/90 backdrop-blur-sm shadow-md",
-          "text-[10px] font-medium text-muted-foreground/70",
-          "hover:text-foreground hover:bg-card hover:shadow-lg",
+          "rounded-l-lg border border-r-0 border-teal-500/25",
+          "bg-gradient-to-b from-teal-500/[0.08] via-pink-500/[0.06] to-amber-500/[0.08]",
+          "backdrop-blur-sm shadow-[0_0_12px_rgba(20,184,166,0.12)]",
+          "text-[10px] font-medium text-teal-300/80",
+          "hover:text-teal-200 hover:border-teal-500/40 hover:shadow-[0_0_16px_rgba(20,184,166,0.2)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50",
           "transition-all duration-200",
           "writing-mode-vertical",
@@ -186,6 +187,8 @@ export function SavedComparisonsTray({
         id="saved-comparisons-panel"
         role="region"
         aria-label="Saved comparisons"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className={cn(
           "w-[300px] sm:w-[320px] h-[420px] max-h-[70vh]",
           "rounded-l-xl border border-r-0 border-border/40",
