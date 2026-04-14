@@ -1447,16 +1447,19 @@ function CompareVault({
   return (
     <div
       className={cn(
-        "shrink-0 rounded-xl border bg-background/40 px-2.5 py-2 transition-colors",
+        "shrink-0 rounded-xl border-2 px-3 py-2.5 transition-all",
         isEmpty
-          ? "border-dashed border-border/40"
-          : "border-teal-500/40 bg-teal-500/[0.05]"
+          ? "border-dashed border-border/50 bg-background/40"
+          : "border-teal-500/60 bg-teal-500/[0.08] shadow-[0_0_20px_rgba(20,184,166,0.15)]"
       )}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         {/* Label */}
         <div className="flex flex-col">
-          <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/70 leading-none">
+          <span className={cn(
+            "text-[10px] font-bold uppercase tracking-wider leading-none",
+            isEmpty ? "text-muted-foreground/70" : "text-teal-300"
+          )}>
             Compare
           </span>
           <span className={cn(
@@ -1467,31 +1470,37 @@ function CompareVault({
           </span>
         </div>
 
-        {/* Slot indicators / chips */}
-        <div className="flex items-center gap-1">
+        {/* Slot indicators / chips — each with an always-visible X */}
+        <div className="flex items-center gap-1.5">
           {Array.from({ length: max }).map((_, i) => {
             const career = shortlist[i];
             if (career) {
               return (
-                <button
+                <div
                   key={career.id}
-                  type="button"
-                  onClick={() => onRemove(career.id)}
-                  title={`Remove ${career.title}`}
-                  className="group relative h-7 w-7 rounded-full bg-teal-500/15 hover:bg-rose-500/20 ring-1 ring-teal-500/30 hover:ring-rose-500/40 flex items-center justify-center transition-colors"
+                  className="relative h-8 w-8 rounded-full bg-teal-500/20 ring-1 ring-teal-500/50 flex items-center justify-center"
+                  title={career.title}
                 >
-                  <span className="text-base group-hover:opacity-30 transition-opacity">{career.emoji}</span>
-                  <X className="absolute h-3 w-3 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
+                  <span className="text-base">{career.emoji}</span>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(career.id)}
+                    title={`Remove ${career.title}`}
+                    aria-label={`Remove ${career.title}`}
+                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 hover:bg-rose-400 text-white flex items-center justify-center shadow-md ring-1 ring-background transition-colors"
+                  >
+                    <X className="h-2.5 w-2.5" strokeWidth={3} />
+                  </button>
+                </div>
               );
             }
             return (
               <span
                 key={`empty-${i}`}
-                className="h-7 w-7 rounded-full border border-dashed border-border/40 flex items-center justify-center"
+                className="h-8 w-8 rounded-full border border-dashed border-border/50 flex items-center justify-center"
                 title="Empty slot"
               >
-                <Plus className="h-3 w-3 text-muted-foreground/30" />
+                <Plus className="h-3 w-3 text-muted-foreground/40" />
               </span>
             );
           })}
@@ -1504,9 +1513,9 @@ function CompareVault({
             onClick={onCompare}
             disabled={!canCompare}
             className={cn(
-              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors",
+              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold transition-all",
               canCompare
-                ? "bg-teal-500 text-white hover:bg-teal-400"
+                ? "bg-teal-500 text-white hover:bg-teal-400 shadow-[0_0_12px_rgba(20,184,166,0.4)] hover:shadow-[0_0_18px_rgba(20,184,166,0.6)]"
                 : "bg-muted/30 text-muted-foreground/50 cursor-not-allowed"
             )}
             title={
@@ -1518,7 +1527,7 @@ function CompareVault({
             }
           >
             Compare
-            <ChevronRight className="h-3 w-3" />
+            <ChevronRight className="h-3.5 w-3.5" />
           </button>
           {!isEmpty && (
             <button
