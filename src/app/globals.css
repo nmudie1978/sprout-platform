@@ -5,34 +5,34 @@
 @layer base {
   :root {
     /* ── Light mode theme tokens ─────────────────────────────────
-       Light mode = warm (espresso/coffee). The canvas carries an
-       animated mesh-gradient shader in the 21st.dev palette
-       (#000000 / #8B4513 / #3E2723 / #5D4037). Surface tokens are
-       warm-dark so cards/modals stay readable. Sidebar stays latte
-       — a warm creamy companion to the dark canvas. */
-    --background: 20 25% 10%;           /* warm espresso fallback under shader */
+       Light mode uses a dark slate canvas (#020617) with a soft
+       grey radial glow at the top, painted by AmbientLightBackground.
+       Surface tokens are slate-dark with warm cream foreground.
+       Cards and popovers are made translucent further down so the
+       glow bleeds through the whole app. */
+    --background: 230 84% 5%;           /* #020617 — matches radial-glow base */
     --foreground: 40 30% 90%;           /* warm cream text */
-    --card: 20 20% 13%;                 /* warm-dark panel, slight lift above bg */
+    --card: 220 30% 13%;                /* slate-dark panel */
     --card-foreground: 40 30% 90%;
-    --popover: 20 20% 13%;
+    --popover: 220 30% 13%;
     --popover-foreground: 40 30% 90%;
     --primary: 166 60% 45%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 20 15% 18%;
+    --secondary: 220 20% 18%;
     --secondary-foreground: 40 30% 90%;
-    --muted: 20 15% 16%;
+    --muted: 220 25% 15%;
     --muted-foreground: 40 12% 65%;
-    --accent: 20 20% 20%;
+    --accent: 220 25% 20%;
     --accent-foreground: 40 30% 92%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 20 15% 22%;
-    --input: 20 15% 22%;
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
     --ring: 166 60% 45%;
     --radius: 0.75rem;
-    --sidebar: 20 25% 10%;              /* warm-dark — matches background so shader shows through */
+    --sidebar: 230 84% 5%;              /* matches background so the glow shows through */
     --sidebar-foreground: 40 30% 90%;
-    --sidebar-border: 20 15% 22%;
+    --sidebar-border: 220 20% 22%;
     /* Glow brand colours — teal, used by the Glow component in light mode */
     --brand: 166 60% 45%;
     --brand-foreground: 172 66% 60%;
@@ -86,15 +86,15 @@
   }
 
   /* Light-mode only: cards, popovers and modal panels are translucent
-     frosted glass so the MeshGradient shader bleeds through the entire
-     app. Dark mode keeps solid panels via the token above. */
+     frosted glass so the radial glow bleeds through the entire app.
+     Dark mode keeps solid panels via the token above. */
   :root:not(.dark) .bg-card {
-    background-color: hsla(20 20% 13% / 0.5);
+    background-color: hsla(220 30% 13% / 0.5);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
   }
   :root:not(.dark) .bg-popover {
-    background-color: hsla(20 20% 13% / 0.75);
+    background-color: hsla(220 30% 13% / 0.75);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
   }
