@@ -13,7 +13,7 @@ export function AmbientLightBackground() {
     <div
       aria-hidden
       className="fixed inset-0 z-0 pointer-events-none dark:hidden"
-      style={{ backgroundColor: "#FDF6E8" }}
+      style={{ backgroundColor: "hsl(40 70% 90%)" }}
     />
   );
 }
