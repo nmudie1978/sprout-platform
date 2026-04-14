@@ -126,8 +126,9 @@ const TOC_ENTRIES: { id: string; number: string; title: string }[] = [
   { id: "section-04", number: "04", title: "How the Matching Engine Works" },
   { id: "section-05", number: "05", title: "Safety & Privacy Commitments" },
   { id: "section-06", number: "06", title: "Technical Foundations" },
-  { id: "section-07", number: "07", title: "What's Next" },
-  { id: "section-08", number: "08", title: "A Note on What We Are Not" },
+  { id: "section-07", number: "07", title: "Where We Sit in the Market" },
+  { id: "section-08", number: "08", title: "What's Next" },
+  { id: "section-09", number: "09", title: "A Note on What We Are Not" },
 ];
 
 function TableOfContents() {
@@ -794,9 +795,109 @@ export default function WhitePaperPage() {
         </div>
       </section>
 
-      {/* ─── 7. What's Next ────────────────────────────────────── */}
+      {/* ─── 7. Where We Sit in the Market ─────────────────────── */}
       <section id="section-07" className="mb-14 scroll-mt-24">
-        <SectionHeader number="07" title="What's Next" />
+        <SectionHeader
+          number="07"
+          title="Where We Sit in the Market"
+          subtitle="Similar platforms exist globally — none built for the Nordic / European context, none built for individual youth and family use."
+        />
+        <p className="mb-4 text-foreground/85 leading-relaxed">
+          Career-discovery platforms for young people are not a new category.
+          A handful of established players serve North American and UK schools
+          well. The table below shows where they sit and what they cover.
+        </p>
+
+        <div className="overflow-x-auto rounded-xl border border-border/40 mb-6">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/30">
+              <tr className="text-left text-[11px] uppercase tracking-wider text-muted-foreground/80">
+                <th className="px-3 py-2.5 font-semibold">Platform</th>
+                <th className="px-3 py-2.5 font-semibold">Country</th>
+                <th className="px-3 py-2.5 font-semibold">Main focus</th>
+                <th className="px-3 py-2.5 font-semibold">Who buys it</th>
+                <th className="px-3 py-2.5 font-semibold">Pricing</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/30 text-foreground/85">
+              <tr>
+                <td className="px-3 py-3 align-top">
+                  <div className="font-semibold text-teal-700 dark:text-teal-300">Unifrog</div>
+                  <div className="text-[11px] text-muted-foreground/70">unifrog.org</div>
+                </td>
+                <td className="px-3 py-3 align-top">UK-led, ~110 countries via international schools</td>
+                <td className="px-3 py-3 align-top">End-to-end school progression: exploration → recording achievements → applications (university, apprenticeships)</td>
+                <td className="px-3 py-3 align-top">Schools (ages 4–18, teachers & counsellors)</td>
+                <td className="px-3 py-3 align-top">School subscription</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-3 align-top">
+                  <div className="font-semibold text-teal-700 dark:text-teal-300">Xello</div>
+                  <div className="text-[11px] text-muted-foreground/70">xello.world</div>
+                </td>
+                <td className="px-3 py-3 align-top">USA, Canada, UK</td>
+                <td className="px-3 py-3 align-top">K-12 college and career readiness — university, trade, military, career options</td>
+                <td className="px-3 py-3 align-top">School districts (kindergarten → high school)</td>
+                <td className="px-3 py-3 align-top">Institutional only</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-3 align-top">
+                  <div className="font-semibold text-teal-700 dark:text-teal-300">CareerExplorer</div>
+                  <div className="text-[11px] text-muted-foreground/70">careerexplorer.com</div>
+                </td>
+                <td className="px-3 py-3 align-top">USA-led, global web</td>
+                <td className="px-3 py-3 align-top">Personality &amp; aptitude assessment with career matches; broad audience</td>
+                <td className="px-3 py-3 align-top">Individuals — students, professionals, career changers</td>
+                <td className="px-3 py-3 align-top">Free quiz, paid annual membership</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-3 align-top">
+                  <div className="font-semibold text-teal-700 dark:text-teal-300">Find Their Path</div>
+                  <div className="text-[11px] text-muted-foreground/70">findtheirpath.com</div>
+                </td>
+                <td className="px-3 py-3 align-top">North America (high schools)</td>
+                <td className="px-3 py-3 align-top">Science-backed teen assessment with personalised matches; parent-facing guidance</td>
+                <td className="px-3 py-3 align-top">Parents + their teen (grades 9–12)</td>
+                <td className="px-3 py-3 align-top">One-time payment (~$47–97)</td>
+              </tr>
+              <tr className="bg-teal-500/[0.04]">
+                <td className="px-3 py-3 align-top">
+                  <div className="font-bold text-foreground">Endeavrly</div>
+                  <div className="text-[11px] text-muted-foreground/70">endeavrly.no</div>
+                </td>
+                <td className="px-3 py-3 align-top">Norway-first, Nordics-next</td>
+                <td className="px-3 py-3 align-top">15–23 youth career discovery + first-job marketplace + safety-by-design messaging + transparent matching</td>
+                <td className="px-3 py-3 align-top">Direct-to-youth and family (no school licence required)</td>
+                <td className="px-3 py-3 align-top">Free for youth; commercial model in development</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-base font-semibold mt-6 mb-3">How we differ</h3>
+        <Bullets
+          items={[
+            "Direct-to-family, not school-locked — Unifrog and Xello only reach a student if their school buys a licence. A young person whose school has no contract simply has no access. We open the front door directly to the student and their parents.",
+            "Built for the Nordic context — Norwegian university programmes via utdanning.no, salary ranges grounded in SSB labour stats, NAV outlook signals, Norwegian apprenticeship pathways. Generic global tools don't speak fluently about Bachelor-Master 3+2 routes, fagbrev, or vidergående subject choices.",
+            "Safety architecture from line one — we are designed for minors. No free-text chat between minors and adults, verified employers, no in-app payments, guardian consent first-class. Generic platforms bolt safety on; ours is structural.",
+            "Transparent matching, not assessment-quiz lottery — every match is explainable in plain English (\"matches your interest in Chemistry\", \"hands-on work, which you said you enjoy\"). CareerExplorer-style personality quizzes give a result with no audit trail.",
+            "First-job marketplace inside the same product — a student doesn't just learn that being a vet involves dogs; they can take a small dog-walking job nearby this weekend. Career exploration and real-world experience live in one app, not separate silos.",
+            "No engagement traps — no streaks, leaderboards, infinite scroll, or notification spam. We are deliberately uncompetitive with TikTok and Instagram for attention, and that is the point.",
+          ]}
+        />
+
+        <h3 className="text-base font-semibold mt-6 mb-3">The Nordic / European gap</h3>
+        <p className="text-foreground/85 leading-relaxed mb-3">
+          Every platform in the table above was built for an Anglophone, school-driven market. None of them are based in the Nordics, none of them run on Norwegian / Nordic labour data, and none of them treat the parent-and-teen pair as a primary unit.
+        </p>
+        <p className="text-foreground/85 leading-relaxed">
+          The result is a clear gap. A 17-year-old in Oslo, Bergen, or Stavanger thinking about whether to pursue medicine, become a sjømann, train as an electrician, or take an unconventional path through utdanning.no has, today, no native digital companion. They get either generic North American advice they need to translate, or paper-based career-counsellor sessions delivered too late. The opportunity is to build that companion — first for Norway, then the broader Nordics, then meaningful European reach where the labour market and education system specifics matter just as much.
+        </p>
+      </section>
+
+      {/* ─── 8. What's Next ────────────────────────────────────── */}
+      <section id="section-08" className="mb-14 scroll-mt-24">
+        <SectionHeader number="08" title="What's Next" />
         <Bullets
           items={[
             "Deeper integration of parent-contributed Real Career Paths into every Clarity tab, so students see the path walked before in non-linear ways.",
@@ -808,10 +909,10 @@ export default function WhitePaperPage() {
         />
       </section>
 
-      {/* ─── 8. What We Are Not ────────────────────────────────── */}
-      <section id="section-08" className="mb-14 scroll-mt-24">
+      {/* ─── 9. What We Are Not ────────────────────────────────── */}
+      <section id="section-09" className="mb-14 scroll-mt-24">
         <SectionHeader
-          number="08"
+          number="09"
           title="A Note on What We Are Not"
           subtitle="Clarity about boundaries."
         />
