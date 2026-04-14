@@ -1316,7 +1316,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                           <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
                           <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
                           <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
-                          <th className="px-2 py-1.5 w-14 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
+                          <th className="px-2 py-1.5 w-10 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
                             <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-teal-300" title="Tap + on any 2–3 careers to compare them side by side. See how they stack up across day-to-day, training time, fit, and more.">
                               <Plus className="h-2.5 w-2.5" strokeWidth={3} />
                               Add
@@ -1401,15 +1401,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                         compareShortlist.toggle(d.career);
                                       }}
                                       className={cn(
-                                        "inline-flex items-center justify-center h-7 w-7 rounded-md border transition-all",
+                                        "inline-flex items-center justify-center h-5 w-5 rounded border transition-all",
                                         inList
-                                          ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35 shadow-sm shadow-teal-500/20"
-                                          : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15 hover:scale-110"
+                                          ? "bg-teal-500/25 border-teal-500/60 text-teal-200 hover:bg-teal-500/35"
+                                          : "border-teal-500/30 text-teal-400/70 hover:border-teal-500/60 hover:text-teal-300 hover:bg-teal-500/15"
                                       )}
                                       aria-label={inList ? `Remove ${d.career.title} from compare` : `Add ${d.career.title} to compare`}
                                       title={inList ? "Remove from compare" : "Add to compare — pick 2 or 3 careers, then tap Compare"}
                                     >
-                                      {inList ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : <Plus className="h-3.5 w-3.5" strokeWidth={2.5} />}
+                                      {inList ? <Check className="h-3 w-3" strokeWidth={3} /> : <Plus className="h-3 w-3" strokeWidth={2.5} />}
                                     </button>
                                   );
                                 })()}
