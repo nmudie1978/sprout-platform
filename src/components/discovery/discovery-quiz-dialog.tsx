@@ -172,7 +172,14 @@ export function DiscoveryQuizDialog({
       toast.success("Preferences saved", {
         description: "Your Career Radar is updated.",
       });
+      // Invalidate every cached surface that reads from
+      // discoveryPreferences so the dashboard "Who Am I" portrait,
+      // recommended-careers strip, and the profile section all
+      // re-render with the new prefs immediately.
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["discover-recommendations"] });
+      queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
+      queryClient.invalidateQueries({ queryKey: ["career-recommendations"] });
       onSaved?.(prefs);
       onClose();
     },
