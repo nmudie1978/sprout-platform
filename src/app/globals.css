@@ -5,10 +5,9 @@
 @layer base {
   :root {
     /* ── Light mode theme tokens ─────────────────────────────────
-       Warm near-white base with a soft amber undertone. The ambient
-       layer provides visual richness; surfaces stay light and clean
-       to maintain a Scandinavian/SaaS feel. */
-    --background: 38 35% 98%;           /* warm ivory page canvas */
+       Warm cream canvas — not near-white. This is the actual base
+       colour the body paints; the ambient glow layers over this. */
+    --background: 40 80% 92%;           /* warm cream page canvas */
     --foreground: 260 20% 15%;          /* dark ink for body text */
     --card: 0 0% 100%;                  /* base surface — solid */
     --card-foreground: 260 20% 15%;

@@ -22,28 +22,26 @@ export function AmbientLightBackground() {
       aria-hidden
       className="fixed inset-0 z-0 pointer-events-none dark:hidden overflow-hidden"
     >
-      {/* Warm base — cream/ivory instead of pure white. This alone
-          gives the canvas a noticeably warm undertone. */}
-      <div className="absolute inset-0" style={{ backgroundColor: "#FFF4D6" }} />
+      {/* Warm cream base — overrides the body's bg with a clearly
+          warm canvas. Shows in all the gaps between cards. */}
+      <div className="absolute inset-0" style={{ backgroundColor: "#FFE8B3" }} />
 
-      {/* Primary warm glow — saturated amber center, fully opaque,
-          normal blend so the colour is felt directly rather than
-          multiplied against white. */}
+      {/* Primary amber glow — full amber center fading to the warm
+          cream. Covers the whole viewport so warmth is consistent. */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 50% 45%, #FFD966 0%, #FFE79A 35%, transparent 75%)",
-          opacity: 0.75,
+            "radial-gradient(ellipse 90% 80% at 50% 40%, #FFCA5C 0%, #FFDC8A 40%, transparent 85%)",
         }}
       />
 
-      {/* Secondary peach wash — adds depth toward the bottom edges */}
+      {/* Peach wash from below — adds sunset-style depth */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(ellipse 100% 70% at 50% 100%, rgba(255, 195, 140, 0.55) 0%, transparent 65%)",
+            "radial-gradient(ellipse 120% 80% at 50% 100%, rgba(255, 170, 120, 0.65) 0%, transparent 70%)",
         }}
       />
     </div>
