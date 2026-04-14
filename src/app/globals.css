@@ -30,9 +30,9 @@
     --input: 20 15% 22%;
     --ring: 166 60% 45%;
     --radius: 0.75rem;
-    --sidebar: 34 32% 88%;              /* latte stays — creamy companion to dark canvas */
-    --sidebar-foreground: 220 20% 22%;
-    --sidebar-border: 34 25% 82%;
+    --sidebar: 20 25% 10%;              /* warm-dark — matches background so shader shows through */
+    --sidebar-foreground: 40 30% 90%;
+    --sidebar-border: 20 15% 22%;
     /* Glow brand colours — teal, used by the Glow component in light mode */
     --brand: 166 60% 45%;
     --brand-foreground: 172 66% 60%;
