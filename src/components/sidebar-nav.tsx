@@ -160,7 +160,7 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
         side="right"
         sideOffset={12}
         showArrow
-        className="max-w-[240px] py-2.5 border-white/10 bg-white/5 text-slate-100 shadow-lg shadow-black/30"
+        className="max-w-[240px] py-2.5 border-slate-700 bg-slate-900 text-slate-100 shadow-xl shadow-black/50 backdrop-blur-none"
       >
         <div className="space-y-0.5">
           <p className="text-[12px] font-medium text-slate-50">{label}</p>
