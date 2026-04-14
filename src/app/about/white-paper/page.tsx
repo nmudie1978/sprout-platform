@@ -117,6 +117,63 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
+// ── Table of contents ────────────────────────────────────────────
+const TOC_ENTRIES: { id: string; number: string; title: string }[] = [
+  { id: "exec-summary", number: "00", title: "Executive Summary" },
+  { id: "section-01", number: "01", title: "The Problem We're Solving" },
+  { id: "section-02", number: "02", title: "Three Core Principles" },
+  { id: "section-03", number: "03", title: "Module-by-Module Walkthrough" },
+  { id: "section-04", number: "04", title: "How the Matching Engine Works" },
+  { id: "section-05", number: "05", title: "Safety & Privacy Commitments" },
+  { id: "section-06", number: "06", title: "Technical Foundations" },
+  { id: "section-07", number: "07", title: "What's Next" },
+  { id: "section-08", number: "08", title: "A Note on What We Are Not" },
+];
+
+function TableOfContents() {
+  return (
+    <nav
+      aria-labelledby="toc-heading"
+      className="mb-12 rounded-xl border border-border/40 bg-card/30 p-5 md:p-6"
+    >
+      <div className="flex items-baseline justify-between mb-4">
+        <h2
+          id="toc-heading"
+          className="text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400"
+        >
+          Contents
+        </h2>
+        <span className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+          {TOC_ENTRIES.length} sections
+        </span>
+      </div>
+      <ol className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+        {TOC_ENTRIES.map((entry) => (
+          <li key={entry.id} className="border-b border-border/20 last:border-b-0 md:border-b">
+            <a
+              href={`#${entry.id}`}
+              className="group flex items-baseline gap-3 py-2.5 transition-colors hover:text-teal-700 dark:hover:text-teal-300"
+            >
+              <span className="text-[11px] font-mono tracking-wider text-muted-foreground/70 shrink-0 w-6">
+                {entry.number}
+              </span>
+              <span className="text-sm font-medium text-foreground/85 group-hover:text-teal-700 dark:group-hover:text-teal-300 flex-1">
+                {entry.title}
+              </span>
+              <span
+                aria-hidden
+                className="text-muted-foreground/30 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all"
+              >
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
 // ── Principle tile (Section 2) ───────────────────────────────────
 type PrincipleItem = { kind: "no" | "yes"; text: string };
 
@@ -215,8 +272,10 @@ export default function WhitePaperPage() {
         </p>
       </header>
 
+      <TableOfContents />
+
       {/* ─── Executive Summary ─────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="exec-summary" className="mb-14 scroll-mt-24">
         <SectionHeader number="Executive Summary" title="What it is" />
         <div className="space-y-4 text-foreground/85 leading-relaxed">
           <p>
@@ -247,7 +306,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 1. The Problem ────────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-01" className="mb-14 scroll-mt-24">
         <SectionHeader
           number="01"
           title="The Problem We're Solving"
@@ -282,7 +341,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 2. Three Principles ───────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-02" className="mb-14 scroll-mt-24">
         <SectionHeader number="02" title="Three Core Principles" />
         <div className="grid md:grid-cols-3 gap-4">
           <PrincipleTile
@@ -328,7 +387,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 3. Modules ────────────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-03" className="mb-14 scroll-mt-24">
         <SectionHeader
           number="03"
           title="Module-by-Module Walkthrough"
@@ -544,7 +603,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 4. Matching Engine ────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-04" className="mb-14 scroll-mt-24">
         <SectionHeader
           number="04"
           title="How the Matching Engine Works"
@@ -616,7 +675,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 5. Safety & Privacy ───────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-05" className="mb-14 scroll-mt-24">
         <SectionHeader number="05" title="Safety & Privacy Commitments" />
         <div className="grid md:grid-cols-2 gap-4">
           <div className="rounded-lg border border-border/40 p-4">
@@ -702,7 +761,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 6. Technical Foundations ──────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-06" className="mb-14 scroll-mt-24">
         <SectionHeader
           number="06"
           title="Technical Foundations"
@@ -736,7 +795,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 7. What's Next ────────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-07" className="mb-14 scroll-mt-24">
         <SectionHeader number="07" title="What's Next" />
         <Bullets
           items={[
@@ -750,7 +809,7 @@ export default function WhitePaperPage() {
       </section>
 
       {/* ─── 8. What We Are Not ────────────────────────────────── */}
-      <section className="mb-14">
+      <section id="section-08" className="mb-14 scroll-mt-24">
         <SectionHeader
           number="08"
           title="A Note on What We Are Not"
