@@ -58,7 +58,6 @@ export function JourneyReflectionsTray({
   const [savedTick, setSavedTick] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const savedTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   // When the parent flips between Discover/Understand/Clarity, follow
@@ -90,14 +89,22 @@ export function JourneyReflectionsTray({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  // Hover on the trigger tab opens the tray — but once open, the tray
+  // does NOT auto-close on mouse leave. The earlier hover-close pattern
+  // raced badly: the trigger fades out the instant the panel opens,
+  // leaving a small dead zone between trigger and panel. A mouse
+  // dwelling in that gap fires mouseLeave on the trigger, the close
+  // timer ticks, the panel slides shut, the user moves into the panel,
+  // mouseEnter reopens it — and a flicker loop begins. To dismiss the
+  // tray now: click the X, press ESC, click outside, or click the
+  // trigger tab again.
   const handleMouseEnter = useCallback(() => {
-    if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => setOpen(true), 150);
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => setOpen(true), 120);
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
+  const handleHoverCancel = useCallback(() => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    leaveTimeoutRef.current = setTimeout(() => setOpen(false), 300);
   }, []);
 
   const handleToggle = useCallback(() => setOpen((prev) => !prev), []);
@@ -137,7 +144,7 @@ export function JourneyReflectionsTray({
       <button
         onClick={handleToggle}
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseLeave={handleHoverCancel}
         aria-expanded={open}
         aria-controls="journey-reflections-panel"
         className={cn(
@@ -163,8 +170,6 @@ export function JourneyReflectionsTray({
         id="journey-reflections-panel"
         role="region"
         aria-label="Journey reflections"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         aria-hidden={!open}
         className={cn(
           "w-[340px] sm:w-[380px] h-[520px] max-h-[80vh]",
