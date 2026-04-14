@@ -117,35 +117,48 @@ export default function AboutPage() {
             each one gives you what you need for the next.
           </p>
 
-          <div className="space-y-4 mb-6">
-            <div className="p-4 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold">1</span>
+          {/* Cards reveal one-by-one (0s → 0.4s → 0.8s) so the row reads
+              as a journey rather than a static row of three boxes.
+              Pure CSS — no client component needed. Animation defined in
+              globals.css under @keyframes fadeInUp. */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div
+              className="p-4 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+              style={{ animationDelay: "0s" }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold shrink-0">1</span>
                 <h3 className="font-semibold text-foreground">Discover — Explore the career</h3>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Get a high-level view of any career — what it is, who does it, the salary range, and whether it&apos;s
                 worth a closer look. No commitment, just curiosity.
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold">2</span>
+            <div
+              className="p-4 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+              style={{ animationDelay: "0.4s" }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold shrink-0">2</span>
                 <h3 className="font-semibold text-foreground">Understand — Know the reality</h3>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Go deeper into what the role actually involves day to day — the qualifications, the hard parts, the
                 typical week, and what it really takes to qualify.
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">3</span>
+            <div
+              className="p-4 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+              style={{ animationDelay: "0.8s" }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold shrink-0">3</span>
                 <h3 className="font-semibold text-foreground">Clarity — See your full journey</h3>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed ml-8">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 See the complete timeline, milestones, and progression for this career — so you can move forward with
                 confidence, knowing exactly what the journey involves.
               </p>
