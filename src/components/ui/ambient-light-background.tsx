@@ -26,14 +26,15 @@ export function AmbientLightBackground() {
       <div className="absolute inset-0 bg-white" />
 
       {/* Soft yellow glow — single centered radial, multiply-blended so
-          it tints white surfaces gently without washing them out.
-          Produces the "lit from within" warmth the user asked for. */}
+          it tints white surfaces warmly without washing them out.
+          Boosted ~50%: opacity 0.6 → 0.9 and the glow radius extended
+          to 90% so the warmth reaches closer to the edges. */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(circle at center, #FFF991 0%, transparent 70%)",
-          opacity: 0.6,
+            "radial-gradient(circle at center, #FFF991 0%, transparent 90%)",
+          opacity: 0.9,
           mixBlendMode: "multiply",
         }}
       />
