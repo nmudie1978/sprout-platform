@@ -22,20 +22,28 @@ export function AmbientLightBackground() {
       aria-hidden
       className="fixed inset-0 z-0 pointer-events-none dark:hidden overflow-hidden"
     >
-      {/* Base canvas — clean white so the central glow reads warmly */}
-      <div className="absolute inset-0 bg-white" />
+      {/* Warm base — cream/ivory instead of pure white. This alone
+          gives the canvas a noticeably warm undertone. */}
+      <div className="absolute inset-0" style={{ backgroundColor: "#FFF4D6" }} />
 
-      {/* Soft yellow glow — single centered radial, multiply-blended so
-          it tints white surfaces warmly without washing them out.
-          Boosted ~50%: opacity 0.6 → 0.9 and the glow radius extended
-          to 90% so the warmth reaches closer to the edges. */}
+      {/* Primary warm glow — saturated amber center, fully opaque,
+          normal blend so the colour is felt directly rather than
+          multiplied against white. */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(circle at center, #FFF991 0%, transparent 90%)",
-          opacity: 0.9,
-          mixBlendMode: "multiply",
+            "radial-gradient(circle at 50% 45%, #FFD966 0%, #FFE79A 35%, transparent 75%)",
+          opacity: 0.75,
+        }}
+      />
+
+      {/* Secondary peach wash — adds depth toward the bottom edges */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse 100% 70% at 50% 100%, rgba(255, 195, 140, 0.55) 0%, transparent 65%)",
         }}
       />
     </div>
