@@ -1227,11 +1227,10 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         const goTo = (i: number) => {
           const el = carouselRef.current;
           if (!el) return;
-          const slide = el.children[i] as HTMLElement | undefined;
-          if (slide) {
-            el.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
-            setCarouselIdx(i);
-          }
+          const clamped = Math.max(0, Math.min(i, bands.length - 1));
+          // Scroll by slide width (each slide is 100% of container width)
+          el.scrollTo({ left: clamped * el.clientWidth, behavior: "smooth" });
+          setCarouselIdx(clamped);
         };
         const handleScroll = () => {
           const el = carouselRef.current;
@@ -1292,9 +1291,9 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         of body content. Anything beyond that scrolls
                         inside the card so the radar page stays compact. */}
                     <div className="max-h-[200px] overflow-y-auto">
-                    <table className="w-full text-xs" style={{ borderCollapse: "collapse" }}>
-                      <thead className="sticky top-0 z-10">
-                        <tr className="border-b border-border/40 bg-muted/40 backdrop-blur-sm">
+                    <table className="w-full text-xs relative" style={{ borderCollapse: "collapse" }}>
+                      <thead className="sticky top-0 z-[5] bg-muted">
+                        <tr className="border-b border-border/40 bg-muted">
                           <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
                           <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
                           <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
