@@ -63,8 +63,8 @@ const GoalSelectionSheet = dynamic(
   () => import('@/components/goals/GoalSelectionSheet').then((m) => m.GoalSelectionSheet),
   { ssr: false }
 );
-const ReflectionPanel = dynamic(
-  () => import('@/components/journey/reflection-panel').then((m) => m.ReflectionPanel),
+const JourneyReflectionsTray = dynamic(
+  () => import('@/components/journey/journey-reflections-tray').then((m) => m.JourneyReflectionsTray),
   { ssr: false }
 );
 
@@ -581,7 +581,7 @@ function DiscoverTab({
                       accent={career.growthOutlook === 'high' ? 'text-emerald-400' : career.growthOutlook === 'medium' ? 'text-amber-400' : 'text-muted-foreground/50'}
                     />
                     <StatCard label="Sector" value={sectorLabel} icon={Building2} accent={sectorAccent} tooltip={`Most ${career.title} roles in Norway are in the ${sector} sector.`} />
-                    <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-emerald-400' : 'text-amber-400'} tooltip={pensionNote} />
+                    <StatCard label="Pension" value={sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed'} icon={Shield} accent={sector === 'public' ? 'text-emerald-400' : 'text-muted-foreground/60'} tooltip={pensionNote} />
                   </div>
                 );
               })()}
@@ -2797,10 +2797,9 @@ export default function MyJourneyPage() {
         </AnimatePresence>
       </div>
 
-      <ReflectionPanel
+      <JourneyReflectionsTray
         careerSlug={career?.id ?? null}
-        phase={activeTab}
-        careerTitle={career?.title}
+        activeLens={activeTab}
       />
 
       <GoalSelectionSheet
