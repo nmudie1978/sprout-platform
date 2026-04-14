@@ -11,6 +11,7 @@ import {
   LIKERT_QUESTIONS,
   ROLE_LABEL,
 } from "@/lib/feedback-stats";
+import { FeedbackReport } from "@/components/admin/feedback-report";
 import type { FeedbackRole } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -116,9 +117,12 @@ export default async function AdminFeedbackPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <>
-          {/* Likert cards — one per question */}
+          {/* Visual aggregated report — overall scores, charts, breakdowns */}
+          <FeedbackReport agg={agg} />
+
+          {/* Detailed per-question Likert cards (mean / median / std dev / top-2) */}
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-            Per-question statistics
+            Per-question statistics (detail)
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
             {LIKERT_KEYS.map((k) => (
