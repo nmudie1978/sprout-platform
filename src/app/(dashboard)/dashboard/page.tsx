@@ -775,7 +775,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-[100vh] bg-background text-foreground">
+    <div className="min-h-[100vh] text-foreground">
       {/* Guided orientation walkthrough — explains the platform, lands on Career Radar */}
       <OrientationWalkthrough
         open={showOnboardingWizard}
