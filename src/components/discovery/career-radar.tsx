@@ -25,52 +25,79 @@ import { toast } from "sonner";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 
 /**
- * The 30 most well-known jobs in Norway — powers the "Common jobs"
- * toggle on the Career Radar so a youth can narrow a busy radar to
- * the roles they'd recognise on sight (doctor, plumber, teacher…).
- * Hand-curated from the full career catalogue in career-pathways.ts.
+ * The 50 most well-known jobs in Norway — powers the "Common jobs"
+ * toggle on the Career Radar. Spread across every CareerCategory
+ * slice so a youth can narrow a busy radar to the roles they'd
+ * recognise on sight. Hand-curated from career-pathways.ts.
  */
 const COMMON_NORWAY_JOB_IDS = new Set<string>([
-  // Medical (6)
+  // Health (4)
   "doctor",
   "nurse",
   "dentist",
   "veterinarian",
-  "pharmacist",
-  "physiotherapist",
-  // Trades (4)
-  "plumber",
-  "carpenter",
-  "electrician",
-  "auto-mechanic",
-  // Emergency services (2)
-  "police-officer",
-  "firefighter",
-  // Teaching (2)
+  // Education (3)
   "primary-teacher",
+  "secondary-teacher",
   "kindergarten-teacher",
-  // Finance (4)
+  // Tech (3)
+  "software-developer",
+  "data-analyst",
+  "cloud-engineer",
+  // Business (3)
+  "project-manager",
+  "hr-specialist",
+  "lawyer",
+  // Finance (3)
   "accountant",
   "financial-analyst",
   "investment-banker",
-  "real-estate-agent",
-  // Legal (1)
-  "lawyer",
-  // Tech (3)
-  "software-developer",
-  "it-support",
-  "data-analyst",
+  // Marketing (3)
+  "marketing-manager",
+  "sales-representative",
+  "digital-marketer",
+  // Trade / engineering (3)
+  "mechanical-engineer",
+  "electrical-engineer",
+  "auto-mechanic",
+  // Logistics (3)
+  "supply-chain-manager",
+  "truck-driver",
+  "airline-pilot",
+  // Hospitality (3)
+  "chef",
+  "hotel-manager",
+  "tour-guide",
+  // Telecom (1)
+  "telco-network-architect",
   // Creative (4)
-  "architect",
   "journalist",
   "graphic-designer",
   "photographer",
-  // Sport / fitness (2)
-  "personal-trainer",
+  "musician",
+  // Safety (3)
+  "police-officer",
+  "firefighter",
+  "social-worker",
+  // Military (2)
+  "military-officer",
+  "soldier",
+  // Sport (3)
   "sports-coach",
-  // Service (2)
-  "chef",
-  "hairdresser",
+  "personal-trainer",
+  "fitness-instructor",
+  // Property (2)
+  "real-estate-agent",
+  "property-manager",
+  // Social care (3)
+  "youth-worker",
+  "family-support-worker",
+  "addiction-counsellor",
+  // Construction (4)
+  "plumber",
+  "carpenter",
+  "electrician",
+  "bricklayer",
 ]);
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
