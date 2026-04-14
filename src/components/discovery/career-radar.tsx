@@ -547,6 +547,16 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       setCompareModalOpen(true);
     }
   }, [compareShortlist]);
+
+  // Listen for "add to compare" events dispatched by the career detail sheet
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const career = (e as CustomEvent<Career>).detail;
+      if (career) compareShortlist.toggle(career);
+    };
+    window.addEventListener("add-career-to-compare", handler);
+    return () => window.removeEventListener("add-career-to-compare", handler);
+  }, [compareShortlist]);
   const [hovered, setHovered] = useState<PlacedDot | null>(null);
   const [zoom, setZoom] = useState(1);
   // Multi-select tier filter — start with everything visible.
