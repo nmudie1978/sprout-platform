@@ -25,25 +25,27 @@ export function AmbientLightBackground() {
       {/* Base canvas — near-white warm neutral */}
       <div className="absolute inset-0 bg-[hsl(var(--background))]" />
 
-      {/* Soft corner glows — lavender top-left, rose bottom-right, sky bottom-left */}
+      {/* Soft corner glows — warmer palette: amber top-left, peach top-right,
+          rose bottom-left, soft coral bottom-right. Opacities bumped ~30%
+          from cool-palette defaults for a warmer overall feel. */}
       <div
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 55% 45% at 5% 10%, rgba(180, 160, 220, 0.18), transparent 55%),
-            radial-gradient(ellipse 50% 40% at 95% 8%, rgba(255, 220, 200, 0.15), transparent 55%),
-            radial-gradient(ellipse 60% 50% at 10% 95%, rgba(160, 200, 230, 0.15), transparent 55%),
-            radial-gradient(ellipse 55% 45% at 95% 95%, rgba(230, 180, 210, 0.16), transparent 55%)
+            radial-gradient(ellipse 55% 45% at 5% 10%, rgba(255, 210, 165, 0.24), transparent 55%),
+            radial-gradient(ellipse 50% 40% at 95% 8%, rgba(255, 200, 180, 0.22), transparent 55%),
+            radial-gradient(ellipse 60% 50% at 10% 95%, rgba(255, 180, 170, 0.20), transparent 55%),
+            radial-gradient(ellipse 55% 45% at 95% 95%, rgba(245, 175, 160, 0.22), transparent 55%)
           `,
         }}
       />
 
-      {/* Optional atmospheric wash — very low contrast vignette */}
+      {/* Optional atmospheric wash — warm vignette */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 120% 80% at 50% 50%, transparent 60%, rgba(200, 200, 220, 0.08) 100%)",
+            "radial-gradient(ellipse 120% 80% at 50% 50%, transparent 60%, rgba(230, 200, 175, 0.10) 100%)",
         }}
       />
     </div>
