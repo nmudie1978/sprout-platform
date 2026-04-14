@@ -1,0 +1,65 @@
+name: Validate real-world provider URL templates
+
+# Runs every Sunday at 03:00 UTC, or on manual trigger.
+# HEAD-tests every provider template in
+# `src/lib/journey/real-world-provider.ts` (utdanning.no, Samordna
+# opptak, Coursera, LinkedIn Learning / Jobs, etc.) with a sample
+# career query and writes the result to
+# `data/provider-url-validation.json`.
+#
+# Runtime helpers in `src/lib/journey/provider-health.ts` read that
+# file to decide whether to surface the deep link or fall back to a
+# Google search. Without this check the audit (Apr 2026) flagged
+# silent 404s as the lowest-trust source in the app.
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate provider URLs
+        run: npm run providers:validate-urls
+
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh real-world provider URL validation'
+          body: |
+            Automated weekly refresh of
+            `data/provider-url-validation.json`.
+
+            Every URL template in
+            `src/lib/journey/real-world-provider.ts` was HEAD-tested
+            with a sample career query (`carpenter`). Runtime callers
+            read this report via `provider-health.isProviderHealthy()`
+            to decide whether to surface the deep link or substitute
+            a Google search fallback.
+
+            **Review checklist:**
+            - If a provider flipped from `LIVE` to `CLIENT_ERROR`,
+              the host probably changed its URL scheme — update the
+              template in `real-world-provider.ts` before merging.
+            - If > 30% of providers failed, investigate first
+              (likely a network hiccup from the CI runner).
+          branch: chore/validate-provider-urls
+          commit-message: 'chore: refresh real-world provider URL validation'
+          labels: automated, data
+          delete-branch: true

@@ -1,0 +1,64 @@
+name: Refresh career events
+
+# Runs every Sunday at 02:00 UTC, or on manual trigger.
+# Re-scrapes Norwegian career-event sources (tautdanning, oslomet,
+# bi-karrieredagene, eures) and opens a PR with the updated
+# data/career-events/verified-events.json. Without this, the events
+# list goes stale within weeks because providers add and retire
+# events all the time.
+#
+# Zero manual effort — just review and merge the PR.
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Refresh career events
+        run: npm run events:refresh
+
+      # Open a PR with any changes
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh career events feed'
+          body: |
+            Automated weekly refresh of
+            `data/career-events/verified-events.json`.
+
+            Every provider (`tautdanning`, `oslomet`,
+            `bi-karrieredagene`, `eures`) was re-scraped and each event
+            URL re-verified via the `scripts/events-refresh.ts` agent.
+            New events appear, past events drop off, and any provider
+            that returned zero events is flagged for follow-up.
+
+            **Review checklist:**
+            - If a provider went from N events → 0, the source HTML
+              probably changed structure — check the provider file in
+              `src/lib/events/providers/`.
+            - If > 30% of events disappeared, review before merging
+              (likely a network hiccup from the CI runner).
+            - Spot-check 1–2 random events to confirm dates / locations
+              still make sense.
+          branch: chore/refresh-events
+          commit-message: 'chore: refresh career events feed'
+          labels: automated, data
+          delete-branch: true

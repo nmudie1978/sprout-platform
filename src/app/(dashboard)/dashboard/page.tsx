@@ -47,6 +47,7 @@ import { useLocaleSwitch } from "@/hooks/use-locale-switch";
 import { VerificationStatus } from "@/components/verification-status";
 import { CareerDetailSheet } from "@/components/career-detail-sheet";
 import { getAllCareers, getSectorForCareer } from "@/lib/career-pathways";
+import { isCareerSalaryStale } from "@/lib/career-data-recency";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
@@ -1089,6 +1090,7 @@ export default function DashboardPage() {
                 if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
                 return String(n);
               });
+              const salaryStale = isCareerSalaryStale(goalCareer);
               return (
                 <div className="mt-5 pt-4 border-t border-border/30">
                   <div className="flex items-center gap-1.5 mb-2">
@@ -1103,6 +1105,14 @@ export default function DashboardPage() {
                     <CompactStat icon={Briefcase} iconColor="text-blue-500/80" label="Sector" value={sectorLabel} />
                     <CompactStat icon={CheckCircle2} iconColor="text-violet-500/80" label="Pension" value={pensionLabel} />
                   </div>
+                  {salaryStale && (
+                    <p
+                      className="mt-2 text-[9px] text-amber-500/70 leading-snug"
+                      title="Catalogue salaries are checked annually against SSB labour stats. This figure has not been re-verified in the last year — treat as indicative."
+                    >
+                      ⚠ Salary &amp; outlook figures may be out of date — check current SSB / NAV stats before deciding.
+                    </p>
+                  )}
                 </div>
               );
             })()}

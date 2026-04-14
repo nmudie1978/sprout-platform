@@ -49,6 +49,17 @@ export interface Career {
   pathType?: SpecialistPathType;
   /** Primary employment sector. If absent, derived from category defaults. */
   sector?: "public" | "private" | "mixed";
+  /**
+   * ISO timestamp of when avgSalary / growthOutlook were last verified
+   * against an authoritative source (e.g. SSB wage stats, NAV outlook
+   * report). Absent = never verified — the UI surfaces a "salary may
+   * be out of date" disclaimer in that case. The runtime helper
+   * `isCareerSalaryStale()` (see `lib/career-data-recency.ts`) treats
+   * any career older than 12 months as stale.
+   */
+  lastVerifiedAt?: string;
+  /** Public source URL backing the salary / growth figures. */
+  sourceUrl?: string;
 }
 
 export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {

@@ -25,6 +25,8 @@
     "insights:refresh": "tsx scripts/refresh-insights-pool.ts",
     "programmes:validate": "tsx scripts/validate-programmes.ts",
     "programmes:validate:dry": "tsx scripts/validate-programmes.ts --dry-run --verbose",
+    "providers:validate-urls": "tsx scripts/validate-provider-urls.ts",
+    "salaries:refresh-report": "tsx scripts/refresh-career-salaries.ts",
     "prewarm:career-reality": "tsx scripts/prewarm-career-reality.ts",
     "perf:journey": "vitest run tests/my-journey-performance/",
     "perf:journey:ci": "vitest run tests/my-journey-performance/regression/",
