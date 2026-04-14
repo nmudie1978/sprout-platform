@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
+import { toast } from "sonner";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 
 /* ── Radar Guide Tips ─────────────────────────────────────────────── */
@@ -548,11 +549,25 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
     }
   }, [compareShortlist]);
 
-  // Listen for "add to compare" events dispatched by the career detail sheet
+  // Listen for "add to compare" events dispatched by the career detail sheet.
+  // This intentionally only ADDS (doesn't toggle) — the detail sheet button
+  // is labeled "Add to compare shortlist" and should never silently remove.
   useEffect(() => {
     const handler = (e: Event) => {
       const career = (e as CustomEvent<Career>).detail;
-      if (career) compareShortlist.toggle(career);
+      if (!career) return;
+      if (compareShortlist.isInShortlist(career.id)) {
+        toast.info(`${career.title} is already in your shortlist`);
+        return;
+      }
+      if (compareShortlist.shortlist.length >= compareShortlist.max) {
+        toast.info(`You can compare up to ${compareShortlist.max} at a time`, {
+          description: 'Remove one to add another.',
+        });
+        return;
+      }
+      compareShortlist.toggle(career);
+      toast.success(`${career.title} added to shortlist`);
     };
     window.addEventListener("add-career-to-compare", handler);
     return () => window.removeEventListener("add-career-to-compare", handler);

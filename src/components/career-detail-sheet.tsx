@@ -424,14 +424,13 @@ export function CareerDetailSheet({
                         </Button>
                       )}
 
-                      {/* Add to compare shortlist */}
+                      {/* Add to compare shortlist — the radar listener shows toast feedback */}
                       <Button
                         variant="outline"
                         className="w-full"
                         size="sm"
                         onClick={() => {
                           window.dispatchEvent(new CustomEvent("add-career-to-compare", { detail: career }));
-                          toast.success(`${career.title} added to shortlist`);
                         }}
                       >
                         <ArrowLeftRight className="h-3.5 w-3.5 mr-1.5" />
