@@ -5,12 +5,13 @@ import { MeshGradient } from "@paper-design/shaders-react"
 /**
  * AmbientLightBackground
  *
- * Light-mode canvas: subtle animated mesh-gradient shader in warm
- * cream tones so the surface has gentle ambient movement without
- * going dark or hurting text contrast. Dark mode is untouched
- * (this node is `dark:hidden`). Mounted once in the dashboard
- * layout. The shader sits behind everything; the sidebar covers
- * its region with its own latte background.
+ * Light-mode canvas: animated mesh-gradient shader in the warm
+ * espresso palette from the 21st.dev reference design. Dark mode
+ * is untouched (this node renders `dark:hidden`). Mounted once in
+ * the dashboard layout. The shader paints the whole viewport
+ * behind everything; the sidebar covers its region with its own
+ * latte background, so only the main content area shows the
+ * animation.
  */
 export function AmbientLightBackground() {
   return (
@@ -20,13 +21,13 @@ export function AmbientLightBackground() {
     >
       <MeshGradient
         className="absolute inset-0 w-full h-full"
-        colors={["#F7EBD3", "#F3DDB5", "#FDF6E8", "#E9C99A", "#F7E4BE"]}
+        colors={["#000000", "#8B4513", "#ffffff", "#3E2723", "#5D4037"]}
         speed={0.3}
-        backgroundColor="#F7EBD3"
+        backgroundColor="#000000"
       />
       <MeshGradient
-        className="absolute inset-0 w-full h-full opacity-40"
-        colors={["#F7EBD3", "#FFFFFF", "#E9C99A", "#F7EBD3"]}
+        className="absolute inset-0 w-full h-full opacity-60"
+        colors={["#000000", "#ffffff", "#8B4513", "#000000"]}
         speed={0.2}
         wireframe="true"
         backgroundColor="transparent"
