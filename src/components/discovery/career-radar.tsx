@@ -408,12 +408,20 @@ function bandSizes(signalStrength: number): { strong: number; good: number; tota
  * showing more would just be padding with weak matches.
  */
 function dynamicLimit(careers: { id: string }[]): number {
-  const cats = new Set<string>();
+  const catCounts = new Map<string, number>();
   for (const c of careers) {
     const cat = findCareerCategory(c.id);
-    if (cat) cats.add(cat);
+    if (cat) catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
   }
-  return cats.size >= 5 ? 50 : 25;
+  const heavyCategories = [...catCounts.values()].filter((n) => n >= 10).length;
+
+  // Breadth: 5+ categories → show all 50 for full exploration
+  if (catCounts.size >= 5) return 50;
+  // Concentration: at most 2 categories have 10+ hits → still show 50
+  // so the user sees depth within their focused area
+  if (heavyCategories <= 2 && careers.length >= 30) return 50;
+  // Otherwise cap at 25 to avoid padding with weak matches
+  return 25;
 }
 
 // Legacy constants kept for placeDots ring assignment
