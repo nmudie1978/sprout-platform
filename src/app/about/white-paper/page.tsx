@@ -86,35 +86,108 @@ function ModuleCard({
 function Bullets({ items }: { items: string[] }) {
   return (
     <ul className="space-y-1.5 text-sm text-foreground/85">
-      {items.map((item, i) => (
-        <li key={i} className="flex gap-2.5">
-          <span className="text-teal-500/70 mt-0.5 shrink-0">▸</span>
-          <span className="leading-relaxed">{item}</span>
-        </li>
-      ))}
+      {items.map((item, i) => {
+        // Auto-promote a leading "Label — body" pattern: bold +
+        // teal-tinted label so module sub-sections (e.g. "Career
+        // Snapshot — …") read at a glance instead of disappearing
+        // into prose. Bound the split position so dashes used in
+        // mid-sentence ranges don't get swallowed.
+        const dashIdx = item.indexOf(" — ");
+        const hasLabel = dashIdx > 0 && dashIdx < 60;
+        const label = hasLabel ? item.slice(0, dashIdx) : null;
+        const body = hasLabel ? item.slice(dashIdx + 3) : item;
+        return (
+          <li key={i} className="flex gap-2.5">
+            <span className="text-teal-500/70 mt-0.5 shrink-0">▸</span>
+            <span className="leading-relaxed">
+              {label && (
+                <>
+                  <strong className="font-semibold text-teal-700 dark:text-teal-300">
+                    {label}
+                  </strong>
+                  {" — "}
+                </>
+              )}
+              {body}
+            </span>
+          </li>
+        );
+      })}
     </ul>
   );
 }
 
 // ── Principle tile (Section 2) ───────────────────────────────────
+type PrincipleItem = { kind: "no" | "yes"; text: string };
+
 function PrincipleTile({
   icon: Icon,
+  accent,
   title,
-  children,
+  description,
+  items,
+  footer,
 }: {
   icon: React.ComponentType<{ className?: string }>;
+  /** Tailwind colour family used for the icon, divider and ✓/✕ chips. */
+  accent: "teal" | "rose" | "amber";
   title: string;
-  children: React.ReactNode;
+  description: string;
+  items: PrincipleItem[];
+  footer?: React.ReactNode;
 }) {
+  const accentClasses = {
+    teal: {
+      icon: "text-teal-500",
+      ring: "border-teal-500/30",
+      yes: "bg-emerald-500/15 text-emerald-500",
+      no: "bg-rose-500/15 text-rose-500",
+    },
+    rose: {
+      icon: "text-rose-500",
+      ring: "border-rose-500/30",
+      yes: "bg-emerald-500/15 text-emerald-500",
+      no: "bg-rose-500/15 text-rose-500",
+    },
+    amber: {
+      icon: "text-amber-500",
+      ring: "border-amber-500/30",
+      yes: "bg-emerald-500/15 text-emerald-500",
+      no: "bg-rose-500/15 text-rose-500",
+    },
+  }[accent];
+
   return (
-    <div className="rounded-xl border border-border/40 bg-gradient-to-br from-teal-500/[0.03] to-transparent p-5">
-      <div className="flex items-center gap-2.5 mb-2">
-        <Icon className="h-5 w-5 text-teal-600 dark:text-teal-400" />
-        <h3 className="text-base font-semibold">{title}</h3>
+    <div className="rounded-xl border border-border/40 bg-card/40 p-5 flex flex-col">
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg border ${accentClasses.ring} bg-background/60`}>
+          <Icon className={`h-3.5 w-3.5 ${accentClasses.icon}`} />
+        </span>
+        <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
       </div>
-      <div className="text-sm text-foreground/80 leading-relaxed">
-        {children}
-      </div>
+      <p className="text-[13px] text-muted-foreground leading-relaxed mb-3">
+        {description}
+      </p>
+      <ul className="space-y-1.5">
+        {items.map((it, i) => (
+          <li key={i} className="flex items-start gap-2 text-[12.5px] leading-snug">
+            <span
+              className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold shrink-0 ${
+                it.kind === "no" ? accentClasses.no : accentClasses.yes
+              }`}
+              aria-hidden
+            >
+              {it.kind === "no" ? "✕" : "✓"}
+            </span>
+            <span className="text-foreground/80">{it.text}</span>
+          </li>
+        ))}
+      </ul>
+      {footer && (
+        <p className="mt-3 pt-3 border-t border-border/30 text-[11px] italic text-muted-foreground/80">
+          {footer}
+        </p>
+      )}
     </div>
   );
 }
@@ -144,31 +217,31 @@ export default function WhitePaperPage() {
 
       {/* ─── Executive Summary ─────────────────────────────────── */}
       <section className="mb-14">
-        <SectionHeader number="Executive Summary" title="What Endeavrly is" />
+        <SectionHeader number="Executive Summary" title="What it is" />
         <div className="space-y-4 text-foreground/85 leading-relaxed">
           <p>
-            Endeavrly is a career discovery and first-job platform built
-            specifically for young people aged <strong>15 to 23</strong>. It
-            helps students understand who they are, explore careers that
-            genuinely fit them, find meaningful early work, and build a
-            realistic roadmap toward a fulfilling adult life — without exposing
-            them to the risks of general-purpose social and freelance platforms.
+            A career discovery and first-job platform built specifically for
+            young people aged <strong>15 to 23</strong>. It helps students
+            understand who they are, explore careers that genuinely fit them,
+            find meaningful early work, and build a realistic roadmap toward a
+            fulfilling adult life — without exposing them to the risks of
+            general-purpose social and freelance platforms.
           </p>
           <p>
-            The product rests on three non-negotiable commitments:{" "}
+            Three non-negotiable commitments shape the product:{" "}
             <strong>safety by design</strong>,{" "}
             <strong>privacy by default</strong>, and{" "}
-            <strong>exploration before pressure</strong>. There are no in-app
-            payments, no direct free-text chat between minors and adults, no
-            behavioural advertising, and no popularity metrics or social
-            scoring. Every screen is calibrated to reduce anxiety and encourage
-            curiosity — not to maximise engagement for its own sake.
+            <strong>exploration before pressure</strong>. No in-app payments.
+            No direct free-text chat between minors and adults. No behavioural
+            advertising, no popularity metrics, no social scoring. Every screen
+            is calibrated to reduce anxiety and encourage curiosity — not to
+            maximise engagement for its own sake.
           </p>
           <p>
-            Under the hood, Endeavrly combines a transparent rules-based
-            matching engine, age-aware readiness modelling, and a calm, guided
-            narrative experience that walks the student through their own
-            future in a single session — not across years of forced engagement.
+            Under the hood: a transparent rules-based matching engine,
+            age-aware readiness modelling, and a calm, guided narrative
+            experience that walks the student through their own future in a
+            single session — not across years of forced engagement.
           </p>
         </div>
       </section>
@@ -197,7 +270,7 @@ export default function WhitePaperPage() {
         <p className="mt-4 leading-relaxed text-foreground/85">
           The result is a generation that either over-commits to a single path
           they don't understand, or defers the decision until circumstance
-          chooses for them. Endeavrly exists on a single premise:{" "}
+          chooses for them. The platform exists on a single premise:{" "}
           <strong>
             exploration should be safe, structured, personal, and honest
           </strong>
@@ -212,44 +285,45 @@ export default function WhitePaperPage() {
       <section className="mb-14">
         <SectionHeader number="02" title="Three Core Principles" />
         <div className="grid md:grid-cols-3 gap-4">
-          <PrincipleTile icon={ShieldCheck} title="Safety by Design">
-            <p className="mb-2">
-              Built from the ground up for minors. Safety is architectural, not
-              moderation bolted onto a general-purpose app.
-            </p>
-            <ul className="text-xs space-y-1 text-foreground/70">
-              <li>• No free-text chat between minors and adults</li>
-              <li>• No in-app payments</li>
-              <li>• Verified adult accounts before posting</li>
-              <li>• One-tap report on every profile and job</li>
-              <li>• Guardian consent is first-class</li>
-            </ul>
-          </PrincipleTile>
+          <PrincipleTile
+            icon={ShieldCheck}
+            accent="rose"
+            title="Safety by Design"
+            description="Built from the ground up for minors. Safety is architectural, not moderation bolted onto a general-purpose app."
+            items={[
+              { kind: "no", text: "Free-text chat between minors and adults" },
+              { kind: "no", text: "In-app payments" },
+              { kind: "yes", text: "Verified adult accounts before posting" },
+              { kind: "yes", text: "One-tap report on every profile and job" },
+              { kind: "yes", text: "Guardian consent is first-class" },
+            ]}
+          />
 
-          <PrincipleTile icon={Sparkles} title="Exploration Before Pressure">
-            <p className="mb-2">
-              Young people don't need gamification — they need room to think.
-              We deliberately avoid engagement traps.
-            </p>
-            <ul className="text-xs space-y-1 text-foreground/70">
-              <li>• No followers, likes, or leaderboards</li>
-              <li>• No streaks or notification spam</li>
-              <li>• No "falling behind" messaging</li>
-              <li>• No infinite scroll</li>
-            </ul>
-          </PrincipleTile>
+          <PrincipleTile
+            icon={Sparkles}
+            accent="amber"
+            title="Exploration Before Pressure"
+            description="Young people don't need gamification — they need room to think. Engagement traps are deliberately avoided."
+            items={[
+              { kind: "no", text: "Followers, likes, or leaderboards" },
+              { kind: "no", text: "Streaks or notification spam" },
+              { kind: "no", text: "“Falling behind” messaging" },
+              { kind: "no", text: "Infinite scroll" },
+            ]}
+          />
 
-          <PrincipleTile icon={Eye} title="Transparent Matching">
-            <p className="mb-2">
-              Deterministic, rules-based scoring. Every match is explainable in
-              plain English. AI is used narrowly, never as the primary engine
-              for a life-shaping recommendation.
-            </p>
-            <p className="text-xs text-foreground/70 italic">
-              The logic is auditable. The weights are configurable. We can
-              honestly answer: "Why was my child shown this career?"
-            </p>
-          </PrincipleTile>
+          <PrincipleTile
+            icon={Eye}
+            accent="teal"
+            title="Transparent Matching"
+            description="Deterministic, rules-based scoring. Every match is explainable in plain English. AI is used narrowly, never as the primary engine for a life-shaping recommendation."
+            items={[
+              { kind: "yes", text: "Auditable logic, configurable weights" },
+              { kind: "yes", text: "Plain-English explanations on every match" },
+              { kind: "no", text: "Black-box LLM picking your child's career" },
+            ]}
+            footer={'Honestly answers: "Why was my child shown this career?"'}
+          />
         </div>
       </section>
 
