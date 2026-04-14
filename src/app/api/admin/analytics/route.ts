@@ -368,6 +368,16 @@ export async function GET(req: NextRequest) {
       ? Math.round((completedJobs / totalFinishedJobs) * 100)
       : 0;
 
+    // Postgres COUNT(*) comes back as BigInt — JSON.stringify throws
+    // on BigInt, which surfaces as "Failed to fetch analytics" on the
+    // client. Coerce to Number for the JSON response.
+    const userGrowthSafe = (userGrowth as Array<{ week: Date; count: bigint | number }>).map(
+      (row) => ({
+        week: row.week,
+        count: typeof row.count === "bigint" ? Number(row.count) : row.count,
+      }),
+    );
+
     const response = NextResponse.json({
       generatedAt: new Date().toISOString(),
 
@@ -400,7 +410,7 @@ export async function GET(req: NextRequest) {
         newThisMonth: usersThisMonth,
         activeThisWeek: activeUsersThisWeek,
         recentSignups,
-        growth: userGrowth,
+        growth: userGrowthSafe,
       },
 
       // Jobs
