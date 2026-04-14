@@ -273,23 +273,11 @@ export function DiscoveryQuizDialog({
             <p className="text-[10px] text-muted-foreground mb-1.5">
               What do you like doing outside of school? Pick any that fit.
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {INTERESTS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => toggle(interests, setInterests, item.id)}
-                  className={cn(
-                    'rounded-full border px-3 py-1 text-[11px] font-medium transition-colors',
-                    interests.includes(item.id)
-                      ? 'border-violet-500/60 bg-violet-500/15 text-violet-300'
-                      : 'border-border/40 text-muted-foreground/70 hover:border-violet-500/40',
-                  )}
-                >
-                  {item.emoji} {item.label}
-                </button>
-              ))}
-            </div>
+            <InterestMultiSelect
+              items={INTERESTS}
+              selected={interests}
+              onToggle={(id) => toggle(interests, setInterests, id)}
+            />
           </div>
         </div>
 
@@ -412,6 +400,86 @@ function SubjectMultiSelect({
                     {isStarred ? '⭐' : '☆'}
                   </button>
                 )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Multi-select dropdown for interests ─────────────────────────────
+
+function InterestMultiSelect({
+  items,
+  selected,
+  onToggle,
+}: {
+  items: { id: string; label: string; emoji: string }[];
+  selected: string[];
+  onToggle: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-violet-500/40 transition-colors"
+      >
+        {selected.length === 0 ? (
+          <span className="text-xs text-muted-foreground/60">Select activities you enjoy…</span>
+        ) : (
+          <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+            {selected.slice(0, 5).map((id) => {
+              const item = items.find((i) => i.id === id);
+              if (!item) return null;
+              return (
+                <span
+                  key={id}
+                  className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-medium bg-violet-500/15 text-violet-300 ring-1 ring-violet-500/25"
+                >
+                  {item.emoji} {item.label}
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onToggle(id); }}
+                    className="ml-0.5 hover:text-foreground"
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                </span>
+              );
+            })}
+            {selected.length > 5 && (
+              <span className="text-[10px] text-muted-foreground/60">+{selected.length - 5}</span>
+            )}
+          </div>
+        )}
+        <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full max-h-[240px] overflow-y-auto rounded-lg border border-border/50 bg-card shadow-lg">
+          {items.map((item) => {
+            const isSelected = selected.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-2 px-3 py-1.5 hover:bg-muted/20 cursor-pointer"
+                onClick={() => onToggle(item.id)}
+              >
+                <div className={cn(
+                  'h-3.5 w-3.5 rounded border flex items-center justify-center shrink-0',
+                  isSelected ? 'bg-violet-500 border-violet-500' : 'border-border/50',
+                )}>
+                  {isSelected && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
+                </div>
+                <span className="text-base shrink-0">{item.emoji}</span>
+                <span className="text-xs text-foreground/85 flex-1">{item.label}</span>
               </div>
             );
           })}
