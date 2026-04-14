@@ -83,10 +83,19 @@
     @apply bg-background;
   }
 
-  /* Light-mode only: cards and popovers are frosted glass so the
-     MeshGradient canvas bleeds through the whole app (sidebar is
-     made transparent via its own class guard). Dark mode keeps
-     solid panels via the token-driven .bg-card / .bg-popover. */
+  /* Light-mode only: make every `.bg-background` surface transparent
+     so the MeshGradient canvas shows through across the entire app
+     — body, page wrappers, list surfaces, everywhere. Dark mode is
+     untouched: `.bg-background` still resolves to hsl(var(--background))
+     via Tailwind because this rule only applies under `:root:not(.dark)`.
+     Alpha variants like `bg-background/60` use a different generated
+     class so they keep their intended translucency.
+
+     Cards and popovers use frosted glass so content stays readable
+     on top of the shader. */
+  :root:not(.dark) .bg-background {
+    background-color: transparent;
+  }
   :root:not(.dark) .bg-card {
     background-color: hsla(35 40% 92% / 0.5);
     backdrop-filter: blur(14px);
