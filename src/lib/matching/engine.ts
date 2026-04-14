@@ -405,16 +405,18 @@ function computeSubjectSimilarity(
 }
 
 /**
- * Work style fit: best-match across all work dimensions.
- * User picks "desk + outdoors" → both desk AND outdoor careers score well.
- * The key: we compute similarity per dimension and take the best match.
+ * Work style fit: BEST-OF across all work dimensions.
+ * User picks "desk + outdoors" → a career needs to match EITHER desk OR
+ * outdoors well, not both. Previously used weighted average which
+ * unfairly penalised hands-on careers (vet, nurse, marine biologist)
+ * even for users who picked outdoors.
  */
 function computeWorkStyleFit(
   user: UserMatchProfile,
   career: CareerMatchProfile,
 ): number {
   // For each dimension the user cares about (value > 0),
-  // compute how well the career matches
+  // compute how well the career matches — then take the BEST fit.
   const dimPairs: [number, number][] = [
     [user.desk, career.desk],
     [user.handsOn, career.handsOn],
@@ -422,31 +424,26 @@ function computeWorkStyleFit(
     [user.creative, career.creative],
   ];
 
-  // Strategy: weighted average where user-preferred dimensions
-  // contribute more. If user picks desk=1 and outdoors=1,
-  // a desk career scores 1.0 on desk dim and ~0.0 on outdoors dim.
-  // The desk dimension dominates because it matches.
-  let totalSim = 0;
-  let totalWeight = 0;
+  let bestSim = 0;
+  let anyPref = false;
 
   for (const [userVal, careerVal] of dimPairs) {
     if (userVal <= 0) continue; // User didn't select this style
+    anyPref = true;
+    // Similarity = how close the career's score on this dim is to the user's
+    // Since both are 0-1, this gives 0 (worst) to 1 (best)
     const sim = 1 - Math.abs(userVal - careerVal);
-    // Weight by how strongly the user expressed this preference
-    totalSim += userVal * sim;
-    totalWeight += userVal;
+    if (sim > bestSim) bestSim = sim;
   }
 
-  if (totalWeight === 0) return 0.5; // No preference
+  if (!anyPref) return 0.5; // No preference expressed
 
-  const avg = totalSim / totalWeight;
-
-  // Also give a floor bonus for "mixed" careers — they work for everyone
+  // Mixed careers (good fit for multiple styles) get a floor
   if (career.desk > 0.3 && career.handsOn > 0.3) {
-    return Math.max(avg, 0.45); // Mixed careers never score below 0.45
+    return Math.max(bestSim, 0.6); // Mixed careers never score below 0.6
   }
 
-  return avg;
+  return bestSim;
 }
 
 /**
@@ -741,11 +738,20 @@ export function rankCareers(
   // Store results for tooltip access
   lastMatchResults = new Map(diverse.map((r) => [r.career.careerId, r]));
 
-  // Return Career objects (need to look up from allCareers)
+  // Return Career objects (need to look up from allCareers).
+  // Dedupe by career ID — every career must appear at most once.
   const careerMap = new Map(allCareers.map((c) => [c.id, c]));
-  return diverse
-    .map((r) => careerMap.get(r.career.careerId))
-    .filter((c): c is Career => c !== undefined);
+  const seen = new Set<string>();
+  const result: Career[] = [];
+  for (const r of diverse) {
+    const id = r.career.careerId;
+    if (seen.has(id)) continue;
+    const career = careerMap.get(id);
+    if (!career) continue;
+    seen.add(id);
+    result.push(career);
+  }
+  return result;
 }
 
 /**

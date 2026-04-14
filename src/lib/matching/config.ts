@@ -18,20 +18,20 @@ export const MATCHING_CONFIG: MatchingConfig = {
      * This is the strongest signal — if a user picks Chemistry,
      * careers related to Chemistry should rank higher.
      */
-    subjectMatch: 0.35,
+    subjectMatch: 0.42,
 
     /**
      * How much work environment fit matters.
-     * "At a desk" user should see desk careers ranked higher,
-     * but NOT see hands-on careers vanish entirely.
+     * Raised or lowered at various points — previously this dominated
+     * the radar (hands-on careers got heavily penalised). Now lighter.
      */
-    workStyleMatch: 0.22,
+    workStyleMatch: 0.15,
 
     /**
      * How much people interaction preference matters.
      * "With people" user should see high-people careers rank higher.
      */
-    peopleMatch: 0.15,
+    peopleMatch: 0.13,
 
     /**
      * How much creative vs analytical alignment matters.
@@ -50,7 +50,7 @@ export const MATCHING_CONFIG: MatchingConfig = {
      * Soft signal — doesn't gate, just gently ranks.
      * Entry-level careers get a slight boost for younger users.
      */
-    academicFit: 0.10,
+    academicFit: 0.12,
   },
 
   /** Minimum match % to appear on radar. Below this, career is hidden. */
@@ -139,11 +139,11 @@ export const WORK_SETTING_TO_DIMENSIONS: Record<
   string,
   { desk: number; handsOn: number; outdoors: number; creative: number }
 > = {
-  desk:       { desk: 1.0, handsOn: 0.0,  outdoors: 0.0, creative: 0.15 },
-  "hands-on": { desk: 0.0, handsOn: 1.0,  outdoors: 0.3, creative: 0.2  },
-  outdoors:   { desk: 0.0, handsOn: 0.4,  outdoors: 1.0, creative: 0.1  },
-  creative:   { desk: 0.3, handsOn: 0.25, outdoors: 0.05, creative: 1.0 },
-  mixed:      { desk: 0.4, handsOn: 0.4,  outdoors: 0.3, creative: 0.3  },
+  desk:       { desk: 1.0, handsOn: 0.1,  outdoors: 0.1, creative: 0.2  },
+  "hands-on": { desk: 0.2, handsOn: 1.0,  outdoors: 0.5, creative: 0.35 },
+  outdoors:   { desk: 0.1, handsOn: 0.55, outdoors: 1.0, creative: 0.2  },
+  creative:   { desk: 0.45, handsOn: 0.3, outdoors: 0.15, creative: 1.0 },
+  mixed:      { desk: 0.5, handsOn: 0.5,  outdoors: 0.4, creative: 0.4  },
 };
 
 // ── People intensity mapping ──────────────────────────────────────

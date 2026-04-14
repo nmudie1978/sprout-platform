@@ -1119,22 +1119,24 @@ function UnderstandTab({
       <SectionCard>
         <SectionHeader icon={Wrench} title="Tools of the Trade" tooltip="The software, equipment, and tools professionals in this role use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
         {!uCollapsed('u-career-paths') && (
-          <div className="p-4">
+          <div className="p-3">
             {!details?.typicalDay.tools?.length ? (
               <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {details.typicalDay.tools.map((tool, i) => {
                   const info = getToolInfo(tool);
                   return (
-                    <a key={i} href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`} target="_blank" rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-lg border border-border/30 bg-background/40 px-3.5 py-2.5 hover:border-border/50 transition-colors">
-                      <Wrench className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground group-hover:text-foreground">{tool}</p>
-                        {info && <p className="text-[11px] text-foreground/65 mt-0.5">{info.description}</p>}
-                      </div>
-                      <ExternalLink className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                    <a
+                      key={i}
+                      href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={info?.description || tool}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border/30 bg-background/40 px-2.5 py-1 text-[11px] text-foreground/75 hover:text-foreground hover:border-border/50 transition-colors"
+                    >
+                      <span>{tool}</span>
+                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40" />
                     </a>
                   );
                 })}

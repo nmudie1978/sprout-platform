@@ -1211,7 +1211,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
         <div className="min-w-0">
           <h3 className="text-sm font-semibold">Matches Report</h3>
           <p className="text-[11px] text-muted-foreground">
-            {visibleDots.length} of {dots.length} careers shown
+            Showing {visibleDots.length} of {dots.length}
           </p>
         </div>
         <CompareVault
@@ -1276,7 +1276,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 </p>
                 <span className="text-[10px] text-muted-foreground">
                   {bands[safeIdx]?.dots.length}{" "}
-                  {bands[safeIdx]?.dots.length === 1 ? "career" : "careers"}
+                  {bands[safeIdx]?.dots.length === 1 ? "match" : "matches"}
                 </span>
               </div>
               {bands.length > 1 && (
@@ -1320,7 +1320,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                     <table className="w-full text-xs relative" style={{ borderCollapse: "collapse" }}>
                       <thead className="sticky top-0 z-[5] bg-muted">
                         <tr className="border-b border-border/40 bg-muted">
-                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
+                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Role</th>
                           <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
                           <th className="text-center px-2 py-1.5 w-16 text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Growth outlook — hover each dot for detail">Growth</th>
                           <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>

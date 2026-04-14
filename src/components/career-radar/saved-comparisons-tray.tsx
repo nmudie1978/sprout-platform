@@ -232,8 +232,8 @@ export function SavedComparisonsTray({
                 onClick={() => handleLoad(comp)}
                 className={cn(
                   "w-full text-left rounded-lg px-3 py-2.5",
-                  "border border-border/20 bg-background/50",
-                  "hover:bg-muted/40 hover:border-border/40",
+                  "border border-border/70 bg-background/50 shadow-sm",
+                  "hover:bg-muted/40 hover:border-teal-500/50 hover:shadow-md",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40",
                   "transition-all duration-150 group",
                 )}

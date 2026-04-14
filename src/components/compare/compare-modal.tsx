@@ -11,14 +11,13 @@
  * primary goal and routes to /my-journey.
  */
 
-import { X, ArrowRight, Sparkles, Download } from 'lucide-react';
+import { X, ArrowRight, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { Career, DiscoveryPreferences } from '@/lib/career-pathways';
 import {
   getFitDimensions,
   shortDayToDay,
-  whyItMightSuitYou,
 } from '@/lib/compare/fit-dimensions';
 import { getValueSignals } from '@/lib/compare/value-signals';
 import { getAcademicProfile, getPathwayLabel } from '@/lib/education/academic-readiness';
@@ -140,7 +139,6 @@ interface CompareCardProps {
 function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
   const dims = getFitDimensions(career);
   const tasks = shortDayToDay(career);
-  const why = whyItMightSuitYou(career, preferences);
   const signals = getValueSignals(career);
   const academic = getAcademicProfile(career);
   const essentialSubjects = academic.subjects.filter(s => s.importance === 'essential');
@@ -182,13 +180,9 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
             <ArrowRight className="h-3 w-3 text-muted-foreground/40 group-hover/link:text-teal-400 transition-colors" />
           </a>
         </div>
-        <p className="text-[11px] text-muted-foreground/75 leading-relaxed mb-2.5">
+        <p className="text-[11px] text-muted-foreground/75 leading-relaxed">
           {career.description}
         </p>
-        <div className="flex items-start gap-1.5 rounded-lg bg-muted/20 px-2.5 py-1.5 border border-border/30">
-          <Sparkles className="h-3 w-3 text-muted-foreground/50 shrink-0 mt-0.5" />
-          <p className="text-[10px] text-foreground/70 leading-snug">{why}</p>
-        </div>
       </div>
 
       {/* Fit dimensions — row 2 */}
@@ -299,7 +293,6 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
     .map((career) => {
       const dims = getFitDimensions(career);
       const tasks = shortDayToDay(career);
-      const why = whyItMightSuitYou(career, preferences);
       const signals = getValueSignals(career);
       const ap = getAcademicProfile(career);
 
@@ -327,7 +320,6 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
             <h2>${escapeHtml(career.title)}</h2>
           </header>
           <p class="desc">${escapeHtml(career.description)}</p>
-          <div class="why">★ ${escapeHtml(why)}</div>
 
           <h3>How it feels</h3>
           <div class="dims">${dimsHtml}</div>
@@ -398,15 +390,6 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
   .emoji { font-size: 28px; line-height: 1; }
   .card h2 { font-size: 16px; margin: 0; color: #1a1a1a; }
   .desc { font-size: 12px; color: #555; margin: 0 0 12px 0; }
-  .why {
-    background: #f0fdfa;
-    border: 1px solid #ccfbf1;
-    color: #0f766e;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 11px;
-    margin-bottom: 14px;
-  }
   .card h3 {
     font-size: 9px;
     text-transform: uppercase;

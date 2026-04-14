@@ -430,7 +430,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             </NavSection>
 
             <NavSection title="Small Jobs" collapsed={collapsed}>
-              <NavItem href="/jobs" icon={Search} label="Browse Jobs" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
+              <NavItem href="/jobs" icon={Search} label="Browse" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
             </NavSection>
 
             <NavSection title="Account" collapsed={collapsed}>
