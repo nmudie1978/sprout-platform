@@ -1314,7 +1314,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                         <tr className="border-b border-border/40 bg-muted">
                           <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Career</th>
                           <th className="hidden sm:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Salary</th>
-                          <th className="text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Growth</th>
+                          <th className="text-center px-2 py-1.5 w-16 text-[10px] font-semibold uppercase tracking-wider text-foreground/70" title="Growth outlook — hover each dot for detail">Growth</th>
                           <th className="hidden md:table-cell text-left px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground/70">Education path</th>
                           <th className="px-2 py-1.5 w-10 text-center bg-teal-500/[0.08] border-l border-teal-500/20">
                             <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-teal-300" title="Tap + on any 2–3 careers to compare them side by side. See how they stack up across day-to-day, training time, fit, and more.">
@@ -1363,26 +1363,20 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                               <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
                                 {formatSalaryShort(d.career.avgSalary)}
                               </td>
-                              <td className="px-3 py-1 align-middle">
+                              <td className="px-3 py-1 align-middle text-center">
                                 <span
                                   className={cn(
-                                    "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize",
-                                    growthClass
+                                    "inline-block h-2.5 w-2.5 rounded-full cursor-help",
+                                    growth === "high" && "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]",
+                                    growth === "medium" && "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]",
+                                    growth === "stable" && "bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.5)]"
                                   )}
-                                  title={`Growth outlook: ${growth}`}
-                                >
-                                  <span
-                                    className={cn(
-                                      "inline-block w-1.5 h-1.5 rounded-full",
-                                      growth === "high"
-                                        ? "bg-emerald-500"
-                                        : growth === "medium"
-                                        ? "bg-amber-500"
-                                        : "bg-blue-400"
-                                    )}
-                                  />
-                                  {growth}
-                                </span>
+                                  title={`Growth outlook: ${growth.charAt(0).toUpperCase() + growth.slice(1)} — ${
+                                    growth === "high" ? "strong hiring demand expected"
+                                      : growth === "medium" ? "steady demand, moderate growth"
+                                      : "consistent demand, little change"
+                                  }`}
+                                />
                               </td>
                               <td
                                 className="hidden md:table-cell px-3 py-1 align-middle text-foreground/65 max-w-[280px] truncate"

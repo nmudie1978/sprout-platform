@@ -171,7 +171,16 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </button>
         <div className="flex items-start gap-2.5 mb-2 pr-8">
           <span className="text-2xl leading-none shrink-0">{career.emoji}</span>
-          <h3 className="text-sm font-bold text-foreground/95 leading-tight">{career.title}</h3>
+          <a
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`day in the life ${career.title}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-bold text-foreground/95 leading-tight hover:text-teal-400 transition-colors inline-flex items-center gap-1.5 group/link"
+            title={`Watch 'Day in the Life of ${career.title}' on YouTube`}
+          >
+            {career.title}
+            <ArrowRight className="h-3 w-3 text-muted-foreground/40 group-hover/link:text-teal-400 transition-colors" />
+          </a>
         </div>
         <p className="text-[11px] text-muted-foreground/75 leading-relaxed mb-2.5">
           {career.description}
