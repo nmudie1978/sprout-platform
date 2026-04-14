@@ -85,6 +85,20 @@
     @apply bg-background;
   }
 
+  /* Light-mode only: cards, popovers and modal panels are translucent
+     frosted glass so the MeshGradient shader bleeds through the entire
+     app. Dark mode keeps solid panels via the token above. */
+  :root:not(.dark) .bg-card {
+    background-color: hsla(20 20% 13% / 0.5);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  :root:not(.dark) .bg-popover {
+    background-color: hsla(20 20% 13% / 0.75);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
   /* Consistent heading styles — mobile-first */
   h1 {
     @apply text-xl sm:text-2xl font-bold tracking-tight;
