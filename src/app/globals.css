@@ -75,10 +75,29 @@
     letter-spacing: -0.01em;
   }
 
-  /* Light mode background — handled by LightModeShaderBackground (MeshGradient).
-     No CSS gradient needed; the shader canvas covers the viewport. */
+  /* Light mode: transparent body so the fixed aurora gradient in the
+     dashboard layout shows through everywhere. In light mode all
+     card/panel backgrounds use low alpha (see below) so the aurora
+     bleeds through instead of being hidden. */
+  :root body {
+    background-color: transparent;
+  }
   .dark body {
     background-image: none;
+    @apply bg-background;
+  }
+
+  /* Light mode: translucent card/popover surfaces so the aurora
+     backdrop flows through all UI panels. Kept opaque in dark mode. */
+  :root .bg-card {
+    background-color: hsl(var(--card) / 0.65) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .dark .bg-card {
+    background-color: hsl(var(--card));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   /* Consistent heading styles — mobile-first */
