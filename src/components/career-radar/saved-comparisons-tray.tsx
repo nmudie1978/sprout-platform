@@ -204,7 +204,7 @@ export function SavedComparisonsTray({
           <div>
             <h3 className="text-xs font-semibold text-foreground">Saved Comparisons</h3>
             <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-              {count === 0 ? "No comparisons saved yet" : `${count} saved`}
+              {count === 0 ? "Nothing saved yet" : `${count} saved`}
             </p>
           </div>
           <button
