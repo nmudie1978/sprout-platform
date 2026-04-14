@@ -20,6 +20,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Globe, Rocket, Play, TrendingUp,
@@ -2411,6 +2412,23 @@ function ClarityCompletionCard({
             This journey is saved in <span className="font-medium text-foreground/85">My Explored Journeys</span> on your dashboard.
           </p>
           <p className="text-[10px] text-emerald-400/60 mt-2">Curious about another career? Start a new journey anytime — every one you complete makes your picture clearer.</p>
+          <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-emerald-950 text-xs font-semibold px-3.5 py-2 transition-colors"
+            >
+              <Target className="h-3.5 w-3.5" />
+              Back to dashboard
+            </Link>
+            <Link
+              href="/careers"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-500/40 hover:border-emerald-400/60 hover:bg-emerald-500/10 text-emerald-300 text-xs font-semibold px-3.5 py-2 transition-colors"
+            >
+              <Search className="h-3.5 w-3.5" />
+              Explore another career
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
       )}
     </div>

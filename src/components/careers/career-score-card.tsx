@@ -70,7 +70,7 @@ function HalfCircleGauge({ value, gradId }: { value: number; gradId: string }) {
 
   return (
     <svg
-      className="block mx-auto w-auto max-w-full h-24"
+      className="block mx-auto w-auto max-w-full h-12"
       viewBox="0 0 100 50"
       aria-hidden="true"
     >
@@ -109,54 +109,44 @@ export function CareerScoreCard({ career, matchScore, onLearnMore }: CareerScore
 
   return (
     <Card className="relative overflow-hidden border-border/40 bg-card/80 hover:border-pink-500/40 transition-colors h-full flex flex-col">
-      <CardContent className="p-5 flex flex-col gap-3 flex-1">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-2xl shrink-0">{career.emoji}</span>
-            <h3 className="text-sm font-semibold truncate">{career.title}</h3>
+      <CardContent className="p-3 flex flex-col gap-2 flex-1">
+        {/* Header: emoji + title + gauge + score on one row */}
+        <div className="flex items-center gap-2.5">
+          <span className="text-xl shrink-0">{career.emoji}</span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-semibold truncate leading-tight">{career.title}</h3>
+            {career.avgSalary && (
+              <p className="text-[10px] text-muted-foreground/60 tabular-nums truncate">
+                {career.avgSalary.split(" ")[0]} kr/year
+              </p>
+            )}
           </div>
+          <div className="shrink-0 flex items-baseline gap-0.5">
+            <span className="text-lg font-semibold tabular-nums leading-none">
+              {Math.round(matchScore)}
+            </span>
+            <span className="text-[10px] text-muted-foreground/60">%</span>
+          </div>
+        </div>
+
+        {/* Compact gauge underneath the row */}
+        <HalfCircleGauge value={matchScore} gradId={gradId} />
+
+        {/* Strength + CTA */}
+        <div className="flex items-center gap-2 mt-auto">
           <Badge variant="outline" className={`shrink-0 text-[9px] uppercase tracking-wider ${STRENGTH_BADGE[strength]}`}>
             {STRENGTH_LABEL[strength]}
           </Badge>
+          <Button
+            onClick={onLearnMore}
+            variant="ghost"
+            size="sm"
+            className="ml-auto h-7 px-2 text-[11px] text-pink-400 hover:text-pink-300 hover:bg-pink-500/5"
+          >
+            Learn more
+            <ArrowRight className="h-3 w-3 ml-1" />
+          </Button>
         </div>
-
-        {/* Gauge */}
-        <div className="relative -mb-6 mt-1">
-          <HalfCircleGauge value={matchScore} gradId={gradId} />
-          <div className="absolute inset-x-0 bottom-0 text-center">
-            <div className="text-3xl font-semibold tabular-nums leading-none">
-              {Math.round(matchScore)}
-              <span className="text-base text-muted-foreground/60 font-normal">%</span>
-            </div>
-            <div className="text-[9px] uppercase tracking-wider text-muted-foreground/50 mt-0.5">
-              match
-            </div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <p className="text-[11px] text-muted-foreground/75 leading-relaxed line-clamp-2 mt-6 min-h-[2.4rem]">
-          {career.description}
-        </p>
-
-        {/* Salary chip */}
-        {career.avgSalary && (
-          <p className="text-[10px] text-muted-foreground/50 tabular-nums">
-            {career.avgSalary.split(" ")[0]} kr/year
-          </p>
-        )}
-
-        {/* CTA */}
-        <Button
-          onClick={onLearnMore}
-          variant="outline"
-          size="sm"
-          className="w-full mt-auto border-pink-500/30 hover:border-pink-500/60 hover:bg-pink-500/5 text-pink-400 hover:text-pink-300"
-        >
-          Learn more
-          <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-        </Button>
       </CardContent>
     </Card>
   );

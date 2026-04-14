@@ -2018,41 +2018,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
     },
     {
-      id: "police-officer",
-      title: "Police Officer",
-      emoji: "👮",
-      description: "Maintain public safety, enforce laws, investigate crimes, and assist communities across Norway. In Norway, police officers must complete a 3-year bachelor's degree at Politihøgskolen (Police University College) in Oslo, Stavern, or Bodø. Entry is highly competitive with strict physical, academic, and character requirements.",
-      avgSalary: "450,000 - 700,000 kr/year",
-      educationPath: "Politihøgskolen — 3-year Bachelor's in Police Studies",
-      keySkills: ["law enforcement", "communication", "physical fitness", "conflict resolution", "decision-making", "Norwegian law"],
-      dailyTasks: ["Patrol assigned districts", "Respond to emergency calls", "Investigate criminal cases", "Write reports and statements", "Community outreach"],
-      growthOutlook: "stable",
-      pathType: "police",
-    },
-    {
-      id: "firefighter",
-      title: "Firefighter",
-      emoji: "🚒",
-      description: "Respond to fires, accidents, and emergencies across Norway. Norwegian firefighters train through the Norges brannskole (Norwegian Fire Academy) in Tjeldsund. Many fire departments also require EMT/first responder certification. The role combines rescue work, fire suppression, hazmat response, and public education.",
-      avgSalary: "420,000 - 600,000 kr/year",
-      educationPath: "Norges brannskole (1 year) + fagbrev or relevant technical background",
-      keySkills: ["physical fitness", "teamwork", "calm under pressure", "technical rescue", "first aid", "hazmat awareness"],
-      dailyTasks: ["Respond to fire and rescue calls", "Maintain equipment and vehicles", "Conduct fire drills", "Inspect buildings for safety", "Train with new techniques"],
-      growthOutlook: "stable",
-      pathType: "firefighter",
-    },
-    {
-      id: "social-worker",
-      title: "Social Worker",
-      emoji: "🤝",
-      description: "Help individuals and families cope with challenges, access services, and improve their lives.",
-      avgSalary: "450,000 - 600,000 kr/year",
-      educationPath: "Bachelor's in Social Work (3 years)",
-      keySkills: ["empathy", "communication", "case management", "advocacy", "crisis intervention"],
-      dailyTasks: ["Meet with clients", "Assess needs", "Develop care plans", "Connect to services", "Document cases"],
-      growthOutlook: "high",
-    },
-    {
       id: "environmental-scientist",
       title: "Environmental Scientist",
       emoji: "🌍",
@@ -6393,15 +6358,141 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   // ========================================
   PUBLIC_SERVICE_SAFETY: [
     {
-      id: "social-worker",
-      title: "Social Worker",
-      emoji: "🤝",
-      description: "Support individuals and families through difficult times — child protection, mental health, addiction, housing. Norway's NAV employs many.",
-      avgSalary: "500,000 - 700,000 kr/year",
-      educationPath: "Bachelor's in Social Work (3 years)",
-      keySkills: ["empathy", "active listening", "case management", "boundaries", "crisis response"],
-      dailyTasks: ["Meet clients", "Assess needs", "Coordinate services", "Write reports", "Liaise with agencies"],
-      growthOutlook: "high",
+      id: "police-officer",
+      title: "Police Officer",
+      emoji: "👮",
+      description: "Maintain public safety, enforce laws, investigate crimes, and assist communities across Norway. In Norway, police officers must complete a 3-year bachelor's degree at Politihøgskolen (Police University College) in Oslo, Stavern, or Bodø. Entry is highly competitive with strict physical, academic, and character requirements.",
+      avgSalary: "450,000 - 700,000 kr/year",
+      educationPath: "Politihøgskolen — 3-year Bachelor's in Police Studies",
+      keySkills: ["law enforcement", "communication", "physical fitness", "conflict resolution", "decision-making", "Norwegian law"],
+      dailyTasks: ["Patrol assigned districts", "Respond to emergency calls", "Investigate criminal cases", "Write reports and statements", "Community outreach"],
+      growthOutlook: "stable",
+      pathType: "police",
+    },
+    {
+      id: "firefighter",
+      title: "Firefighter",
+      emoji: "🚒",
+      description: "Respond to fires, accidents, and emergencies across Norway. Norwegian firefighters train through the Norges brannskole (Norwegian Fire Academy) in Tjeldsund. Many fire departments also require EMT/first responder certification. The role combines rescue work, fire suppression, hazmat response, and public education.",
+      avgSalary: "420,000 - 600,000 kr/year",
+      educationPath: "Norges brannskole (1 year) + fagbrev or relevant technical background",
+      keySkills: ["physical fitness", "teamwork", "calm under pressure", "technical rescue", "first aid", "hazmat awareness"],
+      dailyTasks: ["Respond to fire and rescue calls", "Maintain equipment and vehicles", "Conduct fire drills", "Inspect buildings for safety", "Train with new techniques"],
+      growthOutlook: "stable",
+      pathType: "firefighter",
+    },
+    {
+      id: "judge",
+      title: "Judge",
+      emoji: "⚖️",
+      description: "Preside over civil and criminal cases in Norwegian courts (tingrett, lagmannsrett, Høyesterett). Interpret law, weigh evidence, and deliver rulings. Appointed after years of legal practice.",
+      avgSalary: "1,100,000 - 1,800,000 kr/year",
+      educationPath: "Master of Law (5 years) + 10+ years practice (advocate, prosecutor, or academic) + judicial appointment",
+      keySkills: ["legal reasoning", "impartiality", "written judgment", "procedural law", "decision-making"],
+      dailyTasks: ["Preside over hearings", "Weigh evidence", "Write judgments", "Rule on procedure", "Mentor junior judges"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "prosecutor",
+      title: "Prosecutor",
+      emoji: "🧑‍⚖️",
+      description: "Represent the state in criminal cases for the Norwegian prosecuting authority (Påtalemyndigheten). Review police investigations, charge offenders, and argue cases in court.",
+      avgSalary: "650,000 - 1,100,000 kr/year",
+      educationPath: "Master of Law (5 years) + prosecutor training track",
+      keySkills: ["criminal law", "courtroom advocacy", "case analysis", "ethical judgment", "writing"],
+      dailyTasks: ["Review investigations", "Decide charges", "Argue cases in court", "Interview witnesses", "Liaise with police"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "tax-inspector",
+      title: "Tax Inspector",
+      emoji: "🧾",
+      description: "Audit individuals and companies on behalf of Skatteetaten (the Norwegian Tax Administration). Investigate tax returns, uncover evasion, and advise on compliance. One of Norway's largest public-sector employers.",
+      avgSalary: "520,000 - 800,000 kr/year",
+      educationPath: "Bachelor's in Accounting, Economics or Law (3 years) + Skatteetaten training",
+      keySkills: ["tax law", "accounting", "investigation", "attention to detail", "report writing"],
+      dailyTasks: ["Audit tax returns", "Interview taxpayers", "Analyse financials", "Write audit reports", "Advise on compliance"],
+      growthOutlook: "stable",
+      entryLevel: true,
+    },
+    {
+      id: "park-ranger",
+      title: "Park Ranger / Nature Inspector",
+      emoji: "🌲",
+      description: "Protect Norway's national parks and protected areas for Statens naturoppsyn (SNO). Monitor wildlife, enforce conservation law, and guide the public.",
+      avgSalary: "440,000 - 600,000 kr/year",
+      educationPath: "Bachelor's in Biology, Forestry or Environmental Science (3 years) + SNO training",
+      keySkills: ["wildlife knowledge", "outdoor fitness", "conservation law", "observation", "public communication"],
+      dailyTasks: ["Patrol protected areas", "Monitor wildlife", "Enforce regulations", "Guide visitors", "Record observations"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "lifeguard",
+      title: "Lifeguard",
+      emoji: "🛟",
+      description: "Supervise swimmers at beaches and pools across Norway (strandvakt / badevakt). Prevent accidents, perform water rescues and provide first aid.",
+      avgSalary: "380,000 - 480,000 kr/year",
+      educationPath: "NSSR livredningskurs + first aid certification + strong swimming standard",
+      keySkills: ["strong swimming", "first aid", "vigilance", "calm under pressure", "communication"],
+      dailyTasks: ["Scan swimmers", "Warn of hazards", "Perform rescues", "Administer first aid", "Maintain equipment"],
+      growthOutlook: "stable",
+      entryLevel: true,
+    },
+    {
+      id: "nav-case-worker",
+      title: "NAV Case Worker",
+      emoji: "🗂️",
+      description: "Advise citizens navigating NAV (Norwegian Labour and Welfare Administration). Guide on unemployment, sick leave, disability and work-inclusion schemes. Huge Norwegian public-sector role.",
+      avgSalary: "480,000 - 650,000 kr/year",
+      educationPath: "Bachelor's in Social Work, Social Science or similar (3 years)",
+      keySkills: ["active listening", "regulation knowledge", "case management", "empathy", "system navigation"],
+      dailyTasks: ["Meet with service users", "Assess eligibility", "Coordinate benefits", "Write decisions", "Liaise with employers"],
+      growthOutlook: "stable",
+      entryLevel: true,
+    },
+    {
+      id: "civil-defence-officer",
+      title: "Civil Defence Officer",
+      emoji: "🧯",
+      description: "Serve in Sivilforsvaret — Norway's civilian preparedness force. Train for and respond to floods, fires, evacuation and major incidents supporting police and fire services.",
+      avgSalary: "450,000 - 650,000 kr/year",
+      educationPath: "Sivilforsvaret basic training + specialist courses (search, rescue, evacuation)",
+      keySkills: ["emergency response", "coordination", "physical fitness", "map reading", "teamwork"],
+      dailyTasks: ["Run preparedness drills", "Respond to incidents", "Maintain equipment", "Train volunteers", "Support blue-light services"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "forensic-scientist",
+      title: "Forensic Scientist",
+      emoji: "🔬",
+      description: "Analyse evidence for the Norwegian police (Kripos / NIPS) — DNA, toxicology, digital traces, ballistics. Findings support criminal investigations and court cases.",
+      avgSalary: "600,000 - 900,000 kr/year",
+      educationPath: "Bachelor's/Master's in Forensic Science, Chemistry or Biology (3-5 years)",
+      keySkills: ["lab technique", "analytical thinking", "documentation", "attention to detail", "expert-witness communication"],
+      dailyTasks: ["Examine evidence", "Run lab analyses", "Write expert reports", "Testify in court", "Maintain chain of custody"],
+      growthOutlook: "medium",
+    },
+    {
+      id: "diplomat",
+      title: "Diplomat / Foreign Service Officer",
+      emoji: "🌍",
+      description: "Represent Norway abroad through the Ministry of Foreign Affairs (UD). Work at embassies and consulates on politics, trade, development and consular support to Norwegian citizens.",
+      avgSalary: "700,000 - 1,300,000 kr/year",
+      educationPath: "Master's in Political Science, Law, Economics or International Relations + UD Aspirant programme (3-year trainee track)",
+      keySkills: ["languages", "political analysis", "negotiation", "cross-cultural communication", "writing"],
+      dailyTasks: ["Brief Oslo on host country", "Attend meetings", "Support Norwegian citizens abroad", "Draft reports", "Host events"],
+      growthOutlook: "stable",
+    },
+    {
+      id: "bailiff",
+      title: "Bailiff / Enforcement Officer",
+      emoji: "📜",
+      description: "Work for Namsmannen — the Norwegian enforcement authority — recovering unpaid debts, enforcing court orders, and carrying out evictions with due process.",
+      avgSalary: "470,000 - 650,000 kr/year",
+      educationPath: "Bachelor's in Law, Police Studies or Economics (3 years) + Namsmannen training",
+      keySkills: ["enforcement law", "negotiation", "documentation", "calm de-escalation", "procedural rigour"],
+      dailyTasks: ["Serve notices", "Negotiate payment plans", "Execute seizures", "Carry out evictions", "Record cases"],
+      growthOutlook: "stable",
     },
     {
       id: "emergency-dispatcher",
@@ -7831,11 +7922,33 @@ export function getRecommendedCareers(
 }
 
 /**
- * Get recommended careers based on user's career aspiration text
- * Searches careers by matching the aspiration text against career titles, descriptions, and skills
+ * Get recommended careers based on user's career aspiration text.
+ *
+ * The primary signal is the `aspiration` — usually the user's Primary
+ * Goal title — which anchors the search to a specific career in the
+ * catalogue. Scoring from that anchor uses category, skill overlap,
+ * and title-word similarity.
+ *
+ * `opts` layers three secondary signals on top:
+ *   - additionalAnchorIds: career IDs the user has explored or saved.
+ *     Each contributes a lighter-weight secondary anchor — their
+ *     keySkills feed an auxiliary profile whose matches add a smaller
+ *     boost than the primary anchor's skills.
+ *   - discoveryPrefs: Career Radar preferences (subjects / workStyles /
+ *     peoplePref). Subjects feed the SUBJECT_CATEGORY_WEIGHTS table to
+ *     give a category-level boost.
+ *   - excludeIds: careers to drop from the output (e.g. already saved).
+ *
+ * All three are optional and backwards-compatible — existing callers
+ * that pass only `aspiration` are unaffected.
  */
 export function getRecommendationsFromAspiration(
-  aspiration: string
+  aspiration: string,
+  opts?: {
+    additionalAnchorIds?: string[];
+    discoveryPrefs?: DiscoveryPreferences;
+    excludeIds?: string[];
+  },
 ): { career: Career; matchScore: number }[] {
   if (!aspiration || !aspiration.trim()) {
     return [];
@@ -7900,6 +8013,49 @@ export function getRecommendationsFromAspiration(
     (anchorCareer?.keySkills ?? []).map((s) => s.toLowerCase())
   );
 
+  // Secondary anchors: skills from explored + saved careers. Scored at
+  // roughly half the weight of the primary anchor so they nudge results
+  // without drowning the primary goal signal.
+  const secondaryAnchorIds = (opts?.additionalAnchorIds ?? []).filter(
+    (id) => id && id !== anchorCareer?.id,
+  );
+  const secondaryAnchorCareers: Career[] = [];
+  const secondaryProfileSkills = new Set<string>();
+  const secondaryAnchorCategories = new Set<CareerCategory>();
+  if (secondaryAnchorIds.length > 0) {
+    for (const [category, list] of Object.entries(CAREER_PATHWAYS) as [CareerCategory, Career[]][]) {
+      for (const c of list) {
+        if (secondaryAnchorIds.includes(c.id)) {
+          secondaryAnchorCareers.push(c);
+          secondaryAnchorCategories.add(category);
+          for (const s of c.keySkills) secondaryProfileSkills.add(s.toLowerCase());
+        }
+      }
+    }
+  }
+
+  // Discovery-preference signal: map subjects to category weights so
+  // careers in categories the user's school subjects point at get a
+  // small boost. Mirrors the radar's own scoring surface.
+  const categoryBoost: Partial<Record<CareerCategory, number>> = {};
+  const discoverySubjects = new Set(
+    [
+      ...(opts?.discoveryPrefs?.subjects ?? []),
+      ...(opts?.discoveryPrefs?.starredSubjects ?? []),
+    ].map((s) => s.toLowerCase()),
+  );
+  if (discoverySubjects.size > 0) {
+    for (const subj of discoverySubjects) {
+      const weights = SUBJECT_CATEGORY_WEIGHTS[subj];
+      if (!weights) continue;
+      for (const [cat, w] of Object.entries(weights) as [CareerCategory, number][]) {
+        categoryBoost[cat] = (categoryBoost[cat] ?? 0) + w;
+      }
+    }
+  }
+
+  const excludeSet = new Set(opts?.excludeIds ?? []);
+
   // ── Step 3: score every other career ─────────────────────────
   const recommendations: { career: Career; matchScore: number }[] = [];
 
@@ -7907,6 +8063,11 @@ export function getRecommendationsFromAspiration(
     for (const career of list) {
       // Don't recommend the user's own goal back to them.
       if (anchorCareer && career.id === anchorCareer.id) continue;
+      // Skip careers the caller told us to exclude (e.g. already saved).
+      if (excludeSet.has(career.id)) continue;
+      // Skip careers the user has already explored as secondary anchors —
+      // no point recommending something they've been through.
+      if (secondaryAnchorIds.includes(career.id)) continue;
 
       let score = 0;
       const titleLower = career.title.toLowerCase();
@@ -7931,9 +8092,22 @@ export function getRecommendationsFromAspiration(
         }
         score += exactSkillHits * 18 + partialSkillHits * 6;
 
-        // Cross-category careers must have at least one real skill
-        // overlap, otherwise they're just noise.
-        if (!sameCategory && exactSkillHits + partialSkillHits === 0) {
+        // Cross-category careers must have some real signal — primary
+        // skill overlap, secondary-anchor overlap, or a discovery-subject
+        // affinity with this category. Otherwise they're just noise.
+        const hasSecondarySignal =
+          secondaryProfileSkills.size > 0 &&
+          (skillsLower.some((s) =>
+            secondaryProfileSkills.has(s) ||
+            [...secondaryProfileSkills].some((p) => p.includes(s) || s.includes(p)),
+          ) || secondaryAnchorCategories.has(category));
+        const hasDiscoverySignal = (categoryBoost[category] ?? 0) > 0;
+        if (
+          !sameCategory &&
+          exactSkillHits + partialSkillHits === 0 &&
+          !hasSecondarySignal &&
+          !hasDiscoverySignal
+        ) {
           continue;
         }
 
@@ -7956,6 +8130,34 @@ export function getRecommendationsFromAspiration(
           if (skillsLower.some((s) => s === word)) score += 15;
         }
         if (score === 0) continue;
+      }
+
+      // Secondary-anchor skill overlap — lighter weights than primary
+      // anchor so explored/saved careers nudge results without dominating.
+      if (secondaryProfileSkills.size > 0) {
+        let exactHits = 0;
+        let partialHits = 0;
+        for (const s of skillsLower) {
+          if (secondaryProfileSkills.has(s)) {
+            exactHits++;
+          } else if ([...secondaryProfileSkills].some((p) => p.includes(s) || s.includes(p))) {
+            partialHits++;
+          }
+        }
+        score += exactHits * 8 + partialHits * 3;
+        // Small bonus when the career sits in the same category as one of
+        // the user's explored/saved careers — signals continued curiosity
+        // in that field even when the primary goal points elsewhere.
+        if (secondaryAnchorCategories.has(category)) {
+          score += 6;
+        }
+      }
+
+      // Discovery-preference category boost — subjects × category weights
+      // nudge careers whose category the user's subjects point at.
+      const catBoost = categoryBoost[category];
+      if (catBoost && catBoost > 0) {
+        score += catBoost * 3;
       }
 
       if (career.entryLevel) score *= 1.05;

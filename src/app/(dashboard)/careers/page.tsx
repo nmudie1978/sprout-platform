@@ -29,6 +29,7 @@ import { useCareerFilters } from "@/lib/career-filters/use-career-filters";
 import { getAllSkills, getSalaryBounds } from "@/lib/career-filters/utils";
 import { useIsMobile } from "@/hooks/use-media-query";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
+import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 
 // Pagination constants
 const PAGE_SIZE = 7;
@@ -70,11 +71,24 @@ function CareersPageContent() {
 
   const isYouth = session?.user?.role === "YOUTH";
 
+  // Saved careers (localStorage) — passed to the insights endpoint so
+  // its scoring can treat them as secondary anchors and exclude them
+  // from the recommendation output.
+  const { curiosities } = useCuriositySaves();
+  const savedCareerIds = useMemo(
+    () => curiosities.map((c) => c.careerId).filter(Boolean).sort(),
+    [curiosities],
+  );
+  const savedParam = savedCareerIds.join(",");
+
   // Fetch career insights for personalised match scores
   const { data: insightsData } = useQuery({
-    queryKey: ["career-insights"],
+    queryKey: ["career-insights", savedParam],
     queryFn: async () => {
-      const response = await fetch("/api/career-insights");
+      const url = savedParam
+        ? `/api/career-insights?saved=${encodeURIComponent(savedParam)}`
+        : "/api/career-insights";
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch insights");
       return response.json();
     },
@@ -474,7 +488,14 @@ function CareersPageContent() {
             <div className="flex items-center gap-2 mb-4">
               <Heart className="h-5 w-5 text-pink-500" />
               <h2 className="text-lg font-semibold">Recommended for You</h2>
-              <span className="text-xs text-muted-foreground">Based on your Primary Goal</span>
+              <span
+                className="text-xs text-muted-foreground cursor-help"
+                title={insightsData?.insightsMessage || "Ranked by similarity to your Primary Goal, any careers you've explored or saved, and your Career Radar preferences."}
+              >
+                {insightsData?.insightsMessage
+                  ? insightsData.insightsMessage.replace(/^Based on your /, "Based on ")
+                  : "Based on your Primary Goal"}
+              </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {topRecs.map((rec: any) => {

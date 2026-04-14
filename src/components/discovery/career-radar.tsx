@@ -144,6 +144,7 @@ const PRESET_COMMON_JOBS = new Set<string>([
 ]);
 
 const PRESET_HIGH_EARNING = new Set<string>([
+  // Healthcare
   "neurosurgeon",
   "cardiothoracic-surgeon",
   "cardiac-surgeon",
@@ -152,26 +153,57 @@ const PRESET_HIGH_EARNING = new Set<string>([
   "transplant-surgeon",
   "anesthesiologist",
   "radiologist",
+  // Technology
   "cto",
-  "chief-financial-officer",
   "cio",
   "chief-digital-officer",
-  "managing-director",
   "head-of-engineering",
   "vp-engineering",
   "vp-product",
   "head-of-product",
   "principal-engineer",
   "staff-engineer",
-  "investment-banker",
-  "quantitative-analyst",
-  "senior-management-consultant",
-  "airline-pilot",
-  "consulting-partner",
   "cloud-architect",
   "software-architect",
   "director-of-engineering",
+  // Business & consulting
+  "chief-financial-officer",
+  "managing-director",
   "business-unit-director",
+  "senior-management-consultant",
+  "consulting-partner",
+  "hr-director",
+  "corporate-lawyer",
+  "general-counsel",
+  // Finance
+  "investment-banker",
+  "quantitative-analyst",
+  "finance-director",
+  "ma-director",
+  // Sales & marketing
+  "chief-marketing-officer",
+  "sales-director",
+  "head-of-sales",
+  "commercial-director",
+  "growth-marketing-director",
+  "global-brand-director",
+  // Creative & media
+  "film-director",
+  "art-director",
+  "music-producer",
+  "fashion-designer",
+  // Sport
+  "professional-athlete",
+  "sports-manager",
+  // Engineering & logistics
+  "engineering-director",
+  "supply-chain-director",
+  "airline-pilot",
+  // Real estate
+  "real-estate-developer",
+  // Public service (top tier)
+  "judge",
+  "diplomat",
 ]);
 
 const PRESET_WORK_LIFE_BALANCE = new Set<string>([
@@ -329,6 +361,8 @@ const PRESET_HIGHLY_COMPETITIVE = new Set<string>([
   "film-director",
   "senior-data-scientist",
   "principal-data-scientist",
+  "fashion-designer",
+  "diplomat",
 ]);
 
 /** Return true if the career satisfies the chosen preset filter. */
