@@ -1444,21 +1444,48 @@ function CompareVault({
   const isEmpty = shortlist.length === 0;
   const canCompare = shortlist.length >= 2;
 
+  // Rotating colors for each slot — gives the tray personality
+  const slotColors = [
+    { bg: "bg-teal-500/25", ring: "ring-teal-400/70", glow: "shadow-[0_0_10px_rgba(45,212,191,0.4)]" },
+    { bg: "bg-pink-500/25", ring: "ring-pink-400/70", glow: "shadow-[0_0_10px_rgba(244,114,182,0.4)]" },
+    { bg: "bg-amber-500/25", ring: "ring-amber-400/70", glow: "shadow-[0_0_10px_rgba(251,191,36,0.4)]" },
+    { bg: "bg-violet-500/25", ring: "ring-violet-400/70", glow: "shadow-[0_0_10px_rgba(167,139,250,0.4)]" },
+  ];
+
   return (
     <div
       className={cn(
-        "shrink-0 rounded-xl border-2 px-3 py-2.5 transition-all",
+        "shrink-0 rounded-xl border-2 px-3 py-2.5 transition-all relative overflow-hidden",
         isEmpty
           ? "border-dashed border-border/50 bg-background/40"
-          : "border-teal-500/60 bg-teal-500/[0.08] shadow-[0_0_20px_rgba(20,184,166,0.15)]"
+          : "border-transparent"
       )}
+      style={!isEmpty ? {
+        background: "linear-gradient(135deg, rgba(20,184,166,0.12) 0%, rgba(244,114,182,0.10) 50%, rgba(251,191,36,0.12) 100%)",
+        borderImage: "linear-gradient(135deg, rgb(45,212,191), rgb(244,114,182), rgb(251,191,36)) 1",
+        boxShadow: "0 0 24px rgba(20,184,166,0.18), 0 0 40px rgba(244,114,182,0.08)",
+      } : undefined}
     >
-      <div className="flex items-center gap-2.5">
+      {/* Subtle animated sparkle shimmer when populated */}
+      {!isEmpty && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            background: "linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%)",
+            backgroundSize: "200% 100%",
+            animation: "shine-sweep 4s ease-in-out infinite",
+          }}
+        />
+      )}
+      <div className="flex items-center gap-2.5 relative">
         {/* Label */}
         <div className="flex flex-col">
           <span className={cn(
             "text-[10px] font-bold uppercase tracking-wider leading-none",
-            isEmpty ? "text-muted-foreground/70" : "text-teal-300"
+            isEmpty
+              ? "text-muted-foreground/70"
+              : "bg-gradient-to-r from-teal-300 via-pink-300 to-amber-300 bg-clip-text text-transparent"
           )}>
             Compare
           </span>
@@ -1470,15 +1497,21 @@ function CompareVault({
           </span>
         </div>
 
-        {/* Slot indicators / chips — each with an always-visible X */}
+        {/* Slot indicators / chips — each with color and always-visible X */}
         <div className="flex items-center gap-1.5">
           {Array.from({ length: max }).map((_, i) => {
             const career = shortlist[i];
+            const colors = slotColors[i % slotColors.length];
             if (career) {
               return (
                 <div
                   key={career.id}
-                  className="relative h-8 w-8 rounded-full bg-teal-500/20 ring-1 ring-teal-500/50 flex items-center justify-center"
+                  className={cn(
+                    "relative h-8 w-8 rounded-full ring-2 flex items-center justify-center transition-transform hover:scale-110",
+                    colors.bg,
+                    colors.ring,
+                    colors.glow
+                  )}
                   title={career.title}
                 >
                   <span className="text-base">{career.emoji}</span>
@@ -1487,7 +1520,7 @@ function CompareVault({
                     onClick={() => onRemove(career.id)}
                     title={`Remove ${career.title}`}
                     aria-label={`Remove ${career.title}`}
-                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 hover:bg-rose-400 text-white flex items-center justify-center shadow-md ring-1 ring-background transition-colors"
+                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-rose-500 hover:bg-rose-400 text-white flex items-center justify-center shadow-lg ring-2 ring-background transition-all hover:scale-125"
                   >
                     <X className="h-2.5 w-2.5" strokeWidth={3} />
                   </button>
@@ -1497,7 +1530,10 @@ function CompareVault({
             return (
               <span
                 key={`empty-${i}`}
-                className="h-8 w-8 rounded-full border border-dashed border-border/50 flex items-center justify-center"
+                className={cn(
+                  "h-8 w-8 rounded-full border-2 border-dashed flex items-center justify-center transition-colors",
+                  isEmpty ? "border-border/50" : "border-border/70"
+                )}
                 title="Empty slot"
               >
                 <Plus className="h-3 w-3 text-muted-foreground/40" />
@@ -1515,7 +1551,7 @@ function CompareVault({
             className={cn(
               "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[11px] font-bold transition-all",
               canCompare
-                ? "bg-teal-500 text-white hover:bg-teal-400 shadow-[0_0_12px_rgba(20,184,166,0.4)] hover:shadow-[0_0_18px_rgba(20,184,166,0.6)]"
+                ? "bg-gradient-to-r from-teal-500 via-pink-500 to-amber-500 text-white hover:from-teal-400 hover:via-pink-400 hover:to-amber-400 shadow-[0_0_16px_rgba(20,184,166,0.4),0_0_28px_rgba(244,114,182,0.25)] hover:shadow-[0_0_22px_rgba(20,184,166,0.5),0_0_36px_rgba(244,114,182,0.35)] hover:scale-105"
                 : "bg-muted/30 text-muted-foreground/50 cursor-not-allowed"
             )}
             title={
