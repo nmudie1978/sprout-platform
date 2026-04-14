@@ -121,10 +121,10 @@ function NavItem({ href, icon: Icon, label, active, badge, statusDot, collapsed,
           "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
           collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
           active
-            ? "bg-teal-500/15 text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
+            ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
             : personal
-            ? "text-teal-100/80 hover:text-teal-100 hover:bg-teal-500/[0.06]"
-            : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+            ? "text-slate-700 dark:text-teal-100/80 hover:text-slate-900 dark:hover:text-teal-100 hover:bg-teal-500/[0.06]"
+            : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/[0.04]"
         )}
       >
         {/* Hover glow effect */}
@@ -206,8 +206,8 @@ function NavGroup({ href, icon: Icon, label, active, collapsed, childActive, chi
             "relative flex items-center gap-3 rounded-xl text-sm transition-all duration-200 ease-out overflow-hidden",
             collapsed ? "justify-center px-2 py-2.5" : "px-3 py-2",
             (active || childActive)
-              ? "bg-teal-500/15 text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
-              : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
+              ? "bg-teal-500/15 text-teal-700 dark:text-teal-300 font-medium shadow-[inset_0_0_20px_rgba(20,184,166,0.08)]"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/[0.04]"
           )}
         >
           <Link
@@ -264,8 +264,8 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
       <div className="mb-5">
         {!collapsed && (
           <div className="flex items-center gap-1.5 px-3 mb-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.8)] motion-safe:animate-[yours-pulse_3.2s_ease-in-out_infinite]" />
-            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-teal-300">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500 dark:bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.8)] motion-safe:animate-[yours-pulse_3.2s_ease-in-out_infinite]" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-teal-700 dark:text-teal-300">
               {title}
             </p>
           </div>
@@ -273,19 +273,19 @@ function NavSection({ title, children, collapsed, accent }: NavSectionProps) {
         {collapsed && <div className="w-6 border-t border-teal-500/40 mx-auto mb-2" />}
         <div
           className={cn(
-            "relative space-y-0.5 rounded-xl border border-white/10 bg-white/5 overflow-hidden",
+            "relative space-y-0.5 rounded-xl border border-stone-300/50 dark:border-white/10 bg-stone-100/40 dark:bg-white/5 overflow-hidden",
             collapsed ? "p-1" : "p-1.5"
           )}
         >
-          {/* Top edge teal highlight — thin gradient line that fades to the sides */}
+          {/* Top edge teal highlight — dark mode only */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/60 to-transparent"
+            className="hidden dark:block pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/60 to-transparent"
           />
-          {/* Ambient outer glow — soft, slow breathing pulse on the border */}
+          {/* Ambient outer glow — dark mode only (would blob-out light mode) */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_8s_ease-in-out_infinite]"
+            className="hidden dark:block pointer-events-none absolute -inset-px rounded-xl motion-safe:animate-[yours-glow_8s_ease-in-out_infinite]"
           />
           <div className="relative">{children}</div>
         </div>
@@ -372,7 +372,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         collapsed ? "w-16" : "w-56"
       )}
     >
-      {/* Animated shine border */}
+      {/* Animated shine border — dark mode only; light mode stays plain latte */}
       <div
         style={
           {
@@ -383,19 +383,13 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
             "--background-radial-gradient": "radial-gradient(transparent,transparent,#14b8a6,#2dd4bf,transparent,transparent)",
           } as React.CSSProperties
         }
-        className="before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
+        className="hidden dark:block before:absolute before:inset-0 before:aspect-square before:size-full before:rounded-[--border-radius] before:p-[--border-width] before:will-change-[background-position] before:content-[''] before:![-webkit-mask-composite:xor] before:![mask-composite:exclude] before:[background-image:--background-radial-gradient] before:[background-size:300%_300%] before:[mask:--mask-linear-gradient] motion-safe:before:animate-shine absolute inset-0 pointer-events-none"
       />
       <aside
         className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden"
         style={{ backgroundColor: 'hsl(var(--sidebar))' }}
       >
-      {/* Light-mode teal glow — only renders in light mode, subtle */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none dark:hidden opacity-50" aria-hidden="true">
-        <div className="absolute left-1/2 top-1/3 h-[400px] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand-foreground)/.35)_10%,_hsla(var(--brand-foreground)/0)_65%)]" />
-        <div className="absolute left-1/2 bottom-10 h-[300px] w-[80%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand)/.20)_10%,_hsla(var(--brand-foreground)/0)_60%)]" />
-      </div>
-
-      {/* Floating ambient orbs — dark mode only (light mode uses the glow above) */}
+      {/* Floating ambient orbs — dark mode only; light mode stays plain latte */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block">
         <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-slow_20s_ease-in-out_infinite]" />
         <div className="absolute top-1/2 -right-10 w-32 h-32 rounded-full bg-teal-500/[0.03] blur-3xl animate-[float-medium_15s_ease-in-out_infinite]" />
@@ -409,7 +403,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <div className="absolute inset-0 rounded-xl bg-teal-400/20 opacity-0 group-hover/logo:opacity-100 blur-md transition-opacity duration-500" />
         </div>
         {!collapsed && (
-          <span className="font-bold text-base tracking-tight text-slate-100 bg-gradient-to-r from-slate-100 to-slate-300 bg-clip-text">
+          <span className="font-bold text-base tracking-tight text-slate-800 dark:text-slate-100">
             Endeavrly
           </span>
         )}
@@ -502,7 +496,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <button
             type="button"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all duration-200 group/theme px-3 py-2"
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-stone-200/60 dark:hover:bg-white/5 transition-all duration-200 group/theme px-3 py-2"
           >
             {mounted && theme === "dark" ? (
               <Sun className="h-[18px] w-[18px] shrink-0 transition-transform duration-300 group-hover/theme:rotate-90 group-hover/theme:text-amber-400" />
@@ -518,7 +512,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout px-3 py-2"
+            className="flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group/signout px-3 py-2"
           >
             <LogOut className="h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover/signout:translate-x-0.5" />
             <span>Sign Out</span>
@@ -532,8 +526,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           type="button"
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
-            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
-            collapsed ? "justify-center px-2 py-3 ring-1 ring-white/10" : "px-3 py-2"
+            "flex items-center gap-3 w-full rounded-xl text-sm text-slate-600 dark:text-slate-400 hover:text-teal-700 dark:hover:text-teal-300 hover:bg-teal-500/10 transition-all duration-200",
+            collapsed ? "justify-center px-2 py-3 ring-1 ring-stone-300/60 dark:ring-white/10" : "px-3 py-2"
           )}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}

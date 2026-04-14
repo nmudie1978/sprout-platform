@@ -10,9 +10,9 @@
        feels cohesive — no white "holes" punched into the canvas. */
     --background: 40 70% 95%;           /* warm cream canvas */
     --foreground: 260 20% 15%;
-    --card: 0 0% 100%;                  /* solid white card surface */
+    --card: 40 60% 98%;                 /* warm off-cream card — carries canvas hue */
     --card-foreground: 260 20% 15%;
-    --popover: 0 0% 100%;                /* solid white overlay */
+    --popover: 40 60% 98%;               /* warm off-cream overlay */
     --popover-foreground: 260 20% 15%;
     --primary: 166 60% 32%;
     --primary-foreground: 0 0% 100%;
@@ -28,9 +28,9 @@
     --input: 268 12% 88%;
     --ring: 166 60% 32%;
     --radius: 0.75rem;
-    --sidebar: 180 25% 97%;
+    --sidebar: 34 32% 88%;              /* latte — slightly darker than canvas for separation */
     --sidebar-foreground: 220 20% 22%;
-    --sidebar-border: 180 15% 88%;
+    --sidebar-border: 34 25% 82%;       /* warm latte border */
     /* Glow brand colours — teal, used by the Glow component in light mode */
     --brand: 166 60% 45%;
     --brand-foreground: 172 66% 60%;
