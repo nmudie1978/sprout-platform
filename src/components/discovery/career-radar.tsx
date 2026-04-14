@@ -404,7 +404,7 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   HOSPITALITY_TOURISM: "Hospitality",
   TELECOMMUNICATIONS: "Telecom",
   CREATIVE_MEDIA: "Creative",
-  PUBLIC_SERVICE_SAFETY: "Public",
+  PUBLIC_SERVICE_SAFETY: "Safety",
   MILITARY_DEFENCE: "Military",
   SPORT_FITNESS: "Sport",
   REAL_ESTATE_PROPERTY: "Property",
