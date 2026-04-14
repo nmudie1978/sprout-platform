@@ -4,7 +4,6 @@ import { authOptions } from "@/lib/auth";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AiChatWidget } from "@/components/ai-chat-widget";
-import { Glow } from "@/components/ui/glow";
 import { AmbientLightBackground } from "@/components/ui/ambient-light-background";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
@@ -91,12 +90,6 @@ export default async function DashboardLayout({
       {/* Light-mode ambient canvas — calm premium backdrop.
           Rendered once at shell level so every page inherits it. */}
       <AmbientLightBackground />
-
-      {/* Dark-mode glows — preserved behind main content */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block" aria-hidden="true">
-        <Glow variant="top" className="opacity-70" />
-        <Glow variant="below" className="opacity-50" />
-      </div>
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
