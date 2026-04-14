@@ -40,7 +40,11 @@ export default async function RootLayout({
   ]);
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    // className="dark" on <html> guarantees the very first paint is
+    // dark mode — sign-in, every server-rendered page, and the flash
+    // before next-themes hydrates. next-themes will swap the class
+    // only if the user has explicitly opted into light via the toggle.
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <body className={inter.className}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>{children}</Providers>
