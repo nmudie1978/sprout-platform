@@ -8,7 +8,7 @@
        Warm amber canvas with matching warm cream surfaces.
        Cards/modals/popovers ARE warm (not white) so the whole app
        feels cohesive — no white "holes" punched into the canvas. */
-    --background: 40 80% 92%;           /* warm cream canvas */
+    --background: 40 70% 95%;           /* warm cream canvas */
     --foreground: 260 20% 15%;
     --card: 0 0% 100%;                  /* solid white card surface */
     --card-foreground: 260 20% 15%;
