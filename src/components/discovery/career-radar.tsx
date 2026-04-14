@@ -421,6 +421,24 @@ const STRONG_BAND_SIZE = 7;
 const GOOD_BAND_SIZE = 13;
 
 /**
+ * Format a salary range like "450,000 - 700,000 kr/year" into a
+ * short compact form: "450k - 700k" or "1.2M - 2M".
+ */
+function formatSalaryShort(raw?: string | null): string {
+  if (!raw) return "—";
+  return raw.replace(/\s*kr\/year.*/i, "").trim().replace(/[\d,]+/g, (m) => {
+    const n = parseInt(m.replace(/,/g, ""), 10);
+    if (isNaN(n)) return m;
+    if (n >= 1_000_000) {
+      const v = n / 1_000_000;
+      return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, "")}M`;
+    }
+    if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+    return String(n);
+  });
+}
+
+/**
  * Build a 2-letter monogram from a career title for the Initials view.
  * Strips parens/slashes, takes the first letter of the first two words,
  * falls back to the first 2 letters if there's only one word.
@@ -1343,7 +1361,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                 </div>
                               </td>
                               <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
-                                {d.career.avgSalary?.split(" ")[0] ?? "—"}
+                                {formatSalaryShort(d.career.avgSalary)}
                               </td>
                               <td className="px-3 py-1 align-middle">
                                 <span
