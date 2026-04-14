@@ -60,7 +60,7 @@ function CareerRadarPageContent() {
 
   return (
     <div className="container mx-auto px-4 py-6 relative">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
       <div className="max-w-3xl mx-auto">
         <div className="flex items-start justify-between gap-4">

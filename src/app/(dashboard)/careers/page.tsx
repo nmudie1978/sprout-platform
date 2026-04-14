@@ -252,7 +252,7 @@ function CareersPageContent() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
       <PageHeader
         title={t('careers.titlePrefix')}

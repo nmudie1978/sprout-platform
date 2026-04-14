@@ -65,7 +65,7 @@ export default function BrowseQuestionsPage() {
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8 relative">
       {/* Subtle background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
       {/* Header */}
       <PageHeader

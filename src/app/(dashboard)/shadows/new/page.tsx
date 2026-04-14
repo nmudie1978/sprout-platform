@@ -123,7 +123,7 @@ export default function NewShadowPage() {
       <div className="min-h-full">
         <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
           {/* Background gradient */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
           {/* Back Button */}
           <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -143,7 +143,7 @@ export default function NewShadowPage() {
     <div className="min-h-full">
       <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-2xl relative">
         {/* Background gradient */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
         {/* Header */}
         <motion.div

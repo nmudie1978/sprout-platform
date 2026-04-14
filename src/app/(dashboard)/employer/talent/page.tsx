@@ -118,7 +118,7 @@ export default function TalentBrowsePage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative min-h-screen">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-pink-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-teal-500/5 via-transparent to-pink-500/5 pointer-events-none dark:hidden" />
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">

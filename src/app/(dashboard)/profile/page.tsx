@@ -441,7 +441,7 @@ export default function ProfilePage() {
       {/* Funky Modern Background - Warm muted tones */}
       <div className="fixed inset-0 -z-20">
         {/* Base gradient - warm terracotta to sage */}
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/50 to-emerald-50/60 dark:from-stone-950 dark:via-stone-900 dark:to-emerald-950/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-100 via-amber-50/50 to-emerald-50/60 dark:hidden" />
 
         {/* Noise texture overlay */}
         <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"

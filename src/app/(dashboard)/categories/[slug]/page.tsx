@@ -117,7 +117,7 @@ export default function CategoryPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 pointer-events-none dark:hidden" />
 
       {/* Back link */}
       <Link

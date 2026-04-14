@@ -157,7 +157,7 @@ export default function IndustryInsightsPage() {
   return (
     <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
       {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
       {/* Live insight update toast — top-right, non-blocking */}
       <div className="fixed top-20 right-4 z-50 pointer-events-none">
