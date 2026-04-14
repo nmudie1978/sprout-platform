@@ -174,7 +174,7 @@
   },
   "savedCareers": {
     "title": "Saved careers",
-    "tooltip": "Careers you've saved from Explore Careers.",
+    "tooltip": "Every career you've saved — whether from Explore Careers or from your Career Radar — collected in one place. No duplicates.",
     "emptyState": "No saved careers yet."
   },
   "smallJobs": {

@@ -174,7 +174,7 @@
   },
   "savedCareers": {
     "title": "Lagrede karrierer",
-    "tooltip": "Karrierer du har lagret fra Utforsk karrierer.",
+    "tooltip": "Alle karrierer du har lagret — enten fra Utforsk karrierer eller fra Karriereradaren din — samlet på ett sted. Ingen duplikater.",
     "emptyState": "Ingen lagrede karrierer ennå."
   },
   "smallJobs": {
