@@ -217,13 +217,15 @@ function CompareCard({ career, preferences, onRemove }: CompareCardProps) {
         </ul>
       </div>
 
-      {/* Things to consider — row 5 */}
+      {/* Things to consider — row 5.
+          Skip signals[0] since it's already shown in the Reality check
+          section above. Only render the remaining signals here. */}
       <div className="p-4 border-b border-border/30">
-        {signals.length > 0 ? (
+        {signals.length > 1 ? (
           <>
             <p className={cn(titleClass, 'mb-1.5')}>Things to consider</p>
             <ul className="space-y-1">
-              {signals.map((s, i) => (
+              {signals.slice(1).map((s, i) => (
                 <li key={i} className="flex items-start gap-2 text-[11px] text-foreground/75 leading-snug">
                   <span className="h-1 w-1 rounded-full bg-muted-foreground/40 shrink-0 mt-1.5" />
                   {s}
@@ -303,7 +305,9 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
         .map((t) => `<li>${escapeHtml(t)}</li>`)
         .join('');
 
+      // Skip signals[0] — it's already shown in the Reality check section.
       const signalsHtml = signals
+        .slice(1)
         .map((s) => `<li>${escapeHtml(s)}</li>`)
         .join('');
 
@@ -331,7 +335,7 @@ function buildComparisonHtml(careers: Career[], preferences: DiscoveryPreference
           <ul>${tasksHtml}</ul>
 
           ${
-            signals.length > 0
+            signals.length > 1
               ? `<h3 class="warn">Things to consider</h3><ul class="warn-list">${signalsHtml}</ul>`
               : ''
           }
