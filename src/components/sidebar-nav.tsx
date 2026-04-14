@@ -368,10 +368,9 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   return (
     <div
       className={cn(
-        "hidden lg:block relative z-20 shrink-0 self-stretch transition-all duration-300 ease-out",
+        "hidden lg:block relative z-20 shrink-0 self-stretch transition-all duration-300 ease-out dark:bg-[hsl(var(--sidebar))]",
         collapsed ? "w-16" : "w-56"
       )}
-      style={{ backgroundColor: 'hsl(var(--sidebar))' }}
     >
       {/* Animated shine border — dark mode only; light mode stays plain latte */}
       <div
@@ -489,7 +488,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
       {/* Bottom section */}
       <div className="px-2 pb-3 mt-auto space-y-1 relative">
         {/* Subtle top fade */}
-        <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-[hsl(var(--sidebar))] to-transparent pointer-events-none" />
+        <div className="hidden dark:block absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-[hsl(var(--sidebar))] to-transparent pointer-events-none" />
 
         {/* Theme toggle — hidden when collapsed to avoid icon-stack misclicks */}
         {!collapsed && (
