@@ -37,15 +37,15 @@ export function AmbientLightBackground() {
           <MeshGradient
             width={dimensions.width}
             height={dimensions.height}
-            colors={["#3d7a7d", "#6fa9a9", "#b37a5a", "#8a6a4f", "#4d8a7a", "#7ca04a"]}
+            colors={["#72b9bb", "#b5d9d9", "#ffd1bd", "#ffebe0", "#8cc5b8", "#dbf4a4"]}
             distortion={0.8}
             swirl={0.6}
             grainMixer={0}
             grainOverlay={0}
-            speed={0.21}
+            speed={0.42}
             offsetX={0.08}
           />
-          <div className="absolute inset-0 pointer-events-none bg-black/15" />
+          <div className="absolute inset-0 pointer-events-none bg-white/20" />
         </>
       )}
     </div>
