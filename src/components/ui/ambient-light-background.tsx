@@ -22,26 +22,31 @@ export function AmbientLightBackground() {
       aria-hidden
       className="fixed inset-0 z-0 pointer-events-none dark:hidden overflow-hidden"
     >
-      {/* Warm cream base — overrides the body's bg with a clearly
-          warm canvas. Shows in all the gaps between cards. */}
-      <div className="absolute inset-0" style={{ backgroundColor: "#FFE8B3" }} />
+      {/* Warm peach base — matches the peach tone visible at the bottom
+          so the entire viewport reads as the same warm environment. */}
+      <div className="absolute inset-0" style={{ backgroundColor: "#FFDCC0" }} />
 
-      {/* Primary amber glow — full amber center fading to the warm
-          cream. Covers the whole viewport so warmth is consistent. */}
+      {/* Sunrise gradient — peach/coral top-to-bottom so the whole
+          canvas has the saturated warm tone the user asked for, not
+          just the bottom edge. */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage:
-            "radial-gradient(ellipse 90% 80% at 50% 40%, #FFCA5C 0%, #FFDC8A 40%, transparent 85%)",
+          backgroundImage: `linear-gradient(180deg,
+            rgba(255, 220, 192, 1) 0%,
+            rgba(255, 200, 160, 1) 40%,
+            rgba(255, 180, 140, 1) 75%,
+            rgba(255, 170, 120, 1) 100%
+          )`,
         }}
       />
 
-      {/* Peach wash from below — adds sunset-style depth */}
+      {/* Subtle amber highlight near top-center — gentle focal warmth */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "radial-gradient(ellipse 120% 80% at 50% 100%, rgba(255, 170, 120, 0.65) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255, 230, 190, 0.6) 0%, transparent 70%)",
         }}
       />
     </div>
