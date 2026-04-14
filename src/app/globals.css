@@ -5,34 +5,32 @@
 @layer base {
   :root {
     /* ── Light mode theme tokens ─────────────────────────────────
-       Light mode uses a dark slate canvas (#020617) with a soft
-       grey radial glow at the top, painted by AmbientLightBackground.
-       Surface tokens are slate-dark with warm cream foreground.
-       Cards and popovers are made translucent further down so the
-       glow bleeds through the whole app. */
-    --background: 230 84% 5%;           /* #020617 — matches radial-glow base */
-    --foreground: 40 30% 90%;           /* warm cream text */
-    --card: 220 30% 13%;                /* slate-dark panel */
-    --card-foreground: 40 30% 90%;
-    --popover: 220 30% 13%;
-    --popover-foreground: 40 30% 90%;
-    --primary: 166 60% 45%;
+       Warm amber canvas with matching warm cream surfaces.
+       Cards/modals/popovers ARE warm (not white) so the whole app
+       feels cohesive — no white "holes" punched into the canvas. */
+    --background: 40 70% 90%;           /* warm cream canvas — 10% warmer */
+    --foreground: 260 20% 15%;
+    --card: 40 70% 90%;                 /* same as canvas — one uniform tone */
+    --card-foreground: 260 20% 15%;
+    --popover: 40 70% 90%;               /* same as canvas — one uniform tone */
+    --popover-foreground: 260 20% 15%;
+    --primary: 166 60% 32%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 40 30% 90%;
-    --muted: 220 25% 15%;
-    --muted-foreground: 40 12% 65%;
-    --accent: 220 25% 20%;
-    --accent-foreground: 40 30% 92%;
-    --destructive: 0 62% 50%;
+    --secondary: 270 12% 95%;
+    --secondary-foreground: 260 15% 18%;
+    --muted: 268 10% 94%;
+    --muted-foreground: 260 8% 40%;
+    --accent: 330 12% 95%;
+    --accent-foreground: 260 15% 20%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 220 20% 22%;
-    --input: 220 20% 22%;
-    --ring: 166 60% 45%;
+    --border: 268 12% 88%;
+    --input: 268 12% 88%;
+    --ring: 166 60% 32%;
     --radius: 0.75rem;
-    --sidebar: 230 84% 5%;              /* matches background so the glow shows through */
-    --sidebar-foreground: 40 30% 90%;
-    --sidebar-border: 220 20% 22%;
+    --sidebar: 34 32% 88%;              /* latte — slightly darker than canvas for separation */
+    --sidebar-foreground: 220 20% 22%;
+    --sidebar-border: 34 25% 82%;       /* warm latte border */
     /* Glow brand colours — teal, used by the Glow component in light mode */
     --brand: 166 60% 45%;
     --brand-foreground: 172 66% 60%;
@@ -83,20 +81,6 @@
   .dark body {
     background-image: none;
     @apply bg-background;
-  }
-
-  /* Light-mode only: cards, popovers and modal panels are translucent
-     frosted glass so the radial glow bleeds through the entire app.
-     Dark mode keeps solid panels via the token above. */
-  :root:not(.dark) .bg-card {
-    background-color: hsla(220 30% 13% / 0.5);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-  }
-  :root:not(.dark) .bg-popover {
-    background-color: hsla(220 30% 13% / 0.75);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
   }
 
   /* Consistent heading styles — mobile-first */
