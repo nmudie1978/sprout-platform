@@ -176,6 +176,37 @@ function StatCard({
   );
 }
 
+/**
+ * Compact horizontal stat — used inside the My Journey card so the
+ * Career Snapshot shares a container with the journey progress.
+ * Roughly half the height of the standalone StatCard above.
+ */
+function CompactStat({
+  label,
+  value,
+  icon: Icon,
+  iconColor = "text-muted-foreground/60",
+}: {
+  label: string;
+  value: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor?: string;
+}) {
+  return (
+    <div className="flex items-center gap-2 rounded-md border border-border/40 bg-background/20 px-2 py-1.5">
+      <Icon className={cn("h-3.5 w-3.5 shrink-0", iconColor)} />
+      <div className="min-w-0 flex-1">
+        <p className="text-[8px] uppercase tracking-wider text-muted-foreground/50 leading-none">
+          {label}
+        </p>
+        <p className="text-[11px] font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Country flag helper ──────────────────────────────────────────────
 // Maps a free-text country string (as stored on YouthProfile.country)
 // to a Unicode flag emoji. We accept the country names actually used
@@ -1043,6 +1074,39 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            {/* Career Snapshot — compact strip inside the same Journey
+                container so the user reads "this journey, this career,
+                these facts" as one block. Roughly half the height of
+                the previous standalone Career Snapshot card. */}
+            {goalCareer && (() => {
+              const sector = getSectorForCareer(goalCareer.id);
+              const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
+              const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
+              const salary = goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
+                const n = parseInt(m.replace(/,/g, ''), 10);
+                if (isNaN(n)) return m;
+                if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
+                if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+                return String(n);
+              });
+              return (
+                <div className="mt-5 pt-4 border-t border-border/30">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Search className="h-3 w-3 text-teal-500/70" />
+                    <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                      Career snapshot
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <CompactStat icon={TrendingUp} iconColor="text-teal-500/80" label="Salary" value={`${salary} kr`} />
+                    <CompactStat icon={Rocket} iconColor="text-emerald-500/80" label="Growth" value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)} />
+                    <CompactStat icon={Briefcase} iconColor="text-blue-500/80" label="Sector" value={sectorLabel} />
+                    <CompactStat icon={CheckCircle2} iconColor="text-violet-500/80" label="Pension" value={pensionLabel} />
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Subtle completion indicator — replaces the old congrats
                 banner that used to render here. The full celebration
                 stays inside the Clarity tab's ClarityCompletionCard so the
@@ -1064,63 +1128,6 @@ export default function DashboardPage() {
             <div className="block mb-6">{journeyCard}</div>
           );
         })()}
-
-        {/* ── 2. Career Snapshot — stat cards row ────────────── */}
-        <DashboardSection
-          title="Career Snapshot"
-          icon={Search}
-          iconColor="text-teal-500"
-          tooltip="Key facts about your chosen career — salary, growth, sector, and pension."
-        >
-          {goalCareer ? (
-            (() => {
-              const sector = getSectorForCareer(goalCareer.id);
-              const sectorLabel = sector === 'public' ? 'Public' : sector === 'private' ? 'Private' : 'Mixed';
-              const pensionLabel = sector === 'public' ? 'Strong' : sector === 'private' ? 'Varies' : 'Mixed';
-              return (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <StatCard
-                    label="Salary"
-                    value={goalCareer.avgSalary.replace(/\s*kr\/year.*/i, '').trim().replace(/[\d,]+/g, (m) => {
-                      const n = parseInt(m.replace(/,/g, ''), 10);
-                      if (isNaN(n)) return m;
-                      if (n >= 1_000_000) { const v = n / 1_000_000; return v % 1 === 0 ? `${v}M` : `${v.toFixed(1).replace(/\.0$/, '')}M`; }
-                      if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
-                      return String(n);
-                    })}
-                    sublabel="kr / year"
-                    icon={TrendingUp}
-                  />
-                  <StatCard
-                    label="Growth"
-                    value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)}
-                    sublabel="Job outlook"
-                    icon={Rocket}
-                    iconColor="text-emerald-500"
-                  />
-                  <StatCard
-                    label="Sector"
-                    value={sectorLabel}
-                    sublabel={sector === 'public' ? 'Government funded' : sector === 'private' ? 'Commercial' : 'Both sectors'}
-                    icon={Briefcase}
-                    iconColor="text-blue-500"
-                  />
-                  <StatCard
-                    label="Pension"
-                    value={pensionLabel}
-                    sublabel={sector === 'public' ? 'Defined benefit' : 'Employer dependent'}
-                    icon={CheckCircle2}
-                    iconColor="text-violet-500"
-                  />
-                </div>
-              );
-            })()
-          ) : (
-            <p className="text-xs text-muted-foreground/40 py-2">
-              Choose a Primary Goal to see career info
-            </p>
-          )}
-        </DashboardSection>
 
         {/* ── 3. Who Am I ────────────────────────────────────── */}
         {discoverData?.hasProfile && discoverData.summary && (
