@@ -4,13 +4,8 @@
  * Proves that `getProgrammesForCareer` (and related accessors) honour
  * the `programme-validation.json` hidden set. Because the validation
  * data is loaded statically at module import time, we can't mutate it
- * at runtime — so this test uses a synthetic validator-style set and
- * asserts the observable contract through `getHiddenProgrammeIds()`.
- *
- * The test also validates that the default (empty) validation file
- * means NO programmes are hidden — the feature is backwards
- * compatible and fails safe: missing validation data = full programme
- * list.
+ * at runtime — so this test asserts the observable contract through
+ * `getHiddenProgrammeIds()`.
  */
 
 import { describe, expect, it } from 'vitest';
@@ -20,14 +15,20 @@ import {
   getProgrammeById,
 } from '../index';
 import { shouldHideFromUi, classifyHttpStatus } from '../validate-programme-url';
+import validation from '../data/programme-validation.json';
 
-describe('Programme validation filter (default: empty)', () => {
-  it('getHiddenProgrammeIds returns an empty set when no programmes are broken', () => {
-    // The seed programme-validation.json ships with empty results —
-    // fail-safe default until the CI script runs for the first time.
+describe('Programme validation filter', () => {
+  it('getHiddenProgrammeIds returns a Set whose ids all correspond to hideable validation statuses', () => {
     const hidden = getHiddenProgrammeIds();
     expect(hidden).toBeInstanceOf(Set);
-    expect(hidden.size).toBe(0);
+
+    const results = (validation as { results?: Record<string, { status: string }> }).results ?? {};
+    const hideableIds = new Set(
+      Object.entries(results)
+        .filter(([, r]) => shouldHideFromUi(r.status as never))
+        .map(([id]) => id),
+    );
+    expect(hidden).toEqual(hideableIds);
   });
 
   it('getProgrammesForCareer returns programmes for a known career', () => {
