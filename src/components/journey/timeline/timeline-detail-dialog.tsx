@@ -26,7 +26,6 @@ import {
 import { Lightbulb } from 'lucide-react';
 import { FOUNDATION_ITEM_ID } from '../renderers/foundation-banner';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
-import { RealWorldSection } from './real-world-section';
 import { getCertificationPath } from '@/lib/education';
 import { Award, ExternalLink as ExtLink } from 'lucide-react';
 
@@ -699,15 +698,11 @@ export function TimelineDetailDialog({
             </div>
           )}
 
-          {/* Real-world connections — courses, universities, and jobs
-              relevant to this step and the user's chosen career.
-              Hidden for "Accept" steps (about the job, not links).
-              Certification steps get specific cert data instead of
-              generic job/course links. */}
-          {!isFoundation && !/\baccept\b/i.test(item.title) && (
-            /\bcertif/i.test(item.title)
-              ? <CertificationsSection career={careerTitle} />
-              : <RealWorldSection item={item} career={careerTitle} />
+          {/* Certification steps still surface specific cert data;
+              the generic "Where to go next" links were removed per
+              product feedback — too noisy on every step. */}
+          {!isFoundation && !/\baccept\b/i.test(item.title) && /\bcertif/i.test(item.title) && (
+            <CertificationsSection career={careerTitle} />
           )}
 
           {/* Save button — foundation data persists across all careers */}

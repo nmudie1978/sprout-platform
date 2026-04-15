@@ -188,8 +188,6 @@ export function DiscoveryQuizDialog({
     },
   });
 
-  const hasAny = subjects.length > 0 || workStyles.length > 0 || !!peoplePref || interests.length > 0;
-
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -294,7 +292,7 @@ export function DiscoveryQuizDialog({
           </Button>
           <Button
             onClick={() => saveMutation.mutate()}
-            disabled={!hasAny || saveMutation.isPending}
+            disabled={saveMutation.isPending}
             className="bg-teal-600 hover:bg-teal-700"
           >
             {saveMutation.isPending ? (

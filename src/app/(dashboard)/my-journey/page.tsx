@@ -1119,7 +1119,7 @@ function UnderstandTab({
             {!uCollapsed('u-study-path') && (
               <div className="p-4 sm:p-5">
                 {hasStudyPath ? (
-                  <EducationBrowser careerTitle={goalTitle} />
+                  <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
                 ) : (
                   <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
                     <p className="text-sm font-medium text-foreground/80">No formal study path required</p>

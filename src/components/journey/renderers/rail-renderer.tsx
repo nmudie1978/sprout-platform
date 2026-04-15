@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { type JourneyItem, type SchoolTrackItem } from '@/lib/journey/career-journey-types';
+import { type JourneyItem } from '@/lib/journey/career-journey-types';
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
@@ -22,6 +22,7 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
+    extraSubjects: firstSchool?.subjects,
   });
   const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
   const foundationDone = foundationStatus === 'done';
@@ -157,9 +158,9 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
               state={foundationState}
               onClick={() => !readOnly && onItemClick(foundationItem)}
             />
-            {firstSchool && (
+            {firstSchool && firstSchool.subjects.length > 0 && (
               <div className="mt-2 w-full">
-                <SchoolBadge item={firstSchool} />
+                <CurrentSubjectBadge subjects={firstSchool.subjects} />
               </div>
             )}
           </div>
@@ -266,25 +267,16 @@ function RailCard({
   );
 }
 
-function SchoolBadge({ item }: { item: SchoolTrackItem }) {
+function CurrentSubjectBadge({ subjects }: { subjects: string[] }) {
   return (
-    <div className="rounded-lg border border-border bg-muted/40 p-2">
-      <div className="flex items-center gap-1.5 mb-1">
-        <BookOpen className="h-3 w-3 text-muted-foreground" />
-        <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Starting subjects
-        </span>
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {item.subjects.map((subject) => (
-          <span
-            key={subject}
-            className="inline-block rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-medium text-foreground/80"
-          >
-            {subject}
-          </span>
-        ))}
-      </div>
+    <div className="flex items-center gap-1.5 flex-wrap">
+      <BookOpen className="h-3 w-3 text-muted-foreground shrink-0" />
+      <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+        Current subjects
+      </span>
+      <span className="text-[10px] text-foreground/70 truncate">
+        {subjects.join(' · ')}
+      </span>
     </div>
   );
 }

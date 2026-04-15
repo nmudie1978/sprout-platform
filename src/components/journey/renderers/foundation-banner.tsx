@@ -25,12 +25,20 @@ interface UseFoundationDataOptions {
   careerTitle?: string;
   userAge?: number;
   journeyStartAge: number;
+  /**
+   * Extra subjects to consider alongside the profile's education
+   * context — typically `journey.schoolTrack[0].subjects`. We merge
+   * them in so the alignment gate matches the subjects visibly
+   * displayed on the Starting Point card.
+   */
+  extraSubjects?: string[];
 }
 
 export function useFoundationData({
   careerTitle,
   userAge,
   journeyStartAge,
+  extraSubjects,
 }: UseFoundationDataOptions) {
   const { data: eduData } = useQuery<{ educationContext: EducationContext | null }>({
     queryKey: ['education-context'],
@@ -46,19 +54,23 @@ export function useFoundationData({
   const eduContext = eduData?.educationContext;
 
   const subjectHint = useMemo(() => {
-    if (!eduContext || !careerTitle) return null;
+    if (!careerTitle) return null;
     if (userAge != null && userAge >= 18) return null;
-    const subjects = [...(eduContext.currentSubjects || [])];
-    if (eduContext.studyProgram) {
-      for (const p of eduContext.studyProgram
-        .split(/[,;/&+]+/)
-        .map((s) => s.trim())
-        .filter((s) => s.length > 1)) {
-        if (!subjects.some((ex) => ex.toLowerCase() === p.toLowerCase())) subjects.push(p);
-      }
+    const subjects: string[] = [];
+    const add = (s: string) => {
+      const trimmed = s.trim();
+      if (trimmed.length < 2) return;
+      if (subjects.some((ex) => ex.toLowerCase() === trimmed.toLowerCase())) return;
+      subjects.push(trimmed);
+    };
+    for (const s of eduContext?.currentSubjects || []) add(s);
+    if (eduContext?.studyProgram) {
+      for (const p of eduContext.studyProgram.split(/[,;/&+]+/)) add(p);
     }
+    for (const s of extraSubjects || []) add(s);
+    if (subjects.length === 0 && !eduContext) return null;
     return calculateSubjectAlignment(subjects, careerTitle);
-  }, [eduContext, careerTitle, userAge]);
+  }, [eduContext, careerTitle, userAge, extraSubjects]);
 
   const foundationItem: JourneyItem = useMemo(() => ({
     id: FOUNDATION_ITEM_ID,
