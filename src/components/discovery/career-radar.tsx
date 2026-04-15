@@ -36,10 +36,9 @@ type PresetFilterKey =
   | "high-earning"
   | "work-life-balance"
   | "fast-growing"
-  | "low-entry"
   | "academic"
   | "future-proof"
-  | "no-degree"
+  | "vocational"
   | "physically-demanding"
   | "highly-competitive";
 
@@ -49,10 +48,9 @@ const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
   { key: "high-earning", label: "High-Earning Careers" },
   { key: "work-life-balance", label: "Work-Life Balance" },
   { key: "fast-growing", label: "Fast-Growing Careers" },
-  { key: "low-entry", label: "Non-University" },
   { key: "academic", label: "Academic / High Study" },
   { key: "future-proof", label: "Future-Proof Careers" },
-  { key: "no-degree", label: "No Degree Required" },
+  { key: "vocational", label: "Vocational (non-Degree)" },
   { key: "physically-demanding", label: "Physically Demanding Roles" },
   { key: "highly-competitive", label: "Highly Competitive Careers" },
 ];
@@ -283,7 +281,7 @@ const PRESET_FUTURE_PROOF = new Set<string>([
   "midwife",
 ]);
 
-const PRESET_NO_DEGREE = new Set<string>([
+const PRESET_VOCATIONAL = new Set<string>([
   "plumber",
   "electrician",
   "carpenter",
@@ -378,16 +376,18 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
       return PRESET_ACADEMIC.has(career.id);
     case "future-proof":
       return PRESET_FUTURE_PROOF.has(career.id);
-    case "no-degree":
-      return PRESET_NO_DEGREE.has(career.id);
     case "physically-demanding":
       return PRESET_PHYSICALLY_DEMANDING.has(career.id);
     case "highly-competitive":
       return PRESET_HIGHLY_COMPETITIVE.has(career.id);
     case "fast-growing":
       return career.growthOutlook === "high";
-    case "low-entry":
-      return career.entryLevel === true;
+    case "vocational":
+      // Union of the curated "no-degree" hand-list and every career
+      // flagged entryLevel=true in the catalogue — broadest honest
+      // coverage of non-degree paths (apprenticeships, trades, service
+      // academies, direct entry).
+      return PRESET_VOCATIONAL.has(career.id) || career.entryLevel === true;
   }
 }
 
