@@ -33,7 +33,6 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
   const [open, setOpen] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const hasProfile = !!data?.hasProfile && !!data.summary;
 
@@ -57,14 +56,19 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
+  // Hover on the tab opens the tray. Once open, it stays open until
+  // the user actively dismisses it — the old hover-close pattern
+  // raced with the fade-out trigger and the dead zone between tab
+  // and panel, producing a visible flicker (panel closes, mouse
+  // re-enters, panel opens, outside-click closes, repeat). Dismiss
+  // via X, ESC, outside click, or clicking the tab again.
   const handleMouseEnter = useCallback(() => {
-    if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => setOpen(true), 150);
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => setOpen(true), 120);
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
+  const handleHoverCancel = useCallback(() => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    leaveTimeoutRef.current = setTimeout(() => setOpen(false), 300);
   }, []);
 
   const handleToggle = useCallback(() => setOpen((prev) => !prev), []);
@@ -82,7 +86,7 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
       <button
         onClick={handleToggle}
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseLeave={handleHoverCancel}
         aria-expanded={open}
         aria-controls="what-i-like-tray-panel"
         className={cn(
@@ -107,8 +111,6 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
         id="what-i-like-tray-panel"
         role="region"
         aria-label="What I Like"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         aria-hidden={!open}
         className={cn(
           'w-[300px] sm:w-[340px]',
@@ -135,8 +137,10 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
           </button>
         </div>
 
-        <div className="px-4 py-3">
-          <p className="text-xs text-foreground/80 leading-relaxed">{data!.summary}</p>
+        <div className="px-4 py-4 bg-gradient-to-br from-violet-500/[0.04] via-fuchsia-500/[0.03] to-teal-500/[0.04]">
+          <p className="text-[13px] text-foreground/90 leading-relaxed">
+            {data!.summary}
+          </p>
         </div>
 
         <div className="px-4 py-2 border-t border-border/20 shrink-0">

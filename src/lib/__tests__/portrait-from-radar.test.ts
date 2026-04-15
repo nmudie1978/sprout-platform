@@ -26,16 +26,21 @@ describe("buildRadarPortrait", () => {
     expect(buildRadarPortrait(null)).toBeNull();
   });
 
-  it("uses subject + work style + people pref signals together", () => {
+  it("mentions every active signal — subject, work style, people pref", () => {
     const p = buildRadarPortrait({
       subjects: ["chemistry", "biology"],
       workStyles: ["hands-on"],
       peoplePref: "with-people",
     })!;
+    // Subjects mentioned (properly cased by the label map).
     expect(p.summary).toContain("Chemistry");
     expect(p.summary).toContain("Biology");
-    expect(p.summary.toLowerCase()).toContain("hands-on");
-    expect(p.summary.toLowerCase()).toContain("people");
+    // Work-style has a few phrase variants — all of them mention
+    // either "hands" or "build", so assert on either.
+    expect(p.summary.toLowerCase()).toMatch(/hands|build/);
+    // People-pref variants all mention either "people" or "room".
+    expect(p.summary.toLowerCase()).toMatch(/people|room/);
+    // Tags include the subject labels + derived style / people tags.
     expect(p.topTags).toContain("Chemistry");
     expect(p.topTags).toContain("Biology");
     expect(p.topTags).toContain("Hands-on");
@@ -53,7 +58,28 @@ describe("buildRadarPortrait", () => {
 
   it("works with only a single subject", () => {
     const p = buildRadarPortrait({ subjects: ["art"] })!;
-    expect(p.summary.startsWith("You're drawn to Art")).toBe(true);
+    // All single-subject variants mention the subject by name.
+    expect(p.summary).toContain("Art");
     expect(p.topTags).toEqual(["Art"]);
+  });
+
+  it("never uses the word 'career' in the generated summary", () => {
+    const p = buildRadarPortrait({
+      subjects: ["drama", "english", "history"],
+      workStyles: ["creative"],
+      peoplePref: "mostly-alone",
+    })!;
+    expect(p.summary.toLowerCase()).not.toContain("career");
+  });
+
+  it("is deterministic for the same preferences", () => {
+    const prefs = {
+      subjects: ["biology"],
+      workStyles: ["hands-on"] as string[],
+      peoplePref: "with-people",
+    };
+    const a = buildRadarPortrait(prefs)!;
+    const b = buildRadarPortrait(prefs)!;
+    expect(a.summary).toBe(b.summary);
   });
 });
