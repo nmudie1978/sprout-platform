@@ -609,16 +609,27 @@ function DiscoverTab({
                 )}
               </div>
             ) : (
-              <a
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`day in the life ${career.title}`)}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border/30 bg-muted/10 aspect-video hover:bg-muted/20 transition-colors"
-              >
-                <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
-                  <Play className="h-5 w-5 text-red-400" />
+              <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/30 bg-muted/10 aspect-video px-4 text-center">
+                <div className="h-10 w-10 rounded-full bg-muted/40 flex items-center justify-center">
+                  <Video className="h-4 w-4 text-muted-foreground/60" />
                 </div>
-                <p className="text-xs text-muted-foreground/50">Watch on YouTube</p>
-              </a>
+                <div>
+                  <p className="text-xs font-medium text-foreground/70">
+                    No videos found for this career
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/60 mt-1 leading-relaxed">
+                    We couldn&apos;t find a relevant &quot;Day in the Life&quot; clip for {career.title}.
+                  </p>
+                </div>
+                <a
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`day in the life ${career.title}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-teal-400 hover:text-teal-300 hover:underline"
+                >
+                  Search YouTube yourself →
+                </a>
+              </div>
             )}
           </div>}
         </SectionCard>

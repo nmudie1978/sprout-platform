@@ -26,6 +26,39 @@ interface YouTubeSearchResult {
 
 const EMPTY_RESULT: YouTubeSearchResult = { videos: [], videoId: null, title: null };
 
+// Relevance filter. YouTube happily returns random videos for niche or
+// novel career titles ("Telco Transformation Lead" → generic leadership
+// talks). Keep only results whose title actually references the career.
+//
+// Rule: derive meaningful career tokens from the query (strip the
+// "day in the life" prefix, drop tiny/common words), then keep a video
+// if its title contains any of those tokens with a word boundary OR the
+// full career phrase as a substring. Careers with no meaningful tokens
+// after filtering (e.g. "Chef") skip the filter to avoid false negatives.
+const QUERY_PREFIX = /^(a\s+)?day\s+in\s+the\s+life\s+(of\s+a\s+|of\s+an\s+|of\s+)?/i;
+const CAREER_STOPWORDS = new Set([
+  'the', 'and', 'for', 'with', 'from', 'your', 'you', 'this', 'that',
+  'day', 'life', 'role', 'work', 'job',
+]);
+
+function extractCareerFromQuery(q: string): string {
+  return q.replace(QUERY_PREFIX, '').trim();
+}
+
+function careerTokens(career: string): string[] {
+  const cleaned = career.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+  return cleaned
+    .split(/\s+/)
+    .filter((t) => t.length >= 4 && !CAREER_STOPWORDS.has(t));
+}
+
+function isTitleRelevant(title: string, career: string, tokens: string[]): boolean {
+  const t = title.toLowerCase();
+  if (t.includes(career.toLowerCase())) return true;
+  if (tokens.length === 0) return true; // no meaningful filter → keep
+  return tokens.some((tok) => new RegExp(`\\b${tok}\\b`, 'i').test(t));
+}
+
 // Cache entries written before the list change hold only `{videoId, title}`.
 // Normalise both shapes into the new `videos[]` response so we don't need to
 // invalidate the cache — legacy entries transparently upgrade on read.
@@ -48,7 +81,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing q parameter' }, { status: 400 });
   }
 
-  const cacheKey = `yt:${query.toLowerCase().trim()}`;
+  // Bumped from `yt:` → `yt2:` so the relevance-filter rollout treats
+  // any previously cached result set (which may contain unrelated junk
+  // videos) as a miss and refetches through the new filter.
+  const cacheKey = `yt2:${query.toLowerCase().trim()}`;
 
   // Check DB cache. Legacy entries stored only one video — treat those as
   // a miss so the new multi-video query runs and replaces them. Without
@@ -82,12 +118,23 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await res.json();
-    const videos: YouTubeVideo[] = (data.items ?? [])
+    const rawVideos: YouTubeVideo[] = (data.items ?? [])
       .map((it: { id?: { videoId?: string }; snippet?: { title?: string } }) => ({
         videoId: it.id?.videoId ?? '',
         title: it.snippet?.title ?? null,
       }))
       .filter((v: YouTubeVideo) => Boolean(v.videoId));
+
+    // Filter to videos whose title actually references the career. For
+    // niche or novel roles the YouTube Data API falls back to loosely
+    // related content (generic leadership videos, unrelated vlogs) and
+    // we'd rather show the "no videos found" empty state than mislead
+    // the user with junk matches.
+    const career = extractCareerFromQuery(query);
+    const tokens = careerTokens(career);
+    const videos = rawVideos.filter((v) =>
+      isTitleRelevant(v.title ?? '', career, tokens),
+    );
 
     const result: YouTubeSearchResult = {
       videos,
@@ -95,15 +142,16 @@ export async function GET(req: NextRequest) {
       title: videos[0]?.title ?? null,
     };
 
-    // Save to DB cache (7 days)
-    if (videos.length > 0) {
-      const cachePayload = result as unknown as Prisma.InputJsonValue;
-      prisma.videoCache.upsert({
-        where: { cacheKey },
-        create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-        update: { data: cachePayload, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-      }).catch(() => { /* non-blocking */ });
-    }
+    // Save to DB cache. Hits cache for 7 days. Misses (no relevant videos)
+    // cache for 1 day so that a newly-indexed career picks up sooner,
+    // while still avoiding a repeated YouTube round-trip on every page view.
+    const cachePayload = result as unknown as Prisma.InputJsonValue;
+    const ttlMs = videos.length > 0 ? 7 * 24 * 60 * 60 * 1000 : 1 * 24 * 60 * 60 * 1000;
+    prisma.videoCache.upsert({
+      where: { cacheKey },
+      create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
+      update: { data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
+    }).catch(() => { /* non-blocking */ });
 
     return NextResponse.json(result, {
       headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
