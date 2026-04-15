@@ -2,18 +2,21 @@ import React from "react";
 import { Page, Text, View, Svg, Rect, Path, Circle } from "@react-pdf/renderer";
 import { palette, stageColors, styles, type } from "./theme";
 import {
+  ActionListItem,
   BulletList,
-  ConnectorLine,
+  Callout,
+  EditorialBlock,
   EmptyState,
   HairlineRule,
   InsightCard,
-  Pair,
+  KeyValueList,
   PageFrame,
-  PhaseMarker,
   QuoteBlock,
   SectionHeader,
-  StageDot,
+  StageLegend,
+  StatStrip,
   TagList,
+  TimelineItem,
 } from "./primitives";
 import type {
   ClaritySummary,
@@ -27,8 +30,16 @@ import type {
   UnderstandSummary,
 } from "./types";
 
-// ── Cover ───────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Cover
+// ═══════════════════════════════════════════════════════════════════
 
+/**
+ * A dark, editorial cover. Title sits in the upper third; subtitle
+ * anchors the middle; generated-date block closes out at the bottom.
+ * All spacing uses `justifyContent: space-between` to stay balanced
+ * regardless of career-title length.
+ */
 export function CoverPage({ vm }: { vm: JourneyReportViewModel }) {
   const { cover } = vm;
   return (
@@ -36,35 +47,25 @@ export function CoverPage({ vm }: { vm: JourneyReportViewModel }) {
       size="A4"
       style={{
         backgroundColor: palette.cover.bg,
-        paddingHorizontal: 52,
-        paddingVertical: 56,
+        paddingHorizontal: 58,
+        paddingVertical: 64,
         fontFamily: type.heading.family,
         justifyContent: "space-between",
       }}
     >
-      {/* Top — brand mark + wordmark */}
+      {/* Top — brand line */}
       <View>
-        <HairlineRule width={56} color={palette.cover.accent} height={3} />
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 22 }}>
-          <Svg style={{ width: 26, height: 26 }} viewBox="0 0 32 32">
-            <Circle cx={16} cy={16} r={15} fill={palette.cover.accent} />
-            <Path
-              d="M16 7 L20 16 L16 14 L12 16 Z"
-              fill={palette.cover.bg}
-            />
-            <Path
-              d="M16 25 L12 16 L16 18 L20 16 Z"
-              fill={palette.cover.bg}
-              fillOpacity={0.55}
-            />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Svg style={{ width: 16, height: 16 }} viewBox="0 0 20 20">
+            <Path d="M10 2 L18 18 L10 13 L2 18 Z" fill={palette.cover.accent} />
           </Svg>
           <Text
             style={{
-              fontFamily: type.heading.family,
-              fontWeight: type.heading.weight,
-              fontSize: 11,
-              color: palette.cover.accent,
-              letterSpacing: 3.5,
+              fontFamily: type.bodyStrong.family,
+              fontWeight: type.bodyStrong.weight,
+              fontSize: 9,
+              color: palette.cover.text,
+              letterSpacing: 3,
               textTransform: "uppercase",
             }}
           >
@@ -73,95 +74,122 @@ export function CoverPage({ vm }: { vm: JourneyReportViewModel }) {
         </View>
       </View>
 
-      {/* Centre — title block */}
+      {/* Middle — title block */}
       <View>
+        <Text
+          style={{
+            fontFamily: type.bodyStrong.family,
+            fontWeight: type.bodyStrong.weight,
+            fontSize: 9,
+            color: palette.cover.accent,
+            letterSpacing: 2.2,
+            textTransform: "uppercase",
+            marginBottom: 22,
+          }}
+        >
+          My Journey Report
+        </Text>
+
         <Text
           style={{
             fontFamily: type.display.family,
             fontWeight: type.display.weight,
-            fontSize: 44,
-            lineHeight: 1.05,
+            fontSize: 52,
+            lineHeight: 1.04,
             color: palette.cover.text,
-            letterSpacing: -0.8,
+            letterSpacing: -1.2,
             marginBottom: 18,
+            maxWidth: 440,
           }}
         >
-          My Journey
-          {"\n"}
-          Report
+          {cover.careerTitle
+            ? `A considered path to ${cover.careerTitle}.`
+            : "A considered look at where you're going."}
         </Text>
 
-        <HairlineRule width={72} color={palette.cover.accent} height={3} />
+        <View style={{ height: 20 }} />
+        <View style={{ height: 0.75, width: 64, backgroundColor: palette.cover.accent }} />
+        <View style={{ height: 20 }} />
 
-        {cover.careerTitle ? (
-          <Text
-            style={{
-              fontFamily: type.body.family,
-              fontSize: 13,
-              color: palette.cover.muted,
-              lineHeight: 1.55,
-              marginTop: 22,
-              marginBottom: 4,
-              maxWidth: 380,
-            }}
-          >
-            A considered summary of exploring a future in{" "}
-            <Text style={{ color: palette.cover.text, fontFamily: type.bodyStrong.family, fontWeight: type.bodyStrong.weight }}>
-              {cover.careerTitle}
-            </Text>
-            .
-          </Text>
-        ) : (
-          <Text
-            style={{
-              fontFamily: type.body.family,
-              fontSize: 13,
-              color: palette.cover.muted,
-              lineHeight: 1.55,
-              marginTop: 22,
-              maxWidth: 380,
-            }}
-          >
-            {cover.subtitle}
-          </Text>
-        )}
+        <Text
+          style={{
+            fontFamily: type.body.family,
+            fontSize: 12,
+            color: palette.cover.muted,
+            lineHeight: 1.6,
+            maxWidth: 400,
+          }}
+        >
+          {cover.subtitle ||
+            "A structured summary of what you're exploring, what you've learned, and what comes next."}
+        </Text>
       </View>
 
-      {/* Bottom — metadata (no name; date only, left-aligned for a
-          calmer, less "certificate-like" feel). */}
+      {/* Bottom — metadata */}
       <View>
-        <View style={{ height: 1, backgroundColor: palette.cover.rule, marginBottom: 20 }} />
-        <View>
-          <Text
-            style={{
-              fontFamily: type.bodyStrong.family,
-              fontWeight: type.bodyStrong.weight,
-              fontSize: 7.5,
-              color: palette.cover.muted,
-              letterSpacing: 1.4,
-              textTransform: "uppercase",
-              marginBottom: 6,
-            }}
-          >
-            Generated
-          </Text>
-          <Text
-            style={{
-              fontFamily: type.heading.family,
-              fontWeight: type.subheading.weight,
-              fontSize: 14,
-              color: palette.cover.text,
-            }}
-          >
-            {cover.generatedDate}
-          </Text>
+        <View style={{ height: 0.5, backgroundColor: palette.cover.rule, marginBottom: 22 }} />
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View>
+            <Text
+              style={{
+                fontFamily: type.bodyStrong.family,
+                fontWeight: type.bodyStrong.weight,
+                fontSize: 7.5,
+                color: palette.cover.muted,
+                letterSpacing: 1.4,
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Generated
+            </Text>
+            <Text
+              style={{
+                fontFamily: type.heading.family,
+                fontWeight: type.subheading.weight,
+                fontSize: 13,
+                color: palette.cover.text,
+                letterSpacing: -0.1,
+              }}
+            >
+              {cover.generatedDate}
+            </Text>
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text
+              style={{
+                fontFamily: type.bodyStrong.family,
+                fontWeight: type.bodyStrong.weight,
+                fontSize: 7.5,
+                color: palette.cover.muted,
+                letterSpacing: 1.4,
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Prepared by
+            </Text>
+            <Text
+              style={{
+                fontFamily: type.heading.family,
+                fontWeight: type.subheading.weight,
+                fontSize: 13,
+                color: palette.cover.text,
+                letterSpacing: -0.1,
+              }}
+            >
+              Endeavrly · My Journey
+            </Text>
+          </View>
         </View>
       </View>
     </Page>
   );
 }
 
-// ── TOC ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Contents
+// ═══════════════════════════════════════════════════════════════════
 
 export interface TocEntry {
   n: number;
@@ -169,6 +197,10 @@ export interface TocEntry {
   pageNumber: number;
 }
 
+/**
+ * Editorial contents page. Number column, title (flex), page number.
+ * Rows separated by hairlines for that magazine-index feel.
+ */
 export function TocPage({
   entries,
   pageNumber,
@@ -186,25 +218,26 @@ export function TocPage({
         lead="A structured walk-through of your journey — the career, the path in, your personal roadmap, and the next moves to make."
       />
 
-      <View style={{ marginTop: 4 }}>
+      <View style={{ marginTop: 8 }}>
         {entries.map((entry, i) => (
           <View
             key={i}
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingVertical: 10,
+              paddingVertical: 14,
               borderBottomWidth: 0.5,
-              borderBottomColor: palette.hairlineSoft,
+              borderBottomColor: palette.hairline,
             }}
           >
             <Text
               style={{
-                width: 28,
-                fontFamily: type.heading.family,
-                fontWeight: type.heading.weight,
-                fontSize: 11,
+                width: 36,
+                fontFamily: type.display.family,
+                fontWeight: type.display.weight,
+                fontSize: 12,
                 color: palette.accent,
+                letterSpacing: -0.2,
               }}
             >
               {String(entry.n).padStart(2, "0")}
@@ -214,8 +247,9 @@ export function TocPage({
                 flex: 1,
                 fontFamily: type.heading.family,
                 fontWeight: type.subheading.weight,
-                fontSize: 12,
+                fontSize: 12.5,
                 color: palette.ink,
+                letterSpacing: -0.1,
               }}
             >
               {entry.title}
@@ -223,8 +257,9 @@ export function TocPage({
             <Text
               style={{
                 fontFamily: type.body.family,
-                fontSize: 10,
+                fontSize: 9.5,
                 color: palette.subtle,
+                letterSpacing: 0.4,
               }}
             >
               p. {entry.pageNumber}
@@ -236,8 +271,7 @@ export function TocPage({
   );
 }
 
-// ── Executive summary ──────────────────────────────────────────────
-
+// Legacy export kept for backwards compatibility.
 export function ExecutivePage({
   data,
   pageNumber,
@@ -249,56 +283,17 @@ export function ExecutivePage({
 }) {
   return (
     <PageFrame sectionLabel="Summary" pageNumber={pageNumber} totalPages={totalPages}>
-      <SectionHeader
-        eyebrow="Executive Summary"
-        title={data.headline}
-        lead="A short narrative of the exploration so far — what's been uncovered, what's been decided, and what's still open."
-      />
-
-      <View style={{ marginBottom: 18 }}>
-        {data.paragraphs.map((p, i) => (
-          <Text
-            key={i}
-            style={[styles.body, { fontSize: 10.5, lineHeight: 1.7, marginBottom: 10 }]}
-          >
-            {p}
-          </Text>
-        ))}
-      </View>
-
-      {data.highlights.length > 0 && (
-        <>
-          <Rule />
-          <View style={{ flexDirection: "row", gap: 12, marginTop: 4 }}>
-            {data.highlights.map((h, i) => (
-              <View key={i} style={{ flex: 1 }}>
-                <Text style={styles.label}>{h.label}</Text>
-                <Text
-                  style={{
-                    fontFamily: type.display.family,
-                    fontWeight: type.display.weight,
-                    fontSize: 15,
-                    color: palette.ink,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {h.value}
-                </Text>
-              </View>
-            ))}
-          </View>
-        </>
-      )}
+      <SectionHeader eyebrow="Summary" title={data.headline} />
+      {data.paragraphs.map((p, i) => (
+        <Text key={i} style={[styles.bodyLg, { marginBottom: 10 }]}>
+          {p}
+        </Text>
+      ))}
     </PageFrame>
   );
 }
 
-function Rule() {
-  return <View style={styles.rule} />;
-}
-
-// ── Discover ───────────────────────────────────────────────────────
-
+// Legacy export kept for backwards compatibility.
 export function DiscoverPage({
   data,
   pageNumber,
@@ -308,117 +303,28 @@ export function DiscoverPage({
   pageNumber: number;
   totalPages: number;
 }) {
-  const hasAnyContent =
-    data.strengths.length > 0 ||
-    data.motivations.length > 0 ||
-    data.workStyle.length > 0 ||
-    data.growthAreas.length > 0 ||
-    data.careerInterests.length > 0 ||
-    Boolean(data.roleModels) ||
-    Boolean(data.experiences) ||
-    Boolean(data.radar);
-
   return (
     <PageFrame sectionLabel="Discover" pageNumber={pageNumber} totalPages={totalPages}>
-      <SectionHeader
-        eyebrow="Phase 01  ·  Discover"
-        title="Who you are"
-        lead="Self-awareness is the foundation. This section captures the signals that make your starting point unique — what you're good at, what pulls you, and what you still want to grow."
-      />
-
-      {!hasAnyContent && (
-        <InsightCard label="Discover isn't empty — it's unwritten" tone="muted">
-          <Text style={[styles.body, { marginBottom: 6 }]}>
-            You haven't captured Discover answers yet. That's fine — the Journey works even when
-            you start from the middle. When you're ready, Discover asks four things:
-          </Text>
-          <BulletList
-            items={[
-              "What are you good at — the three or four things that come more naturally to you than to other people?",
-              "What pulls you — the kind of work, problems, or people you keep coming back to?",
-              "How do you work best — pace, people, environment, what drains you and what fills you up?",
-              "Where do you want to grow — the soft edges you already know you need to sharpen?",
-            ]}
-          />
-        </InsightCard>
-      )}
-
-      {data.radar && (
-        <InsightCard label="From your Career Radar" tone="accent">
-          <BulletList items={data.radar.summaryLines} />
-        </InsightCard>
-      )}
-
-      {data.strengths.length > 0 && (
-        <InsightCard label="Top strengths">
-          <TagList items={data.strengths} max={10} />
-        </InsightCard>
-      )}
-
-      <View style={styles.row}>
-        {data.motivations.length > 0 && (
-          <View style={styles.col}>
-            <InsightCard label="What drives you">
-              <TagList items={data.motivations} color={palette.emerald} bg={palette.emeraldSoft} max={8} />
-            </InsightCard>
-          </View>
-        )}
-        {data.workStyle.length > 0 && (
-          <View style={styles.col}>
-            <InsightCard label="How you work best">
-              <TagList items={data.workStyle} color={palette.violet} bg={palette.violetSoft} max={6} />
-            </InsightCard>
-          </View>
-        )}
-      </View>
-
-      {data.growthAreas.length > 0 && (
-        <InsightCard label="Areas to grow">
-          <TagList items={data.growthAreas} color={palette.amber} bg={palette.amberSoft} max={6} />
-        </InsightCard>
-      )}
-
-      {(data.roleModels || data.experiences) && (
-        <>
-          <View style={styles.sp8} />
-          <View style={styles.row}>
-            {data.roleModels && (
-              <View style={styles.col}>
-                <InsightCard label="Who inspires you">
-                  <Text style={styles.body}>{data.roleModels}</Text>
-                </InsightCard>
-              </View>
-            )}
-            {data.experiences && (
-              <View style={styles.col}>
-                <InsightCard label="What you've tried">
-                  <Text style={styles.body}>{data.experiences}</Text>
-                </InsightCard>
-              </View>
-            )}
-          </View>
-        </>
-      )}
-
-      {data.careerInterests.length > 0 && (
-        <InsightCard label="Career directions you've considered">
-          <TagList items={data.careerInterests} color={palette.blue} bg={palette.blueSoft} max={10} />
-        </InsightCard>
+      <SectionHeader eyebrow="Discover" title="Who you are" />
+      {data.radar?.summaryLines.length ? (
+        <BulletList items={data.radar.summaryLines} />
+      ) : (
+        <EmptyState message="Discover reflections haven't been captured yet." />
       )}
     </PageFrame>
   );
 }
 
-// ── Understand ─────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Career Summary (Understand)
+// ═══════════════════════════════════════════════════════════════════
 
 /**
- * Understand is the richest content section. When the user hasn't
- * written their own notes we still have a great deal to say about
- * the career itself — description, salary, demand, typical day,
- * required subjects, university path, certifications, and a salary
- * + sector line. We weave user-authored content in as its own card
- * at the top when present, so the reader sees the user's voice
- * first and the catalog data as supporting colour.
+ * A career-summary page in the editorial mode:
+ *   1. Overview (catalog description + user's role-reality notes).
+ *   2. Stat strip — salary / demand outlook / education path.
+ *   3. Structured two-column blocks — what you do, who suits, skills,
+ *      reality check.
  */
 export function UnderstandPage({
   data,
@@ -431,173 +337,121 @@ export function UnderstandPage({
   pageNumber: number;
   totalPages: number;
 }) {
-  const userHasNotes =
-    data.roleReality.length > 0 ||
-    data.industryInsights.length > 0 ||
-    data.qualifications.length > 0 ||
-    data.keySkills.length > 0 ||
-    data.courses.length > 0 ||
-    Boolean(data.actionPlan);
+  const stats: Array<{ label: string; value: string }> = [];
+  if (data.facts?.avgSalary) stats.push({ label: "Entry salary", value: data.facts.avgSalary });
+  if (data.facts?.growthOutlookLabel)
+    stats.push({ label: "Demand outlook", value: data.facts.growthOutlookLabel });
+  if (data.facts?.educationPath)
+    stats.push({ label: "Education path", value: data.facts.educationPath });
 
-  const hasCatalog = Boolean(
-    data.facts || data.insights || data.requirements || data.certifications || data.programmes.length,
-  );
+  const hasAnything =
+    data.facts ||
+    data.insights ||
+    data.requirements ||
+    data.programmes.length > 0 ||
+    data.certifications ||
+    data.roleReality.length > 0 ||
+    data.industryInsights.length > 0;
 
   return (
-    <PageFrame sectionLabel="Career Summary" pageNumber={pageNumber} totalPages={totalPages}>
+    <PageFrame
+      sectionLabel="Career Summary"
+      pageNumber={pageNumber}
+      totalPages={totalPages}
+    >
       <SectionHeader
         eyebrow="Career Summary"
-        title={career ? `Career Summary for: ${career}` : "Career Summary"}
+        title={career ? career : "Career Summary"}
         lead={
           career
-            ? `What the role actually looks like, what it asks of you, and what you'd need to build to get there. Signals below are drawn from the app's verified career catalog.`
+            ? `What the role actually looks like, what it asks of you, and what you'd need to build to get there.`
             : "Exploration is what turns a career name into a decision."
         }
       />
 
-      {/* Fact strip — headline facts about the career */}
-      {data.facts && (
-        <View style={{ flexDirection: "row", gap: 10, marginBottom: 12 }}>
-          {data.facts.avgSalary && (
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: palette.surface,
-                borderRadius: 6,
-                padding: 12,
-                borderLeftWidth: 2,
-                borderLeftColor: palette.accent,
-              }}
-            >
-              <Text style={styles.label}>Entry salary (NO)</Text>
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.subheading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                }}
-              >
-                {data.facts.avgSalary}
-              </Text>
-            </View>
-          )}
-          {data.facts.growthOutlookLabel && (
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: palette.surface,
-                borderRadius: 6,
-                padding: 12,
-                borderLeftWidth: 2,
-                borderLeftColor: palette.emerald,
-              }}
-            >
-              <Text style={styles.label}>Demand outlook</Text>
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.subheading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                }}
-              >
-                {data.facts.growthOutlookLabel}
-              </Text>
-            </View>
-          )}
-          {data.facts.educationPath && (
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: palette.surface,
-                borderRadius: 6,
-                padding: 12,
-                borderLeftWidth: 2,
-                borderLeftColor: palette.blue,
-              }}
-            >
-              <Text style={styles.label}>Education path</Text>
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.subheading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                }}
-              >
-                {data.facts.educationPath}
-              </Text>
-            </View>
-          )}
+      {/* Stat strip — headline facts */}
+      {stats.length > 0 && <StatStrip items={stats} />}
+
+      {/* Overview paragraph — from catalog */}
+      {data.facts?.description && (
+        <View style={{ marginBottom: 22 }}>
+          <Text style={styles.bodyLg}>{data.facts.description}</Text>
         </View>
       )}
 
-      {data.facts?.description && (
-        <Text style={[styles.body, { fontSize: 10.5, lineHeight: 1.7, marginBottom: 12 }]}>
-          {data.facts.description}
-        </Text>
-      )}
-
-      {/* User-authored role reality first, if present */}
+      {/* User's notes — elevated, surfaces the user's voice before
+          catalog content. */}
       {data.roleReality.length > 0 && (
-        <InsightCard label="What you noted about the role" tone="accent">
+        <Callout label="What you noted about the role" tone="accent">
           <BulletList items={data.roleReality} max={6} />
-        </InsightCard>
+        </Callout>
       )}
 
-      {/* Catalog signals */}
+      {/* What you actually do — full-width because this is long-form */}
       {data.insights?.whatYouActuallyDo && data.insights.whatYouActuallyDo.length > 0 && (
-        <InsightCard label="What you actually do day-to-day">
+        <EditorialBlock label="What you actually do day-to-day">
           <BulletList items={data.insights.whatYouActuallyDo} max={6} />
-        </InsightCard>
+        </EditorialBlock>
       )}
 
-      <View style={styles.row}>
+      {/* Two-column — skills + who this suits */}
+      <View style={{ flexDirection: "row", gap: 22, marginBottom: 12 }}>
         {data.insights?.topSkills && data.insights.topSkills.length > 0 && (
-          <View style={styles.col}>
-            <InsightCard label="Key skills to build">
-              <TagList
-                items={data.insights.topSkills}
-                color={palette.blue}
-                bg={palette.blueSoft}
-                max={10}
-              />
-            </InsightCard>
+          <View style={{ flex: 1 }}>
+            <View style={styles.ruleSoft} />
+            <View style={{ height: 8 }} />
+            <Text style={styles.label}>Key skills to build</Text>
+            <TagList
+              items={data.insights.topSkills}
+              color={palette.blue}
+              bg={palette.blueSoft}
+              max={10}
+            />
           </View>
         )}
         {data.insights?.whoThisIsGoodFor && data.insights.whoThisIsGoodFor.length > 0 && (
-          <View style={styles.col}>
-            <InsightCard label="Who this suits">
-              <BulletList items={data.insights.whoThisIsGoodFor} max={5} />
-            </InsightCard>
+          <View style={{ flex: 1 }}>
+            <View style={styles.ruleSoft} />
+            <View style={{ height: 8 }} />
+            <Text style={styles.label}>Who this suits</Text>
+            <BulletList items={data.insights.whoThisIsGoodFor} max={5} />
           </View>
         )}
       </View>
 
       {data.insights?.realityCheck && (
-        <InsightCard label="Reality check" tone="muted">
-          <Text style={styles.body}>{data.insights.realityCheck}</Text>
-        </InsightCard>
+        <Callout label="Reality check" tone="muted">
+          {data.insights.realityCheck}
+        </Callout>
       )}
 
       {data.industryInsights.length > 0 && (
-        <InsightCard label="Your industry notes">
+        <EditorialBlock label="Your industry notes">
           <BulletList items={data.industryInsights} max={6} />
-        </InsightCard>
+        </EditorialBlock>
       )}
 
-      {!userHasNotes && !hasCatalog && (
+      {!hasAnything && (
         <EmptyState message="Nothing has been captured in Understand yet. Reading the role reality, making notes, and saving a few qualifications or courses will fill this section with substance." />
       )}
     </PageFrame>
   );
 }
 
+// ═══════════════════════════════════════════════════════════════════
+//  The Path (Understand, subpage)
+// ═══════════════════════════════════════════════════════════════════
+
 /**
- * A second Understand page — renders when we have path / programme /
- * certification content. Keeps the first page readable and gives the
- * requirements their own breathing room.
+ * Structured breakdown of how someone qualifies for this career:
+ *   - Required / recommended subjects
+ *   - Grade expectation
+ *   - University programme
+ *   - Entry role
+ *   - Qualifies for (immediate / with experience)
+ *   - Certifications
+ *
+ * Uses KeyValueList for the factual core and TagList for subject chips.
  */
 export function UnderstandPathPage({
   data,
@@ -610,268 +464,190 @@ export function UnderstandPathPage({
   pageNumber: number;
   totalPages: number;
 }) {
-  return (
-    <PageFrame sectionLabel="Understand · path" pageNumber={pageNumber} totalPages={totalPages}>
-      <View style={{ marginBottom: 12 }}>
-        <Text style={styles.eyebrow}>Phase 02  ·  Understand</Text>
-        <Text style={styles.h1}>{career ? `The path to ${career}` : "The path to the role"}</Text>
-        <View style={{ height: 10 }} />
-        <Rule />
-      </View>
+  const req = data.requirements;
 
-      {data.requirements && (
-        <>
-          <View style={styles.row}>
-            <View style={styles.col}>
-              <InsightCard label="Required school subjects">
-                {data.requirements.subjects.required.length > 0 ? (
-                  <TagList items={data.requirements.subjects.required} max={8} />
-                ) : (
-                  <Text style={styles.bodyMuted}>Not specified for this career.</Text>
-                )}
-                {data.requirements.subjects.minimumGrade && (
-                  <>
-                    <View style={styles.sp8} />
-                    <Text style={styles.caption}>
-                      Grade expectation: {data.requirements.subjects.minimumGrade}
-                    </Text>
-                  </>
-                )}
-              </InsightCard>
-            </View>
-            {data.requirements.subjects.recommended.length > 0 && (
-              <View style={styles.col}>
-                <InsightCard label="Recommended subjects">
-                  <TagList
-                    items={data.requirements.subjects.recommended}
-                    color={palette.violet}
-                    bg={palette.violetSoft}
-                    max={8}
-                  />
-                </InsightCard>
+  const pathFacts: Array<{ label: string; value: string }> = [];
+  if (req?.universityPath?.programme)
+    pathFacts.push({ label: "Programme", value: req.universityPath.programme });
+  if (req?.universityPath?.duration)
+    pathFacts.push({ label: "Duration", value: req.universityPath.duration });
+  if (req?.universityPath?.type)
+    pathFacts.push({
+      label: "Qualification",
+      value: capitalise(req.universityPath.type),
+    });
+  if (req?.universityPath?.applicationRoute)
+    pathFacts.push({ label: "Apply via", value: req.universityPath.applicationRoute });
+  if (req?.subjects?.minimumGrade)
+    pathFacts.push({ label: "Grade expectation", value: req.subjects.minimumGrade });
+
+  const entryFacts: Array<{ label: string; value: string }> = [];
+  if (req?.entryLevel?.title)
+    entryFacts.push({ label: "First role", value: req.entryLevel.title });
+  if (req?.qualifiesFor?.immediate)
+    entryFacts.push({ label: "Qualifies you for", value: req.qualifiesFor.immediate });
+  if (req?.qualifiesFor?.withExperience)
+    entryFacts.push({
+      label: "With experience",
+      value: req.qualifiesFor.withExperience,
+    });
+
+  const hasSubjects =
+    (req?.subjects?.required?.length ?? 0) > 0 ||
+    (req?.subjects?.recommended?.length ?? 0) > 0;
+
+  return (
+    <PageFrame
+      sectionLabel="The Path"
+      pageNumber={pageNumber}
+      totalPages={totalPages}
+    >
+      <SectionHeader
+        eyebrow="Understand · The Path"
+        title={career ? `The path to ${career}` : "The path to the role"}
+        lead="How people qualify: the school subjects, university route, and first role you'd be ready to step into."
+      />
+
+      {/* Subjects */}
+      {hasSubjects && (
+        <View style={{ marginBottom: 24 }}>
+          <Text style={[styles.h2, { marginBottom: 14 }]}>School subjects</Text>
+          <View style={{ flexDirection: "row", gap: 24 }}>
+            {(req?.subjects.required.length ?? 0) > 0 && (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Required</Text>
+                <TagList
+                  items={req!.subjects.required}
+                  color={palette.accent}
+                  bg={palette.accentSoft}
+                  max={10}
+                />
+              </View>
+            )}
+            {(req?.subjects.recommended.length ?? 0) > 0 && (
+              <View style={{ flex: 1 }}>
+                <Text style={styles.label}>Recommended</Text>
+                <TagList
+                  items={req!.subjects.recommended}
+                  color={palette.violet}
+                  bg={palette.violetSoft}
+                  max={10}
+                />
               </View>
             )}
           </View>
-
-          {data.requirements.universityPath.programme && (
-            <InsightCard label="University path" tone="accent">
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.subheading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                  marginBottom: 3,
-                }}
-              >
-                {data.requirements.universityPath.programme}
-                {data.requirements.universityPath.duration
-                  ? `  ·  ${data.requirements.universityPath.duration}`
-                  : ""}
-              </Text>
-              {data.requirements.universityPath.examples.length > 0 && (
-                <Text style={styles.body}>
-                  Examples: {data.requirements.universityPath.examples.slice(0, 6).join(", ")}.
-                </Text>
-              )}
-              {data.requirements.universityPath.applicationRoute && (
-                <Text style={[styles.caption, { marginTop: 4 }]}>
-                  Apply via {data.requirements.universityPath.applicationRoute}.
-                </Text>
-              )}
-              {data.requirements.universityPath.competitiveness && (
-                <Text style={[styles.caption, { marginTop: 2 }]}>
-                  {data.requirements.universityPath.competitiveness}
-                </Text>
-              )}
-            </InsightCard>
-          )}
-
-          {(data.requirements.entryLevel.title ||
-            data.requirements.qualifiesFor.immediate ||
-            data.requirements.qualifiesFor.seniorPath) && (
-            <View style={styles.row}>
-              {data.requirements.entryLevel.title && (
-                <View style={styles.col}>
-                  <InsightCard label="Entry-level stage">
-                    <Text
-                      style={{
-                        fontFamily: type.heading.family,
-                        fontWeight: type.subheading.weight,
-                        fontSize: 10.5,
-                        color: palette.ink,
-                      }}
-                    >
-                      {data.requirements.entryLevel.title}
-                    </Text>
-                    {data.requirements.entryLevel.description && (
-                      <Text style={[styles.body, { marginTop: 3 }]}>
-                        {data.requirements.entryLevel.description}
-                      </Text>
-                    )}
-                    {data.requirements.entryLevel.whatYouNeed && (
-                      <Text style={[styles.caption, { marginTop: 4 }]}>
-                        {data.requirements.entryLevel.whatYouNeed}
-                      </Text>
-                    )}
-                  </InsightCard>
-                </View>
-              )}
-              <View style={styles.col}>
-                <InsightCard label="What this qualifies you for">
-                  {data.requirements.qualifiesFor.immediate && (
-                    <Text style={[styles.body, { marginBottom: 2 }]}>
-                      Immediately: {data.requirements.qualifiesFor.immediate}
-                    </Text>
-                  )}
-                  {data.requirements.qualifiesFor.withExperience && (
-                    <Text style={[styles.body, { marginBottom: 2 }]}>
-                      With experience: {data.requirements.qualifiesFor.withExperience}
-                    </Text>
-                  )}
-                  {data.requirements.qualifiesFor.seniorPath && (
-                    <Text style={styles.body}>
-                      Senior path: {data.requirements.qualifiesFor.seniorPath}
-                    </Text>
-                  )}
-                </InsightCard>
-              </View>
-            </View>
-          )}
-        </>
+        </View>
       )}
 
-      {data.programmes.length > 0 && (
-        <InsightCard label="Programmes that lead here">
-          {data.programmes.slice(0, 5).map((p, i) => (
-            <View
-              key={i}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 5,
-                borderBottomWidth: i === Math.min(4, data.programmes.length - 1) ? 0 : 0.5,
-                borderBottomColor: palette.hairlineSoft,
-              }}
+      {/* University programme + key facts */}
+      {pathFacts.length > 0 && (
+        <View style={{ marginBottom: 24 }}>
+          <Text style={[styles.h2, { marginBottom: 14 }]}>University route</Text>
+          <KeyValueList items={pathFacts} />
+          {(req?.universityPath?.examples?.length ?? 0) > 0 && (
+            <View style={{ marginTop: 4 }}>
+              <Text style={[styles.label, { marginBottom: 6 }]}>Example institutions</Text>
+              <Text style={[styles.body, { color: palette.body }]}>
+                {req!.universityPath.examples.slice(0, 6).join(" · ")}
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
+
+      {/* Entry level + progression */}
+      {entryFacts.length > 0 && (
+        <View style={{ marginBottom: 24 }}>
+          <Text style={[styles.h2, { marginBottom: 14 }]}>Where you start</Text>
+          <KeyValueList items={entryFacts} />
+          {req?.entryLevel?.description && (
+            <Text
+              style={[styles.body, { color: palette.muted, marginTop: 4, lineHeight: 1.62 }]}
             >
-              <View style={{ flex: 1, paddingRight: 8 }}>
-                <Text
-                  style={{
-                    fontFamily: type.heading.family,
-                    fontWeight: type.subheading.weight,
-                    fontSize: 9.5,
-                    color: palette.ink,
-                  }}
-                >
-                  {p.programme}
-                </Text>
-                <Text style={styles.caption}>
-                  {[p.institution, p.city, p.country].filter(Boolean).join(", ")}
-                </Text>
-              </View>
-              <Text style={[styles.caption, { paddingTop: 2, minWidth: 64, textAlign: "right" }]}>
-                {[p.duration, p.language].filter(Boolean).join("  ·  ")}
-              </Text>
-            </View>
-          ))}
-        </InsightCard>
+              {req.entryLevel.description}
+            </Text>
+          )}
+        </View>
       )}
 
+      {/* Certifications — treated as a stand-alone page section */}
       {data.certifications && data.certifications.certifications.length > 0 && (
-        <InsightCard label={data.certifications.summary || "Professional certifications"}>
-          {data.certifications.certifications.map((c, i) => (
-            <View
-              key={i}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 4,
-                borderBottomWidth: i === data.certifications!.certifications.length - 1 ? 0 : 0.5,
-                borderBottomColor: palette.hairlineSoft,
-              }}
+        <View style={{ marginBottom: 16 }}>
+          <Text style={[styles.h2, { marginBottom: 6 }]}>Certifications worth knowing</Text>
+          {data.certifications.summary && (
+            <Text
+              style={[styles.body, { color: palette.muted, marginBottom: 12, maxWidth: 440 }]}
             >
-              <View style={{ flex: 1, paddingRight: 8 }}>
-                <Text
-                  style={{
-                    fontFamily: type.heading.family,
-                    fontWeight: type.subheading.weight,
-                    fontSize: 9.5,
-                    color: palette.ink,
-                  }}
-                >
-                  {c.name}
+              {data.certifications.summary}
+            </Text>
+          )}
+          <View>
+            {data.certifications.certifications.slice(0, 6).map((c, i) => (
+              <View
+                key={i}
+                style={{
+                  paddingVertical: 10,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: palette.hairline,
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                  gap: 16,
+                  ...(i === 0 ? { borderTopWidth: 0.75, borderTopColor: palette.divider } : {}),
+                }}
+                wrap={false}
+              >
+                <View style={{ flex: 2 }}>
+                  <Text
+                    style={{
+                      fontFamily: type.heading.family,
+                      fontWeight: type.subheading.weight,
+                      fontSize: 10.5,
+                      color: palette.ink,
+                      marginBottom: 2,
+                      letterSpacing: -0.05,
+                    }}
+                  >
+                    {c.name}
+                  </Text>
+                  <Text style={{ fontSize: 8.5, color: palette.subtle }}>{c.provider}</Text>
+                </View>
+                <Text style={{ flex: 1, fontSize: 9, color: palette.muted }}>
+                  {c.duration}
                 </Text>
-                <Text style={styles.caption}>
-                  {[c.provider, c.duration, c.cost].filter(Boolean).join("  ·  ")}
-                </Text>
-              </View>
-              {c.recognised && (
-                <Text style={[styles.caption, { paddingTop: 2, maxWidth: 110, textAlign: "right" }]}>
+                <Text style={{ flex: 1, fontSize: 9, color: palette.muted }}>
                   {c.recognised}
                 </Text>
-              )}
-            </View>
-          ))}
-        </InsightCard>
+              </View>
+            ))}
+          </View>
+        </View>
       )}
 
       {data.facts?.pensionNote && (
-        <InsightCard label="Sector & pension" tone="muted">
-          <Text style={styles.body}>{data.facts.pensionNote}</Text>
-        </InsightCard>
-      )}
-
-      {data.actionPlan && (
-        <>
-          <Rule />
-          <Text style={styles.h2}>Your action plan</Text>
-          {data.actionPlan.roleTitle && (
-            <InsightCard label="Target role" tone="accent">
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.subheading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                }}
-              >
-                {data.actionPlan.roleTitle}
-              </Text>
-            </InsightCard>
-          )}
-          <View style={styles.row}>
-            {data.actionPlan.shortTermActions && data.actionPlan.shortTermActions.length > 0 && (
-              <View style={styles.col}>
-                <InsightCard label="Next steps">
-                  <BulletList items={data.actionPlan.shortTermActions} max={5} />
-                </InsightCard>
-              </View>
-            )}
-            {(data.actionPlan.skillToBuild || data.actionPlan.midTermMilestone) && (
-              <View style={styles.col}>
-                {data.actionPlan.skillToBuild && (
-                  <InsightCard label="Skill to build">
-                    <Text style={styles.body}>{data.actionPlan.skillToBuild}</Text>
-                  </InsightCard>
-                )}
-                {data.actionPlan.midTermMilestone && (
-                  <InsightCard label="Mid-term milestone">
-                    <Text style={styles.body}>{data.actionPlan.midTermMilestone}</Text>
-                  </InsightCard>
-                )}
-              </View>
-            )}
-          </View>
-        </>
+        <Callout label="Pension & benefits note" tone="muted">
+          {data.facts.pensionNote}
+        </Callout>
       )}
     </PageFrame>
   );
 }
 
-// ── Roadmap ─────────────────────────────────────────────────────────
+function capitalise(s: string): string {
+  return s ? s[0].toUpperCase() + s.slice(1) : s;
+}
 
-const ITEMS_PER_ROADMAP_PAGE = 5;
+// ═══════════════════════════════════════════════════════════════════
+//  Roadmap
+// ═══════════════════════════════════════════════════════════════════
 
+const ITEMS_PER_ROADMAP_PAGE = 7;
+
+/**
+ * A true vertical timeline. Each step is a TimelineItem (stage dot +
+ * connector rail + content column); @react-pdf auto-breaks across
+ * pages if the step count would overflow, and TimelineItem is
+ * wrap={false} so no single step splits mid-row.
+ */
 export function RoadmapPages({
   data,
   education,
@@ -883,27 +659,23 @@ export function RoadmapPages({
   education: EducationContext;
   startingPageNumber: number;
   totalPages: number;
-  /** Optional override; defaults to the module constant. */
   itemsPerPage?: number;
 }): React.ReactElement[] {
   const perPage = itemsPerPage ?? ITEMS_PER_ROADMAP_PAGE;
   const hasItems = data.items.length > 0;
   const hasSchoolTrack = data.schoolTrack.length > 0;
-  // `education` is no longer rendered — "Current education" was removed
-  // from the report because it duplicates content on the roadmap's
-  // first step. Keep the prop so callers don't have to change shape.
   void education;
 
   if (!hasItems && !hasSchoolTrack) {
     return [
       <PageFrame
         key="rm-empty"
-        sectionLabel="Your path"
+        sectionLabel="Your Path"
         pageNumber={startingPageNumber}
         totalPages={totalPages}
       >
         <SectionHeader
-          eyebrow="Your path"
+          eyebrow="Your Path"
           title="Your personal roadmap"
           lead="The path from where you are today to the career you're exploring — mapped around your age, your education stage, and your chosen direction."
         />
@@ -920,99 +692,102 @@ export function RoadmapPages({
     const isFirst = p === 0;
     const isLastRoadmapPage = p === pageCount - 1;
     const pageNumber = startingPageNumber + p;
+    const sliceLastIdx = slice.length - 1;
 
     out.push(
       <PageFrame
         key={`rm-${p}`}
-        sectionLabel="Your path"
+        sectionLabel="Your Path"
         pageNumber={pageNumber}
         totalPages={totalPages}
       >
         {isFirst ? (
           <SectionHeader
-            eyebrow="Your path"
+            eyebrow="Your Path"
             title={data.career ? `Your path to ${data.career}` : "Your personal roadmap"}
             lead={
               data.isFallback
-                ? "A draft roadmap built from the career's real requirements and your current age. Open the Clarity tab in-app to refine it into your personalised version."
-                : "An age-anchored timeline from today to a senior role. Every milestone is editable in-app — this is the version captured on the day this report was generated."
+                ? "A draft roadmap built from the career's real requirements and your current age. Open the Clarity tab in-app to refine it."
+                : "An age-anchored timeline from today to a senior role — the version captured on the day this report was generated."
             }
           />
         ) : (
-          <View style={{ marginBottom: 12 }}>
-            <Text style={styles.eyebrow}>Continued</Text>
+          <View style={{ marginBottom: 20 }}>
+            <Text style={[styles.overline, { marginBottom: 8 }]}>Your Path</Text>
             <Text style={styles.h1}>Your path, continued</Text>
-            <View style={styles.ruleSoft} />
+            <View style={{ height: 14 }} />
+            <View style={styles.rule} />
           </View>
         )}
 
         {isFirst && hasItems && (
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 14,
-              marginBottom: 14,
-            }}
-          >
-            {(["foundation", "education", "experience", "career"] as const).map((stage) => {
-              const s = stageColors[stage];
+          <StageLegend
+            stages={[
+              { label: "Foundation", color: stageColors.foundation.accent },
+              { label: "Education", color: stageColors.education.accent },
+              { label: "Experience", color: stageColors.experience.accent },
+              { label: "Career", color: stageColors.career.accent },
+            ]}
+          />
+        )}
+
+        {slice.length > 0 && (
+          <View>
+            {slice.map((step, i) => {
+              const stage = stageColors[step.stage];
+              const stageLabel = step.stage[0].toUpperCase() + step.stage.slice(1);
+              const startYear =
+                data.birthYear != null ? data.birthYear + step.startAge : null;
+              const endYear =
+                data.birthYear != null && step.endAge != null
+                  ? data.birthYear + step.endAge
+                  : null;
+              const ageLabel = step.endAge
+                ? `Age ${step.startAge}–${step.endAge}`
+                : `Age ${step.startAge}`;
+              const yearLabel = startYear
+                ? endYear && endYear !== startYear
+                  ? `${startYear}–${endYear}`
+                  : `${startYear}`
+                : undefined;
+              const isLast = i === sliceLastIdx && isLastRoadmapPage && !hasSchoolTrack;
+              const summary = step.subtitle || step.description || undefined;
               return (
-                <View
-                  key={stage}
-                  style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-                >
-                  <StageDot color={s.accent} />
-                  <Text
-                    style={{
-                      fontSize: 8.5,
-                      color: palette.muted,
-                      textTransform: "capitalize",
-                      letterSpacing: 0.3,
-                    }}
-                  >
-                    {stage}
-                  </Text>
-                </View>
+                <TimelineItem
+                  key={i}
+                  stage={step.stage}
+                  stageLabel={stageLabel}
+                  stageColor={stage.accent}
+                  stageBg={stage.bg}
+                  stageInk={stage.ink}
+                  title={step.title}
+                  summary={summary}
+                  ageLabel={ageLabel}
+                  yearLabel={yearLabel}
+                  isMilestone={step.isMilestone}
+                  isLast={isLast}
+                />
               );
             })}
           </View>
         )}
 
-        {slice.length > 0 && (
-          <View>
-            {slice.map((item, i) => (
-              <RoadmapRow
-                key={i}
-                step={item}
-                birthYear={data.birthYear}
-                last={
-                  isLastRoadmapPage && i === slice.length - 1
-                }
-              />
-            ))}
-          </View>
-        )}
-
-        {/* Learning track renders once, on the final roadmap page.
-            "Current education" was removed — it duplicates the
-            starting-point info already inline on the roadmap. */}
         {isLastRoadmapPage && hasSchoolTrack && (
-          <View style={{ marginTop: 18 }}>
+          <View style={{ marginTop: 24 }}>
             <View style={styles.rule} />
-            <Text style={styles.h1}>Learning track</Text>
-            <Text style={[styles.bodyMuted, { marginBottom: 10 }]}>
+            <View style={{ height: 18 }} />
+            <Text style={[styles.h2, { marginBottom: 6 }]}>Learning track</Text>
+            <Text style={[styles.bodyMuted, { marginBottom: 14, maxWidth: 440 }]}>
               The subjects and personal learning that run alongside your roadmap.
             </Text>
             {data.schoolTrack.map((item, i) => (
               <View
                 key={i}
                 style={{
-                  backgroundColor: palette.surface,
-                  borderRadius: 6,
-                  padding: 12,
-                  marginBottom: 8,
-                  borderLeftWidth: 2,
-                  borderLeftColor: palette.blue,
+                  paddingVertical: 10,
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: palette.hairline,
+                  ...(i === 0 ? { borderTopWidth: 0.5, borderTopColor: palette.hairline } : {}),
                 }}
                 wrap={false}
               >
@@ -1028,7 +803,7 @@ export function RoadmapPages({
                     style={{
                       fontFamily: type.heading.family,
                       fontWeight: type.subheading.weight,
-                      fontSize: 10,
+                      fontSize: 10.5,
                       color: palette.ink,
                     }}
                   >
@@ -1042,17 +817,21 @@ export function RoadmapPages({
                       color: stageColors[item.stage].ink,
                       backgroundColor: stageColors[item.stage].bg,
                       paddingHorizontal: 7,
-                      paddingVertical: 3,
-                      borderRadius: 10,
-                      textTransform: "capitalize",
+                      paddingVertical: 2.5,
                       letterSpacing: 0.4,
+                      textTransform: "uppercase",
                     }}
                   >
                     {item.stage}
                   </Text>
                 </View>
                 {item.subjects.length > 0 && (
-                  <TagList items={item.subjects} color={palette.blue} bg={palette.blueSoft} max={10} />
+                  <TagList
+                    items={item.subjects}
+                    color={palette.blue}
+                    bg={palette.blueSoft}
+                    max={10}
+                  />
                 )}
                 {item.personalLearning && (
                   <Text style={[styles.caption, { marginTop: 4 }]}>
@@ -1070,119 +849,9 @@ export function RoadmapPages({
   return out;
 }
 
-function RoadmapRow({
-  step,
-  birthYear,
-  last,
-}: {
-  step: RoadmapSection["items"][number];
-  birthYear: number | null;
-  last: boolean;
-}) {
-  const stage = stageColors[step.stage];
-  const stageLabel = step.stage[0].toUpperCase() + step.stage.slice(1);
-
-  // Compact age + year label. Year range only renders when we know the
-  // user's birth year — otherwise we fall back to age only.
-  const startYear = birthYear != null ? birthYear + step.startAge : null;
-  const endYear =
-    birthYear != null && step.endAge != null ? birthYear + step.endAge : null;
-  const ageStr = step.endAge ? `${step.startAge}\u2013${step.endAge}` : `${step.startAge}`;
-  const yearStr = startYear
-    ? endYear && endYear !== startYear
-      ? ` \u00B7 ${startYear}\u2013${endYear}`
-      : ` \u00B7 ${startYear}`
-    : "";
-  const ageYearLabel = `Age ${ageStr}${yearStr}`;
-
-  // Single-line summary: prefer subtitle, then description — never both.
-  // microActions are dropped from the PDF entirely to fit the roadmap
-  // on one page; they remain visible in-app.
-  const summary = step.subtitle || step.description || null;
-
-  return (
-    <View
-      style={{ flexDirection: "row", marginBottom: last ? 0 : 4 }}
-      wrap={false}
-    >
-      {/* Left rail — tightened connector so more rows fit per page. */}
-      <View style={{ width: 22, alignItems: "center" }}>
-        <StageDot color={stage.accent} milestone={step.isMilestone} />
-        {!last && (
-          <View style={{ flex: 1, marginTop: 2 }}>
-            <ConnectorLine height={14} />
-          </View>
-        )}
-      </View>
-
-      {/* Content */}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: stage.bg,
-          borderRadius: 5,
-          paddingHorizontal: 9,
-          paddingVertical: 6,
-          borderLeftWidth: 2,
-          borderLeftColor: stage.accent,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: summary ? 2 : 0,
-          }}
-        >
-          <Text
-            style={{
-              flex: 1,
-              fontFamily: type.heading.family,
-              fontWeight: type.heading.weight,
-              fontSize: 9.5,
-              color: stage.ink,
-            }}
-          >
-            {step.isMilestone ? `${step.title}  \u2605` : step.title}
-          </Text>
-          <Text
-            style={{
-              fontSize: 6.5,
-              fontFamily: type.bodyStrong.family,
-              fontWeight: type.bodyStrong.weight,
-              color: stage.ink,
-              backgroundColor: "rgba(255,255,255,0.6)",
-              paddingHorizontal: 5,
-              paddingVertical: 1,
-              borderRadius: 8,
-              letterSpacing: 0.4,
-            }}
-          >
-            {stageLabel}
-          </Text>
-          <Text style={{ fontSize: 7.5, color: palette.subtle }}>
-            {ageYearLabel}
-          </Text>
-        </View>
-        {summary && (
-          <Text
-            style={{
-              fontSize: 8,
-              color: palette.muted,
-              lineHeight: 1.35,
-            }}
-          >
-            {summary}
-          </Text>
-        )}
-      </View>
-    </View>
-  );
-}
-
-// ── Alternative routes ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Alternative routes
+// ═══════════════════════════════════════════════════════════════════
 
 export function RoutesPage({
   routes,
@@ -1197,16 +866,14 @@ export function RoutesPage({
 }) {
   if (routes.length === 0) return null;
 
-  const tints: { bg: string; ink: string; accent: string }[] = [
-    { bg: palette.accentSoft, ink: palette.accent, accent: palette.accent },
-    { bg: palette.violetSoft, ink: palette.violet, accent: palette.violet },
-    { bg: palette.amberSoft, ink: palette.amber, accent: palette.amber },
-  ];
-
   return (
-    <PageFrame sectionLabel="Alternative routes" pageNumber={pageNumber} totalPages={totalPages}>
+    <PageFrame
+      sectionLabel="Alternative Routes"
+      pageNumber={pageNumber}
+      totalPages={totalPages}
+    >
       <SectionHeader
-        eyebrow="Phase 03  ·  Clarity"
+        eyebrow="Alternative Routes"
         title="More than one way in"
         lead={
           career
@@ -1215,51 +882,59 @@ export function RoutesPage({
         }
       />
 
-      {routes.map((route, i) => {
-        const tint = tints[i % tints.length];
-        return (
+      <View>
+        {routes.map((route, i) => (
           <View
             key={i}
             style={{
-              backgroundColor: palette.surface,
-              borderRadius: 6,
-              padding: 14,
-              marginBottom: 10,
-              borderLeftWidth: 2,
-              borderLeftColor: tint.accent,
+              paddingVertical: 16,
+              borderBottomWidth: 0.5,
+              borderBottomColor: palette.hairline,
+              ...(i === 0 ? { borderTopWidth: 0.75, borderTopColor: palette.divider } : {}),
             }}
             wrap={false}
           >
+            {/* Route header */}
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 10,
+                alignItems: "baseline",
+                marginBottom: 12,
               }}
             >
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.heading.weight,
-                  fontSize: 12,
-                  color: palette.ink,
-                }}
-              >
-                {route.label}
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "baseline", gap: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: type.display.family,
+                    fontWeight: type.display.weight,
+                    fontSize: 10,
+                    color: palette.faint,
+                    letterSpacing: -0.2,
+                  }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: type.heading.family,
+                    fontWeight: type.heading.weight,
+                    fontSize: 13,
+                    color: palette.ink,
+                    letterSpacing: -0.1,
+                  }}
+                >
+                  {route.label}
+                </Text>
+              </View>
               {route.university.country && (
                 <Text
                   style={{
                     fontSize: 7,
                     fontFamily: type.bodyStrong.family,
                     fontWeight: type.bodyStrong.weight,
-                    color: tint.ink,
-                    backgroundColor: tint.bg,
-                    paddingHorizontal: 8,
-                    paddingVertical: 3,
-                    borderRadius: 10,
-                    letterSpacing: 0.6,
+                    color: palette.subtle,
+                    letterSpacing: 0.8,
                     textTransform: "uppercase",
                   }}
                 >
@@ -1267,48 +942,75 @@ export function RoutesPage({
                 </Text>
               )}
             </View>
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={styles.label}>Study</Text>
-                <Text style={[styles.body, { color: palette.ink, fontSize: 10, fontFamily: type.heading.family, fontWeight: type.subheading.weight }]}>
+
+            {/* Two-column route detail */}
+            <View style={{ flexDirection: "row", gap: 22 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.label, { marginBottom: 6 }]}>Study</Text>
+                <Text
+                  style={{
+                    fontFamily: type.heading.family,
+                    fontWeight: type.subheading.weight,
+                    fontSize: 10.5,
+                    color: palette.ink,
+                    marginBottom: 2,
+                    letterSpacing: -0.05,
+                  }}
+                >
                   {route.university.name}
                 </Text>
                 {route.university.programme && (
-                  <Text style={styles.body}>{route.university.programme}</Text>
+                  <Text style={[styles.body, { color: palette.muted, marginBottom: 2 }]}>
+                    {route.university.programme}
+                  </Text>
                 )}
                 {route.university.city && (
                   <Text style={styles.caption}>
-                    {[route.university.city, route.university.country].filter(Boolean).join(", ")}
+                    {[route.university.city, route.university.country]
+                      .filter(Boolean)
+                      .join(", ")}
                   </Text>
                 )}
               </View>
-              <View style={styles.col}>
-                <Text style={styles.label}>First role</Text>
-                <Text style={[styles.body, { color: palette.ink, fontSize: 10, fontFamily: type.heading.family, fontWeight: type.subheading.weight }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.label, { marginBottom: 6 }]}>First role</Text>
+                <Text
+                  style={{
+                    fontFamily: type.heading.family,
+                    fontWeight: type.subheading.weight,
+                    fontSize: 10.5,
+                    color: palette.ink,
+                    marginBottom: 2,
+                    letterSpacing: -0.05,
+                  }}
+                >
                   {route.employer.name}
                 </Text>
-                <Text style={styles.body}>{route.employer.role}</Text>
-                {route.employer.city && <Text style={styles.caption}>{route.employer.city}</Text>}
+                <Text style={[styles.body, { color: palette.muted, marginBottom: 2 }]}>
+                  {route.employer.role}
+                </Text>
+                {route.employer.city && (
+                  <Text style={styles.caption}>{route.employer.city}</Text>
+                )}
               </View>
             </View>
           </View>
-        );
-      })}
+        ))}
+      </View>
 
-      <View style={styles.sp8} />
-      <InsightCard label="Why this matters" tone="accent">
-        <Text style={styles.body}>
-          International routes often come with lower tuition, English-taught programmes, and the
-          kind of language, cultural, and network advantages employers value when you return home.
-          Keep more than one route in view — it makes a single rejection or change of plan far less
-          fatal.
-        </Text>
-      </InsightCard>
+      <View style={{ height: 20 }} />
+      <Callout label="Why this matters" tone="accent">
+        International routes often come with lower tuition, English-taught programmes, and the kind
+        of language, cultural, and network advantages employers value when you return home. Keep
+        more than one route in view — it makes a single rejection or change of plan far less fatal.
+      </Callout>
     </PageFrame>
   );
 }
 
-// ── Clarity (momentum + actions + reflections) ─────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Clarity (legacy)
+// ═══════════════════════════════════════════════════════════════════
 
 export function ClarityPage({
   data,
@@ -1328,7 +1030,7 @@ export function ClarityPage({
   return (
     <PageFrame sectionLabel="Clarity" pageNumber={pageNumber} totalPages={totalPages}>
       <SectionHeader
-        eyebrow="Phase 03  ·  Clarity"
+        eyebrow="Clarity"
         title="Momentum and what you've decided"
         lead="Clarity is what exploration earns. This section captures the actions you've committed to, the ones you've already done, and the reflections you've written along the way."
       />
@@ -1338,12 +1040,9 @@ export function ClarityPage({
       )}
 
       {data.momentum.length > 0 && (
-        <InsightCard
-          label={`Your momentum  ·  ${momentumDone} of ${data.momentum.length} done`}
-          tone="accent"
-        >
+        <EditorialBlock label={`Your momentum  ·  ${momentumDone} of ${data.momentum.length} done`}>
           {data.momentum.map((action, i) => {
-            const status =
+            const statusStyle =
               action.status === "done" || action.done
                 ? { label: "Done", bg: palette.emeraldSoft, fg: palette.emerald }
                 : action.status === "in_progress"
@@ -1355,47 +1054,27 @@ export function ClarityPage({
                 style={{
                   flexDirection: "row",
                   alignItems: "flex-start",
-                  gap: 7,
-                  marginBottom: 6,
+                  gap: 8,
+                  paddingVertical: 6,
                 }}
                 wrap={false}
               >
                 <Text
                   style={{
-                    fontSize: 6.5,
+                    fontSize: 7,
                     fontFamily: type.bodyStrong.family,
                     fontWeight: type.bodyStrong.weight,
-                    color: status.fg,
-                    backgroundColor: status.bg,
+                    color: statusStyle.fg,
+                    backgroundColor: statusStyle.bg,
                     paddingHorizontal: 7,
-                    paddingVertical: 3,
-                    borderRadius: 10,
-                    letterSpacing: 0.7,
+                    paddingVertical: 2.5,
+                    letterSpacing: 0.5,
                     textTransform: "uppercase",
-                    marginTop: 1,
+                    marginTop: 2,
                   }}
                 >
-                  {status.label}
+                  {statusStyle.label}
                 </Text>
-                {action.type && (
-                  <Text
-                    style={{
-                      fontSize: 6.5,
-                      fontFamily: type.bodyStrong.family,
-                      fontWeight: type.bodyStrong.weight,
-                      color: palette.violet,
-                      backgroundColor: palette.violetSoft,
-                      paddingHorizontal: 7,
-                      paddingVertical: 3,
-                      borderRadius: 10,
-                      letterSpacing: 0.5,
-                      textTransform: "uppercase",
-                      marginTop: 1,
-                    }}
-                  >
-                    {action.type}
-                  </Text>
-                )}
                 <Text
                   style={[
                     styles.body,
@@ -1410,50 +1089,13 @@ export function ClarityPage({
               </View>
             );
           })}
-        </InsightCard>
-      )}
-
-      {data.alignedActions.length > 0 && (
-        <InsightCard label="Real-world actions completed">
-          {data.alignedActions.map((action, i) => (
-            <View
-              key={i}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 4,
-                gap: 8,
-              }}
-            >
-              <Svg style={{ width: 6, height: 6 }}>
-                <Circle cx={3} cy={3} r={3} fill={palette.emerald} />
-              </Svg>
-              <Text
-                style={{
-                  fontSize: 6.5,
-                  fontFamily: type.bodyStrong.family,
-                  fontWeight: type.bodyStrong.weight,
-                  color: palette.emerald,
-                  backgroundColor: palette.emeraldSoft,
-                  paddingHorizontal: 7,
-                  paddingVertical: 3,
-                  borderRadius: 10,
-                  letterSpacing: 0.5,
-                  textTransform: "uppercase",
-                }}
-              >
-                {action.type.replace(/_/g, " ")}
-              </Text>
-              <Text style={[styles.body, { flex: 1 }]}>{action.title}</Text>
-            </View>
-          ))}
-        </InsightCard>
+        </EditorialBlock>
       )}
 
       {data.reflections.length > 0 && (
         <>
-          <View style={styles.rule} />
-          <Text style={styles.h1}>Reflections</Text>
+          <View style={styles.sp16} />
+          <Text style={[styles.h2, { marginBottom: 12 }]}>Reflections</Text>
           {data.reflections.slice(0, 6).map((r, i) => (
             <QuoteBlock key={i} text={r} />
           ))}
@@ -1463,7 +1105,9 @@ export function ClarityPage({
   );
 }
 
-// ── Next steps ──────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Next steps
+// ═══════════════════════════════════════════════════════════════════
 
 export function NextStepsPage({
   steps,
@@ -1484,70 +1128,50 @@ export function NextStepsPage({
   };
 
   return (
-    <PageFrame sectionLabel="Next steps" pageNumber={pageNumber} totalPages={totalPages}>
+    <PageFrame
+      sectionLabel="Next Moves"
+      pageNumber={pageNumber}
+      totalPages={totalPages}
+    >
       <SectionHeader
-        eyebrow="What to do next"
-        title="Your next six moves"
-        lead="Recommendations that follow directly from what you've explored. Each one is concrete, small enough to act on, and chosen to move you forward without overwhelming."
+        eyebrow="Your Next Moves"
+        title="Six concrete moves from here"
+        lead="Each one is small enough to act on, chosen to follow directly from what you've explored, and placed on the right priority ladder."
       />
 
-      {steps.map((step, i) => {
-        const tone = priorityTone[step.priority];
-        return (
-          <View
-            key={i}
-            style={{
-              flexDirection: "row",
-              gap: 12,
-              marginBottom: 10,
-              paddingBottom: 10,
-              borderBottomWidth: 0.5,
-              borderBottomColor: palette.hairlineSoft,
-            }}
-            wrap={false}
-          >
-            <View style={{ width: 82, paddingTop: 3 }}>
-              <Text
-                style={{
-                  fontSize: 6.5,
-                  fontFamily: type.bodyStrong.family,
-                  fontWeight: type.bodyStrong.weight,
-                  color: tone.ink,
-                  backgroundColor: tone.bg,
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  borderRadius: 10,
-                  letterSpacing: 0.7,
-                  textTransform: "uppercase",
-                  alignSelf: "flex-start",
-                }}
-              >
-                {tone.label}
-              </Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontFamily: type.heading.family,
-                  fontWeight: type.heading.weight,
-                  fontSize: 11,
-                  color: palette.ink,
-                  marginBottom: 3,
-                }}
-              >
-                {step.headline}
-              </Text>
-              <Text style={styles.body}>{step.body}</Text>
-            </View>
-          </View>
-        );
-      })}
+      {steps.length === 0 ? (
+        <EmptyState message="Your next moves will appear here once your journey has enough context to recommend specific actions." />
+      ) : (
+        <View>
+          {steps.map((step, i) => {
+            const tone = priorityTone[step.priority];
+            return (
+              <ActionListItem
+                key={i}
+                number={i + 1}
+                priorityLabel={tone.label}
+                priorityInk={tone.ink}
+                priorityBg={tone.bg}
+                headline={step.headline}
+                body={step.body}
+                isLast={i === steps.length - 1}
+              />
+            );
+          })}
+        </View>
+      )}
     </PageFrame>
   );
 }
 
-// ── Closing page ───────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+//  Closing
+// ═══════════════════════════════════════════════════════════════════
 
+/**
+ * Spacious, calm ending. Reflections rendered as pull-quotes, closing
+ * statement on an inked panel, tiny meta row at the bottom.
+ */
 export function ClosingPage({
   vm,
   pageNumber,
@@ -1566,20 +1190,18 @@ export function ClosingPage({
       />
 
       {vm.closingReflections.length > 0 && (
-        <>
-          <Text style={styles.h1}>In your own words</Text>
+        <View style={{ marginBottom: 28 }}>
+          <Text style={[styles.h2, { marginBottom: 12 }]}>In your own words</Text>
           {vm.closingReflections.slice(0, 4).map((r, i) => (
             <QuoteBlock key={i} text={r} />
           ))}
-          <View style={styles.sp16} />
-        </>
+        </View>
       )}
 
       <View
         style={{
           backgroundColor: palette.surfaceDeep,
-          borderRadius: 8,
-          padding: 22,
+          padding: 28,
           marginTop: 6,
         }}
       >
@@ -1587,10 +1209,12 @@ export function ClosingPage({
           style={{
             fontFamily: type.display.family,
             fontWeight: type.display.weight,
-            fontSize: 16,
+            fontSize: 20,
             color: "#FFFFFF",
-            marginBottom: 10,
-            letterSpacing: -0.2,
+            marginBottom: 14,
+            letterSpacing: -0.4,
+            lineHeight: 1.22,
+            maxWidth: 400,
           }}
         >
           Your journey is uniquely yours.
@@ -1598,9 +1222,10 @@ export function ClosingPage({
         <Text
           style={{
             fontFamily: type.body.family,
-            fontSize: 10.5,
+            fontSize: 11,
             color: "#CBD5E1",
-            lineHeight: 1.65,
+            lineHeight: 1.68,
+            maxWidth: 440,
           }}
         >
           Every step you take — whether exploring, learning, or doing — builds toward the future
@@ -1608,8 +1233,8 @@ export function ClosingPage({
           report when you need perspective, and trust that clarity is something you build, not
           something that arrives.
         </Text>
-        <View style={{ height: 14 }} />
-        <HairlineRule width={40} color={palette.cover.accent} height={2} />
+        <View style={{ height: 18 }} />
+        <HairlineRule width={36} color={palette.cover.accent} height={1.5} />
         <Text
           style={{
             fontFamily: type.bodyStrong.family,
@@ -1618,20 +1243,32 @@ export function ClosingPage({
             color: palette.cover.muted,
             letterSpacing: 1.4,
             textTransform: "uppercase",
-            marginTop: 12,
+            marginTop: 14,
           }}
         >
           Endeavrly  ·  My Journey
         </Text>
       </View>
 
-      <View style={styles.sp16} />
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View style={{ height: 20 }} />
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingTop: 12,
+          borderTopWidth: 0.5,
+          borderTopColor: palette.hairline,
+        }}
+      >
         <Text style={styles.caption}>
           {`Report generated on ${vm.cover.generatedDate}${vm.cover.careerTitle ? `  ·  ${vm.cover.careerTitle}` : ""}`}
         </Text>
-        <PhaseMarker n={pageNumber} label="End of report" color={palette.accent} />
+        <Text style={[styles.caption, { letterSpacing: 0.4 }]}>End of report</Text>
       </View>
     </PageFrame>
   );
 }
+
+// Keep secondary SVG primitive exports for legacy consumers.
+export { Svg, Rect, Path, Circle };

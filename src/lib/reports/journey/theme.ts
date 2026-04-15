@@ -1,46 +1,49 @@
 import { StyleSheet } from "@react-pdf/renderer";
 
 /**
- * Design tokens for the Journey Report PDF.
+ * Design tokens for the Journey Report PDF — editorial edition.
  *
- * The palette favours soft neutrals + a single teal accent so the document
- * reads as an editorial report rather than a dashboard. Deep ink + body +
- * muted + subtle give us four type weights of emphasis before we need
- * colour. Stage accents are only used inside the roadmap section.
+ * Priorities:
+ *   - Calm, ivory ground with ink + charcoal body; accent used sparingly.
+ *   - Typographic hierarchy carries the design, not filled cards.
+ *   - Labels use light tracking (not aggressive all-caps blocks).
+ *   - Spacing scale is rhythmic: 4 → 8 → 12 → 18 → 24 → 32 → 48.
+ *
+ * If you find yourself reaching for `InsightCard` + tinted background to
+ * separate content, reach for an `EditorialBlock` (title rule + body)
+ * first. Cards are for moments that truly need emphasis.
  */
 
 export const palette = {
   ink: "#0B1220",
   body: "#1F2937",
-  muted: "#475569",
+  muted: "#4B5563",
   subtle: "#64748B",
   faint: "#94A3B8",
   hairline: "#E2E8F0",
   hairlineSoft: "#EEF2F7",
 
-  // Warm off-white page base — barely perceptible tint, still reads as
-  // "white" when printed but gives a premium editorial feel on screen.
+  // Warm off-white page base — reads as white in print, adds subtle
+  // warmth on screen. Matches the editorial-paper feel we want.
   bg: "#FBFAF6",
-  // Insight cards stay pure white so they pop against the warm bg —
-  // the small contrast delta is what makes the layout feel layered.
   surface: "#FFFFFF",
   surfaceAlt: "#F4F2ED",
   surfaceDeep: "#0B1220",
 
   accent: "#0F766E",
-  accentSoft: "#CCFBF1",
+  accentSoft: "#E6F4F1",
   accentInk: "#0B5E58",
 
   emerald: "#047857",
-  emeraldSoft: "#D1FAE5",
+  emeraldSoft: "#E8F5EE",
   amber: "#B45309",
-  amberSoft: "#FEF3C7",
+  amberSoft: "#FBF3E2",
   violet: "#6D28D9",
-  violetSoft: "#EDE9FE",
+  violetSoft: "#EFEAFB",
   blue: "#1D4ED8",
-  blueSoft: "#DBEAFE",
+  blueSoft: "#E6EEFB",
   rose: "#BE123C",
-  roseSoft: "#FFE4E6",
+  roseSoft: "#FBEAEE",
 
   divider: "#E2E8F0",
   dividerSoft: "#F1F5F9",
@@ -55,18 +58,19 @@ export const palette = {
 } as const;
 
 export const stageColors = {
-  foundation: { bg: "#ECFDF5", ink: "#047857", accent: "#10B981" },
-  education: { bg: "#DBEAFE", ink: "#1D4ED8", accent: "#3B82F6" },
-  experience: { bg: "#FFF7ED", ink: "#C2410C", accent: "#F97316" },
-  career: { bg: "#FEF3C7", ink: "#B45309", accent: "#F59E0B" },
+  foundation: { bg: "#F0FAF5", ink: "#047857", accent: "#10B981" },
+  education: { bg: "#EEF3FC", ink: "#1D4ED8", accent: "#3B82F6" },
+  experience: { bg: "#FDF4EA", ink: "#C2410C", accent: "#F97316" },
+  career: { bg: "#FBF3DD", ink: "#B45309", accent: "#F59E0B" },
 } as const;
 
-/** A4 page geometry. 44pt horizontal + 48pt vertical margins give a calm
- *  editorial feel without looking overly spacious on A4. */
+/** A4 geometry — 52pt horizontal / 54pt vertical margins. A touch more
+ *  breathing room than before; content width ≈ 491pt (~69 characters
+ *  at 10.5pt body), which is inside the comfortable reading band. */
 export const page = {
-  paddingTop: 48,
-  paddingBottom: 56,
-  paddingHorizontal: 44,
+  paddingTop: 56,
+  paddingBottom: 62,
+  paddingHorizontal: 52,
   width: 595.28,
   height: 841.89,
 } as const;
@@ -79,8 +83,7 @@ export const type = {
   bodyStrong: { family: "Inter", weight: 500 as const },
 } as const;
 
-/** Shared, flat stylesheet. Keep page-specific styles inline — this holds
- *  only the primitives that are reused across every page. */
+/** Shared stylesheet. Page-specific styling stays inline. */
 export const styles = StyleSheet.create({
   page: {
     backgroundColor: palette.bg,
@@ -88,101 +91,143 @@ export const styles = StyleSheet.create({
     paddingBottom: page.paddingBottom,
     paddingHorizontal: page.paddingHorizontal,
     fontFamily: type.body.family,
-    fontSize: 9.5,
-    lineHeight: 1.55,
+    fontSize: 10,
+    lineHeight: 1.6,
     color: palette.body,
   },
 
-  // Type scale
+  // ── Type scale ─────────────────────────────────────────────────────
+  // Display sizes are used sparingly — cover + major section titles.
+  // Body sizes pin text at 10pt with 1.6 leading for print readability.
+
   displayXL: {
     fontFamily: type.display.family,
     fontWeight: type.display.weight,
-    fontSize: 34,
-    lineHeight: 1.1,
+    fontSize: 42,
+    lineHeight: 1.06,
     color: palette.ink,
-    letterSpacing: -0.4,
+    letterSpacing: -0.8,
   },
   displayL: {
     fontFamily: type.display.family,
     fontWeight: type.display.weight,
-    fontSize: 24,
-    lineHeight: 1.15,
+    fontSize: 26,
+    lineHeight: 1.14,
     color: palette.ink,
-    letterSpacing: -0.2,
+    letterSpacing: -0.35,
   },
   h1: {
     fontFamily: type.heading.family,
     fontWeight: type.heading.weight,
-    fontSize: 18,
-    lineHeight: 1.2,
+    fontSize: 16,
+    lineHeight: 1.22,
     color: palette.ink,
-    marginBottom: 6,
     letterSpacing: -0.1,
   },
   h2: {
     fontFamily: type.heading.family,
     fontWeight: type.heading.weight,
-    fontSize: 13,
-    lineHeight: 1.25,
+    fontSize: 12,
+    lineHeight: 1.28,
     color: palette.ink,
-    marginBottom: 4,
   },
   h3: {
     fontFamily: type.subheading.family,
     fontWeight: type.subheading.weight,
     fontSize: 10.5,
-    lineHeight: 1.3,
+    lineHeight: 1.32,
     color: palette.ink,
-    marginBottom: 4,
   },
+
   lead: {
-    fontSize: 10.5,
+    fontSize: 11,
     color: palette.muted,
-    lineHeight: 1.6,
-    marginBottom: 18,
+    lineHeight: 1.62,
   },
   body: {
-    fontSize: 9.5,
+    fontSize: 10,
     color: palette.body,
     lineHeight: 1.6,
   },
+  bodyLg: {
+    fontSize: 10.5,
+    color: palette.body,
+    lineHeight: 1.62,
+  },
   bodyMuted: {
-    fontSize: 9,
+    fontSize: 9.5,
     color: palette.muted,
     lineHeight: 1.55,
   },
   caption: {
-    fontSize: 8,
+    fontSize: 8.5,
     color: palette.subtle,
     lineHeight: 1.5,
   },
-  eyebrow: {
+
+  // Overline — used sparingly as a small category marker above titles.
+  // Kept at modest tracking (0.8) rather than the old heavy 1.5 so it
+  // reads editorial, not web-app.
+  overline: {
     fontSize: 7.5,
     fontFamily: type.bodyStrong.family,
     fontWeight: type.bodyStrong.weight,
     color: palette.accent,
     textTransform: "uppercase",
-    letterSpacing: 1.5,
-    marginBottom: 8,
+    letterSpacing: 0.8,
   },
   label: {
-    fontSize: 7,
+    fontSize: 7.5,
     fontFamily: type.bodyStrong.family,
     fontWeight: type.bodyStrong.weight,
     color: palette.subtle,
     textTransform: "uppercase",
-    letterSpacing: 1.2,
-    marginBottom: 5,
+    letterSpacing: 0.6,
+    marginBottom: 4,
   },
 
-  // Layout
-  row: { flexDirection: "row", gap: 14 },
+  // Display-number — used inside the stat strip so figures feel like
+  // headline data, not body copy.
+  displayNum: {
+    fontFamily: type.display.family,
+    fontWeight: type.display.weight,
+    fontSize: 16,
+    lineHeight: 1.1,
+    color: palette.ink,
+    letterSpacing: -0.2,
+  },
+
+  // ── Layout ─────────────────────────────────────────────────────────
+
+  row: { flexDirection: "row", gap: 16 },
   col: { flex: 1 },
 
-  // Footer / page number bar
+  // Running head (top of page, under the margin) — brand on the left,
+  // section label on the right. Appears on every content page via the
+  // PageFrame primitive.
+  pageHeader: {
+    position: "absolute",
+    top: 24,
+    left: page.paddingHorizontal,
+    right: page.paddingHorizontal,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  pageHeaderText: {
+    fontSize: 7.5,
+    fontFamily: type.bodyStrong.family,
+    fontWeight: type.bodyStrong.weight,
+    color: palette.faint,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+  },
+
+  // Footer — brand / page number. Keep under 8pt; it should disappear
+  // into the paper unless the reader looks for it.
   pageFooter: {
     position: "absolute",
-    bottom: 26,
+    bottom: 28,
     left: page.paddingHorizontal,
     right: page.paddingHorizontal,
     flexDirection: "row",
@@ -192,27 +237,32 @@ export const styles = StyleSheet.create({
   pageFooterText: {
     fontSize: 7.5,
     color: palette.faint,
-    letterSpacing: 0.6,
+    letterSpacing: 0.5,
     fontFamily: type.body.family,
   },
 
-  // Section divider — ultra-thin rule with breathing room.
+  // Rule system — three weights for three levels of separation.
   rule: {
     height: 0.75,
     backgroundColor: palette.divider,
-    marginVertical: 18,
   },
   ruleSoft: {
     height: 0.5,
     backgroundColor: palette.hairlineSoft,
-    marginVertical: 10,
+  },
+  ruleStrong: {
+    height: 1.25,
+    backgroundColor: palette.ink,
   },
 
-  // Spacers
+  // Spacers — rhythmic scale. Prefer using these over ad-hoc marginTop.
   sp4: { height: 4 },
   sp8: { height: 8 },
   sp12: { height: 12 },
   sp16: { height: 16 },
+  sp20: { height: 20 },
   sp24: { height: 24 },
   sp32: { height: 32 },
+  sp40: { height: 40 },
+  sp48: { height: 48 },
 });
