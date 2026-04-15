@@ -959,15 +959,15 @@ function buildNextSteps(
   if (discover.strengths.length === 0 && !discover.radar) {
     steps.push({
       priority: "foundational",
-      headline: "Name your strengths",
-      body: "Return to Discover and capture three to five things you genuinely do well. These anchor every future decision.",
+      headline: "Commit to one first action this fortnight",
+      body: "Choose a single concrete move — book a shadow day, message one person in the field, or sign up for a trial course. Momentum is earned, not granted; the smallest committed action beats the best intention.",
     });
   }
   if (career && understand.roleReality.length === 0) {
     steps.push({
       priority: "next",
-      headline: `Test your picture of ${career}`,
-      body: "Watch one Day-in-the-Life video, read two real stories, and note one thing that surprised you. Small reality checks compound.",
+      headline: `Try one real-world test of ${career}`,
+      body: `Shadow someone for a day, sit in on a real workplace, take a short intro course, or volunteer somewhere adjacent. One day of direct exposure to ${career} sharpens your picture more than hours of further reading.`,
     });
   }
 
