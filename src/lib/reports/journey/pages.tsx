@@ -498,14 +498,14 @@ export function UnderstandPathPage({
 
   return (
     <PageFrame
-      sectionLabel="The Path"
+      sectionLabel="How You Qualify"
       pageNumber={pageNumber}
       totalPages={totalPages}
     >
       <SectionHeader
-        eyebrow="Understand · The Path"
-        title={career ? `The path to ${career}` : "The path to the role"}
-        lead="How people qualify: the school subjects, university route, and first role you'd be ready to step into."
+        eyebrow="Understand · How you qualify"
+        title={career ? `How you qualify for ${career}` : "How you qualify for the role"}
+        lead="The school subjects, university route, entry-level position, and certifications that make up the standard qualification path."
       />
 
       {/* Subjects */}
@@ -670,12 +670,12 @@ export function RoadmapPages({
     return [
       <PageFrame
         key="rm-empty"
-        sectionLabel="Your Path"
+        sectionLabel="Your Roadmap"
         pageNumber={startingPageNumber}
         totalPages={totalPages}
       >
         <SectionHeader
-          eyebrow="Your Path"
+          eyebrow="Your Roadmap"
           title="Your personal roadmap"
           lead="The path from where you are today to the career you're exploring — mapped around your age, your education stage, and your chosen direction."
         />
@@ -697,14 +697,18 @@ export function RoadmapPages({
     out.push(
       <PageFrame
         key={`rm-${p}`}
-        sectionLabel="Your Path"
+        sectionLabel="Your Roadmap"
         pageNumber={pageNumber}
         totalPages={totalPages}
       >
         {isFirst ? (
           <SectionHeader
-            eyebrow="Your Path"
-            title={data.career ? `Your path to ${data.career}` : "Your personal roadmap"}
+            eyebrow="Your Roadmap"
+            title={
+              data.career
+                ? `Your personal roadmap to ${data.career}`
+                : "Your personal roadmap"
+            }
             lead={
               data.isFallback
                 ? "A draft roadmap built from the career's real requirements and your current age. Open the Clarity tab in-app to refine it."
@@ -713,7 +717,7 @@ export function RoadmapPages({
           />
         ) : (
           <View style={{ marginBottom: 20 }}>
-            <Text style={styles.h1}>Your path, continued</Text>
+            <Text style={styles.h1}>Your roadmap, continued</Text>
             <View style={{ height: 14 }} />
             <View style={styles.rule} />
           </View>

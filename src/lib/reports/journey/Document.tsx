@@ -120,13 +120,13 @@ function planLayout(vm: JourneyReportViewModel) {
   if (understandPath !== null) {
     toc.push({
       n: n++,
-      title: career ? `The path to ${career}` : "The path to the role",
+      title: career ? `How you qualify for ${career}` : "How you qualify for the role",
       pageNumber: understandPath,
     });
   }
   toc.push({
     n: n++,
-    title: career ? `Your path to ${career}` : "Your personal roadmap",
+    title: career ? `Your personal roadmap to ${career}` : "Your personal roadmap",
     pageNumber: roadmapStart,
   });
   if (routes !== null) {
