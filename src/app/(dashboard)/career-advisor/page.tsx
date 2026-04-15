@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
+import { Spotlight } from "@/components/ui/spotlight";
 import {
   Bot,
   Send,
@@ -372,9 +373,19 @@ export default function CareerAdvisorPage() {
   }
 
   return (
-    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative">
+    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 max-w-4xl relative overflow-hidden">
       {/* Background gradient - matches Industry Insights */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
+
+      {/* Subtle spotlight sweep — dark-mode only, plays once on mount.
+          Pure SVG, no WebGL — meant to lift the surface without
+          fighting the chat for attention. */}
+      <div className="absolute inset-0 -z-[5] hidden dark:block pointer-events-none">
+        <Spotlight
+          className="-top-40 left-0 md:-top-20 md:left-1/4"
+          fill="hsl(166 72% 55%)"
+        />
+      </div>
 
       <PageHeader
         title="AI Career"

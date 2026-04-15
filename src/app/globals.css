@@ -713,4 +713,22 @@
     50%      { stroke-opacity: 1; }
   }
 
+  /* Spotlight sweep — used by <Spotlight /> on the AI Advisor page.
+     Fades in and drifts slightly upward on mount for a calm premium
+     feel. No infinite loop — it plays once and settles. */
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1);
+    }
+  }
+
+  .animate-spotlight {
+    animation: spotlight 2s ease 0.2s 1 forwards;
+  }
+
 }
