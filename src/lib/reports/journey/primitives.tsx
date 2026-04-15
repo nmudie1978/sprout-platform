@@ -209,8 +209,12 @@ export function InsightCard({
   );
 }
 
-// ── Stat strip — 3-4 headline stats in a row, separated by hairlines.
-//    Deliberately feels like a magazine contents page.
+// ── Stat strip — a row of headline stats. Each cell has a small
+//    tracked label, a short accent underline, and a value in a
+//    refined medium weight. No inter-column hairlines; generous
+//    horizontal gap carries the separation. Values wrap naturally
+//    inside their column so a long educationPath doesn't blow up
+//    the other cells.
 
 export function StatStrip({
   items,
@@ -222,31 +226,53 @@ export function StatStrip({
     <View
       style={{
         flexDirection: "row",
+        gap: 32,
+        paddingTop: 20,
+        paddingBottom: 22,
         borderTopWidth: 0.75,
-        borderTopColor: palette.divider,
-        borderBottomWidth: 0.75,
-        borderBottomColor: palette.divider,
-        paddingVertical: 16,
-        marginBottom: 22,
+        borderTopColor: palette.ink,
+        borderBottomWidth: 0.5,
+        borderBottomColor: palette.hairline,
+        marginBottom: 24,
       }}
       wrap={false}
     >
       {items.map((item, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && (
-            <View
-              style={{
-                width: 0.5,
-                backgroundColor: palette.hairline,
-                marginHorizontal: 12,
-              }}
-            />
-          )}
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.label, { marginBottom: 6 }]}>{item.label}</Text>
-            <Text style={styles.displayNum}>{item.value}</Text>
-          </View>
-        </React.Fragment>
+        <View key={i} style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: 7,
+              fontFamily: type.bodyStrong.family,
+              fontWeight: type.bodyStrong.weight,
+              color: palette.subtle,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              marginBottom: 6,
+            }}
+          >
+            {item.label}
+          </Text>
+          <View
+            style={{
+              width: 18,
+              height: 1,
+              backgroundColor: palette.accent,
+              marginBottom: 10,
+            }}
+          />
+          <Text
+            style={{
+              fontFamily: type.heading.family,
+              fontWeight: type.subheading.weight,
+              fontSize: 12,
+              lineHeight: 1.4,
+              color: palette.ink,
+              letterSpacing: -0.15,
+            }}
+          >
+            {item.value}
+          </Text>
+        </View>
       ))}
     </View>
   );
