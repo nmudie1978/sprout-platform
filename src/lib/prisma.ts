@@ -4,19 +4,36 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Use DIRECT_URL for Prisma Client operations (Supabase pooled connection doesn't support all operations)
-const databaseUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+// Lazy Prisma client. Instantiating PrismaClient at module-load fails on
+// Vercel during the "collect page data" build phase because DATABASE_URL /
+// DIRECT_URL aren't populated then — any route that imports this module
+// blows up with "Invalid value undefined for datasource db". We defer
+// construction behind a Proxy so property access at runtime triggers init
+// with a real URL, while build-time module imports stay side-effect-free.
+function createClient(): PrismaClient {
+  const databaseUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+  return new PrismaClient({
+    // Only pass the datasources override when we actually have a URL —
+    // otherwise Prisma throws at ctor time. When absent, Prisma falls back
+    // to its default env-driven resolution and any query will fail with a
+    // clear error instead of crashing the import.
+    ...(databaseUrl ? { datasources: { db: { url: databaseUrl } } } : {}),
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  });
+}
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  datasources: {
-    db: {
-      url: databaseUrl,
-    },
+function getClient(): PrismaClient {
+  if (!globalForPrisma.prisma) globalForPrisma.prisma = createClient();
+  return globalForPrisma.prisma;
+}
+
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = getClient();
+    const value = Reflect.get(client as unknown as object, prop, receiver);
+    return typeof value === 'function' ? value.bind(client) : value;
   },
-  log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
 });
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // ============================================
 // RLS CONTEXT SUPPORT
