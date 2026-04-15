@@ -912,14 +912,18 @@ export default function DashboardPage() {
               </span>
             )}
             {profileData && (() => {
-              const total = 8;
+              // Availability removed from the profile-complete checklist:
+              // users were seeing "set your availability" even when it was
+              // already set (edge cases between AvailabilityStatus enum and
+              // the free-text availability string). It's a nice-to-have
+              // not a gate — drop it and keep the 7 high-signal fields.
+              const total = 7;
               let done = 0;
               if (profileData.displayName) done++;
               if (profileData.user?.dateOfBirth) done++;
               if (profileData.phoneNumber) done++;
               if (profileData.city) done++;
               if (profileData.bio) done++;
-              if (profileData.availability) done++;
               if (profileData.interests?.length > 0) done++;
               if (goalTitle) done++;
               const pct = Math.round((done / total) * 100);

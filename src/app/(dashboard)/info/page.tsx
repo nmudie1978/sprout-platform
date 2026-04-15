@@ -52,24 +52,53 @@ export default function InfoPage() {
         Endeavrly gives them a place to explore, try things, and learn about themselves — before the pressure of choosing a path kicks in.
       </p>
 
-      {/* Framework */}
+      {/* Framework — three lenses rendered L-to-R so the row reads as
+          a journey, not a stack. Same staggered fade-in pattern used
+          on the About page (0s → 0.4s → 0.8s) so Discover lands
+          first, then Understand, then Clarity. Dynamic colour classes
+          unrolled to fixed strings so Tailwind's JIT keeps them. */}
       <div className="pt-6 border-t border-border mb-8">
         <h2 className="text-lg font-semibold mb-3">Discover, Understand, Clarity</h2>
         <p className="text-sm text-muted-foreground mb-4">Three lenses, sequential on purpose — each gives you what you need for the next.</p>
-        <div className="space-y-3">
-          {[
-            { n: "1", title: "Discover — Explore the career", desc: "See what a career looks like at a glance — salary, growth, typical day, and the school subjects you need. Enough to know if it sparks your interest.", color: "teal" },
-            { n: "2", title: "Understand — Know the reality", desc: "Go deeper into education paths, real entry requirements, university programmes, and honest reality checks. This is where curiosity becomes clarity.", color: "emerald" },
-            { n: "3", title: "Clarity — See your full journey", desc: "Everything comes together here — your personalised roadmap, voice-guided narration of your path, live opportunities, and the full timeline of what it takes to get there.", color: "amber" },
-          ].map((l) => (
-            <div key={l.n} className={`p-3 rounded-lg bg-${l.color}-50/50 dark:bg-${l.color}-950/20 border border-${l.color}-200/50 dark:border-${l.color}-800/30`}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-${l.color}-500/20 text-${l.color}-600 dark:text-${l.color}-400 text-[10px] font-bold`}>{l.n}</span>
-                <h3 className="text-sm font-semibold">{l.title}</h3>
-              </div>
-              <p className="text-xs text-muted-foreground ml-7">{l.desc}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div
+            className="p-3 rounded-lg bg-teal-50/50 dark:bg-teal-950/20 border border-teal-200/50 dark:border-teal-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+            style={{ animationDelay: "0s" }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-bold shrink-0">1</span>
+              <h3 className="text-sm font-semibold">Discover — Explore the career</h3>
             </div>
-          ))}
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              See what a career looks like at a glance — salary, growth, typical day, and the school subjects you need. Enough to know if it sparks your interest.
+            </p>
+          </div>
+
+          <div
+            className="p-3 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/50 dark:border-emerald-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+            style={{ animationDelay: "0.4s" }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0">2</span>
+              <h3 className="text-sm font-semibold">Understand — Know the reality</h3>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Go deeper into education paths, real entry requirements, university programmes, and honest reality checks. This is where curiosity becomes clarity.
+            </p>
+          </div>
+
+          <div
+            className="p-3 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 flex flex-col motion-safe:animate-fade-in-up motion-safe:opacity-0"
+            style={{ animationDelay: "0.8s" }}
+          >
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold shrink-0">3</span>
+              <h3 className="text-sm font-semibold">Clarity — See your full journey</h3>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Everything comes together here — your personalised roadmap, voice-guided narration of your path, live opportunities, and the full timeline of what it takes to get there.
+            </p>
+          </div>
         </div>
       </div>
 

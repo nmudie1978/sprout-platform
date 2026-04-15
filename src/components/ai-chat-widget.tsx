@@ -30,18 +30,39 @@ interface Message {
 }
 
 const HIDDEN_KEY = "ai-chat-hidden";
+const VISIBILITY_EVENT = "endeavrly:ai-chat-visibility-changed";
 
 export function AiChatWidget() {
   const [isHidden, setIsHidden] = useState(true); // start hidden until localStorage checked
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
+  // Read localStorage once on mount, then listen for updates — the
+  // widget is mounted at the dashboard layout level, so flipping the
+  // "AI Career Assistant" toggle in /profile previously had no way to
+  // reach this component until a full reload. Two listeners:
+  //   - `storage` event (fires in OTHER tabs when localStorage changes)
+  //   - a custom CustomEvent the profile page fires in the SAME tab
   useEffect(() => {
-    try {
-      setIsHidden(localStorage.getItem(HIDDEN_KEY) === "1");
-    } catch {
-      setIsHidden(false);
-    }
+    const readFromStorage = () => {
+      try {
+        setIsHidden(localStorage.getItem(HIDDEN_KEY) === "1");
+      } catch {
+        setIsHidden(false);
+      }
+    };
+    readFromStorage();
+
+    const sameTabHandler = () => readFromStorage();
+    const crossTabHandler = (e: StorageEvent) => {
+      if (e.key === HIDDEN_KEY) readFromStorage();
+    };
+    window.addEventListener(VISIBILITY_EVENT, sameTabHandler);
+    window.addEventListener("storage", crossTabHandler);
+    return () => {
+      window.removeEventListener(VISIBILITY_EVENT, sameTabHandler);
+      window.removeEventListener("storage", crossTabHandler);
+    };
   }, []);
 
   const [messages, setMessages] = useState<Message[]>([

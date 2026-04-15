@@ -658,11 +658,14 @@ export default function ProfilePage() {
         if (!profile.city) missingRequired.push("City");
 
         // Recommended fields
+        // Note: availability was previously checked here but dropped from
+        // the completion checklist — users were seeing "set availability"
+        // even when it was already set due to enum vs free-text mismatch,
+        // and the field is a nice-to-have rather than a gate.
         if (!profile.bio) missingRecommended.push("About Me (bio)");
-        if (!profile.availability) missingRecommended.push("Availability");
         if (!goalsData?.primaryGoal) missingRecommended.push("Career Goal");
 
-        const totalFields = 7; // 4 required + 3 recommended
+        const totalFields = 6; // 4 required + 2 recommended
         const completedFields = totalFields - missingRequired.length - missingRecommended.length;
         const percent = Math.round((completedFields / totalFields) * 100);
         const isComplete = missingRequired.length === 0 && missingRecommended.length === 0;
@@ -1252,7 +1255,16 @@ export default function ProfilePage() {
                       checked={!aiChatHidden}
                       onCheckedChange={(checked) => {
                         setAiChatHidden(!checked);
-                        try { localStorage.setItem("ai-chat-hidden", checked ? "0" : "1"); } catch { /* ignore */ }
+                        try {
+                          localStorage.setItem("ai-chat-hidden", checked ? "0" : "1");
+                          // Broadcast so AiChatWidget (mounted in the
+                          // dashboard layout, read localStorage once on
+                          // mount) re-reads the value — without this the
+                          // widget stays hidden after re-enabling.
+                          window.dispatchEvent(
+                            new CustomEvent("endeavrly:ai-chat-visibility-changed"),
+                          );
+                        } catch { /* ignore */ }
                       }}
                     />
                   </div>
