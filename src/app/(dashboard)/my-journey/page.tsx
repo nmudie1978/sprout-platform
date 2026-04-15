@@ -24,7 +24,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Globe, Rocket, Play, TrendingUp,
-  ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
+  ArrowLeft, ArrowRight, BookOpen, Briefcase, GraduationCap, Pencil,
   Eye, ExternalLink, ChevronDown, Lock,
   Target, Sparkles, Save, Maximize2, X,
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
@@ -1912,15 +1912,15 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
       {/* 1. Roadmap — collapsible. The timeline component owns its
           own header ("Henry's Roadmap to Surgeon · …") so the
           collapse toggle is a small chevron above it. */}
-      <SectionCard className="border-teal-500/25" style={{ boxShadow: '0 0 25px rgba(20,184,166,0.12), 0 0 50px rgba(20,184,166,0.06)' }}>
+      <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
         <button
           type="button"
           onClick={toggleRoadmap}
           aria-expanded={!roadmapCollapsed}
-          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-teal-500/[0.04] transition-colors text-left"
+          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-amber-500/[0.04] transition-colors text-left"
         >
           <div className="flex items-center gap-2.5">
-            <Rocket className="h-4 w-4 text-teal-400" />
+            <Rocket className="h-4 w-4 text-amber-400" />
             <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Roadmap</h3>
           </div>
           <ChevronDown
@@ -2570,9 +2570,16 @@ function ClarityCompletionCard({
             <p className="text-[10px] text-rose-400 ml-2 shrink-0" role="alert">{reportError}</p>
           )}
         </div>
-        <p className="max-w-md text-center text-[11px] leading-relaxed text-muted-foreground/75">
+        <p className="max-w-xl text-center text-xs leading-relaxed text-muted-foreground/80">
           {congratsMessage}
         </p>
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground/60 hover:text-emerald-300 transition-colors"
+        >
+          <ArrowLeft className="h-3 w-3" />
+          Back to dashboard
+        </Link>
         </div>
       )}
     </div>

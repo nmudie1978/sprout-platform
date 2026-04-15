@@ -5,8 +5,7 @@ import { type JourneyItem, type SchoolTrackItem } from '@/lib/journey/career-jou
 import { cn } from '@/lib/utils';
 import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
-import { BookOpen, Check, Banknote } from 'lucide-react';
-import { getAllCareers, getCareerById } from '@/lib/career-pathways';
+import { BookOpen, Check, ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react';
 import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
 
 const NODE_SIZE = 40;
@@ -14,43 +13,18 @@ const H_SPACING = 200;
 const CAREER_TRACK_Y = 40;
 const CARD_WIDTH = 180;
 
-export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly }: RendererProps) {
+export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly, scenarioOverrides }: RendererProps) {
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
 
-  const { foundationItem } = useFoundationData({
+  const { foundationItem, subjectHint } = useFoundationData({
     careerTitle,
     userAge,
     journeyStartAge: journey.startAge,
   });
   const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
   const foundationDone = foundationStatus === 'done';
-
-  // Earnings indicator
-  const earningsInfo = useMemo(() => {
-    if (!careerTitle) return null;
-    const slug = careerTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const career = getCareerById(slug) ?? getAllCareers().find(c => c.title === careerTitle);
-    if (!career?.avgSalary) return null;
-    const nums = career.avgSalary.match(/[\d,]+/g);
-    if (!nums || nums.length < 1) return null;
-    const low = nums[0].replace(/,/g, '');
-    const high = nums.length >= 2 ? nums[nums.length - 1].replace(/,/g, '') : null;
-    let firstExpIdx = -1;
-    let lastCareerIdx = -1;
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].stage === 'experience' && firstExpIdx === -1) firstExpIdx = i;
-      if (items[i].stage === 'career') lastCareerIdx = i;
-    }
-    const fmt = (n: string) => { const v = parseInt(n, 10); return isNaN(v) ? n : v >= 1000 ? `${Math.round(v / 1000)}k` : `${v}`; };
-    return {
-      firstExpIdx,
-      lastCareerIdx,
-      entryLabel: high ? `~${fmt(low)}–${fmt(high)} kr` : `~${fmt(low)} kr`,
-      seniorLabel: high ? `~${fmt(high)}+ kr` : null,
-    };
-  }, [careerTitle, items]);
 
   const youAreHereIndex = useMemo(() => {
     for (let i = 0; i < items.length; i++) {
@@ -80,6 +54,33 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
 
   const foundationState: StepState = foundationDone ? 'completed' : 'current';
 
+  // Alignment gate — sits on the rail immediately before the first
+  // education step and signals whether the user's current school subjects
+  // match the career's required subjects for that course. Only shows when
+  // we have enough to judge: a career, a user, and ≥1 required subject.
+  const educationIndex = useMemo(
+    () => items.findIndex((it) => it.stage === 'education'),
+    [items]
+  );
+  const alignmentGate = useMemo(() => {
+    if (!subjectHint) return null;
+    const matched = subjectHint.matchedKey.length;
+    const missing = subjectHint.missingKey.length;
+    const total = matched + missing;
+    if (total === 0) return null;
+    let level: 'aligned' | 'partial' | 'gap';
+    if (missing === 0) level = 'aligned';
+    else if (matched === 0) level = 'gap';
+    else level = 'partial';
+    const tooltip =
+      level === 'aligned'
+        ? `Subjects aligned: ${subjectHint.matchedKey.join(', ')}. You meet the core requirements for this path.`
+        : level === 'partial'
+          ? `Gap: you still need ${subjectHint.missingKey.join(', ')}. Aligned so far: ${subjectHint.matchedKey.join(', ')}.`
+          : `No required subjects yet. You'll need ${subjectHint.missingKey.join(', ')} to qualify for this path.`;
+    return { level, tooltip };
+  }, [subjectHint]);
+
   return (
     <div className="pb-4 -mx-2 px-2">
       <div className="overflow-x-auto">
@@ -96,6 +97,44 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
             strokeLinecap="round"
           />
         </svg>
+
+        {/* Alignment gate — positioned on the rail immediately before the
+            first education step (e.g. university course). Glows emerald
+            when aligned, rose when any required subject is missing;
+            native-title tooltip explains the state. */}
+        {alignmentGate && educationIndex >= 0 && (() => {
+          const eduPos = positions[educationIndex];
+          const prevX = educationIndex === 0 ? foundationPos.x : positions[educationIndex - 1].x;
+          const gateX = (prevX + eduPos.x) / 2 + NODE_SIZE / 2 - 12;
+          return (
+            <div
+              className="absolute z-20"
+              style={{ left: gateX, top: careerLineY - 12 }}
+              title={alignmentGate.tooltip}
+              aria-label={alignmentGate.tooltip}
+            >
+              <div
+                className={cn(
+                  'h-6 w-6 rounded-full flex items-center justify-center border-2 shadow-sm bg-background',
+                  alignmentGate.level === 'aligned' &&
+                    'border-emerald-500 text-emerald-500 animate-pulse',
+                  alignmentGate.level === 'partial' &&
+                    'border-rose-500 text-rose-500 animate-pulse',
+                  alignmentGate.level === 'gap' &&
+                    'border-rose-500 text-rose-500 animate-pulse',
+                )}
+              >
+                {alignmentGate.level === 'aligned' ? (
+                  <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+                ) : alignmentGate.level === 'partial' ? (
+                  <ShieldAlert className="h-3.5 w-3.5" strokeWidth={2.5} />
+                ) : (
+                  <AlertCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Foundation — rendered as inline step[0] for symmetry. */}
         <div className="absolute" style={{ left: foundationPos.x, top: foundationPos.y }}>
@@ -163,13 +202,7 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
                   item={item}
                   state={state}
                   onClick={() => onItemClick(item)}
-                  earningsHint={
-                    earningsInfo && i === earningsInfo.firstExpIdx
-                      ? earningsInfo.entryLabel
-                      : earningsInfo?.seniorLabel && i === earningsInfo.lastCareerIdx
-                        ? earningsInfo.seniorLabel
-                        : undefined
-                  }
+                  scenarioAnnotation={scenarioOverrides?.get(i)}
                 />
 
               </div>
@@ -186,12 +219,12 @@ function RailCard({
   item,
   state,
   onClick,
-  earningsHint,
+  scenarioAnnotation,
 }: {
   item: JourneyItem;
   state: StepState;
   onClick: () => void;
-  earningsHint?: string;
+  scenarioAnnotation?: string;
 }) {
   const stateClasses: Record<StepState, string> = {
     completed: 'border-emerald-500/40 bg-emerald-500/[0.04]',
@@ -224,11 +257,10 @@ function RailCard({
       >
         {item.title}
       </p>
-      {earningsHint && (
-        <span className="inline-flex items-center gap-1 mt-1.5 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[9px] font-medium">
-          <Banknote className="h-2.5 w-2.5" />
-          {earningsHint}
-        </span>
+      {scenarioAnnotation && (
+        <p className="mt-1 text-[10px] leading-snug text-violet-300/90 font-medium">
+          {scenarioAnnotation}
+        </p>
       )}
     </button>
   );

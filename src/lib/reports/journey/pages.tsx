@@ -984,6 +984,7 @@ export function RoadmapPages({
               <RoadmapRow
                 key={i}
                 step={item}
+                birthYear={data.birthYear}
                 last={
                   isLastRoadmapPage && i === slice.length - 1
                 }
@@ -1069,22 +1070,47 @@ export function RoadmapPages({
   return out;
 }
 
-function RoadmapRow({ step, last }: { step: RoadmapSection["items"][number]; last: boolean }) {
+function RoadmapRow({
+  step,
+  birthYear,
+  last,
+}: {
+  step: RoadmapSection["items"][number];
+  birthYear: number | null;
+  last: boolean;
+}) {
   const stage = stageColors[step.stage];
   const stageLabel = step.stage[0].toUpperCase() + step.stage.slice(1);
-  const age = step.endAge ? `Age ${step.startAge}–${step.endAge}` : `Age ${step.startAge}`;
+
+  // Compact age + year label. Year range only renders when we know the
+  // user's birth year — otherwise we fall back to age only.
+  const startYear = birthYear != null ? birthYear + step.startAge : null;
+  const endYear =
+    birthYear != null && step.endAge != null ? birthYear + step.endAge : null;
+  const ageStr = step.endAge ? `${step.startAge}\u2013${step.endAge}` : `${step.startAge}`;
+  const yearStr = startYear
+    ? endYear && endYear !== startYear
+      ? ` \u00B7 ${startYear}\u2013${endYear}`
+      : ` \u00B7 ${startYear}`
+    : "";
+  const ageYearLabel = `Age ${ageStr}${yearStr}`;
+
+  // Single-line summary: prefer subtitle, then description — never both.
+  // microActions are dropped from the PDF entirely to fit the roadmap
+  // on one page; they remain visible in-app.
+  const summary = step.subtitle || step.description || null;
 
   return (
     <View
-      style={{ flexDirection: "row", marginBottom: last ? 0 : 10 }}
+      style={{ flexDirection: "row", marginBottom: last ? 0 : 4 }}
       wrap={false}
     >
-      {/* Left rail */}
-      <View style={{ width: 26, alignItems: "center" }}>
+      {/* Left rail — tightened connector so more rows fit per page. */}
+      <View style={{ width: 22, alignItems: "center" }}>
         <StageDot color={stage.accent} milestone={step.isMilestone} />
         {!last && (
           <View style={{ flex: 1, marginTop: 2 }}>
-            <ConnectorLine height={60} />
+            <ConnectorLine height={14} />
           </View>
         )}
       </View>
@@ -1094,8 +1120,9 @@ function RoadmapRow({ step, last }: { step: RoadmapSection["items"][number]; las
         style={{
           flex: 1,
           backgroundColor: stage.bg,
-          borderRadius: 6,
-          padding: 12,
+          borderRadius: 5,
+          paddingHorizontal: 9,
+          paddingVertical: 6,
           borderLeftWidth: 2,
           borderLeftColor: stage.accent,
         }}
@@ -1104,9 +1131,9 @@ function RoadmapRow({ step, last }: { step: RoadmapSection["items"][number]; las
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 3,
-            gap: 8,
+            alignItems: "center",
+            gap: 6,
+            marginBottom: summary ? 2 : 0,
           }}
         >
           <Text
@@ -1114,65 +1141,41 @@ function RoadmapRow({ step, last }: { step: RoadmapSection["items"][number]; las
               flex: 1,
               fontFamily: type.heading.family,
               fontWeight: type.heading.weight,
-              fontSize: 10,
+              fontSize: 9.5,
               color: stage.ink,
             }}
           >
-            {step.title}
+            {step.isMilestone ? `${step.title}  \u2605` : step.title}
           </Text>
-          <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 7,
-                fontFamily: type.bodyStrong.family,
-                fontWeight: type.bodyStrong.weight,
-                color: stage.ink,
-                backgroundColor: "rgba(255,255,255,0.6)",
-                paddingHorizontal: 6,
-                paddingVertical: 2,
-                borderRadius: 10,
-                letterSpacing: 0.4,
-              }}
-            >
-              {stageLabel}
-            </Text>
-            <Text style={{ fontSize: 8, color: palette.subtle }}>{age}</Text>
-          </View>
+          <Text
+            style={{
+              fontSize: 6.5,
+              fontFamily: type.bodyStrong.family,
+              fontWeight: type.bodyStrong.weight,
+              color: stage.ink,
+              backgroundColor: "rgba(255,255,255,0.6)",
+              paddingHorizontal: 5,
+              paddingVertical: 1,
+              borderRadius: 8,
+              letterSpacing: 0.4,
+            }}
+          >
+            {stageLabel}
+          </Text>
+          <Text style={{ fontSize: 7.5, color: palette.subtle }}>
+            {ageYearLabel}
+          </Text>
         </View>
-        {step.subtitle && (
-          <Text style={{ fontSize: 8.5, color: palette.muted, marginBottom: 3 }}>
-            {step.subtitle}
+        {summary && (
+          <Text
+            style={{
+              fontSize: 8,
+              color: palette.muted,
+              lineHeight: 1.35,
+            }}
+          >
+            {summary}
           </Text>
-        )}
-        {step.description && (
-          <Text style={[styles.body, { fontSize: 9, marginBottom: 4 }]}>
-            {step.description}
-          </Text>
-        )}
-        {step.microActions && step.microActions.length > 0 && (
-          <View style={{ marginTop: 2 }}>
-            {step.microActions.slice(0, 4).map((a, i) => (
-              <Text
-                key={i}
-                style={{ fontSize: 8, color: palette.muted, paddingLeft: 8, marginBottom: 1 }}
-              >
-                →  {a}
-              </Text>
-            ))}
-          </View>
-        )}
-        {step.isMilestone && (
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5, gap: 4 }}>
-            <Svg style={{ width: 8, height: 8 }}>
-              <Path
-                d="M4 0 L5.2 2.8 L8 3.2 L6 5.4 L6.4 8 L4 6.8 L1.6 8 L2 5.4 L0 3.2 L2.8 2.8 Z"
-                fill={stage.accent}
-              />
-            </Svg>
-            <Text style={{ fontSize: 7, color: stage.ink, fontFamily: type.bodyStrong.family, fontWeight: type.bodyStrong.weight, letterSpacing: 0.4 }}>
-              Milestone
-            </Text>
-          </View>
         )}
       </View>
     </View>

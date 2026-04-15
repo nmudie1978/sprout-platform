@@ -42,13 +42,35 @@ function registerFontsOnce() {
 // content overflows. The user-facing goal is "Your path" on one page.
 const ROADMAP_SINGLE_PAGE_CAP = 9999;
 
+/**
+ * True only when the "Study pathways" page has substantive sub-content
+ * to render. A shallow truthy check on `requirements` wasn't enough —
+ * the object could exist while every nested field was empty, producing
+ * a near-blank page with just a heading. We now require at least one
+ * real sub-section.
+ */
 function hasPathContent(vm: JourneyReportViewModel): boolean {
-  return Boolean(
-    vm.understand.requirements ||
-      vm.understand.programmes.length > 0 ||
-      (vm.understand.certifications && vm.understand.certifications.certifications.length > 0) ||
-      vm.understand.facts?.pensionNote ||
-      vm.understand.actionPlan,
+  const req = vm.understand.requirements;
+  const hasRequirements = Boolean(
+    req &&
+      (req.subjects.required.length > 0 ||
+        req.subjects.recommended.length > 0 ||
+        req.universityPath?.programme ||
+        req.entryLevel?.title ||
+        req.qualifiesFor?.immediate ||
+        req.qualifiesFor?.seniorPath),
+  );
+  const hasProgrammes = vm.understand.programmes.length > 0;
+  const hasCertifications = Boolean(
+    vm.understand.certifications &&
+      vm.understand.certifications.certifications.length > 0,
+  );
+  return (
+    hasRequirements ||
+    hasProgrammes ||
+    hasCertifications ||
+    Boolean(vm.understand.facts?.pensionNote) ||
+    Boolean(vm.understand.actionPlan)
   );
 }
 

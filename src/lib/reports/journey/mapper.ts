@@ -552,17 +552,28 @@ function mapRoadmap(
   input: MapperInput,
   education: EducationContext,
 ): RoadmapSection {
+  // Derive birth year from the report-generation date and the user's
+  // current age. Null when age is unknown — the PDF will fall back to
+  // age-only labels.
+  const reportYear = input.generatedIso
+    ? new Date(input.generatedIso).getUTCFullYear()
+    : new Date().getUTCFullYear();
+  const birthYear =
+    typeof input.userAge === "number" && input.userAge > 0
+      ? reportYear - input.userAge
+      : null;
+
   const savedItems = readSavedRoadmap(timeline);
   if (savedItems && savedItems.items.length > 0) {
-    return { ...savedItems, isFallback: false };
+    return { ...savedItems, isFallback: false, birthYear };
   }
   const fallback = buildFallbackRoadmap(input, education);
-  return { ...fallback, isFallback: true };
+  return { ...fallback, isFallback: true, birthYear };
 }
 
 function readSavedRoadmap(
   timeline: Record<string, unknown> | null,
-): Omit<RoadmapSection, "isFallback"> | null {
+): Omit<RoadmapSection, "isFallback" | "birthYear"> | null {
   if (!timeline) return null;
   const rawItems = (timeline.items as unknown[]) ?? [];
   const items: RoadmapStep[] = rawItems.map((raw) => {
@@ -608,7 +619,7 @@ function readSavedRoadmap(
 function buildFallbackRoadmap(
   input: MapperInput,
   education: EducationContext,
-): Omit<RoadmapSection, "isFallback"> {
+): Omit<RoadmapSection, "isFallback" | "birthYear"> {
   const career = input.career;
   const reqs = input.careerRequirements;
   const title = career?.title ?? input.primaryGoalTitle ?? "your career";

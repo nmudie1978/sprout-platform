@@ -209,6 +209,10 @@ export interface RoadmapSection {
   /** True when we generated the roadmap from requirements rather than
    *  reading the user's saved timeline. Used to show a gentle caveat. */
   isFallback: boolean;
+  /** User's approximate birth year (report year − current age). Used by
+   *  the PDF to render calendar-year ranges alongside age ranges on
+   *  each roadmap row. Null when we can't determine age. */
+  birthYear: number | null;
 }
 
 export interface ExecutiveSummaryData {

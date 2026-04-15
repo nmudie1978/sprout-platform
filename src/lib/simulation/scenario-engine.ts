@@ -197,8 +197,14 @@ export function generateScenarios(
 }
 
 /**
- * Build step title overrides for a given scenario. Scans roadmap items
- * and appends university/employer names to relevant steps.
+ * Build per-step annotations for a given scenario. Scans roadmap items
+ * and returns a short "Institution · City" line for each step that
+ * maps to a university or employer in the active scenario.
+ *
+ * The renderer shows this as a subtitle under the step title — the
+ * title itself stays clean ("Apply for university studies") and the
+ * scenario-specific detail ("Karolinska Institutet · Stockholm")
+ * sits directly underneath.
  */
 export function buildScenarioOverlay(
   items: JourneyItem[],
@@ -206,21 +212,26 @@ export function buildScenarioOverlay(
 ): ScenarioOverlay {
   const overrides = new Map<number, string>();
 
+  const universityLabel = `${scenario.university.name} \u00B7 ${scenario.university.city}`;
+  const employerLabel = `${scenario.employer.name} \u00B7 ${scenario.employer.city}`;
+
   for (let i = 0; i < items.length; i++) {
     const title = items[i].title.toLowerCase();
 
-    // University steps
-    if (/apply.*universit|begin.*universit|start.*degree|apply.*studi/i.test(title)) {
-      overrides.set(i, `${items[i].title} at ${scenario.university.name}`);
-    } else if (/complete.*graduation|graduate|earn.*degree|finish.*degree/i.test(title)) {
-      overrides.set(i, `${items[i].title} from ${scenario.university.name}`);
-    }
-
-    // Job steps
-    else if (/apply.*entry|apply.*role|apply.*job|apply.*intern/i.test(title)) {
-      overrides.set(i, `${items[i].title} at ${scenario.employer.name}`);
-    } else if (/accept.*entry|accept.*role|start.*first|begin.*first/i.test(title)) {
-      overrides.set(i, `${items[i].title} at ${scenario.employer.name}, ${scenario.employer.city}`);
+    // University steps — attach university + city.
+    if (
+      /apply.*universit|begin.*universit|start.*degree|apply.*studi|complete.*graduation|graduate|earn.*degree|finish.*degree|complete.*degree/i.test(
+        title,
+      )
+    ) {
+      overrides.set(i, universityLabel);
+    } else if (
+      /apply.*entry|apply.*role|apply.*job|apply.*intern|accept.*entry|accept.*role|start.*first|begin.*first/i.test(
+        title,
+      )
+    ) {
+      // Employer steps — attach employer + city.
+      overrides.set(i, employerLabel);
     }
   }
 
