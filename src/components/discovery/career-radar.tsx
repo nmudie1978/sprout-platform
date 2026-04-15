@@ -49,7 +49,7 @@ const PRESET_FILTER_OPTIONS: { key: PresetFilterKey; label: string }[] = [
   { key: "high-earning", label: "High-Earning Careers" },
   { key: "work-life-balance", label: "Work-Life Balance" },
   { key: "fast-growing", label: "Fast-Growing Careers" },
-  { key: "low-entry", label: "Low Entry Barrier" },
+  { key: "low-entry", label: "Non-University" },
   { key: "academic", label: "Academic / High Study" },
   { key: "future-proof", label: "Future-Proof Careers" },
   { key: "no-degree", label: "No Degree Required" },
