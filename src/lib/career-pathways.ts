@@ -1876,7 +1876,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["SQL", "Excel", "data visualisation", "statistics", "business acumen"],
       dailyTasks: ["Query databases", "Build dashboards", "Analyse trends", "Present findings", "Support decision-making"],
       growthOutlook: "high",
-      entryLevel: true,
       lastVerifiedAt: "2026-04-14",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
@@ -2795,7 +2794,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["digital marketing", "content creation", "branding", "social media", "creativity"],
       dailyTasks: ["Create listings", "Run campaigns", "Manage social media", "Plan events", "Track results"],
       growthOutlook: "medium",
-      entryLevel: true,
     },
     {
       id: "real-estate-sales-manager",
@@ -3162,14 +3160,14 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ── Trading & investing ──
     { id: "stockbroker", title: "Stockbroker", emoji: "📈", description: "Buy and sell stocks on behalf of clients — building portfolios, providing advice, and managing relationships.", avgSalary: "650,000 - 1,800,000 kr/year (commission-driven)", educationPath: "Bachelor's in Finance / Economics + Finansforetaket licensing", keySkills: ["market knowledge", "client service", "trading", "communication", "risk management"], dailyTasks: ["Place trades", "Advise clients", "Track markets", "Build portfolios", "Manage compliance"], growthOutlook: "medium" },
     { id: "trader", title: "Trader", emoji: "💹", description: "Trade financial instruments — equities, FX, commodities, derivatives — on behalf of a bank, fund, or own account.", avgSalary: "700,000 - 3,000,000+ kr/year (highly variable, performance-based)", educationPath: "Bachelor's/Master's in Finance / Maths + trading internship", keySkills: ["market analysis", "fast decision-making", "risk control", "discipline", "stress management"], dailyTasks: ["Watch markets", "Place trades", "Manage risk", "Read research", "Brief desk"], growthOutlook: "medium" },
-    { id: "day-trader", title: "Day Trader", emoji: "⏱️", description: "Buy and sell securities within the same day — making many small trades and rarely holding positions overnight.", avgSalary: "0 - 2,000,000+ kr/year (highly variable, often negative)", educationPath: "Self-taught — most professional day traders fail; risk capital required", keySkills: ["technical analysis", "discipline", "risk management", "patience", "emotional control"], dailyTasks: ["Watch markets", "Take entries", "Manage stops", "Journal trades", "Review setups"], growthOutlook: "stable", entryLevel: true },
+    { id: "day-trader", title: "Day Trader", emoji: "⏱️", description: "Buy and sell securities within the same day — making many small trades and rarely holding positions overnight.", avgSalary: "0 - 2,000,000+ kr/year (highly variable, often negative)", educationPath: "Self-taught — most professional day traders fail; risk capital required", keySkills: ["technical analysis", "discipline", "risk management", "patience", "emotional control"], dailyTasks: ["Watch markets", "Take entries", "Manage stops", "Journal trades", "Review setups"], growthOutlook: "stable" },
     { id: "investment-banker", title: "Investment Banker", emoji: "🏦", description: "Advise companies on M&A, IPOs, and capital raising — building financial models and pitching deals to executives.", avgSalary: "485,000 - 1,610,000 kr/year", educationPath: "Bachelor's/Master's in Finance / Economics + analyst programme", keySkills: ["financial modelling", "valuation", "stamina", "client management", "presentation"], dailyTasks: ["Build models", "Draft pitches", "Run analyses", "Brief clients", "Execute deals"], growthOutlook: "medium" , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "equity-analyst", title: "Equity Analyst", emoji: "📊", description: "Research and value listed companies — publishing recommendations to fund managers and institutional clients.", avgSalary: "650,000 - 1,500,000 kr/year", educationPath: "Bachelor's in Finance / Economics + CFA route", keySkills: ["financial analysis", "valuation", "report writing", "industry knowledge", "modelling"], dailyTasks: ["Build models", "Read reports", "Meet management", "Write notes", "Brief sales"], growthOutlook: "medium" },
     { id: "financial-analyst", title: "Financial Analyst", emoji: "💼", description: "Analyse business performance, build forecasts, and support decision-making — in corporate finance, banking, or asset management.", avgSalary: "750,000 - 1,295,000 kr/year", educationPath: "Bachelor's in Finance / Economics + Excel / financial modelling skills", keySkills: ["financial modelling", "Excel", "analysis", "communication", "attention to detail"], dailyTasks: ["Build forecasts", "Track performance", "Analyse variance", "Brief management", "Support decisions"], growthOutlook: "high" , lastVerifiedAt: "2026-04-14" , sourceUrl: "https://www.ssb.no/en/statbank/table/11418" },
     { id: "hedge-fund-manager", title: "Hedge Fund Manager", emoji: "🎯", description: "Run a hedge fund — make investment decisions, manage risk, and grow client capital across complex strategies.", avgSalary: "1,200,000 - 10,000,000+ kr/year (performance fees)", educationPath: "Bachelor's/Master's in Finance + decade of trading or PM experience", keySkills: ["investment strategy", "risk management", "decision-making", "leadership", "investor relations"], dailyTasks: ["Make decisions", "Manage risk", "Meet investors", "Run team", "Track P&L"], growthOutlook: "medium" },
     { id: "options-trader", title: "Options Trader", emoji: "📉", description: "Trade options contracts — using volatility, time decay, and complex strategies to profit and hedge risk.", avgSalary: "700,000 - 3,000,000+ kr/year (variable)", educationPath: "Bachelor's in Finance / Maths / Physics + trading desk experience", keySkills: ["volatility", "Greeks", "risk modelling", "strategy", "discipline"], dailyTasks: ["Quote options", "Hedge risk", "Build positions", "Watch vol", "Manage P&L"], growthOutlook: "medium" },
-    { id: "forex-trader", title: "Forex Trader", emoji: "💱", description: "Trade currency pairs in the FX market — analysing macro, central banks, and price action 24/5.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught or finance background + risk capital", keySkills: ["macro analysis", "technical analysis", "risk management", "discipline", "stamina"], dailyTasks: ["Watch news", "Place trades", "Manage stops", "Read flows", "Journal trades"], growthOutlook: "stable", entryLevel: true },
-    { id: "crypto-trader", title: "Crypto Trader", emoji: "🪙", description: "Trade cryptocurrencies on exchanges — using technical analysis, on-chain data, and market sentiment.", avgSalary: "0 - 3,000,000+ kr/year (highly variable, very risky)", educationPath: "Self-taught — risk capital and risk management required", keySkills: ["technical analysis", "on-chain data", "risk management", "discipline", "stamina"], dailyTasks: ["Watch charts", "Place trades", "Manage positions", "Track on-chain", "Review setups"], growthOutlook: "medium", entryLevel: true },
+    { id: "forex-trader", title: "Forex Trader", emoji: "💱", description: "Trade currency pairs in the FX market — analysing macro, central banks, and price action 24/5.", avgSalary: "0 - 2,000,000+ kr/year (highly variable)", educationPath: "Self-taught or finance background + risk capital", keySkills: ["macro analysis", "technical analysis", "risk management", "discipline", "stamina"], dailyTasks: ["Watch news", "Place trades", "Manage stops", "Read flows", "Journal trades"], growthOutlook: "stable" },
+    { id: "crypto-trader", title: "Crypto Trader", emoji: "🪙", description: "Trade cryptocurrencies on exchanges — using technical analysis, on-chain data, and market sentiment.", avgSalary: "0 - 3,000,000+ kr/year (highly variable, very risky)", educationPath: "Self-taught — risk capital and risk management required", keySkills: ["technical analysis", "on-chain data", "risk management", "discipline", "stamina"], dailyTasks: ["Watch charts", "Place trades", "Manage positions", "Track on-chain", "Review setups"], growthOutlook: "medium" },
     { id: "wealth-manager", title: "Wealth Manager", emoji: "💎", description: "Help wealthy individuals and families manage and grow their wealth — investments, tax, estate, and lifestyle.", avgSalary: "800,000 - 2,000,000+ kr/year", educationPath: "Bachelor's in Finance + CFP / wealth management certifications", keySkills: ["client management", "investment strategy", "tax planning", "discretion", "communication"], dailyTasks: ["Meet clients", "Build portfolios", "Plan tax", "Review markets", "Network"], growthOutlook: "high" },
     { id: "risk-analyst", title: "Risk Analyst", emoji: "⚖️", description: "Identify and quantify risks across credit, market, or operational areas — supporting decisions that protect the business.", avgSalary: "550,000 - 1,000,000 kr/year", educationPath: "Bachelor's in Finance / Maths / Statistics + FRM / PRM certifications", keySkills: ["statistical modelling", "risk frameworks", "Excel", "report writing", "regulation"], dailyTasks: ["Build risk models", "Run stress tests", "Monitor exposures", "Write reports", "Brief management"], growthOutlook: "high" },
     { id: "derivatives-trader", title: "Derivatives Trader", emoji: "🔀", description: "Trade derivatives — futures, swaps, options — for a bank or fund, often hedging or providing liquidity.", avgSalary: "800,000 - 3,000,000+ kr/year (variable)", educationPath: "Bachelor's/Master's in Finance / Maths / Physics + trading desk experience", keySkills: ["derivatives pricing", "risk management", "modelling", "fast decision-making", "discipline"], dailyTasks: ["Price derivatives", "Hedge books", "Manage P&L", "Watch markets", "Brief desk"], growthOutlook: "medium" },
@@ -5929,7 +5927,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     { id: "telco-account-manager", title: "Account Manager", emoji: "🧑‍💼", description: "Own the relationship with telecom customers, growing accounts and keeping them happy.", avgSalary: "650,000 - 1,000,000 kr/year", educationPath: "Bachelor's in Business/Telecom + account management experience", keySkills: ["relationship building", "negotiation", "forecasting", "commercial acumen", "communication"], dailyTasks: ["Meet customers", "Forecast revenue", "Resolve issues", "Plan account growth", "Coordinate internal teams"], growthOutlook: "medium" },
     { id: "telco-project-manager", title: "Project Manager", emoji: "📅", description: "Run telecom projects to scope, time, and budget — from network rollouts to OSS/BSS upgrades.", avgSalary: "700,000 - 1,000,000 kr/year", educationPath: "Bachelor's + PRINCE2/PMP", keySkills: ["project planning", "risk management", "stakeholder mgmt", "reporting", "delivery"], dailyTasks: ["Plan and track work", "Run governance", "Manage risks", "Report status", "Coordinate teams"], growthOutlook: "medium" },
     { id: "telco-programme-manager", title: "Programme Manager", emoji: "🗂️", description: "Coordinate multiple related telecom projects into one programme delivering business outcomes.", avgSalary: "850,000 - 1,250,000 kr/year", educationPath: "Bachelor's + MSP/PgMP + 8+ years delivery", keySkills: ["programme governance", "benefits realisation", "leadership", "finance", "executive comms"], dailyTasks: ["Govern programmes", "Manage budgets", "Brief executives", "Resolve cross-project issues", "Track benefits"], growthOutlook: "medium" },
-    { id: "telco-pmo-analyst", title: "PMO Analyst", emoji: "🗃️", description: "Support telecom programmes with planning, reporting, governance, and finance tracking.", avgSalary: "550,000 - 800,000 kr/year", educationPath: "Bachelor's + PMO/PRINCE2 awareness", keySkills: ["planning tools", "reporting", "governance", "finance tracking", "attention to detail"], dailyTasks: ["Maintain plans", "Build status reports", "Track budgets", "Run governance forums", "Maintain RAID logs"], growthOutlook: "medium", entryLevel: true },
+    { id: "telco-pmo-analyst", title: "PMO Analyst", emoji: "🗃️", description: "Support telecom programmes with planning, reporting, governance, and finance tracking.", avgSalary: "550,000 - 800,000 kr/year", educationPath: "Bachelor's + PMO/PRINCE2 awareness", keySkills: ["planning tools", "reporting", "governance", "finance tracking", "attention to detail"], dailyTasks: ["Maintain plans", "Build status reports", "Track budgets", "Run governance forums", "Maintain RAID logs"], growthOutlook: "medium" },
     { id: "telco-agile-coach", title: "Agile Coach", emoji: "🧭", description: "Coach telecom teams and leaders to adopt agile ways of working at scale.", avgSalary: "850,000 - 1,200,000 kr/year", educationPath: "Bachelor's + SAFe/agile certifications + coaching experience", keySkills: ["SAFe/Scrum", "coaching", "facilitation", "change management", "metrics"], dailyTasks: ["Coach teams", "Run workshops", "Support leaders", "Improve flow", "Measure outcomes"], growthOutlook: "high" },
     { id: "telco-scrum-master", title: "Scrum Master", emoji: "🌀", description: "Facilitate scrum teams delivering telecom software and network automation work.", avgSalary: "650,000 - 900,000 kr/year", educationPath: "Bachelor's + CSM/PSM", keySkills: ["scrum", "facilitation", "servant leadership", "JIRA", "team coaching"], dailyTasks: ["Run ceremonies", "Remove blockers", "Coach team", "Track flow", "Support PO"], growthOutlook: "medium" },
     { id: "telco-customer-support-engineer", title: "Customer Support Engineer", emoji: "🛎️", description: "Provide technical support to telecom customers, diagnosing issues across networks and services.", avgSalary: "500,000 - 750,000 kr/year", educationPath: "Bachelor's/vocational in Telecom/IT", keySkills: ["troubleshooting", "customer comms", "ticketing", "product knowledge", "patience"], dailyTasks: ["Take support tickets", "Diagnose issues", "Coordinate with engineering", "Update customers", "Document fixes"], growthOutlook: "medium", entryLevel: true },
@@ -6504,7 +6502,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["tax law", "accounting", "investigation", "attention to detail", "report writing"],
       dailyTasks: ["Audit tax returns", "Interview taxpayers", "Analyse financials", "Write audit reports", "Advise on compliance"],
       growthOutlook: "stable",
-      entryLevel: true,
     },
     {
       id: "park-ranger",
@@ -6539,7 +6536,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["active listening", "regulation knowledge", "case management", "empathy", "system navigation"],
       dailyTasks: ["Meet with service users", "Assess eligibility", "Coordinate benefits", "Write decisions", "Liaise with employers"],
       growthOutlook: "stable",
-      entryLevel: true,
     },
     {
       id: "civil-defence-officer",
@@ -6864,7 +6860,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["trauma-informed practice", "empathy", "legal knowledge", "advocacy", "boundary setting"],
       dailyTasks: ["Support survivors", "Plan safety", "Accompany to court", "Coordinate housing", "Document cases"],
       growthOutlook: "high",
-      entryLevel: true,
     },
     {
       id: "crisis-intervention-specialist",
@@ -7306,7 +7301,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["organisation", "communication", "problem-solving", "calm under pressure", "people skills"],
       dailyTasks: ["Plan travel", "Coordinate kit", "Manage logistics", "Liaise with staff", "Support players"],
       growthOutlook: "stable",
-      entryLevel: true,
     },
 
     // ──────────────────────────────────────────────
@@ -7382,7 +7376,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["organisation", "communication", "multitasking", "problem-solving", "teamwork"],
       dailyTasks: ["Book venues", "Coordinate volunteers", "Manage schedules", "Handle vendors", "Support live ops"],
       growthOutlook: "medium",
-      entryLevel: true,
     },
     {
       id: "sponsorship-manager",
@@ -7656,7 +7649,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["facilitation", "listening", "coalition-building", "communication", "tenacity"],
       dailyTasks: ["Listen to residents", "Run community meetings", "Build local groups", "Plan campaigns", "Connect to decision-makers"],
       growthOutlook: "medium",
-      entryLevel: true,
     },
     {
       id: "outreach-worker",
