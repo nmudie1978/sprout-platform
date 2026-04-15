@@ -285,6 +285,7 @@ const PRESET_FUTURE_PROOF = new Set<string>([
   "ai-engineer",
   "ai-researcher",
   "firefighter",
+  "police-officer",
   "paramedic",
   "physiotherapist",
   "occupational-therapist",
@@ -870,7 +871,7 @@ const RING_RADII = [95, 175];
 // Padding around the SVG so category labels around the outer ring aren't clipped
 const VIEWBOX_PAD = 40;
 const ZOOM_MIN = 0.6;
-const ZOOM_MAX = 2.5;
+const ZOOM_MAX = 3.0;
 const ZOOM_STEP = 0.25;
 
 // Band sizes scale with signal strength to avoid clutter.

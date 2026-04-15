@@ -141,6 +141,14 @@ const RADAR_TIPS = [
     description: "Use the Compare feature to put two or more careers side by side. See how they differ in salary, education path, growth, and how well they match your profile.",
   },
   {
+    title: "Save anything you want to come back to",
+    description: "Heart a career on its detail sheet to keep it in your Saved Careers tray on the right edge of the radar — and anywhere else Saved Careers appears (your Dashboard too). Nothing's lost; it's always one tap away.",
+  },
+  {
+    title: "Save a whole comparison",
+    description: "Built a Compare that you want to revisit? Save it from the Compare view and it lands in the Saved Comparisons tray. Open one tap later to reload the exact same shortlist — great for weighing two paths over a few days.",
+  },
+  {
     title: "Update your preferences",
     description: "The radar is only as good as what you tell it. Tap 'Edit preferences' to change your subjects, work style, or people preference — the radar updates instantly.",
   },
