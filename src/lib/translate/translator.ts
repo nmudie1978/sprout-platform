@@ -2,7 +2,13 @@ import { createHash } from "crypto";
 import OpenAI from "openai";
 import { prisma } from "@/lib/prisma";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let _openai: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+}
 
 /** 30-day cache TTL */
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -51,7 +57,7 @@ export async function translateText(
   }
 
   // Call OpenAI
-  const completion = await openai.chat.completions.create({
+  const completion = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0.3,
     messages: [
@@ -129,7 +135,7 @@ export async function translateBatch(
     .map((t) => `[${t.index}] ${t.item.text}`)
     .join("\n\n");
 
-  const completion = await openai.chat.completions.create({
+  const completion = await getOpenAI().chat.completions.create({
     model: "gpt-4o-mini",
     temperature: 0.3,
     messages: [
