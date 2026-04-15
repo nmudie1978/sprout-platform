@@ -46,7 +46,7 @@ import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
 import { pickCelebrationMessage } from '@/lib/journey/celebration-messages';
-import { getCertificationPath, getCareerRequirements, getNorwayProgrammes } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements, getNorwayProgrammes, getProgrammesForCareer } from '@/lib/education';
 import {
   parseGradeRequirement,
   formatGradeLabel,
@@ -1105,8 +1105,31 @@ function UnderstandTab({
           case we show a short "not applicable" message inside the
           section rather than hiding it. */}
       {(() => {
-        const progs = career ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
-        const hasStudyPath = !!(progs && progs.programmes && progs.programmes.length > 0);
+        // Three complementary data sources feed the Study Path check.
+        // The old gate used only the hand-curated NORWAY_PROGRAMMES map
+        // (~17 careers), which hid the whole section for any career
+        // outside that short list — including careers that do have a
+        // formal Norwegian degree route recorded elsewhere. Symptom:
+        // "How you qualify" on Discover showed a degree path, but
+        // Understand's Study Path said "No formal study path required".
+        //
+        // We now consider:
+        //   1. The hand-curated NORWAY_PROGRAMMES map (hardcoded ~17).
+        //   2. The 3-layer programmes model via getProgrammesForCareer
+        //      — covers every career with real utdanning.no programme
+        //      rows (hundreds).
+        //   3. The career-requirements dataset (744 careers) — if it
+        //      declares a universityPath.programme, there IS a formal
+        //      study path even when no specific institution rows are
+        //      mapped yet. The EducationBrowser's PathwayFallbackView
+        //      renders that structured requirement data gracefully.
+        const hardcoded = career ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
+        const nordicProgs = career ? getProgrammesForCareer(career.id, { country: 'NO' }) : [];
+        const reqs = career ? getCareerRequirements(career.id) : null;
+        const hasStudyPath =
+          !!(hardcoded && hardcoded.programmes && hardcoded.programmes.length > 0) ||
+          nordicProgs.length > 0 ||
+          !!reqs?.universityPath?.programme;
         return (
           <SectionCard>
             <SectionHeader
