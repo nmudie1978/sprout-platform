@@ -75,20 +75,26 @@ export function PageFrame({
   );
 }
 
-// ── Section header: overline + large title + lead, subtle rule ─────
+// ── Section header: large title + lead + rule.
+//    The section name already appears in the running head (top
+//    right of every page via PageFrame). Rendering it a second time
+//    as an overline above the title was redundant — the `eyebrow`
+//    prop is accepted for backwards compatibility but no longer
+//    drawn, so callers don't have to change.
 
 export function SectionHeader({
-  eyebrow,
+  eyebrow: _eyebrow,
   title,
   lead,
 }: {
-  eyebrow: string;
+  /** Legacy — the running head carries the section name now. */
+  eyebrow?: string;
   title: string;
   lead?: string;
 }) {
+  void _eyebrow;
   return (
     <View style={{ marginBottom: 22 }}>
-      <Text style={[styles.overline, { marginBottom: 10 }]}>{eyebrow}</Text>
       <Text style={styles.displayL}>{title}</Text>
       {lead ? (
         <Text style={[styles.lead, { marginTop: 12, maxWidth: 440 }]}>{lead}</Text>

@@ -713,7 +713,6 @@ export function RoadmapPages({
           />
         ) : (
           <View style={{ marginBottom: 20 }}>
-            <Text style={[styles.overline, { marginBottom: 8 }]}>Your Path</Text>
             <Text style={styles.h1}>Your path, continued</Text>
             <View style={{ height: 14 }} />
             <View style={styles.rule} />
