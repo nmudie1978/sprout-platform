@@ -3,11 +3,8 @@ import { Document, Font } from "@react-pdf/renderer";
 import path from "path";
 import type { JourneyReportViewModel } from "./types";
 import {
-  ClarityPage,
   ClosingPage,
   CoverPage,
-  DiscoverPage,
-  ExecutivePage,
   NextStepsPage,
   RoadmapPages,
   RoutesPage,
@@ -41,7 +38,9 @@ function registerFontsOnce() {
   Font.registerHyphenationCallback((word) => [word]);
 }
 
-const ITEMS_PER_ROADMAP_PAGE = 5;
+// Roadmap is rendered as a single page — react-pdf auto-breaks if the
+// content overflows. The user-facing goal is "Your path" on one page.
+const ROADMAP_SINGLE_PAGE_CAP = 9999;
 
 function hasPathContent(vm: JourneyReportViewModel): boolean {
   return Boolean(
@@ -59,54 +58,51 @@ function hasPathContent(vm: JourneyReportViewModel): boolean {
  *
  *   Cover (unnumbered)
  *   1  Contents
- *   2  Executive summary
- *   3  Discover
- *   4  Understand — role
- *   5  Understand — path (conditional)
- *   6..  Roadmap (one or more)
+ *   2  Career Summary (role detail)
+ *   3  Career Summary — path (conditional)
+ *   4..  Roadmap (one page — auto-breaks on overflow)
  *   N  Alternative routes (conditional)
- *   N+1 Clarity
- *   N+2 Next steps
- *   N+3 Closing
+ *   N+1 Recommended next steps
+ *   N+2 Closing
+ *
+ * The Executive Summary, Discover ("Who you are"), and Clarity
+ * ("Momentum & reflections") sections were dropped. The cover
+ * communicates "what this is"; Career Summary + roadmap + next steps
+ * carry the actionable content.
  */
 function planLayout(vm: JourneyReportViewModel) {
   const tocPage = 1;
-  const executive = 2;
-  const discover = 3;
-  const understandRole = 4;
+  const understandRole = 2;
   const understandPathShown = hasPathContent(vm);
-  const understandPath = understandPathShown ? 5 : null;
-  const roadmapStart = understandPathShown ? 6 : 5;
-  const roadmapPageCount = Math.max(
-    1,
-    Math.ceil(vm.roadmap.items.length / ITEMS_PER_ROADMAP_PAGE),
-  );
+  const understandPath = understandPathShown ? 3 : null;
+  const roadmapStart = understandPathShown ? 4 : 3;
+  // Single-page roadmap — react-pdf handles natural overflow if the
+  // content is longer than one page.
+  const roadmapPageCount = 1;
 
   let cursor = roadmapStart + roadmapPageCount;
   const routes: number | null = vm.routes.length > 0 ? cursor : null;
   if (routes !== null) cursor += 1;
-  const clarity = cursor++;
   const nextSteps = cursor++;
   const closing = cursor++;
   const total = closing;
 
   const toc: TocEntry[] = [];
   let n = 1;
-  toc.push({ n: n++, title: "Executive Summary", pageNumber: executive });
-  toc.push({ n: n++, title: "Discover — Who you are", pageNumber: discover });
   toc.push({
     n: n++,
-    title: "Understand — Inside the role",
+    title: vm.cover.careerTitle
+      ? `Career Summary — ${vm.cover.careerTitle}`
+      : "Career Summary",
     pageNumber: understandRole,
   });
   if (understandPath !== null) {
-    toc.push({ n: n++, title: "Understand — The path", pageNumber: understandPath });
+    toc.push({ n: n++, title: "The path", pageNumber: understandPath });
   }
-  toc.push({ n: n++, title: "Clarity — Your personal roadmap", pageNumber: roadmapStart });
+  toc.push({ n: n++, title: "Your path", pageNumber: roadmapStart });
   if (routes !== null) {
     toc.push({ n: n++, title: "Alternative routes", pageNumber: routes });
   }
-  toc.push({ n: n++, title: "Momentum & reflections", pageNumber: clarity });
   toc.push({ n: n++, title: "Recommended next steps", pageNumber: nextSteps });
   toc.push({ n: n++, title: "Closing", pageNumber: closing });
 
@@ -114,14 +110,11 @@ function planLayout(vm: JourneyReportViewModel) {
     toc,
     pages: {
       tocPage,
-      executive,
-      discover,
       understandRole,
       understandPath,
       roadmapStart,
       roadmapPageCount,
       routes,
-      clarity,
       nextSteps,
       closing,
     },
@@ -143,16 +136,6 @@ export function JourneyReportDocument({ vm }: { vm: JourneyReportViewModel }) {
     >
       <CoverPage vm={vm} />
       <TocPage entries={toc} pageNumber={pages.tocPage} totalPages={total} />
-      <ExecutivePage
-        data={vm.executive}
-        pageNumber={pages.executive}
-        totalPages={total}
-      />
-      <DiscoverPage
-        data={vm.discover}
-        pageNumber={pages.discover}
-        totalPages={total}
-      />
       <UnderstandPage
         data={vm.understand}
         career={vm.cover.careerTitle}
@@ -172,6 +155,7 @@ export function JourneyReportDocument({ vm }: { vm: JourneyReportViewModel }) {
         education: vm.education,
         startingPageNumber: pages.roadmapStart,
         totalPages: total,
+        itemsPerPage: ROADMAP_SINGLE_PAGE_CAP,
       })}
       {pages.routes !== null && (
         <RoutesPage
@@ -181,11 +165,6 @@ export function JourneyReportDocument({ vm }: { vm: JourneyReportViewModel }) {
           totalPages={total}
         />
       )}
-      <ClarityPage
-        data={vm.clarity}
-        pageNumber={pages.clarity}
-        totalPages={total}
-      />
       <NextStepsPage
         steps={vm.nextSteps}
         pageNumber={pages.nextSteps}

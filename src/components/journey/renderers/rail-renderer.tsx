@@ -118,6 +118,11 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
               state={foundationState}
               onClick={() => !readOnly && onItemClick(foundationItem)}
             />
+            {firstSchool && (
+              <div className="mt-2 w-full">
+                <SchoolBadge item={firstSchool} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -167,11 +172,6 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
                   }
                 />
 
-                {i === 0 && firstSchool && (
-                  <div className="mt-2 w-full">
-                    <SchoolBadge item={firstSchool} />
-                  </div>
-                )}
               </div>
             </div>
           );

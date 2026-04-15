@@ -42,22 +42,35 @@ export function CoverPage({ vm }: { vm: JourneyReportViewModel }) {
         justifyContent: "space-between",
       }}
     >
-      {/* Top — wordmark */}
+      {/* Top — brand mark + wordmark */}
       <View>
         <HairlineRule width={56} color={palette.cover.accent} height={3} />
-        <Text
-          style={{
-            fontFamily: type.heading.family,
-            fontWeight: type.heading.weight,
-            fontSize: 11,
-            color: palette.cover.accent,
-            letterSpacing: 3.5,
-            textTransform: "uppercase",
-            marginTop: 22,
-          }}
-        >
-          Endeavrly
-        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 22 }}>
+          <Svg style={{ width: 26, height: 26 }} viewBox="0 0 32 32">
+            <Circle cx={16} cy={16} r={15} fill={palette.cover.accent} />
+            <Path
+              d="M16 7 L20 16 L16 14 L12 16 Z"
+              fill={palette.cover.bg}
+            />
+            <Path
+              d="M16 25 L12 16 L16 18 L20 16 Z"
+              fill={palette.cover.bg}
+              fillOpacity={0.55}
+            />
+          </Svg>
+          <Text
+            style={{
+              fontFamily: type.heading.family,
+              fontWeight: type.heading.weight,
+              fontSize: 11,
+              color: palette.cover.accent,
+              letterSpacing: 3.5,
+              textTransform: "uppercase",
+            }}
+          >
+            Endeavrly
+          </Text>
+        </View>
       </View>
 
       {/* Centre — title block */}
@@ -431,10 +444,10 @@ export function UnderstandPage({
   );
 
   return (
-    <PageFrame sectionLabel="Understand" pageNumber={pageNumber} totalPages={totalPages}>
+    <PageFrame sectionLabel="Career Summary" pageNumber={pageNumber} totalPages={totalPages}>
       <SectionHeader
-        eyebrow="Phase 02  ·  Understand"
-        title={career ? `Inside the reality of ${career}` : "What you've learned"}
+        eyebrow="Career Summary"
+        title={career ? `Career Summary for: ${career}` : "Career Summary"}
         lead={
           career
             ? `What the role actually looks like, what it asks of you, and what you'd need to build to get there. Signals below are drawn from the app's verified career catalog.`
@@ -864,26 +877,33 @@ export function RoadmapPages({
   education,
   startingPageNumber,
   totalPages,
+  itemsPerPage,
 }: {
   data: RoadmapSection;
   education: EducationContext;
   startingPageNumber: number;
   totalPages: number;
+  /** Optional override; defaults to the module constant. */
+  itemsPerPage?: number;
 }): React.ReactElement[] {
+  const perPage = itemsPerPage ?? ITEMS_PER_ROADMAP_PAGE;
   const hasItems = data.items.length > 0;
   const hasSchoolTrack = data.schoolTrack.length > 0;
-  const hasSchoolInfo = Boolean(education.stage || education.subjects.length > 0);
+  // `education` is no longer rendered — "Current education" was removed
+  // from the report because it duplicates content on the roadmap's
+  // first step. Keep the prop so callers don't have to change shape.
+  void education;
 
-  if (!hasItems && !hasSchoolTrack && !hasSchoolInfo) {
+  if (!hasItems && !hasSchoolTrack) {
     return [
       <PageFrame
         key="rm-empty"
-        sectionLabel="Roadmap"
+        sectionLabel="Your path"
         pageNumber={startingPageNumber}
         totalPages={totalPages}
       >
         <SectionHeader
-          eyebrow="Phase 03  ·  Clarity"
+          eyebrow="Your path"
           title="Your personal roadmap"
           lead="The path from where you are today to the career you're exploring — mapped around your age, your education stage, and your chosen direction."
         />
@@ -892,14 +912,11 @@ export function RoadmapPages({
     ];
   }
 
-  const pageCount = Math.max(1, Math.ceil(data.items.length / ITEMS_PER_ROADMAP_PAGE));
+  const pageCount = Math.max(1, Math.ceil(data.items.length / perPage));
   const out: React.ReactElement[] = [];
 
   for (let p = 0; p < pageCount; p++) {
-    const slice = data.items.slice(
-      p * ITEMS_PER_ROADMAP_PAGE,
-      (p + 1) * ITEMS_PER_ROADMAP_PAGE,
-    );
+    const slice = data.items.slice(p * perPage, (p + 1) * perPage);
     const isFirst = p === 0;
     const isLastRoadmapPage = p === pageCount - 1;
     const pageNumber = startingPageNumber + p;
@@ -907,13 +924,13 @@ export function RoadmapPages({
     out.push(
       <PageFrame
         key={`rm-${p}`}
-        sectionLabel="Roadmap"
+        sectionLabel="Your path"
         pageNumber={pageNumber}
         totalPages={totalPages}
       >
         {isFirst ? (
           <SectionHeader
-            eyebrow="Phase 03  ·  Clarity"
+            eyebrow="Your path"
             title={data.career ? `Your path to ${data.career}` : "Your personal roadmap"}
             lead={
               data.isFallback
@@ -975,98 +992,74 @@ export function RoadmapPages({
           </View>
         )}
 
-        {/* School track + current education render once, on the final roadmap page. */}
-        {isLastRoadmapPage && (hasSchoolTrack || hasSchoolInfo) && (
+        {/* Learning track renders once, on the final roadmap page.
+            "Current education" was removed — it duplicates the
+            starting-point info already inline on the roadmap. */}
+        {isLastRoadmapPage && hasSchoolTrack && (
           <View style={{ marginTop: 18 }}>
             <View style={styles.rule} />
-            {hasSchoolTrack && (
-              <>
-                <Text style={styles.h1}>Learning track</Text>
-                <Text style={[styles.bodyMuted, { marginBottom: 10 }]}>
-                  The subjects and personal learning that run alongside your roadmap.
-                </Text>
-                {data.schoolTrack.map((item, i) => (
-                  <View
-                    key={i}
+            <Text style={styles.h1}>Learning track</Text>
+            <Text style={[styles.bodyMuted, { marginBottom: 10 }]}>
+              The subjects and personal learning that run alongside your roadmap.
+            </Text>
+            {data.schoolTrack.map((item, i) => (
+              <View
+                key={i}
+                style={{
+                  backgroundColor: palette.surface,
+                  borderRadius: 6,
+                  padding: 12,
+                  marginBottom: 8,
+                  borderLeftWidth: 2,
+                  borderLeftColor: palette.blue,
+                }}
+                wrap={false}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
+                  <Text
                     style={{
-                      backgroundColor: palette.surface,
-                      borderRadius: 6,
-                      padding: 12,
-                      marginBottom: 8,
-                      borderLeftWidth: 2,
-                      borderLeftColor: palette.blue,
+                      fontFamily: type.heading.family,
+                      fontWeight: type.subheading.weight,
+                      fontSize: 10,
+                      color: palette.ink,
                     }}
-                    wrap={false}
                   >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: 6,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontFamily: type.heading.family,
-                          fontWeight: type.subheading.weight,
-                          fontSize: 10,
-                          color: palette.ink,
-                        }}
-                      >
-                        {item.title}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 7,
-                          fontFamily: type.bodyStrong.family,
-                          fontWeight: type.bodyStrong.weight,
-                          color: stageColors[item.stage].ink,
-                          backgroundColor: stageColors[item.stage].bg,
-                          paddingHorizontal: 7,
-                          paddingVertical: 3,
-                          borderRadius: 10,
-                          textTransform: "capitalize",
-                          letterSpacing: 0.4,
-                        }}
-                      >
-                        {item.stage}
-                      </Text>
-                    </View>
-                    {item.subjects.length > 0 && (
-                      <TagList items={item.subjects} color={palette.blue} bg={palette.blueSoft} max={10} />
-                    )}
-                    {item.personalLearning && (
-                      <Text style={[styles.caption, { marginTop: 4 }]}>
-                        Self-directed: {item.personalLearning}
-                      </Text>
-                    )}
-                  </View>
-                ))}
-              </>
-            )}
-
-            {hasSchoolInfo && (
-              <>
-                {hasSchoolTrack ? <View style={styles.sp12} /> : null}
-                <Text style={styles.h1}>Current education</Text>
-                <View style={styles.row}>
-                  <View style={styles.col}>
-                    <Pair label="Education stage" value={education.stageLabel || education.stage || "Not specified"} />
-                    {education.schoolName && <Pair label="School" value={education.schoolName} />}
-                    {education.expectedCompletion && (
-                      <Pair label="Expected completion" value={education.expectedCompletion} />
-                    )}
-                  </View>
-                  {education.subjects.length > 0 && (
-                    <View style={styles.col}>
-                      <Text style={styles.label}>Current subjects</Text>
-                      <TagList items={education.subjects} color={palette.blue} bg={palette.blueSoft} max={12} />
-                    </View>
-                  )}
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 7,
+                      fontFamily: type.bodyStrong.family,
+                      fontWeight: type.bodyStrong.weight,
+                      color: stageColors[item.stage].ink,
+                      backgroundColor: stageColors[item.stage].bg,
+                      paddingHorizontal: 7,
+                      paddingVertical: 3,
+                      borderRadius: 10,
+                      textTransform: "capitalize",
+                      letterSpacing: 0.4,
+                    }}
+                  >
+                    {item.stage}
+                  </Text>
                 </View>
-              </>
-            )}
+                {item.subjects.length > 0 && (
+                  <TagList items={item.subjects} color={palette.blue} bg={palette.blueSoft} max={10} />
+                )}
+                {item.personalLearning && (
+                  <Text style={[styles.caption, { marginTop: 4 }]}>
+                    Self-directed: {item.personalLearning}
+                  </Text>
+                )}
+              </View>
+            ))}
           </View>
         )}
       </PageFrame>,

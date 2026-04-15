@@ -45,6 +45,7 @@ import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
 import type { NextStep } from '@/lib/reports/journey';
+import { pickCelebrationMessage } from '@/lib/journey/celebration-messages';
 import { getCertificationPath, getCareerRequirements, getNorwayProgrammes } from '@/lib/education';
 import {
   parseGradeRequirement,
@@ -2359,6 +2360,10 @@ function ClarityCompletionCard({
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
 
+  // Pick a random warm note once per mount so the same user sees a
+  // stable message within a session but gets a fresh one on next visit.
+  const congratsMessage = useMemo(() => pickCelebrationMessage(), []);
+
   const { data: recommendationsData } = useQuery<{ nextSteps: NextStep[] }>({
     queryKey: ['my-journey-recommendations', careerTitle],
     queryFn: async () => {
@@ -2476,25 +2481,25 @@ function ClarityCompletionCard({
         </>
       )}
       {clarityComplete && (
-        /* Slim SaaS-style success row. Minimum chrome: a single horizontal
-           strip with a status label on the left and two icon actions on
-           the right — recommendations popover + PDF export. No large
-           emoji, no paragraph copy, no centred CTA card. */
-        <div className="rounded-lg border border-emerald-500/25 bg-gradient-to-r from-emerald-500/[0.06] via-emerald-500/[0.03] to-transparent px-3 py-2 flex items-center gap-3">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
+        /* Centred slim success row + a short human note underneath.
+           Only as wide as its content: status label + two icon
+           actions (recommendations + PDF). */
+        <div className="flex flex-col items-center gap-3">
+        <div className="inline-flex items-center gap-3 rounded-lg border border-emerald-500/25 bg-gradient-to-r from-emerald-500/[0.06] via-emerald-500/[0.03] to-transparent px-3 py-2">
+          <div className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" strokeWidth={2.25} />
-            <div className="min-w-0 flex items-baseline gap-1.5 flex-wrap">
+            <div className="flex items-baseline gap-1.5">
               <span className="text-xs font-semibold text-emerald-300 tracking-tight">Journey complete</span>
               {careerTitle && (
                 <>
                   <span className="text-[10px] text-muted-foreground/40" aria-hidden>·</span>
-                  <span className="text-xs font-medium text-foreground/80 truncate">{careerTitle}</span>
+                  <span className="text-xs font-medium text-foreground/80">{careerTitle}</span>
                 </>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1">
             {/* Recommendations popover — icon only, opens a small card with the nextSteps list. */}
             <Popover>
               <PopoverTrigger asChild>
@@ -2564,6 +2569,10 @@ function ClarityCompletionCard({
           {reportError && (
             <p className="text-[10px] text-rose-400 ml-2 shrink-0" role="alert">{reportError}</p>
           )}
+        </div>
+        <p className="max-w-md text-center text-[11px] leading-relaxed text-muted-foreground/75">
+          {congratsMessage}
+        </p>
         </div>
       )}
     </div>
