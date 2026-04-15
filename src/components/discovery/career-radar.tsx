@@ -227,30 +227,41 @@ const PRESET_WORK_LIFE_BALANCE = new Set<string>([
   "hospital-administrator",
 ]);
 
+// High-study careers: master's / medical specialty / PhD routes.
+// Curated from the user's list (Apr 2026) against confirmed catalogue
+// ids. Missing roles (Economist, Actuary, Physicist, Chemist,
+// Biologist, Geneticist, Neuroscientist, Chemical Engineer) noted as
+// catalogue gaps for future expansion.
 const PRESET_ACADEMIC = new Set<string>([
   "doctor",
   "surgeon",
   "dentist",
-  "veterinarian",
   "pharmacist",
+  "veterinarian",
   "psychologist",
   "psychiatrist",
   "lawyer",
   "corporate-lawyer",
+  "judge",
+  "prosecutor",
   "architect",
-  "anesthesiologist",
-  "radiologist",
-  "pathologist",
-  "ophthalmologist",
+  "civil-engineer",
+  "mechanical-engineer",
+  "electrical-engineer",
+  "aerospace-engineer",
+  "aviation-engineer",
+  "data-scientist",
+  "ai-engineer",
+  "ai-researcher",
+  "machine-learning-engineer",
   "university-lecturer",
   "clinical-researcher",
   "astrophysicist",
   "biomedical-scientist",
   "epidemiologist",
-  "ai-researcher",
   "food-scientist",
-  "civil-engineer",
-  "aviation-engineer",
+  "accountant",
+  "investment-banker",
 ]);
 
 const PRESET_FUTURE_PROOF = new Set<string>([
@@ -308,30 +319,107 @@ const PRESET_VOCATIONAL = new Set<string>([
   "beautician",
 ]);
 
+// Fast-growing careers: the 30 roles the user flagged (Apr 2026) as
+// structurally expanding through the rest of the decade — AI / data /
+// cloud / cyber, renewable energy technicians, mental-health /
+// healthcare administration, product + UX, digital commerce,
+// logistics + infosec. Curated against confirmed catalogue ids.
+// Missing from the catalogue (flagged as gaps): Physician Assistant,
+// Solar Energy Technician, Electric Vehicle Technician, Sustainability
+// Specialist, E-commerce Manager, Business Intelligence Analyst,
+// Information Security Manager. Substitutes: renewable-energy-tech,
+// offshore-wind-technician + senior-wind-turbine-technician,
+// fullstack-engineer (for Full Stack Developer), mental-health-nurse
+// (for Mental Health Counselor), hospital-administrator (for
+// Healthcare Administrator), logistics-coordinator (for Logistics
+// Analyst), digital-marketer (for Digital Marketing Specialist).
+const PRESET_FAST_GROWING = new Set<string>([
+  // AI / data / cloud / software
+  "ai-engineer",
+  "machine-learning-engineer",
+  "ai-researcher",
+  "data-scientist",
+  "data-engineer",
+  "cybersecurity-analyst",
+  "cloud-engineer",
+  "devops-engineer",
+  "software-developer",
+  "fullstack-engineer",
+  "blockchain-developer",
+  "robotics-engineer",
+  "automation-engineer",
+  // Renewables / environment
+  "renewable-energy-tech",
+  "offshore-wind-technician",
+  "senior-wind-turbine-technician",
+  "environmental-scientist",
+  // Healthcare / mental health
+  "hospital-administrator",
+  "nurse-practitioner",
+  "mental-health-nurse",
+  // Product / UX / commerce
+  "ux-designer",
+  "product-manager",
+  "digital-marketer",
+  // Logistics / operations
+  "logistics-coordinator",
+  "supply-chain-manager",
+]);
+
+// Physically demanding roles: construction / trades / heavy ops /
+// emergency services / industrial maintenance / physically-active
+// medical + service. Curated from the user's list (Apr 2026).
+// Missing: Steelworker, Road Worker, Miner, Oil Rig Worker, Forestry
+// Worker, Landscaper, Fisherman, Dock Worker, Mover, Janitor, Waste
+// Collector, Recycling Worker, Pest Control, Window Cleaner, Stunt
+// Performer. Substitutes applied where close equivalents exist
+// (groundskeeper for landscaper, aircraft-maintenance-engineer for
+// aircraft maintenance technician, industrial-mechanic +
+// heavy-equipment-mechanic for generic "Mechanic",
+// drilling-technician for oil rig worker).
 const PRESET_PHYSICALLY_DEMANDING = new Set<string>([
+  // Construction & trades
+  "construction-worker",
+  "bricklayer",
+  "carpenter",
+  "electrician",
+  "plumber",
+  "welder",
+  "roofer",
+  "scaffolder",
+  // Heavy operations / machinery
+  "crane-operator",
+  // Factory / warehouse / logistics
+  "factory-worker",
+  "warehouse-worker",
+  // Vehicle / aircraft maintenance
+  "auto-mechanic",
+  "industrial-mechanic",
+  "heavy-equipment-mechanic",
+  "aircraft-maintenance-engineer",
+  // Offshore / extraction
+  "drilling-technician",
+  // Grounds / agriculture
+  "gardener",
+  "groundskeeper",
+  "farmer",
+  // Emergency services / military
   "firefighter",
   "police-officer",
-  "soldier",
-  "military-officer",
-  "carpenter",
-  "bricklayer",
-  "plumber",
-  "electrician",
-  "auto-mechanic",
-  "welder",
-  "construction-worker",
-  "warehouse-worker",
-  "chef",
-  "nurse",
-  "physiotherapist",
-  "personal-trainer",
-  "professional-athlete",
-  "sports-coach",
-  "gardener",
-  "delivery-driver",
   "paramedic",
-  "offshore-wind-technician",
-  "construction-manager",
+  "soldier",
+  // Medical
+  "nurse",
+  "surgeon",
+  // Food prep / service
+  "butcher",
+  "chef",
+  "kitchen-porter",
+  // Cleaning
+  "cleaner",
+  "house-cleaner",
+  // Sport
+  "professional-athlete",
 ]);
 
 const PRESET_HIGHLY_COMPETITIVE = new Set<string>([
@@ -381,7 +469,7 @@ function matchesPreset(career: Career, preset: PresetFilterKey): boolean {
     case "highly-competitive":
       return PRESET_HIGHLY_COMPETITIVE.has(career.id);
     case "fast-growing":
-      return career.growthOutlook === "high";
+      return PRESET_FAST_GROWING.has(career.id);
     case "vocational":
       // Union of the curated "no-degree" hand-list and every career
       // flagged entryLevel=true in the catalogue — broadest honest
