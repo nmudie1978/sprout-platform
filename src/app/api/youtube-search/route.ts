@@ -50,13 +50,20 @@ export async function GET(req: NextRequest) {
 
   const cacheKey = `yt:${query.toLowerCase().trim()}`;
 
-  // Check DB cache
+  // Check DB cache. Legacy entries stored only one video — treat those as
+  // a miss so the new multi-video query runs and replaces them. Without
+  // this the "More" control never appears for any career that was
+  // searched under the old single-result API.
   try {
     const cached = await prisma.videoCache.findUnique({ where: { cacheKey } });
     if (cached && cached.expiresAt > new Date()) {
-      return NextResponse.json(normaliseCached(cached.data), {
-        headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
-      });
+      const d = cached.data as { videos?: unknown[] };
+      const isLegacy = !Array.isArray(d?.videos);
+      if (!isLegacy) {
+        return NextResponse.json(normaliseCached(cached.data), {
+          headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },
+        });
+      }
     }
   } catch { /* cache miss, proceed to API */ }
 
