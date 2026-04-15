@@ -66,108 +66,1750 @@
     "kokki": "chef"
   },
   "advancedCareerMap": {
-    "surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgery is a specialisation you choose after completing a 6-year medical degree and an 18-month internship. Surgical training then takes around 6 more years." },
-    "general-surgeon": { "baseCareerId": "doctor", "specialisationNote": "General surgery covers a broad range of abdominal and soft-tissue operations. After the 6-year medical degree + LIS1, complete LIS2/3 in general surgery (6+ years)." },
-    "colorectal-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Colorectal surgery is a subspeciality of general surgery. Complete the medical degree + general surgery specialisation, then a colorectal fellowship (1-2 years)." },
-    "hepatobiliary-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Hepatobiliary surgery focuses on liver, gallbladder, and pancreas. Complete the medical degree + general surgery, then a hepatobiliary fellowship (1-2 years)." },
-    "endocrine-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Endocrine surgery focuses on thyroid, parathyroid, and adrenal glands. Complete the medical degree + general surgery, then an endocrine surgery fellowship." },
-    "cardiothoracic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cardiothoracic surgery covers the heart and lungs. After the medical degree + LIS1, complete LIS2/3 in cardiothoracic surgery (8+ years total post-graduation)." },
-    "cardiac-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cardiac surgery is a subspeciality of cardiothoracic surgery focusing on the heart. Medical degree + cardiothoracic specialisation + cardiac fellowship." },
-    "vascular-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Vascular surgery covers arteries and veins. After the medical degree + LIS1, complete LIS2/3 in vascular surgery (6+ years)." },
-    "thoracic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Thoracic surgery focuses on the lungs and chest. After the medical degree + LIS1, complete LIS2/3 in thoracic surgery (7+ years)." },
-    "neurosurgeon": { "baseCareerId": "doctor", "specialisationNote": "Neurosurgery covers the brain, spinal cord, and nervous system. After the medical degree + LIS1, complete LIS2/3 in neurosurgery (7+ years)." },
-    "spinal-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Spinal surgery is a subspeciality accessible via orthopaedics or neurosurgery. Complete the base specialisation, then a spine fellowship (1-2 years)." },
-    "orthopaedic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Orthopaedic surgery covers bones, joints, and muscles. After the medical degree + LIS1, complete LIS2/3 in orthopaedic surgery (6+ years)." },
-    "trauma-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Trauma surgery handles life-threatening injuries. Complete the medical degree + general surgery specialisation, then a trauma fellowship." },
-    "sports-medicine-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Sports medicine surgery focuses on athletic injuries. Complete orthopaedic surgery specialisation, then a sports medicine fellowship (1-2 years)." },
-    "plastic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Plastic surgery covers reconstruction and repair. After the medical degree + LIS1, complete LIS2/3 in plastic surgery (6+ years)." },
-    "reconstructive-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Reconstructive surgery restores form after trauma or cancer. Complete plastic surgery specialisation, then a reconstructive fellowship." },
-    "cosmetic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Cosmetic surgery focuses on elective aesthetic procedures. Complete plastic surgery specialisation, then an aesthetic fellowship or private-practice training." },
-    "ophthalmic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Ophthalmic surgery covers the eye. After the medical degree + LIS1, complete LIS2/3 in ophthalmology (5+ years)." },
-    "otolaryngologist": { "baseCareerId": "doctor", "specialisationNote": "ENT surgery covers the ear, nose, throat, and head/neck. After the medical degree + LIS1, complete LIS2/3 in otorhinolaryngology (5+ years)." },
-    "oral-maxillofacial-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Maxillofacial surgery requires BOTH a medical degree AND a dental degree, followed by a maxillofacial surgery specialisation (4+ years)." },
-    "urological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Urology covers the urinary tract and male reproductive system. After the medical degree + LIS1, complete LIS2/3 in urology (6+ years)." },
-    "paediatric-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Paediatric surgery operates on children. Complete general surgery specialisation, then a paediatric surgery fellowship (2+ years)." },
-    "obstetric-gynaecological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "OB/GYN surgery covers female reproductive health. After the medical degree + LIS1, complete LIS2/3 in obstetrics and gynaecology (5+ years)." },
-    "transplant-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Transplant surgery involves organ transplantation. Complete general surgery specialisation, then a transplant fellowship (2+ years)." },
-    "bariatric-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Bariatric surgery performs weight-loss operations. Complete general surgery specialisation, then a bariatric/metabolic surgery fellowship." },
-    "oncological-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Surgical oncology removes cancerous tumours. Complete general surgery specialisation, then a surgical oncology fellowship (2+ years)." },
-    "hand-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Hand surgery covers the hand, wrist, and forearm. Accessible via orthopaedics or plastic surgery, then a hand surgery fellowship (1-2 years)." },
-    "breast-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Breast surgery focuses on breast cancer and reconstruction. Complete general surgery specialisation, then a breast surgery fellowship." },
-    "dermatologic-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Dermatologic surgery treats skin cancers and conditions surgically. Complete dermatology specialisation, then a surgical dermatology fellowship." },
-    "peripheral-nerve-surgeon": { "baseCareerId": "doctor", "specialisationNote": "Peripheral nerve surgery repairs damaged nerves. Accessible via neurosurgery or plastic surgery, then a peripheral nerve fellowship." },
-    "anesthesiologist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 anaesthesiology specialisation (5 years)." },
-    "general-practitioner": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then the ALIS general-practice specialisation (5 years)." },
-    "psychiatrist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 psychiatry specialisation (5 years)." },
-    "radiologist": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 radiology specialisation (5 years)." },
-    "pediatrician": { "baseCareerId": "doctor", "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 paediatrics specialisation (5 years)." },
-
-    "backend-developer": { "baseCareerId": "software-developer", "specialisationNote": "Backend developers build the server, database, and API layer of applications. Same education as a general software developer — a 3-year bachelor in informatikk/computer science, optionally a 2-year master. Specialisation comes from work experience and project portfolio, not the degree." },
-    "frontend-developer": { "baseCareerId": "software-developer", "specialisationNote": "Frontend developers build the user-facing layer of web and mobile apps. Same education as a general software developer — a bachelor in informatikk/computer science, plus self-study of frameworks like React or Vue. Portfolio matters more than the specific degree." },
-    "fullstack-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Full-stack engineers handle both frontend and backend. Same education as a general software developer — a bachelor in informatikk/computer science, then on-the-job exposure to both ends of the stack." },
-    "mobile-developer": { "baseCareerId": "software-developer", "specialisationNote": "Mobile developers build iOS and Android apps. Same education as a general software developer — a bachelor in informatikk, then platform-specific learning (Swift/SwiftUI for iOS, Kotlin for Android)." },
-    "embedded-developer": { "baseCareerId": "software-developer", "specialisationNote": "Embedded developers write firmware for physical devices (cars, IoT, medical equipment). A bachelor in informatikk or electronics engineering, plus C/C++ and hardware experience. NTNU's Datateknologi or Elektronikk-systemer programme is the strongest route." },
-    "game-developer": { "baseCareerId": "software-developer", "specialisationNote": "Game developers build games using engines like Unity or Unreal. A bachelor in informatikk gives the foundation; specialised game-design programmes exist at Westerdals and Høgskulen i Volda but a portfolio of shipped games matters more." },
-    "ar-vr-developer": { "baseCareerId": "software-developer", "specialisationNote": "AR/VR developers build immersive experiences. A bachelor in informatikk plus 3D/Unity skills. The field is small enough that portfolio and side-projects beat any specific degree." },
-    "ai-engineer": { "baseCareerId": "software-developer", "specialisationNote": "AI engineers integrate machine-learning models into production systems. A bachelor in informatikk/computer science is the standard route; many add a master in Artificial Intelligence or Machine Learning. NTNU and UiO both offer AI specialisations." },
-    "applied-ai-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Applied AI engineers ship ML models into real products. A bachelor in informatikk plus practical experience with PyTorch/TensorFlow. The role overlaps heavily with software development — a CS degree is the strongest entry." },
-    "machine-learning-engineer": { "baseCareerId": "software-developer", "specialisationNote": "ML engineers train and deploy machine-learning models. A bachelor in informatikk/computer science or statistics, often followed by a master in Machine Learning or Data Science. NTNU's MIT (Master in Informatics) is a leading route." },
-    "computer-vision-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Computer vision engineers build systems that interpret images and video. A bachelor in informatikk plus a master in Machine Learning, Computer Science, or Electronics. NTNU has the strongest programmes in Norway." },
-    "nlp-engineer": { "baseCareerId": "software-developer", "specialisationNote": "NLP engineers build language-processing systems. A bachelor in informatikk plus a master with focus on machine learning or computational linguistics. UiO's Informatics programme has an NLP track." },
-    "blockchain-developer": { "baseCareerId": "software-developer", "specialisationNote": "Blockchain developers write smart contracts and decentralised applications. A bachelor in informatikk gives the foundation; the rest is self-taught around Solidity, Rust, and EVM tooling." },
-    "devops-engineer": { "baseCareerId": "software-developer", "specialisationNote": "DevOps engineers automate deployment and infrastructure. A bachelor in informatikk plus hands-on experience with cloud platforms (AWS, Azure, GCP) and tools like Docker, Kubernetes, Terraform. Often a transition from backend development." },
-    "sre": { "baseCareerId": "software-developer", "specialisationNote": "Site Reliability Engineers keep large systems running. A bachelor in informatikk plus deep experience with distributed systems, observability, and incident response. Usually a transition role from backend or DevOps." },
-    "site-reliability-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Site Reliability Engineers keep large systems running. A bachelor in informatikk plus deep experience with distributed systems, observability, and incident response. Usually a transition role from backend or DevOps." },
-    "platform-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Platform engineers build internal tooling and infrastructure that other developers use. A bachelor in informatikk plus systems-design experience. Usually a transition from backend or DevOps." },
-    "cloud-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Cloud engineers design and run systems on AWS, Azure, or GCP. A bachelor in informatikk is the strongest entry; cloud certifications (AWS Solutions Architect, Azure Administrator) supplement the degree." },
-    "security-engineer": { "baseCareerId": "software-developer", "specialisationNote": "Security engineers protect systems from attacks. A bachelor in informatikk is the entry point; many add a master in Information Security. NTNU's Information Security master is the leading Norwegian programme." },
-    "application-security-lead": { "baseCareerId": "software-developer", "specialisationNote": "Application security leads guard the codebase against vulnerabilities. A bachelor in informatikk plus several years of security engineering experience. Senior individual-contributor or lead role." },
-    "qa-engineer": { "baseCareerId": "software-developer", "specialisationNote": "QA engineers build automated test suites and validate software releases. A bachelor in informatikk gives the strongest entry; the role rewards systematic thinking and tool-fluency over deep theory." },
-    "backend-engineer-distributed": { "baseCareerId": "software-developer", "specialisationNote": "Distributed backend engineers build systems that scale across many servers. Same education as a general software developer — a bachelor in informatikk — plus deep experience with concurrency, message queues, and consensus protocols." },
-
-    "data-scientist": { "baseCareerId": "data-analyst", "specialisationNote": "Data scientists build models and run experiments on data. A bachelor in statistics, mathematics, or informatikk, often followed by a master in Data Science or Machine Learning. NTNU and UiO both offer dedicated programmes." },
-    "business-analyst": { "baseCareerId": "data-analyst", "specialisationNote": "Business analysts translate data and processes into business decisions. A bachelor in business administration, economics, or informatikk works. The role values clear communication and SQL/Excel fluency over a specific degree." },
-    "data-engineer": { "baseCareerId": "data-analyst", "specialisationNote": "Data engineers build the pipelines that move and transform data. A bachelor in informatikk or computer science plus experience with SQL, Python, and cloud data platforms (Snowflake, BigQuery, Databricks)." },
-    "quantitative-analyst": { "baseCareerId": "data-analyst", "specialisationNote": "Quants build mathematical models for finance. A bachelor in mathematics, statistics, or physics, almost always followed by a master in Quantitative Finance, Financial Mathematics, or similar. NHH and BI offer relevant masters in Norway." },
-
-    "graphic-designer": { "baseCareerId": "designer", "specialisationNote": "Graphic designers create visual identity, print, and brand work. A bachelor in graphic design or visual communication. KHiO, Konstfack, and KADK are the leading Nordic schools — portfolio is the primary admission criterion." },
-    "ui-designer": { "baseCareerId": "designer", "specialisationNote": "UI designers craft the visual layer of digital products. A bachelor in interaction design, visual communication, or graphic design. Portfolio of shipped digital work matters more than the specific degree." },
-    "ux-designer": { "baseCareerId": "designer", "specialisationNote": "UX designers research user needs and design product flows. A bachelor in interaction design or a CS degree with design focus. AHO and Konstfack offer the strongest Nordic programmes — portfolio is critical." },
-    "interior-designer": { "baseCareerId": "designer", "specialisationNote": "Interior designers shape physical spaces. A bachelor in interior architecture or interior design. KHiO, AHO, and KADK all offer relevant programmes." },
-    "fashion-designer": { "baseCareerId": "designer", "specialisationNote": "Fashion designers create clothing and accessories. A bachelor in fashion design — Konstfack (Stockholm) and KADK (Copenhagen) are the leading Nordic schools. Portfolio admission." },
-    "art-director": { "baseCareerId": "designer", "specialisationNote": "Art directors lead the visual concept on projects in advertising, film, or product. A bachelor in graphic design, visual communication, or fine art, plus several years as a designer first. Portfolio carries the role." },
-    "animator": { "baseCareerId": "designer", "specialisationNote": "Animators create motion graphics and character animation for film, games, and ads. A bachelor in animation or visual communication. Volda and Westerdals are the strongest Norwegian programmes; KADK offers an animation route in Denmark." },
-    "illustrator": { "baseCareerId": "designer", "specialisationNote": "Illustrators create commissioned artwork for editorial, books, and brands. A bachelor in illustration, visual communication, or fine art. KHiO and Konstfack are the leading Nordic schools. Portfolio is everything." },
-
-    "auditor": { "baseCareerId": "accountant", "specialisationNote": "Auditors verify the financial records of companies. A bachelor in accounting or business administration (NHH, BI, CBS), then 3 years of practical training to become statsautorisert revisor. Norwegian auditors are regulated by Finanstilsynet." },
-
-    "corporate-lawyer": { "baseCareerId": "lawyer", "specialisationNote": "Corporate lawyers advise companies on contracts, M&A, and compliance. Same education as any other lawyer — the 5-year master in rettsvitenskap. Corporate specialisation comes from working at a commercial law firm after graduating." },
-
-    "case-worker": { "baseCareerId": "social-worker", "specialisationNote": "Case workers manage individual welfare cases. A 3-year bachelor in sosialt arbeid (social work) or barnevernspedagogikk. OsloMet, NTNU, and Høgskulen i Volda all offer the programme." },
-    "youth-worker": { "baseCareerId": "social-worker", "specialisationNote": "Youth workers support young people through schools, NGOs, and outreach programmes. A bachelor in sosialt arbeid, barnevernspedagogikk, or pedagogikk. Often combined with experience in volunteer or community settings." },
-    "family-support-worker": { "baseCareerId": "social-worker", "specialisationNote": "Family support workers help families in crisis. A bachelor in sosialt arbeid or barnevernspedagogikk. The barnevernspedagog route is the strongest fit for child-focused roles." },
-    "outreach-worker": { "baseCareerId": "social-worker", "specialisationNote": "Outreach workers connect with people who don't access traditional services (homeless, addiction, marginalised youth). A bachelor in sosialt arbeid or vernepleie, often combined with field experience." },
-    "child-protection-officer": { "baseCareerId": "social-worker", "specialisationNote": "Child protection officers (barnevernspedagog) safeguard children at risk. A 3-year bachelor in barnevernspedagogikk (child welfare). OsloMet and NTNU are the leading programmes." },
-    "community-organiser": { "baseCareerId": "social-worker", "specialisationNote": "Community organisers build local action and advocacy. A bachelor in sosialt arbeid, sosiologi, or statsvitenskap. The role values lived experience and network-building as much as the degree." },
-    "addiction-counsellor": { "baseCareerId": "social-worker", "specialisationNote": "Addiction counsellors support people through substance recovery. A bachelor in sosialt arbeid or vernepleie, often with additional courses in rusproblematikk (substance issues)." },
-    "adoption-specialist": { "baseCareerId": "social-worker", "specialisationNote": "Adoption specialists handle adoption cases through Bufdir or accredited agencies. A bachelor in sosialt arbeid or barnevernspedagogikk plus several years in child welfare." },
-    "disability-support-worker": { "baseCareerId": "social-worker", "specialisationNote": "Disability support workers (vernepleier) assist people with developmental disabilities. A 3-year bachelor in vernepleie. OsloMet and Høgskulen i Volda offer the programme." },
-    "homelessness-support-worker": { "baseCareerId": "social-worker", "specialisationNote": "Homelessness support workers help rough sleepers access housing and services. A bachelor in sosialt arbeid is the strongest route; field experience and resilience matter equally." },
-
-    "counsellor": { "baseCareerId": "psychologist", "specialisationNote": "Counsellors provide talk-based support but do not have full clinical authorisation. The 6-year profesjonsstudium psykologi gives full authorisation; counsellor roles can also be entered via a bachelor + master in psychology, or a related field like sosialt arbeid." },
-    "music-therapist": { "baseCareerId": "psychologist", "specialisationNote": "Music therapists use music in clinical settings. A bachelor in music plus a master in music therapy. NMH (Oslo) and Universitetet i Bergen both offer the master." },
-
-    "kindergarten-teacher": { "baseCareerId": "teacher", "specialisationNote": "Kindergarten teachers (barnehagelærer) work with children aged 1-5. A 3-year bachelor in barnehagelærerutdanning. OsloMet, DMMH (Trondheim), and several university colleges offer it." },
-    "primary-teacher": { "baseCareerId": "teacher", "specialisationNote": "Primary teachers (grunnskolelærer 1.-7. trinn) teach years 1-7. A 5-year integrated master in grunnskolelærerutdanning. Most Norwegian universities offer the programme." },
-    "secondary-teacher": { "baseCareerId": "teacher", "specialisationNote": "Lower-secondary teachers (grunnskolelærer 5.-10. trinn) teach years 5-10. A 5-year integrated master in grunnskolelærerutdanning with subject specialisations. NTNU, OsloMet, UiB all offer it." },
-    "music-teacher": { "baseCareerId": "teacher", "specialisationNote": "Music teachers in Norwegian schools need a teaching degree (PPU) on top of a bachelor in music. NMH (Norges musikkhøgskole) and the Grieg Academy in Bergen are the leading routes." },
-
-    "urban-planner": { "baseCareerId": "architect", "specialisationNote": "Urban planners (arealplanlegger) shape how cities and towns develop. A bachelor or master in arealplanlegging, samfunnsgeografi, or arkitektur. NMBU and NTNU both offer dedicated planning programmes." },
-
-    "midwife": { "baseCareerId": "nurse", "specialisationNote": "Midwives (jordmor) deliver babies and care for mothers. First, complete the 3-year bachelor in sykepleie (nursing) and gain authorisation; then complete a 2-year master in jordmorfag. OsloMet, UiB, and NTNU all offer the master." },
-
-    "marine-engineer": { "baseCareerId": "mechanical-engineer", "specialisationNote": "Marine engineers design and maintain ship machinery. A bachelor or master in marin teknikk or maskinteknikk with marine specialisation. NTNU's Marin teknikk programme is world-leading; HVL (Bergen) offers a vocational route." },
-    "petroleum-engineer": { "baseCareerId": "mechanical-engineer", "specialisationNote": "Petroleum engineers extract oil and gas. A 5-year master in petroleumsfag — NTNU, UiS (Stavanger), and UiB all offer it. The Norwegian energy transition is reshaping the role toward CCS and offshore wind." }
+    "addiction-counsellor": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Addiction counsellors support people through substance recovery. A bachelor in sosialt arbeid or vernepleie, often with additional courses in rusproblematikk (substance issues)."
+    },
+    "adoption-specialist": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Adoption specialists handle adoption cases through Bufdir or accredited agencies. A bachelor in sosialt arbeid or barnevernspedagogikk plus several years in child welfare."
+    },
+    "aerospace-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Aerospace Engineers share skills with Mechanical Engineers, particularly in designing systems and solving technical problems related to structures and materials."
+    },
+    "ai-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI engineers integrate machine-learning models into production systems. A bachelor in informatikk/computer science is the standard route; many add a master in Artificial Intelligence or Machine Learning. NTNU and UiO both offer AI specialisations."
+    },
+    "ai-network-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI Infrastructure Network Engineers require software development skills to design and manage networks for AI systems, making this a relevant base career in Norway."
+    },
+    "ai-product-manager": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI Product Managers often work closely with software developers to create AI-powered products, requiring a strong understanding of software development principles."
+    },
+    "ai-researcher": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI Researchers often work with software development, particularly in creating algorithms and applications for artificial intelligence."
+    },
+    "ai-safety-researcher": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI Safety & Ethics Researchers often have a background in software development, focusing on the ethical implications of AI technologies."
+    },
+    "air-force-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Air Force Technicians require mechanical skills similar to those of Mechanical Engineers, focusing on the maintenance and repair of complex systems."
+    },
+    "air-traffic-controller": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Air Traffic Controllers work closely with Airline Pilots to ensure safe flight operations, making their training and skills relevant to aviation."
+    },
+    "aircraft-maintenance-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Aircraft Maintenance Engineers share skills in mechanical systems and maintenance, making Mechanical Engineering a relevant study path in Norway."
+    },
+    "anesthesiologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 anaesthesiology specialisation (5 years)."
+    },
+    "animator": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Animators create motion graphics and character animation for film, games, and ads. A bachelor in animation or visual communication. Volda and Westerdals are the strongest Norwegian programmes; KADK offers an animation route in Denmark."
+    },
+    "app-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An App Developer is a type of Software Developer who focuses specifically on creating mobile applications, sharing many skills and educational paths."
+    },
+    "application-security-lead": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Application security leads guard the codebase against vulnerabilities. A bachelor in informatikk plus several years of security engineering experience. Senior individual-contributor or lead role."
+    },
+    "applied-ai-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Applied AI engineers ship ML models into real products. A bachelor in informatikk plus practical experience with PyTorch/TensorFlow. The role overlaps heavily with software development — a CS degree is the strongest entry."
+    },
+    "ar-vr-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AR/VR developers build immersive experiences. A bachelor in informatikk plus 3D/Unity skills. The field is small enough that portfolio and side-projects beat any specific degree."
+    },
+    "art-director": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Art directors lead the visual concept on projects in advertising, film, or product. A bachelor in graphic design, visual communication, or fine art, plus several years as a designer first. Portfolio carries the role."
+    },
+    "astronaut": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Astronauts require extensive training and skills similar to airline pilots, including technical mastery and teamwork in high-pressure environments."
+    },
+    "athletic-trainer": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "Athletic Trainers focus on injury management and prevention, which aligns closely with the rehabilitation and treatment aspects of Physiotherapy."
+    },
+    "auditor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Auditors verify the financial records of companies. A bachelor in accounting or business administration (NHH, BI, CBS), then 3 years of practical training to become statsautorisert revisor. Norwegian auditors are regulated by Finanstilsynet."
+    },
+    "automation-engineer": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Automation Engineer focuses on automating processes, similar to an Automation Technician who works with automation systems and technology."
+    },
+    "aviation-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Aviation Engineers share a strong foundation in mechanical engineering principles, focusing on the design and development of aircraft systems."
+    },
+    "backend-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Backend developers build the server, database, and API layer of applications. Same education as a general software developer — a 3-year bachelor in informatikk/computer science, optionally a 2-year master. Specialisation comes from work experience and project portfolio, not the degree."
+    },
+    "backend-engineer-distributed": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Distributed backend engineers build systems that scale across many servers. Same education as a general software developer — a bachelor in informatikk — plus deep experience with concurrency, message queues, and consensus protocols."
+    },
+    "bailiff": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Bailiff works closely with legal processes and enforcement, making a Law degree relevant for understanding the legal framework involved."
+    },
+    "baker": {
+      "baseCareerId": "chef",
+      "specialisationNote": "Bakers and chefs both work with food, requiring similar skills in timing and precision, but bakers focus specifically on baked goods."
+    },
+    "bank-advisor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Bank Advisor works with financial products and customer service, similar to an Accountant who manages finances and provides financial advice."
+    },
+    "bariatric-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Bariatric surgery performs weight-loss operations. Complete general surgery specialisation, then a bariatric/metabolic surgery fellowship."
+    },
+    "barista": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A barista shares skills with a chef in food and beverage preparation, focusing on quality and customer service in a café environment."
+    },
+    "beautician": {
+      "baseCareerId": "hairdresser",
+      "specialisationNote": "Makeup artists and hairdressers both work in the beauty industry, focusing on enhancing clients' appearance and providing beauty services."
+    },
+    "blockchain-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Blockchain developers write smart contracts and decentralised applications. A bachelor in informatikk gives the foundation; the rest is self-taught around Solidity, Rust, and EVM tooling."
+    },
+    "breast-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Breast surgery focuses on breast cancer and reconstruction. Complete general surgery specialisation, then a breast surgery fellowship."
+    },
+    "building-surveyor": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Building Surveyor works closely with Civil Engineers to ensure buildings are safe and comply with regulations, making their education paths somewhat related."
+    },
+    "business-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Business analysts translate data and processes into business decisions. A bachelor in business administration, economics, or informatikk works. The role values clear communication and SQL/Excel fluency over a specific degree."
+    },
+    "butcher": {
+      "baseCareerId": "chef",
+      "specialisationNote": "Butchers and chefs both work with meat, and a butcher's skills in preparing meat are essential for a chef's cooking."
+    },
+    "cardiac-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Cardiac surgery is a subspeciality of cardiothoracic surgery focusing on the heart. Medical degree + cardiothoracic specialisation + cardiac fellowship."
+    },
+    "cardiothoracic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Cardiothoracic surgery covers the heart and lungs. After the medical degree + LIS1, complete LIS2/3 in cardiothoracic surgery (8+ years total post-graduation)."
+    },
+    "career-coach": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "A Career Coach often uses psychological principles to help clients understand their career paths, making a psychology background relevant."
+    },
+    "caregiver": {
+      "baseCareerId": "care-assistant",
+      "specialisationNote": "A caregiver provides personal care and support similar to a care assistant, focusing on helping individuals with daily living activities."
+    },
+    "case-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Case workers manage individual welfare cases. A 3-year bachelor in sosialt arbeid (social work) or barnevernspedagogikk. OsloMet, NTNU, and Høgskulen i Volda all offer the programme."
+    },
+    "catering-manager": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Catering Manager often has a background as a Chef, overseeing food preparation and menu planning in various settings."
+    },
+    "chartered-surveyor": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Chartered Surveyors assess land and buildings, similar to Civil Engineers who design and oversee construction projects, making their education paths somewhat related."
+    },
+    "chief-financial-officer": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Chief Financial Officer often has a background in accounting, as they manage financial strategies and reporting, which are core aspects of accounting."
+    },
+    "chief-marine-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Chief Marine Engineer's role involves mechanical systems and engineering principles, similar to those studied in mechanical engineering."
+    },
+    "child-protection-officer": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Child protection officers (barnevernspedagog) safeguard children at risk. A 3-year bachelor in barnevernspedagogikk (child welfare). OsloMet and NTNU are the leading programmes."
+    },
+    "chiropractor": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "Chiropractors and physiotherapists both focus on treating musculoskeletal issues, using manual techniques and therapy to help patients recover and manage pain."
+    },
+    "civil-defence-officer": {
+      "baseCareerId": "firefighter",
+      "specialisationNote": "Civil Defence Officers work closely with firefighters during emergencies, providing support and coordination in disaster response situations."
+    },
+    "civil-servant": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Civil servants often work with legal frameworks and policies, making a law degree relevant for understanding governance and administration."
+    },
+    "clinical-researcher": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Clinical Researchers often have a medical background, similar to doctors, as they conduct trials that require deep medical knowledge and patient care understanding."
+    },
+    "cloud-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Cloud Architect often works closely with Software Developers to design and implement cloud solutions, making their education paths quite similar in technology and programming."
+    },
+    "cloud-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Cloud engineers design and run systems on AWS, Azure, or GCP. A bachelor in informatikk is the strongest entry; cloud certifications (AWS Solutions Architect, Azure Administrator) supplement the degree."
+    },
+    "coast-guard-officer": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "A Coast Guard Officer shares skills in leadership, decision-making, and public safety, similar to a Police Officer who also protects and serves the community."
+    },
+    "coded-welder": {
+      "baseCareerId": "welder",
+      "specialisationNote": "A Coded Welder is a specialised type of Welder who performs high-integrity welding, requiring additional certifications and skills beyond standard welding."
+    },
+    "color-grading-specialist": {
+      "baseCareerId": "painter-decorator",
+      "specialisationNote": "A Color Grading Specialist works with colour in film, similar to how a Painter & Decorator uses colour to enhance spaces, focusing on aesthetics."
+    },
+    "colorectal-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Colorectal surgery is a subspeciality of general surgery. Complete the medical degree + general surgery specialisation, then a colorectal fellowship (1-2 years)."
+    },
+    "combat-engineer": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Combat Engineers share skills in construction and engineering, making Civil Engineer a relevant base career in Norway."
+    },
+    "commercial-real-estate-agent": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Commercial Real Estate Agent often deals with legal aspects of property transactions, making knowledge of law beneficial in this field."
+    },
+    "commissioning-contractor": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Commissioning Contractor works closely with automation systems, making the role similar to that of an Automation Technician who also deals with system testing and implementation."
+    },
+    "community-development-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Community Development Workers often collaborate with social workers to support communities, making this a closely related field in Norway."
+    },
+    "community-organiser": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Community organisers build local action and advocacy. A bachelor in sosialt arbeid, sosiologi, or statsvitenskap. The role values lived experience and network-building as much as the degree."
+    },
+    "community-outreach-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Community Outreach Workers often collaborate with Social Workers to support marginalised communities, making their roles closely related in community development."
+    },
+    "compliance-director": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Compliance Director often requires a strong legal background, similar to a Lawyer, focusing on regulatory compliance and policy development."
+    },
+    "compressor-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Compressor Technician works with machinery similar to an Industrial Mechanic, focusing on maintaining and repairing compressors used in various industries."
+    },
+    "computer-vision-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Computer vision engineers build systems that interpret images and video. A bachelor in informatikk plus a master in Machine Learning, Computer Science, or Electronics. NTNU has the strongest programmes in Norway."
+    },
+    "confined-space-rescue-technician": {
+      "baseCareerId": "firefighter",
+      "specialisationNote": "A Confined Space Rescue Technician often works alongside firefighters, providing rescue services in hazardous environments, which requires similar training in safety and emergency response."
+    },
+    "construction-manager": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Construction Managers often work closely with Civil Engineers to ensure projects are completed effectively, making this a relevant educational path."
+    },
+    "construction-program-director": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Construction Program Director oversees building projects, similar to how a Civil Engineer designs and manages construction plans, making their education paths closely related."
+    },
+    "construction-site-supervisor": {
+      "baseCareerId": "civil-works-foreman",
+      "specialisationNote": "A Construction Site Supervisor's role closely aligns with that of a Civil Works Foreman, as both oversee construction activities and manage teams to ensure project success."
+    },
+    "construction-worker": {
+      "baseCareerId": "carpenter",
+      "specialisationNote": "A construction worker often collaborates with carpenters, as both roles involve building and working with materials on construction sites."
+    },
+    "control-room-operator": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Control Room Operator works closely with automation systems, making the skills and knowledge from an Automation Technician's education relevant and beneficial."
+    },
+    "controlled-demolition-specialist": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Controlled Demolition Specialist requires a background in civil engineering to understand structural integrity and demolition techniques, making this a closely related field."
+    },
+    "corporate-lawyer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Corporate lawyers advise companies on contracts, M&A, and compliance. Same education as any other lawyer — the 5-year master in rettsvitenskap. Corporate specialisation comes from working at a commercial law firm after graduating."
+    },
+    "corrections-officer": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Corrections Officers work closely with inmates, similar to Social Workers who support individuals in need, focusing on rehabilitation and humane treatment."
+    },
+    "cosmetic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Cosmetic surgery focuses on elective aesthetic procedures. Complete plastic surgery specialisation, then an aesthetic fellowship or private-practice training."
+    },
+    "counsellor": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "Counsellors provide talk-based support but do not have full clinical authorisation. The 6-year profesjonsstudium psykologi gives full authorisation; counsellor roles can also be entered via a bachelor + master in psychology, or a related field like sosialt arbeid."
+    },
+    "crane-operator": {
+      "baseCareerId": "civil-works-foreman",
+      "specialisationNote": "A Crane Operator works closely with construction teams, similar to a Civil Works Foreman, who oversees construction projects and ensures safety and efficiency."
+    },
+    "crane-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Crane Technician's work involves mechanical systems, making a Mechanical Engineer a relevant base career due to overlapping skills in maintenance and repair."
+    },
+    "crisis-intervention-specialist": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Crisis Intervention Specialists often work closely with Social Workers, addressing mental health crises and providing support in emergency situations."
+    },
+    "critical-infrastructure-maintenance-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Critical Infrastructure Maintenance Technician works with electrical systems, similar to an Electrician, focusing on maintenance and repair in critical facilities."
+    },
+    "cross-api-integration-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Integration Architect designs systems and APIs, which is closely related to the work of a Software Developer who also creates software solutions and integrations."
+    },
+    "cross-network-automation-sw-eng": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Network Automation Software Engineer writes software for automating network tasks, which is closely related to the skills and knowledge of a Software Developer."
+    },
+    "cross-observability-eng": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Observability Engineer works closely with software systems, requiring a strong foundation in software development and IT principles."
+    },
+    "cross-oss-bss-product-mgr": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Telecom Product Manager often works closely with software developers to create and manage telecom products, requiring a strong understanding of software practices."
+    },
+    "cross-platform-product-owner": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "The Telco Platform Product Owner works closely with software developers to manage product backlogs and ensure telecom needs are met, making software development knowledge essential."
+    },
+    "cross-test-env-governance": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "The role involves using data analytics to optimise test environments, which aligns closely with the skills of a data analyst in interpreting and managing data."
+    },
+    "cto": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "The Chief Technology Officer often oversees software development teams, making a background in software development highly relevant for this executive role."
+    },
+    "customs-officer": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Customs Officers and Police Officers both enforce laws and regulations, requiring similar skills in observation and communication."
+    },
+    "cyber-warfare-specialist": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Cyber Warfare Specialist often requires skills in software development and cybersecurity to protect networks and conduct operations effectively."
+    },
+    "data-architect": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Data Architect designs data systems, while a Data Analyst interprets data; both roles require strong data skills and understanding of data management."
+    },
+    "data-engineer": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Data engineers build the pipelines that move and transform data. A bachelor in informatikk or computer science plus experience with SQL, Python, and cloud data platforms (Snowflake, BigQuery, Databricks)."
+    },
+    "data-protection-officer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Data Protection Officer often requires legal knowledge, particularly in data protection laws like GDPR, making a law degree relevant."
+    },
+    "data-scientist": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Data scientists build models and run experiments on data. A bachelor in statistics, mathematics, or informatikk, often followed by a master in Data Science or Machine Learning. NTNU and UiO both offer dedicated programmes."
+    },
+    "database-administrator": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Database Administrator works with data management and optimisation, similar to a Data Analyst who interprets and analyses data for insights."
+    },
+    "decision-science-lead": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Decision Science Lead uses data analysis to inform business decisions, similar to a Data Analyst who interprets data to provide insights."
+    },
+    "dental-hygienist": {
+      "baseCareerId": "dental-assistant",
+      "specialisationNote": "A Dental Hygienist works closely with dentists and dental assistants, focusing on patient care and oral health education, making this a relevant base career."
+    },
+    "dermatologic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Dermatologic surgery treats skin cancers and conditions surgically. Complete dermatology specialisation, then a surgical dermatology fellowship."
+    },
+    "detective": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Detectives are often police officers who specialise in investigating serious crimes, requiring similar training and skills in law enforcement."
+    },
+    "devops-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "DevOps engineers automate deployment and infrastructure. A bachelor in informatikk plus hands-on experience with cloud platforms (AWS, Azure, GCP) and tools like Docker, Kubernetes, Terraform. Often a transition from backend development."
+    },
+    "devsecops-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A DevSecOps Engineer works closely with software developers to integrate security into the software development process, making this career closely related to software development."
+    },
+    "dietitian": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Dietitians work within the healthcare field, focusing on nutrition and dietary plans, which aligns with the broader role of healthcare workers in patient care."
+    },
+    "diplomat": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Diplomats often require legal knowledge to navigate international laws and treaties, making a law degree relevant for this career path."
+    },
+    "director-of-engineering": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Director of Engineering often oversees engineering projects, similar to how a Civil Engineer manages construction and infrastructure projects, requiring strong leadership and technical skills."
+    },
+    "disability-support-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Disability support workers (vernepleier) assist people with developmental disabilities. A 3-year bachelor in vernepleie. OsloMet and Høgskulen i Volda offer the programme."
+    },
+    "district-heating-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A District Heating Technician's work involves technical skills similar to those of a Mechanical Engineer, particularly in systems involving heat and energy."
+    },
+    "dog-groomer": {
+      "baseCareerId": "veterinarian",
+      "specialisationNote": "A Dog Groomer works closely with animals, similar to a Veterinarian, but focuses on grooming rather than medical care."
+    },
+    "domestic-violence-advocate": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Domestic Violence Advocates often work closely with Social Workers to support survivors, making their education paths quite similar in Norway."
+    },
+    "drilling-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Drilling Technician operates complex machinery, similar to a Mechanical Engineer who designs and maintains such systems, focusing on technical skills and equipment management."
+    },
+    "drone-operator-uav": {
+      "baseCareerId": "helicopter-pilot",
+      "specialisationNote": "Drone operators share skills in piloting and situational awareness with helicopter pilots, making this a relevant base career in Norway."
+    },
+    "early-childhood-educator": {
+      "baseCareerId": "childcare-assistant",
+      "specialisationNote": "Early Childhood Educators work closely with children, similar to Childcare Assistants, but with a greater focus on educational activities and development."
+    },
+    "electrical-commissioning-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "An Electrical Commissioning Technician works closely with electrical systems, similar to an Electrician, focusing on testing and verifying installations."
+    },
+    "electrical-contractor": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "An Electrical Contractor is essentially a skilled Electrician who runs their own business, focusing on electrical installations and project management."
+    },
+    "electrical-engineer": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Electrical Engineers design systems, while Electricians install and maintain electrical systems, making them closely related in the field of electrical work."
+    },
+    "electro-technical-officer": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "The Electro-Technical Officer's role involves managing automation systems, which closely relates to the skills of an Automation Technician in Norway."
+    },
+    "embedded-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Embedded developers write firmware for physical devices (cars, IoT, medical equipment). A bachelor in informatikk or electronics engineering, plus C/C++ and hardware experience. NTNU's Datateknologi or Elektronikk-systemer programme is the strongest route."
+    },
+    "emergency-dispatcher": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Emergency Dispatchers play a crucial role in healthcare by coordinating responses to emergencies, making their work closely related to healthcare workers."
+    },
+    "emt": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Emergency Medical Technicians provide crucial first-response care, which aligns with the broader role of healthcare workers in supporting patient health and safety."
+    },
+    "endocrine-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Endocrine surgery focuses on thyroid, parathyroid, and adrenal glands. Complete the medical degree + general surgery, then an endocrine surgery fellowship."
+    },
+    "energy-commissioning-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "Energy Commissioning Technicians work with systems similar to Automation Technicians, focusing on testing and verifying energy systems during construction."
+    },
+    "engineering-director": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "An Industrial Engineering Director often oversees engineering projects similar to a Civil Engineer, focusing on technical excellence in infrastructure and manufacturing."
+    },
+    "engineering-manager": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Engineering Manager often comes from a background in software development, leading teams to create software products, making this a relevant base career."
+    },
+    "enterprise-systems-consultant": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Enterprise Systems Consultant often works closely with software developers to implement and optimise enterprise systems, making their education paths somewhat related."
+    },
+    "eod-technician": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "EOD Technicians often work alongside police officers to handle explosive threats, requiring similar skills in safety and precision under pressure."
+    },
+    "equity-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "An Equity Analyst uses financial data and analysis, similar to a Data Analyst who interprets data to inform decisions, making this a related field."
+    },
+    "escalator-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "An Escalator Technician shares skills in mechanical systems and maintenance with an Industrial Mechanic, focusing on repair and servicing of machinery."
+    },
+    "escrow-officer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "An Escrow Officer deals with legal documents and compliance in real estate, similar to a Lawyer who handles legal matters and documentation."
+    },
+    "esports-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "An Esports Analyst uses data analysis skills similar to a Data Analyst, focusing on game performance and strategies."
+    },
+    "family-support-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Family support workers help families in crisis. A bachelor in sosialt arbeid or barnevernspedagogikk. The barnevernspedagog route is the strongest fit for child-focused roles."
+    },
+    "fashion-designer": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Fashion designers create clothing and accessories. A bachelor in fashion design — Konstfack (Stockholm) and KADK (Copenhagen) are the leading Nordic schools. Portfolio admission."
+    },
+    "fast-food-crew": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Fast Food Crew Member often works under a Chef, preparing and serving food in a restaurant setting, making this a related career path."
+    },
+    "finance-director": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Finance Director often has a background in accounting, as they manage financial planning and reporting, which are key aspects of accounting."
+    },
+    "financial-advisor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Financial Advisors and Accountants both require strong financial knowledge and analytical skills, making the educational paths somewhat similar in Norway."
+    },
+    "financial-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Financial Analyst often uses data analysis skills similar to those of a Data Analyst, focusing on financial data interpretation and forecasting."
+    },
+    "fitness-instructor": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Personal trainers help clients improve their health and fitness, which aligns with the broader goals of healthcare workers in promoting well-being."
+    },
+    "flight-attendant": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Both flight attendants and airline pilots work in the aviation industry, focusing on passenger safety and comfort during flights."
+    },
+    "flight-engineer-space": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Flight Engineer (Space) requires knowledge of systems and mechanics, similar to a Mechanical Engineer who designs and maintains machinery."
+    },
+    "food-blogger": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Food Blogger often shares recipes and cooking tips, which aligns closely with the skills and knowledge of a Chef in Norway."
+    },
+    "food-product-developer": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Food Product Developer works closely with chefs to create new food products, making culinary skills and creativity essential in both careers."
+    },
+    "food-scientist": {
+      "baseCareerId": "chef",
+      "specialisationNote": "Food Scientists study the properties of food, which is closely related to the work of Chefs who apply this knowledge in cooking and food preparation."
+    },
+    "food-technologist": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Food Technologist works on food production processes, while a Chef focuses on preparing and presenting food, both requiring knowledge of food safety and quality."
+    },
+    "forensic-scientist": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Forensic Scientists provide crucial evidence that supports legal cases, making their work closely related to the legal field and lawyers who use this evidence in court."
+    },
+    "forex-trader": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Forex trading involves financial analysis and risk management, which aligns with the skills needed in accounting, particularly in understanding market dynamics."
+    },
+    "foster-care-coordinator": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "A Foster Care Coordinator works closely with social workers to support children in foster care, making their roles closely related in child welfare."
+    },
+    "fpso-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "An FPSO Technician's role in maintaining mechanical systems aligns closely with the skills and training of an Industrial Mechanic in Norway."
+    },
+    "fractional-cto": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Fractional CTO often has a background in software development, providing technical leadership and strategic guidance to tech companies."
+    },
+    "frontend-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Frontend developers build the user-facing layer of web and mobile apps. Same education as a general software developer — a bachelor in informatikk/computer science, plus self-study of frameworks like React or Vue. Portfolio matters more than the specific degree."
+    },
+    "fullstack-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Full-stack engineers handle both frontend and backend. Same education as a general software developer — a bachelor in informatikk/computer science, then on-the-job exposure to both ends of the stack."
+    },
+    "game-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Game developers build games using engines like Unity or Unreal. A bachelor in informatikk gives the foundation; specialised game-design programmes exist at Westerdals and Høgskulen i Volda but a portfolio of shipped games matters more."
+    },
+    "game-director": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Game Director often collaborates closely with Software Developers to create and implement game features, making their education paths somewhat aligned."
+    },
+    "gas-network-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Gas Network Technicians work with systems that require similar technical skills and safety knowledge as Electricians, particularly in installation and maintenance."
+    },
+    "gas-turbine-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Gas Turbine Technicians work with complex machinery, similar to Mechanical Engineers who design and maintain such systems, making their education paths closely related."
+    },
+    "general-counsel": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A General Counsel is a senior lawyer who oversees all legal matters in an organisation, making the role closely related to that of a lawyer in Norway."
+    },
+    "general-practitioner": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then the ALIS general-practice specialisation (5 years)."
+    },
+    "general-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "General surgery covers a broad range of abdominal and soft-tissue operations. After the 6-year medical degree + LIS1, complete LIS2/3 in general surgery (6+ years)."
+    },
+    "graphic-designer": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Graphic designers create visual identity, print, and brand work. A bachelor in graphic design or visual communication. KHiO, Konstfack, and KADK are the leading Nordic schools — portfolio is the primary admission criterion."
+    },
+    "grid-connection-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Grid Connection Technician works closely with electrical systems, similar to an Electrician, focusing on connecting power generation to the grid."
+    },
+    "ground-control-operator": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Both Ground Control Operators and Airline Pilots are involved in the operation of aircraft, with Ground Control Operators managing communications and telemetry from the ground."
+    },
+    "hand-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Hand surgery covers the hand, wrist, and forearm. Accessible via orthopaedics or plastic surgery, then a hand surgery fellowship (1-2 years)."
+    },
+    "head-of-finance": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "The Head of Finance role involves overseeing financial strategies, which closely relates to the work of an accountant who manages financial records and reporting."
+    },
+    "head-of-legal": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "The Head of Legal oversees legal matters, similar to a lawyer who provides legal advice and representation, making this a closely related career in Norway."
+    },
+    "heavy-equipment-mechanic": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "Heavy Equipment Mechanics share skills with Industrial Mechanics, focusing on servicing and repairing large machinery used in various industries."
+    },
+    "helicopter-maintenance-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Helicopter Maintenance Engineers require mechanical engineering skills to maintain and repair helicopter systems, making this a relevant base career in Norway."
+    },
+    "hepatobiliary-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Hepatobiliary surgery focuses on liver, gallbladder, and pancreas. Complete the medical degree + general surgery, then a hepatobiliary fellowship (1-2 years)."
+    },
+    "high-voltage-electrician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A High Voltage Electrician is a specialized type of Electrician who works with high-voltage systems, requiring additional training and safety certifications."
+    },
+    "high-voltage-wind-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A High Voltage Wind Technician is closely related to an Electrician, as both roles involve working with electrical systems and require similar training and skills."
+    },
+    "homelessness-support-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Homelessness support workers help rough sleepers access housing and services. A bachelor in sosialt arbeid is the strongest route; field experience and resilience matter equally."
+    },
+    "housing-support-officer": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Housing Support Officers often work closely with social workers to assist individuals in securing and maintaining housing, making their roles complementary in supporting vulnerable populations."
+    },
+    "hr-specialist": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "HR Specialists and Social Workers both focus on understanding and supporting people, making their skills in communication and empathy valuable in both fields."
+    },
+    "hvac-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "HVAC Technicians often work with electrical systems, making skills in electricity essential, similar to the training of Electricians in Norway."
+    },
+    "hydraulic-systems-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Hydraulic Systems Technician works with hydraulic systems, which is a key part of industrial mechanics, focusing on installation and maintenance of machinery."
+    },
+    "iac-specialist": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Infrastructure as Code Specialist works closely with software development practices, focusing on automating infrastructure management through coding techniques."
+    },
+    "illustrator": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Illustrators create commissioned artwork for editorial, books, and brands. A bachelor in illustration, visual communication, or fine art. KHiO and Konstfack are the leading Nordic schools. Portfolio is everything."
+    },
+    "immigration-officer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "An Immigration Officer often requires knowledge of laws and regulations, similar to a Lawyer, making this a relevant educational path in Norway."
+    },
+    "independent-contractor-technical": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "As a Senior Technical Contractor, you would likely have skills in software development, making this a relevant base career in Norway."
+    },
+    "industrial-abseiler": {
+      "baseCareerId": "painter-decorator",
+      "specialisationNote": "An Industrial Abseiler often performs painting and coating tasks on tall structures, which aligns with the skills of a Painter & Decorator."
+    },
+    "industrial-fitter": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "An Industrial Fitter's work closely aligns with that of an Industrial Mechanic, focusing on the assembly and maintenance of mechanical systems in industrial settings."
+    },
+    "industrial-instrumentation-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Industrial Instrumentation Technician focuses on maintaining instrumentation systems, which is closely related to the role of an Automation Technician who works with automated systems."
+    },
+    "industrial-maintenance-supervisor": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "An Industrial Maintenance Supervisor oversees maintenance, similar to an Industrial Mechanic who repairs and maintains machinery, making their education paths closely related."
+    },
+    "infantry-officer": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Both Infantry Officers and Police Officers lead teams and make critical decisions in high-pressure situations, focusing on safety and security."
+    },
+    "infrastructure-program-director": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "An Infrastructure Program Director often collaborates with civil engineers on large-scale projects, making this a relevant educational path in Norway."
+    },
+    "instrumentation-contractor": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Instrumentation Contractor works closely with automation systems, making the Automation Technician a relevant base career due to similar skills in control systems and instrumentation."
+    },
+    "instrumentation-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Instrumentation Technician works with measurement and control instruments, similar to an Automation Technician who focuses on automated systems and processes in industry."
+    },
+    "insurance-advisor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Insurance Advisors often require strong financial knowledge similar to Accountants, as they help clients manage financial risks through insurance products."
+    },
+    "interior-designer": {
+      "baseCareerId": "designer",
+      "specialisationNote": "Interior designers shape physical spaces. A bachelor in interior architecture or interior design. KHiO, AHO, and KADK all offer relevant programmes."
+    },
+    "investment-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Investment Analysts often use data analysis skills to evaluate investment opportunities, making the Data Analyst career a relevant base in Norway."
+    },
+    "investment-banker": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Investment bankers and accountants both work with financial data, but investment bankers focus more on advising companies and deal-making."
+    },
+    "investment-manager": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Investment Managers often require strong financial analysis skills similar to those of Accountants, making this a relevant base career in Norway."
+    },
+    "journalist": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Journalists often work closely with legal matters, requiring an understanding of laws and ethics, similar to the training of a lawyer."
+    },
+    "judge": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Judges are often experienced lawyers who have advanced their careers to preside over court cases, making the legal education path similar."
+    },
+    "key-account-director": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Key Account Director manages client relationships and strategies, similar to how an Accountant manages financial accounts and client financial strategies."
+    },
+    "kindergarten-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Kindergarten teachers (barnehagelærer) work with children aged 1-5. A 3-year bachelor in barnehagelærerutdanning. OsloMet, DMMH (Trondheim), and several university colleges offer it."
+    },
+    "kitchen-porter": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Kitchen Porter supports chefs by preparing ingredients and maintaining kitchen hygiene, making it a foundational role in the culinary field."
+    },
+    "lab-technician": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Lab Technicians perform tests that support healthcare workers in diagnosing and treating patients, making their roles closely related in the medical field."
+    },
+    "land-surveyor": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Land Surveyors often work closely with Civil Engineers to determine property boundaries and ensure accurate land development."
+    },
+    "launch-operations-engineer": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "A Launch Operations Engineer and an Airline Pilot both work in the aerospace field, focusing on safety and coordination during critical operations."
+    },
+    "licensed-aircraft-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Licensed Aircraft Engineers and Mechanical Engineers both require strong technical skills and knowledge of complex systems, making their education paths somewhat similar."
+    },
+    "lift-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Lift Technicians work with electrical systems and mechanical components, similar to Electricians, focusing on lift installations and repairs."
+    },
+    "lighting-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Lighting Technicians often work with electrical systems and lighting setups, making skills in electrics and safety relevant to the Electrician career."
+    },
+    "loan-officer": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Loan Officers assess financial applications, similar to how Accountants evaluate financial data and ensure compliance with regulations."
+    },
+    "ma-director": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "An M&A Director often works closely with lawyers to navigate legal aspects of mergers and acquisitions, making a law background beneficial."
+    },
+    "machine-learning-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "ML engineers train and deploy machine-learning models. A bachelor in informatikk/computer science or statistics, often followed by a master in Machine Learning or Data Science. NTNU's MIT (Master in Informatics) is a leading route."
+    },
+    "maintenance-release-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Maintenance Release Engineer ensures aircraft safety and compliance, similar to how a Mechanical Engineer focuses on the design and maintenance of mechanical systems."
+    },
+    "maintenance-shutdown-contractor": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Maintenance Shutdown Contractor often works closely with mechanical engineers to plan and execute maintenance tasks in industrial settings, ensuring equipment operates efficiently."
+    },
+    "marine-electrician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Marine Electrician is a specialised type of Electrician who works specifically on ships and offshore vessels, focusing on marine electrical systems."
+    },
+    "marine-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Marine engineers design and maintain ship machinery. A bachelor or master in marin teknikk or maskinteknikk with marine specialisation. NTNU's Marin teknikk programme is world-leading; HVL (Bergen) offers a vocational route."
+    },
+    "market-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Market Analyst uses data analysis skills similar to a Data Analyst, focusing on financial markets instead of general data."
+    },
+    "massage-therapist": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "Massage therapists often work alongside physiotherapists, using similar techniques to help patients recover and improve their physical wellbeing."
+    },
+    "mechanical-commissioning-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Mechanical Commissioning Technician works closely with mechanical systems, similar to an Industrial Mechanic, focusing on testing and operational readiness."
+    },
+    "mechanical-maintenance-contractor": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "Mechanical Maintenance Contractors focus on maintaining and repairing industrial machinery, which aligns closely with the skills and training of Industrial Mechanics in Norway."
+    },
+    "medical-affairs-director": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "A Medical Affairs Director often has a medical degree and works closely with clinical science, making the role closely related to that of a doctor."
+    },
+    "medical-secretary": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "A Medical Secretary provides essential administrative support in healthcare settings, making it closely related to the broader role of a Healthcare Worker."
+    },
+    "mental-health-nurse": {
+      "baseCareerId": "nurse",
+      "specialisationNote": "A Mental Health Nurse is a specialist nurse who focuses on caring for individuals with mental health issues, building on the general nursing education."
+    },
+    "mental-health-support-worker": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Mental Health Support Workers provide essential support within the healthcare sector, focusing on mental health, which aligns closely with the role of a Healthcare Worker."
+    },
+    "midwife": {
+      "baseCareerId": "nurse",
+      "specialisationNote": "Midwives (jordmor) deliver babies and care for mothers. First, complete the 3-year bachelor in sykepleie (nursing) and gain authorisation; then complete a 2-year master in jordmorfag. OsloMet, UiB, and NTNU all offer the master."
+    },
+    "military-officer": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Both military officers and police officers lead teams and maintain order, requiring strong leadership and decision-making skills."
+    },
+    "military-pilot": {
+      "baseCareerId": "helicopter-pilot",
+      "specialisationNote": "Military pilots often fly helicopters, making this career closely related in terms of skills and training required."
+    },
+    "military-police": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Military Police share similarities with Police Officers in law enforcement and investigation, focusing on maintaining order and security within military contexts."
+    },
+    "millwright": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Millwright's work closely aligns with that of an Industrial Mechanic, as both involve installing and maintaining heavy machinery in industrial settings."
+    },
+    "mlops-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "MLOps Engineers work closely with software developers to create and maintain the systems that deploy machine learning models effectively."
+    },
+    "mobile-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Mobile developers build iOS and Android apps. Same education as a general software developer — a bachelor in informatikk, then platform-specific learning (Swift/SwiftUI for iOS, Kotlin for Android)."
+    },
+    "mortgage-advisor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Mortgage Advisor provides financial advice similar to an Accountant, focusing on helping clients manage their finances and understand financial products."
+    },
+    "music-licensing-specialist": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Music Licensing Specialist often deals with copyright law and contracts, making a law degree relevant for understanding legal aspects in the music industry."
+    },
+    "music-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Music teachers in Norwegian schools need a teaching degree (PPU) on top of a bachelor in music. NMH (Norges musikkhøgskole) and the Grieg Academy in Bergen are the leading routes."
+    },
+    "music-therapist": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "Music therapists use music in clinical settings. A bachelor in music plus a master in music therapy. NMH (Oslo) and Universitetet i Bergen both offer the master."
+    },
+    "nail-technician": {
+      "baseCareerId": "hairdresser",
+      "specialisationNote": "A Nail Technician shares skills in beauty and customer service with Hairdressers, focusing on enhancing clients' appearance."
+    },
+    "nav-case-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "NAV Case Workers provide support similar to Social Workers, helping citizens with welfare and social services, requiring similar skills and educational backgrounds."
+    },
+    "naval-officer": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Both Naval Officers and Airline Pilots require strong leadership and navigation skills, although their environments differ significantly."
+    },
+    "neurosurgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Neurosurgery covers the brain, spinal cord, and nervous system. After the medical degree + LIS1, complete LIS2/3 in neurosurgery (7+ years)."
+    },
+    "nlp-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "NLP engineers build language-processing systems. A bachelor in informatikk plus a master with focus on machine learning or computational linguistics. UiO's Informatics programme has an NLP track."
+    },
+    "non-destructive-testing-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Non-Destructive Testing Technicians often work closely with Mechanical Engineers to ensure the integrity of structures and components, using similar technical skills and knowledge."
+    },
+    "nurse-practitioner": {
+      "baseCareerId": "nurse",
+      "specialisationNote": "A Nurse Practitioner is an advanced Nurse who has additional training to diagnose and treat patients, building on the foundational skills of a registered Nurse."
+    },
+    "obstetric-gynaecological-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "OB/GYN surgery covers female reproductive health. After the medical degree + LIS1, complete LIS2/3 in obstetrics and gynaecology (5+ years)."
+    },
+    "occupational-therapist": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Occupational Therapists work within the healthcare field, helping individuals recover and adapt to daily activities after health challenges, similar to other healthcare roles."
+    },
+    "offensive-security-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Offensive Security Engineers often have a background in software development, as they need to understand coding and software vulnerabilities to perform their tasks effectively."
+    },
+    "offshore-electrician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "An Offshore Electrician is a specialised type of Electrician who works in challenging environments like oil and gas platforms, focusing on safety and reliability."
+    },
+    "offshore-instrumentation-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Offshore Instrumentation Technician works with control systems, similar to an Automation Technician who also focuses on automation and instrumentation in various settings."
+    },
+    "offshore-maintenance-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "Offshore Maintenance Technicians perform maintenance similar to Industrial Mechanics, focusing on ensuring machinery operates efficiently in offshore environments."
+    },
+    "offshore-mechanical-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "An Offshore Mechanical Technician performs similar mechanical maintenance tasks as an Industrial Mechanic, focusing on equipment and systems in offshore environments."
+    },
+    "offshore-production-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An Offshore Production Technician works with automated systems in oil and gas production, similar to an Automation Technician who focuses on control systems and process optimisation."
+    },
+    "offshore-service-contractor": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Offshore Service Contractors often require mechanical engineering skills for maintenance and modifications on installations, linking the two careers closely."
+    },
+    "offshore-wind-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Offshore Wind Technicians often have a background in electrical trades, as they perform maintenance on wind turbine electrical systems."
+    },
+    "oncological-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Surgical oncology removes cancerous tumours. Complete general surgery specialisation, then a surgical oncology fellowship (2+ years)."
+    },
+    "ophthalmic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Ophthalmic surgery covers the eye. After the medical degree + LIS1, complete LIS2/3 in ophthalmology (5+ years)."
+    },
+    "ophthalmologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "An ophthalmologist is a type of doctor who focuses specifically on eye health and surgery, requiring a medical degree and additional training in ophthalmology."
+    },
+    "oral-maxillofacial-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Maxillofacial surgery requires BOTH a medical degree AND a dental degree, followed by a maxillofacial surgery specialisation (4+ years)."
+    },
+    "orthopaedic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Orthopaedic surgery covers bones, joints, and muscles. After the medical degree + LIS1, complete LIS2/3 in orthopaedic surgery (6+ years)."
+    },
+    "otolaryngologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "ENT surgery covers the ear, nose, throat, and head/neck. After the medical degree + LIS1, complete LIS2/3 in otorhinolaryngology (5+ years)."
+    },
+    "outreach-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Outreach workers connect with people who don't access traditional services (homeless, addiction, marginalised youth). A bachelor in sosialt arbeid or vernepleie, often combined with field experience."
+    },
+    "overhead-line-equipment-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "An Overhead Line Equipment Technician works with electrical systems similar to an Electrician, focusing on high-voltage installations for railway power supply."
+    },
+    "paediatric-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Paediatric surgery operates on children. Complete general surgery specialisation, then a paediatric surgery fellowship (2+ years)."
+    },
+    "painter": {
+      "baseCareerId": "painter-decorator",
+      "specialisationNote": "A Painter & Decorator focuses on applying finishes like paint and wallpaper, which is closely related to the work of a Painter."
+    },
+    "paramedic": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Paramedics are healthcare workers who provide emergency medical care, making this a closely related field with similar skills and training requirements."
+    },
+    "pastry-chef": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Pastry Chef is a specialised type of Chef focusing on desserts and pastries, requiring similar culinary skills and training."
+    },
+    "pathologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "A pathologist is a type of doctor who focuses on diagnosing diseases through laboratory tests, making their education and skills closely aligned with general medical training."
+    },
+    "pediatrician": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 paediatrics specialisation (5 years)."
+    },
+    "perf-test-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Load Test Engineers work closely with Software Developers to ensure applications perform well under stress, making their roles interconnected in software quality assurance."
+    },
+    "performance-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Performance Analyst uses data analysis skills similar to a Data Analyst, focusing on sports performance metrics and trends."
+    },
+    "peripheral-nerve-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Peripheral nerve surgery repairs damaged nerves. Accessible via neurosurgery or plastic surgery, then a peripheral nerve fellowship."
+    },
+    "petroleum-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Petroleum engineers extract oil and gas. A 5-year master in petroleumsfag — NTNU, UiS (Stavanger), and UiB all offer it. The Norwegian energy transition is reshaping the role toward CCS and offshore wind."
+    },
+    "pharmacy-technician": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Pharmacy technicians support healthcare workers by managing medications and assisting patients, making their roles closely related in the healthcare field."
+    },
+    "pipefitter": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Pipefitter's work involves installing piping systems, which is closely related to the skills of an Industrial Mechanic who also works with machinery and systems in industrial settings."
+    },
+    "plastic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Plastic surgery covers reconstruction and repair. After the medical degree + LIS1, complete LIS2/3 in plastic surgery (6+ years)."
+    },
+    "platform-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Platform Architect designs systems for developers, similar to how a Software Developer creates software applications, making their education paths closely related."
+    },
+    "platform-director-media": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Streaming Platform Director requires strong software development skills to lead platform strategy and engineering for media products, making this career closely related."
+    },
+    "platform-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Platform engineers build internal tooling and infrastructure that other developers use. A bachelor in informatikk plus systems-design experience. Usually a transition from backend or DevOps."
+    },
+    "plc-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A PLC Technician is closely related to an Automation Technician, as both roles involve working with automated systems and programming in industrial settings."
+    },
+    "plumber": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Both plumbers and electricians work with essential systems in buildings, requiring technical skills and vocational training."
+    },
+    "pneumatic-systems-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Pneumatic Systems Technician works with systems that are part of industrial mechanics, focusing on pneumatic control systems and compressed air networks."
+    },
+    "podiatrist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "A podiatrist is a specialist doctor focusing on foot and lower limb health, making their education and skills closely related to general medicine."
+    },
+    "port-crane-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Port Crane Technician shares skills in mechanical systems and maintenance with an Industrial Mechanic, focusing on heavy machinery used in ports."
+    },
+    "power-line-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Power Line Technicians work with electrical systems, similar to Electricians, focusing on power transmission and distribution."
+    },
+    "power-plant-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Power Plant Technician's role in maintaining and operating machinery is closely related to the skills of an Industrial Mechanic, focusing on mechanical systems."
+    },
+    "precision-machinist": {
+      "baseCareerId": "cnc-machinist",
+      "specialisationNote": "A Precision Machinist closely relates to a CNC Machinist, as both roles involve advanced machining techniques and producing components with tight tolerances."
+    },
+    "primary-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Primary teachers (grunnskolelærer 1.-7. trinn) teach years 1-7. A 5-year integrated master in grunnskolelærerutdanning. Most Norwegian universities offer the programme."
+    },
+    "principal-data-scientist": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Principal Data Scientist's role involves advanced data analysis and strategy, which closely relates to the work of a Data Analyst in handling data and deriving insights."
+    },
+    "principal-engineer": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Principal Engineer sets technical direction and makes architectural decisions, similar to how a Civil Engineer designs and oversees construction projects."
+    },
+    "private-equity-associate": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Private Equity Associate often requires strong financial skills similar to those of an Accountant, particularly in financial modelling and valuation."
+    },
+    "probation-officer": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Probation Officers work closely with individuals in the community, similar to Social Workers who also focus on rehabilitation and support."
+    },
+    "process-operator": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "Process Operators work closely with industrial machinery, making the Industrial Mechanic career a relevant match due to shared technical skills and knowledge in manufacturing processes."
+    },
+    "product-manager": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Product Manager often works closely with Software Developers to create and improve products, making their paths somewhat related in technology and project management."
+    },
+    "product-manager-tech": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Technical Product Manager works closely with software developers to define product vision and requirements, making this role closely related to software development."
+    },
+    "product-owner": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Product Owner works closely with software developers to manage product features and priorities, making this role closely related to software development."
+    },
+    "property-consultant": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Property Consultant often deals with legal aspects of property transactions, making knowledge of law beneficial, similar to a Lawyer's expertise."
+    },
+    "property-developer": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Property Developers often work closely with Civil Engineers to plan and execute construction projects, making this a relevant base career in Norway."
+    },
+    "property-lawyer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Property Lawyer is a type of Lawyer who focuses specifically on legal issues related to real estate transactions and property law."
+    },
+    "prosecutor": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Prosecutor is a type of Lawyer who specifically represents the state in criminal cases, requiring similar legal education and skills."
+    },
+    "protection-and-control-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Protection and Control Technician works with systems that automate and protect electrical networks, similar to the role of an Automation Technician who focuses on automated systems."
+    },
+    "psychiatrist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 psychiatry specialisation (5 years)."
+    },
+    "public-health-social-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Public Health Social Workers focus on health issues within communities, which aligns closely with the broader role of Social Workers who address various social challenges."
+    },
+    "public-health-specialist": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Public Health Specialists often work on community health initiatives, similar to Social Workers who support individuals and communities in need."
+    },
+    "pump-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Pump Technician's work in installing and maintaining pumps aligns closely with the skills and training of an Industrial Mechanic, focusing on mechanical systems."
+    },
+    "qa-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "QA engineers build automated test suites and validate software releases. A bachelor in informatikk gives the strongest entry; the role rewards systematic thinking and tool-fluency over deep theory."
+    },
+    "quant-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Quant Developers create software for trading systems, making their work closely related to Software Developers who also build applications and systems."
+    },
+    "quantitative-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Quants build mathematical models for finance. A bachelor in mathematics, statistics, or physics, almost always followed by a master in Quantitative Finance, Financial Mathematics, or similar. NHH and BI offer relevant masters in Norway."
+    },
+    "quantity-surveyor": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "A Quantity Surveyor works closely with Civil Engineers on construction projects, focusing on cost management while engineers handle design and structural aspects."
+    },
+    "radiographer": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Radiographers are healthcare workers who specialise in using imaging technology to assist in diagnosing patients, making their role closely related to general healthcare work."
+    },
+    "radiologist": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "After the 6-year medical degree, complete LIS1 (18 months) then LIS2/3 radiology specialisation (5 years)."
+    },
+    "rail-signalling-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Rail Signalling Technicians work with electrical systems similar to Electricians, focusing on railway signalling systems and safety-critical wiring."
+    },
+    "rail-systems-technician": {
+      "baseCareerId": "industrial-electrician",
+      "specialisationNote": "Rail Systems Technicians work with electrical systems similar to Industrial Electricians, focusing on railway infrastructure and maintenance."
+    },
+    "real-estate-agent": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Real Estate Agents often work closely with lawyers to handle property transactions and contracts, making legal knowledge beneficial in this field."
+    },
+    "real-estate-appraiser": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Real Estate Appraisers assess property values, similar to how Accountants evaluate financial data, both requiring strong analytical skills and attention to detail."
+    },
+    "real-estate-broker": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Real estate brokers often deal with legal aspects of property transactions, making a background in law beneficial for understanding contracts and compliance."
+    },
+    "real-estate-consultant": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "Real Estate Consultants often provide legal advice related to property transactions, making a law background beneficial for this career."
+    },
+    "real-estate-developer": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Real Estate Developers often work closely with Civil Engineers to ensure that property developments are structurally sound and meet regulatory standards."
+    },
+    "real-estate-investor": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Real Estate Investors often require strong financial analysis skills, similar to accountants, to manage property finances effectively."
+    },
+    "reconstructive-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Reconstructive surgery restores form after trauma or cancer. Complete plastic surgery specialisation, then a reconstructive fellowship."
+    },
+    "referee": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Referees enforce rules and make quick decisions, similar to police officers who maintain order and ensure rules are followed in society."
+    },
+    "refuge-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Refuge Workers often have similar training and responsibilities to Social Workers, focusing on providing support to vulnerable populations."
+    },
+    "registered-nurse": {
+      "baseCareerId": "nurse",
+      "specialisationNote": "A Registered Nurse is a specialised type of Nurse who provides direct patient care and coordinates treatment in healthcare settings."
+    },
+    "regulatory-affairs-director": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Regulatory Affairs Director often needs legal knowledge to navigate regulations, making a law degree relevant for understanding compliance and policy."
+    },
+    "rehabilitation-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Rehabilitation Workers often collaborate with Social Workers to support individuals in their recovery, making their educational paths closely related."
+    },
+    "renewable-energy-tech": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Renewable Energy Technicians often require electrical knowledge and skills similar to those of electricians, as they work with energy systems."
+    },
+    "residential-care-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "A Residential Care Worker often collaborates with Social Workers to provide care and support to individuals in need, sharing similar educational paths and skills."
+    },
+    "residential-real-estate-agent": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Residential Real Estate Agent often deals with legal aspects of property transactions, making knowledge of law beneficial in this career."
+    },
+    "restaurant-manager": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A Restaurant Manager often has a background in culinary arts, making the Chef role closely related as both involve food service and management."
+    },
+    "restaurant-owner": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A restaurant owner often works closely with chefs to create menus and manage kitchen operations, making culinary skills essential for success."
+    },
+    "restaurant-server": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A restaurant server works closely with chefs to deliver food, making their role essential in the dining experience, which is why this career is related."
+    },
+    "rig-electrician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Rig Electrician is a specialised type of Electrician who works on drilling rigs, focusing on power systems and safety in offshore environments."
+    },
+    "rig-instrumentation-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Rig Instrumentation Technician works with control systems and instrumentation, similar to an Automation Technician who also focuses on automated systems and controls."
+    },
+    "risk-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Risk Analyst uses data analysis skills similar to a Data Analyst, focusing on identifying and quantifying risks in various business areas."
+    },
+    "risk-and-compliance-director": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Risk and Compliance Director often requires a strong understanding of legal frameworks, making a law degree relevant for this role in Norway."
+    },
+    "robotics-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Robotics Engineers often have a background in Mechanical Engineering, focusing on the design and integration of robotic systems."
+    },
+    "rocket-scientist": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Rocket scientists often require mechanical engineering principles to design propulsion systems, making this a relevant base career in Norway."
+    },
+    "rope-access-technician": {
+      "baseCareerId": "welder",
+      "specialisationNote": "Rope Access Technicians often require welding skills for maintenance tasks, making a welding background relevant to their work at heights."
+    },
+    "rotating-equipment-specialist": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Rotating Equipment Specialist focuses on maintaining and analysing rotating machinery, which aligns closely with the skills and tasks of an Industrial Mechanic in Norway."
+    },
+    "rov-pilot-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "An ROV Pilot Technician operates complex machinery and systems, similar to the skills required for an Automation Technician, particularly in electronics and maintenance."
+    },
+    "safeguarding-officer": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "A Safeguarding Officer works closely with social workers to protect vulnerable individuals, often requiring similar training and knowledge in social work principles."
+    },
+    "satellite-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Satellite Engineers often require skills in mechanical engineering for designing satellite structures and systems, making this a relevant base career."
+    },
+    "saturation-diver": {
+      "baseCareerId": "welder",
+      "specialisationNote": "Saturation divers often perform deep-sea welding tasks, making skills in welding essential for their work in underwater environments."
+    },
+    "scada-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "SCADA Technicians work with automation systems, making the Automation Technician a closely related field with similar technical skills and training requirements."
+    },
+    "school-counsellor": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "School Counsellors often work alongside Social Workers to support students' emotional and social needs, making this a relevant base career in Norway."
+    },
+    "scouting-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Scouting Analyst uses data analysis skills similar to a Data Analyst, focusing on player performance and recruitment rather than general data."
+    },
+    "search-and-rescue-operator": {
+      "baseCareerId": "firefighter",
+      "specialisationNote": "Search and Rescue Operators often work alongside firefighters and share skills in emergency response and rescue techniques, making this a relevant base career in Norway."
+    },
+    "secondary-teacher": {
+      "baseCareerId": "teacher",
+      "specialisationNote": "Lower-secondary teachers (grunnskolelærer 5.-10. trinn) teach years 5-10. A 5-year integrated master in grunnskolelærerutdanning with subject specialisations. NTNU, OsloMet, UiB all offer it."
+    },
+    "security-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Security engineers protect systems from attacks. A bachelor in informatikk is the entry point; many add a master in Information Security. NTNU's Information Security master is the leading Norwegian programme."
+    },
+    "security-guard": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "A Security Guard's role in protecting people and property shares similarities with a Police Officer's duties in maintaining safety and responding to incidents."
+    },
+    "senior-data-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Senior Data Engineer often requires software development skills to build data pipelines and systems, making this a relevant base career in Norway."
+    },
+    "senior-data-scientist": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Senior Data Scientist's role involves advanced data analysis and predictive modelling, which closely relates to the work of a Data Analyst in interpreting data for decision-making."
+    },
+    "senior-devops-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Senior DevOps Engineer works closely with Software Developers to improve deployment processes and automate infrastructure, making this a relevant career connection in Norway."
+    },
+    "senior-legal-counsel": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Senior Legal Counsel is a highly experienced lawyer who provides advanced legal advice and manages complex legal issues within an organisation."
+    },
+    "senior-software-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Senior Software Engineer is an advanced role within software development, focusing on high-quality code and mentoring, similar to a Software Developer's path."
+    },
+    "senior-sre": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Senior Site Reliability Engineer works closely with software developers to ensure applications run smoothly and reliably, making this a relevant career match."
+    },
+    "senior-wind-turbine-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Senior Wind Turbine Technician requires mechanical skills and knowledge similar to those of a Mechanical Engineer, particularly in turbine repair and diagnostics."
+    },
+    "ships-electrical-engineer": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Ship's Electrical Engineer requires skills in electrical systems similar to those of an Electrician, focusing on maritime applications and safety."
+    },
+    "shipyard-commissioning-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Shipyard Commissioning Technician works with automation systems, similar to an Automation Technician who focuses on installing and maintaining automated systems in various industries."
+    },
+    "site-manager": {
+      "baseCareerId": "civil-works-foreman",
+      "specialisationNote": "A Construction Site Manager oversees building projects, similar to a Civil Works Foreman who manages construction activities and ensures safety and efficiency on site."
+    },
+    "site-reliability-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Site Reliability Engineers keep large systems running. A bachelor in informatikk plus deep experience with distributed systems, observability, and incident response. Usually a transition role from backend or DevOps."
+    },
+    "sniper": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "A sniper often works in law enforcement or military contexts, similar to police officers who require precision and tactical skills in their roles."
+    },
+    "social-services-manager": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Social Services Managers often oversee teams of social workers, making their educational paths and responsibilities closely related."
+    },
+    "software-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Software Architect designs the overall structure of software systems, while a Software Developer builds those systems, making them closely related in the tech field."
+    },
+    "soldier": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Both soldiers and police officers serve to protect and defend the public, requiring similar skills in discipline, teamwork, and physical fitness."
+    },
+    "solutions-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Solutions Architect designs systems that software developers build, making their roles closely related in the tech industry."
+    },
+    "sommelier": {
+      "baseCareerId": "chef",
+      "specialisationNote": "A sommelier works closely with chefs to select and pair wines with dishes, making their roles complementary in fine dining establishments."
+    },
+    "space-robotics-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Space Robotics Engineers often require mechanical engineering skills to design and operate robotic systems used in space exploration."
+    },
+    "space-systems-engineer": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Space Systems Engineer requires strong engineering skills, similar to those of a Mechanical Engineer, focusing on system integration and design."
+    },
+    "spacecraft-pilot": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Spacecraft pilots share similar skills with airline pilots, such as flight operations and decision-making under pressure, making this a relevant base career."
+    },
+    "special-forces-operator": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Special Forces Operators and Police Officers both require elite training and skills for high-pressure situations, focusing on safety and security."
+    },
+    "special-needs-assistant": {
+      "baseCareerId": "childcare-assistant",
+      "specialisationNote": "A Special Needs Assistant works closely with children, similar to a Childcare Assistant, focusing on supporting their learning and development."
+    },
+    "special-needs-educator": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "A Special Needs Educator often works closely with social workers to support students with special needs, making this a relevant related field in Norway."
+    },
+    "speech-language-therapist": {
+      "baseCareerId": "healthcare-worker",
+      "specialisationNote": "Speech and Language Therapists work within the healthcare field, focusing on communication and swallowing difficulties, which aligns with the broader role of healthcare workers."
+    },
+    "spinal-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Spinal surgery is a subspeciality accessible via orthopaedics or neurosurgery. Complete the base specialisation, then a spine fellowship (1-2 years)."
+    },
+    "sports-agent": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Sports Agent often requires a background in law to negotiate contracts and understand legal aspects, making a lawyer a closely related career in Norway."
+    },
+    "sports-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Sports Analyst uses data analysis skills similar to a Data Analyst, focusing on sports performance rather than general data."
+    },
+    "sports-medicine-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Sports medicine surgery focuses on athletic injuries. Complete orthopaedic surgery specialisation, then a sports medicine fellowship (1-2 years)."
+    },
+    "sports-physiotherapist": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "A Sports Physiotherapist is a specialised type of Physiotherapist who focuses on treating athletes, using similar skills and education."
+    },
+    "sports-psychologist": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "A Sports Psychologist is a type of Psychologist who focuses on helping athletes improve their mental performance and cope with the pressures of sports."
+    },
+    "sports-therapist": {
+      "baseCareerId": "physiotherapist",
+      "specialisationNote": "Sports Therapists focus on rehabilitation and injury management, similar to Physiotherapists who also help patients recover from injuries and improve physical function."
+    },
+    "sre": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Site Reliability Engineers keep large systems running. A bachelor in informatikk plus deep experience with distributed systems, observability, and incident response. Usually a transition role from backend or DevOps."
+    },
+    "staff-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Staff Engineer often has a background in software development, focusing on solving complex technical issues and improving engineering practices."
+    },
+    "steam-turbine-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Steam Turbine Technician works with mechanical systems, similar to a Mechanical Engineer, focusing on maintenance and repair of complex machinery."
+    },
+    "stockbroker": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Stockbrokers require strong financial knowledge and skills similar to accountants, as both roles involve managing financial information and advising clients."
+    },
+    "submarine-officer": {
+      "baseCareerId": "airline-pilot",
+      "specialisationNote": "Both submarine officers and airline pilots require navigation skills and teamwork, although one operates underwater and the other in the air."
+    },
+    "subsea-controls-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Subsea Controls Technician works with automation systems, similar to an Automation Technician, focusing on control systems for subsea equipment."
+    },
+    "subsea-technician": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Subsea Technician works with complex machinery and systems, similar to a Mechanical Engineer who designs and maintains mechanical systems."
+    },
+    "substance-abuse-counsellor": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Substance Abuse Counsellors often work closely with Social Workers, as both roles involve helping individuals overcome personal challenges and improve their well-being."
+    },
+    "substation-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "A Substation Technician works with electrical systems, similar to an Electrician, focusing on voltage transformation and maintenance of power distribution equipment."
+    },
+    "support-worker": {
+      "baseCareerId": "care-assistant",
+      "specialisationNote": "Support Workers and Care Assistants both provide essential support to individuals with various needs, focusing on improving their quality of life and independence."
+    },
+    "surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Surgery is a specialisation you choose after completing a 6-year medical degree and an 18-month internship. Surgical training then takes around 6 more years."
+    },
+    "surveyor": {
+      "baseCareerId": "civil-engineer",
+      "specialisationNote": "Surveyors work closely with civil engineers to ensure land measurements and mapping are accurate for construction projects, making their education paths somewhat related."
+    },
+    "systems-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Systems Architect designs complex systems, often requiring software development skills, making this a relevant base career in Norway."
+    },
+    "systems-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Systems Engineer often works closely with software development, focusing on integrating and maintaining systems that include software components."
+    },
+    "tank-commander": {
+      "baseCareerId": "police-officer",
+      "specialisationNote": "Both Tank Commanders and Police Officers require strong leadership and tactical skills, often working in high-pressure situations to ensure safety and effective operations."
+    },
+    "tax-inspector": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Tax Inspectors often have a background in accounting, as they need to understand tax laws and financial statements to perform their audits effectively."
+    },
+    "technical-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Technical Architect designs the overall software structure, while a Software Developer builds the actual software, making their education paths closely related."
+    },
+    "technical-director": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Technical Director often oversees software development projects, making their role closely related to that of a Software Developer, focusing on technical leadership and architecture."
+    },
+    "technical-director-gaming": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Gaming Technical Director's role involves software development skills, particularly in game engines and tools, making it closely related to software development."
+    },
+    "technology-transformation-lead": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Technology Transformation Lead often works closely with software developers to modernise and migrate technology platforms, requiring a strong understanding of software development principles."
+    },
+    "telco-ai-ml-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "AI and ML Engineers often work with software development, using programming skills to create machine learning applications in telecom."
+    },
+    "telco-bss-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "BSS Engineers work with software systems for business support, making software development skills highly relevant in this field."
+    },
+    "telco-capacity-planner": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Capacity Planner uses data analysis and forecasting skills similar to those of a Data Analyst, focusing on network capacity needs."
+    },
+    "telco-cloud-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Telco Cloud Engineer uses software development skills, particularly in cloud technologies, making it closely related to the role of a Software Developer."
+    },
+    "telco-cloud-platform-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Cloud & Telco Platform Architect requires software development skills to design and implement cloud solutions, making this career closely related to software development."
+    },
+    "telco-compliance-manager": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Compliance Manager ensures telecom regulations are followed, similar to how a Lawyer interprets and applies laws, making their education paths related."
+    },
+    "telco-cpq-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A CPQ Architect designs software systems for pricing and product configuration, which aligns closely with the skills of a Software Developer in creating complex applications."
+    },
+    "telco-edge-specialist": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An Edge Computing Specialist designs software solutions for low-latency applications, which is closely related to the work of a Software Developer."
+    },
+    "telco-field-engineer": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Field Engineers in telecom often work with electrical systems, similar to Electricians who install and maintain electrical equipment."
+    },
+    "telco-fraud-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Fraud Analyst uses data analysis skills similar to a Data Analyst, focusing on detecting and preventing fraud in telecom services."
+    },
+    "telco-integration-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Integration Engineers often work with software systems and APIs, making a Software Developer's education relevant for understanding system connections."
+    },
+    "telco-it-systems-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "An IT Systems Engineer works closely with software systems, making a Software Developer's education relevant for understanding system operations and applications."
+    },
+    "telco-network-automation-eng": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Network Automation Engineer uses programming and automation skills similar to those of a Software Developer, focusing on network systems instead of general software."
+    },
+    "telco-orchestration-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Network Service Orchestration Architect designs software systems for managing network services, similar to how a Software Developer creates applications and systems."
+    },
+    "telco-oss-bss-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Telecom Solutions Architect designs software solutions for telecom systems, making it closely related to the software development field in Norway."
+    },
+    "telco-oss-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "OSS Engineers work with software systems that support telecommunications, making a software development background highly relevant."
+    },
+    "telco-pricing-analyst": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Pricing Analyst uses data analysis skills similar to those of a Data Analyst to model pricing strategies and market trends."
+    },
+    "telco-problem-manager": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Problem Manager uses data analysis skills to investigate telecom issues, similar to how a Data Analyst interprets data to provide insights."
+    },
+    "telco-revenue-assurance-mgr": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Revenue Assurance Manager uses data analysis skills to ensure billing accuracy, similar to the role of a Data Analyst who interprets data for insights."
+    },
+    "telco-scrum-master": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Scrum Master works closely with software development teams to improve their processes, making this role closely related to software development."
+    },
+    "telco-service-assurance-engineer": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "Service Assurance Engineers use analytics to monitor service health, similar to how Data Analysts interpret data to provide insights."
+    },
+    "telco-software-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Telco Software Engineer is similar to a Software Developer, focusing on creating software for telecom systems and applications."
+    },
+    "telco-sre": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Telecom Platform Reliability Engineer requires software development skills, particularly in automation and observability, making it closely related to the software developer role."
+    },
+    "telco-tech-support-specialist": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Technical Support Specialists often require deep product knowledge and troubleshooting skills similar to those of Software Developers, making this a relevant base career."
+    },
+    "telco-voip-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "VoIP Engineers often require software development skills to design and implement voice services, making this a relevant base career in Norway."
+    },
+    "test-architect": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Software Test Architect works closely with Software Developers to ensure quality in software products, making their education and skills highly relevant to this base career."
+    },
+    "test-automation-engineer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "A Test Automation Engineer works closely with software developers to create automated tests, ensuring software quality, which aligns with the skills and education of a software developer."
+    },
+    "thoracic-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Thoracic surgery focuses on the lungs and chest. After the medical degree + LIS1, complete LIS2/3 in thoracic surgery (7+ years)."
+    },
+    "title-officer": {
+      "baseCareerId": "lawyer",
+      "specialisationNote": "A Title Officer examines property titles and ensures legal ownership, which relates closely to the work of a Lawyer in property law."
+    },
+    "toolmaker": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "Toolmakers often work closely with mechanical engineers to design and create tools used in manufacturing, making their skills complementary."
+    },
+    "trader": {
+      "baseCareerId": "data-analyst",
+      "specialisationNote": "A Trader uses market analysis skills similar to a Data Analyst, focusing on data to make informed financial decisions."
+    },
+    "transplant-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Transplant surgery involves organ transplantation. Complete general surgery specialisation, then a transplant fellowship (2+ years)."
+    },
+    "trauma-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Trauma surgery handles life-threatening injuries. Complete the medical degree + general surgery specialisation, then a trauma fellowship."
+    },
+    "treasury-director": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "A Treasury Director manages financial operations similar to an Accountant, focusing on cash flow and financial planning."
+    },
+    "tunnel-boring-machine-technician": {
+      "baseCareerId": "industrial-mechanic",
+      "specialisationNote": "A Tunnel Boring Machine Technician operates complex machinery, similar to the skills of an Industrial Mechanic, focusing on maintenance and operation of heavy equipment."
+    },
+    "ui-designer": {
+      "baseCareerId": "designer",
+      "specialisationNote": "UI designers craft the visual layer of digital products. A bachelor in interaction design, visual communication, or graphic design. Portfolio of shipped digital work matters more than the specific degree."
+    },
+    "urban-planner": {
+      "baseCareerId": "architect",
+      "specialisationNote": "Urban planners (arealplanlegger) shape how cities and towns develop. A bachelor or master in arealplanlegging, samfunnsgeografi, or arkitektur. NMBU and NTNU both offer dedicated planning programmes."
+    },
+    "urological-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Urology covers the urinary tract and male reproductive system. After the medical degree + LIS1, complete LIS2/3 in urology (6+ years)."
+    },
+    "utility-network-commissioning-technician": {
+      "baseCareerId": "electrician",
+      "specialisationNote": "Utility Network Commissioning Technicians work with electrical systems, similar to electricians, focusing on testing and commissioning utility networks."
+    },
+    "ux-designer": {
+      "baseCareerId": "designer",
+      "specialisationNote": "UX designers research user needs and design product flows. A bachelor in interaction design or a CS degree with design focus. AHO and Konstfack offer the strongest Nordic programmes — portfolio is critical."
+    },
+    "ux-researcher": {
+      "baseCareerId": "psychologist",
+      "specialisationNote": "A UX Researcher studies user behaviour, similar to how a psychologist understands human behaviour, making psychology a relevant educational background."
+    },
+    "vascular-surgeon": {
+      "baseCareerId": "doctor",
+      "specialisationNote": "Vascular surgery covers arteries and veins. After the medical degree + LIS1, complete LIS2/3 in vascular surgery (6+ years)."
+    },
+    "vessel-maintenance-supervisor": {
+      "baseCareerId": "mechanical-engineer",
+      "specialisationNote": "A Vessel Maintenance Supervisor requires a strong understanding of mechanical systems, similar to a Mechanical Engineer, focusing on maintenance and compliance."
+    },
+    "veterinary-assistant": {
+      "baseCareerId": "veterinarian",
+      "specialisationNote": "Veterinary Assistants support Veterinarians in animal care, making their training relevant for those pursuing a career as a Veterinarian."
+    },
+    "wealth-manager": {
+      "baseCareerId": "accountant",
+      "specialisationNote": "Wealth Managers often work closely with accountants to manage financial aspects, making this a relevant base career in Norway."
+    },
+    "web-developer": {
+      "baseCareerId": "software-developer",
+      "specialisationNote": "Web Developers are a type of Software Developer, focusing specifically on creating websites and web applications using programming languages and frameworks."
+    },
+    "welding-inspector": {
+      "baseCareerId": "welder",
+      "specialisationNote": "A Welding Inspector ensures that welds meet standards, which is closely related to the skills and knowledge of a Welder."
+    },
+    "wind-commissioning-technician": {
+      "baseCareerId": "automation-technician",
+      "specialisationNote": "A Wind Commissioning Technician works with electrical systems and automation, similar to an Automation Technician who also focuses on technical installations and systems."
+    },
+    "youth-worker": {
+      "baseCareerId": "social-worker",
+      "specialisationNote": "Youth workers support young people through schools, NGOs, and outreach programmes. A bachelor in sosialt arbeid, barnevernspedagogikk, or pedagogikk. Often combined with experience in volunteer or community settings."
+    }
   },
   "programmes": [
     {

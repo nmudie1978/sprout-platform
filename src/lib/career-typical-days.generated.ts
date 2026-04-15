@@ -1369,6 +1369,66 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You will spend a lot of time on detailed design work and testing, which can be repetitive."
   },
+  "bailiff": {
+      "typicalDay": {
+          "morning": [
+              "Review case files and prepare for the day's appointments.",
+              "Meet with colleagues to discuss ongoing cases and strategies.",
+              "Visit debtors' addresses to attempt collection or enforcement."
+          ],
+          "midday": [
+              "Conduct negotiations with debtors to arrange payment plans.",
+              "Complete necessary documentation for court orders.",
+              "Attend a court hearing to represent the enforcement authority."
+          ],
+          "afternoon": [
+              "Carry out evictions, ensuring all legal procedures are followed.",
+              "Debrief with team members on the day's activities.",
+              "Prepare reports on case outcomes and next steps."
+          ],
+          "tools": [
+              "Computer for case management software.",
+              "Mobile phone for communication.",
+              "Legal documents and forms.",
+              "Vehicle for travelling to appointments.",
+              "Recording equipment for documenting interactions."
+          ],
+          "environment": "Mostly outdoors at various locations, with some time spent in an office for paperwork and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Visit individuals to recover unpaid debts.",
+          "Enforce court orders and ensure compliance with the law.",
+          "Negotiate payment plans with debtors.",
+          "Prepare and submit legal documentation.",
+          "Conduct evictions while ensuring safety and legal standards.",
+          "Collaborate with legal professionals and law enforcement.",
+          "Maintain accurate records of all cases and interactions."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure.",
+          "Good at negotiating and resolving conflicts.",
+          "Detail-oriented and organised.",
+          "Able to work independently and as part of a team.",
+          "Comfortable dealing with difficult situations."
+      ],
+      "topSkills": [
+          "Understanding of enforcement law and procedures.",
+          "Strong negotiation skills.",
+          "Ability to document interactions accurately.",
+          "Calm de-escalation techniques.",
+          "Procedural rigour in following legal guidelines.",
+          "Effective communication skills.",
+          "Problem-solving abilities."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Law, Police Studies, or Economics.",
+          "Apply for a position with Namsmannen after graduation.",
+          "Complete Namsmannen's specific training programme.",
+          "Consider internships or volunteer work in legal settings.",
+          "Look for apprenticeships in enforcement or legal fields."
+      ],
+      "realityCheck": "The job can involve confrontational situations, requiring a strong ability to remain calm and professional."
+  },
   "baker": {
       "typicalDay": {
           "morning": [
@@ -2789,6 +2849,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for apprenticeships with production companies."
       ],
       "realityCheck": "The job often involves long hours on set and can be very demanding, especially during busy shoots."
+  },
+  "civil-defence-officer": {
+      "typicalDay": {
+          "morning": [
+              "Attend a briefing on current operations or training exercises.",
+              "Check and maintain equipment and gear.",
+              "Review maps and plan routes for potential emergency scenarios."
+          ],
+          "midday": [
+              "Participate in a training exercise, such as search and rescue drills.",
+              "Conduct physical fitness training to stay in shape.",
+              "Collaborate with other emergency services to discuss coordination."
+          ],
+          "afternoon": [
+              "Complete paperwork and reports from training or incidents.",
+              "Engage in community outreach or education about emergency preparedness.",
+              "Attend additional training sessions or workshops."
+          ],
+          "tools": [
+              "Emergency response vehicles",
+              "First aid kits",
+              "Maps and GPS devices",
+              "Communication radios",
+              "Protective gear (helmets, uniforms)"
+          ],
+          "environment": "Mostly outdoors in various weather conditions, working with a team to prepare for and respond to emergencies."
+      },
+      "whatYouActuallyDo": [
+          "Train regularly for emergency situations like floods and fires.",
+          "Respond to incidents and support local authorities.",
+          "Maintain and check emergency equipment.",
+          "Educate the public on safety and preparedness.",
+          "Coordinate with other emergency services during incidents."
+      ],
+      "whoThisIsGoodFor": [
+          "Calm under pressure",
+          "Physically active and fit",
+          "Enjoys teamwork and collaboration",
+          "Good at following instructions and protocols"
+      ],
+      "topSkills": [
+          "Emergency response techniques",
+          "Map reading and navigation",
+          "Physical fitness and endurance",
+          "Coordination with other teams",
+          "Effective communication skills"
+      ],
+      "entryPaths": [
+          "Complete Sivilforsvaret basic training.",
+          "Attend specialist courses in search, rescue, and evacuation.",
+          "Consider volunteering with local emergency services.",
+          "Join youth programmes related to safety and preparedness."
+      ],
+      "realityCheck": "The training can be intense and physically demanding, which may surprise some new recruits."
   },
   "civil-engineer": {
       "typicalDay": {
@@ -4651,6 +4765,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participating in online communities or forums for creators."
       ],
       "realityCheck": "It takes time to build an audience and see results, so patience and persistence are key."
+  },
+  "diplomat": {
+      "typicalDay": {
+          "morning": [
+              "Read and respond to emails from colleagues and partners",
+              "Prepare briefing notes for meetings with local officials",
+              "Review news articles relevant to Norway's interests"
+          ],
+          "midday": [
+              "Attend meetings with government representatives",
+              "Network with local business leaders and NGOs",
+              "Draft reports on political developments"
+          ],
+          "afternoon": [
+              "Conduct research on trade opportunities",
+              "Meet with Norwegian citizens to assist with consular issues",
+              "Plan upcoming events or diplomatic visits"
+          ],
+          "tools": [
+              "Office software (e.g. Microsoft Office)",
+              "Communication tools (e.g. email, video conferencing)",
+              "Research databases and news platforms"
+          ],
+          "environment": "Mostly indoors at an embassy or consulate, with a mix of meetings and independent work."
+      },
+      "whatYouActuallyDo": [
+          "Represent Norway in discussions with foreign governments.",
+          "Monitor political situations and report back to Oslo.",
+          "Assist Norwegian citizens with travel or legal issues abroad.",
+          "Build relationships with local organisations and businesses.",
+          "Negotiate agreements that benefit Norway's interests."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys learning about different cultures.",
+          "Good at staying calm under pressure.",
+          "Likes to solve problems and negotiate.",
+          "Comfortable speaking in public.",
+          "Interested in global issues and politics."
+      ],
+      "topSkills": [
+          "Fluency in multiple languages.",
+          "Strong writing and communication skills.",
+          "Ability to analyse political situations.",
+          "Negotiation and conflict resolution skills.",
+          "Cultural awareness and sensitivity."
+      ],
+      "entryPaths": [
+          "Complete a Master's degree in Political Science, Law, Economics, or International Relations.",
+          "Apply for the UD Aspirant programme after graduation.",
+          "Gain experience through internships at embassies or international organisations.",
+          "Participate in student organisations focused on global issues.",
+          "Consider relevant volunteer work in international development."
+      ],
+      "realityCheck": "The job often involves long hours and dealing with complex, sensitive issues."
   },
   "disability-support-worker": {
       "typicalDay": {
@@ -6971,6 +7139,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "The competition is fierce, and only a small number of players make it to professional levels."
   },
+  "forensic-scientist": {
+      "typicalDay": {
+          "morning": [
+              "Review case files and prioritise tasks for the day.",
+              "Prepare samples for analysis in the lab.",
+              "Perform DNA extraction from biological samples."
+          ],
+          "midday": [
+              "Conduct toxicology tests on samples.",
+              "Document findings in lab reports.",
+              "Attend a team meeting to discuss ongoing cases."
+          ],
+          "afternoon": [
+              "Analyse digital evidence from devices.",
+              "Prepare evidence for court presentations.",
+              "Update databases with new findings."
+          ],
+          "tools": [
+              "Microscopes",
+              "PCR machines",
+              "Spectrophotometers",
+              "Digital forensics software",
+              "Lab notebooks"
+          ],
+          "environment": "Mostly indoors in a laboratory setting, with a focus on precise scientific work and occasional collaboration with law enforcement."
+      },
+      "whatYouActuallyDo": [
+          "Analyse physical evidence from crime scenes.",
+          "Test samples for DNA and toxins.",
+          "Document all steps of the analysis process.",
+          "Prepare reports summarising findings.",
+          "Present evidence in court as an expert witness."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical.",
+          "Enjoys solving puzzles and problems.",
+          "Comfortable working with scientific equipment.",
+          "Able to communicate complex information clearly."
+      ],
+      "topSkills": [
+          "Lab techniques for sample analysis.",
+          "Analytical thinking to interpret results.",
+          "Strong documentation skills for reporting.",
+          "Attention to detail in handling evidence.",
+          "Effective communication for court presentations."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Forensic Science, Chemistry or Biology.",
+          "Master's degree for advanced roles.",
+          "Internships in forensic labs or police departments.",
+          "Fagbrev in relevant fields for technical roles."
+      ],
+      "realityCheck": "The job can involve long hours of meticulous lab work, which may feel repetitive at times."
+  },
   "forex-trader": {
       "typicalDay": {
           "morning": [
@@ -8517,6 +8739,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "You often have to work under tight deadlines, which can be stressful."
   },
+  "judge": {
+      "typicalDay": {
+          "morning": [
+              "Review case files and legal documents for upcoming hearings",
+              "Prepare notes and questions for witnesses",
+              "Attend morning court sessions to hear cases"
+          ],
+          "midday": [
+              "Deliberate with colleagues on case outcomes",
+              "Write or revise legal judgments",
+              "Meet with court staff to discuss scheduling and case management"
+          ],
+          "afternoon": [
+              "Preside over afternoon court sessions",
+              "Engage in discussions with lawyers about legal arguments",
+              "Take time to reflect on cases and legal principles"
+          ],
+          "tools": [
+              "Legal databases (like Lovdata)",
+              "Courtroom technology for presentations",
+              "Document management software"
+          ],
+          "environment": "Mostly indoors in a courtroom, with a formal atmosphere and a focus on legal proceedings."
+      },
+      "whatYouActuallyDo": [
+          "Preside over court hearings and manage courtroom procedures.",
+          "Interpret laws and apply them to specific cases.",
+          "Evaluate evidence presented by both sides.",
+          "Make rulings based on legal reasoning and precedents.",
+          "Draft written judgments explaining your decisions."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong analytical thinker",
+          "Impartial and fair-minded",
+          "Good at communicating complex ideas clearly"
+      ],
+      "topSkills": [
+          "Legal reasoning and analysis",
+          "Impartiality in decision-making",
+          "Strong written communication for judgments",
+          "Understanding of procedural law",
+          "Ability to remain calm under pressure"
+      ],
+      "entryPaths": [
+          "Complete a Master of Law (5 years) in Norway.",
+          "Gain at least 10 years of legal practice as a lawyer, prosecutor, or in academia.",
+          "Apply for a judicial appointment after meeting the experience requirements."
+      ],
+      "realityCheck": "The path to becoming a judge is long and requires significant legal experience before you can be appointed."
+  },
   "kitchen-porter": {
       "typicalDay": {
           "morning": [
@@ -8789,6 +9061,60 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Consider internships with real estate agencies."
       ],
       "realityCheck": "You spend a lot of time dealing with paperwork and administrative tasks, not just showing properties."
+  },
+  "lifeguard": {
+      "typicalDay": {
+          "morning": [
+              "Check equipment and ensure it is ready for the day.",
+              "Inspect the swimming area for safety hazards.",
+              "Review safety protocols with fellow lifeguards."
+          ],
+          "midday": [
+              "Monitor swimmers and look out for any signs of trouble.",
+              "Enforce pool or beach rules to ensure safety.",
+              "Assist with minor first aid needs, like scrapes or sunburn."
+          ],
+          "afternoon": [
+              "Perform regular headcounts of swimmers.",
+              "Engage with visitors to promote safe swimming practices.",
+              "Prepare for the end of the day by cleaning and securing equipment."
+          ],
+          "tools": [
+              "Rescue buoy",
+              "First aid kit",
+              "Whistle",
+              "Binoculars",
+              "Radio for communication"
+          ],
+          "environment": "Mostly outdoors at beaches or pools, with a focus on vigilance and quick reactions."
+      },
+      "whatYouActuallyDo": [
+          "Watch over swimmers to keep them safe.",
+          "Respond quickly to emergencies and perform rescues.",
+          "Administer first aid when needed.",
+          "Educate swimmers about safety rules.",
+          "Work as part of a team with other lifeguards."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being active and outdoors.",
+          "Stays calm in stressful situations.",
+          "Has good communication skills.",
+          "Is responsible and reliable."
+      ],
+      "topSkills": [
+          "Strong swimming ability.",
+          "First aid knowledge.",
+          "Ability to stay alert for long periods.",
+          "Good communication and teamwork.",
+          "Problem-solving skills in emergencies."
+      ],
+      "entryPaths": [
+          "Complete the NSSR lifeguard course.",
+          "Obtain a first aid certification.",
+          "Demonstrate strong swimming skills.",
+          "Look for seasonal jobs at local pools or beaches."
+      ],
+      "realityCheck": "The job can be quiet for long stretches, but you must stay focused and ready to act at any moment."
   },
   "lifestyle-influencer": {
       "typicalDay": {
@@ -10413,6 +10739,57 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
       ],
       "realityCheck": "Building a career in music takes time and persistence, with many ups and downs along the way."
   },
+  "nav-case-worker": {
+      "typicalDay": {
+          "morning": [
+              "Review new cases and applications that have come in overnight.",
+              "Respond to emails from clients seeking advice.",
+              "Attend a team meeting to discuss ongoing cases."
+          ],
+          "midday": [
+              "Meet with clients to discuss their situations and offer support.",
+              "Fill out necessary paperwork for benefits or assistance.",
+              "Consult with colleagues about complex cases."
+          ],
+          "afternoon": [
+              "Follow up on client progress and update case files.",
+              "Research regulations and policies related to welfare.",
+              "Prepare reports for management on case trends."
+          ],
+          "tools": [
+              "NAV's case management software",
+              "Microsoft Office Suite (Word, Excel)",
+              "Phone for client communication"
+          ],
+          "environment": "Mostly indoors in an office setting, with a mix of client meetings and administrative work."
+      },
+      "whatYouActuallyDo": [
+          "Help clients understand their rights and options within NAV.",
+          "Guide people through the application process for benefits.",
+          "Provide emotional support and empathy to clients in need.",
+          "Keep detailed records of client interactions and progress.",
+          "Stay updated on changes in laws and regulations affecting welfare."
+      ],
+      "whoThisIsGoodFor": [
+          "Good at listening to others and understanding their feelings.",
+          "Able to handle multiple cases at once without getting overwhelmed.",
+          "Comfortable with paperwork and following rules.",
+          "Enjoys helping people and making a difference in their lives."
+      ],
+      "topSkills": [
+          "Active listening to understand client needs.",
+          "Knowledge of regulations and welfare policies.",
+          "Case management to keep track of multiple clients.",
+          "Empathy to support clients emotionally.",
+          "Strong communication skills for clear explanations."
+      ],
+      "entryPaths": [
+          "Bachelor's degree in Social Work or Social Science.",
+          "Relevant vocational programmes in social services.",
+          "Internships or apprenticeships with NAV or similar organisations."
+      ],
+      "realityCheck": "You often deal with complex situations and must manage clients' expectations while navigating bureaucracy."
+  },
   "naval-officer": {
       "typicalDay": {
           "morning": [
@@ -11548,6 +11925,62 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Explore job openings with construction companies or painting firms."
       ],
       "realityCheck": "The job can be physically demanding and requires a lot of preparation work before you get to the fun part of painting."
+  },
+  "park-ranger": {
+      "typicalDay": {
+          "morning": [
+              "Check trail conditions and clear any debris or hazards.",
+              "Monitor wildlife activity and take notes.",
+              "Meet with team members to discuss the day's tasks."
+          ],
+          "midday": [
+              "Conduct guided walks for visitors and share information about the area.",
+              "Inspect park facilities and report any maintenance needs.",
+              "Study wildlife behaviour and update records."
+          ],
+          "afternoon": [
+              "Enforce conservation laws by checking permits and ensuring compliance.",
+              "Participate in conservation projects, like planting trees or removing invasive species.",
+              "Prepare reports on wildlife sightings and visitor interactions."
+          ],
+          "tools": [
+              "Field notebook for observations",
+              "GPS device for navigation",
+              "Wildlife cameras for monitoring",
+              "First aid kit for emergencies",
+              "Binoculars for observing animals"
+          ],
+          "environment": "Mostly outdoors in various weather conditions, working in nature reserves and interacting with the public."
+      },
+      "whatYouActuallyDo": [
+          "Monitor wildlife populations and habitats.",
+          "Enforce rules to protect natural areas.",
+          "Guide visitors and educate them about nature.",
+          "Inspect park facilities for safety and cleanliness.",
+          "Participate in habitat restoration projects."
+      ],
+      "whoThisIsGoodFor": [
+          "Enjoys being outdoors and in nature.",
+          "Strong interest in wildlife and conservation.",
+          "Good at communicating with people.",
+          "Able to work independently and in a team.",
+          "Physically fit and comfortable with outdoor activities."
+      ],
+      "topSkills": [
+          "Knowledge of local wildlife and ecosystems.",
+          "Ability to enforce conservation laws fairly.",
+          "Strong observation skills for monitoring nature.",
+          "Good communication skills for guiding visitors.",
+          "Physical fitness for hiking and working outdoors."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Biology, Forestry, or Environmental Science.",
+          "Apply for a position with Statens naturoppsyn (SNO) after graduation.",
+          "Gain experience through internships or volunteer work in conservation.",
+          "Consider vocational training in outdoor education or environmental management.",
+          "Look for apprenticeships in related fields like park management."
+      ],
+      "realityCheck": "You spend a lot of time outdoors in all weather, which can be tough and tiring."
   },
   "pastry-chef": {
       "typicalDay": {
@@ -12899,6 +13332,63 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Look for job openings with real estate agencies or banks."
       ],
       "realityCheck": "You spend a lot of time travelling to different properties, which can be tiring and unpredictable."
+  },
+  "prosecutor": {
+      "typicalDay": {
+          "morning": [
+              "Review case files and police reports.",
+              "Meet with police officers to discuss ongoing investigations.",
+              "Draft legal documents for upcoming cases."
+          ],
+          "midday": [
+              "Attend court hearings to present cases.",
+              "Consult with colleagues about case strategies.",
+              "Research legal precedents relevant to current cases."
+          ],
+          "afternoon": [
+              "Prepare for upcoming trials by organising evidence.",
+              "Write summaries of court proceedings.",
+              "Meet with victims and witnesses to discuss their testimonies."
+          ],
+          "tools": [
+              "Legal databases for research.",
+              "Case management software.",
+              "Office equipment like computers and printers."
+          ],
+          "environment": "Mostly indoors in an office setting or courtroom, with a mix of solitary work and collaboration."
+      },
+      "whatYouActuallyDo": [
+          "Review evidence and police investigations for criminal cases.",
+          "Decide whether to charge suspects based on available evidence.",
+          "Prepare and present cases in court before a judge.",
+          "Negotiate plea deals with defence lawyers.",
+          "Advise law enforcement on legal matters during investigations.",
+          "Write legal documents, including charges and court motions.",
+          "Ensure that cases comply with legal and ethical standards."
+      ],
+      "whoThisIsGoodFor": [
+          "Strong analytical thinker.",
+          "Good at public speaking.",
+          "Detail-oriented and organised.",
+          "Able to handle stressful situations.",
+          "Committed to justice and ethical practices."
+      ],
+      "topSkills": [
+          "Understanding of criminal law and procedure.",
+          "Strong writing skills for legal documents.",
+          "Ability to argue effectively in court.",
+          "Critical thinking for case analysis.",
+          "Ethical judgement in decision-making.",
+          "Communication skills for interacting with victims and witnesses."
+      ],
+      "entryPaths": [
+          "Complete a Master of Law (5 years) at a university.",
+          "Follow a prosecutor training track after your degree.",
+          "Consider internships with the prosecuting authority or law firms.",
+          "Gain experience through clerkships during your studies.",
+          "Explore volunteer opportunities in legal aid organisations."
+      ],
+      "realityCheck": "The job often involves long hours of preparation and can be emotionally challenging when dealing with serious cases."
   },
   "psychiatrist": {
       "typicalDay": {
@@ -18034,6 +18524,56 @@ export const generatedCareerDetailsMap: Record<string, CareerDetails> = {
           "Participate in cadet programmes for early exposure."
       ],
       "realityCheck": "The training can be intense and demanding, requiring both physical fitness and mental resilience."
+  },
+  "tax-inspector": {
+      "typicalDay": {
+          "morning": [
+              "Review tax returns submitted by individuals and companies.",
+              "Check for inconsistencies or missing information.",
+              "Prepare for meetings with taxpayers."
+          ],
+          "midday": [
+              "Conduct interviews with taxpayers to clarify their tax situations.",
+              "Gather evidence for potential tax evasion cases.",
+              "Write reports on findings from audits."
+          ],
+          "afternoon": [
+              "Meet with colleagues to discuss complex cases.",
+              "Update the tax database with new information.",
+              "Attend training sessions on new tax laws."
+          ],
+          "tools": [
+              "Tax software for auditing.",
+              "Databases for tracking taxpayer information.",
+              "Microsoft Office for report writing."
+          ],
+          "environment": "Mostly indoors in an office setting, with a balance of individual work and meetings."
+      },
+      "whatYouActuallyDo": [
+          "Audit tax returns for accuracy and compliance.",
+          "Investigate suspected tax evasion cases.",
+          "Interview taxpayers to gather information.",
+          "Write detailed reports on audit findings.",
+          "Advise taxpayers on tax compliance and regulations."
+      ],
+      "whoThisIsGoodFor": [
+          "Detail-oriented and methodical.",
+          "Enjoys problem-solving and investigation.",
+          "Comfortable communicating with different people."
+      ],
+      "topSkills": [
+          "Understanding of tax law and regulations.",
+          "Strong accounting knowledge.",
+          "Ability to analyse financial documents.",
+          "Attention to detail in investigations.",
+          "Effective report writing skills."
+      ],
+      "entryPaths": [
+          "Complete a Bachelor's degree in Accounting, Economics, or Law.",
+          "Apply for a position at Skatteetaten as a trainee.",
+          "Gain relevant experience through internships in finance or auditing."
+      ],
+      "realityCheck": "You spend a lot of time on paperwork and investigations, which can be less exciting than it sounds."
   },
   "taxi-driver": {
       "typicalDay": {

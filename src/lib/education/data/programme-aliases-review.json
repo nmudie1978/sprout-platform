@@ -1,0 +1,3346 @@
+{
+  "generatedAt": "2026-04-14T22:52:38.477Z",
+  "minConfidence": "medium",
+  "items": [
+    {
+      "id": "acquisitions-manager",
+      "title": "Acquisitions Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Acquisitions Manager in the allowed list, as it focuses on real estate and finance.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "affiliate-marketer",
+      "title": "Affiliate Marketer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Affiliate marketing is a unique field focused on online sales and marketing, which does not closely relate to any of the base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "agile-coach",
+      "title": "SAFe Agile Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a SAFe Agile Coach does not closely align with any of the available base careers, as it focuses on agile methodologies rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "aircraft-structures-technician",
+      "title": "Aircraft Structures Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Aircraft Structures Technician role does not closely align with any of the available base careers, as it focuses on aircraft repair rather than engineering or construction.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "alliances-director",
+      "title": "Alliances Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Alliances Director does not closely match any of the available base careers, as it focuses on partnership management rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "ar-rep",
+      "title": "A&R Representative",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "An A&R Representative focuses on music talent and artist development, which does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "artillery-officer",
+      "title": "Artillery Officer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of an Artillery Officer.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "asset-management-director",
+      "title": "Asset Management Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specialised field of asset management in physical infrastructure.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "assistant-coach",
+      "title": "Assistant Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Assistant Coach does not closely align with any of the available base careers, as it focuses on sports rather than healthcare or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "astrophysicist",
+      "title": "Astrophysicist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Astrophysicists study the universe, which does not closely relate to any of the available base careers in healthcare, engineering, or technology.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "audio-engineer",
+      "title": "Audio Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Audio engineering does not closely relate to any of the available base careers, as it focuses on sound rather than health, law, or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "avionics-technician",
+      "title": "Avionics Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Avionics Technician among the allowed options, as it focuses on aircraft electronics.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "beatmaker",
+      "title": "Beatmaker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed careers that aligns with the skills and focus of a Beatmaker.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "biomedical-scientist",
+      "title": "Biomedical Scientist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Biomedical Scientists focus on research and lab work, which is distinct from the clinical roles of doctors and nurses.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "biotech-rd-director",
+      "title": "Biotech R&D Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Biotech R&D Director role does not closely align with any of the available base careers, as it focuses on biotechnology and research management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "brand-ambassador",
+      "title": "Brand Ambassador",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Brand Ambassador focuses on promoting products and building relationships, which doesn't directly align with any specific base career in the allowed list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "brand-manager",
+      "title": "Brand Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Brand Managers focus on marketing strategies and brand identity, which is not closely related to any of the allowed careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "brewer",
+      "title": "Brewer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Brewing is a specialised field that does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "bus-driver",
+      "title": "Bus Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Bus Driver within the allowed list, as it requires specific driving qualifications and skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "business-development-director",
+      "title": "Business Development Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Business Development Director does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "business-unit-director",
+      "title": "Business Unit Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Business Unit Director in the provided list, as it focuses on business management rather than technical or healthcare roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "busker",
+      "title": "Busker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Busking involves performing arts, which does not align with any of the listed base careers focused on healthcare, engineering, or trades.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "camera-operator",
+      "title": "Camera Operator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Camera operators focus on visual storytelling through camera work, which does not align closely with any of the listed base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "chief-digital-officer",
+      "title": "Chief Digital Officer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Chief Digital Officer does not closely align with any of the available base careers, as it focuses on digital strategy and leadership rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "chief-marketing-officer",
+      "title": "Chief Marketing Officer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Chief Marketing Officer role does not closely align with any of the available base careers, as it focuses on marketing strategy and leadership, which are not represented.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "chief-people-officer",
+      "title": "Chief People Officer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Chief People Officer role does not closely align with any of the available base careers, as it focuses on HR and organisational leadership.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "cinematographer",
+      "title": "Cinematographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Cinematography is a highly specialised field in film, with no direct equivalent in the allowed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "clinical-operations-director",
+      "title": "Clinical Operations Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Clinical Operations Director is highly specialised and does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "commercial-director",
+      "title": "Commercial Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Commercial Director in the provided list, as it focuses on business strategy rather than a specific vocational field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "commercial-diver",
+      "title": "Commercial Diver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Commercial diving is a specialised field with no direct equivalent in the allowed base careers, as it focuses on underwater work rather than general engineering or construction.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "commercial-video-producer",
+      "title": "Commercial Video Producer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Commercial Video Producer among the allowed options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "commodities-trader",
+      "title": "Commodities Trader",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of a Commodities Trader.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "composer",
+      "title": "Composer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The career of a composer does not closely align with any of the available base careers, as it focuses on music creation rather than a specific vocational field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "consulting-partner",
+      "title": "Consulting Partner",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Consulting Partner does not closely align with any of the available base careers, as it focuses on business leadership rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "content-creator",
+      "title": "Social Media Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Social Media Managers focus on creating content for digital platforms, which does not align closely with any of the listed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "content-creator",
+      "title": "Content Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Content Creator does not closely align with any of the available base careers, as it focuses on digital media rather than traditional professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "copywriter",
+      "title": "Copywriter",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Copywriting is a specific skill set focused on writing for marketing, which does not align closely with any of the base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "corporate-development-director",
+      "title": "Corporate Development Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Corporate Development Director in the provided list, as it focuses on corporate finance and strategy.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "corporate-trainer",
+      "title": "Corporate Trainer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of a Corporate Trainer in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "corporate-videographer",
+      "title": "Corporate Videographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Corporate Videographers create video content, which does not closely relate to any of the listed base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "country-manager",
+      "title": "Country Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Country Manager's role involves business leadership and strategy, which does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "courier",
+      "title": "Courier",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a courier in the allowed list, as it primarily requires on-the-job training and does not align with any specific educational path.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "crypto-trader",
+      "title": "Crypto Trader",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Crypto Trader in the allowed list, as it requires unique skills and knowledge in finance and technology.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "customer-service-rep",
+      "title": "Customer Service Representative",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Customer Service Representative in the allowed list, as it typically requires different skills and training.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "cybersecurity-analyst",
+      "title": "Cybersecurity Analyst",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Cybersecurity Analyst, as it focuses on IT security.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "day-trader",
+      "title": "Day Trader",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Day trading involves financial skills and market analysis, which do not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "delivery-director",
+      "title": "Delivery Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Delivery Director does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "delivery-driver",
+      "title": "Delivery Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Delivery Driver in the allowed list, as it primarily requires a driver's license and on-the-job training.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "delivery-driver",
+      "title": "Delivery Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Delivery Driver among the allowed options, as it focuses on logistics and driving.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "derivatives-trader",
+      "title": "Derivatives Trader",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Derivatives Trader, as it requires specific finance and trading skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "digital-creator",
+      "title": "Digital Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Digital Creator does not closely align with any of the available base careers, as it focuses on creative content rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "digital-marketer",
+      "title": "Digital Marketing Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Digital Marketing Specialist among the allowed options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "digital-transformation-lead",
+      "title": "Digital Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of a Digital Transformation Lead.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "director-of-product",
+      "title": "Director of Product",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Director of Product does not closely align with any of the available base careers, as it focuses on product management and leadership in business.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "dispositions-manager",
+      "title": "Dispositions Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Dispositions Manager, as it focuses on real estate and finance, which are not represented in the allowed list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "dj",
+      "title": "DJ",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a DJ in the allowed list, as it focuses on music and performance rather than traditional career paths.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "documentary-filmmaker",
+      "title": "Documentary Filmmaker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Documentary filmmaking involves storytelling and research, which does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "drone-videographer",
+      "title": "Drone Videographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Drone Videographer in the provided list, as it focuses on creative and technical skills specific to drone operation and videography.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "dynamic-positioning-operator",
+      "title": "Dynamic Positioning Operator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Dynamic Positioning Operator is highly specialised and does not closely align with any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "educational-content-creator",
+      "title": "Educational Content Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Educational Content Creator does not closely align with any of the available base careers, as it focuses on teaching and content production rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "energy-trading-manager",
+      "title": "Energy Trading Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Energy Trading Manager does not closely align with any of the available base careers, as it focuses on energy markets and trading rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "enterprise-account-executive",
+      "title": "Enterprise Account Executive",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Enterprise Account Executive does not closely align with any of the available base careers, as it focuses on sales and business rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "enterprise-architect",
+      "title": "Enterprise Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for an Enterprise Architect, as it focuses on IT architecture and business strategy.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "environmental-scientist",
+      "title": "Environmental Scientist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the environmental scientist's focus on environmental issues and sustainability.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "epidemiologist",
+      "title": "Epidemiologist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Epidemiologists focus on disease patterns and public health, which does not closely align with the available base careers in healthcare or other fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "equipment-manager",
+      "title": "Equipment Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Equipment Manager does not closely align with any of the available base careers, as it focuses on sports equipment rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "erp-transformation-lead",
+      "title": "ERP Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for an ERP Transformation Lead, as it focuses on IT and business processes.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "esg-director",
+      "title": "ESG Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an ESG Director focuses on sustainability and governance, which does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "esports-coach",
+      "title": "Esports Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Esports coaching involves strategy and leadership, but it does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "esports-player",
+      "title": "Esports Player",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Esports players focus on gaming skills and teamwork, which does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "estate-manager",
+      "title": "Estate Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Estate Managers oversee properties and staff, which does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "event-photographer",
+      "title": "Event Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Event photographers focus on capturing moments at events, which does not closely relate to any of the listed base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "event-planner",
+      "title": "Event Planner",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Event planning involves skills like organisation and communication, but it does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "executive-assistant",
+      "title": "Executive Assistant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Executive Assistant does not closely match any of the available base careers, as it focuses on administrative support rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "explosives-technician",
+      "title": "Explosives Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific skills and training required for an Explosives Technician.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "facilities-manager",
+      "title": "Facilities Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Facilities Managers focus on building operations and maintenance, which does not closely align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "facility-manager",
+      "title": "Sports Facility Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Sports Facility Manager, as it focuses on facility operations rather than healthcare or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "film-composer",
+      "title": "Film Composer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Film Composer among the allowed options, as it requires a unique skill set in music and film scoring.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "film-director",
+      "title": "Film Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Film Director among the allowed options, as it requires specific creative and technical skills not covered here.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "fitness-influencer",
+      "title": "Fitness Influencer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Fitness Influencer focuses on personal training and content creation, which does not align closely with any of the available base careers in healthcare or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "fitness-instructor",
+      "title": "Fitness Instructor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Fitness Instructors focus on leading exercise classes, which does not closely relate to any of the base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "flight-dynamics-engineer",
+      "title": "Flight Dynamics Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specialised field of flight dynamics engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "food-delivery-rider",
+      "title": "Food Delivery Rider",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path for a Food Delivery Rider that aligns with the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "food-safety-inspector",
+      "title": "Food Safety Inspector",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Food Safety Inspectors ensure food businesses comply with health regulations, which is distinct from the medical professions listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "footballer",
+      "title": "Footballer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed careers that aligns with becoming a professional footballer.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "fractional-cio",
+      "title": "Fractional CIO",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Fractional CIO does not closely align with any of the available base careers, as it focuses on IT leadership rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "freelance-photographer",
+      "title": "Freelance Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Freelance photography does not closely align with any of the listed base careers, as it focuses on creative skills rather than technical or healthcare professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "freight-driver",
+      "title": "Freight Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Freight Driver in the allowed list, as it focuses on logistics and transportation.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "freight-forwarder",
+      "title": "Freight Forwarder",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Freight Forwarder in the allowed list, as it focuses on logistics and international trade.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "game-composer",
+      "title": "Game Composer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Game Composer within the allowed list, as it focuses on music composition and interactive audio.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "gaming-streamer",
+      "title": "Gaming Streamer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed careers that aligns with the skills and self-taught nature of a Gaming Streamer.",
+        "confidence": "high"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "gardener",
+      "title": "Gardener",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Gardening does not closely relate to any of the available base careers, as it focuses on horticulture rather than a specific profession listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "general-manager",
+      "title": "General Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a General Manager does not closely align with any of the available base careers, as it focuses on business leadership rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "global-account-director",
+      "title": "Global Account Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Global Account Director does not closely match any of the available base careers, as it focuses on account management rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "global-brand-director",
+      "title": "Global Brand Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Global Brand Director does not closely align with any of the available base careers, as it focuses on marketing and brand strategy.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "grid-transformation-lead",
+      "title": "Grid Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Grid Transformation Lead does not closely align with any of the available base careers, as it focuses on energy infrastructure rather than the listed fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "groundskeeper",
+      "title": "Groundskeeper",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Groundskeeping does not closely relate to any of the available base careers, as it focuses on horticulture and maintenance rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "group-product-manager",
+      "title": "Group Product Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Group Product Manager does not closely align with any of the available base careers in Norway, as it focuses on product strategy and management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "growth-marketing-director",
+      "title": "Growth Marketing Director",
+      "proposal": {
+        "baseCareerId": "marketing-manager",
+        "specialisationNote": "A Growth Marketing Director focuses on user acquisition and retention, which aligns with the strategic aspects of a Marketing Manager's role in driving business growth.",
+        "confidence": "medium"
+      },
+      "reason": "base-not-in-pool"
+    },
+    {
+      "id": "hazardous-materials-technician",
+      "title": "Hazardous Materials Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Hazardous Materials Technician does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-bss",
+      "title": "Head of BSS",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of BSS is highly specialised in telecommunications and does not closely relate to any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-engineering",
+      "title": "Head of Engineering",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of Engineering does not closely match any of the available base careers, as it focuses on leadership in engineering rather than a specific technical role.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-networks",
+      "title": "Head of Networks",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Head of Networks role focuses on telecommunications, which does not align with any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-operations",
+      "title": "Head of Operations",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Head of Operations role does not closely align with any of the available base careers in the list, as it focuses on operational management rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-oss",
+      "title": "Head of OSS",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Head of OSS role is highly specialised in telecommunications and does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-product",
+      "title": "Head of Product",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of Product does not closely align with any of the available base careers, as it focuses on product strategy and leadership rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-revenue",
+      "title": "Head of Revenue",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of Revenue does not closely align with any of the available base careers, as it focuses on business leadership rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-sales",
+      "title": "Head of Sales",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Head of Sales role does not closely align with any of the available base careers, as it focuses on sales and leadership rather than the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "head-of-talent",
+      "title": "Head of Talent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of Talent does not closely align with any of the available base careers, as it focuses on HR and talent management rather than a specific vocational skill.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "health-information-manager",
+      "title": "Health Information Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Health Information Managers focus on data management in healthcare, which does not closely align with any of the available base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "healthtech-product-director",
+      "title": "Healthtech Product Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Healthtech Product Director does not closely align with any specific base career in the allowed list, as it focuses on product strategy rather than direct healthcare roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "hedge-fund-manager",
+      "title": "Hedge Fund Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Hedge Fund Manager, as it requires specific finance and investment skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "hospital-administrator",
+      "title": "Hospital Administrator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Hospital Administrators manage healthcare facilities, but there is no direct base career that matches this specific administrative role in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "hotel-housekeeper",
+      "title": "Hotel Housekeeper",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Hotel Housekeeping does not closely relate to any of the available base careers, as it primarily involves cleaning and maintenance rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "hotel-manager",
+      "title": "Hotel Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Hotel Manager in the allowed list, as it focuses on hospitality rather than the available fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "house-cleaner",
+      "title": "House Cleaner",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "House cleaning does not have a direct educational path in the allowed careers, as it typically requires no formal education.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "hr-director",
+      "title": "HR Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct base career related to HR Director among the allowed options, as they focus on healthcare and technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "independent-consultant",
+      "title": "Independent Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Independent consultants can come from various fields and provide expert advice, but there is no specific base career in the allowed list that directly matches this role.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "independent-program-director",
+      "title": "Independent Program Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Independent Program Director does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "independent-transformation-lead",
+      "title": "Independent Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Independent Transformation Lead does not closely align with any of the available base careers, as it focuses on transformation and advisory rather than specific technical or healthcare skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "infrastructure-architect",
+      "title": "Infrastructure Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Infrastructure Architect in the allowed list, as it focuses on IT infrastructure design.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "instagram-influencer",
+      "title": "Instagram Influencer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "An Instagram Influencer focuses on personal branding and social media, which does not align closely with any of the listed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "it-project-manager",
+      "title": "IT Project Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "IT Project Managers lead technology projects, which is quite different from the careers listed, as they focus on healthcare or trades.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "it-support",
+      "title": "IT Support Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an IT Support Specialist among the allowed options, as they focus on technical support rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "leasing-agent",
+      "title": "Leasing Agent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Leasing Agents primarily focus on rental properties and tenant relations, which does not closely align with any of the base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "lettings-agent",
+      "title": "Lettings Agent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Lettings Agents focus on property rental, which does not closely relate to any of the base careers listed, as they are primarily in healthcare, law, engineering, and trades.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "lettings-agent",
+      "title": "Lettings Agent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Lettings Agent in the allowed list, as it focuses on property management rather than any specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "level-iii-ndt-inspector",
+      "title": "Level III NDT Inspector",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Level III NDT Inspector role does not closely align with any of the available base careers, as it focuses on non-destructive testing rather than healthcare or engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "lifeguard",
+      "title": "Lifeguard",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Lifeguards focus on water safety and rescue, which doesn't directly align with any of the listed base careers in healthcare or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "lifestyle-influencer",
+      "title": "Lifestyle Influencer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Lifestyle Influencer focuses on personal branding and aesthetics, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "live-streamer",
+      "title": "Live Streamer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Live Streamer in the allowed list, as it primarily focuses on entertainment and community engagement.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "logistics-coordinator",
+      "title": "Logistics Coordinator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Logistics Coordinator in the allowed list, as it focuses on logistics and supply chain management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "logistics-driver",
+      "title": "Logistics Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Logistics Driver does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "logistics-officer",
+      "title": "Military Logistics Officer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Military Logistics Officers manage supply chains and logistics in a military context, which does not closely relate to any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "management-consultant",
+      "title": "Management Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Management Consultant, as it focuses on business strategy and operations.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "managing-director",
+      "title": "Managing Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Managing Director does not closely align with any of the available base careers, as it focuses on overall company leadership rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "marine",
+      "title": "Marine",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Marine career focuses on military training and operations, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "marketing-manager",
+      "title": "Marketing Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Marketing Manager in the allowed list, as it focuses on marketing and business, which are not represented.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "military-intelligence-analyst",
+      "title": "Military Intelligence Analyst",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific skills and training of a Military Intelligence Analyst.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "mission-specialist",
+      "title": "Mission Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Mission Specialist is highly specialised and does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "mortgage-broker",
+      "title": "Mortgage Broker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Mortgage Broker in the provided list, as it focuses on finance and real estate.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-content-creator",
+      "title": "Music Content Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Music Content Creator role focuses on digital content production and audience engagement, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-journalist",
+      "title": "Music Journalist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Music journalism focuses on writing and research about music, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-lecturer",
+      "title": "Music Lecturer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Music Lecturer in the allowed list, as it focuses on teaching music rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-manager",
+      "title": "Music Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Music Manager does not closely relate to any of the available base careers, as it focuses on the music industry rather than a specific profession listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-producer",
+      "title": "Music Producer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Music Producer among the allowed options, as it focuses on creative audio production.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "music-promoter",
+      "title": "Music Promoter",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Music Promoter does not closely align with any of the available base careers, as it focuses on event organisation and marketing rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "musician",
+      "title": "Musician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a musician in the allowed list, as it focuses on performance and creativity rather than formal education paths.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "network-engineer",
+      "title": "Network Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Network Engineer among the allowed options, as they focus on IT and networking rather than the fields listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "nutritionist",
+      "title": "Nutritionist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Nutritionists focus on food and health, which is not directly covered by the available base careers, making it a unique field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "nutritionist",
+      "title": "Nutritionist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Nutritionists focus on diet and nutrition, which does not closely align with the available base careers in healthcare or other fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "office-administrator",
+      "title": "Office Administrator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Office Administrator among the allowed options, as it focuses on administrative tasks rather than technical or healthcare roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "offshore-operations-technician",
+      "title": "Offshore Operations Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Offshore Operations Technician does not closely align with any of the available base careers, as it focuses on technical operations rather than healthcare or engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "online-personality",
+      "title": "Online Personality",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Online Personality does not closely align with any of the available base careers, as it primarily focuses on personal branding and content creation.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "operations-director",
+      "title": "Operations Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Operations Director in the provided list, as it focuses on management rather than a specific technical or healthcare role.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "optician",
+      "title": "Optician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Optician in the provided list, as it requires specific optical training.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "options-trader",
+      "title": "Options Trader",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Options trading is a highly specialised finance role with no direct equivalent in the provided base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "orchestra-member",
+      "title": "Orchestra Member",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for an Orchestra Member within the allowed list, as it requires specific musical training and skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "org-transformation-director",
+      "title": "Organisational Transformation Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Organisational Transformation Director does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "oss-bss-transformation-lead",
+      "title": "Telecom Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telecom Transformation Lead does not closely align with any of the available base careers, as it focuses on telecom operations and systems management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "outdoor-instructor",
+      "title": "Outdoor Instructor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Outdoor Instructor does not closely match any of the available base careers, as it focuses on outdoor activities rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "park-ranger",
+      "title": "Park Ranger / Nature Inspector",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Park Ranger involves specific environmental and wildlife knowledge that does not closely align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "payload-specialist",
+      "title": "Payload Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Payload Specialist role is highly specialised and does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "performance-marketing-director",
+      "title": "Performance Marketing Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Performance Marketing Director in the provided list, as it focuses on marketing rather than the available fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "personal-trainer",
+      "title": "Personal Trainer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Personal Trainers focus on fitness and exercise, which does not closely align with any of the listed healthcare or technical careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "pharmaceutical-program-director",
+      "title": "Pharmaceutical Program Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Pharmaceutical Program Director does not closely align with any of the available base careers, as it focuses on drug development and regulatory processes rather than direct healthcare roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "pharmacist",
+      "title": "Pharmacist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Pharmacists have a unique role focused on medications, which does not closely align with the available base careers in healthcare.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "photographer",
+      "title": "Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Photography does not closely relate to any of the listed base careers, as it focuses on visual arts rather than the technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "photojournalist",
+      "title": "Photojournalist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Photojournalism is a specific field within journalism that focuses on storytelling through images, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "podcast-host",
+      "title": "Podcast Host",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Podcast hosting does not align closely with any of the available base careers, as it focuses on media and communication rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "portfolio-director",
+      "title": "Portfolio Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Portfolio Director does not closely align with any of the available base careers, as it focuses on business management rather than a specific vocational field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "post-production-specialist",
+      "title": "Post-Production Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Post-Production Specialist in the allowed list, as it focuses on film and video production.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "power-systems-architect",
+      "title": "Power Systems Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Power Systems Architect does not closely match any of the available base careers, as it focuses on electrical engineering and power systems.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "principal-consultant",
+      "title": "Principal Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Principal Consultant does not closely align with any of the available base careers, as it focuses on consulting rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "principal-product-manager",
+      "title": "Principal Product Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Principal Product Manager in the provided list, as it focuses on product strategy rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "private-equity-vp",
+      "title": "Private Equity Vice President",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of a Private Equity Vice President.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "private-music-tutor",
+      "title": "Private Music Tutor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Private Music Tutor among the allowed options, as it focuses on music education rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "product-director-consumer",
+      "title": "Consumer Product Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Consumer Product Director does not closely align with any of the available base careers, as it focuses on product strategy rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "product-strategy-lead",
+      "title": "Product Strategy Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Product Strategy Lead does not closely align with any of the available base careers, as it focuses on business strategy rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "professional-athlete",
+      "title": "Professional Athlete",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed list that aligns with becoming a professional athlete, as it primarily relies on talent and training in sports.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "program-director",
+      "title": "Program Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Program Director does not closely align with any of the available base careers, as it focuses on programme management rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "programme-manager",
+      "title": "Programme Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Programme Manager within the allowed list, as it focuses on project and programme management in business contexts.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "project-manager",
+      "title": "Project Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Project Manager in the provided list, as it spans various industries and requires specific business skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "property-administrator",
+      "title": "Property Administrator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Property Administrator among the allowed options, as it focuses on administrative tasks rather than technical or healthcare roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "property-inspector",
+      "title": "Property Inspector",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Property Inspectors focus on building safety and compliance, which does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "property-manager",
+      "title": "Property Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Property Manager in the allowed list, as it focuses on real estate management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "property-manager",
+      "title": "Property Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Property management involves organisation and compliance, which does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "property-valuer",
+      "title": "Property Valuer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Property Valuer, as it focuses on real estate valuation rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "quality-assurance-food",
+      "title": "Food Quality Assurance Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific focus on food quality assurance.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-analyst",
+      "title": "Real Estate Analyst",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Real Estate Analyst in the provided list, as it focuses on finance and market analysis.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-asset-manager",
+      "title": "Asset Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for Asset Manager, as it focuses on real estate and finance.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-marketing-specialist",
+      "title": "Real Estate Marketing Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Real Estate Marketing Specialist in the provided list, as it focuses on marketing rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-photographer",
+      "title": "Real Estate Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Real Estate Photography focuses on capturing properties, which doesn't align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-portfolio-manager",
+      "title": "Portfolio Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Portfolio Manager, as it focuses on real estate and finance.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-sales-manager",
+      "title": "Real Estate Sales Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Real Estate Sales Manager among the allowed options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "real-estate-valuer",
+      "title": "Real Estate Valuer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Real Estate Valuer among the allowed options, as it focuses on property valuation and market analysis.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "receptionist",
+      "title": "Hotel Receptionist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Hotel Receptionist does not closely align with any of the available base careers, as it focuses on hospitality rather than healthcare or technical fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "regional-director",
+      "title": "Regional Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Regional Director does not closely align with any of the available base careers, as it focuses on business leadership rather than a specific vocational field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "regional-sales-director",
+      "title": "Regional Sales Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Regional Sales Director does not closely align with any of the available base careers, as it focuses on sales and management rather than the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "retail-assistant",
+      "title": "Retail Assistant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Retail Assistants focus on customer service and sales, which does not directly relate to any of the allowed base careers in healthcare, engineering, or law.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "retail-manager",
+      "title": "Retail Store Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Retail Store Manager does not closely align with any of the available base careers, as it focuses on retail operations rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "risk-director",
+      "title": "Risk Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Risk Director does not closely align with any of the available base careers, as it focuses on finance and risk management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "rov-supervisor",
+      "title": "ROV Supervisor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an ROV Supervisor is highly specialised and does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "rte",
+      "title": "Release Train Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Release Train Engineer does not closely align with any of the available base careers, as it focuses on Agile project management rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sales-director",
+      "title": "Sales Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Sales Director, as it focuses on sales and leadership rather than the available fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sales-representative",
+      "title": "Sales Representative",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sales Representative among the allowed options in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "scaffolder",
+      "title": "Scaffolder",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a scaffolder in the provided list, as it focuses on construction rather than the other fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "scrum-master",
+      "title": "Scrum Master",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct match for a Scrum Master in the allowed careers, as it focuses on project management in software development.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "security-architect",
+      "title": "Security Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Security Architect in the provided list, as it focuses on IT security rather than the available fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "senior-engineering-manager",
+      "title": "Senior Engineering Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Senior Engineering Manager, as it focuses on engineering management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "senior-management-consultant",
+      "title": "Senior Management Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Senior Management Consultant, as it focuses on business strategy and operations.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "senior-network-architect",
+      "title": "Senior Network Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Senior Network Architect within the allowed list, as it focuses on IT and networking.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "senior-product-manager",
+      "title": "Senior Product Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Senior Product Manager does not closely align with any of the available base careers, as it focuses on product strategy and management rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "senior-project-director",
+      "title": "Senior Project Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Senior Project Director within the allowed list, as it focuses on project management rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "session-musician",
+      "title": "Session Musician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Session Musician, as it is a unique artistic role.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "short-form-video-creator",
+      "title": "Short-form Video Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Short-form Video Creator does not closely align with any of the available base careers, as it focuses on digital content creation rather than traditional professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "social-media-influencer",
+      "title": "Social Media Influencer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Social Media Influencer does not have a direct equivalent in the allowed careers, as it primarily relies on personal branding and content creation rather than formal education.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "songwriter",
+      "title": "Songwriter",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Songwriting does not closely relate to any of the available base careers, as it is a creative field without formal educational requirements.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sonographer",
+      "title": "Sonographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Sonographer uses ultrasound technology, which is a specific skill set not directly covered by the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sound-editor",
+      "title": "Sound Editor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Sound Editor, as it focuses on audio skills not covered by the available options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sound-engineer",
+      "title": "Sound Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Sound engineering is a specialised field that does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sound-technician",
+      "title": "Sound Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Sound Technician, as it focuses on audio engineering rather than any of the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "space-mission-planner",
+      "title": "Space Mission Planner",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Space Mission Planner in the allowed list, as it requires specialised aerospace knowledge.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "spacewalk-specialist",
+      "title": "Spacewalk Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Spacewalk Specialist, as it requires unique astronaut training and skills.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "specialist-inspection-contractor",
+      "title": "Specialist Inspection Contractor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Specialist Inspection Contractor involves technical skills and engineering knowledge that do not align closely with the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sponsorship-manager",
+      "title": "Sponsorship Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Sponsorship Manager focuses on building partnerships and managing relationships, which does not closely align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-broadcaster",
+      "title": "Sports Broadcaster",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Sports Broadcaster, as it focuses on media and journalism.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-coach",
+      "title": "Sports Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Coach among the allowed options, as coaching focuses on sports training and development.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-commentator",
+      "title": "Sports Commentator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Commentator among the allowed options, as it requires specific skills in broadcasting and sports knowledge.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-event-coordinator",
+      "title": "Sports Event Coordinator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Event Coordinator among the allowed options, as it focuses on event management rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-event-manager",
+      "title": "Sports Event Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Event Manager in the allowed list, as it focuses on event planning and logistics.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-journalist",
+      "title": "Sports Journalist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Journalist in the allowed list, as journalism is a distinct field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-manager",
+      "title": "Sports Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the role of a Sports Manager in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-marketing-manager",
+      "title": "Sports Marketing Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Marketing Manager in the provided list, as it focuses on marketing within sports rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-nutritionist",
+      "title": "Sports Nutritionist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct base career that aligns closely with the role of a Sports Nutritionist in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-photographer",
+      "title": "Sports Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Sports Photographer in the allowed list, as photography is a distinct field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "sports-scientist",
+      "title": "Sports Scientist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Sports Scientist focuses on improving athletic performance through science, which does not closely align with the available base careers in healthcare or engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "strategic-account-executive",
+      "title": "Strategic Account Executive",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Strategic Account Executive, as it focuses on sales and client management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "strategic-partnerships-lead",
+      "title": "Strategic Partnerships Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Strategic Partnerships Lead in the allowed list, as it focuses on business development and partnerships.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "strategy-consultant",
+      "title": "Strategy Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Strategy Consultant in the provided list, as it focuses on business strategy rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "strength-conditioning-coach",
+      "title": "Strength & Conditioning Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific focus on strength and conditioning coaching.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "studio-director",
+      "title": "Studio Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Studio Director does not closely align with any of the available base careers, as it focuses on creative leadership in the gaming industry.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "studio-photographer",
+      "title": "Studio Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Studio Photographer among the allowed options, as photography is a distinct field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "subsea-diver",
+      "title": "Subsea Diver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Subsea Divers require specialised training in commercial diving and subsea operations, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "supply-chain-director",
+      "title": "Supply Chain Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Supply Chain Director does not closely align with any of the available base careers, as it focuses on logistics and management rather than the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "supply-chain-manager",
+      "title": "Supply Chain Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Supply Chain Manager in the allowed list, as it focuses on logistics and management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "swim-instructor",
+      "title": "Swim Instructor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Swim Instructor in the allowed list, as it focuses specifically on teaching swimming and water safety.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "systems-administrator",
+      "title": "Systems Administrator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Systems Administrator among the allowed options, as they focus on IT infrastructure rather than technical trades or healthcare.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "talent-agent",
+      "title": "Talent Agent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Talent Agent focuses on booking performances, which does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "talent-scout",
+      "title": "Talent Scout",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Talent Scouts focus on identifying athletic talent, which does not closely relate to any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "taxi-driver",
+      "title": "Taxi Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed list that aligns with becoming a taxi driver in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "team-manager",
+      "title": "Team Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Team Manager in sports does not closely align with any of the available base careers, as it focuses on logistics and coordination rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tech-reviewer",
+      "title": "Tech Reviewer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Tech Reviewer role does not closely align with any of the available base careers, as it focuses on consumer technology rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "technical-writer",
+      "title": "Technical Writer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Technical Writer among the allowed options, as it focuses on documentation rather than technical roles.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "technology-director",
+      "title": "Technology Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Technology Director does not closely align with any of the available base careers, as it focuses on technology leadership rather than a specific technical skill set.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "technology-strategy-consultant",
+      "title": "Technology Strategy Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Technology Strategy Consultant, as it focuses on technology and business strategy.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-account-manager",
+      "title": "Account Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telco Account Manager does not closely align with any of the available base careers, as it focuses on business relationships rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-agile-coach",
+      "title": "Agile Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "An Agile Coach focuses on improving team processes in telecom, which does not closely relate to any of the allowed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-billing-specialist",
+      "title": "Billing & Charging Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Billing & Charging Specialist does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-call-center-agent",
+      "title": "Call Center Agent",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Call Center Agent does not closely align with any of the available base careers, as it primarily focuses on customer service rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-catalog-manager",
+      "title": "Product Catalog Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Product Catalog Manager in telecom does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-change-manager",
+      "title": "Change Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Change Manager in telecom does not closely align with any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-core-network-engineer",
+      "title": "Core Network Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Core Network Engineer, as it focuses on telecommunications technology.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-cto",
+      "title": "CTO (Chief Technology Officer)",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a CTO is highly specialised in technology leadership, which does not align closely with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-customer-success-manager",
+      "title": "Customer Success Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Customer Success Manager in telecom does not closely match any of the available base careers, as it focuses on customer engagement rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-customer-support-engineer",
+      "title": "Customer Support Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Customer Support Engineer in telecom does not closely match any of the available base careers, as it focuses on technical support rather than healthcare or engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-cybersecurity-analyst",
+      "title": "Cybersecurity Analyst",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Cybersecurity Analyst is highly specialised and does not align closely with any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-digital-transformation-mgr",
+      "title": "Telecom Transformation Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Telecom Transformation Manager in the allowed list, as it focuses on digital transformation in telecom, which is not represented.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-enterprise-architect",
+      "title": "Enterprise Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Enterprise Architect in telecom does not closely align with any of the available base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-fulfilment-head",
+      "title": "Head of Service Fulfilment",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Head of Service Fulfilment in telecom does not closely align with any of the available base careers, as it focuses on telecom operations and management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-incident-manager",
+      "title": "Incident Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Incident Manager in telecom does not closely align with any of the available base careers, as it focuses on IT and crisis management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-ip-network-engineer",
+      "title": "IP Network Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an IP Network Engineer does not closely align with any of the available base careers, as it focuses on telecommunications and networking.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-network-architect",
+      "title": "Telecom Network Architect",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telecom Network Architect does not closely align with any of the available base careers, as it focuses on network design and telecommunications.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-network-director",
+      "title": "Network Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Network Director in telecom does not closely align with any of the available base careers, which are primarily in healthcare, engineering, and trades.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-network-engineer",
+      "title": "Network Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Network Engineer in the provided list, as it focuses on telecommunications and networking.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-network-perf-eng",
+      "title": "Network Performance Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific skills and education required for a Network Performance Engineer.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-noc-engineer",
+      "title": "NOC Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The NOC Engineer role focuses on telecom networks, which does not align closely with any of the available base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-noc-lead",
+      "title": "Network Operations Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for a Network Operations Lead, as it focuses on IT and telecom management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-open-ran-engineer",
+      "title": "Open RAN Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of an Open RAN Engineer is highly specialised in telecommunications and does not closely align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-operations-director",
+      "title": "Operations Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the operations leadership role in telecommunications.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-optical-network-engineer",
+      "title": "Optical Network Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list for an Optical Network Engineer, as it focuses on telecommunications engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-oss-bss-director",
+      "title": "Telecom Program Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telecom Program Director does not closely align with any of the available base careers, as it focuses on technology and management in telecommunications.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-pmo-analyst",
+      "title": "PMO Analyst",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The PMO Analyst role in telecom does not closely align with any of the available base careers, as it focuses on project management rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-presales-engineer",
+      "title": "Pre-Sales Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Pre-Sales Engineer is quite specific to telecom and does not closely align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-programme-manager",
+      "title": "Programme Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Programme Manager in telecom does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-project-manager",
+      "title": "Project Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telco Project Manager does not closely align with any of the available base careers, as it focuses on telecom-specific project management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-ran-engineer",
+      "title": "RAN Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The RAN Engineer role focuses on telecommunications, which does not align with the available base careers that are primarily in healthcare or trades.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-rf-engineer",
+      "title": "Radio Frequency (RF) Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Radio Frequency Engineer does not closely match any of the available base careers, as it is highly specialised in telecommunications.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-safe-rte",
+      "title": "Telecom Release Train Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telecom Release Train Engineer does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-sales-engineer",
+      "title": "Sales Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Sales Engineer in telecom does not closely match any of the available base careers, as it combines technical and sales skills specific to the telecom industry.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-service-delivery-manager",
+      "title": "Service Delivery Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Service Delivery Manager in telecom does not closely align with any of the available base careers in the list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-slm-lead",
+      "title": "Subscription Lifecycle Management Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of Subscription Lifecycle Management Lead does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-strategy-manager",
+      "title": "Strategy Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Strategy Manager in telecom does not closely align with any of the available base careers, as it focuses on business strategy rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-test-env-lead",
+      "title": "Network Test Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Network Test Lead does not closely align with any of the available base careers in this list.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-transformation-lead",
+      "title": "Telco Transformation Lead",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Telco Transformation Lead does not closely align with any of the available base careers, as it focuses on telecom and IT transformation rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "telco-transmission-engineer",
+      "title": "Transmission Engineer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Transmission Engineer does not closely match any of the available base careers, as it focuses on telecommunications engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tennis-player",
+      "title": "Tennis Player",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no direct educational path in the allowed careers that aligns with becoming a professional tennis player.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "ticketing-manager",
+      "title": "Ticketing Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Ticketing Manager does not closely align with any of the available base careers, as it focuses on event management rather than healthcare, engineering, or other listed fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tiktok-creator",
+      "title": "TikTok Creator",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The TikTok Creator role does not closely align with any of the available base careers, as it focuses on digital content creation rather than traditional professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tour-guide",
+      "title": "Tour Guide",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Tour Guide in the provided list, as it focuses on tourism and cultural knowledge.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tour-manager",
+      "title": "Tour Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Tour Manager's role in logistics and people management does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "transformation-consultant",
+      "title": "Transformation Consultant",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Transformation Consultants focus on business and technology changes, which does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "transformation-director",
+      "title": "Transformation Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Transformation Director does not closely align with any of the available careers, as it focuses on business change rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "travel-vlogger",
+      "title": "Travel Vlogger",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Travel Vlogger's skills in storytelling and logistics do not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "truck-driver",
+      "title": "Truck Driver",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Truck Driver in the allowed list, as it requires specific vocational training and licensing.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tunnelling-technician",
+      "title": "Tunnelling Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Tunnelling Technician among the allowed options, as it focuses on construction and mining operations.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "tutor",
+      "title": "Tutor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Tutors help students learn specific subjects, but there is no direct equivalent career in the allowed list that focuses on teaching or education.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "umpire",
+      "title": "Umpire",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Umpiring is a specialised role in sports that does not align closely with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "university-lecturer",
+      "title": "University Lecturer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A University Lecturer requires a PhD and focuses on teaching and research, which does not align with any of the available base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "venture-capital-principal",
+      "title": "Venture Capital Principal",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Venture Capital Principal involves finance and investment, which does not closely relate to any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "video-content-producer",
+      "title": "Video Content Producer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Video Content Producer among the allowed options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "video-editor",
+      "title": "Video Editor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Video Editor among the allowed options, as it focuses on creative media rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "video-editor",
+      "title": "Video Editor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Video Editor among the allowed options, as it focuses on creative media rather than technical or healthcare fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "videographer",
+      "title": "Videographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Videographers focus on video production, which does not align closely with any of the listed base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vlogger",
+      "title": "Vlogger",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Vlogging does not closely relate to any of the listed base careers, as it primarily focuses on content creation rather than a specific professional field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vocal-coach",
+      "title": "Vocal Coach",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "A Vocal Coach focuses on training singers, which does not closely relate to any of the base careers listed.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vocalist",
+      "title": "Vocalist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a vocalist in the allowed list, as it focuses on performing arts rather than the listed professions.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vp-engineering",
+      "title": "VP Engineering",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of VP Engineering does not closely align with any of the available base careers, as it focuses on executive leadership in engineering rather than a specific technical field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vp-marketing",
+      "title": "VP Marketing",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The VP Marketing role does not closely align with any of the available base careers, as it focuses on marketing leadership rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "vp-product",
+      "title": "VP Product",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of VP Product does not closely align with any of the available base careers, as it focuses on product strategy and leadership rather than a specific technical or healthcare field.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "warehouse-manager",
+      "title": "Warehouse Manager",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Warehouse Manager in the provided list, as it focuses on logistics and inventory management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "warehouse-picker",
+      "title": "Warehouse Picker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Warehouse Picker in the allowed list, as it primarily involves logistics and manual tasks.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "warehouse-worker",
+      "title": "Warehouse Worker",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a Warehouse Worker in the allowed list, as it primarily requires on-the-job training without formal education.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "wastewater-systems-technician",
+      "title": "Wastewater Systems Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Wastewater Systems Technician does not closely align with any of the available base careers, as it focuses on environmental and technical skills specific to wastewater management.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "water-treatment-plant-technician",
+      "title": "Water Treatment Plant Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Water Treatment Plant Technician does not closely align with any of the available base careers, as it focuses on water purification rather than healthcare or engineering.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "weapons-specialist",
+      "title": "Weapons Specialist",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career in the allowed list that matches the specific skills and training of a Weapons Specialist.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "wedding-videographer",
+      "title": "Wedding Videographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Wedding videography is a creative field focused on storytelling through video, which does not align closely with any of the listed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "well-intervention-technician",
+      "title": "Well Intervention Technician",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Well Intervention Technician is highly specialized in oil and gas, with no direct equivalent in the allowed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "wildlife-photographer",
+      "title": "Wildlife Photographer",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Wildlife photography does not closely align with any of the available base careers, as it focuses on artistic skills and nature rather than a specific profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "wind-service-supervisor",
+      "title": "Wind Service Supervisor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The Wind Service Supervisor role does not closely align with any of the available base careers, as it focuses on renewable energy management rather than traditional fields.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "workforce-strategy-director",
+      "title": "Workforce Strategy Director",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The role of a Workforce Strategy Director does not closely align with any of the available base careers in Norway.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "yoga-instructor",
+      "title": "Yoga Instructor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "Yoga Instructors focus on physical and mental well-being, but there is no direct equivalent in the allowed base careers.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "youtube-video-editor",
+      "title": "YouTube Video Editor",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "There is no closely related base career for a YouTube Video Editor among the allowed options.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    },
+    {
+      "id": "youtuber",
+      "title": "YouTuber",
+      "proposal": {
+        "baseCareerId": null,
+        "specialisationNote": "The YouTuber career does not closely align with any of the available base careers, as it focuses on content creation rather than a formal profession.",
+        "confidence": "low"
+      },
+      "reason": "no-base-fits"
+    }
+  ]
+}

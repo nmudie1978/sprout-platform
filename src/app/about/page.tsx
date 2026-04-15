@@ -1,4 +1,4 @@
-import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download, Users, ArrowRight } from "lucide-react";
+import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download, Users, ArrowRight, FileText } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
@@ -92,19 +92,36 @@ export default function AboutPage() {
             the pressure of choosing a path kicks in.
           </p>
 
-          {/* One-page summary download — for parents, teachers, and partners
-              who want the elevator-pitch version of Endeavrly without
-              having to read the whole page. */}
-          <a
-            href="/Endeavrly-Summary.pdf"
-            download="Endeavrly-Summary.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg border border-teal-500/40 bg-teal-500/10 px-4 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-500/15 hover:border-teal-500/60 transition-colors"
-          >
-            <Download className="h-4 w-4" />
-            Download the Endeavrly summary (PDF)
-          </a>
+          {/* Download / read links — the one-page summary is for the
+              elevator-pitch version; the full white paper is the deeper
+              read for parents, investors, educators, and school leaders. */}
+          <div className="mt-6 flex flex-col sm:flex-row flex-wrap gap-2">
+            <a
+              href="/Endeavrly-Summary.pdf"
+              download="Endeavrly-Summary.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-teal-500/40 bg-teal-500/10 px-4 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-500/15 hover:border-teal-500/60 transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              Download the summary (PDF)
+            </a>
+            <Link
+              href="/about/white-paper"
+              className="inline-flex items-center gap-2 rounded-lg border border-border hover:border-teal-500/50 px-4 py-2.5 text-sm font-medium text-foreground hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+            >
+              <FileText className="h-4 w-4" />
+              Read the full white paper
+            </Link>
+            <a
+              href="/api/reports/white-paper"
+              download="endeavrly-white-paper.pdf"
+              className="inline-flex items-center gap-2 rounded-lg border border-border hover:border-teal-500/50 px-4 py-2.5 text-sm font-medium text-foreground hover:text-teal-700 dark:hover:text-teal-300 transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              Download white paper (PDF)
+            </a>
+          </div>
         </div>
 
         {/* The Framework */}

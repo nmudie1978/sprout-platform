@@ -53,6 +53,7 @@ import {
   isCareerSalaryStale,
 } from "@/lib/career-data-recency";
 import { useDiscoverRecommendations } from "@/hooks/use-discover-recommendations";
+import { WhatILikeTray } from "@/components/dashboard/what-i-like-tray";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Target } from "lucide-react";
@@ -191,14 +192,22 @@ function CompactStat({
   value,
   icon: Icon,
   iconColor = "text-muted-foreground/60",
+  tooltip,
 }: {
   label: string;
   value: string;
   icon: React.ComponentType<{ className?: string }>;
   iconColor?: string;
+  tooltip?: string;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-md border border-border/40 bg-background/20 px-2 py-1.5">
+    <div
+      className={cn(
+        "flex items-center gap-2 rounded-md border border-border/40 bg-background/20 px-2 py-1.5",
+        tooltip && "cursor-help",
+      )}
+      title={tooltip}
+    >
       <Icon className={cn("h-3.5 w-3.5 shrink-0", iconColor)} />
       <div className="min-w-0 flex-1">
         <p className="text-[8px] uppercase tracking-wider text-muted-foreground/50 leading-none">
@@ -1103,16 +1112,6 @@ export default function DashboardPage() {
                     <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                       Career snapshot
                     </p>
-                    {explicitlyVerified && (
-                      <span
-                        className="ml-auto inline-flex items-center gap-1 text-[9px] text-emerald-500/85 cursor-help"
-                        title={`Salary verified against SSB labour stats — ${goalCareer.lastVerifiedAt}`}
-                        aria-label="Salary verified against SSB"
-                      >
-                        <CheckCircle2 className="h-2.5 w-2.5" />
-                        Verified
-                      </span>
-                    )}
                     {salaryStale && (
                       <span
                         className="inline-flex items-center text-amber-500/80 cursor-help"
@@ -1124,7 +1123,19 @@ export default function DashboardPage() {
                     )}
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <CompactStat icon={TrendingUp} iconColor="text-teal-500/80" label="Salary" value={`${salary} kr`} />
+                    <CompactStat
+                      icon={TrendingUp}
+                      iconColor="text-teal-500/80"
+                      label="Salary"
+                      value={`${salary} kr`}
+                      tooltip={
+                        explicitlyVerified
+                          ? `Verified against SSB labour stats — last checked ${goalCareer.lastVerifiedAt}.`
+                          : salaryStale
+                            ? "Indicative range. Not re-verified against SSB labour stats in the last year — check current SSB / NAV data before deciding."
+                            : undefined
+                      }
+                    />
                     <CompactStat icon={Rocket} iconColor="text-emerald-500/80" label="Growth" value={goalCareer.growthOutlook.charAt(0).toUpperCase() + goalCareer.growthOutlook.slice(1)} />
                     <CompactStat icon={Briefcase} iconColor="text-blue-500/80" label="Sector" value={sectorLabel} />
                     <CompactStat icon={CheckCircle2} iconColor="text-violet-500/80" label="Pension" value={pensionLabel} />
@@ -1155,32 +1166,9 @@ export default function DashboardPage() {
           );
         })()}
 
-        {/* ── 3. Who Am I ────────────────────────────────────── */}
-        {discoverData?.hasProfile && discoverData.summary && (
-          <DashboardSection
-            title="Who Am I"
-            icon={Sparkles}
-            iconColor="text-muted-foreground/60"
-          >
-            <Link href="/my-journey" className="block group">
-              <p className="text-xs text-muted-foreground/70 leading-relaxed">
-                {discoverData.summary}
-              </p>
-              {discoverData.signals?.topTags && discoverData.signals.topTags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {discoverData.signals.topTags.slice(0, 6).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-medium bg-muted/20 text-muted-foreground/60"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </Link>
-          </DashboardSection>
-        )}
+        {/* Who Am I lives at the bottom of the dashboard — see below
+            DidYouKnowCard. Kept there so the top of the page stays
+            focused on the active journey and today's actions. */}
 
         {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
         {discoveryPrefs && (
@@ -1461,6 +1449,12 @@ export default function DashboardPage() {
 
       {/* ── 6. Industry Insights Ticker ─────────────────────── */}
       <DidYouKnowCard />
+
+      {/* Right-edge slide-out: the user's Career Radar profile summary.
+          Named "What I Like" to stay consistent with the Radar's own
+          label. Mounts only when discoveryPreferences is populated —
+          the tray component itself guards on that. */}
+      <WhatILikeTray />
 
       {/* Career Detail Sheet */}
       <CareerDetailSheet

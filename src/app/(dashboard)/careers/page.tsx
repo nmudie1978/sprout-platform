@@ -32,7 +32,7 @@ import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 
 // Pagination constants
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 20;
 
 function CareersPageContent() {
   const { data: session } = useSession();

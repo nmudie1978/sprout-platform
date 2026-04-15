@@ -229,6 +229,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Fit eyeglasses", "Adjust frames", "Advise on lenses", "Take measurements", "Manage inventory"],
       growthOutlook: "stable",
       entryLevel: true,
+      sector: "private",
     },
     {
       id: "lab-technician",
@@ -251,6 +252,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["medical strategy", "KOL management", "clinical evidence", "regulatory affairs", "team leadership"],
       dailyTasks: ["Set medical affairs strategy", "Manage KOL relationships", "Review clinical data", "Support regulatory submissions", "Lead medical team"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "clinical-operations-director",
@@ -262,6 +264,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["clinical trial management", "GCP compliance", "CRO management", "budget management", "regulatory knowledge"],
       dailyTasks: ["Direct clinical trials", "Manage CRO partnerships", "Ensure GCP compliance", "Control study budgets", "Report to clinical leadership"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "pharmaceutical-program-director",
@@ -273,6 +276,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["drug development", "programme management", "regulatory strategy", "cross-functional leadership", "risk management"],
       dailyTasks: ["Direct development programmes", "Coordinate cross-functional teams", "Manage regulatory strategy", "Control programme budgets", "Report to R&D leadership"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "biotech-rd-director",
@@ -284,6 +288,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["R&D leadership", "scientific strategy", "IP management", "team leadership", "grant/funding management"],
       dailyTasks: ["Set R&D strategy", "Lead research programmes", "Manage IP portfolio", "Secure funding", "Develop scientific talent"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "healthtech-product-director",
@@ -295,6 +300,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["healthtech product strategy", "clinical workflows", "regulatory compliance", "user research", "team leadership"],
       dailyTasks: ["Set healthtech product vision", "Navigate regulatory requirements", "Lead product teams", "Engage clinical stakeholders", "Drive user adoption"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "care-assistant",
@@ -504,6 +510,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["manual technique", "anatomy", "diagnosis", "patient communication", "physical stamina"],
       dailyTasks: ["Assess patients", "Perform adjustments", "Plan treatment", "Advise on posture", "Document outcomes"],
       growthOutlook: "stable",
+      sector: "private",
     },
 
     // ──────────────────────────────────────────────
@@ -589,6 +596,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["nutritional science", "patient assessment", "communication", "empathy", "clinical reasoning"],
       dailyTasks: ["Assess nutritional needs", "Create meal plans", "Counsel patients", "Manage clinical conditions", "Educate groups"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "nutritionist",
@@ -600,6 +608,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["nutrition knowledge", "communication", "motivation", "research", "client coaching"],
       dailyTasks: ["Advise on healthy eating", "Plan diets", "Coach clients", "Run workshops", "Stay current on research"],
       growthOutlook: "high",
+      sector: "private",
     },
 
     // ──────────────────────────────────────────────
@@ -615,6 +624,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["food chemistry", "lab analysis", "microbiology", "research methods", "report writing"],
       dailyTasks: ["Run lab experiments", "Analyse samples", "Test new formulations", "Document findings", "Collaborate with R&D"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "food-technologist",
@@ -626,6 +636,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["process design", "food safety standards", "problem-solving", "quality control", "technical writing"],
       dailyTasks: ["Design recipes for scale", "Trial production runs", "Troubleshoot lines", "Test product quality", "Document processes"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "food-product-developer",
@@ -637,6 +648,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["recipe development", "consumer insight", "creativity", "sensory analysis", "project management"],
       dailyTasks: ["Develop prototypes", "Run taste panels", "Refine recipes", "Cost ingredients", "Brief packaging teams"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "food-safety-inspector",
@@ -670,6 +682,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["nutrition science", "exercise physiology", "client coaching", "meal planning", "data tracking"],
       dailyTasks: ["Assess athletes", "Design meal plans", "Adjust during training cycles", "Track outcomes", "Educate teams"],
       growthOutlook: "high",
+      sector: "private",
     },
 
     // ──────────────────────────────────────────────
@@ -825,6 +838,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       keySkills: ["presentation", "curriculum design", "communication", "adaptability", "technology"],
       dailyTasks: ["Develop training materials", "Deliver workshops", "Assess learning outcomes", "Update content"],
       growthOutlook: "high",
+      sector: "private",
     },
     {
       id: "childcare-assistant",
@@ -838,8 +852,8 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "high",
       entryLevel: true,
     },
-    { id: "tutor", title: "Tutor", emoji: "📝", description: "Teach individual students one-on-one — usually in a specific subject, helping them catch up or excel.", avgSalary: "200,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — university student or graduate", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "adaptability"], dailyTasks: ["Plan lessons", "Teach students", "Mark work", "Track progress", "Brief parents"], growthOutlook: "high", entryLevel: true },
-    { id: "career-coach", title: "Career Coach", emoji: "🧭", description: "Help people figure out career direction, write CVs, and prepare for interviews — through one-on-one coaching.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Bachelor's in Psychology / HR / Education + coaching certification (ICF)", keySkills: ["coaching", "empathy", "career knowledge", "questioning", "structure"], dailyTasks: ["Run sessions", "Review CVs", "Coach interviews", "Set goals", "Track progress"], growthOutlook: "high" },
+    { id: "tutor", title: "Tutor", emoji: "📝", description: "Teach individual students one-on-one — usually in a specific subject, helping them catch up or excel.", avgSalary: "200,000 - 600,000 kr/year (often part-time)", educationPath: "Subject expertise — university student or graduate", keySkills: ["subject mastery", "patience", "explanation", "diagnosis", "adaptability"], dailyTasks: ["Plan lessons", "Teach students", "Mark work", "Track progress", "Brief parents"], growthOutlook: "high", entryLevel: true, sector: "private" },
+    { id: "career-coach", title: "Career Coach", emoji: "🧭", description: "Help people figure out career direction, write CVs, and prepare for interviews — through one-on-one coaching.", avgSalary: "450,000 - 900,000 kr/year", educationPath: "Bachelor's in Psychology / HR / Education + coaching certification (ICF)", keySkills: ["coaching", "empathy", "career knowledge", "questioning", "structure"], dailyTasks: ["Run sessions", "Review CVs", "Coach interviews", "Set goals", "Track progress"], growthOutlook: "high", sector: "private" },
   ],
 
   // ========================================
@@ -859,6 +873,7 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       entryLevel: true,
       lastVerifiedAt: "2026-04-14",
       sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
+      sector: "private",
     },
     {
       id: "data-scientist",
@@ -6606,18 +6621,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       growthOutlook: "stable",
     },
     {
-      id: "youth-worker",
-      title: "Youth Worker",
-      emoji: "🧑‍🤝‍🧑",
-      description: "Support teenagers in clubs, schools, outreach and crisis settings. Help young people navigate education, friendships, mental health and risk.",
-      avgSalary: "420,000 - 580,000 kr/year",
-      educationPath: "Bachelor's in Youth Work, Social Pedagogy or Childcare (3 years)",
-      keySkills: ["empathy", "boundaries", "group work", "active listening", "safeguarding"],
-      dailyTasks: ["Run sessions", "Mentor 1:1", "Coordinate activities", "Liaise with families", "Document interactions"],
-      growthOutlook: "medium",
-      entryLevel: true,
-    },
-    {
       id: "civil-servant",
       title: "Civil Servant",
       emoji: "🏛️",
@@ -6667,29 +6670,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     // ──────────────────────────────────────────────
     // Social Services — child & family
     // ──────────────────────────────────────────────
-    {
-      id: "child-protection-officer",
-      title: "Child Protection Officer",
-      emoji: "🛡️",
-      description: "Investigate concerns about children's welfare, work with families to keep children safe, and coordinate with police, schools, and care services.",
-      avgSalary: "500,000 - 700,000 kr/year",
-      educationPath: "Bachelor's in Social Work or Child Welfare (3 years) — barnevernspedagog",
-      keySkills: ["assessment", "interviewing children", "report writing", "emotional resilience", "multi-agency working"],
-      dailyTasks: ["Investigate referrals", "Visit families", "Write case reports", "Attend court hearings", "Coordinate care plans"],
-      growthOutlook: "high",
-    },
-    {
-      id: "family-support-worker",
-      title: "Family Support Worker",
-      emoji: "👨‍👩‍👧",
-      description: "Work alongside struggling families in their homes — practical help, parenting guidance, and connecting them to other services.",
-      avgSalary: "420,000 - 580,000 kr/year",
-      educationPath: "Vocational social care training or Bachelor's in Social Work",
-      keySkills: ["empathy", "boundary setting", "communication", "practical problem-solving", "patience"],
-      dailyTasks: ["Visit family homes", "Support parenting", "Coordinate with schools", "Write progress notes", "Attend case meetings"],
-      growthOutlook: "stable",
-      entryLevel: true,
-    },
     {
       id: "early-childhood-educator",
       title: "Early Childhood Educator",
@@ -6897,17 +6877,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       dailyTasks: ["Respond to calls", "Assess risk", "Coordinate emergency response", "Refer to services", "Document interventions"],
       growthOutlook: "high",
     },
-    {
-      id: "probation-officer",
-      title: "Probation Officer",
-      emoji: "⚖️",
-      description: "Supervise people serving community sentences or on parole. Support rehabilitation, monitor compliance, and write reports for the courts.",
-      avgSalary: "490,000 - 660,000 kr/year",
-      educationPath: "Bachelor's in Social Work, Criminology, or related field",
-      keySkills: ["risk assessment", "boundary setting", "report writing", "motivational interviewing", "knowledge of legal system"],
-      dailyTasks: ["Meet clients", "Monitor compliance", "Write court reports", "Coordinate with police", "Support rehabilitation plans"],
-      growthOutlook: "stable",
-    },
 
     // ──────────────────────────────────────────────
     // Social Services — housing, community & public health
@@ -7102,17 +7071,6 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       educationPath: "Bachelor's in Physiotherapy (3 years) + sports physio specialisation",
       keySkills: ["anatomy", "manual therapy", "rehabilitation", "movement analysis", "client communication"],
       dailyTasks: ["Assess injuries", "Plan rehab", "Apply treatments", "Track recovery", "Educate athletes"],
-      growthOutlook: "high",
-    },
-    {
-      id: "nutritionist",
-      title: "Nutritionist",
-      emoji: "🥗",
-      description: "Advise individuals and athletes on diet and nutrition for health, performance or specific goals. May work clinically or in sport.",
-      avgSalary: "450,000 - 750,000 kr/year",
-      educationPath: "Bachelor's in Nutrition (3 years) — UiO, NMBU",
-      keySkills: ["nutrition science", "client communication", "meal planning", "behaviour change", "evidence evaluation"],
-      dailyTasks: ["Assess clients", "Build meal plans", "Track outcomes", "Educate on choices", "Stay current on research"],
       growthOutlook: "high",
     },
     {

@@ -7,12 +7,13 @@ import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
 import { Check, Banknote } from 'lucide-react';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
+import { FoundationBanner } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
 const LINE_X = NODE_SIZE / 2;
 
-export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle }: RendererProps) {
+export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly }: RendererProps) {
   const items = journey.items;
   const totalHeight = items.length * ROW_HEIGHT + NODE_SIZE;
 
@@ -57,6 +58,15 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
   };
 
   return (
+    <div className="space-y-3">
+      <FoundationBanner
+        careerTitle={careerTitle}
+        userAge={userAge}
+        cardDataMap={cardDataMap}
+        onItemClick={onItemClick}
+        journeyStartAge={journey.startAge}
+        disabled={readOnly}
+      />
     <div className="relative" style={{ minHeight: totalHeight }}>
       <svg
         className="absolute left-0 top-0 pointer-events-none"
@@ -116,6 +126,7 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
           </div>
         );
       })}
+    </div>
     </div>
   );
 }

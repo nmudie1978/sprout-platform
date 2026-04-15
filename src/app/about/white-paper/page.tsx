@@ -15,6 +15,7 @@ import {
   Lock,
   MessageCircle,
   BarChart3,
+  Download,
 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -271,6 +272,17 @@ export default function WhitePaperPage() {
         <p className="text-sm text-muted-foreground">
           Prepared for parents, investors, educators, and school leaders.
         </p>
+
+        <div className="not-prose mt-6">
+          <a
+            href="/api/reports/white-paper"
+            download="endeavrly-white-paper.pdf"
+            className="inline-flex items-center gap-2 rounded-lg border border-teal-500/40 bg-teal-500/10 px-4 py-2.5 text-sm font-medium text-teal-700 dark:text-teal-300 hover:bg-teal-500/15 hover:border-teal-500/60 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Download white paper (PDF)
+          </a>
+        </div>
       </header>
 
       <TableOfContents />

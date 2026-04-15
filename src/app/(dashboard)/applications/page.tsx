@@ -21,8 +21,10 @@ import {
   Bookmark,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { toast } from "sonner";
+import { MessagesTray } from "@/components/applications/messages-tray";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 
 const categoryEmojis: Record<string, string> = {
   BABYSITTING: "\u{1F476}",
@@ -37,14 +39,12 @@ const categoryEmojis: Record<string, string> = {
 
 type FilterType = "all" | "pending" | "accepted" | "in_progress" | "completed" | "rejected" | "saved";
 
-// Fixed widths on the Status/Pay/Arrow columns are load-bearing: each
-// <div className="grid ..."> is its own independent grid, so `auto` sizes
-// to that grid's own content. The header's "Status"/"Pay" text is much
-// narrower than the row's Pending badge + "263 kr / fixed" block, which
-// pushed the fr columns out of alignment between the header and rows.
-// Fixed pixel widths force both grids to share the same geometry.
+// Desktop list grid — matches the Browse Careers list-view density.
+// Fixed widths keep the header and rows perfectly aligned regardless of
+// per-row content width (the long status badges and payamounts used to
+// push the fr columns out of sync).
 const APP_GRID =
-  "grid-cols-[minmax(0,2.5fr)_minmax(0,1fr)_minmax(0,1fr)_110px_90px_20px]";
+  "grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_6rem_6rem_6.5rem_5.5rem_1.25rem]";
 
 function formatTimeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -76,13 +76,14 @@ function getStatusBadge(app: any) {
 
 function ApplicationListHeader() {
   return (
-    <div className={`hidden lg:grid ${APP_GRID} items-center gap-4 px-4 py-2 border-b bg-muted/30 text-[11px] font-medium text-muted-foreground uppercase tracking-wider`}>
+    <div className={`hidden lg:grid ${APP_GRID} items-center gap-x-3 px-3 py-1.5 border-b bg-muted/30 text-[10px] font-medium text-muted-foreground/80 uppercase tracking-wider`}>
       <span>Job</span>
+      <span>Employer</span>
       <span>Location</span>
       <span>Date</span>
       <span>Status</span>
       <span className="text-right">Pay</span>
-      <span className="w-3.5" />
+      <span />
     </div>
   );
 }
@@ -96,50 +97,50 @@ const ApplicationRow = memo(function ApplicationRow({ app }: { app: any }) {
 
   return (
     <Link href={`/jobs/${app.job.id}`} className="block group">
-      {/* Desktop: grid row */}
-      <div className={`hidden lg:grid ${APP_GRID} items-center gap-4 px-4 py-3 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${isRejected ? "opacity-50" : ""}`}>
-        {/* Job */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-lg bg-muted/60 flex items-center justify-center text-lg shrink-0">
+      {/* Desktop: dense grid row — matches Browse Careers list view */}
+      <div className={`hidden lg:grid ${APP_GRID} items-center gap-x-3 px-3 py-1.5 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${isRejected ? "opacity-50" : ""}`}>
+        {/* Job title */}
+        <span className="flex items-center gap-2 min-w-0">
+          <span className="text-sm flex-shrink-0 leading-none" aria-hidden>
             {categoryEmojis[app.job.category] || "\u2728"}
-          </div>
-          <div className="min-w-0">
-            <h4 className="font-medium text-sm leading-tight truncate group-hover:text-primary transition-colors">
-              {app.job.title}
-            </h4>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-              <span className="truncate font-medium">{employer?.companyName || "Individual"}</span>
-              {employer?.verified && <CheckCircle2 className="h-3 w-3 text-blue-500 shrink-0" />}
-            </div>
-          </div>
-        </div>
+          </span>
+          <span className="text-xs font-medium truncate group-hover:text-primary transition-colors">
+            {app.job.title}
+          </span>
+        </span>
+
+        {/* Employer */}
+        <span className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+          <span className="truncate">{employer?.companyName || "Individual"}</span>
+          {employer?.verified && <CheckCircle2 className="h-3 w-3 text-blue-500 shrink-0" />}
+        </span>
 
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <MapPin className="h-3 w-3 shrink-0" />
+        <span className="flex items-center gap-1 text-[11px] text-muted-foreground min-w-0">
+          <MapPin className="h-2.5 w-2.5 shrink-0" />
           <span className="truncate">{app.job.location?.split(",")[0] || "TBC"}</span>
-        </div>
+        </span>
 
         {/* Date */}
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="h-3 w-3 shrink-0" />
+        <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+          <Clock className="h-2.5 w-2.5 shrink-0" />
           <span>{app.job.startDate ? formatDate(app.job.startDate).split(",")[0] : "TBC"}</span>
-        </div>
+        </span>
 
         {/* Status */}
-        <div>{getStatusBadge(app)}</div>
+        <span>{getStatusBadge(app)}</span>
 
         {/* Pay */}
-        <div className="text-right">
-          <span className="font-bold text-sm">{formatCurrency(app.job.payAmount)}</span>
+        <span className="text-right tabular-nums">
+          <span className="text-xs font-semibold">{formatCurrency(app.job.payAmount)}</span>
           {app.job.payType && (
-            <p className="text-[10px] text-muted-foreground">
+            <span className="text-[9px] text-muted-foreground/80 ml-1">
               {app.job.payType === "HOURLY" ? "/hr" : "fixed"}
-            </p>
+            </span>
           )}
-        </div>
+        </span>
 
-        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+        <ArrowRight className="h-3 w-3 text-muted-foreground/60 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
       </div>
 
       {/* Mobile: stacked row */}
@@ -197,10 +198,19 @@ interface ApplicationsResponse {
 
 // ── Page ─────────────────────────────────────────────────────────────
 
+const APPLICATIONS_PAGE_SIZE = 15;
+
 export default function ApplicationsPage() {
   const { data: session, status: sessionStatus } = useSession();
   const [filter, setFilter] = useState<FilterType>("all");
+  const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
+
+  // Reset to page 1 whenever the filter changes so the user doesn't land
+  // on an empty page after switching tabs with fewer results.
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
 
   const { data, isLoading } = useQuery<ApplicationsResponse>({
     queryKey: ["my-applications"],
@@ -314,7 +324,7 @@ export default function ApplicationsPage() {
   const countsWithSaved: Record<FilterType, number> = { ...(counts as Record<Exclude<FilterType, "saved">, number>), saved: savedCount };
 
   return (
-    <div className="min-h-screen dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30">
+    <div className="min-h-[100vh] text-foreground dark:bg-background">
       <div className="container mx-auto px-4 py-6 max-w-5xl">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
@@ -424,12 +434,36 @@ export default function ApplicationsPage() {
               </Card>
             )
           ) : filteredApplications.length > 0 ? (
-            <div className="border rounded-xl overflow-hidden bg-card">
-              <ApplicationListHeader />
-              {filteredApplications.map((app: any) => (
-                <ApplicationRow key={app.id} app={app} />
-              ))}
-            </div>
+            (() => {
+              const totalPages = Math.max(
+                1,
+                Math.ceil(filteredApplications.length / APPLICATIONS_PAGE_SIZE),
+              );
+              const safePage = Math.min(page, totalPages);
+              const startIdx = (safePage - 1) * APPLICATIONS_PAGE_SIZE;
+              const paged = filteredApplications.slice(
+                startIdx,
+                startIdx + APPLICATIONS_PAGE_SIZE,
+              );
+              return (
+                <>
+                  <div className="border rounded-xl overflow-hidden bg-card">
+                    <ApplicationListHeader />
+                    {paged.map((app: any) => (
+                      <ApplicationRow key={app.id} app={app} />
+                    ))}
+                  </div>
+                  <PaginationControls
+                    currentPage={safePage}
+                    totalPages={totalPages}
+                    totalItems={filteredApplications.length}
+                    pageSize={APPLICATIONS_PAGE_SIZE}
+                    onPageChange={setPage}
+                    className="mt-4"
+                  />
+                </>
+              );
+            })()
           ) : (
             <Card>
               <CardContent className="py-12 text-center">
@@ -448,6 +482,9 @@ export default function ApplicationsPage() {
           )}
         </motion.div>
       </div>
+
+      {/* Right-edge slide-out: message threads scoped to small jobs. */}
+      <MessagesTray />
     </div>
   );
 }

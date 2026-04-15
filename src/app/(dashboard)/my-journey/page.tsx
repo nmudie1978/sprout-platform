@@ -43,7 +43,7 @@ import { getAllCareers, getSectorForCareer, getPensionNote, type Career } from '
 import type { CareerDetails } from '@/lib/career-typical-days';
 import type { CareerProgression } from '@/lib/career-progressions';
 import type { RealityCheckResult } from '@/lib/career-reality-types';
-import { getCertificationPath, getCareerRequirements } from '@/lib/education';
+import { getCertificationPath, getCareerRequirements, getNorwayProgrammes } from '@/lib/education';
 import {
   parseGradeRequirement,
   formatGradeLabel,
@@ -1095,35 +1095,50 @@ function UnderstandTab({
         );
       })()}
 
-      {/* ── Study Path — embedded browser with full institution/programme data ──
-          Now wrapped in the standard SectionCard + SectionHeader so it
-          matches the look-and-feel of other Understand-tab sections
-          (A Typical Day, Career Presence & Tools, etc.). The header is
-          the single collapse point — EducationBrowser no longer renders
-          its own custom hero or outer border. */}
-      <SectionCard>
-        <SectionHeader
-          icon={GraduationCap}
-          title="Study Path"
-          tooltip="Real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects."
-          collapsed={uCollapsed('u-study-path')}
-          onToggle={() => uToggle('u-study-path')}
-        />
-        {!uCollapsed('u-study-path') && (
-          <div className="p-4 sm:p-5">
-            <EducationBrowser careerTitle={goalTitle} />
-          </div>
-        )}
-      </SectionCard>
+      {/* ── Study Path — embedded browser with full institution/programme
+          data. Kept visible even for careers that don't map to a
+          Norwegian university route (e.g. professional athlete,
+          musician) so the Understand layout stays predictable; in that
+          case we show a short "not applicable" message inside the
+          section rather than hiding it. */}
+      {(() => {
+        const progs = career ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
+        const hasStudyPath = !!(progs && progs.programmes && progs.programmes.length > 0);
+        return (
+          <SectionCard>
+            <SectionHeader
+              icon={GraduationCap}
+              title="Study Path"
+              tooltip="Real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects."
+              collapsed={uCollapsed('u-study-path')}
+              onToggle={() => uToggle('u-study-path')}
+            />
+            {!uCollapsed('u-study-path') && (
+              <div className="p-4 sm:p-5">
+                {hasStudyPath ? (
+                  <EducationBrowser careerTitle={goalTitle} />
+                ) : (
+                  <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
+                    <p className="text-sm font-medium text-foreground/80">No formal study path required</p>
+                    <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
+                      This career is typically entered through practice, portfolio, or on-the-job progression rather than a specific Norwegian university programme.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </SectionCard>
+        );
+      })()}
 
-      {/* ── Tools of the Trade ── */}
+      {/* ── Tools of the Trade — always rendered; shows "not applicable"
+          when no specialist tools apply, so the Understand layout is
+          predictable across every career. */}
       <SectionCard>
         <SectionHeader icon={Wrench} title="Tools of the Trade" tooltip="The software, equipment, and tools professionals in this role use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
         {!uCollapsed('u-career-paths') && (
           <div className="p-3">
-            {!details?.typicalDay.tools?.length ? (
-              <p className="text-xs text-foreground/70">Tool information coming soon for this role.</p>
-            ) : (
+            {details?.typicalDay.tools?.length ? (
               <div className="flex flex-wrap gap-1.5">
                 {details.typicalDay.tools.map((tool, i) => {
                   const info = getToolInfo(tool);
@@ -1141,6 +1156,13 @@ function UnderstandTab({
                     </a>
                   );
                 })}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
+                <p className="text-sm font-medium text-foreground/80">No specialist tools</p>
+                <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
+                  This role depends on skills, judgement, and presence — not on specific software or equipment.
+                </p>
               </div>
             )}
           </div>

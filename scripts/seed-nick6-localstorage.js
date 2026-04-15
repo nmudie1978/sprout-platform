@@ -8,12 +8,29 @@
  *   4. Refresh the dashboard
  *
  * Populates:
- *   - 50 saved careers (endeavrly-curiosity-saves)
+ *   - 50 saved careers (endeavrly-curiosity-saves:<userId>)
  *   - 10 saved comparisons (saved-career-comparisons)
  *   - 30 per-career Clarity confirmations so those journeys show as complete
  */
 
-(() => {
+(async () => {
+  // Fetch the logged-in user id from the NextAuth session so we write
+  // to the per-user curiosity-saves key that the hook actually reads.
+  let userId;
+  try {
+    const res = await fetch('/api/auth/session', { credentials: 'include' });
+    const session = await res.json();
+    userId = session?.user?.id;
+  } catch (e) {
+    console.error('Failed to fetch session:', e);
+    return;
+  }
+  if (!userId) {
+    console.error('❌ No logged-in user. Log in first, then re-run.');
+    return;
+  }
+  console.log(`Seeding for userId=${userId}`);
+
   // ── 50 saved careers ─────────────────────────────────────────
   const SAVED_CAREERS = [
     { id: 'software-developer', title: 'Software Developer', emoji: '💻' },
@@ -71,15 +88,13 @@
   // Convert to the shape useCuriositySaves expects
   const now = Date.now();
   const curiosityItems = SAVED_CAREERS.map((c, i) => ({
-    id: c.id,
-    type: 'career',
-    title: c.title,
-    emoji: c.emoji,
-    savedAt: now - (i * 1000 * 60 * 60), // staggered, most recent first
-    source: 'careers',
+    careerId: c.id,
+    careerTitle: c.title,
+    careerEmoji: c.emoji,
+    savedAt: new Date(now - (i * 1000 * 60 * 60)).toISOString(), // staggered, most recent first
   }));
 
-  localStorage.setItem('endeavrly-curiosity-saves', JSON.stringify(curiosityItems));
+  localStorage.setItem(`endeavrly-curiosity-saves:${userId}`, JSON.stringify(curiosityItems));
   console.log(`✅ Saved ${curiosityItems.length} careers to localStorage`);
 
   // ── 10 saved comparisons ─────────────────────────────────────

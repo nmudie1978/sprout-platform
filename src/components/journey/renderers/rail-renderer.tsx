@@ -7,13 +7,14 @@ import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
 import { BookOpen, Check, Banknote } from 'lucide-react';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
+import { FoundationBanner } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const H_SPACING = 200;
 const CAREER_TRACK_Y = 40;
 const CARD_WIDTH = 180;
 
-export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle }: RendererProps) {
+export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly }: RendererProps) {
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
@@ -68,7 +69,20 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
   const careerLineY = CAREER_TRACK_Y + NODE_SIZE / 2;
 
   return (
-    <div className="overflow-x-auto pb-4 -mx-2 px-2">
+    <div className="pb-4 -mx-2 px-2 space-y-3">
+      {/* Foundation banner — rail + stepping layouts don't have a
+          dedicated foundation card like zigzag does. Show a compact
+          "Your Starting Point" banner above the track so the title is
+          visible here too. */}
+      <FoundationBanner
+        careerTitle={careerTitle}
+        userAge={userAge}
+        cardDataMap={cardDataMap}
+        onItemClick={onItemClick}
+        journeyStartAge={journey.startAge}
+        disabled={readOnly}
+      />
+      <div className="overflow-x-auto">
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
         <svg className="absolute inset-0 pointer-events-none" width={totalWidth} height={totalHeight}>
           <line
@@ -138,6 +152,7 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
