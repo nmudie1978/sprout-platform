@@ -13,7 +13,7 @@ const H_SPACING = 200;
 const CAREER_TRACK_Y = 40;
 const CARD_WIDTH = 180;
 
-export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly, scenarioOverrides }: RendererProps) {
+export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly, scenarioOverrides, showYears, birthYear }: RendererProps) {
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
@@ -168,10 +168,19 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
 
         {items.map((item, i) => {
           const pos = positions[i];
-          const ageLabel =
+          const ageRange =
             item.endAge && item.endAge !== item.startAge
               ? `Age ${item.startAge}\u2013${item.endAge}`
               : `Age ${item.startAge}`;
+          // Year stamp — only rendered when the user toggled it on and
+          // we know their birth year. Converts step.startAge / endAge
+          // into calendar years so "Age 17-18" becomes "2026-2027".
+          const yearStamp = showYears && birthYear != null
+            ? item.endAge && item.endAge !== item.startAge
+              ? ` \u00B7 ${birthYear + item.startAge}\u2013${birthYear + item.endAge}`
+              : ` \u00B7 ${birthYear + item.startAge}`
+            : '';
+          const ageLabel = `${ageRange}${yearStamp}`;
           const state = stateFor(i);
 
           return (

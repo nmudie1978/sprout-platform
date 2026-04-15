@@ -47,6 +47,17 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
   const { style, setStyle } = useTimelineStyle();
+  // "Show years" toggle — persists across sessions via localStorage so
+  // users who prefer calendar-year stamps on every step don't have to
+  // re-toggle on each visit.
+  const [showYears, setShowYears] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem('journey-show-years') === '1';
+  });
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem('journey-show-years', showYears ? '1' : '0');
+  }, [showYears]);
   const roadmapRef = useRef<HTMLDivElement>(null);
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;
   useRoadmapCardData(goalId);
@@ -526,6 +537,26 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
               {activeScenario ? activeScenario.label : 'Scenarios'}
             </button>
           )}
+          {/* Years toggle — flips every step's label between
+              "Age 17" and "Age 17 · 2026". Only useful when we
+              actually know userAge (otherwise there's no birth year
+              to compute from), so the control hides itself otherwise. */}
+          {userAge != null && (
+            <button
+              type="button"
+              onClick={() => setShowYears((v) => !v)}
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors',
+                showYears
+                  ? 'bg-teal-500/15 border-teal-500/30 text-teal-300 hover:bg-teal-500/25'
+                  : 'bg-muted/20 border-border/40 text-muted-foreground/70 hover:bg-muted/30',
+              )}
+              title={showYears ? 'Hide calendar years on each step' : 'Show calendar years next to each step age'}
+              aria-pressed={showYears}
+            >
+              {showYears ? 'Years on' : 'Show years'}
+            </button>
+          )}
           <TimelineStyleSelector value={style} onChange={setStyle} />
         </div>
       </div>
@@ -556,6 +587,8 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
           onProgressCycle={handleProgressCycle}
           careerTitle={primaryGoalTitle ?? undefined}
           readOnly={readOnly || simState.isPlaying}
+          showYears={showYears}
+          birthYear={userAge != null ? new Date().getFullYear() - userAge : undefined}
           simulation={
             simState.isPlaying || simState.isPaused
               ? {

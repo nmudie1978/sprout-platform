@@ -41,4 +41,12 @@ export interface RendererProps {
   };
   /** Scenario overlay — maps step index → overridden title */
   scenarioOverrides?: Map<number, string>;
+  /**
+   * When set alongside `birthYear`, renderers append a calendar-year
+   * stamp to each step's age label (e.g. "Age 17 · 2026" instead of
+   * just "Age 17"). Toggled from the parent header.
+   */
+  showYears?: boolean;
+  /** User's approximate birth year — current calendar year minus userAge. */
+  birthYear?: number;
 }

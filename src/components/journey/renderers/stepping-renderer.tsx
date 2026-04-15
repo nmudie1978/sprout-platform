@@ -12,7 +12,7 @@ const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
 const LINE_X = NODE_SIZE / 2;
 
-export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly, scenarioOverrides }: RendererProps) {
+export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly, scenarioOverrides, showYears, birthYear }: RendererProps) {
   const items = journey.items;
   const totalHeight = (items.length + 1) * ROW_HEIGHT + NODE_SIZE;
 
@@ -84,10 +84,16 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
 
       {items.map((item, i) => {
         const topOffset = (i + 1) * ROW_HEIGHT;
-        const ageLabel =
+        const ageRange =
           item.endAge && item.endAge !== item.startAge
             ? `Age ${item.startAge}–${item.endAge}`
             : `Age ${item.startAge}`;
+        const yearStamp = showYears && birthYear != null
+          ? item.endAge && item.endAge !== item.startAge
+            ? ` · ${birthYear + item.startAge}–${birthYear + item.endAge}`
+            : ` · ${birthYear + item.startAge}`
+          : '';
+        const ageLabel = `${ageRange}${yearStamp}`;
         const state = stateFor(i);
 
         return (
