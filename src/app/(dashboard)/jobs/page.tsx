@@ -188,7 +188,7 @@ export default function JobsPage() {
     : 0;
 
   return (
-    <div className="container mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
+    <div className="max-w-6xl mx-auto px-3 py-4 sm:px-4 sm:py-8 relative">
 
       <PageContext
         pageKey="jobs"
