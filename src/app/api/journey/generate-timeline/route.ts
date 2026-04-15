@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
+import { enrichFirstRoleStep } from '@/lib/journey/enrich-first-role';
 import { buildPromptRules } from '@/lib/journey/roadmap-rules';
 import type { Journey } from '@/lib/journey/career-journey-types';
 
@@ -144,7 +145,7 @@ export async function POST(req: NextRequest) {
     // foundation completion, expected finish year AND version. The
     // version stamp invalidates old cached timelines when roadmap
     // rules change (currently v2 = no-university-before-18).
-    const ROADMAP_CACHE_VERSION = 'v2';
+    const ROADMAP_CACHE_VERSION = 'v3';
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
       if (
@@ -262,6 +263,11 @@ export async function POST(req: NextRequest) {
               }))
             : undefined,
         };
+        // Inject the curated first-role suggestion (role title + why)
+        // into the entry-level step so the AI path matches the fallback
+        // path's behaviour. The LLM shouldn't invent employer/role copy —
+        // this is grounded in career-requirements.json.
+        journey = enrichFirstRoleStep(journey);
       } catch (aiError) {
         console.error('[Timeline] OpenAI failed, using fallback:', aiError);
         journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);

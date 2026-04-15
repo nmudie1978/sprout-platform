@@ -18,6 +18,7 @@
 
 import type { Journey, JourneyItem, JourneyStage, SchoolTrackItem } from './career-journey-types';
 import { HIGHER_EDUCATION_MIN_AGE, HIGHER_EDUCATION_RE } from './roadmap-rules';
+import { enrichFirstRoleStep } from './enrich-first-role';
 
 export type EducationStage = 'school' | 'college' | 'university' | 'other';
 
@@ -563,12 +564,12 @@ export function generateFallbackTimeline(
     },
   ];
 
-  return {
+  return enrichFirstRoleStep({
     id: `fb-${career.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
     career,
     startAge: a,
     startYear: currentYear,
     items: filteredItems,
     schoolTrack,
-  };
+  });
 }

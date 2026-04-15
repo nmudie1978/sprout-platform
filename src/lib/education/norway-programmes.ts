@@ -195,20 +195,20 @@ const CERTIFICATION_PATHS: Record<string, CertificationPath> = {
   'project': {
     summary: 'Project management is a skills-based career. While a degree helps, industry certifications are what employers look for. Most project managers start in technical or business roles and transition into management.',
     certifications: [
-      { name: 'PRINCE2 Foundation & Practitioner', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~15,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/project-management/prince2', recognised: 'Globally recognised, standard in Norway/UK' },
+      { name: 'PRINCE2 Foundation & Practitioner', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~15,000 NOK', url: 'https://www.axelos.com/certifications/propath/prince2-project-management', recognised: 'Globally recognised, standard in Norway/UK' },
       { name: 'PMP (Project Management Professional)', provider: 'PMI', duration: 'Self-paced + exam', cost: '~5,000 NOK (exam)', url: 'https://www.pmi.org/certifications/project-management-pmp', recognised: 'Globally recognised, standard in US/international' },
       { name: 'Certified Scrum Master (CSM)', provider: 'Scrum Alliance', duration: '2 days + exam', cost: '~12,000 NOK', url: 'https://www.scrumalliance.org/get-certified/scrum-master-track/certified-scrummaster', recognised: 'Industry standard for agile teams' },
-      { name: 'ITIL 4 Foundation', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~10,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/itil-4', recognised: 'IT service management standard' },
+      { name: 'ITIL 4 Foundation', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~10,000 NOK', url: 'https://www.axelos.com/certifications/propath/itil-4', recognised: 'IT service management standard' },
     ],
     recommendedDegrees: ["Bachelor's in IT or Computer Science", "Bachelor's in Business Administration", "Master's in Project Management"],
   },
   'programme': {
     summary: 'Programme management typically requires 10+ years of project management experience. There is no direct degree — it\'s a senior role you grow into. Certifications like MSP and PgMP demonstrate readiness.',
     certifications: [
-      { name: 'MSP (Managing Successful Programmes)', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~20,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/programme-management/msp', recognised: 'Standard for programme management in Norway/UK' },
+      { name: 'MSP (Managing Successful Programmes)', provider: 'PeopleCert / Axelos', duration: '5 days + exam', cost: '~20,000 NOK', url: 'https://www.axelos.com/certifications/propath/msp-programme-management', recognised: 'Standard for programme management in Norway/UK' },
       { name: 'PgMP (Programme Management Professional)', provider: 'PMI', duration: 'Self-paced + exam', cost: '~7,000 NOK (exam)', url: 'https://www.pmi.org/certifications/program-management-pgmp', recognised: 'Globally recognised senior PM credential' },
-      { name: 'PRINCE2 Agile', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~15,000 NOK', url: 'https://www.peoplecert.org/browse-certifications/project-management/prince2-agile', recognised: 'Combines PRINCE2 with agile methods' },
-      { name: 'SAFe Program Consultant (SPC)', provider: 'Scaled Agile', duration: '4 days + exam', cost: '~25,000 NOK', url: 'https://scaledagile.com/training/safe-program-consultant/', recognised: 'Enterprise agile at scale' },
+      { name: 'PRINCE2 Agile', provider: 'PeopleCert / Axelos', duration: '3 days + exam', cost: '~15,000 NOK', url: 'https://www.axelos.com/certifications/propath/prince2-agile-project-management', recognised: 'Combines PRINCE2 with agile methods' },
+      { name: 'SAFe Practice Consultant (SPC)', provider: 'Scaled Agile', duration: '4 days + exam', cost: '~25,000 NOK', url: 'https://scaledagile.com/certification/safe-practice-consultant/', recognised: 'Enterprise agile at scale (formerly SAFe Program Consultant)' },
     ],
     recommendedDegrees: ["Bachelor's in IT or Engineering", "MBA or Master's in Business", "Master's in Project Management"],
   },
@@ -246,7 +246,7 @@ const CERTIFICATION_PATHS: Record<string, CertificationPath> = {
     summary: 'Product management is a cross-functional role with no single degree path. Most product managers come from engineering, design, or business backgrounds. Certifications help but experience matters most.',
     certifications: [
       { name: 'Certified Scrum Product Owner (CSPO)', provider: 'Scrum Alliance', duration: '2 days + exam', cost: '~12,000 NOK', url: 'https://www.scrumalliance.org/get-certified/product-owner-track/certified-scrum-product-owner', recognised: 'Agile product ownership standard' },
-      { name: 'Product Management Certificate', provider: 'Product School', duration: '8 weeks', cost: '~40,000 NOK', url: 'https://productschool.com/product-management-certification', recognised: 'Recognised by tech companies globally' },
+      { name: 'Product Management Certificate', provider: 'Product School', duration: '8 weeks', cost: '~40,000 NOK', url: 'https://productschool.com/certifications/product-manager-certification', recognised: 'Recognised by tech companies globally' },
       { name: 'SAFe Product Owner/Product Manager', provider: 'Scaled Agile', duration: '2 days + exam', cost: '~15,000 NOK', url: 'https://scaledagile.com/training/safe-product-owner-product-manager/', recognised: 'Enterprise product management' },
     ],
     recommendedDegrees: ["Bachelor's in Computer Science or Engineering", "Bachelor's in Business", "MBA"],

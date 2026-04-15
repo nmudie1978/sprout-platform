@@ -520,5 +520,52 @@ export function getCareerRequirements(
   // Try resolving via career alias
   const resolved = resolveCareerId(careerIdOrTitle);
   if (resolved && requirementsMap[resolved]) return requirementsMap[resolved];
+  // Token-subset match: "secondary-school-teacher" → "secondary-teacher",
+  // "primary-school-teacher" → "primary-teacher", etc. Handles the split
+  // where programmes.json uses a generic bucket ("teacher") but
+  // requirements.json has tiered records (secondary-teacher, primary-
+  // teacher, music-teacher). Pick the key with the most matching tokens
+  // so the most specific record wins.
+  const slugTokens = slug.split('-').filter(Boolean);
+  if (slugTokens.length > 0) {
+    let best: { key: string; score: number } | null = null;
+    for (const key of Object.keys(requirementsMap)) {
+      const keyTokens = key.split('-').filter(Boolean);
+      if (keyTokens.every((t) => slugTokens.includes(t))) {
+        if (!best || keyTokens.length > best.score) best = { key, score: keyTokens.length };
+      }
+    }
+    if (best) return requirementsMap[best.key];
+  }
   return null;
+}
+
+// ── First-role suggestion (for roadmap "entry-level role" step) ──────
+//
+// Sourced directly from career-requirements.json's entryLevelRequirements
+// record — 744/816 careers covered. The role is the curated, real entry
+// title (e.g. "Junior Aerospace Engineer"), the reason is the curated
+// description + whatYouNeed blurb so the user understands why that role
+// is realistic for them after their education path.
+
+export interface FirstRoleSuggestion {
+  /** Real entry-level role title, e.g. "Junior Aerospace Engineer" */
+  role: string;
+  /** What this role involves day-to-day — the "what" */
+  description: string;
+  /** What qualifications the user will have that make them a fit — the "why" */
+  whatYouNeed: string;
+}
+
+export function getFirstRoleSuggestion(
+  careerIdOrTitle: string,
+): FirstRoleSuggestion | null {
+  const reqs = getCareerRequirements(careerIdOrTitle);
+  const entry = reqs?.entryLevelRequirements;
+  if (!entry?.title) return null;
+  return {
+    role: entry.title,
+    description: entry.description ?? '',
+    whatYouNeed: entry.whatYouNeed ?? '',
+  };
 }

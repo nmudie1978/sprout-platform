@@ -178,6 +178,17 @@ function SteppingCard({
       >
         {item.title}
       </p>
+      {item.subtitle && (
+        <p
+          className={cn(
+            'mt-0.5 text-[11px] leading-snug font-medium',
+            state === 'future' ? 'text-muted-foreground/70' : 'text-foreground/65'
+          )}
+          title={item.description ?? undefined}
+        >
+          {item.subtitle}
+        </p>
+      )}
       {scenarioAnnotation && (
         <p className="mt-1 text-[11px] leading-snug text-violet-300/90 font-medium">
           {scenarioAnnotation}
