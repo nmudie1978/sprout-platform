@@ -183,7 +183,7 @@ export function TocPage({
       <SectionHeader
         eyebrow="Contents"
         title="Inside this report"
-        lead="A structured walk-through of your journey — from who you are, to what you've learned, to what comes next."
+        lead="A structured walk-through of your journey — the career, the path in, your personal roadmap, and the next moves to make."
       />
 
       <View style={{ marginTop: 4 }}>

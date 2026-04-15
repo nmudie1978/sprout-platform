@@ -79,7 +79,7 @@ export function MobileSheet({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "fixed inset-0 bg-black/40 backdrop-blur-sm z-50",
+              "fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]",
               !showAsSheet && "flex items-center justify-center p-4"
             )}
             onClick={handleBackdropClick}
@@ -108,11 +108,11 @@ export function MobileSheet({
             className={cn(
               "bg-background shadow-xl",
               showAsSheet ? [
-                "fixed z-50 bottom-0 left-0 right-0",
+                "fixed z-[60] bottom-0 left-0 right-0",
                 "rounded-t-3xl border-t",
-                "max-h-[90vh]"
+                "max-h-[90dvh]"
               ] : [
-                "relative z-50",
+                "relative z-[60]",
                 "rounded-2xl border",
                 "w-full max-w-md",
               ]
@@ -160,11 +160,15 @@ export function MobileSheet({
               )}
             </div>
 
-            {/* Content - scrollable */}
+            {/* Content - scrollable. On mobile, pad the bottom with safe-area-inset
+                so the footer clears the home indicator and isn't covered by the
+                OS gesture area. */}
             <div
               className={cn(
                 "overflow-y-auto overscroll-contain px-4 pb-4",
-                showAsSheet ? "max-h-[calc(90vh-80px)]" : "max-h-[calc(85vh-100px)]"
+                showAsSheet
+                  ? "max-h-[calc(90dvh-80px)] pb-[max(env(safe-area-inset-bottom,0px),1rem)]"
+                  : "max-h-[calc(85vh-100px)]"
               )}
               style={{ WebkitOverflowScrolling: "touch" }}
             >

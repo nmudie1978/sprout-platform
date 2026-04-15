@@ -109,24 +109,31 @@ function planLayout(vm: JourneyReportViewModel) {
   const closing = cursor++;
   const total = closing;
 
+  const career = vm.cover.careerTitle;
   const toc: TocEntry[] = [];
   let n = 1;
   toc.push({
     n: n++,
-    title: vm.cover.careerTitle
-      ? `Career Summary — ${vm.cover.careerTitle}`
-      : "Career Summary",
+    title: career ? `Career Summary for: ${career}` : "Career Summary",
     pageNumber: understandRole,
   });
   if (understandPath !== null) {
-    toc.push({ n: n++, title: "The path", pageNumber: understandPath });
+    toc.push({
+      n: n++,
+      title: career ? `The path to ${career}` : "The path to the role",
+      pageNumber: understandPath,
+    });
   }
-  toc.push({ n: n++, title: "Your path", pageNumber: roadmapStart });
+  toc.push({
+    n: n++,
+    title: career ? `Your path to ${career}` : "Your personal roadmap",
+    pageNumber: roadmapStart,
+  });
   if (routes !== null) {
-    toc.push({ n: n++, title: "Alternative routes", pageNumber: routes });
+    toc.push({ n: n++, title: "More than one way in", pageNumber: routes });
   }
-  toc.push({ n: n++, title: "Recommended next steps", pageNumber: nextSteps });
-  toc.push({ n: n++, title: "Closing", pageNumber: closing });
+  toc.push({ n: n++, title: "Your next six moves", pageNumber: nextSteps });
+  toc.push({ n: n++, title: "A journey, not a verdict", pageNumber: closing });
 
   return {
     toc,
