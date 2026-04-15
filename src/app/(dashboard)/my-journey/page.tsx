@@ -115,14 +115,20 @@ interface LearningResponse {
 
 // ─── Data hooks ──────────────────────────────────────────────────────────────
 
+interface YouTubeSearchResponse {
+  videos: { videoId: string; title: string | null }[];
+  videoId: string | null;
+  title: string | null;
+}
+
 function useYouTubeVideo(careerTitle: string | null) {
-  return useQuery<{ videoId: string | null }>({
+  return useQuery<YouTubeSearchResponse>({
     queryKey: ['youtube-video', careerTitle],
     queryFn: async () => {
-      if (!careerTitle) return { videoId: null };
+      if (!careerTitle) return { videos: [], videoId: null, title: null };
       const query = `day in the life ${careerTitle}`;
       const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
-      if (!res.ok) return { videoId: null };
+      if (!res.ok) return { videos: [], videoId: null, title: null };
       return res.json();
     },
     enabled: !!careerTitle,
@@ -325,15 +331,10 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle,
    */
   centered?: boolean;
 }) {
-  const Wrapper = onToggle ? 'button' : 'div';
-  return (
-    <Wrapper
-      {...(onToggle ? { type: 'button' as const, onClick: onToggle, 'aria-expanded': !collapsed } : {})}
-      className={cn(
-        'flex items-center justify-between px-5 py-3.5 border-b border-border/30 w-full text-left',
-        onToggle && 'hover:bg-muted/20 transition-colors cursor-pointer',
-      )}
-    >
+  // Inner content is shared by both the button and div branches so the
+  // centered spacer layout stays identical regardless of interactivity.
+  const inner = (
+    <>
       {/* Left spacer — present only in centered mode to balance the
           chevron on the right so the icon+title sits at the true
           middle of the header. */}
@@ -363,8 +364,31 @@ function SectionHeader({ icon: Icon, title, badge, tooltip, collapsed, onToggle,
           )} />
         )}
       </div>
-    </Wrapper>
+    </>
   );
+
+  const className = cn(
+    'flex items-center justify-between px-5 py-3.5 border-b border-border/30 w-full text-left',
+    onToggle && 'hover:bg-muted/20 transition-colors cursor-pointer',
+  );
+
+  // Render an explicit <button> when interactive, plain <div> otherwise —
+  // avoiding a dynamic-tag pattern that previously hid subtle hydration
+  // quirks on the centered collapsible cards (Day in the Life, Career
+  // Overview) where the click sometimes failed to register.
+  if (onToggle) {
+    return (
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={!collapsed}
+        className={className}
+      >
+        {inner}
+      </button>
+    );
+  }
+  return <div className={className}>{inner}</div>;
 }
 
 function EmptyState({ icon: Icon, message }: { icon: typeof Target; message: string }) {
@@ -464,7 +488,19 @@ function DiscoverTab({
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
   const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
-  const videoId = ytData?.videoId ?? null;
+  // Video carousel state. The YouTube search returns up to 5 Day-in-the-
+  // Life clips so the user can cycle through alternatives via the "more"
+  // icon when the first pick doesn't land.
+  const videos = ytData?.videos ?? [];
+  const [videoIndex, setVideoIndex] = useState(0);
+  // Reset the index whenever the career (and therefore the video list)
+  // changes so we don't stay pointed at index 4 of the previous career.
+  useEffect(() => {
+    setVideoIndex(0);
+  }, [goalTitle]);
+  const currentVideo = videos[videoIndex] ?? null;
+  const videoId = currentVideo?.videoId ?? ytData?.videoId ?? null;
+  const hasMoreVideos = videos.length > 1;
   const { isCollapsed: dCollapsed, toggle: dToggle } = useSectionCollapse(['d-video', 'd-overview', 'd-insights']);
 
   // Pull the user's age from /api/profile so the Timeline card can
@@ -540,14 +576,37 @@ function DiscoverTab({
           <SectionHeader icon={Play} title="A Day in the Life" centered collapsed={dCollapsed('d-video')} onToggle={() => dToggle('d-video')} />
           {!dCollapsed('d-video') && <div className="p-4">
             {videoId ? (
-              <div className="rounded-lg overflow-hidden">
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}`}
-                  className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`Day in the life — ${career.title}`}
-                />
+              <div className="space-y-2">
+                <div className="rounded-lg overflow-hidden">
+                  <iframe
+                    key={videoId}
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    className="w-full aspect-video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={`Day in the life — ${career.title}`}
+                  />
+                </div>
+                {/* "More videos" control — only shown when the search
+                    returned multiple clips. Cycles through the list and
+                    wraps so the user can keep tapping for variety. */}
+                {hasMoreVideos && (
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <span className="text-[10px] text-muted-foreground/50 truncate flex-1">
+                      {currentVideo?.title ?? ''}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setVideoIndex((i) => (i + 1) % videos.length)}
+                      title="Show another Day in the Life video"
+                      aria-label="Show another Day in the Life video"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border/40 px-2 py-1 text-[10px] font-medium text-muted-foreground hover:text-foreground hover:border-border/70 hover:bg-muted/30 transition-colors shrink-0"
+                    >
+                      <Video className="h-3 w-3" />
+                      More ({videoIndex + 1}/{videos.length})
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <a
