@@ -1368,7 +1368,11 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
           {/* Preset filter dropdown — narrows the radar to a curated
               slice of careers (common, high-earning, work-life balance,
               fast-growing, low-entry, academic, future-proof, no-degree,
-              physically demanding, highly competitive). */}
+              physically demanding, highly competitive). An inline clear
+              (×) button lets the user drop the preset without hunting
+              for the "Clear filter" option in the list, so it's clear
+              the preset is purely additive to their "what I like"
+              preferences and can always be switched off. */}
           <div className="relative inline-flex items-center">
             <Filter className={cn(
               "h-3 w-3 absolute left-2 pointer-events-none",
@@ -1382,21 +1386,36 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                 setCarouselIdx(0);
               }}
               className={cn(
-                "h-7 pl-6 pr-2 rounded-md border text-[10px] transition-colors appearance-none",
+                "h-7 pl-6 rounded-md border text-[10px] transition-colors appearance-none",
+                presetFilter ? "pr-7" : "pr-2",
                 presetFilter
                   ? "bg-teal-500/15 text-teal-700 dark:text-teal-400 font-semibold border-teal-500/30"
                   : "bg-background text-muted-foreground hover:bg-muted",
               )}
-              title="Filter by preset career type"
+              title="Filter by preset career type — this is purely a view filter and does not change your 'what I like' preferences."
               aria-label="Preset career filter"
             >
-              <option value="">All Careers</option>
+              <option value="">Clear filter — show all careers</option>
               {PRESET_FILTER_OPTIONS.map((opt) => (
                 <option key={opt.key} value={opt.key}>
                   {opt.label}
                 </option>
               ))}
             </select>
+            {presetFilter && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPresetFilter(null);
+                  setCarouselIdx(0);
+                }}
+                className="absolute right-1 h-5 w-5 flex items-center justify-center rounded text-teal-700 dark:text-teal-400 hover:bg-teal-500/20"
+                title="Clear preset filter"
+                aria-label="Clear preset filter"
+              >
+                <X className="h-3 w-3" strokeWidth={2.5} />
+              </button>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1">
