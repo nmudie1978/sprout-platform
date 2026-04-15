@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { getDemoJourneys } from '@/lib/journey/demo-journeys';
 import { type JourneyItem } from '@/lib/journey/career-journey-types';
-import { ZigzagRenderer } from '@/components/journey/renderers';
+import { RailRenderer } from '@/components/journey/renderers';
 import { TimelineDetailDialog } from '@/components/journey/timeline/timeline-detail-dialog';
 
 export default function JourneyRenderersPage() {
@@ -30,9 +30,9 @@ export default function JourneyRenderersPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-1">Journey Zigzag Preview</h1>
+        <h1 className="text-2xl font-bold mb-1">Journey Rail Preview</h1>
         <p className="text-sm text-muted-foreground mb-4">
-          Preview the zigzag career journey timeline across all 10 demo careers.
+          Preview the rail career journey timeline across all 10 demo careers.
         </p>
 
         <Select value={selectedJourneyId} onValueChange={setSelectedJourneyId}>
@@ -58,7 +58,7 @@ export default function JourneyRenderersPage() {
           </p>
         </CardHeader>
         <CardContent className="overflow-auto" style={{ maxHeight: 600 }}>
-          <ZigzagRenderer journey={journey} onItemClick={handleItemClick} />
+          <RailRenderer journey={journey} onItemClick={handleItemClick} />
         </CardContent>
       </Card>
 

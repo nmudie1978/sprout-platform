@@ -60,8 +60,8 @@ describe('Dashboard completion indicator (Issue 2 — positive tests)', () => {
     // The Dashboard now shows a small flag/icon + completion indicator
     // text instead of the full congrats banner.
     expect(DASHBOARD_SOURCE).toMatch(/journey\.completeIndicator|Journey complete/);
-    // Uses CheckCircle2 as the subtle flag glyph.
-    expect(DASHBOARD_SOURCE).toMatch(/CheckCircle2.*h-3 w-3/);
+    // Uses a small gold Star as the completion marker.
+    expect(DASHBOARD_SOURCE).toMatch(/Star.*h-3 w-3.*fill-amber-400/);
   });
 
   it('gates the indicator on completedLensCount === 3', () => {
@@ -97,25 +97,27 @@ describe('Dashboard completion indicator (Issue 2 — negative tests)', () => {
   it('completion indicator is compact — small sizing only', () => {
     // The subtle indicator uses text-[10px] and h-3 w-3, not
     // the old text-sm / text-xs font-bold from the congrats banner.
-    // The `Subtle completion indicator` comment was stripped by
-    // stripComments(), so we look for the adjacent literal string
-    // completion indicator as the anchor and verify the nearby
-    // classes are the compact ones.
-    const idx = Math.max(DASHBOARD_SOURCE.indexOf('Journey complete'), DASHBOARD_SOURCE.indexOf('completeIndicator'));
+    // Anchor on the i18n key 'completeIndicator' — that token only
+    // appears on the compact dashboard indicator (other "Journey
+    // complete" strings elsewhere in the file are aria-labels on
+    // per-goal row markers and don't need the 10px sizing).
+    const idx = DASHBOARD_SOURCE.indexOf('completeIndicator');
     expect(idx).toBeGreaterThan(-1);
     const surround = DASHBOARD_SOURCE.slice(Math.max(0, idx - 200), idx + 100);
     expect(surround).toMatch(/text-\[10px\]/);
     expect(surround).toMatch(/h-3 w-3/);
   });
 
-  it('the Grow congrats copy still lives in my-journey GrowCompleteCard', () => {
-    // Positive check that we only MOVED the celebration, we didn't
-    // destroy it. The congrats JSX must still render inside the
-    // Grow tab.
-    expect(MY_JOURNEY_SOURCE).toMatch(
-      /explored.*from every angle/,
-    );
-    expect(MY_JOURNEY_SOURCE).toMatch(/🎉/);
+  it('my-journey Clarity completion now renders the slim success row, not the old banner', () => {
+    // The large "🎉 You've explored X from every angle" banner was
+    // replaced with a compact SaaS-style success row — "Journey
+    // complete" label + recommendations popover + PDF export icon.
+    // Negative: the old celebration copy must not reappear.
+    expect(MY_JOURNEY_SOURCE).not.toMatch(/explored.*from every angle/);
+    expect(MY_JOURNEY_SOURCE).not.toMatch(/🎉/);
+    // Positive: the new row is present inside the Clarity completion card.
+    expect(MY_JOURNEY_SOURCE).toMatch(/Journey complete/);
+    expect(MY_JOURNEY_SOURCE).toMatch(/Recommended next moves|Next moves/);
   });
 });
 

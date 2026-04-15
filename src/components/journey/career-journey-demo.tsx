@@ -28,7 +28,7 @@ import {
 } from '@/lib/journey/career-journey-types';
 import { getDemoJourneys } from '@/lib/journey/demo-journeys';
 import { TimelineDetailDialog } from './timeline';
-import { ZigzagRenderer } from './renderers';
+import { RailRenderer } from './renderers';
 
 // ============================================
 // STAGE ICON MAP (for legend)
@@ -135,7 +135,7 @@ export function CareerJourneyDemo() {
 
             {/* Visual View */}
             <TabsContent value="visual" className="mt-0">
-              <ZigzagRenderer
+              <RailRenderer
                 journey={journey}
                 onItemClick={handleItemClick}
               />

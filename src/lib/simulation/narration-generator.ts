@@ -14,7 +14,7 @@
  */
 
 import type { Journey, JourneyItem } from '@/lib/journey/career-journey-types';
-import { FOUNDATION_ITEM_ID } from '@/components/journey/renderers/zigzag-renderer';
+import { FOUNDATION_ITEM_ID } from '@/components/journey/renderers/foundation-banner';
 
 // ── Types ───────────────────────────────────────────────────────────
 

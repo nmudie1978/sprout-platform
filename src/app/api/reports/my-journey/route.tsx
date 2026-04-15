@@ -1,32 +1,148 @@
 export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { MyJourneyPdfDocument, type JourneyReportData, type RoadmapItem, type SchoolTrackItem } from "@/lib/reports/myJourneyPdf";
-import path from "path";
-import { Font } from "@react-pdf/renderer";
+import {
+  buildViewModel,
+  JourneyReportDocument,
+  type MapperInput,
+} from "@/lib/reports/journey";
+import {
+  getAllCareers,
+  getSectorForCareer,
+  getPensionNote,
+  type Career,
+} from "@/lib/career-pathways";
+import {
+  getCareerRequirements,
+  getCertificationPath,
+  getProgrammesForCareer,
+} from "@/lib/education";
+import { getCareerDetails } from "@/lib/career-typical-days";
 
-// Register fonts
-const fontsDir = path.join(process.cwd(), "public", "fonts");
+/**
+ * Resolve every data source (DB + career catalogue + education +
+ * typical-day details) into the flat `MapperInput` the view-model
+ * builder expects. Shared by POST (PDF) and GET (recommendations JSON)
+ * so both endpoints produce identical content.
+ */
+async function resolveMapperInput(userId: string): Promise<MapperInput | null> {
+  const [profile, user] = await Promise.all([
+    prisma.youthProfile.findUnique({
+      where: { userId },
+      select: {
+        primaryGoal: true,
+        journeySummary: true,
+        generatedTimeline: true,
+        discoveryPreferences: true,
+      },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { dateOfBirth: true },
+    }),
+  ]);
 
-Font.register({
-  family: "Poppins",
-  fonts: [
-    { src: path.join(fontsDir, "Poppins-Medium.ttf"), fontWeight: 500 },
-    { src: path.join(fontsDir, "Poppins-SemiBold.ttf"), fontWeight: 600 },
-  ],
-});
+  if (!profile) return null;
 
-Font.register({
-  family: "Inter",
-  fonts: [
-    { src: path.join(fontsDir, "Inter-Regular.ttf"), fontWeight: 400 },
-    { src: path.join(fontsDir, "Inter-Medium.ttf"), fontWeight: 500 },
-  ],
-});
+  const activeGoalData = await prisma.journeyGoalData.findFirst({
+    where: { userId, isActive: true },
+    select: { journeySummary: true },
+  });
 
+  const primaryGoal = profile.primaryGoal as { title?: string } | null;
+  const careerTitle = primaryGoal?.title ?? null;
+
+  let career: Career | null = null;
+  if (careerTitle) {
+    const all = getAllCareers();
+    career = all.find((c) => c.title.toLowerCase() === careerTitle.toLowerCase()) ?? null;
+  }
+  const careerId = career?.id ?? null;
+
+  const careerRequirements = careerTitle
+    ? getCareerRequirements(careerId ?? careerTitle)
+    : null;
+  const certificationPath = careerId && careerTitle
+    ? getCertificationPath(careerId, careerTitle)
+    : null;
+  const programmes = careerTitle
+    ? getProgrammesForCareer(careerId ?? careerTitle)
+    : [];
+  const careerDetails = careerId ? getCareerDetails(careerId) : null;
+  const sector = careerId ? getSectorForCareer(careerId) : null;
+  const pensionNote = sector ? getPensionNote(sector) : null;
+
+  let userAge: number | null = null;
+  if (user?.dateOfBirth) {
+    const dob = new Date(user.dateOfBirth);
+    if (!Number.isNaN(dob.getTime())) {
+      const now = new Date();
+      let a = now.getFullYear() - dob.getFullYear();
+      const m = now.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) a -= 1;
+      if (a >= 10 && a <= 30) userAge = a;
+    }
+  }
+
+  return {
+    primaryGoalTitle: careerTitle,
+    journeySummary: (profile.journeySummary as Record<string, unknown>) ?? null,
+    generatedTimeline: (profile.generatedTimeline as Record<string, unknown>) ?? null,
+    activeGoalJourneySummary:
+      (activeGoalData?.journeySummary as Record<string, unknown>) ?? null,
+    discoverPreferences:
+      (profile.discoveryPreferences as Record<string, unknown>) ?? null,
+    career: career
+      ? {
+          id: career.id,
+          title: career.title,
+          description: career.description,
+          avgSalary: career.avgSalary,
+          educationPath: career.educationPath,
+          keySkills: career.keySkills,
+          dailyTasks: career.dailyTasks,
+          growthOutlook: career.growthOutlook,
+          sector: career.sector,
+        }
+      : null,
+    careerDetails: careerDetails
+      ? {
+          whatYouActuallyDo: careerDetails.whatYouActuallyDo,
+          whoThisIsGoodFor: careerDetails.whoThisIsGoodFor,
+          topSkills: careerDetails.topSkills,
+          entryPaths: careerDetails.entryPaths,
+          realityCheck: careerDetails.realityCheck,
+          typicalDay: careerDetails.typicalDay,
+        }
+      : null,
+    careerRequirements: careerRequirements ?? null,
+    certificationPath: certificationPath ?? null,
+    programmes: programmes.map((p) => ({
+      institution: p.institution,
+      city: p.city,
+      country: p.country,
+      programme: p.programme,
+      englishName: p.englishName,
+      url: p.url,
+      type: p.type,
+      duration: p.duration,
+      languageOfInstruction: p.languageOfInstruction,
+      tuitionFee: p.tuitionFee,
+    })),
+    pensionNote,
+    userAge,
+    generatedIso: new Date().toISOString(),
+  };
+}
+
+/**
+ * POST /api/reports/my-journey
+ * Generates the premium My Journey PDF report.
+ */
 export async function POST() {
   try {
     const session = await getServerSession(authOptions);
@@ -34,122 +150,65 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const profile = await prisma.youthProfile.findUnique({
-      where: { userId: session.user.id },
-      select: {
-        displayName: true,
-        primaryGoal: true,
-        journeySummary: true,
-        generatedTimeline: true,
-      },
-    });
-
-    if (!profile) {
+    const input = await resolveMapperInput(session.user.id);
+    if (!input) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const summary = (profile.journeySummary as Record<string, unknown>) || {};
-    const primaryGoal = profile.primaryGoal as { title?: string } | null;
-    const reflections = (summary.discoverReflections as Record<string, unknown>) || {};
-    const actionPlan = ((summary.rolePlans as unknown[]) || [])[0] as JourneyReportData["actionPlan"];
+    const vm = buildViewModel(input);
+    const pdfBuffer = await renderToBuffer(<JourneyReportDocument vm={vm} />);
 
-    // Education context
-    const eduContext = (summary.educationContext as Record<string, unknown>) || null;
-
-    // Education Roadmap (from generated timeline)
-    const timeline = (profile.generatedTimeline as Record<string, unknown>) || null;
-    let roadmapItems: RoadmapItem[] = [];
-    let schoolTrack: SchoolTrackItem[] = [];
-    let roadmapCareer: string | null = null;
-
-    if (timeline) {
-      roadmapCareer = (timeline.career as string) || null;
-      const rawItems = (timeline.items as RoadmapItem[]) || [];
-      roadmapItems = rawItems.map((item) => ({
-        stage: item.stage || "foundation",
-        title: item.title || "",
-        subtitle: item.subtitle,
-        startAge: item.startAge || 16,
-        endAge: item.endAge,
-        isMilestone: item.isMilestone || false,
-        description: item.description,
-        microActions: item.microActions,
-      }));
-      const rawSchool = (timeline.schoolTrack as SchoolTrackItem[]) || [];
-      schoolTrack = rawSchool.map((item) => ({
-        stage: item.stage || "foundation",
-        title: item.title || "",
-        subjects: item.subjects || [],
-        personalLearning: item.personalLearning,
-        startAge: item.startAge || 16,
-        endAge: item.endAge,
-      }));
-    }
-
-    const reportData: JourneyReportData = {
-      userName: profile.displayName || "User",
-      goalTitle: primaryGoal?.title || null,
-      generatedDate: new Date().toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }),
-      // Discover
-      strengths: (summary.strengths as string[]) || [],
-      motivations: (reflections.motivations as string[]) || [],
-      workStyle: (reflections.workStyle as string[]) || [],
-      growthAreas: (reflections.growthAreas as string[]) || [],
-      roleModels: (reflections.roleModels as string) || "",
-      experiences: (reflections.experiences as string) || "",
-      careerInterests: (summary.careerInterests as string[]) || [],
-      // Understand
-      roleRealityNotes: (summary.roleRealityNotes as string[]) || [],
-      industryInsightNotes: (summary.industryInsightNotes as string[]) || [],
-      pathQualifications: (summary.pathQualifications as string[]) || [],
-      pathSkills: (summary.pathSkills as string[]) || [],
-      pathCourses: (summary.pathCourses as string[]) || [],
-      pathRequirements: (summary.pathRequirements as string[]) || [],
-      actionPlan: actionPlan || null,
-      // Clarity
-      alignedActions: ((summary.alignedActions as { type: string; title: string }[]) || []),
-      reflections: ((summary.alignedActionReflections as { response: string }[]) || []).map((r) => r.response),
-      // School
-      educationStage: eduContext
-        ? (eduContext.stage as string) || null
-        : null,
-      schoolName: eduContext ? (eduContext.schoolName as string) || null : null,
-      subjects: eduContext ? (eduContext.currentSubjects as string[]) || [] : [],
-      expectedCompletion: eduContext ? (eduContext.expectedCompletion as string) || null : null,
-      // Education Roadmap
-      roadmapItems,
-      schoolTrack,
-      roadmapCareer,
-    };
-
-    const pdfBuffer = await renderToBuffer(
-      <MyJourneyPdfDocument data={reportData} />
-    );
+    const careerSlug = (vm.cover.careerTitle || "career")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "career";
+    const datePart = new Date().toISOString().split("T")[0];
+    const filename = `my-journey-report-${careerSlug}-${datePart}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="my-journey-report-${new Date().toISOString().split("T")[0]}.pdf"`,
-        "Content-Length": pdfBuffer.length.toString(),
+        "Content-Disposition": `attachment; filename="${filename}"`,
+        "Content-Length": String(pdfBuffer.length),
+        "Cache-Control": "no-store",
       },
     });
   } catch (error) {
-    console.error("Error generating PDF report:", error);
+    console.error("My Journey Report generation failed:", error);
     return NextResponse.json(
       { error: "Failed to generate report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
+/**
+ * GET /api/reports/my-journey
+ * Returns the `nextSteps` recommendations as JSON — the same list that
+ * lands on the "Recommended next steps" page of the PDF. Used by the
+ * celebration box on /my-journey so users see a discreet preview of
+ * the guidance the full report surfaces.
+ */
 export async function GET() {
-  return NextResponse.json({
-    status: "ok",
-    message: "My Journey Report API. Use POST to generate PDF.",
-  });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id || session.user.role !== "YOUTH") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const input = await resolveMapperInput(session.user.id);
+    if (!input) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    const vm = buildViewModel(input);
+    return NextResponse.json({ nextSteps: vm.nextSteps });
+  } catch (error) {
+    console.error("My Journey recommendations fetch failed:", error);
+    return NextResponse.json(
+      { error: "Failed to load recommendations" },
+      { status: 500 },
+    );
+  }
 }

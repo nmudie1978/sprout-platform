@@ -7,7 +7,7 @@ import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
 import { Check, Banknote } from 'lucide-react';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
-import { FoundationBanner } from './foundation-banner';
+import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const ROW_HEIGHT = 90;
@@ -15,7 +15,16 @@ const LINE_X = NODE_SIZE / 2;
 
 export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgressCycle, careerTitle, userAge, readOnly }: RendererProps) {
   const items = journey.items;
-  const totalHeight = items.length * ROW_HEIGHT + NODE_SIZE;
+  const totalHeight = (items.length + 1) * ROW_HEIGHT + NODE_SIZE;
+
+  const { foundationItem } = useFoundationData({
+    careerTitle,
+    userAge,
+    journeyStartAge: journey.startAge,
+  });
+  const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
+  const foundationDone = foundationStatus === 'done';
+  const foundationState: StepState = foundationDone ? 'completed' : 'current';
 
   // Earnings indicator
   const earningsInfo = useMemo(() => {
@@ -58,15 +67,6 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
   };
 
   return (
-    <div className="space-y-3">
-      <FoundationBanner
-        careerTitle={careerTitle}
-        userAge={userAge}
-        cardDataMap={cardDataMap}
-        onItemClick={onItemClick}
-        journeyStartAge={journey.startAge}
-        disabled={readOnly}
-      />
     <div className="relative" style={{ minHeight: totalHeight }}>
       <svg
         className="absolute left-0 top-0 pointer-events-none"
@@ -85,8 +85,31 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
         />
       </svg>
 
+      {/* Foundation — rendered as inline step[0] for symmetry. */}
+      <div
+        className="absolute flex items-start gap-3"
+        style={{ top: 0, left: 0, right: 0 }}
+      >
+        <div className="flex-shrink-0">
+          <SharedNode
+            item={foundationItem}
+            onClick={() => !readOnly && onItemClick(foundationItem)}
+            size={NODE_SIZE}
+            stepState={foundationState}
+            progressStatus={foundationStatus}
+            onProgressCycle={onProgressCycle && !readOnly ? () => onProgressCycle(FOUNDATION_ITEM_ID) : undefined}
+          />
+        </div>
+        <SteppingCard
+          item={foundationItem}
+          ageLabel="Now"
+          state={foundationState}
+          onClick={() => !readOnly && onItemClick(foundationItem)}
+        />
+      </div>
+
       {items.map((item, i) => {
-        const topOffset = i * ROW_HEIGHT;
+        const topOffset = (i + 1) * ROW_HEIGHT;
         const ageLabel =
           item.endAge && item.endAge !== item.startAge
             ? `Age ${item.startAge}–${item.endAge}`
@@ -126,7 +149,6 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
           </div>
         );
       })}
-    </div>
     </div>
   );
 }

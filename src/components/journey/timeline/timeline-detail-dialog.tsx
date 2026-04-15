@@ -24,7 +24,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { Lightbulb } from 'lucide-react';
-import { FOUNDATION_ITEM_ID } from '../renderers/zigzag-renderer';
+import { FOUNDATION_ITEM_ID } from '../renderers/foundation-banner';
 import { SUBJECT_GROUPS, ALL_SUBJECTS } from '@/lib/education/subject-list';
 import { RealWorldSection } from './real-world-section';
 import { getCertificationPath } from '@/lib/education';

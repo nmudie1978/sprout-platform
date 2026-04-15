@@ -7,7 +7,7 @@ import type { RendererProps } from './types';
 import { SharedNode, type StepState } from './shared-node';
 import { BookOpen, Check, Banknote } from 'lucide-react';
 import { getAllCareers, getCareerById } from '@/lib/career-pathways';
-import { FoundationBanner } from './foundation-banner';
+import { useFoundationData, FOUNDATION_ITEM_ID } from './foundation-banner';
 
 const NODE_SIZE = 40;
 const H_SPACING = 200;
@@ -18,6 +18,14 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
   const items = journey.items;
   const schoolTrack = journey.schoolTrack;
   const firstSchool = schoolTrack && schoolTrack.length > 0 ? schoolTrack[0] : null;
+
+  const { foundationItem } = useFoundationData({
+    careerTitle,
+    userAge,
+    journeyStartAge: journey.startAge,
+  });
+  const foundationStatus = cardDataMap?.[FOUNDATION_ITEM_ID]?.status;
+  const foundationDone = foundationStatus === 'done';
 
   // Earnings indicator
   const earningsInfo = useMemo(() => {
@@ -59,29 +67,21 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
     return 'future';
   };
 
+  // Foundation occupies index 0 visually; real items shift by +1.
   const positions = useMemo(
-    () => items.map((_, i) => ({ x: i * H_SPACING + NODE_SIZE, y: CAREER_TRACK_Y })),
+    () => items.map((_, i) => ({ x: (i + 1) * H_SPACING + NODE_SIZE, y: CAREER_TRACK_Y })),
     [items]
   );
+  const foundationPos = { x: NODE_SIZE, y: CAREER_TRACK_Y };
 
-  const totalWidth = items.length * H_SPACING + NODE_SIZE * 2;
+  const totalWidth = (items.length + 1) * H_SPACING + NODE_SIZE * 2;
   const totalHeight = CAREER_TRACK_Y + NODE_SIZE + 180;
   const careerLineY = CAREER_TRACK_Y + NODE_SIZE / 2;
 
+  const foundationState: StepState = foundationDone ? 'completed' : 'current';
+
   return (
-    <div className="pb-4 -mx-2 px-2 space-y-3">
-      {/* Foundation banner — rail + stepping layouts don't have a
-          dedicated foundation card like zigzag does. Show a compact
-          "Your Starting Point" banner above the track so the title is
-          visible here too. */}
-      <FoundationBanner
-        careerTitle={careerTitle}
-        userAge={userAge}
-        cardDataMap={cardDataMap}
-        onItemClick={onItemClick}
-        journeyStartAge={journey.startAge}
-        disabled={readOnly}
-      />
+    <div className="pb-4 -mx-2 px-2">
       <div className="overflow-x-auto">
       <div className="relative" style={{ width: totalWidth, height: totalHeight }}>
         <svg className="absolute inset-0 pointer-events-none" width={totalWidth} height={totalHeight}>
@@ -96,6 +96,30 @@ export function RailRenderer({ journey, onItemClick, cardDataMap, onProgressCycl
             strokeLinecap="round"
           />
         </svg>
+
+        {/* Foundation — rendered as inline step[0] for symmetry. */}
+        <div className="absolute" style={{ left: foundationPos.x, top: foundationPos.y }}>
+          <div className="flex flex-col items-center" style={{ width: CARD_WIDTH }}>
+            <div className="flex justify-center mb-1" style={{ marginTop: -28 }}>
+              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-teal-500/15 text-teal-700 dark:text-teal-300">
+                Now
+              </span>
+            </div>
+            <SharedNode
+              item={foundationItem}
+              onClick={() => !readOnly && onItemClick(foundationItem)}
+              size={NODE_SIZE}
+              stepState={foundationState}
+              progressStatus={foundationStatus}
+              onProgressCycle={onProgressCycle && !readOnly ? () => onProgressCycle(FOUNDATION_ITEM_ID) : undefined}
+            />
+            <RailCard
+              item={foundationItem}
+              state={foundationState}
+              onClick={() => !readOnly && onItemClick(foundationItem)}
+            />
+          </div>
+        </div>
 
         {items.map((item, i) => {
           const pos = positions[i];

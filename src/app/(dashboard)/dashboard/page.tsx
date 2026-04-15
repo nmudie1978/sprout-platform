@@ -37,6 +37,7 @@ import {
   Heart,
   X,
   AlertTriangle,
+  Star,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
 import type { GoalsResponse } from "@/lib/goals/types";
@@ -1156,7 +1157,7 @@ export default function DashboardPage() {
                 is complete, consistent across refresh and revisit. */}
             {completedLensCount === 3 && (
               <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground/70">
-                <CheckCircle2 className="h-3 w-3 shrink-0" />
+                <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" />
                 <span>{t('journey.completeIndicator')}</span>
               </div>
             )}
@@ -1237,6 +1238,7 @@ export default function DashboardPage() {
                         const stageLetter = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'C' : stageLabel === 'Understand' ? 'U' : 'D';
                         const stageTooltip = stageLabel === 'Clarity' || stageLabel === 'Complete' ? 'Clarity — building your roadmap' : stageLabel === 'Understand' ? 'Understand — exploring the role in depth' : 'Discover — exploring what this career is about';
                         const stageColor = stageLetter === 'C' ? 'text-emerald-400 bg-emerald-500/15' : stageLetter === 'U' ? 'text-blue-400 bg-blue-500/15' : 'text-violet-400 bg-violet-500/15';
+                        const isComplete = stageLabel === 'Complete';
                         return (
                           <tr
                             key={goal.goalId}
@@ -1254,6 +1256,12 @@ export default function DashboardPage() {
                                 <span className={cn("text-[11px] truncate", isCurrentGoal ? "font-medium text-foreground" : "text-foreground/75")}>
                                   {goal.goalTitle}
                                 </span>
+                                {isComplete && (
+                                  <Star
+                                    className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400"
+                                    aria-label="Journey complete"
+                                  />
+                                )}
                               </span>
                             </td>
                             <td className="px-2 py-1.5 text-center">

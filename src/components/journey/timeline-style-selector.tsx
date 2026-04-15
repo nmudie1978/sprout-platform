@@ -16,27 +16,6 @@ interface StyleOption {
 
 const OPTIONS: StyleOption[] = [
   {
-    id: 'zigzag',
-    label: 'Zigzag',
-    description: 'Alternating wave',
-    activeBg: 'bg-violet-500/15',
-    activeText: 'text-violet-700 dark:text-violet-300',
-    preview: (
-      <svg viewBox="0 0 32 20" className="w-full h-full" fill="none">
-        <polyline
-          points="4,5 16,15 28,5"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <circle cx="4" cy="5" r="2.5" fill="currentColor" />
-        <circle cx="16" cy="15" r="2.5" fill="currentColor" />
-        <circle cx="28" cy="5" r="2.5" fill="currentColor" />
-      </svg>
-    ),
-  },
-  {
     id: 'rail',
     label: 'Rail',
     description: 'Straight track',
