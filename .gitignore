@@ -38,3 +38,6 @@ next-env.d.ts
 # prisma
 prisma/*.db
 prisma/*.db-journal
+
+# QA audit outputs (generated; commit only when intentional)
+scripts/output/
