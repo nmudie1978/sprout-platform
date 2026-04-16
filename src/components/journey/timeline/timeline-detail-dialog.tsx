@@ -56,9 +56,15 @@ function getStepTip(item: JourneyItem, careerTitle?: string | null): { text: str
   }
 
   // Internship / work experience / volunteering
-  if (/intern|work experience|volunteer|shadow|placement/i.test(title)) {
+  //
+  // Endeavrly deliberately does NOT run a live opportunity feed — we
+  // don't want to compete with the real job boards or create pressure
+  // for youth to apply constantly. The honest pointer is: track the
+  // intent in the Momentum list, and go direct to the places where
+  // Nordic employers actually post these openings.
+  if (/intern|work experience|volunteer|placement/i.test(title)) {
     return {
-      text: "Check the Momentum section below your roadmap for live opportunities you can act on right now.",
+      text: "Add this as a concrete step in the Momentum section below your roadmap. Most internships in Norway are posted on company career pages and LinkedIn rather than on general job boards.",
     };
   }
 

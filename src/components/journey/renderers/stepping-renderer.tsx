@@ -84,16 +84,20 @@ export function SteppingRenderer({ journey, onItemClick, cardDataMap, onProgress
 
       {items.map((item, i) => {
         const topOffset = (i + 1) * ROW_HEIGHT;
-        const ageRange =
-          item.endAge && item.endAge !== item.startAge
-            ? `Age ${item.startAge}–${item.endAge}`
+        // When "Show years" is on we render only the calendar year
+        // range — stacking "Age 23–27 · 2032–2036" into the pill was
+        // overflowing the card's top corner and read as messy. Years
+        // are the more useful anchor anyway (they map to real dates).
+        // When "Show years" is off we keep the age range as the label.
+        const showingYears = showYears && birthYear != null;
+        const hasRange = !!item.endAge && item.endAge !== item.startAge;
+        const ageLabel = showingYears
+          ? hasRange
+            ? `${birthYear + item.startAge}–${birthYear + item.endAge!}`
+            : `${birthYear + item.startAge}`
+          : hasRange
+            ? `Age ${item.startAge}–${item.endAge!}`
             : `Age ${item.startAge}`;
-        const yearStamp = showYears && birthYear != null
-          ? item.endAge && item.endAge !== item.startAge
-            ? ` · ${birthYear + item.startAge}–${birthYear + item.endAge}`
-            : ` · ${birthYear + item.startAge}`
-          : '';
-        const ageLabel = `${ageRange}${yearStamp}`;
         const state = stateFor(i);
 
         return (

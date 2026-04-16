@@ -1886,6 +1886,13 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   // voice-guided roadmap experience inside PersonalCareerTimeline.
   const [simulationPlay, setSimulationPlay] = useState<(() => void) | null>(null);
 
+  // Full-screen roadmap overlay toggle — lets the user expand the
+  // Clarity roadmap to fill the viewport so a long career ladder can be
+  // scanned without fighting the page chrome. The overlay component
+  // (FullscreenRoadmap) already handles its own Escape handler, scroll
+  // lock, and close button.
+  const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
+
   // Clarity accordion — only one section open at a time
   const [claritySection, setClaritySection] = useState<string | null>('actions');
 
@@ -2246,23 +2253,40 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           own header ("Henry's Roadmap to Surgeon · …") so the
           collapse toggle is a small chevron above it. */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
-        <button
-          type="button"
-          onClick={toggleRoadmap}
-          aria-expanded={!roadmapCollapsed}
-          className="w-full flex items-center justify-between gap-3 px-5 py-3.5 border-b border-border/20 hover:bg-amber-500/[0.04] transition-colors text-left"
-        >
-          <div className="flex items-center gap-2.5">
-            <Rocket className="h-4 w-4 text-amber-400" />
-            <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Roadmap</h3>
-          </div>
-          <ChevronDown
-            className={cn(
-              'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
-              roadmapCollapsed && '-rotate-90'
-            )}
-          />
-        </button>
+        {/* Header row — collapse toggle owns the row, a separate
+            full-screen button sits on the right so it's always
+            reachable without triggering collapse. */}
+        <div className="flex items-center border-b border-border/20">
+          <button
+            type="button"
+            onClick={toggleRoadmap}
+            aria-expanded={!roadmapCollapsed}
+            className="flex-1 flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-amber-500/[0.04] transition-colors text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <Rocket className="h-4 w-4 text-amber-400" />
+              <h3 className="text-sm font-semibold text-foreground/90">{possessiveName} Roadmap</h3>
+            </div>
+            <ChevronDown
+              className={cn(
+                'h-4 w-4 text-muted-foreground/55 transition-transform duration-200',
+                roadmapCollapsed && '-rotate-90'
+              )}
+            />
+          </button>
+          {!roadmapCollapsed && goalTitle && (
+            <button
+              type="button"
+              onClick={() => setRoadmapFullscreen(true)}
+              title="Expand to full screen"
+              aria-label="Expand roadmap to full screen"
+              className="inline-flex items-center gap-1.5 mr-3 px-2.5 py-1.5 rounded-md border border-border/30 bg-background/40 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-amber-500/40 hover:bg-amber-500/[0.06] transition-colors"
+            >
+              <Maximize2 className="h-3.5 w-3.5" />
+              Full screen
+            </button>
+          )}
+        </div>
         {!roadmapCollapsed && (
           <div className="p-4">
             <PersonalCareerTimeline
@@ -2272,6 +2296,11 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           </div>
         )}
       </SectionCard>
+      <AnimatePresence>
+        {roadmapFullscreen && goalTitle && (
+          <FullscreenRoadmap goalTitle={goalTitle} onClose={() => setRoadmapFullscreen(false)} />
+        )}
+      </AnimatePresence>
 
       {/* 2. Momentum + Real Career Paths — tabbed container */}
       <SectionCard className="border-amber-500/20" style={{ boxShadow: '0 0 20px rgba(245,158,11,0.06)' }}>
