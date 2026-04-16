@@ -207,24 +207,28 @@ describe('EducationBrowser content (Issue 4 — negative tests)', () => {
 });
 
 describe('Study Path section wiring (Issue 4 — sibling context)', () => {
-  it('Study Path renders inside a standard SectionCard + SectionHeader', () => {
-    // The section now uses the shared SectionHeader pattern with
-    // centred=false (default) matching A Typical Day, Career
-    // Presence, etc. — not a custom teal-glow hero.
-    expect(MY_JOURNEY_SOURCE).toMatch(/title="Study Path"/);
-    expect(MY_JOURNEY_SOURCE).toMatch(/u-study-path/);
+  it('Study Path renders as a tab inside the "Education Pathway" SectionCard', () => {
+    // School Readiness + Study Path were collapsed into a single
+    // tabbed card titled "Education Pathway". Study Path is now
+    // a TabsTrigger with value="study-path", not its own SectionCard.
+    expect(MY_JOURNEY_SOURCE).toMatch(/title="Education Pathway"/);
+    expect(MY_JOURNEY_SOURCE).toMatch(/value="study-path"/);
+    expect(MY_JOURNEY_SOURCE).toMatch(/u-education-pathway/);
+    // Guard: ensure the EducationBrowser component is still rendered
+    // inside the study-path TabsContent (not accidentally unmounted).
+    expect(MY_JOURNEY_SOURCE).toMatch(/<EducationBrowser\s/);
   });
 
-  it('A Typical Day is a SEPARATE SectionCard sibling, not inside Study Path', () => {
-    // Both sections exist in the Understand tab. Regression check
-    // that they're at the same structural level and Study Path
-    // doesn't accidentally wrap A Typical Day's content.
+  it('A Typical Day is a SEPARATE SectionCard sibling, not inside Education Pathway', () => {
+    // Both sections exist in the Understand tab. A Typical Day is
+    // still its own SectionCard; Education Pathway (Readiness +
+    // Study Path tabs) is a sibling, not a parent.
     expect(MY_JOURNEY_SOURCE).toMatch(/title="A Typical Day"/);
     const typicalDayIndex = MY_JOURNEY_SOURCE.indexOf('title="A Typical Day"');
-    const studyPathIndex = MY_JOURNEY_SOURCE.indexOf('title="Study Path"');
-    // A Typical Day should appear ABOVE Study Path in source order
-    // (matches the Understand tab render order).
+    const educationPathwayIndex = MY_JOURNEY_SOURCE.indexOf('title="Education Pathway"');
+    // A Typical Day should appear ABOVE Education Pathway in source
+    // order (matches the Understand tab render order).
     expect(typicalDayIndex).toBeGreaterThan(0);
-    expect(studyPathIndex).toBeGreaterThan(typicalDayIndex);
+    expect(educationPathwayIndex).toBeGreaterThan(typicalDayIndex);
   });
 });

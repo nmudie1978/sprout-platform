@@ -127,6 +127,7 @@
       "applicationVia": "opintopolku.fi",
       "careerIds": [
         "doctor",
+        "dentist",
         "veterinarian",
         "lawyer",
         "teacher",
@@ -205,6 +206,7 @@
       "applicationVia": "antagning.se",
       "careerIds": [
         "doctor",
+        "dentist",
         "nurse"
       ]
     },
@@ -259,6 +261,7 @@
       "applicationVia": "optagelse.dk",
       "careerIds": [
         "doctor",
+        "dentist",
         "veterinarian",
         "lawyer",
         "biologist",
@@ -299,6 +302,18 @@
       "applicationVia": "antagning.se",
       "careerIds": [
         "physiotherapist"
+      ]
+    },
+    {
+      "id": "mau",
+      "name": "Malmö universitet",
+      "shortName": "MAU",
+      "country": "SE",
+      "city": "Malmö",
+      "url": "https://mau.se",
+      "applicationVia": "antagning.se",
+      "careerIds": [
+        "dentist"
       ]
     },
     {
@@ -401,6 +416,18 @@
       ]
     },
     {
+      "id": "oulu",
+      "name": "Oulun yliopisto",
+      "shortName": "OULU",
+      "country": "FI",
+      "city": "Oulu",
+      "url": "https://www.oulu.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "dentist"
+      ]
+    },
+    {
       "id": "perho",
       "name": "Perho Liiketalousopisto",
       "shortName": "PERHO",
@@ -495,7 +522,8 @@
       "url": "https://www.uib.no",
       "applicationVia": "Samordna opptak",
       "careerIds": [
-        "psychologist"
+        "psychologist",
+        "dentist"
       ]
     },
     {
@@ -526,7 +554,8 @@
       "url": "https://uit.no",
       "applicationVia": "Samordna opptak",
       "careerIds": [
-        "psychologist"
+        "psychologist",
+        "dentist"
       ]
     },
     {
@@ -565,6 +594,18 @@
         "doctor",
         "lawyer",
         "biologist"
+      ]
+    },
+    {
+      "id": "utu",
+      "name": "Turun yliopisto",
+      "shortName": "UTU",
+      "country": "FI",
+      "city": "Turku",
+      "url": "https://www.utu.fi",
+      "applicationVia": "opintopolku.fi",
+      "careerIds": [
+        "dentist"
       ]
     },
     {

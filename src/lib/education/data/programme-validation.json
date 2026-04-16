@@ -1,10 +1,10 @@
 {
   "meta": {
-    "lastCheckedAt": "2026-04-15T20:56:06.919Z",
-    "totalProgrammes": 107,
+    "lastCheckedAt": "2026-04-16T00:00:00.000Z",
+    "totalProgrammes": 115,
     "validationStats": {
-      "LIVE": 56,
-      "CLIENT_ERROR": 49,
+      "LIVE": 66,
+      "CLIENT_ERROR": 47,
       "DNS": 1,
       "TIMEOUT": 1
     }
@@ -82,17 +82,65 @@
       "httpCode": 200,
       "checkedAt": "2026-04-15T20:55:35.354Z"
     },
+    "no-uib-odontologi": {
+      "url": "https://www4.uib.no/studier/program/odontologi-integrert-master",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "no-uit-odontologi": {
+      "url": "https://uit.no/utdanning/program?p_document_id=284209",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
     "se-gu-tandl-karprogrammet": {
-      "url": "https://www.gu.se/studera/tandlakarprogrammet",
-      "status": "CLIENT_ERROR",
-      "httpCode": 404,
-      "checkedAt": "2026-04-15T20:55:35.354Z"
+      "url": "https://www.gu.se/studera/hitta-utbildning/tandlakarprogrammet-o2tlp",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "se-ki-tandl-karprogrammet": {
+      "url": "https://utbildning.ki.se/program/2tl19-tandlakarprogrammet",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "se-mau-tandl-karutbildning": {
+      "url": "https://mau.se/sok-utbildning/program/ogtly/",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
     },
     "dk-au-odontologi": {
-      "url": "https://studier.au.dk/kandidat/odontologi",
-      "status": "DNS",
-      "httpCode": null,
-      "checkedAt": "2026-04-15T20:55:35.355Z"
+      "url": "https://kandidat.au.dk/odontologi",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "dk-ku-odontologi": {
+      "url": "https://www.ku.dk/studier/bachelor/odontologi",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "fi-helsinki-hammaslaaketiede": {
+      "url": "https://www.helsinki.fi/en/degree-programmes/hammaslaaketiede",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "fi-utu-hammaslaaketiede": {
+      "url": "https://www.utu.fi/fi/opiskelijaksi/hammaslaaketieteen-tutkinto-ohjelma-hammaslaaketieteen-kandidaatti-ja-lisensiaatti-3",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
+    },
+    "fi-oulu-hammaslaaketiede": {
+      "url": "https://www.oulu.fi/fi/hae/kandidaattiohjelmat/hammaslaaketiede",
+      "status": "LIVE",
+      "httpCode": 200,
+      "checkedAt": "2026-04-16T00:00:00.000Z"
     },
     "no-oslomet-fysioterapi": {
       "url": "https://www.oslomet.no/studier/hv/fysioterapi",

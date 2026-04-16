@@ -32,6 +32,7 @@ import {
   Building2, Shield, Loader2, Download, FileText, ListChecks, CheckCircle,
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Tooltip,
   TooltipContent,
@@ -932,7 +933,7 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-school-readiness', 'u-study-path', 'u-notes', 'u-career-paths']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-education-pathway', 'u-notes']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -965,27 +966,113 @@ function UnderstandTab({
 
       {/* ── TOP: What You'll Do + Reality Videos — side by side ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Left: What You'll Actually Do — always visible */}
+        {/* Left: What You'll Actually Do + Tools of the Trade as two
+            tabs inside one card. The user reads these back-to-back
+            ("what I'd do" → "what I'd use to do it"), so keeping them
+            in a single surface reduces section count on the Understand
+            tab. Tabs follow the same styling as Education Pathway
+            (full-width, teal underline) for visual consistency. */}
         <SectionCard>
-          <SectionHeader icon={Briefcase} title="What You'll Actually Do" tooltip="The core responsibilities and daily tasks that define this role — what you'd actually spend your time doing." collapsed={uCollapsed('u-tasks')} onToggle={() => uToggle('u-tasks')} />
+          <SectionHeader
+            icon={Briefcase}
+            title="Day-to-Day Work"
+            tooltip="The core responsibilities, daily tasks, and tools that define this role."
+            collapsed={uCollapsed('u-tasks')}
+            onToggle={() => uToggle('u-tasks')}
+          />
           {!uCollapsed('u-tasks') && (
             <div className="p-4">
-              {details && details.whatYouActuallyDo.length > 0 ? (
-                <div className="space-y-1.5">
-                  {details.whatYouActuallyDo.map((task, i) => (
-                    <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
-                      <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
-                      </div>
-                      <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
+              <Tabs defaultValue="tasks" className="w-full">
+                <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none mb-4">
+                  <TabsTrigger
+                    value="tasks"
+                    className="
+                      relative rounded-none border-0 bg-transparent
+                      px-4 py-3 text-sm font-semibold
+                      text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                      data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                      data-[state=active]:shadow-none
+                      after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                      after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                      data-[state=active]:after:scale-x-100
+                    "
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <Briefcase className="h-4 w-4" />
+                      What You'll Do
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="tools"
+                    className="
+                      relative rounded-none border-0 bg-transparent
+                      px-4 py-3 text-sm font-semibold
+                      text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                      data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                      data-[state=active]:shadow-none
+                      after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                      after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                      data-[state=active]:after:scale-x-100
+                    "
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <Wrench className="h-4 w-4" />
+                      Tools of the Trade
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="tasks">
+                  {details && details.whatYouActuallyDo.length > 0 ? (
+                    <div className="space-y-1.5">
+                      {details.whatYouActuallyDo.map((task, i) => (
+                        <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
+                          <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                            <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+                          </div>
+                          <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : detailsLoading ? (
-                <LoadingSkeleton />
-              ) : (
-                <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
-              )}
+                  ) : detailsLoading ? (
+                    <LoadingSkeleton />
+                  ) : (
+                    <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="tools">
+                  {details?.typicalDay.tools?.length ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {details.typicalDay.tools.map((tool, i) => {
+                        const info = getToolInfo(tool);
+                        return (
+                          <a
+                            key={i}
+                            href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={info?.description || tool}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-border/30 bg-background/40 px-2.5 py-1 text-[11px] text-foreground/75 hover:text-foreground hover:border-border/50 transition-colors"
+                          >
+                            <span>{tool}</span>
+                            <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40" />
+                          </a>
+                        );
+                      })}
+                    </div>
+                  ) : detailsLoading ? (
+                    <LoadingSkeleton />
+                  ) : (
+                    <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
+                      <p className="text-sm font-medium text-foreground/80">No specialist tools</p>
+                      <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
+                        This role depends on skills, judgement, and presence — not on specific software or equipment.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </SectionCard>
@@ -1126,73 +1213,23 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── School Readiness — compact summary ── */}
+      {/* ── Education Pathway — School Readiness + Study Path as tabs
+          inside a single card. The two sections used to live as two
+          adjacent SectionCards; they're unified here because the
+          student reads them as "am I ready?" → "where can I study?"
+          back-to-back and the separate cards added noise. Defaults to
+          the Readiness tab because that's the decision-support answer
+          ("can I even pursue this?") before the student browses
+          programmes. */}
       {(() => {
         const ap = getAcademicProfile(career);
-        const dc = getDemandColors(ap.demand);
         const essentialSubjects = ap.subjects.filter(s => s.importance === 'essential');
-        return (
-          <SectionCard>
-            <SectionHeader icon={GraduationCap} title="School Readiness" collapsed={uCollapsed('u-school-readiness')} onToggle={() => uToggle('u-school-readiness')} />
-            {!uCollapsed('u-school-readiness') && (
-              <div className="px-4 py-3 text-[11px]">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1.5">
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-muted-foreground/50 w-24 shrink-0">Demand</span>
-                    <span className="text-foreground/80 font-medium">{getDemandLabel(ap.demand)}</span>
-                  </div>
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-muted-foreground/50 w-24 shrink-0">Pathway</span>
-                    <span className="text-foreground/80 font-medium">{getPathwayLabel(ap.pathwayType)}</span>
-                  </div>
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-muted-foreground/50 w-24 shrink-0">Competition</span>
-                    <span className="text-foreground/80 font-medium">{getCompetitivenessLabel(ap.competitiveness)}</span>
-                  </div>
-                  {essentialSubjects.length > 0 && (
-                    <div className="flex items-baseline gap-4 col-span-2 sm:col-span-3">
-                      <span className="text-muted-foreground/50 w-24 shrink-0">Key subjects</span>
-                      <span className="text-foreground/70">{essentialSubjects.map(s => s.name).join(', ')}</span>
-                    </div>
-                  )}
-                  {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
-                    <div className="flex items-baseline gap-4">
-                      <span className="text-muted-foreground/50 w-24 shrink-0">Typical grades</span>
-                      <span className="text-foreground/70">{ap.grade.gradeMin}–{ap.grade.gradeMax} on the 1–6 scale</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </SectionCard>
-        );
-      })()}
 
-      {/* ── Study Path — embedded browser with full institution/programme
-          data. Kept visible even for careers that don't map to a
-          Norwegian university route (e.g. professional athlete,
-          musician) so the Understand layout stays predictable; in that
-          case we show a short "not applicable" message inside the
-          section rather than hiding it. */}
-      {(() => {
-        // Three complementary data sources feed the Study Path check.
-        // The old gate used only the hand-curated NORWAY_PROGRAMMES map
-        // (~17 careers), which hid the whole section for any career
-        // outside that short list — including careers that do have a
-        // formal Norwegian degree route recorded elsewhere. Symptom:
-        // "How you qualify" on Discover showed a degree path, but
-        // Understand's Study Path said "No formal study path required".
-        //
-        // We now consider:
-        //   1. The hand-curated NORWAY_PROGRAMMES map (hardcoded ~17).
-        //   2. The 3-layer programmes model via getProgrammesForCareer
-        //      — covers every career with real utdanning.no programme
-        //      rows (hundreds).
-        //   3. The career-requirements dataset (744 careers) — if it
-        //      declares a universityPath.programme, there IS a formal
-        //      study path even when no specific institution rows are
-        //      mapped yet. The EducationBrowser's PathwayFallbackView
-        //      renders that structured requirement data gracefully.
+        // Same three-source Study Path detection as before. See the old
+        // inline comment (git history) for the reasoning — short
+        // version: hardcoded NORWAY_PROGRAMMES map, 3-layer programmes
+        // via getProgrammesForCareer, or a universityPath.programme in
+        // career-requirements. Any of the three = hasStudyPath.
         const hardcoded = career ? getNorwayProgrammes(career.id, goalTitle || career.title) : null;
         const nordicProgs = career ? getProgrammesForCareer(career.id, { country: 'NO' }) : [];
         const reqs = career ? getCareerRequirements(career.id) : null;
@@ -1200,70 +1237,288 @@ function UnderstandTab({
           !!(hardcoded && hardcoded.programmes && hardcoded.programmes.length > 0) ||
           nordicProgs.length > 0 ||
           !!reqs?.universityPath?.programme;
+
         return (
           <SectionCard>
             <SectionHeader
               icon={GraduationCap}
-              title="Study Path"
-              tooltip="Real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects."
-              collapsed={uCollapsed('u-study-path')}
-              onToggle={() => uToggle('u-study-path')}
+              title="Education Pathway"
+              tooltip="School readiness and the real universities, colleges and vocational schools that lead to this career — filtered by your location and subjects."
+              collapsed={uCollapsed('u-education-pathway')}
+              onToggle={() => uToggle('u-education-pathway')}
             />
-            {!uCollapsed('u-study-path') && (
+            {!uCollapsed('u-education-pathway') && (
               <div className="p-4 sm:p-5">
-                {hasStudyPath ? (
-                  <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
-                ) : (
-                  <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
-                    <p className="text-sm font-medium text-foreground/80">No formal study path required</p>
-                    <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
-                      This career is typically entered through practice, portfolio, or on-the-job progression rather than a specific Norwegian university programme.
-                    </p>
-                  </div>
-                )}
+                <Tabs defaultValue="readiness" className="w-full">
+                  {/* Prominent full-width tab strip — 2 equal-width
+                      buttons with larger text, generous padding, and a
+                      clear active state (teal underline + solid
+                      background) so they read as a primary navigation
+                      control rather than a small pill filter. */}
+                  <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
+                    <TabsTrigger
+                      value="readiness"
+                      className="
+                        relative rounded-none border-0 bg-transparent
+                        px-4 py-3.5 text-sm font-semibold
+                        text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                        data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                        data-[state=active]:shadow-none
+                        after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                        after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                        data-[state=active]:after:scale-x-100
+                      "
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4" />
+                        School Readiness
+                      </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="study-path"
+                      className="
+                        relative rounded-none border-0 bg-transparent
+                        px-4 py-3.5 text-sm font-semibold
+                        text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                        data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                        data-[state=active]:shadow-none
+                        after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                        after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                        data-[state=active]:after:scale-x-100
+                      "
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" />
+                        Study Path
+                      </span>
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="readiness" className="mt-6">
+                    {/* Redesigned readiness view — three signal tiles
+                        (Demand / Pathway / Competition), subject chips,
+                        and a 1–6 grade meter. The old flat key/value
+                        list was dismissed as "dull"; this surface keeps
+                        the same signals but with colour-coded icons and
+                        a clear scale so the user can read "is this for
+                        me?" at a glance instead of parsing a grid. */}
+                    {(() => {
+                      const demandColors = getDemandColors(ap.demand);
+                      const demandHint: Record<typeof ap.demand, string> = {
+                        'low': 'Steady but quiet demand.',
+                        'moderate': 'Balanced demand — opportunities exist.',
+                        'strong': 'Growing demand — good prospects.',
+                        'very-strong': 'High demand — opportunities are abundant.',
+                      };
+                      const pathwayTone: Record<typeof ap.pathwayType, { bg: string; text: string }> = {
+                        'vocational':          { bg: 'bg-amber-500/10',   text: 'text-amber-400' },
+                        'bachelor':            { bg: 'bg-sky-500/10',     text: 'text-sky-400' },
+                        'master':              { bg: 'bg-blue-500/10',    text: 'text-blue-400' },
+                        'doctorate':           { bg: 'bg-violet-500/10',  text: 'text-violet-400' },
+                        'professional-degree': { bg: 'bg-violet-500/10',  text: 'text-violet-400' },
+                        'mixed':               { bg: 'bg-slate-500/10',   text: 'text-slate-400' },
+                        'entry-level':         { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+                        'licence-based':       { bg: 'bg-teal-500/10',    text: 'text-teal-400' },
+                      };
+                      const pathwayHint: Record<typeof ap.pathwayType, string> = {
+                        'vocational':          'Apprenticeship or trade school route.',
+                        'bachelor':            'Three-year university bachelor\u2019s.',
+                        'master':              'Master\u2019s degree (typically 5 years).',
+                        'doctorate':           'Doctoral study required.',
+                        'professional-degree': 'Integrated 5\u20136 year degree.',
+                        'mixed':               'Several valid routes into this role.',
+                        'entry-level':         'No specific degree required to start.',
+                        'licence-based':       'Licensing or certification needed.',
+                      };
+                      const compTone: Record<typeof ap.competitiveness, { bg: string; text: string }> = {
+                        'low':       { bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+                        'moderate':  { bg: 'bg-sky-500/10',     text: 'text-sky-400' },
+                        'high':      { bg: 'bg-amber-500/10',   text: 'text-amber-400' },
+                        'very-high': { bg: 'bg-rose-500/10',    text: 'text-rose-400' },
+                      };
+                      const compHint: Record<typeof ap.competitiveness, string> = {
+                        'low':       'Broad admission — most qualified applicants get in.',
+                        'moderate':  'Some selection — solid grades help.',
+                        'high':      'Competitive — strong grades and preparation matter.',
+                        'very-high': 'Highly selective — top grades and preparation required.',
+                      };
+                      const pt = pathwayTone[ap.pathwayType];
+                      const ct = compTone[ap.competitiveness];
+
+                      return (
+                        <div className="space-y-4">
+                          {/* ── Key subjects as chips ──────────────── */}
+                          {essentialSubjects.length > 0 && (
+                            <div className="rounded-xl border border-border/40 bg-card/40 p-4">
+                              <div className="flex items-center gap-2 mb-3">
+                                <BookOpen className="h-3.5 w-3.5 text-teal-400" />
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-teal-300">Subjects you&rsquo;ll need</span>
+                                <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums">
+                                  {essentialSubjects.length} essential
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {essentialSubjects.map((s) => (
+                                  <span
+                                    key={s.name}
+                                    className="inline-flex items-center gap-1.5 rounded-full border border-teal-500/25 bg-teal-500/[0.08] px-2.5 py-1 text-[11px] font-medium text-teal-100/90"
+                                  >
+                                    <Check className="h-3 w-3 text-teal-400" />
+                                    {s.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* ── Grade-range meter (1–6) ────────────── */}
+                          {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
+                            <div className="rounded-xl border border-border/40 bg-card/40 p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-2">
+                                  <BarChart3 className="h-3.5 w-3.5 text-teal-400" />
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-teal-300">Typical grade range</span>
+                                </div>
+                                <span className="text-[11px] font-semibold text-foreground/85 tabular-nums">
+                                  {ap.grade.gradeMin}&ndash;{ap.grade.gradeMax}
+                                  <span className="text-muted-foreground/45 font-normal"> / 6</span>
+                                </span>
+                              </div>
+                              {/* Scale bars — all teal, with opacity
+                                  ramping up across the scale. Positions
+                                  inside the required range get full
+                                  brightness (bg-teal-400); positions
+                                  below use progressive teal tints so
+                                  the whole bar reads as one palette
+                                  rather than a green-vs-grey split. */}
+                              <div className="flex gap-1.5">
+                                {[
+                                  'bg-teal-500/15',
+                                  'bg-teal-500/20',
+                                  'bg-teal-500/30',
+                                  'bg-teal-500/45',
+                                  'bg-teal-500/65',
+                                  'bg-teal-500/80',
+                                ].map((dimClass, i) => {
+                                  const n = i + 1;
+                                  const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
+                                  return (
+                                    <div
+                                      key={n}
+                                      className={cn(
+                                        'h-2 flex-1 rounded-full transition-colors',
+                                        inRange ? 'bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.35)]' : dimClass,
+                                      )}
+                                    />
+                                  );
+                                })}
+                              </div>
+                              <div className="flex justify-between mt-1.5 px-[2px]">
+                                {[
+                                  'text-teal-500/35',
+                                  'text-teal-500/45',
+                                  'text-teal-400/55',
+                                  'text-teal-400/65',
+                                  'text-teal-300/80',
+                                  'text-teal-300/90',
+                                ].map((dimClass, i) => {
+                                  const n = i + 1;
+                                  const inRange = n >= (ap.grade.gradeMin ?? 0) && n <= (ap.grade.gradeMax ?? 0);
+                                  return (
+                                    <span
+                                      key={n}
+                                      className={cn(
+                                        'text-[9px] tabular-nums',
+                                        inRange ? 'text-teal-300 font-semibold' : dimClass,
+                                      )}
+                                    >
+                                      {n}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                              <p className="text-[10px] text-muted-foreground/50 mt-3 leading-snug">
+                                Indicative only &mdash; actual cut-offs vary by institution and year.
+                              </p>
+                            </div>
+                          )}
+
+                          {/* ── Compact signal strip (Demand /
+                              Pathway / Competition). Moved to the end
+                              of the readiness view as a quick recap,
+                              shrunk to one-line-per-signal so the
+                              section doesn't lead with heavy cards. */}
+                          <div className="rounded-lg border border-border/30 bg-card/20 divide-y divide-border/20 overflow-hidden">
+                            {[
+                              {
+                                label: 'Demand',
+                                icon: TrendingUp,
+                                tone: demandColors,
+                                value: getDemandLabel(ap.demand),
+                                hint: demandHint[ap.demand],
+                              },
+                              {
+                                label: 'Pathway',
+                                icon: Award,
+                                tone: pt,
+                                value: getPathwayLabel(ap.pathwayType),
+                                hint: pathwayHint[ap.pathwayType],
+                              },
+                              {
+                                label: 'Competition',
+                                icon: Target,
+                                tone: ct,
+                                value: getCompetitivenessLabel(ap.competitiveness),
+                                hint: compHint[ap.competitiveness],
+                              },
+                            ].map((row) => {
+                              const Icon = row.icon;
+                              return (
+                                <div key={row.label} className="flex items-center gap-2.5 px-2.5 py-1.5">
+                                  <div className={cn('h-4 w-4 rounded flex items-center justify-center shrink-0', row.tone.bg)}>
+                                    <Icon className={cn('h-2 w-2', row.tone.text)} />
+                                  </div>
+                                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50 w-[68px] shrink-0">
+                                    {row.label}
+                                  </span>
+                                  <span className={cn('text-[11px] font-semibold shrink-0', row.tone.text)}>
+                                    {row.value}
+                                  </span>
+                                  <span className="text-[10px] text-muted-foreground/45 truncate hidden sm:inline">
+                                    &middot; {row.hint}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </TabsContent>
+
+                  <TabsContent value="study-path" className="mt-5">
+                    {hasStudyPath ? (
+                      <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
+                    ) : (
+                      <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
+                        <p className="text-sm font-medium text-foreground/80">No formal study path required</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
+                          This career is typically entered through practice, portfolio, or on-the-job progression rather than a specific Norwegian university programme.
+                        </p>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </div>
             )}
           </SectionCard>
         );
       })()}
 
-      {/* ── Tools of the Trade — always rendered; shows "not applicable"
-          when no specialist tools apply, so the Understand layout is
-          predictable across every career. */}
-      <SectionCard>
-        <SectionHeader icon={Wrench} title="Tools of the Trade" tooltip="The software, equipment, and tools professionals in this role use every day." collapsed={uCollapsed('u-career-paths')} onToggle={() => uToggle('u-career-paths')} />
-        {!uCollapsed('u-career-paths') && (
-          <div className="p-3">
-            {details?.typicalDay.tools?.length ? (
-              <div className="flex flex-wrap gap-1.5">
-                {details.typicalDay.tools.map((tool, i) => {
-                  const info = getToolInfo(tool);
-                  return (
-                    <a
-                      key={i}
-                      href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={info?.description || tool}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border/30 bg-background/40 px-2.5 py-1 text-[11px] text-foreground/75 hover:text-foreground hover:border-border/50 transition-colors"
-                    >
-                      <span>{tool}</span>
-                      <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40" />
-                    </a>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
-                <p className="text-sm font-medium text-foreground/80">No specialist tools</p>
-                <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
-                  This role depends on skills, judgement, and presence — not on specific software or equipment.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-      </SectionCard>
+      {/* "Tools of the Trade" was merged into the Day-to-Day Work card
+          at the top of the tab as a second tab — the two lists (daily
+          tasks + tools used) are read together and having them on one
+          surface cuts the section count on Understand. */}
 
       {/* Self-confirmation — drives the dashboard's Understand progress
           AND the tab lock. The Understand tab is read-only deep-dive

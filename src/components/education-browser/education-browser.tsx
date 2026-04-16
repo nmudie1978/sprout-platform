@@ -53,6 +53,9 @@ import {
 } from '@/lib/education/programme-alignment';
 import { BrowserFilters, type FilterState } from './browser-filters';
 import { AlignmentBadge } from './alignment-badge';
+import { PaginationControls } from '@/components/ui/pagination-controls';
+
+const PAGE_SIZE = 5;
 
 interface EducationBrowserProps {
   careerTitle: string | null;
@@ -110,10 +113,20 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     alignment: '',
     city: '',
   });
+  // Pagination — 1-indexed to match PaginationControls' contract. We
+  // reset to page 1 whenever the active career changes (the list is
+  // entirely different data) and also whenever filters change so the
+  // user never lands on an empty trailing page.
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     setFilters({ search: '', country: '', type: '', alignment: '', city: '' });
+    setPage(1);
   }, [resolvedId]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
 
   const filtered = useMemo(() => {
     let list = allProgrammes;
@@ -267,141 +280,166 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         </div>
       )}
 
-      {/* ── Filters ───────────────────────────────────────────────── */}
-      <BrowserFilters filters={filters} onChange={setFilters} cities={cities} />
+      {/* Filters intentionally hidden — the curated programme list is
+          already the right answer for the user's chosen career, so the
+          search + country/type/city/fit chips were removed to reduce
+          surface area. Filter state is still initialised to empty
+          defaults so the `filtered` useMemo passes every programme
+          through unchanged. */}
 
-      {/* ── Results count + view toggle ────────────────────────────── */}
-      <div className="flex items-center justify-between">
-        <p className="text-[11px] text-muted-foreground/70">
-          {filtered.length} programme{filtered.length !== 1 ? 's' : ''} at{' '}
-          {groups.length} institution{groups.length !== 1 ? 's' : ''}
-          {foundation?.currentSubjects && foundation.currentSubjects.length > 0 && (
-            <> &middot; alignment based on {foundation.currentSubjects.length} subject{foundation.currentSubjects.length !== 1 ? 's' : ''}</>
-          )}
-        </p>
-      </div>
-
-      {/* ── Institution cards ─────────────────────────────────────── */}
-      {groups.length > 0 ? (
-        <>
-          {/* Cards view — flat grid of all programmes as standalone cards */}
-          {viewMode === 'cards' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {filtered.map((prog) => {
-                const inst = getInstitutionById(prog.institutionId);
-                const alignment = alignments.get(prog.id) ?? { status: 'unknown' as const, reason: '', matchedSubjects: [], missingSubjects: [] };
-                return (
-                  <div
-                    key={prog.id}
-                    className="rounded-xl border border-border/40 bg-card/60 p-3.5 hover:border-teal-500/30 transition-colors"
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2">
-                        {prog.englishName}
-                      </h4>
-                      <AlignmentBadge status={alignment.status} matchedSubjects={alignment.matchedSubjects} missingSubjects={alignment.missingSubjects} compact />
-                    </div>
-                    <p className="text-[11px] text-muted-foreground/70 mb-1 truncate">{prog.programme}</p>
-                    <p className="text-[11px] text-foreground/75 font-medium mb-2">
-                      {inst?.name ?? prog.institution}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground/65">
-                      <span>{COUNTRY_FLAGS[prog.country] ?? prog.country} {prog.city}</span>
-                      <span>&middot;</span>
-                      <span>{prog.type}</span>
-                      <span>&middot;</span>
-                      <span>{prog.duration}</span>
-                    </div>
-                    {prog.url && (
-                      <a
-                        href={prog.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 hover:underline"
-                      >
-                        Visit programme page →
-                      </a>
-                    )}
-                  </div>
-                );
-              })}
+      {/* ── Results count + pagination slice ──────────────────────────
+          Derive the page window once so the count line and both render
+          branches share the same slice. `safePage` guards against a
+          stale out-of-range page after filters shrink the list. */}
+      {(() => {
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        const safePage = Math.min(Math.max(1, page), totalPages);
+        const start = (safePage - 1) * PAGE_SIZE;
+        const end = Math.min(start + PAGE_SIZE, filtered.length);
+        const pageData = filtered.slice(start, end);
+        return (
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] text-muted-foreground/70">
+                {filtered.length} programme{filtered.length !== 1 ? 's' : ''} at{' '}
+                {groups.length} institution{groups.length !== 1 ? 's' : ''}
+                {filtered.length > PAGE_SIZE && (
+                  <> &middot; showing {start + 1}–{end}</>
+                )}
+                {foundation?.currentSubjects && foundation.currentSubjects.length > 0 && (
+                  <> &middot; alignment based on {foundation.currentSubjects.length} subject{foundation.currentSubjects.length !== 1 ? 's' : ''}</>
+                )}
+              </p>
             </div>
-          )}
 
-          {/* List view — table-style rows matching Explore Careers */}
-          {viewMode === 'list' && (
-            <>
-              {/* Column headers */}
-              <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-full">
-                <span>Programme</span>
-                <span>Institution</span>
-                <span>Location</span>
-                <span className="text-center">Duration</span>
-                <span className="text-center">Alignment</span>
-                <span>Learn more</span>
+            {groups.length > 0 ? (
+              <>
+                {viewMode === 'cards' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {pageData.map((prog) => {
+                      const inst = getInstitutionById(prog.institutionId);
+                      const alignment = alignments.get(prog.id) ?? { status: 'unknown' as const, reason: '', matchedSubjects: [], missingSubjects: [] };
+                      return (
+                        <div
+                          key={prog.id}
+                          className="rounded-xl border border-border/40 bg-card/60 p-3.5 hover:border-teal-500/30 transition-colors"
+                        >
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2">
+                              {prog.englishName}
+                            </h4>
+                            <AlignmentBadge status={alignment.status} matchedSubjects={alignment.matchedSubjects} missingSubjects={alignment.missingSubjects} compact />
+                          </div>
+                          <p className="text-[11px] text-muted-foreground/70 mb-1 truncate">{prog.programme}</p>
+                          <p className="text-[11px] text-foreground/75 font-medium mb-2">
+                            {inst?.name ?? prog.institution}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground/65">
+                            <span>{COUNTRY_FLAGS[prog.country] ?? prog.country} {prog.city}</span>
+                            <span>&middot;</span>
+                            <span>{prog.type}</span>
+                            <span>&middot;</span>
+                            <span>{prog.duration}</span>
+                          </div>
+                          {prog.url && (
+                            <a
+                              href={prog.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 hover:underline"
+                            >
+                              Visit programme page →
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {viewMode === 'list' && (
+                  <>
+                    <div className="inline-grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-2 border border-b-0 rounded-t-md bg-teal-500/[0.08] text-[10px] font-bold uppercase tracking-wider text-teal-300 w-full">
+                      <span>Programme</span>
+                      <span>Institution</span>
+                      <span>Location</span>
+                      <span className="text-center">Duration</span>
+                      <span className="text-center">Alignment</span>
+                      <span>Learn more</span>
+                    </div>
+                    <div className="border rounded-b-md overflow-hidden bg-background w-full">
+                      {pageData.map((prog) => {
+                        const inst = getInstitutionById(prog.institutionId);
+                        const alignment = alignments.get(prog.id);
+                        return (
+                          <a
+                            key={prog.id}
+                            href={prog.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1.5 border-b border-border/25 hover:bg-muted/50 transition-colors text-left group"
+                          >
+                            <span className="flex items-center gap-2 min-w-0">
+                              <span className="text-sm flex-shrink-0 leading-none">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
+                              <span className="text-xs font-medium truncate group-hover:text-teal-300 transition-colors">{prog.englishName}</span>
+                            </span>
+                            <span className="text-[11px] text-muted-foreground truncate">
+                              {inst?.name ?? prog.institution}
+                            </span>
+                            <span className="text-[11px] text-muted-foreground truncate">
+                              {prog.city}
+                            </span>
+                            {/* Duration — strip the verbose programme
+                                breakdown ("5 years (3-year bachelor +
+                                2-year master)" etc.) down to the leading
+                                number. The full string is preserved in
+                                the data and shown in the card view and
+                                on the institution's own programme page. */}
+                            <span className="text-[11px] text-muted-foreground text-center tabular-nums">
+                              {prog.duration.match(/^(\d+(?:\.\d+)?)/)?.[1] ?? prog.duration}
+                            </span>
+                            <span className="flex items-center justify-center">
+                              <AlignmentBadge status={alignment?.status ?? 'unknown'} matchedSubjects={alignment?.matchedSubjects} missingSubjects={alignment?.missingSubjects} compact />
+                            </span>
+                            <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+                              Visit page
+                              <ChevronRight className="h-3 w-3" />
+                            </span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {/* Pagination — only renders when there are ≥2 pages
+                    (PaginationControls handles that internally). 5 rows
+                    per page is the product brief for this surface. */}
+                <PaginationControls
+                  currentPage={safePage}
+                  totalPages={totalPages}
+                  totalItems={filtered.length}
+                  pageSize={PAGE_SIZE}
+                  onPageChange={setPage}
+                  showItemCount={false}
+                  className="pt-2"
+                />
+              </>
+            ) : (
+              <div className="py-14 text-center rounded-2xl border border-border/30 bg-card/30">
+                <p className="text-sm text-muted-foreground/75 mb-1">No results match your filters</p>
+                <button
+                  type="button"
+                  onClick={() => setFilters({ search: '', country: '', type: '', alignment: '', city: '' })}
+                  className="text-[11px] text-teal-400 hover:underline"
+                >
+                  Clear filters
+                </button>
               </div>
-              <div className="border rounded-b-md overflow-hidden bg-background w-full">
-                {filtered.map((prog) => {
-                  const inst = getInstitutionById(prog.institutionId);
-                  const alignment = alignments.get(prog.id);
-                  return (
-                    <a
-                      key={prog.id}
-                      href={prog.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="grid grid-cols-[1fr_10rem_6rem_5rem_5rem_7rem] items-center gap-x-4 px-3 py-1.5 border-b border-border/25 hover:bg-muted/50 transition-colors text-left group"
-                    >
-                      {/* Programme */}
-                      <span className="flex items-center gap-2 min-w-0">
-                        <span className="text-sm flex-shrink-0 leading-none">{COUNTRY_FLAGS[prog.country] ?? ''}</span>
-                        <span className="text-xs font-medium truncate group-hover:text-teal-300 transition-colors">{prog.englishName}</span>
-                      </span>
-
-                      {/* Institution */}
-                      <span className="text-[11px] text-muted-foreground truncate">
-                        {inst?.name ?? prog.institution}
-                      </span>
-
-                      {/* Location */}
-                      <span className="text-[11px] text-muted-foreground truncate">
-                        {prog.city}
-                      </span>
-
-                      {/* Duration */}
-                      <span className="text-[11px] text-muted-foreground text-center">
-                        {prog.duration}
-                      </span>
-
-                      {/* Alignment */}
-                      <span className="flex items-center justify-center">
-                        <AlignmentBadge status={alignment?.status ?? 'unknown'} matchedSubjects={alignment?.matchedSubjects} missingSubjects={alignment?.missingSubjects} compact />
-                      </span>
-
-                      {/* Learn more */}
-                      <span className="text-[10px] text-primary font-medium flex items-center gap-0.5">
-                        Visit page
-                        <ChevronRight className="h-3 w-3" />
-                      </span>
-                    </a>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </>
-      ) : (
-        <div className="py-14 text-center rounded-2xl border border-border/30 bg-card/30">
-          <p className="text-sm text-muted-foreground/75 mb-1">No results match your filters</p>
-          <button
-            type="button"
-            onClick={() => setFilters({ search: '', country: '', type: '', alignment: '', city: '' })}
-            className="text-[11px] text-teal-400 hover:underline"
-          >
-            Clear filters
-          </button>
-        </div>
-      )}
+            )}
+          </>
+        );
+      })()}
     </div>
   );
 }
