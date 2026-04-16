@@ -3548,6 +3548,146 @@
         "cloud"
       ]
     },
+    "network": {
+      "summary": "Network engineering is driven by vendor certifications. Cisco's CCNA → CCNP → CCIE ladder is the industry gold standard; Juniper and cloud-provider networking certs are strong complements. Degree-entry is common but the certifications are what employers look for.",
+      "certifications": [
+        {
+          "name": "Cisco CCNA",
+          "provider": "Cisco",
+          "duration": "3\u20136 months self-paced + exam",
+          "cost": "~3,500 NOK",
+          "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccna/",
+          "recognised": "Global entry-level network engineering standard"
+        },
+        {
+          "name": "Cisco CCNP Enterprise",
+          "provider": "Cisco",
+          "duration": "6\u201312 months + exams",
+          "cost": "~5,500 NOK",
+          "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccnp-enterprise/",
+          "recognised": "Mid-senior network engineering standard"
+        },
+        {
+          "name": "Cisco CCIE Enterprise Infrastructure",
+          "provider": "Cisco",
+          "duration": "12\u201324 months + written & lab exam",
+          "cost": "~20,000 NOK",
+          "url": "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/enterprise/ccie-enterprise-infrastructure/",
+          "recognised": "Expert-tier global benchmark"
+        },
+        {
+          "name": "Juniper JNCIA-Junos",
+          "provider": "Juniper Networks",
+          "duration": "Self-paced + exam",
+          "cost": "~2,500 NOK",
+          "url": "https://www.juniper.net/us/en/training/certification/tracks/enterprise-routing-switching/jncia-junos.html",
+          "recognised": "Vendor alternative to CCNA"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Computer Science, Networking, or IT",
+        "Bachelor's in Electrical Engineering"
+      ],
+      "matchTerms": [
+        "network"
+      ]
+    },
+    "ai-ml": {
+      "summary": "AI and machine-learning roles value a master's degree plus a portfolio of projects. Cloud-provider ML specialty certifications and frameworks-specific credentials signal applied readiness beyond coursework.",
+      "certifications": [
+        {
+          "name": "AWS Machine Learning Specialty",
+          "provider": "Amazon Web Services",
+          "duration": "Self-paced + exam",
+          "cost": "~3,500 NOK",
+          "url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/",
+          "recognised": "Leading cloud ML credential"
+        },
+        {
+          "name": "Google Cloud Professional Machine Learning Engineer",
+          "provider": "Google",
+          "duration": "Self-paced + exam",
+          "cost": "~2,500 NOK",
+          "url": "https://cloud.google.com/learn/certification/machine-learning-engineer",
+          "recognised": "GCP ML engineering standard"
+        },
+        {
+          "name": "DeepLearning.AI TensorFlow Developer",
+          "provider": "DeepLearning.AI (Coursera)",
+          "duration": "4 months part-time",
+          "cost": "~3,000 NOK",
+          "url": "https://www.tensorflow.org/certificate",
+          "recognised": "Foundational deep-learning credential"
+        },
+        {
+          "name": "Microsoft Azure AI Engineer Associate",
+          "provider": "Microsoft",
+          "duration": "Self-paced + exam",
+          "cost": "~2,000 NOK",
+          "url": "https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/",
+          "recognised": "Azure AI integration standard"
+        }
+      ],
+      "recommendedDegrees": [
+        "Master's in Artificial Intelligence or Machine Learning",
+        "Bachelor's in Computer Science with AI specialisation",
+        "Master's in Statistics or Applied Mathematics"
+      ],
+      "matchTerms": [
+        "ai-engineer",
+        "ai engineer",
+        "ai-researcher",
+        "ai research",
+        "machine-learning",
+        "machine learning",
+        "ml-engineer",
+        "ml engineer",
+        "computer-vision",
+        "computer vision",
+        "nlp",
+        "mlops",
+        "generative-ai",
+        "generative ai"
+      ]
+    },
+    "devops": {
+      "summary": "DevOps and site-reliability engineering careers are portfolio-and-certification led. Cloud, containers, and infrastructure-as-code certs matter more than a specific degree once you have one technical bachelor's behind you.",
+      "certifications": [
+        {
+          "name": "AWS Certified DevOps Engineer Professional",
+          "provider": "Amazon Web Services",
+          "duration": "Self-paced + exam",
+          "cost": "~3,500 NOK",
+          "url": "https://aws.amazon.com/certification/certified-devops-engineer-professional/",
+          "recognised": "Senior DevOps benchmark"
+        },
+        {
+          "name": "Certified Kubernetes Administrator (CKA)",
+          "provider": "CNCF",
+          "duration": "Self-paced + exam",
+          "cost": "~3,000 NOK",
+          "url": "https://training.linuxfoundation.org/certification/certified-kubernetes-administrator-cka/",
+          "recognised": "Container orchestration standard"
+        },
+        {
+          "name": "HashiCorp Terraform Associate",
+          "provider": "HashiCorp",
+          "duration": "Self-paced + exam",
+          "cost": "~1,500 NOK",
+          "url": "https://www.hashicorp.com/certification/terraform-associate",
+          "recognised": "Infrastructure-as-code standard"
+        }
+      ],
+      "recommendedDegrees": [
+        "Bachelor's in Computer Science or Software Engineering"
+      ],
+      "matchTerms": [
+        "devops",
+        "sre",
+        "site-reliability",
+        "platform-engineer"
+      ]
+    },
     "data": {
       "summary": "Data science and analytics roles value a mix of formal education and practical skills. A degree in statistics, maths, or computer science provides the foundation, but practical certifications and portfolio projects matter equally.",
       "certifications": [

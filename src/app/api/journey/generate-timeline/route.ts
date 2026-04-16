@@ -35,7 +35,7 @@ const SYSTEM_PROMPT = `Career timeline generator for youth (15-23). Output ONLY 
 ROADMAP RULES (all mandatory):
 ${buildPromptRules()}
 
-JSON SHAPE: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
+JSON SHAPE: {"career":"str","startAge":N,"startYear":N,"items":[{"stage":"foundation"|"education"|"certification"|"experience"|"career","title":"str","subtitle":"str","startAge":N,"endAge":N|null,"isMilestone":bool,"icon":"Sparkles"|"Wrench"|"GraduationCap"|"BookOpen"|"Briefcase"|"FolderOpen"|"Award"|"Target","description":"str","microActions":["str","str"]}],"schoolTrack":[{"stage":"str","title":"str","subjects":["str"],"personalLearning":"str","startAge":N,"endAge":N|null}]}
 
 OUTPUT REQUIREMENTS:
 - Generate 7-8 items + 4 schoolTrack items.
@@ -53,7 +53,7 @@ function isValidJourney(data: unknown): data is Omit<Journey, 'id'> {
   if (typeof obj.career !== 'string') return false;
   if (typeof obj.startAge !== 'number') return false;
   if (!Array.isArray(obj.items) || obj.items.length < 5) return false;
-  const validStages = ['foundation', 'education', 'experience', 'career'];
+  const validStages = ['foundation', 'education', 'certification', 'experience', 'career'];
   for (const item of obj.items) {
     if (!item || typeof item !== 'object') return false;
     const i = item as Record<string, unknown>;
@@ -254,7 +254,7 @@ export async function POST(req: NextRequest) {
           schoolTrack: Array.isArray(parsed.schoolTrack)
             ? (parsed.schoolTrack as unknown as Record<string, unknown>[]).map((st, i) => ({
                 id: `st-${i}-${Math.random().toString(36).slice(2, 7)}`,
-                stage: st.stage as 'foundation' | 'education' | 'experience' | 'career',
+                stage: st.stage as 'foundation' | 'education' | 'certification' | 'experience' | 'career',
                 title: (st.title as string) || '',
                 subjects: Array.isArray(st.subjects) ? st.subjects as string[] : [],
                 personalLearning: (st.personalLearning as string) || undefined,

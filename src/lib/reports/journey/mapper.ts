@@ -132,7 +132,7 @@ const titleCase = (s: string): string =>
   s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
 const isStage = (v: unknown): v is Stage =>
-  v === "foundation" || v === "education" || v === "experience" || v === "career";
+  v === "foundation" || v === "education" || v === "certification" || v === "experience" || v === "career";
 const safeStage = (v: unknown): Stage => (isStage(v) ? v : "foundation");
 
 const fmtDate = (iso: string): string =>
@@ -960,14 +960,14 @@ function buildNextSteps(
     steps.push({
       priority: "foundational",
       headline: "Commit to one first action this fortnight",
-      body: "Choose a single concrete move — book a shadow day, message one person in the field, or sign up for a trial course. Momentum is earned, not granted; the smallest committed action beats the best intention.",
+      body: "Choose a single concrete move — message one person in the field, sit in on an open day, or sign up for a trial course. Momentum is earned, not granted; the smallest committed action beats the best intention.",
     });
   }
   if (career && understand.roleReality.length === 0) {
     steps.push({
       priority: "next",
       headline: `Try one real-world test of ${career}`,
-      body: `Shadow someone for a day, sit in on a real workplace, take a short intro course, or volunteer somewhere adjacent. One day of direct exposure to ${career} sharpens your picture more than hours of further reading.`,
+      body: `Sit in on a real workplace, take a short intro course, or volunteer somewhere adjacent. One day of direct exposure to ${career} sharpens your picture more than hours of further reading.`,
     });
   }
 

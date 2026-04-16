@@ -563,6 +563,11 @@ const CATEGORY_VALUE_SIGNALS: Record<CareerCategory, string[]> = {
     'Strong safety culture on site',
     'Variable hours depending on project',
   ],
+  ARTIFICIAL_INTELLIGENCE: [
+    'Fast-moving field — continuous study to stay current',
+    'Deep focus and long individual problem-solving stretches',
+    'Work increasingly shapes how other industries operate',
+  ],
 };
 
 // ── Public API ──────────────────────────────────────────────────────

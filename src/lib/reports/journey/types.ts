@@ -15,7 +15,7 @@
  * career the user has chosen. Empty user input is not an empty section.
  */
 
-export type Stage = "foundation" | "education" | "experience" | "career";
+export type Stage = "foundation" | "education" | "certification" | "experience" | "career";
 
 export interface RoadmapStep {
   stage: Stage;

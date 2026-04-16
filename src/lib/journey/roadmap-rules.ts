@@ -186,6 +186,7 @@ export const HIGHER_EDUCATION_RE =
 export const STAGE_AGE_BANDS: Record<JourneyStage, { min: number; max: number }> = {
   foundation: { min: 14, max: 19 },
   education: { min: 17, max: 25 },
+  certification: { min: 20, max: 35 },
   experience: { min: 21, max: 30 },
   career: { min: 27, max: 65 },
 };

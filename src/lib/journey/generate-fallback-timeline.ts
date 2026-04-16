@@ -19,11 +19,81 @@
 import type { Journey, JourneyItem, JourneyStage, SchoolTrackItem } from './career-journey-types';
 import { HIGHER_EDUCATION_MIN_AGE, HIGHER_EDUCATION_RE } from './roadmap-rules';
 import { enrichFirstRoleStep } from './enrich-first-role';
+import { getCertificationPath } from '@/lib/education';
 
 export type EducationStage = 'school' | 'college' | 'university' | 'other';
 
 function id(): string {
   return `fb-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+/**
+ * Build certification-stage items for a career. When the career matches
+ * a known certification path (e.g. "network" → CCNA/CCNP/CCIE, "ai-
+ * engineer" → AWS ML, TensorFlow Developer, etc.), we emit one
+ * timeline step per certification, spaced across the given age window.
+ *
+ * Falls back to a single generic "Gain professional certifications"
+ * experience-stage item when no cert path is matched — callers can use
+ * whichever shape they need.
+ */
+function buildCertificationItems(
+  career: string,
+  startAge: number,
+  endAge: number,
+): JourneyItem[] {
+  const certs = getCertificationPath(career, career);
+  if (!certs || certs.certifications.length === 0) {
+    return [
+      {
+        id: id(),
+        stage: 'experience',
+        title: 'Gain professional certifications',
+        subtitle: 'Strengthen your credentials',
+        startAge,
+        endAge,
+        isMilestone: true,
+        icon: 'Award',
+        description: `Once you have work experience, certifications relevant to ${career} demonstrate expertise and open doors to senior roles.`,
+        microActions: [
+          'Research which certifications are valued in your field',
+          'Discuss certification goals with your employer',
+          'Enrol in a certification programme',
+        ],
+      },
+    ];
+  }
+
+  // Space the certs across the [startAge, endAge] window so the
+  // foundational cert comes first and the expert-tier cert sits at
+  // the end. If the window is tight (<= number of certs), we allow
+  // consecutive same-year steps — still better than hiding them.
+  const n = certs.certifications.length;
+  const span = Math.max(endAge - startAge, n - 1);
+  return certs.certifications.map((cert, i) => {
+    const age = startAge + Math.round((span * i) / Math.max(n - 1, 1));
+    const priorityHint =
+      i === 0 ? 'Foundational' : i === n - 1 ? 'Expert-tier' : 'Mid-career';
+    return {
+      id: id(),
+      stage: 'certification' as JourneyStage,
+      title: `Earn ${cert.name}`,
+      subtitle: `${cert.provider} · ${priorityHint}`,
+      startAge: age,
+      endAge: age,
+      isMilestone: i === n - 1,
+      icon: 'Award',
+      description: `${cert.recognised}. Duration: ${cert.duration}. Typical cost: ${cert.cost}.`,
+      microActions: [
+        `Review the exam blueprint on ${cert.provider}'s site`,
+        'Schedule study time — usually several months per level',
+        'Book the exam once you score 80%+ on practice tests',
+      ],
+      suggestedResources: [
+        { label: `${cert.name} — official page`, url: cert.url, type: 'article' as const },
+      ],
+    };
+  });
 }
 
 export function generateFallbackTimeline(
@@ -133,22 +203,7 @@ export function generateFallbackTimeline(
           'Build relationships across your team',
         ],
       },
-      {
-        id: id(),
-        stage: 'experience' as JourneyStage,
-        title: 'Gain professional certifications',
-        subtitle: 'Strengthen your credentials',
-        startAge: Math.max(a + 9, 25),
-        endAge: Math.max(a + 10, 27),
-        isMilestone: true,
-        icon: 'Award',
-        description: `Now that you have work experience, consider professional certifications relevant to ${career}. These demonstrate expertise and open doors to senior roles.`,
-        microActions: [
-          'Research which certifications are valued in your field',
-          'Discuss certification goals with your employer',
-          'Enrol in a certification programme',
-        ],
-      },
+      ...buildCertificationItems(career, Math.max(a + 9, 25), Math.max(a + 10, 27)),
       {
         id: id(),
         stage: 'career' as JourneyStage,
@@ -234,22 +289,7 @@ export function generateFallbackTimeline(
           'Build relationships across your team',
         ],
       },
-      {
-        id: id(),
-        stage: 'experience' as JourneyStage,
-        title: 'Gain professional certifications',
-        subtitle: 'Strengthen your credentials',
-        startAge: entryEndAge,
-        endAge: entryEndAge + 2,
-        isMilestone: true,
-        icon: 'Award',
-        description: `With work experience behind you, consider professional certifications relevant to ${career}. These demonstrate expertise and open doors to senior roles.`,
-        microActions: [
-          'Research which certifications are valued in your field',
-          'Discuss certification goals with your employer',
-          'Enrol in a certification programme',
-        ],
-      },
+      ...buildCertificationItems(career, entryEndAge, entryEndAge + 2),
       {
         id: id(),
         stage: 'career' as JourneyStage,
@@ -333,22 +373,7 @@ export function generateFallbackTimeline(
           'Build relationships with experienced colleagues',
         ],
       },
-      {
-        id: id(),
-        stage: 'experience' as JourneyStage,
-        title: 'Earn specialist certifications',
-        subtitle: 'Strengthen your credentials',
-        startAge: entryEndAge,
-        endAge: entryEndAge + 2,
-        isMilestone: true,
-        icon: 'Award',
-        description: `With practical experience under your belt, consider specialist certifications that deepen your expertise in ${career}.`,
-        microActions: [
-          'Research which certifications are valued in your field',
-          'Discuss training goals with your employer',
-          'Enrol in a certification programme',
-        ],
-      },
+      ...buildCertificationItems(career, entryEndAge, entryEndAge + 2),
       {
         id: id(),
         stage: 'career' as JourneyStage,
@@ -416,22 +441,7 @@ export function generateFallbackTimeline(
           'Build relationships across your team',
         ],
       },
-      {
-        id: id(),
-        stage: 'experience' as JourneyStage,
-        title: 'Gain professional certifications',
-        subtitle: 'Strengthen your credentials',
-        startAge: a + 5,
-        endAge: a + 7,
-        isMilestone: true,
-        icon: 'Award',
-        description: `Once you have work experience, certifications relevant to ${career} demonstrate expertise and open doors to senior roles.`,
-        microActions: [
-          'Research which certifications are valued in your field',
-          'Discuss certification goals with your employer',
-          'Enrol in a certification programme',
-        ],
-      },
+      ...buildCertificationItems(career, a + 5, a + 7),
       {
         id: id(),
         stage: 'career' as JourneyStage,

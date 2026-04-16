@@ -11,7 +11,7 @@ import type { CareerJourney, CareerJourneyItem, CareerJourneyStage } from './dem
 // TYPES
 // ============================================
 
-export type JourneyStage = 'foundation' | 'education' | 'experience' | 'career';
+export type JourneyStage = 'foundation' | 'education' | 'certification' | 'experience' | 'career';
 
 export interface SuggestedResource {
   label: string;
@@ -92,6 +92,15 @@ export const STAGE_CONFIG: Record<JourneyStage, StageConfig> = {
     gradientTo: '#4a8ac4',
     icon: 'GraduationCap',
   },
+  certification: {
+    label: 'Certification',
+    color: '#a78bfa',
+    bgClass: 'bg-violet-100',
+    textClass: 'text-violet-600',
+    gradientFrom: '#b9a3fb',
+    gradientTo: '#9573ea',
+    icon: 'Award',
+  },
   experience: {
     label: 'Experience',
     color: '#e08a4a',
@@ -112,7 +121,7 @@ export const STAGE_CONFIG: Record<JourneyStage, StageConfig> = {
   },
 };
 
-export const STAGE_ORDER: JourneyStage[] = ['foundation', 'education', 'experience', 'career'];
+export const STAGE_ORDER: JourneyStage[] = ['foundation', 'education', 'certification', 'experience', 'career'];
 
 // ============================================
 // LEGACY ADAPTER

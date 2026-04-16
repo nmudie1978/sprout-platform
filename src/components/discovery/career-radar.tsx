@@ -846,6 +846,7 @@ const CATEGORY_LABEL: Record<CareerCategory, string> = {
   REAL_ESTATE_PROPERTY: "Business",
   MILITARY_DEFENCE: "Public Service",
   MANUFACTURING_ENGINEERING: "Trades",
+  ARTIFICIAL_INTELLIGENCE: "AI",
 };
 
 interface PlacedDot {

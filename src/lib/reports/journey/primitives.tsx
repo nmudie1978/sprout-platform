@@ -334,7 +334,7 @@ export function KeyValueList({
 //    optional milestone ring, age/year stamp, title, stage tag, summary.
 //    Rows never break across pages (wrap=false).
 
-export type TimelineStage = "foundation" | "education" | "experience" | "career";
+export type TimelineStage = "foundation" | "education" | "certification" | "experience" | "career";
 
 export interface TimelineItemProps {
   stage: TimelineStage;

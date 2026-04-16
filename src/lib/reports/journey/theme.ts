@@ -60,6 +60,7 @@ export const palette = {
 export const stageColors = {
   foundation: { bg: "#F0FAF5", ink: "#047857", accent: "#10B981" },
   education: { bg: "#EEF3FC", ink: "#1D4ED8", accent: "#3B82F6" },
+  certification: { bg: "#F4F0FC", ink: "#6D28D9", accent: "#A78BFA" },
   experience: { bg: "#FDF4EA", ink: "#C2410C", accent: "#F97316" },
   career: { bg: "#FBF3DD", ink: "#B45309", accent: "#F59E0B" },
 } as const;

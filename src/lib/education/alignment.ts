@@ -432,6 +432,7 @@ export function classifyStepType(item: JourneyItem): RoadmapStepType {
   const stageMap: Record<JourneyStage, RoadmapStepType> = {
     foundation: 'learning',
     education: 'school',
+    certification: 'learning',
     experience: 'real-world',
     career: 'milestone',
   };
@@ -464,6 +465,7 @@ export function getWhyItMatters(item: JourneyItem): string {
   const stageFallback: Record<JourneyStage, string> = {
     foundation: 'Building foundations now makes everything that follows easier.',
     education: 'The right knowledge opens doors you can\'t see yet.',
+    certification: 'Industry certifications signal capability to employers in a language they speak.',
     experience: 'Real experience teaches things no classroom can.',
     career: 'Every step here moves you closer to doing what you care about.',
   };

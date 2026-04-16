@@ -728,6 +728,7 @@ export function RoadmapPages({
             stages={[
               { label: "Foundation", color: stageColors.foundation.accent },
               { label: "Education", color: stageColors.education.accent },
+              { label: "Certification", color: stageColors.certification.accent },
               { label: "Experience", color: stageColors.experience.accent },
               { label: "Career", color: stageColors.career.accent },
             ]}
