@@ -65,13 +65,19 @@ describe('Routes API — Phase 2b', () => {
   });
 
   describe('hasMultipleRoutes', () => {
-    it('returns false for the auto-migrated baseline (every career has exactly one route today)', () => {
-      // Every career in the dataset currently has just the one
-      // auto-migrated default. Phase 4 flips this to true as hand-
-      // curated routes land — at which point the route picker UI
-      // surfaces in Phase 3.
+    it('returns false for careers still on the auto-migrated single-route baseline', () => {
+      // Doctor (and most careers) still has just the one auto-
+      // migrated default route. Phase 4 will flip more of these to
+      // true as hand-curated alternative routes land.
       expect(hasMultipleRoutes('doctor')).toBe(false);
-      expect(hasMultipleRoutes('psychologist')).toBe(false);
+    });
+
+    it('returns true for careers that have hand-curated alternative routes', () => {
+      // Psychology has had a counselling route hand-added in Phase 3
+      // (currently a DEMO PLACEHOLDER, see routes.json) so the route
+      // picker UI surfaces. When Phase 4 lands real content, this
+      // assertion still holds — true is true.
+      expect(hasMultipleRoutes('psychologist')).toBe(true);
     });
 
     it('returns false for an unknown careerId', () => {

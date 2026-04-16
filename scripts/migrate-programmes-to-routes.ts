@@ -16,12 +16,38 @@
  * Run: npx tsx scripts/migrate-programmes-to-routes.ts
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Route, Stage, RoutesFile, StagesFile } from '../src/lib/education/route-types';
 
 const root = resolve(__dirname, '..');
 const today = new Date().toISOString().slice(0, 10);
+
+// Idempotency rule: a careerId is "hand-curated" if EITHER
+//   (a) it has more than one route in the existing routes.json, OR
+//   (b) its single route's id is not the auto-migration convention
+//       `<careerId>--standard`.
+// For hand-curated careers we PRESERVE everything (routes + stages)
+// and skip them in the regeneration. For everything else we
+// regenerate the standard auto-migrated route from programmes.json.
+function loadExisting(): { routes: Omit<Route, 'stages'>[]; stages: Stage[] } {
+  const rPath = resolve(root, 'src/lib/education/data/routes.json');
+  const sPath = resolve(root, 'src/lib/education/data/stages.json');
+  if (!existsSync(rPath) || !existsSync(sPath)) return { routes: [], stages: [] };
+  const rFile = JSON.parse(readFileSync(rPath, 'utf8')) as RoutesFile;
+  const sFile = JSON.parse(readFileSync(sPath, 'utf8')) as StagesFile;
+  return { routes: rFile.routes, stages: sFile.stages };
+}
+
+function isHandCurated(careerId: string, existingRoutes: Omit<Route, 'stages'>[]): boolean {
+  const careerRoutes = existingRoutes.filter((r) => r.careerId === careerId);
+  if (careerRoutes.length === 0) return false;
+  if (careerRoutes.length > 1) return true;
+  const sole = careerRoutes[0];
+  return sole.id !== `${careerId}--standard`;
+}
+
+const existing = loadExisting();
 
 interface ProgrammeRow {
   id: string;
@@ -48,6 +74,22 @@ for (const p of programmesFile.programmes) {
 const routes: Omit<Route, 'stages'>[] = [];
 const stages: Stage[] = [];
 
+// Preserve every route + stage for any hand-curated career.
+const handCuratedCareers = new Set<string>();
+for (const careerId of new Set(existing.routes.map((r) => r.careerId))) {
+  if (isHandCurated(careerId, existing.routes)) handCuratedCareers.add(careerId);
+}
+for (const r of existing.routes) {
+  if (handCuratedCareers.has(r.careerId)) routes.push(r);
+}
+for (const s of existing.stages) {
+  const route = existing.routes.find((r) => r.id === s.routeId);
+  if (route && handCuratedCareers.has(route.careerId)) stages.push(s);
+}
+if (handCuratedCareers.size > 0) {
+  console.log(`[migrate] preserving ${handCuratedCareers.size} hand-curated career(s): ${[...handCuratedCareers].join(', ')}`);
+}
+
 // Average duration parsing — picks the first numeric token from a
 // duration string like "5 years", "3 + 2 years", "18-24 months". Used
 // for the route's estimatedYears at-a-glance number. Hand-edited
@@ -70,6 +112,7 @@ function parseYears(durations: (string | undefined)[]): number {
 }
 
 for (const [careerId, programmes] of byCareer) {
+  if (handCuratedCareers.has(careerId)) continue; // preserved above
   const routeId = `${careerId}--standard`;
   const stageId = `${routeId}--education`;
 

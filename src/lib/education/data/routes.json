@@ -6,6 +6,34 @@
   },
   "routes": [
     {
+      "id": "psychologist--standard",
+      "careerId": "psychologist",
+      "name": "Clinical psychologist (profesjonsstudium)",
+      "shortName": "Clinical",
+      "summary": "Norway's 6-year integrated clinical psychology degree. Highly competitive — about 3,000 applicants for ~150 places.",
+      "tags": [
+        "common",
+        "elite"
+      ],
+      "isDefault": true,
+      "countryCode": "NO",
+      "estimatedYears": 6
+    },
+    {
+      "id": "psychologist--counselling",
+      "careerId": "psychologist",
+      "name": "Counselling track (DEMO PLACEHOLDER — Phase 4 will replace)",
+      "shortName": "Counselling",
+      "summary": "Bachelor + master route via counselling and pedagogical psychology, often completed at a Nordic university outside Norway. Lower entry bar than the clinical profesjonsstudium. NB: this route is a UI demo; real route content lands in Phase 4.",
+      "tags": [
+        "common",
+        "via-abroad"
+      ],
+      "isDefault": false,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
       "id": "doctor--standard",
       "careerId": "doctor",
       "name": "Standard route",
@@ -238,19 +266,6 @@
       "isDefault": true,
       "countryCode": null,
       "estimatedYears": 3
-    },
-    {
-      "id": "psychologist--standard",
-      "careerId": "psychologist",
-      "name": "Standard route",
-      "shortName": "Standard",
-      "summary": "",
-      "tags": [
-        "common"
-      ],
-      "isDefault": true,
-      "countryCode": null,
-      "estimatedYears": 5
     },
     {
       "id": "engineer--standard",

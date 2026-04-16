@@ -41,11 +41,14 @@ import {
   resolveCareer,
   getAlternativePaths,
   getCareerRequirements,
+  getRoutesForCareer,
+  hasMultipleRoutes,
   type ProgrammeWithInstitution,
   type Institution,
   type CareerRequirements,
 } from '@/lib/education';
 import { isAcademicTrackCareer } from '@/lib/education/route-scope';
+import { RoutePicker } from './route-picker';
 import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
@@ -92,10 +95,55 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
   const advanced = useMemo(() => (lookup ? getAdvancedCareerMapping(lookup) : null), [lookup]);
   const alternativePaths = useMemo(() => (resolvedId ? getAlternativePaths(resolvedId) : []), [resolvedId]);
 
-  const allProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
+  const careerProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
     if (!resolvedId) return [];
     return getProgrammesForCareer(resolvedId);
   }, [resolvedId]);
+
+  // Phase 3 — route picker. Only surfaces when the career has >1
+  // route. Selection persists per career in localStorage so a user
+  // returning to the page lands on their last-picked route. Filters
+  // careerProgrammes to programmes referenced by the selected route's
+  // stages.
+  const routes = useMemo(() => (resolvedId ? getRoutesForCareer(resolvedId) : []), [resolvedId]);
+  const showRoutePicker = useMemo(() => (resolvedId ? hasMultipleRoutes(resolvedId) : false), [resolvedId]);
+  const routeStorageKey = resolvedId ? `study-path-route--${resolvedId}` : null;
+
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  // Hydrate from localStorage in an effect (not the useState initializer)
+  // so SSR + iOS Safari private tabs (where localStorage throws) don't
+  // crash the render.
+  useEffect(() => {
+    if (!routeStorageKey) return;
+    try {
+      const persisted = window.localStorage.getItem(routeStorageKey);
+      if (persisted) setSelectedRouteId(persisted);
+      else setSelectedRouteId(null);
+    } catch {
+      setSelectedRouteId(null);
+    }
+  }, [routeStorageKey]);
+
+  const handleRouteSelect = (routeId: string) => {
+    setSelectedRouteId(routeId);
+    if (!routeStorageKey) return;
+    try {
+      window.localStorage.setItem(routeStorageKey, routeId);
+    } catch { /* private-tab — selection lives only for this session */ }
+  };
+
+  const activeRoute = useMemo(() => {
+    if (!showRoutePicker) return null;
+    return routes.find((r) => r.id === selectedRouteId) ?? routes.find((r) => r.isDefault) ?? routes[0] ?? null;
+  }, [routes, selectedRouteId, showRoutePicker]);
+
+  // The set of programme ids the active route covers. When there's no
+  // picker (single-route careers), we fall back to all programmes.
+  const allProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
+    if (!activeRoute) return careerProgrammes;
+    const stagesProgrammeIds = new Set(activeRoute.stages.flatMap((s) => s.programmeIds));
+    return careerProgrammes.filter((p) => stagesProgrammeIds.has(p.id));
+  }, [careerProgrammes, activeRoute]);
 
   const alignments = useMemo<Map<string, AlignmentResult>>(() => {
     const map = new Map<string, AlignmentResult>();
@@ -288,14 +336,26 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
           defaults so the `filtered` useMemo passes every programme
           through unchanged. */}
 
+      {/* ── Route picker (Phase 3) ────────────────────────────────
+          Only renders when the career has >1 route. Selecting a route
+          filters the programmes table below to only programmes the
+          route's stages reference. Selection persists per career in
+          localStorage. */}
+      {showRoutePicker && (
+        <RoutePicker
+          routes={routes}
+          selectedRouteId={selectedRouteId}
+          onSelect={handleRouteSelect}
+        />
+      )}
+
       {/* ── Single-route disclaimer ──────────────────────────────────
-          Until the multi-route Study Path rework lands (see
-          docs/pathway-data-model.md), the affected academic-track
-          careers show only one common pathway. This banner sets honest
-          expectations while the alternative routes are in development.
-          Removed automatically when the career has multiple routes
-          available. Vocational + long-tail careers don't see this. */}
-      {isAcademicTrackCareer(resolvedId) && (
+          Until the multi-route Study Path rework lands per career,
+          academic-track careers without multiple routes yet show this
+          honest "more is coming" line. Auto-hides as soon as the
+          route picker is visible (i.e. once Phase 4 fills in
+          alternative routes for this career). */}
+      {!showRoutePicker && isAcademicTrackCareer(resolvedId) && (
         <div className="rounded-md border border-amber-500/20 bg-amber-500/[0.04] px-3 py-2.5">
           <p className="text-[11px] text-amber-200/80 leading-relaxed">
             <span className="font-medium text-amber-200">Showing the most common route.</span>{' '}

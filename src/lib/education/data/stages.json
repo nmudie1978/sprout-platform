@@ -6,6 +6,50 @@
   },
   "stages": [
     {
+      "id": "psychologist--standard--education",
+      "routeId": "psychologist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Profesjonsstudium i psykologi",
+      "durationYears": 6,
+      "description": "Norway's integrated 6-year clinical psychology degree. Highly competitive entry.",
+      "programmeIds": [
+        "no-uio-psykologi",
+        "no-uib-psykologi",
+        "no-ntnu-psykologi",
+        "no-uit-psykologi"
+      ],
+      "outcome": "Eligible for autorisasjon as klinisk psykolog after 1 year supervised practice"
+    },
+    {
+      "id": "psychologist--counselling--bachelor",
+      "routeId": "psychologist--counselling",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Bachelor + master in psychology (Nordic / abroad)",
+      "durationYears": 5,
+      "description": "Three-year bachelor in psychology followed by a two-year master, typically completed in Sweden, Denmark, Finland, or other EU countries with lower entry bars than the Norwegian profesjonsstudium.",
+      "programmeIds": [
+        "dk-ku-psykologi",
+        "dk-au-psykologi",
+        "se-lu-psykologprogrammet",
+        "se-su-psykologprogrammet",
+        "se-gu-psykologprogrammet",
+        "fi-helsinki-psykologia"
+      ],
+      "outcome": "Foundation for counselling, pedagogical, or organisational psychology work"
+    },
+    {
+      "id": "psychologist--counselling--practice",
+      "routeId": "psychologist--counselling",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "Supervised practice + authorisation",
+      "durationYears": 1,
+      "description": "Supervised work in a counselling, school, or organisational setting. The exact authorisation route depends on the country where the degree was earned and where the user wants to practice.",
+      "programmeIds": []
+    },
+    {
       "id": "doctor--standard--education",
       "routeId": "doctor--standard",
       "orderIndex": 0,
@@ -282,27 +326,6 @@
         "se-su-kandidatprogram-i-kemi",
         "dk-ku-kemi",
         "fi-helsinki-kemian-koulutusohjelma"
-      ]
-    },
-    {
-      "id": "psychologist--standard--education",
-      "routeId": "psychologist--standard",
-      "orderIndex": 0,
-      "kind": "education",
-      "title": "Education",
-      "durationYears": 5,
-      "description": "",
-      "programmeIds": [
-        "no-uio-psykologi",
-        "no-uib-psykologi",
-        "no-ntnu-psykologi",
-        "no-uit-psykologi",
-        "dk-ku-psykologi",
-        "dk-au-psykologi",
-        "se-lu-psykologprogrammet",
-        "se-su-psykologprogrammet",
-        "se-gu-psykologprogrammet",
-        "fi-helsinki-psykologia"
       ]
     },
     {
