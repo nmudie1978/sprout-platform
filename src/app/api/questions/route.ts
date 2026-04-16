@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
           include: {
             answerer: {
               select: {
-                email: true,
+                id: true,
               },
             },
           },

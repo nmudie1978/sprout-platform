@@ -4,6 +4,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { recordLifeSkillEvent } from "@/lib/life-skills";
+import { z } from "zod";
+
+const patchSchema = z.object({
+  status: z.enum(["ACCEPTED", "REJECTED", "WITHDRAWN"]),
+});
 
 export async function PATCH(
   req: NextRequest,
@@ -17,8 +22,14 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const body = await req.json();
-    const { status } = body;
+    const parsed = patchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten() },
+        { status: 400 },
+      );
+    }
+    const { status } = parsed.data;
 
     // Get application with job details
     const application = await prisma.application.findUnique({
@@ -35,20 +46,34 @@ export async function PATCH(
       );
     }
 
-    // Only job poster can accept/reject
-    if (
+    // Per-role status authorisation:
+    //   EMPLOYER (must own the job) → ACCEPTED, REJECTED
+    //   YOUTH (must own the application) → WITHDRAWN
+    // Without this gate a YOUTH could POST {status:"ACCEPTED"} on their
+    // own application, self-accept, trigger the auto-reject of every
+    // other applicant, and send "you got the job" notifications.
+    const isEmployerOwner =
       session.user.role === "EMPLOYER" &&
-      application.job.postedById !== session.user.id
-    ) {
+      application.job.postedById === session.user.id;
+    const isYouthOwner =
+      session.user.role === "YOUTH" &&
+      application.youthId === session.user.id;
+
+    if (!isEmployerOwner && !isYouthOwner) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    // Only applicant can withdraw
-    if (
-      session.user.role === "YOUTH" &&
-      application.youthId !== session.user.id
-    ) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    if (isYouthOwner && status !== "WITHDRAWN") {
+      return NextResponse.json(
+        { error: "Applicants may only withdraw their own application." },
+        { status: 403 },
+      );
+    }
+    if (isEmployerOwner && status === "WITHDRAWN") {
+      return NextResponse.json(
+        { error: "Only the applicant can withdraw their application." },
+        { status: 403 },
+      );
     }
 
     const updatedApplication = await prisma.application.update({

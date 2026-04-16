@@ -3,6 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const patchSchema = z.object({
+  companyName: z.string().min(1).max(120).optional(),
+  website: z.string().url().max(300).nullish(),
+  companyLogo: z.string().url().max(500).nullish(),
+  bio: z.string().max(2000).nullish(),
+  phoneNumber: z.string().max(40).nullish(),
+});
 
 export async function GET(req: NextRequest) {
   try {
@@ -44,12 +53,16 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { companyName, website, companyLogo, bio, phoneNumber } = await req.json();
+    const parsed = patchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten() }, { status: 400 });
+    }
+    const { companyName, website, companyLogo, bio, phoneNumber } = parsed.data;
 
     const profile = await prisma.employerProfile.update({
       where: { userId: session.user.id },
       data: {
-        companyName,
+        ...(companyName !== undefined ? { companyName } : {}),
         website: website || null,
         companyLogo: companyLogo || null,
         bio: bio || null,
