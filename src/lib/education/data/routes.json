@@ -10,7 +10,7 @@
       "careerId": "doctor",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -23,7 +23,7 @@
       "careerId": "nurse",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -36,7 +36,7 @@
       "careerId": "dentist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -49,7 +49,7 @@
       "careerId": "physiotherapist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -62,7 +62,7 @@
       "careerId": "veterinarian",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -75,7 +75,7 @@
       "careerId": "software-developer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -88,7 +88,7 @@
       "careerId": "it-engineer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -101,7 +101,7 @@
       "careerId": "mechanical-engineer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -114,7 +114,7 @@
       "careerId": "civil-engineer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -127,7 +127,7 @@
       "careerId": "accountant",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -140,7 +140,7 @@
       "careerId": "economist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -153,7 +153,7 @@
       "careerId": "lawyer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -166,7 +166,7 @@
       "careerId": "architect",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -179,7 +179,7 @@
       "careerId": "designer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -192,7 +192,7 @@
       "careerId": "teacher",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -205,7 +205,7 @@
       "careerId": "social-worker",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -218,7 +218,7 @@
       "careerId": "biologist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -231,7 +231,7 @@
       "careerId": "chemist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -244,7 +244,7 @@
       "careerId": "psychologist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -257,7 +257,7 @@
       "careerId": "engineer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -270,7 +270,7 @@
       "careerId": "healthcare-worker",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -283,7 +283,7 @@
       "careerId": "data-analyst",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -296,7 +296,7 @@
       "careerId": "police-officer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -309,7 +309,7 @@
       "careerId": "firefighter",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -322,7 +322,7 @@
       "careerId": "airline-pilot",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -335,7 +335,7 @@
       "careerId": "helicopter-pilot",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -348,7 +348,7 @@
       "careerId": "chef",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -361,7 +361,7 @@
       "careerId": "carpenter",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -374,7 +374,7 @@
       "careerId": "bricklayer",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -387,7 +387,7 @@
       "careerId": "painter-decorator",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -400,7 +400,7 @@
       "careerId": "civil-works-foreman",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -413,7 +413,7 @@
       "careerId": "electrician",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -426,7 +426,7 @@
       "careerId": "automation-technician",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -439,7 +439,7 @@
       "careerId": "industrial-electrician",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -452,7 +452,7 @@
       "careerId": "care-assistant",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -465,7 +465,7 @@
       "careerId": "childcare-assistant",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -478,7 +478,7 @@
       "careerId": "dental-assistant",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -491,7 +491,7 @@
       "careerId": "cnc-machinist",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -504,7 +504,7 @@
       "careerId": "welder",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -517,7 +517,7 @@
       "careerId": "industrial-mechanic",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -530,7 +530,7 @@
       "careerId": "auto-mechanic",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -543,7 +543,7 @@
       "careerId": "hairdresser",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],
@@ -556,7 +556,7 @@
       "careerId": "boilermaker",
       "name": "Standard route",
       "shortName": "Standard",
-      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "summary": "",
       "tags": [
         "common"
       ],

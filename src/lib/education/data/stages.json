@@ -12,7 +12,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 6,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-medisin",
         "no-ntnu-medisin",
@@ -29,7 +29,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-sykepleie",
         "no-ntnu-sykepleie",
@@ -45,7 +45,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-odontologi",
         "no-uib-odontologi",
@@ -67,7 +67,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3.5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-fysioterapi",
         "se-lu-fysioterapeutprogrammet",
@@ -82,7 +82,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5.5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-nmbu-veterin-rmedisin",
         "se-slu-veterin-rprogrammet",
@@ -97,7 +97,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-informatikk",
         "no-ntnu-datateknologi",
@@ -114,7 +114,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-informasjonsteknologi",
         "se-liu-civilingenj-r-informationstekn"
@@ -127,7 +127,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-ntnu-produktutvikling-og-produksjon",
         "se-chalmers-civilingenj-r-maskinteknik",
@@ -141,7 +141,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-ntnu-bygg-og-milj-teknikk",
         "se-kth-civilingenj-r-samh-llsbyggnad",
@@ -155,7 +155,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-regnskap-og-revisjon",
         "se-sse-ekonomie-kandidat",
@@ -169,7 +169,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-nhh-konomi-og-administrasjon",
         "se-su-kandidatprogram-i-nationalekon",
@@ -186,7 +186,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-rettsvitenskap",
         "se-uu-juristprogrammet",
@@ -201,7 +201,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-aho-arkitektur",
         "se-kth-arkitektutbildning",
@@ -216,7 +216,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-aho-design",
         "se-konstfack-industridesign",
@@ -231,7 +231,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-grunnskolel-rerutdanning-1-7",
         "no-ntnu-lektorutdanning-8-13",
@@ -247,7 +247,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3.5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-oslomet-sosialt-arbeid",
         "se-gu-socionomprogrammet",
@@ -261,7 +261,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-biovitenskap",
         "se-uu-kandidatprogram-i-biologi",
@@ -276,7 +276,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-kjemi",
         "se-su-kandidatprogram-i-kemi",
@@ -291,7 +291,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-psykologi",
         "no-uib-psykologi",
@@ -312,7 +312,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-ntnu-sivilingeni-r",
         "no-oslomet-ingeni-rfag",
@@ -326,7 +326,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-vgs-no-helse-og-oppvekstfag-helsearbe"
       ]
@@ -338,7 +338,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-uio-statistikk-og-datavitenskap",
         "no-ntnu-datavitenskap",
@@ -356,7 +356,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-phs-bachelorstudium-i-politiarbeid"
       ]
@@ -368,7 +368,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 1,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-nbsk-grunnkurs-for-brann-og-redning"
       ]
@@ -380,7 +380,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-osm-integrated-atpl-programme",
         "no-saa-trafikkflygerutdanning",
@@ -394,7 +394,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 1.5,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-hft-helikopterflygerutdanning"
       ]
@@ -406,7 +406,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 3,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-etterstad-rm-kos",
         "se-grythyttan-kulinarisk-kock",
@@ -423,7 +423,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-tomrer"
       ]
@@ -435,7 +435,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-murer"
       ]
@@ -447,7 +447,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-maler"
       ]
@@ -459,7 +459,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-anleggsmaskinforer"
       ]
@@ -471,7 +471,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-elektriker"
       ]
@@ -483,7 +483,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-automatiker"
       ]
@@ -495,7 +495,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-industrielektriker"
       ]
@@ -507,7 +507,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-helsefagarbeider"
       ]
@@ -519,7 +519,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-barne-og-ungdomsarbeider"
       ]
@@ -531,7 +531,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-tannhelsesekretar"
       ]
@@ -543,7 +543,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-cnc"
       ]
@@ -555,7 +555,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-sveiser"
       ]
@@ -567,7 +567,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-industrimekaniker"
       ]
@@ -579,7 +579,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-bilmekaniker"
       ]
@@ -591,7 +591,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-frisor"
       ]
@@ -603,7 +603,7 @@
       "kind": "education",
       "title": "Education",
       "durationYears": 2,
-      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "description": "",
       "programmeIds": [
         "no-fagbrev-platearbeider"
       ]

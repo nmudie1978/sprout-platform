@@ -28,6 +28,14 @@ const programmes = programmesFile.programmes as Array<{
 const careerReqs = read("src/lib/education/data/career-requirements.json");
 const validation = read("src/lib/education/data/programme-validation.json");
 
+// Phase 2a outputs — only audit if present (hand-edits in the future
+// may delete these temporarily; the audit shouldn't fail-hard on
+// their absence, but should warn).
+let routesFile: { routes?: Array<{ id: string; careerId: string; isDefault: boolean }> } = {};
+let stagesFile: { stages?: Array<{ id: string; routeId: string; programmeIds: string[] }> } = {};
+try { routesFile = read("src/lib/education/data/routes.json"); } catch { /* missing — handled below */ }
+try { stagesFile = read("src/lib/education/data/stages.json"); } catch { /* missing — handled below */ }
+
 const defects: Defect[] = [];
 const push = (sev: Severity, area: string, id: string, msg: string) =>
   defects.push({ sev, area, id, msg });
@@ -146,6 +154,52 @@ for (const [cid, req] of Object.entries(careersInReq)) {
 for (const p of programmes) {
   if (p.url && p.url.startsWith("http://"))
     push("MEDIUM", "programmes.http-not-https", p.id, `URL uses http://, should be https://: ${p.url}`);
+}
+
+// ── 14. Routes/stages — schema integrity (Phase 2a outputs) ──
+const allRoutes = routesFile.routes ?? [];
+const allStages = stagesFile.stages ?? [];
+
+if (allRoutes.length === 0 || allStages.length === 0) {
+  push("LOW", "routes.missing-files", "—", "routes.json or stages.json missing — run scripts/migrate-programmes-to-routes.ts");
+} else {
+  // 14a. Route id uniqueness
+  const routeCounts = new Map<string, number>();
+  for (const r of allRoutes) routeCounts.set(r.id, (routeCounts.get(r.id) ?? 0) + 1);
+  for (const [id, n] of routeCounts) if (n > 1) push("CRITICAL", "routes.id-duplicate", id, `${n} routes share this ID`);
+
+  // 14b. Stage id uniqueness
+  const stageCounts = new Map<string, number>();
+  for (const s of allStages) stageCounts.set(s.id, (stageCounts.get(s.id) ?? 0) + 1);
+  for (const [id, n] of stageCounts) if (n > 1) push("CRITICAL", "stages.id-duplicate", id, `${n} stages share this ID`);
+
+  // 14c. Stage → route cross-ref
+  const knownRouteIds = new Set(allRoutes.map((r) => r.id));
+  for (const s of allStages) {
+    if (!knownRouteIds.has(s.routeId))
+      push("CRITICAL", "stages.broken-route-ref", s.id, `stage references unknown routeId "${s.routeId}"`);
+  }
+
+  // 14d. Stage → programme cross-ref
+  const knownProgrammeIds = new Set(programmes.map((p) => p.id));
+  for (const s of allStages) {
+    for (const pid of s.programmeIds) {
+      if (!knownProgrammeIds.has(pid))
+        push("HIGH", "stages.broken-programme-ref", s.id, `stage references unknown programmeId "${pid}"`);
+    }
+  }
+
+  // 14e. Exactly one default route per career
+  const defaultsByCareer = new Map<string, number>();
+  for (const r of allRoutes) {
+    if (r.isDefault) defaultsByCareer.set(r.careerId, (defaultsByCareer.get(r.careerId) ?? 0) + 1);
+  }
+  const careersWithRoutes = new Set(allRoutes.map((r) => r.careerId));
+  for (const careerId of careersWithRoutes) {
+    const n = defaultsByCareer.get(careerId) ?? 0;
+    if (n === 0) push("HIGH", "routes.no-default", careerId, `career "${careerId}" has routes but none isDefault: true`);
+    if (n > 1) push("CRITICAL", "routes.multiple-defaults", careerId, `career "${careerId}" has ${n} default routes — exactly one allowed`);
+  }
 }
 
 // ── REPORT ──

@@ -78,7 +78,9 @@ for (const [careerId, programmes] of byCareer) {
     careerId,
     name: 'Standard route',
     shortName: 'Standard',
-    summary: 'The most common pathway recorded for this career today. Alternative routes are coming.',
+    // Empty summary → Phase 3 UI skips the route-summary block. Real
+    // hand-curated routes set this. Not a user-facing string today.
+    summary: '',
     tags: ['common'],
     isDefault: true,
     countryCode: null,
@@ -92,8 +94,10 @@ for (const [careerId, programmes] of byCareer) {
     kind: 'education',
     title: 'Education',
     durationYears: parseYears(programmes.map((p) => p.duration)),
-    description:
-      'Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.',
+    // Empty description → Phase 3 UI skips the stage-description
+    // block. Real hand-curated stages set this. Avoiding placeholder
+    // copy that would leak to users when Phase 3 UI ships.
+    description: '',
     programmeIds: programmes.map((p) => p.id),
   });
 }

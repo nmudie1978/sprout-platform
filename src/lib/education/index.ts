@@ -19,6 +19,20 @@ import requirementsData from './data/career-requirements.json';
 import programmeValidationData from './data/programme-validation.json';
 import { shouldHideFromUi, type ValidationStatus } from './validate-programme-url';
 
+// Phase 2b — pathway routes API. Re-exported here so consumers can
+// import from the existing '@/lib/education' barrel. routes.ts is
+// deliberately self-contained (no imports from this barrel) to avoid
+// circular-import hazards. See docs/pathway-data-model.md.
+export {
+  getRoutesForCareer,
+  getRouteById,
+  getStagesForRoute,
+  getStageById,
+  getDefaultRoute,
+  hasMultipleRoutes,
+} from './routes';
+export type { Route, Stage, RouteTag, StageKind } from './route-types';
+
 // ── Types ───────────────────────────────────────────────────────────
 
 export type NordicCountry = 'NO' | 'SE' | 'DK' | 'FI' | 'IS';
