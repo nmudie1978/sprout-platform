@@ -34,7 +34,7 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     summary: 'In Norway, becoming a doctor requires completing a 6-year medical degree (medisin) followed by 18 months of supervised internship (LIS1). Admission is highly competitive with strict grade requirements.',
     programmes: [
       { programme: 'Medisin (profesjonsstudium)', englishName: 'Medicine (Professional Degree)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/medisin/' },
-      { programme: 'Medisin (profesjonsstudium)', englishName: 'Medicine (Professional Degree)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier/medisin' },
+      { programme: 'Medisin (profesjonsstudium)', englishName: 'Medicine (Professional Degree)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier' },
       { programme: 'Medisin (profesjonsstudium)', englishName: 'Medicine (Professional Degree)', institution: 'NTNU', city: 'Trondheim', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/medisin' },
       { programme: 'Medisin (profesjonsstudium)', englishName: 'Medicine (Professional Degree)', institution: 'UiT Norges arktiske universitet', city: 'Tromsø', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/272191/medisin' },
     ],
@@ -45,8 +45,8 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     summary: 'Nursing in Norway requires a 3-year bachelor\'s degree in sykepleie (nursing), followed by authorisation from Helsedirektoratet. Most universities and university colleges across Norway offer the programme.',
     programmes: [
       { programme: 'Sykepleie (bachelor)', englishName: 'Nursing (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/hv/sykepleie' },
-      { programme: 'Sykepleie (bachelor)', englishName: 'Nursing (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/sykepleie' },
-      { programme: 'Sykepleie (bachelor)', englishName: 'Nursing (Bachelor)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier/sykepleie' },
+      { programme: 'Sykepleie (bachelor)', englishName: 'Nursing (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier' },
+      { programme: 'Sykepleie (bachelor)', englishName: 'Nursing (Bachelor)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier' },
     ],
   },
   'psychologist': {
@@ -54,8 +54,8 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     summary: 'To become a psychologist in Norway, you need to complete the 6-year profesjonsstudium i psykologi. This is a competitive integrated programme that leads directly to authorisation. A bachelor + master route also exists but takes longer.',
     programmes: [
       { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/psykologi-profesjon/' },
-      { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier/psykologi-profesjon' },
-      { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'NTNU', city: 'Trondheim', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/psykologi-profesjon' },
+      { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier' },
+      { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'NTNU', city: 'Trondheim', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier' },
       { programme: 'Psykologi (profesjonsstudium)', englishName: 'Psychology (Professional Degree)', institution: 'UiT Norges arktiske universitet', city: 'Tromsø', duration: '6 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/272193/psykologi_profesjon' },
     ],
     alternativePaths: ['Bachelor in psychology (3 years) + master (2 years) — but this does not give clinical authorisation without additional supervised practice'],
@@ -66,7 +66,7 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     programmes: [
       { programme: 'Grunnskolelærerutdanning 1-7', englishName: 'Primary Teacher Education (Grades 1-7)', institution: 'OsloMet', city: 'Oslo', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/lui/grunnskolelaerer-1-7' },
       { programme: 'Grunnskolelærerutdanning 5-10', englishName: 'Teacher Education (Grades 5-10)', institution: 'OsloMet', city: 'Oslo', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/lui/grunnskolelaerer-5-10' },
-      { programme: 'Lektorutdanning', englishName: 'Upper Secondary Teacher Education', institution: 'NTNU', city: 'Trondheim', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/lektorutdanning' },
+      { programme: 'Lektorutdanning', englishName: 'Upper Secondary Teacher Education', institution: 'NTNU', city: 'Trondheim', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier' },
       { programme: 'Lektorutdanning', englishName: 'Upper Secondary Teacher Education', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/lektorprogrammet/' },
     ],
   },
@@ -74,7 +74,7 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     careerId: 'software-developer',
     summary: 'Software development in Norway can be entered through a bachelor\'s in informatics/computer science (3 years) or a 5-year integrated master\'s. Bootcamps and self-taught routes also work — the industry values skills and portfolio over formal degrees.',
     programmes: [
-      { programme: 'Informatikk (bachelor)', englishName: 'Informatics (Bachelor)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/informatikk/' },
+      { programme: 'Informatikk (bachelor)', englishName: 'Informatics (Bachelor)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier' },
       { programme: 'Datateknologi (sivilingeniør)', englishName: 'Computer Science (Integrated Master)', institution: 'NTNU', city: 'Trondheim', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/mtdt' },
       { programme: 'Informasjonsteknologi (bachelor)', englishName: 'Information Technology (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/tkd/informasjonsteknologi' },
     ],
@@ -85,16 +85,16 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     summary: 'Engineering in Norway is typically studied as a 5-year sivilingeniør (integrated master\'s) at NTNU or a 3-year bachelor\'s at a university college. NTNU\'s sivilingeniør programme is the most prestigious route.',
     programmes: [
       { programme: 'Sivilingeniør (various specialisations)', englishName: 'Engineering (Integrated Master)', institution: 'NTNU', city: 'Trondheim', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/sivilingenior' },
-      { programme: 'Ingeniørfag (bachelor)', englishName: 'Engineering (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/tkd/ingenior' },
-      { programme: 'Ingeniørfag (bachelor)', englishName: 'Engineering (Bachelor)', institution: 'Universitetet i Sørøst-Norge (USN)', city: 'Various', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.usn.no/studier/studie-og-emneoversikt/teknologi/' },
+      { programme: 'Ingeniørfag (bachelor)', englishName: 'Engineering (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier' },
+      { programme: 'Ingeniørfag (bachelor)', englishName: 'Engineering (Bachelor)', institution: 'Universitetet i Sørøst-Norge (USN)', city: 'Various', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.usn.no' },
     ],
   },
   'accountant': {
     careerId: 'accountant',
     summary: 'To become an authorised accountant (regnskapsfører) in Norway, you need a bachelor\'s degree in accounting or economics, plus 2 years of relevant work experience. The authorisation is granted by Finanstilsynet.',
     programmes: [
-      { programme: 'Regnskap og revisjon (bachelor)', englishName: 'Accounting and Auditing (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/sam/regnskap-revisjon' },
-      { programme: 'Økonomi og administrasjon (bachelor)', englishName: 'Business Administration (Bachelor)', institution: 'BI Norwegian Business School', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Direct application', url: 'https://www.bi.no/studier-og-kurs/bachelor/okonomi-og-administrasjon/' },
+      { programme: 'Regnskap og revisjon (bachelor)', englishName: 'Accounting and Auditing (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier' },
+      { programme: 'Økonomi og administrasjon (bachelor)', englishName: 'Business Administration (Bachelor)', institution: 'BI Norwegian Business School', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Direct application', url: 'https://www.bi.no' },
       { programme: 'Økonomi og administrasjon (bachelor)', englishName: 'Business Administration (Bachelor)', institution: 'NHH', city: 'Bergen', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.nhh.no/studier/bachelor-i-okonomi-og-administrasjon/' },
     ],
     alternativePaths: ['Fagbrev in accounting (regnskapsmedarbeider) through vocational training'],
@@ -103,8 +103,8 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     careerId: 'lawyer',
     summary: 'Becoming a lawyer in Norway requires a 5-year master\'s degree in law (rettsvitenskap/jus). After graduating, you need 2 years of supervised practice to obtain your advokatbevilling (lawyer\'s licence).',
     programmes: [
-      { programme: 'Rettsvitenskap (master)', englishName: 'Law (Master)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/rettsvitenskap/' },
-      { programme: 'Rettsvitenskap (master)', englishName: 'Law (Master)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier/rettsvitenskap' },
+      { programme: 'Rettsvitenskap (master)', englishName: 'Law (Master)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier' },
+      { programme: 'Rettsvitenskap (master)', englishName: 'Law (Master)', institution: 'Universitetet i Bergen (UiB)', city: 'Bergen', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://www.uib.no/studier' },
       { programme: 'Rettsvitenskap (master)', englishName: 'Law (Master)', institution: 'UiT Norges arktiske universitet', city: 'Tromsø', duration: '5 years', type: 'integrated', applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/272190/rettsvitenskap' },
     ],
   },
@@ -120,8 +120,8 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     careerId: 'data-analyst',
     summary: 'Data analysis in Norway typically requires a bachelor\'s in statistics, mathematics, informatics, or a related field. Many roles accept a strong portfolio in lieu of a specific degree.',
     programmes: [
-      { programme: 'Statistikk og datavitenskap (bachelor)', englishName: 'Statistics and Data Science (Bachelor)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier/program/statistikk/' },
-      { programme: 'Datavitenskap (bachelor)', englishName: 'Data Science (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/bdat' },
+      { programme: 'Statistikk og datavitenskap (bachelor)', englishName: 'Statistics and Data Science (Bachelor)', institution: 'Universitetet i Oslo (UiO)', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.uio.no/studier' },
+      { programme: 'Datavitenskap (bachelor)', englishName: 'Data Science (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier' },
     ],
   },
   'physiotherapist': {
@@ -129,7 +129,7 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     summary: 'Physiotherapy in Norway requires a 3-year bachelor\'s degree in fysioterapi, followed by authorisation from Helsedirektoratet. The programme includes extensive practical placements.',
     programmes: [
       { programme: 'Fysioterapi (bachelor)', englishName: 'Physiotherapy (Bachelor)', institution: 'OsloMet', city: 'Oslo', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.oslomet.no/studier/hv/fysioterapi' },
-      { programme: 'Fysioterapi (bachelor)', englishName: 'Physiotherapy (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier/fysioterapi' },
+      { programme: 'Fysioterapi (bachelor)', englishName: 'Physiotherapy (Bachelor)', institution: 'NTNU', city: 'Trondheim', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://www.ntnu.no/studier' },
       { programme: 'Fysioterapi (bachelor)', englishName: 'Physiotherapy (Bachelor)', institution: 'UiT Norges arktiske universitet', city: 'Tromsø', duration: '3 years', type: 'bachelor', applicationVia: 'Samordna opptak', url: 'https://uit.no/utdanning/program/340977/fysioterapeututdanning' },
     ],
   },
@@ -137,9 +137,9 @@ const CAREER_EDUCATION: Record<string, CareerEducationPath> = {
     careerId: 'police-officer',
     summary: 'In Norway, becoming a police officer requires a 3-year bachelor\'s degree at Politihøgskolen (Police University College). Entry is extremely competitive — typically 3,000+ applicants for ~700 places. You must pass physical tests, background checks, and be a Norwegian citizen.',
     programmes: [
-      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Oslo', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
-      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Stavern', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
-      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Bodø', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no/studietilbud/bachelor/' },
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Oslo', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no' },
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Stavern', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no' },
+      { programme: 'Bachelorstudium i politiarbeid', englishName: 'Bachelor in Police Studies', institution: 'Politihøgskolen', city: 'Bodø', duration: '3 years', type: 'bachelor' as const, applicationVia: 'Politihøgskolen direct', url: 'https://www.politihogskolen.no' },
     ],
     alternativePaths: ['No alternative route — Politihøgskolen is the only path to becoming a police officer in Norway'],
   },

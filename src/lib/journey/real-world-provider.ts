@@ -80,7 +80,7 @@ function universitiesFor(career: string): RealWorldItem[] {
       kind: 'university',
       title: `${career} via Samordna opptak`,
       descriptor: 'Official application portal for Norwegian universities and colleges',
-      url: `https://www.samordnaopptak.no/info/utdanning/`,
+      url: `https://www.samordnaopptak.no`,
       cta: 'Apply',
     },
     {
@@ -409,25 +409,24 @@ function spaceCareerLinks(career: string): RealWorldItem[] {
 
 function militaryCareerLinks(): RealWorldItem[] {
   return [
-    { kind: 'job', title: 'Forsvaret — Karriere', descriptor: 'Norwegian Armed Forces careers and application portal', url: 'https://www.forsvaret.no/karriere', cta: 'Apply' },
-    { kind: 'university', title: 'Krigsskolen', descriptor: 'Norwegian Military Academy — officer training', url: 'https://www.forsvaret.no/utdanning/krigsskolen', cta: 'View' },
-    { kind: 'university', title: 'Sjøkrigsskolen', descriptor: 'Royal Norwegian Naval Academy', url: 'https://www.forsvaret.no/utdanning/sjokrigsskolen', cta: 'View' },
-    { kind: 'university', title: 'Luftkrigsskolen', descriptor: 'Royal Norwegian Air Force Academy', url: 'https://www.forsvaret.no/utdanning/luftkrigsskolen', cta: 'View' },
+    { kind: 'job', title: 'Forsvaret', descriptor: 'Norwegian Armed Forces — careers, training and application info', url: 'https://www.forsvaret.no', cta: 'Browse' },
+    { kind: 'university', title: 'Krigsskolen', descriptor: 'Norwegian Military Academy — officer training', url: 'https://www.forsvaret.no', cta: 'View' },
+    { kind: 'university', title: 'Sjøkrigsskolen', descriptor: 'Royal Norwegian Naval Academy', url: 'https://www.forsvaret.no', cta: 'View' },
+    { kind: 'university', title: 'Luftkrigsskolen', descriptor: 'Royal Norwegian Air Force Academy', url: 'https://www.forsvaret.no', cta: 'View' },
   ];
 }
 
 function policeCareerLinks(): RealWorldItem[] {
   return [
-    { kind: 'university', title: 'Politihøgskolen — Opptak', descriptor: 'Police University College — application and entry requirements', url: 'https://www.politihogskolen.no/opptak/', cta: 'Apply' },
-    { kind: 'university', title: 'Politihøgskolen — Bachelor', descriptor: 'Three-year bachelor in police studies', url: 'https://www.politihogskolen.no/studietilbud/bachelor/', cta: 'View' },
-    { kind: 'job', title: 'Politiet.no — Karriere', descriptor: 'Norwegian Police careers and vacancies', url: 'https://www.politiet.no/jobb-i-politiet/', cta: 'Browse' },
+    { kind: 'university', title: 'Politihøgskolen', descriptor: 'Police University College — bachelor in police studies, applications and entry requirements', url: 'https://www.politihogskolen.no', cta: 'Browse' },
+    { kind: 'job', title: 'Politiet.no', descriptor: 'Norwegian Police — careers and vacancies', url: 'https://www.politiet.no', cta: 'Browse' },
   ];
 }
 
 function firefighterCareerLinks(): RealWorldItem[] {
   return [
     { kind: 'university', title: 'Norges brannskole', descriptor: 'Norwegian Fire Academy — the required training programme', url: 'https://www.nbsk.no/', cta: 'View' },
-    { kind: 'job', title: 'DSB — Brann og redning', descriptor: 'Directorate for Civil Protection — fire service info', url: 'https://www.dsb.no/lover/brannvern-brannvesen/', cta: 'View' },
+    { kind: 'job', title: 'DSB', descriptor: 'Directorate for Civil Protection — fire service info', url: 'https://www.dsb.no', cta: 'View' },
     { kind: 'job', title: 'Fire service vacancies on Finn.no', descriptor: 'Current openings at Norwegian fire departments', url: 'https://www.finn.no/job/fulltime/search.html?q=brannkonstabel', cta: 'Browse' },
   ];
 }
