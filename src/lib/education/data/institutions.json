@@ -15,7 +15,9 @@
       "careerIds": [
         "software-developer",
         "economist",
-        "designer"
+        "designer",
+        "data-analyst",
+        "architect"
       ]
     },
     {
@@ -40,7 +42,8 @@
       "url": "https://www.au.dk",
       "applicationVia": "optagelse.dk",
       "careerIds": [
-        "dentist"
+        "dentist",
+        "psychologist"
       ]
     },
     {
@@ -52,7 +55,8 @@
       "url": "https://www.cbs.dk",
       "applicationVia": "optagelse.dk",
       "careerIds": [
-        "accountant"
+        "accountant",
+        "economist"
       ]
     },
     {
@@ -114,7 +118,8 @@
       "applicationVia": "antagning.se",
       "careerIds": [
         "dentist",
-        "social-worker"
+        "social-worker",
+        "psychologist"
       ]
     },
     {
@@ -132,7 +137,10 @@
         "lawyer",
         "teacher",
         "biologist",
-        "chemist"
+        "chemist",
+        "psychologist",
+        "economist",
+        "data-analyst"
       ]
     },
     {
@@ -248,7 +256,8 @@
       "careerIds": [
         "software-developer",
         "civil-engineer",
-        "architect"
+        "architect",
+        "data-analyst"
       ]
     },
     {
@@ -265,7 +274,10 @@
         "veterinarian",
         "lawyer",
         "biologist",
-        "chemist"
+        "chemist",
+        "psychologist",
+        "economist",
+        "data-analyst"
       ]
     },
     {
@@ -301,7 +313,8 @@
       "url": "https://www.lu.se",
       "applicationVia": "antagning.se",
       "careerIds": [
-        "physiotherapist"
+        "physiotherapist",
+        "psychologist"
       ]
     },
     {
@@ -510,7 +523,9 @@
       "careerIds": [
         "economist",
         "teacher",
-        "chemist"
+        "chemist",
+        "psychologist",
+        "data-analyst"
       ]
     },
     {
