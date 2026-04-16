@@ -96,7 +96,7 @@ export default function InfoPage() {
               <h3 className="text-sm font-semibold">Clarity — See your full journey</h3>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Everything comes together here — your personalised roadmap, voice-guided narration of your path, live opportunities, and the full timeline of what it takes to get there.
+              Everything comes together here — your personalised roadmap, voice-guided narration of your path, a Momentum list of concrete next moves, and the full timeline of what it takes to get there.
             </p>
           </div>
         </div>

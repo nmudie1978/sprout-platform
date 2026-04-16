@@ -32,18 +32,41 @@ import { Award, ExternalLink as ExtLink } from 'lucide-react';
 /**
  * Returns a single contextual tip for a roadmap step — one key piece
  * of guidance that nudges the user toward the most useful action.
+ *
+ * The optional link is either an internal route (opens in the same
+ * tab) or an external URL (opens in a new tab when `external: true`
+ * is set). `linkLabel` lets the tip use phrasing tighter to the
+ * action than the default "Go there".
  */
-function getStepTip(item: JourneyItem, careerTitle?: string | null): { text: string; link?: string } | null {
+type StepTip = {
+  text: string;
+  link?: string;
+  linkLabel?: string;
+  external?: boolean;
+  /** Named certifications rendered as a pill list under the tip text.
+   *  Used for cert-related steps so the student sees CCNA / PMP /
+   *  AWS ML Specialty etc. instead of a generic "explore options"
+   *  phrase. */
+  certs?: Array<{ name: string; provider: string; url: string }>;
+};
+
+/** Build a LinkedIn jobs search URL for a career title, anchored on
+ *  Norway since the app's primary market is Nordic. We preserve the
+ *  career's natural spelling so "AI Infrastructure Network Engineer"
+ *  stays intact in the query — LinkedIn's ranking handles synonyms. */
+function linkedInJobsUrl(careerTitle: string): string {
+  const keywords = encodeURIComponent(careerTitle.trim());
+  return `https://www.linkedin.com/jobs/search/?keywords=${keywords}&location=Norway&f_E=2`; // f_E=2 → Entry level
+}
+
+function getStepTip(item: JourneyItem, careerTitle?: string | null): StepTip | null {
   const title = item.title.toLowerCase();
 
   // University application steps → Study Paths
   if (/apply.*universit|university.*appli|apply.*studi/i.test(title)) {
-    const href = careerTitle
-      ? `/my-journey#understand`
-      : '/my-journey#understand';
     return {
       text: "Head to the Understand tab's Study Paths to explore programmes and check which courses align with your subjects.",
-      link: href,
+      link: '/my-journey#understand',
     };
   }
 
@@ -55,16 +78,42 @@ function getStepTip(item: JourneyItem, careerTitle?: string | null): { text: str
     };
   }
 
+  // Entry-level role / first job / junior position — LinkedIn is where
+  // these postings actually live in Norway, so we offer a one-click
+  // search filtered to the career + entry-level jobs in Norway.
+  if (/apply.*entry|entry.?level.*role|first.*role|first.*job|accept.*entry|junior/i.test(title)) {
+    if (careerTitle) {
+      return {
+        text: `Search LinkedIn for entry-level ${careerTitle} roles in Norway — that's where most of them are actually posted.`,
+        link: linkedInJobsUrl(careerTitle),
+        linkLabel: 'Search LinkedIn',
+        external: true,
+      };
+    }
+    return {
+      text: "Search LinkedIn for entry-level roles in your field — that's where most of them are actually posted in Norway.",
+      link: 'https://www.linkedin.com/jobs/search/?f_E=2&location=Norway',
+      linkLabel: 'Open LinkedIn',
+      external: true,
+    };
+  }
+
   // Internship / work experience / volunteering
   //
-  // Endeavrly deliberately does NOT run a live opportunity feed — we
-  // don't want to compete with the real job boards or create pressure
-  // for youth to apply constantly. The honest pointer is: track the
-  // intent in the Momentum list, and go direct to the places where
-  // Nordic employers actually post these openings.
+  // Endeavrly deliberately does NOT run a live opportunity feed. The
+  // honest pointer is: track the intent in the Momentum list and go
+  // direct to LinkedIn, where Nordic employers actually post.
   if (/intern|work experience|volunteer|placement/i.test(title)) {
+    if (careerTitle) {
+      return {
+        text: `Add this as a concrete step in your Momentum list, then search LinkedIn for ${careerTitle} internships in Norway.`,
+        link: linkedInJobsUrl(`${careerTitle} intern`),
+        linkLabel: 'Search LinkedIn',
+        external: true,
+      };
+    }
     return {
-      text: "Add this as a concrete step in the Momentum section below your roadmap. Most internships in Norway are posted on company career pages and LinkedIn rather than on general job boards.",
+      text: "Add this as a concrete step in your Momentum list below the roadmap, then search LinkedIn and company career pages directly.",
     };
   }
 
@@ -75,10 +124,23 @@ function getStepTip(item: JourneyItem, careerTitle?: string | null): { text: str
     };
   }
 
-  // Certification / qualification
+  // Certification / qualification — surface named credentials for
+  // the career (e.g. CCNA / CCNP / CCIE for network engineer, PMP /
+  // PRINCE2 for project manager, AWS ML Specialty for AI engineer).
+  // When no cert path is mapped, fall back to a generic pointer.
   if (/certif|qualif|licence|accredit|diploma/i.test(title)) {
+    if (careerTitle) {
+      const path = getCertificationPath(careerTitle, careerTitle);
+      if (path && path.certifications.length > 0) {
+        const top = path.certifications.slice(0, 4);
+        return {
+          text: `For ${careerTitle}, the most recognised credentials are:`,
+          certs: top.map((c) => ({ name: c.name, provider: c.provider, url: c.url })),
+        };
+      }
+    }
     return {
-      text: "Explore the Understand tab to see which certifications are valued in this field and where to get them.",
+      text: "Certifications valued in this field vary by employer — explore the Understand tab for named options.",
       link: '/my-journey#understand',
     };
   }
@@ -678,14 +740,41 @@ export function TimelineDetailDialog({
           {stepTip && (
             <div className="flex items-start gap-2.5 rounded-lg bg-teal-500/[0.06] border border-teal-500/15 px-3.5 py-3">
               <Lightbulb className="h-3.5 w-3.5 text-teal-400 shrink-0 mt-0.5" />
-              <p className="text-xs leading-relaxed text-foreground/70">
-                {stepTip.text}
-                {stepTip.link && (
-                  <a href={stepTip.link} className="ml-1 text-teal-400 hover:text-teal-300 underline underline-offset-2">
-                    Go there
-                  </a>
+              <div className="flex-1 min-w-0 space-y-2">
+                <p className="text-xs leading-relaxed text-foreground/70">
+                  {stepTip.text}
+                  {stepTip.link && (
+                    <a
+                      href={stepTip.link}
+                      target={stepTip.external ? '_blank' : undefined}
+                      rel={stepTip.external ? 'noopener noreferrer' : undefined}
+                      className="ml-1 inline-flex items-center gap-0.5 text-teal-400 hover:text-teal-300 underline underline-offset-2"
+                    >
+                      {stepTip.linkLabel ?? 'Go there'}
+                      {stepTip.external && <ExternalLink className="h-2.5 w-2.5" />}
+                    </a>
+                  )}
+                </p>
+                {stepTip.certs && stepTip.certs.length > 0 && (
+                  <ul className="space-y-1">
+                    {stepTip.certs.map((c) => (
+                      <li key={c.name}>
+                        <a
+                          href={c.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center gap-1.5 text-[11.5px] text-foreground/80 hover:text-teal-300 transition-colors"
+                        >
+                          <span className="h-1 w-1 rounded-full bg-teal-400/70 shrink-0" />
+                          <span className="font-semibold">{c.name}</span>
+                          <span className="text-muted-foreground/60">&middot; {c.provider}</span>
+                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40 group-hover:text-teal-300 transition-colors" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 )}
-              </p>
+              </div>
             </div>
           )}
 

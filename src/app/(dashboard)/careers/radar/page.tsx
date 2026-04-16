@@ -154,7 +154,7 @@ const RADAR_TIPS = [
   },
   {
     title: "Set your Primary Goal",
-    description: "Found something interesting? Set it as your Primary Goal from the career detail sheet. That unlocks the full My Journey experience \u2014 roadmap, voice narration, and live opportunities. You can change it anytime.",
+    description: "Found something interesting? Set it as your Primary Goal from the career detail sheet. That unlocks the full My Journey experience \u2014 roadmap, voice narration, and a Momentum list of concrete next moves. You can change it anytime.",
   },
 ];
 
