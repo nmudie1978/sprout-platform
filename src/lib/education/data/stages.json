@@ -1,0 +1,612 @@
+{
+  "meta": {
+    "source": "Auto-migrated from programmes.json by scripts/migrate-programmes-to-routes.ts",
+    "lastUpdated": "2026-04-16",
+    "schemaVersion": 1
+  },
+  "stages": [
+    {
+      "id": "doctor--standard--education",
+      "routeId": "doctor--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 6,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-medisin",
+        "no-ntnu-medisin",
+        "se-ki-l-karprogrammet",
+        "se-uu-l-karprogrammet",
+        "dk-ku-medicin",
+        "fi-helsinki-l-ketieteen-koulutusohjelma"
+      ]
+    },
+    {
+      "id": "nurse--standard--education",
+      "routeId": "nurse--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-sykepleie",
+        "no-ntnu-sykepleie",
+        "se-ki-sjuksk-terskeprogrammet",
+        "dk-kp-sygeplejerskeuddannelsen",
+        "fi-metropolia-sairaanhoitaja"
+      ]
+    },
+    {
+      "id": "dentist--standard--education",
+      "routeId": "dentist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-odontologi",
+        "no-uib-odontologi",
+        "no-uit-odontologi",
+        "se-gu-tandl-karprogrammet",
+        "se-ki-tandl-karprogrammet",
+        "se-mau-tandl-karutbildning",
+        "dk-au-odontologi",
+        "dk-ku-odontologi",
+        "fi-helsinki-hammaslaaketiede",
+        "fi-utu-hammaslaaketiede",
+        "fi-oulu-hammaslaaketiede"
+      ]
+    },
+    {
+      "id": "physiotherapist--standard--education",
+      "routeId": "physiotherapist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3.5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-fysioterapi",
+        "se-lu-fysioterapeutprogrammet",
+        "dk-kp-fysioterapeutuddannelsen",
+        "fi-metropolia-fysioterapeutti"
+      ]
+    },
+    {
+      "id": "veterinarian--standard--education",
+      "routeId": "veterinarian--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5.5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-nmbu-veterin-rmedisin",
+        "se-slu-veterin-rprogrammet",
+        "dk-ku-veterin-rmedicin",
+        "fi-helsinki-el-inl-ketieteen-koulutusohjel"
+      ]
+    },
+    {
+      "id": "software-developer--standard--education",
+      "routeId": "software-developer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-informatikk",
+        "no-ntnu-datateknologi",
+        "se-kth-civilingenj-r-datateknik",
+        "dk-itu-softwareudvikling",
+        "fi-aalto-tietotekniikka",
+        "is-hi-t-lvunarfr-i"
+      ]
+    },
+    {
+      "id": "it-engineer--standard--education",
+      "routeId": "it-engineer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-informasjonsteknologi",
+        "se-liu-civilingenj-r-informationstekn"
+      ]
+    },
+    {
+      "id": "mechanical-engineer--standard--education",
+      "routeId": "mechanical-engineer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-ntnu-produktutvikling-og-produksjon",
+        "se-chalmers-civilingenj-r-maskinteknik",
+        "dk-dtu-maskinteknik"
+      ]
+    },
+    {
+      "id": "civil-engineer--standard--education",
+      "routeId": "civil-engineer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-ntnu-bygg-og-milj-teknikk",
+        "se-kth-civilingenj-r-samh-llsbyggnad",
+        "dk-dtu-bygningsdesign"
+      ]
+    },
+    {
+      "id": "accountant--standard--education",
+      "routeId": "accountant--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-regnskap-og-revisjon",
+        "se-sse-ekonomie-kandidat",
+        "dk-cbs-ha"
+      ]
+    },
+    {
+      "id": "economist--standard--education",
+      "routeId": "economist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-nhh-konomi-og-administrasjon",
+        "se-su-kandidatprogram-i-nationalekon",
+        "fi-aalto-kauppatieteet",
+        "dk-ku-okonomi",
+        "dk-cbs-okonomi",
+        "fi-helsinki-taloustiede"
+      ]
+    },
+    {
+      "id": "lawyer--standard--education",
+      "routeId": "lawyer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-rettsvitenskap",
+        "se-uu-juristprogrammet",
+        "dk-ku-jura",
+        "fi-helsinki-oikeustieteen-maisterin-koulut"
+      ]
+    },
+    {
+      "id": "architect--standard--education",
+      "routeId": "architect--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-aho-arkitektur",
+        "se-kth-arkitektutbildning",
+        "dk-kadk-arkitektuddannelsen",
+        "fi-aalto-arkkitehtuuri"
+      ]
+    },
+    {
+      "id": "designer--standard--education",
+      "routeId": "designer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-aho-design",
+        "se-konstfack-industridesign",
+        "dk-kadk-design",
+        "fi-aalto-muotoilu"
+      ]
+    },
+    {
+      "id": "teacher--standard--education",
+      "routeId": "teacher--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-grunnskolel-rerutdanning-1-7",
+        "no-ntnu-lektorutdanning-8-13",
+        "se-su-mnesl-rarprogrammet",
+        "dk-kp-l-reruddannelsen",
+        "fi-helsinki-luokanopettajan-koulutus"
+      ]
+    },
+    {
+      "id": "social-worker--standard--education",
+      "routeId": "social-worker--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3.5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-oslomet-sosialt-arbeid",
+        "se-gu-socionomprogrammet",
+        "dk-kp-socialr-dgiveruddannelsen"
+      ]
+    },
+    {
+      "id": "biologist--standard--education",
+      "routeId": "biologist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-biovitenskap",
+        "se-uu-kandidatprogram-i-biologi",
+        "dk-ku-biologi",
+        "fi-helsinki-biologian-koulutusohjelma"
+      ]
+    },
+    {
+      "id": "chemist--standard--education",
+      "routeId": "chemist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-kjemi",
+        "se-su-kandidatprogram-i-kemi",
+        "dk-ku-kemi",
+        "fi-helsinki-kemian-koulutusohjelma"
+      ]
+    },
+    {
+      "id": "psychologist--standard--education",
+      "routeId": "psychologist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-psykologi",
+        "no-uib-psykologi",
+        "no-ntnu-psykologi",
+        "no-uit-psykologi",
+        "dk-ku-psykologi",
+        "dk-au-psykologi",
+        "se-lu-psykologprogrammet",
+        "se-su-psykologprogrammet",
+        "se-gu-psykologprogrammet",
+        "fi-helsinki-psykologia"
+      ]
+    },
+    {
+      "id": "engineer--standard--education",
+      "routeId": "engineer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-ntnu-sivilingeni-r",
+        "no-oslomet-ingeni-rfag",
+        "no-universitetet-i-s-r-st-norge-ingeni-rfag"
+      ]
+    },
+    {
+      "id": "healthcare-worker--standard--education",
+      "routeId": "healthcare-worker--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-vgs-no-helse-og-oppvekstfag-helsearbe"
+      ]
+    },
+    {
+      "id": "data-analyst--standard--education",
+      "routeId": "data-analyst--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-uio-statistikk-og-datavitenskap",
+        "no-ntnu-datavitenskap",
+        "dk-ku-statistik",
+        "se-kth-data-science",
+        "se-su-statistik",
+        "fi-aalto-data-science",
+        "fi-helsinki-data-science"
+      ]
+    },
+    {
+      "id": "police-officer--standard--education",
+      "routeId": "police-officer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-phs-bachelorstudium-i-politiarbeid"
+      ]
+    },
+    {
+      "id": "firefighter--standard--education",
+      "routeId": "firefighter--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 1,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-nbsk-grunnkurs-for-brann-og-redning"
+      ]
+    },
+    {
+      "id": "airline-pilot--standard--education",
+      "routeId": "airline-pilot--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-osm-integrated-atpl-programme",
+        "no-saa-trafikkflygerutdanning",
+        "no-uit-luftfart-luftfartsfag"
+      ]
+    },
+    {
+      "id": "helicopter-pilot--standard--education",
+      "routeId": "helicopter-pilot--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 1.5,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-hft-helikopterflygerutdanning"
+      ]
+    },
+    {
+      "id": "chef--standard--education",
+      "routeId": "chef--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 3,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-etterstad-rm-kos",
+        "se-grythyttan-kulinarisk-kock",
+        "se-ryssby-restaurang-livsmedel",
+        "dk-hrs-gastronom",
+        "no-kulinarisk-akademi-kurs",
+        "fi-perho-kokki"
+      ]
+    },
+    {
+      "id": "carpenter--standard--education",
+      "routeId": "carpenter--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-tomrer"
+      ]
+    },
+    {
+      "id": "bricklayer--standard--education",
+      "routeId": "bricklayer--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-murer"
+      ]
+    },
+    {
+      "id": "painter-decorator--standard--education",
+      "routeId": "painter-decorator--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-maler"
+      ]
+    },
+    {
+      "id": "civil-works-foreman--standard--education",
+      "routeId": "civil-works-foreman--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-anleggsmaskinforer"
+      ]
+    },
+    {
+      "id": "electrician--standard--education",
+      "routeId": "electrician--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-elektriker"
+      ]
+    },
+    {
+      "id": "automation-technician--standard--education",
+      "routeId": "automation-technician--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-automatiker"
+      ]
+    },
+    {
+      "id": "industrial-electrician--standard--education",
+      "routeId": "industrial-electrician--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-industrielektriker"
+      ]
+    },
+    {
+      "id": "care-assistant--standard--education",
+      "routeId": "care-assistant--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-helsefagarbeider"
+      ]
+    },
+    {
+      "id": "childcare-assistant--standard--education",
+      "routeId": "childcare-assistant--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-barne-og-ungdomsarbeider"
+      ]
+    },
+    {
+      "id": "dental-assistant--standard--education",
+      "routeId": "dental-assistant--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-tannhelsesekretar"
+      ]
+    },
+    {
+      "id": "cnc-machinist--standard--education",
+      "routeId": "cnc-machinist--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-cnc"
+      ]
+    },
+    {
+      "id": "welder--standard--education",
+      "routeId": "welder--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-sveiser"
+      ]
+    },
+    {
+      "id": "industrial-mechanic--standard--education",
+      "routeId": "industrial-mechanic--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-industrimekaniker"
+      ]
+    },
+    {
+      "id": "auto-mechanic--standard--education",
+      "routeId": "auto-mechanic--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-bilmekaniker"
+      ]
+    },
+    {
+      "id": "hairdresser--standard--education",
+      "routeId": "hairdresser--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-frisor"
+      ]
+    },
+    {
+      "id": "boilermaker--standard--education",
+      "routeId": "boilermaker--standard",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Education",
+      "durationYears": 2,
+      "description": "Auto-migrated from the existing programme catalog. Alternative routes will replace this with named, multi-stage paths in the upcoming rework.",
+      "programmeIds": [
+        "no-fagbrev-platearbeider"
+      ]
+    }
+  ]
+}

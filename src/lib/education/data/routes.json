@@ -1,0 +1,568 @@
+{
+  "meta": {
+    "source": "Auto-migrated from programmes.json by scripts/migrate-programmes-to-routes.ts",
+    "lastUpdated": "2026-04-16",
+    "schemaVersion": 1
+  },
+  "routes": [
+    {
+      "id": "doctor--standard",
+      "careerId": "doctor",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 6
+    },
+    {
+      "id": "nurse--standard",
+      "careerId": "nurse",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "dentist--standard",
+      "careerId": "dentist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "physiotherapist--standard",
+      "careerId": "physiotherapist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3.5
+    },
+    {
+      "id": "veterinarian--standard",
+      "careerId": "veterinarian",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5.5
+    },
+    {
+      "id": "software-developer--standard",
+      "careerId": "software-developer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "it-engineer--standard",
+      "careerId": "it-engineer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "mechanical-engineer--standard",
+      "careerId": "mechanical-engineer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "civil-engineer--standard",
+      "careerId": "civil-engineer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "accountant--standard",
+      "careerId": "accountant",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "economist--standard",
+      "careerId": "economist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "lawyer--standard",
+      "careerId": "lawyer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "architect--standard",
+      "careerId": "architect",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "designer--standard",
+      "careerId": "designer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "teacher--standard",
+      "careerId": "teacher",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "social-worker--standard",
+      "careerId": "social-worker",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3.5
+    },
+    {
+      "id": "biologist--standard",
+      "careerId": "biologist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "chemist--standard",
+      "careerId": "chemist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "psychologist--standard",
+      "careerId": "psychologist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 5
+    },
+    {
+      "id": "engineer--standard",
+      "careerId": "engineer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "healthcare-worker--standard",
+      "careerId": "healthcare-worker",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "data-analyst--standard",
+      "careerId": "data-analyst",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "police-officer--standard",
+      "careerId": "police-officer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "firefighter--standard",
+      "careerId": "firefighter",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 1
+    },
+    {
+      "id": "airline-pilot--standard",
+      "careerId": "airline-pilot",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "helicopter-pilot--standard",
+      "careerId": "helicopter-pilot",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 1.5
+    },
+    {
+      "id": "chef--standard",
+      "careerId": "chef",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 3
+    },
+    {
+      "id": "carpenter--standard",
+      "careerId": "carpenter",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "bricklayer--standard",
+      "careerId": "bricklayer",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "painter-decorator--standard",
+      "careerId": "painter-decorator",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "civil-works-foreman--standard",
+      "careerId": "civil-works-foreman",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "electrician--standard",
+      "careerId": "electrician",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "automation-technician--standard",
+      "careerId": "automation-technician",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "industrial-electrician--standard",
+      "careerId": "industrial-electrician",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "care-assistant--standard",
+      "careerId": "care-assistant",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "childcare-assistant--standard",
+      "careerId": "childcare-assistant",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "dental-assistant--standard",
+      "careerId": "dental-assistant",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "cnc-machinist--standard",
+      "careerId": "cnc-machinist",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "welder--standard",
+      "careerId": "welder",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "industrial-mechanic--standard",
+      "careerId": "industrial-mechanic",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "auto-mechanic--standard",
+      "careerId": "auto-mechanic",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "hairdresser--standard",
+      "careerId": "hairdresser",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
+      "id": "boilermaker--standard",
+      "careerId": "boilermaker",
+      "name": "Standard route",
+      "shortName": "Standard",
+      "summary": "The most common pathway recorded for this career today. Alternative routes are coming.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 2
+    }
+  ]
+}

@@ -45,6 +45,7 @@ import {
   type Institution,
   type CareerRequirements,
 } from '@/lib/education';
+import { isAcademicTrackCareer } from '@/lib/education/route-scope';
 import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
@@ -286,6 +287,22 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
           surface area. Filter state is still initialised to empty
           defaults so the `filtered` useMemo passes every programme
           through unchanged. */}
+
+      {/* ── Single-route disclaimer ──────────────────────────────────
+          Until the multi-route Study Path rework lands (see
+          docs/pathway-data-model.md), the affected academic-track
+          careers show only one common pathway. This banner sets honest
+          expectations while the alternative routes are in development.
+          Removed automatically when the career has multiple routes
+          available. Vocational + long-tail careers don't see this. */}
+      {isAcademicTrackCareer(resolvedId) && (
+        <div className="rounded-md border border-amber-500/20 bg-amber-500/[0.04] px-3 py-2.5">
+          <p className="text-[11px] text-amber-200/80 leading-relaxed">
+            <span className="font-medium text-amber-200">Showing the most common route.</span>{' '}
+            We&apos;re adding alternative pathways (counselling, lateral entry, study abroad, etc.) for this career soon.
+          </p>
+        </div>
+      )}
 
       {/* ── Results count + pagination slice ──────────────────────────
           Derive the page window once so the count line and both render

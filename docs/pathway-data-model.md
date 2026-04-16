@@ -246,13 +246,13 @@ That's ~24 + ~15 = ~39-40 careers in scope for the multi-route treatment. The ot
 
 ## 10. Open questions (need your call before Phase 2 begins)
 
-1. **Storage:** confirm JSON over DB for now? (Recommendation: JSON.)
-2. **Migration:** OK to ship the auto-migration silently in Phase 2a even before the route picker exists in Phase 3? (Recommendation: yes — guarantees zero regressions while plumbing lands.)
-3. **Career list (§9):** is the 24-academic + 15-additional split right? Want to add or drop any?
-4. **Route picker placement:** above the programmes table in Study Path AND above the roadmap in Clarity? (Recommendation: yes — same control, two surfaces, one selected route persisted in localStorage per career.)
-5. **Disclaimer for the launch interim** (between launch and Phase 4 ship): do you want me to add a small "Showing the most common route — alternative routes coming soon" line to the affected careers' Study Path now, before the rework lands? (Recommendation: yes — keeps the "trust the data" promise honest.)
-6. **Tag taxonomy** (§4.1 RouteTag): is the proposed 8-tag set right? Anything to add/remove? Editorial decisions like "elite vs common vs fast" set the tone of the picker.
-7. **Sequence vs. launch:** do we hold launch for this (Option A in our chat), launch first then ship the rework (Option B), or run them in parallel? (My implicit assumption was B — confirm.)
+1. **Storage:** confirm JSON over DB for now? (Recommendation: JSON.).  MY_ANSWER = JSON
+2. **Migration:** OK to ship the auto-migration silently in Phase 2a even before the route picker exists in Phase 3? (Recommendation: yes — guarantees zero regressions while plumbing lands.).   MY_ANSWER = YES
+3. **Career list (§9):** is the 24-academic + 15-additional split right? Want to add or drop any?  MY_ANSWER = YES SPLIT
+4. **Route picker placement:** above the programmes table in Study Path AND above the roadmap in Clarity? (Recommendation: yes — same control, two surfaces, one selected route persisted in localStorage per career.). MY_ANSWER = YES
+5. **Disclaimer for the launch interim** (between launch and Phase 4 ship): do you want me to add a small "Showing the most common route — alternative routes coming soon" line to the affected careers' Study Path now, before the rework lands? (Recommendation: yes — keeps the "trust the data" promise honest.). MY_ANSWER = YES
+6. **Tag taxonomy** (§4.1 RouteTag): is the proposed 8-tag set right? Anything to add/remove? Editorial decisions like "elite vs common vs fast" set the tone of the picker.   MY_ANSWER = YES
+7. **Sequence vs. launch:** do we hold launch for this (Option A in our chat), launch first then ship the rework (Option B), or run them in parallel? (My implicit assumption was B — confirm.). MY_ANSWER = B
 
 ## 11. What "done" looks like for each phase
 
