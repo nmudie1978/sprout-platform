@@ -6,6 +6,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +51,10 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers session={session}>{children}</Providers>
         </NextIntlClientProvider>
+        {/* Vercel observability — zero-config, no env vars needed.
+            Only emits beacons in production on a Vercel deployment. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

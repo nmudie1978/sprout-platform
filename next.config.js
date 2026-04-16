@@ -135,4 +135,26 @@ const nextConfig = {
   },
 };
 
-module.exports = withBundleAnalyzer(withNextIntl(nextConfig));
+// Wrap with Sentry. The withSentryConfig wrapper itself is safe to
+// apply unconditionally — when SENTRY_AUTH_TOKEN is not set, build-time
+// source-map upload is silently skipped. Runtime Sentry only activates
+// when SENTRY_DSN / NEXT_PUBLIC_SENTRY_DSN are set in the environment.
+const baseExport = withBundleAnalyzer(withNextIntl(nextConfig));
+
+let exported = baseExport;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { withSentryConfig } = require('@sentry/nextjs');
+  exported = withSentryConfig(baseExport, {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    silent: !process.env.SENTRY_AUTH_TOKEN,
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+  });
+} catch {
+  // @sentry/nextjs not installed — skip wrapper.
+}
+
+module.exports = exported;
