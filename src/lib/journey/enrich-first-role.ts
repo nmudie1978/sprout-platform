@@ -50,6 +50,11 @@ function buildReason(
     `${s.role} is a realistic first role on the path to becoming a ${career}.`,
   );
   if (s.description) parts.push(s.description);
-  if (s.whatYouNeed) parts.push(`You'll be ready for this because: ${s.whatYouNeed}`);
+  // Note: we used to append "You'll be ready for this because: <prereq>"
+  // here, but it produced a presumptuous tone that misread as the app
+  // asserting the student WILL be ready rather than stating what the
+  // role typically asks for. The prerequisite itself lives on the
+  // Understand tab's How-you-qualify section — no need to restate it
+  // inside the experience step.
   return parts.join(' ');
 }
