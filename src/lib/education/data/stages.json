@@ -50,6 +50,102 @@
       "programmeIds": []
     },
     {
+      "id": "project-manager--via-engineering--bachelor",
+      "routeId": "project-manager--via-engineering",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Bachelor in engineering or computer science",
+      "durationYears": 5,
+      "description": "A 3-5 year bachelor (or 5-year sivilingeniør) in engineering, computer science, or a related technical field. The technical foundation is what makes the eventual transition into PM credible.",
+      "programmeIds": [
+        "no-uio-informatikk",
+        "no-ntnu-datateknologi",
+        "no-oslomet-informasjonsteknologi",
+        "no-ntnu-sivilingeni-r",
+        "no-oslomet-ingeni-rfag"
+      ]
+    },
+    {
+      "id": "project-manager--via-engineering--early-role",
+      "routeId": "project-manager--via-engineering",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "3-5 years in a technical role",
+      "durationYears": 4,
+      "description": "Work as a developer, engineer, or analyst on real projects. Build the credibility and domain understanding you'll need as a PM — most teams won't follow a PM who hasn't done the work first.",
+      "programmeIds": [],
+      "outcome": "Recognised technical reputation; informal scope leadership opportunities"
+    },
+    {
+      "id": "project-manager--via-engineering--cert",
+      "routeId": "project-manager--via-engineering",
+      "orderIndex": 2,
+      "kind": "credential",
+      "title": "Optional: PM certification (PRINCE2, PMP, or CSM)",
+      "durationYears": 0.1,
+      "description": "Useful but not always required when transitioning from a technical role. Larger orgs and consultancies tend to expect one. PRINCE2 is standard in NO/UK; PMP is the global default; CSM (Scrum Master) is the agile-team variant.",
+      "programmeIds": []
+    },
+    {
+      "id": "project-manager--via-engineering--pm-role",
+      "routeId": "project-manager--via-engineering",
+      "orderIndex": 3,
+      "kind": "experience",
+      "title": "Move into a PM seat",
+      "durationYears": 1,
+      "description": "Most often happens internally — taking over a project at your existing employer rather than applying externally. External PM roles typically expect 5+ years of relevant experience by this point.",
+      "programmeIds": [],
+      "outcome": "Project manager role (technical/IT projects, R&D, infrastructure)"
+    },
+    {
+      "id": "project-manager--lateral--bachelor",
+      "routeId": "project-manager--lateral",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Any bachelor degree",
+      "durationYears": 3,
+      "description": "There is no specific degree requirement to become a PM. A bachelor in business, economics, social sciences, humanities, or anything else is fine — the practical experience and certification matter much more than the field of study. Examples shown below are common starting points; many other bachelors work too.",
+      "programmeIds": [
+        "no-nhh-konomi-og-administrasjon",
+        "dk-cbs-okonomi",
+        "dk-ku-okonomi",
+        "fi-helsinki-taloustiede",
+        "se-su-kandidatprogram-i-nationalekon"
+      ]
+    },
+    {
+      "id": "project-manager--lateral--early-role",
+      "routeId": "project-manager--lateral",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "2-3 years as coordinator, operations analyst, or junior consultant",
+      "durationYears": 2.5,
+      "description": "Get exposure to project work without owning end-to-end delivery yet. Roles like project coordinator, operations analyst, junior business analyst, or consultancy associate all work. Pay attention to how delivery actually happens.",
+      "programmeIds": [],
+      "outcome": "Practical understanding of project lifecycle, stakeholder dynamics, risk management"
+    },
+    {
+      "id": "project-manager--lateral--cert",
+      "routeId": "project-manager--lateral",
+      "orderIndex": 2,
+      "kind": "credential",
+      "title": "PM certification (PRINCE2 or PMP)",
+      "durationYears": 0.5,
+      "description": "More important on this route than the engineering route — without a technical track record, the certification is what signals to employers that you understand the discipline. PRINCE2 Foundation + Practitioner is the most common starting point in Norway. ~12-15,000 NOK for course + exam.",
+      "programmeIds": []
+    },
+    {
+      "id": "project-manager--lateral--pm-role",
+      "routeId": "project-manager--lateral",
+      "orderIndex": 3,
+      "kind": "experience",
+      "title": "Apply for PM roles",
+      "durationYears": 1,
+      "description": "With cert + relevant operational experience you're now competitive for junior PM roles. Public sector and large consultancies are the most lateral-friendly employers; specialised industries (pharma, finance) often expect domain experience too.",
+      "programmeIds": [],
+      "outcome": "Project manager role across many industries"
+    },
+    {
       "id": "doctor--standard--education",
       "routeId": "doctor--standard",
       "orderIndex": 0,

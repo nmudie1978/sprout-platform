@@ -35,6 +35,7 @@ import {
 } from '@/components/ui/tooltip';
 import {
   getProgrammesForCareer,
+  getProgrammeById,
   getInstitutionById,
   getAllInstitutions,
   getAdvancedCareerMapping,
@@ -137,12 +138,26 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
     return routes.find((r) => r.id === selectedRouteId) ?? routes.find((r) => r.isDefault) ?? routes[0] ?? null;
   }, [routes, selectedRouteId, showRoutePicker]);
 
-  // The set of programme ids the active route covers. When there's no
-  // picker (single-route careers), we fall back to all programmes.
+  // The programmes the active route covers. When there's no picker
+  // (single-route careers) we fall back to careerProgrammes. With a
+  // picker, we resolve directly via getProgrammeById so a route can
+  // reference programmes from other careers — e.g. project-manager's
+  // "via engineering" route legitimately points at engineering /
+  // software-developer programmes. Filtering only against
+  // careerProgrammes would wipe those out.
   const allProgrammes = useMemo<ProgrammeWithInstitution[]>(() => {
     if (!activeRoute) return careerProgrammes;
-    const stagesProgrammeIds = new Set(activeRoute.stages.flatMap((s) => s.programmeIds));
-    return careerProgrammes.filter((p) => stagesProgrammeIds.has(p.id));
+    const seen = new Set<string>();
+    const out: ProgrammeWithInstitution[] = [];
+    for (const stage of activeRoute.stages) {
+      for (const pid of stage.programmeIds) {
+        if (seen.has(pid)) continue;
+        seen.add(pid);
+        const p = getProgrammeById(pid);
+        if (p) out.push(p);
+      }
+    }
+    return out;
   }, [careerProgrammes, activeRoute]);
 
   const alignments = useMemo<Map<string, AlignmentResult>>(() => {

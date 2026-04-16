@@ -34,6 +34,32 @@
       "estimatedYears": 5
     },
     {
+      "id": "project-manager--via-engineering",
+      "careerId": "project-manager",
+      "name": "Via engineering / tech (DEMO PLACEHOLDER)",
+      "shortName": "Via engineering",
+      "summary": "Engineering or computer-science bachelor, then a few years in a technical role, then transition into a project-management seat — often the most common route in tech-heavy industries. NB: this route is a UI demo for evaluating the picker on a non-degree career; real Phase-4 content will replace it.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": null,
+      "estimatedYears": 8
+    },
+    {
+      "id": "project-manager--lateral",
+      "careerId": "project-manager",
+      "name": "Lateral entry via certification (DEMO PLACEHOLDER)",
+      "shortName": "Lateral + cert",
+      "summary": "No specific degree required. Any bachelor + a few years in a coordinator or operations role + a recognised PM certification (PRINCE2, PMP, or CSM) is the most common late-entry path. Demonstrates the model handles careers with no formal study programme.",
+      "tags": [
+        "lateral-entry"
+      ],
+      "isDefault": false,
+      "countryCode": null,
+      "estimatedYears": 6
+    },
+    {
       "id": "doctor--standard",
       "careerId": "doctor",
       "name": "Standard route",
