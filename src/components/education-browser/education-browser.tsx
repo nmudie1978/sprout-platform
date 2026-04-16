@@ -50,6 +50,7 @@ import {
 } from '@/lib/education';
 import { isAcademicTrackCareer } from '@/lib/education/route-scope';
 import { RoutePicker } from './route-picker';
+import { StageBlock } from './stage-block';
 import { getAllCareers } from '@/lib/career-pathways';
 import {
   computeProgrammeAlignment,
@@ -379,11 +380,45 @@ export function EducationBrowser({ careerTitle, careerId }: EducationBrowserProp
         </div>
       )}
 
-      {/* ── Results count + pagination slice ──────────────────────────
-          Derive the page window once so the count line and both render
-          branches share the same slice. `safePage` guards against a
-          stale out-of-range page after filters shrink the list. */}
-      {(() => {
+      {/* ── Stage-based view (Phase 3.5) ─────────────────────────────
+          When the picker is visible, the route's stages are the
+          dominant content unit — we render each stage as a vertical
+          block (icon, title, duration, description, programmes mini-
+          list, outcome) instead of the flat-table view used for
+          single-route careers. Stages without programmes still show
+          their description + outcome — the flat table can't represent
+          credential / experience steps at all. */}
+      {showRoutePicker && activeRoute && (
+        <div className="space-y-1 pt-1">
+          {activeRoute.stages.map((stage, idx) => {
+            // Resolve programmes for THIS stage only (independent of
+            // the global `allProgrammes` list). Same broken-URL filter
+            // applies via getProgrammeById.
+            const stageProgs: ProgrammeWithInstitution[] = [];
+            const seen = new Set<string>();
+            for (const pid of stage.programmeIds) {
+              if (seen.has(pid)) continue;
+              seen.add(pid);
+              const p = getProgrammeById(pid);
+              if (p) stageProgs.push(p);
+            }
+            return (
+              <StageBlock
+                key={stage.id}
+                stage={stage}
+                programmes={stageProgs}
+                stepNumber={idx + 1}
+                isLast={idx === activeRoute.stages.length - 1}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Results count + pagination slice (single-route flat table) ──
+          Skipped entirely when the route picker is showing — the
+          stage-based view above replaces it. */}
+      {!showRoutePicker && (() => {
         const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
         const safePage = Math.min(Math.max(1, page), totalPages);
         const start = (safePage - 1) * PAGE_SIZE;
