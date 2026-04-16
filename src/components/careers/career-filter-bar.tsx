@@ -21,6 +21,7 @@ const categoryConfig: Record<string, { label: string; emoji: string }> = {
   HEALTHCARE_LIFE_SCIENCES: { label: "Healthcare", emoji: "\u{1F3E5}" },
   EDUCATION_TRAINING: { label: "Education", emoji: "\u{1F4DA}" },
   TECHNOLOGY_IT: { label: "Tech & IT", emoji: "\u{1F4BB}" },
+  ARTIFICIAL_INTELLIGENCE: { label: "AI", emoji: "\u{1F916}" },
   BUSINESS_MANAGEMENT: { label: "Business", emoji: "\u{1F4BC}" },
   FINANCE_BANKING: { label: "Finance", emoji: "\u{1F3E6}" },
   SALES_MARKETING: { label: "Marketing", emoji: "\u{1F4E3}" },

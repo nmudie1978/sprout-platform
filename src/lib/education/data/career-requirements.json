@@ -20877,6 +20877,396 @@
       },
       "specialisationNote": null
     },
+    "ai-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Physics", "Statistics"],
+        "minimumGrade": "Strong grades in mathematics and computing help — most bachelor's programmes expect Matematikk R1 or equivalent."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science (with AI/ML specialisation) or Master in Artificial Intelligence",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "OsloMet", "KTH Royal Institute of Technology", "Aalto University"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden), opintopolku.fi (Finland)",
+        "competitiveness": "Highly competitive — AI specialisations at NTNU and UiO typically require upper-range grades."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior AI Engineer",
+        "description": "Assist a senior team in building, training, and deploying machine learning models for production systems.",
+        "whatYouNeed": "Bachelor's in Computer Science or a related field, plus a portfolio of ML projects or coursework."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior AI Engineer",
+        "withExperience": "Senior AI Engineer",
+        "seniorPath": "Principal AI Engineer or AI Tech Lead"
+      },
+      "specialisationNote": null
+    },
+    "machine-learning-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Physics", "Statistics"],
+        "minimumGrade": "Strong grades in mathematics — R1/R2 and linear algebra foundations are heavily used in ML programmes."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Computer Science, Machine Learning, or Data Science",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "KTH", "Chalmers", "Aalto"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden), opintopolku.fi (Finland)",
+        "competitiveness": "Competitive — top programmes admit only the upper band of applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Machine Learning Engineer",
+        "description": "Build and maintain parts of the ML pipeline under senior guidance, focusing on data preparation and model training.",
+        "whatYouNeed": "Bachelor's in a quantitative field plus strong Python and ML fundamentals."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Machine Learning Engineer",
+        "withExperience": "Senior Machine Learning Engineer",
+        "seniorPath": "Principal ML Engineer or ML Tech Lead"
+      },
+      "specialisationNote": null
+    },
+    "data-scientist": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "English"],
+        "recommended": ["Computer Science", "Statistics", "Economics"],
+        "minimumGrade": "Strong mathematics background matters — most programmes ask for R1 or equivalent statistical foundations."
+      },
+      "universityPath": {
+        "programme": "Master in Data Science, Statistics, or a quantitative field",
+        "duration": "5 years (3-year bachelor + 2-year master)",
+        "type": "master",
+        "examples": ["UiO", "NTNU", "UiB", "BI Norwegian Business School", "KTH", "Aalto"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Competitive — strong grades in mathematics and statistics help."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Data Scientist",
+        "description": "Support senior data scientists with data cleaning, analysis, and model building on specific business problems.",
+        "whatYouNeed": "Bachelor's in a quantitative field, strong SQL and Python skills, and a portfolio of analysis projects."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Data Scientist",
+        "withExperience": "Senior Data Scientist",
+        "seniorPath": "Principal Data Scientist or Head of Data Science"
+      },
+      "specialisationNote": null
+    },
+    "ai-research-scientist": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Physics", "Statistics"],
+        "minimumGrade": "Top grades expected — research tracks admit only the strongest applicants from advanced maths and programming."
+      },
+      "universityPath": {
+        "programme": "PhD in Computer Science, Artificial Intelligence, or Machine Learning",
+        "duration": "8+ years (3-year bachelor + 2-year master + 3-year PhD)",
+        "type": "doctorate",
+        "examples": ["NTNU", "UiO", "KTH", "Aalto", "DTU", "University of Copenhagen"],
+        "applicationRoute": "Direct PhD application to research groups after master's degree",
+        "competitiveness": "Highly selective — PhD positions are few and attract international applicants."
+      },
+      "entryLevelRequirements": {
+        "title": "Research Assistant / PhD Candidate",
+        "description": "Contribute to a research group's projects, publish early papers, and build depth in a specific AI subfield.",
+        "whatYouNeed": "Master's degree with strong research output or coursework, plus a research proposal for the PhD."
+      },
+      "qualifiesFor": {
+        "immediate": "PhD Candidate",
+        "withExperience": "Research Scientist",
+        "seniorPath": "Principal Research Scientist or Research Director"
+      },
+      "specialisationNote": "Research-track career — industry AI research labs (Google DeepMind, Meta AI, Anthropic) typically require a completed PhD or equivalent publications."
+    },
+    "nlp-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "English", "Computer Science"],
+        "recommended": ["Languages", "Statistics"],
+        "minimumGrade": "Strong grades in mathematics and English — linguistic awareness is an advantage."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Computer Science, Computational Linguistics, or AI",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "Helsinki University", "KTH"],
+        "applicationRoute": "Samordna opptak (Norway), opintopolku.fi (Finland)",
+        "competitiveness": "Competitive — NLP specialisations are usually embedded in broader CS/AI master's tracks."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior NLP Engineer",
+        "description": "Work with senior engineers to build and fine-tune language models for specific product use cases.",
+        "whatYouNeed": "Bachelor's in CS, linguistics, or a related field, plus Python and a portfolio of NLP projects."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior NLP Engineer",
+        "withExperience": "Senior NLP Engineer",
+        "seniorPath": "Principal NLP Engineer or NLP Research Lead"
+      },
+      "specialisationNote": null
+    },
+    "computer-vision-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "Physics"],
+        "recommended": ["English", "Statistics"],
+        "minimumGrade": "Strong grades in mathematics and physics — vision work leans heavily on linear algebra and geometry."
+      },
+      "universityPath": {
+        "programme": "Master in Computer Science, Electrical Engineering, or AI (with vision specialisation)",
+        "duration": "5 years (3-year bachelor + 2-year master)",
+        "type": "master",
+        "examples": ["NTNU", "UiO", "UiB", "KTH", "Chalmers", "DTU"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Competitive — strong quantitative background expected."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Computer Vision Engineer",
+        "description": "Support senior engineers with data labelling, model training, and evaluation for vision systems.",
+        "whatYouNeed": "Bachelor's in a technical field, Python + deep learning experience, and coursework in image processing."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Computer Vision Engineer",
+        "withExperience": "Senior Computer Vision Engineer",
+        "seniorPath": "Principal Computer Vision Engineer or CV Tech Lead"
+      },
+      "specialisationNote": null
+    },
+    "mlops-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Physics", "Information Technology"],
+        "minimumGrade": "Solid pass in mathematics and computing — MLOps is a DevOps specialisation applied to ML."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Software Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "OsloMet", "KTH", "Aalto"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive — strong grades in mathematics and computing help."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior MLOps Engineer",
+        "description": "Assist with CI/CD pipelines, monitoring dashboards, and deployment tooling for ML teams.",
+        "whatYouNeed": "Bachelor's in CS/engineering plus experience with cloud platforms, Docker, and scripting."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior MLOps Engineer",
+        "withExperience": "Senior MLOps Engineer",
+        "seniorPath": "Principal MLOps Engineer or Platform Engineering Lead"
+      },
+      "specialisationNote": null
+    },
+    "ai-solutions-architect": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Business Studies", "Physics"],
+        "minimumGrade": "Strong grades help — this role typically follows 5+ years' engineering experience, not direct entry."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Software Engineering (with 5+ years' industry experience)",
+        "duration": "3 years + significant experience",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "KTH", "DTU"],
+        "applicationRoute": "Samordna opptak (Norway); role typically entered through senior engineering track.",
+        "competitiveness": "Architect roles require substantial prior experience rather than competitive university entry."
+      },
+      "entryLevelRequirements": {
+        "title": "Senior Engineer / Lead Engineer",
+        "description": "Become an architect after years of hands-on AI engineering — this is rarely a direct-entry role.",
+        "whatYouNeed": "Degree in CS or engineering plus 5+ years building production AI systems."
+      },
+      "qualifiesFor": {
+        "immediate": "Senior AI Engineer",
+        "withExperience": "AI Solutions Architect",
+        "seniorPath": "Principal Architect or Chief AI Officer"
+      },
+      "specialisationNote": "Architects are senior generalists — start as an AI Engineer or ML Engineer, then grow into architecture after significant delivery experience."
+    },
+    "prompt-engineer": {
+      "schoolSubjects": {
+        "required": ["English", "Mathematics"],
+        "recommended": ["Computer Science", "Languages", "Psychology"],
+        "minimumGrade": "Solid pass — prompt engineering values clear writing and critical thinking alongside technical awareness."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science, Linguistics, or a related field — many practitioners are self-taught",
+        "duration": "3 years (or self-study + portfolio)",
+        "type": "bachelor",
+        "examples": ["UiO", "NTNU", "OsloMet", "Helsinki University"],
+        "applicationRoute": "Samordna opptak (Norway); alternatively direct entry via portfolio and industry experience.",
+        "competitiveness": "Entry-friendly — many prompt engineers move in from adjacent fields with a strong portfolio."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Prompt Engineer",
+        "description": "Test prompts against production models, document what works, and contribute to prompt libraries for specific use cases.",
+        "whatYouNeed": "Strong writing, attention to detail, and comfort experimenting with large language models — no specific degree mandated."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Prompt Engineer",
+        "withExperience": "Senior Prompt Engineer",
+        "seniorPath": "Lead Prompt Engineer or AI Product Specialist"
+      },
+      "specialisationNote": "One of the most accessible AI roles — a strong portfolio often matters more than a specific degree."
+    },
+    "generative-ai-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Art", "Physics"],
+        "minimumGrade": "Strong grades in mathematics and computing — generative models use the same ML foundations as the broader field."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Computer Science or AI (with deep learning focus)",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "KTH", "Aalto", "DTU"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Competitive — top programmes at NTNU and KTH are selective."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Generative AI Engineer",
+        "description": "Integrate generative models into products — prompt design, fine-tuning, and shipping AI-powered features.",
+        "whatYouNeed": "Bachelor's in a technical field plus hands-on experience with generative models or API integration."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Generative AI Engineer",
+        "withExperience": "Senior Generative AI Engineer",
+        "seniorPath": "Principal Generative AI Engineer or Generative AI Tech Lead"
+      },
+      "specialisationNote": null
+    },
+    "robotics-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Physics", "Computer Science"],
+        "recommended": ["Design & Technology", "English"],
+        "minimumGrade": "Strong grades in mathematics and physics — robotics sits at the intersection of mechanical, electrical, and software."
+      },
+      "universityPath": {
+        "programme": "Master in Robotics, Mechatronics, or Electrical Engineering",
+        "duration": "5 years (3-year bachelor + 2-year master)",
+        "type": "master",
+        "examples": ["NTNU", "OsloMet", "KTH", "Chalmers", "DTU", "Aalto"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Competitive — robotics master's programmes attract strong applicants across the Nordics."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Robotics Engineer",
+        "description": "Program robot behaviour, integrate sensors, and support test and deployment for industrial or service robots.",
+        "whatYouNeed": "Bachelor's in robotics, mechatronics, or a related engineering field, plus programming and hardware experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Robotics Engineer",
+        "withExperience": "Senior Robotics Engineer",
+        "seniorPath": "Principal Robotics Engineer or Robotics Tech Lead"
+      },
+      "specialisationNote": null
+    },
+    "ai-product-manager": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "English"],
+        "recommended": ["Business Studies", "Computer Science", "Psychology"],
+        "minimumGrade": "Solid pass — product manager roles value breadth over narrow subject strength."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science, Business, or related — plus technical literacy in ML",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "BI Norwegian Business School", "KTH", "CBS Copenhagen"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive — roles often require 2-5 years' prior product or engineering experience."
+      },
+      "entryLevelRequirements": {
+        "title": "Associate Product Manager",
+        "description": "Support a senior PM on a specific AI product area — work with engineers, users, and analytics to ship features.",
+        "whatYouNeed": "Bachelor's degree plus some combination of technical fluency and product or consulting experience."
+      },
+      "qualifiesFor": {
+        "immediate": "Associate Product Manager",
+        "withExperience": "Senior AI Product Manager",
+        "seniorPath": "Group Product Manager or Director of AI Product"
+      },
+      "specialisationNote": "Often an experienced-hire role — many AI PMs transition from engineering, consulting, or adjacent product roles."
+    },
+    "data-engineer": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "Computer Science", "English"],
+        "recommended": ["Physics", "Statistics"],
+        "minimumGrade": "Solid pass in mathematics and computing — databases and algorithms are core."
+      },
+      "universityPath": {
+        "programme": "Bachelor in Computer Science or Software Engineering",
+        "duration": "3 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "UiB", "OsloMet", "KTH", "Aalto"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
+        "competitiveness": "Moderately competitive — strong job market for entry-level data engineers in the Nordics."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Data Engineer",
+        "description": "Build and maintain data pipelines, schemas, and ETL jobs under senior guidance.",
+        "whatYouNeed": "Bachelor's in CS or engineering, plus SQL and Python proficiency."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Data Engineer",
+        "withExperience": "Senior Data Engineer",
+        "seniorPath": "Principal Data Engineer or Data Platform Lead"
+      },
+      "specialisationNote": null
+    },
+    "ai-ethics-specialist": {
+      "schoolSubjects": {
+        "required": ["English", "Mathematics"],
+        "recommended": ["Philosophy", "Social Studies", "Computer Science"],
+        "minimumGrade": "Solid pass — strong reasoning and writing matter most; technical literacy is built on top."
+      },
+      "universityPath": {
+        "programme": "Master in Philosophy, Law, Computer Science, or Policy (with AI focus)",
+        "duration": "5+ years (3-year bachelor + 2-year master)",
+        "type": "master",
+        "examples": ["UiO", "NTNU", "UiB", "University of Copenhagen", "Helsinki University"],
+        "applicationRoute": "Samordna opptak (Norway), opintopolku.fi (Finland)",
+        "competitiveness": "Moderately competitive — cross-disciplinary programmes are smaller but less selective than pure CS tracks."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior AI Ethics Analyst",
+        "description": "Support audits of AI systems, research policy frameworks, and document findings for engineering and product teams.",
+        "whatYouNeed": "Bachelor's in philosophy, law, CS, or a related field, plus demonstrated interest in AI policy."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior AI Ethics Analyst",
+        "withExperience": "Senior AI Ethics Specialist",
+        "seniorPath": "Head of Responsible AI or AI Policy Director"
+      },
+      "specialisationNote": "Cross-disciplinary role — strongest candidates combine technical literacy with philosophy, law, or social science depth."
+    },
+    "ai-consultant": {
+      "schoolSubjects": {
+        "required": ["Mathematics", "English"],
+        "recommended": ["Business Studies", "Computer Science", "Languages"],
+        "minimumGrade": "Solid pass — consulting values breadth, communication, and polish."
+      },
+      "universityPath": {
+        "programme": "Bachelor/Master in Computer Science, Business, or related — plus consulting experience",
+        "duration": "3-5 years",
+        "type": "bachelor",
+        "examples": ["NTNU", "UiO", "BI Norwegian Business School", "CBS Copenhagen", "KTH"],
+        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden); consulting firms recruit through structured graduate programmes.",
+        "competitiveness": "Competitive — top consulting firms run selective graduate schemes."
+      },
+      "entryLevelRequirements": {
+        "title": "Junior Consultant / Analyst",
+        "description": "Work on client engagements under senior consultants — conduct research, build models, and support recommendations.",
+        "whatYouNeed": "Bachelor's with strong grades plus polished communication and a curiosity about applied AI."
+      },
+      "qualifiesFor": {
+        "immediate": "Junior Consultant",
+        "withExperience": "Senior AI Consultant",
+        "seniorPath": "Principal Consultant or Partner"
+      },
+      "specialisationNote": null
+    },
     "soldier": {
       "schoolSubjects": {
         "required": [

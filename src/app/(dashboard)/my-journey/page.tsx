@@ -1443,50 +1443,35 @@ function UnderstandTab({
                             </div>
                           )}
 
-                          {/* ── Compact signal strip (Demand /
-                              Pathway / Competition). Moved to the end
-                              of the readiness view as a quick recap,
-                              shrunk to one-line-per-signal so the
-                              section doesn't lead with heavy cards. */}
-                          <div className="rounded-lg border border-border/30 bg-card/20 divide-y divide-border/20 overflow-hidden">
+                          {/* ── Three small side-by-side boxes
+                              (Demand / Pathway / Competition). Neutral
+                              styling per "not too much colour" — muted
+                              icons, plain foreground values. All
+                              colour-coding lives upstream in the grade
+                              meter and subject chips so this recap
+                              reads as a plain spec strip, not a
+                              traffic-light dashboard. */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                             {[
-                              {
-                                label: 'Demand',
-                                icon: TrendingUp,
-                                tone: demandColors,
-                                value: getDemandLabel(ap.demand),
-                                hint: demandHint[ap.demand],
-                              },
-                              {
-                                label: 'Pathway',
-                                icon: Award,
-                                tone: pt,
-                                value: getPathwayLabel(ap.pathwayType),
-                                hint: pathwayHint[ap.pathwayType],
-                              },
-                              {
-                                label: 'Competition',
-                                icon: Target,
-                                tone: ct,
-                                value: getCompetitivenessLabel(ap.competitiveness),
-                                hint: compHint[ap.competitiveness],
-                              },
-                            ].map((row) => {
-                              const Icon = row.icon;
+                              { label: 'Demand',      icon: TrendingUp, value: getDemandLabel(ap.demand),                    hint: demandHint[ap.demand] },
+                              { label: 'Pathway',     icon: Award,      value: getPathwayLabel(ap.pathwayType),              hint: pathwayHint[ap.pathwayType] },
+                              { label: 'Competition', icon: Target,     value: getCompetitivenessLabel(ap.competitiveness),  hint: compHint[ap.competitiveness] },
+                            ].map((tile) => {
+                              const Icon = tile.icon;
                               return (
-                                <div key={row.label} className="flex items-center gap-2.5 px-2.5 py-1.5">
-                                  <div className={cn('h-4 w-4 rounded flex items-center justify-center shrink-0', row.tone.bg)}>
-                                    <Icon className={cn('h-2 w-2', row.tone.text)} />
+                                <div key={tile.label} className="rounded-lg border border-border/40 bg-card/30 px-3 py-2.5">
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                    <Icon className="h-3 w-3 text-muted-foreground/55 shrink-0" />
+                                    <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50">
+                                      {tile.label}
+                                    </span>
                                   </div>
-                                  <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/50 w-[68px] shrink-0">
-                                    {row.label}
-                                  </span>
-                                  <span className={cn('text-[11px] font-semibold shrink-0', row.tone.text)}>
-                                    {row.value}
-                                  </span>
-                                  <span className="text-[10px] text-muted-foreground/45 truncate hidden sm:inline">
-                                    &middot; {row.hint}
-                                  </span>
+                                  <p className="text-xs font-semibold text-foreground/90">
+                                    {tile.value}
+                                  </p>
+                                  <p className="text-[10px] text-muted-foreground/50 mt-0.5 leading-snug">
+                                    {tile.hint}
+                                  </p>
                                 </div>
                               );
                             })}
