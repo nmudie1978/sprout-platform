@@ -230,7 +230,7 @@ export async function POST(req: NextRequest) {
           temperature: 0.7,
           max_tokens: 1200,
           response_format: { type: 'json_object' },
-        });
+        }, { timeout: 25_000 });
 
         const content = completion.choices[0]?.message?.content;
         if (!content) throw new Error('Empty response');

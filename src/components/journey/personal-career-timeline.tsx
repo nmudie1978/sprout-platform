@@ -49,14 +49,23 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
   const { style, setStyle } = useTimelineStyle();
   // "Show years" toggle — persists across sessions via localStorage so
   // users who prefer calendar-year stamps on every step don't have to
-  // re-toggle on each visit.
-  const [showYears, setShowYears] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem('journey-show-years') === '1';
-  });
+  // re-toggle on each visit. Hydrated in an effect (not the useState
+  // initializer) so SSR + iOS Safari private tabs (where localStorage
+  // access throws) don't crash the render.
+  const [showYears, setShowYears] = useState<boolean>(false);
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem('journey-show-years', showYears ? '1' : '0');
+    try {
+      if (typeof window !== 'undefined' && window.localStorage.getItem('journey-show-years') === '1') {
+        setShowYears(true);
+      }
+    } catch { /* private-tab / quota — fall back to default */ }
+  }, []);
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('journey-show-years', showYears ? '1' : '0');
+      }
+    } catch { /* private-tab / quota — silently skip persistence */ }
   }, [showYears]);
   const roadmapRef = useRef<HTMLDivElement>(null);
   const goalId = primaryGoalTitle ? slugify(primaryGoalTitle) : undefined;

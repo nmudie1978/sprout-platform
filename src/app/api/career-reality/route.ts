@@ -333,7 +333,7 @@ async function generateRealitySummary(career: string): Promise<AiReality | null>
       temperature: 0.6,
       max_tokens: 400,
       response_format: { type: 'json_object' },
-    });
+    }, { timeout: 25_000 });
 
     const raw = completion.choices[0]?.message?.content;
     if (!raw) return null;

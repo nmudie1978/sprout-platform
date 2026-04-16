@@ -315,7 +315,7 @@ Keep it natural — don't list their profile back to them.`;
       temperature: 0.7,
       max_tokens: 600, // Allow detailed responses for questions like "day in the life"
       ...(lifeSkillsAIEnabled && isYouth && { tools: [lifeSkillsTool] }),
-    });
+    }, { timeout: 25_000 });
 
     let assistantMessage = completion.choices[0]?.message?.content || "";
     console.log("[Chat API] OpenAI response received, length:", assistantMessage.length);
@@ -379,7 +379,7 @@ Keep it natural — don't list their profile back to them.`;
           messages: regenerationMessages,
           temperature: 0.5, // Lower temperature for more consistent output
           max_tokens: 600,
-        });
+        }, { timeout: 20_000 });
 
         const regeneratedMessage = regeneration.choices[0]?.message?.content;
         if (regeneratedMessage) {
