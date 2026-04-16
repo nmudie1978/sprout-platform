@@ -96,6 +96,18 @@ export function SectionHeader({
   return (
     <View style={{ marginBottom: 22 }}>
       <Text style={styles.displayL}>{title}</Text>
+      {/* Short teal accent bar directly under the page title. Editorial
+          convention — a single coloured mark that carries the brand
+          without overpowering the headline. Matches the cover page's
+          underline mark and the active-tab teal on the web app. */}
+      <View
+        style={{
+          height: 2.25,
+          width: 40,
+          backgroundColor: palette.accent,
+          marginTop: 10,
+        }}
+      />
       {lead ? (
         <Text style={[styles.lead, { marginTop: 12, maxWidth: 440 }]}>{lead}</Text>
       ) : null}
