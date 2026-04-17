@@ -1,5 +1,5 @@
 import React from "react";
-import { Document, Font } from "@react-pdf/renderer";
+import { Document, Font, renderToBuffer } from "@react-pdf/renderer";
 import path from "path";
 import type { JourneyReportViewModel } from "../types";
 import type { Variant } from "./variants";
@@ -13,7 +13,7 @@ import {
   UnderstandPathPage,
   type TocEntry,
 } from "../pages";
-import { palette as basePalette } from "../theme";
+import { motifState, palette as basePalette, styles as baseStyles } from "../theme";
 import { VariantCover } from "./VariantCover";
 
 let fontsRegistered = false;
@@ -39,14 +39,56 @@ function registerFontsOnce() {
 }
 
 /**
- * Apply variant palette to the mutable base palette at render time.
- * @react-pdf freezes styles when the document is created, so we mutate
- * the shared palette object before rendering each variant, then restore
- * it in a finally block. This is cheap and scoped — no module-level
- * state leaks between renders because we always snapshot + restore.
+ * Style slots in `baseStyles` whose colour came from the base palette
+ * at module-load time. When we swap palettes at render time, we have
+ * to mutate these properties directly — `StyleSheet.create` resolves
+ * references into primitives, so updating `palette.ink` alone does not
+ * retroactively update `styles.displayL.color`.
+ *
+ * Keep this list in sync with any new style slot in theme.ts that
+ * pulls a color from `palette.*`.
  */
-function withVariantPalette<T>(variant: Variant, fn: () => T): T {
-  // Snapshot fields we'll override.
+type StyleColorPatch = {
+  backgroundColor?: keyof typeof basePalette;
+  color?: keyof typeof basePalette;
+  borderBottomColor?: keyof typeof basePalette;
+  borderTopColor?: keyof typeof basePalette;
+};
+const STYLE_COLOR_MAP: Record<string, StyleColorPatch> = {
+  page: { backgroundColor: "bg", color: "body" },
+  displayXL: { color: "ink" },
+  displayL: { color: "ink" },
+  h1: { color: "ink" },
+  h2: { color: "ink" },
+  h3: { color: "ink" },
+  lead: { color: "muted" },
+  body: { color: "body" },
+  bodyLg: { color: "body" },
+  bodyMuted: { color: "muted" },
+  caption: { color: "subtle" },
+  overline: { color: "accent" },
+  label: { color: "subtle" },
+  displayNum: { color: "ink" },
+  pageHeaderText: { color: "faint" },
+  pageFooterText: { color: "faint" },
+  rule: { backgroundColor: "divider" },
+  ruleSoft: { backgroundColor: "hairlineSoft" },
+  ruleStrong: { backgroundColor: "ink" },
+};
+
+/**
+ * Apply variant palette (and matching StyleSheet colour patches) to the
+ * shared theme objects. Returns a restore closure that undoes every
+ * mutation — callers MUST hold onto it and run it in a `finally` block
+ * after the async render completes, not synchronously after building
+ * the JSX.
+ *
+ * Previous iteration used a synchronous try/finally around `fn()` that
+ * returned the JSX tree, but @react-pdf doesn't traverse the tree
+ * until `renderToBuffer` actually runs — so the restore fired before
+ * any page was drawn, leaving interior pages with the base palette.
+ */
+function applyVariantPalette(variant: Variant): () => void {
   const snapshot: Record<string, string> = {};
   const overrides: Record<string, string> = {
     ink: variant.palette.ink,
@@ -70,7 +112,7 @@ function withVariantPalette<T>(variant: Variant, fn: () => T): T {
     snapshot[key] = mut[key];
     mut[key] = overrides[key];
   }
-  // Cover sub-object
+
   const coverMut = (basePalette.cover as unknown) as Record<string, string>;
   const coverSnapshot = { ...coverMut };
   coverMut.bg = variant.palette.coverBg;
@@ -79,11 +121,64 @@ function withVariantPalette<T>(variant: Variant, fn: () => T): T {
   coverMut.muted = variant.palette.coverMuted;
   coverMut.rule = variant.palette.coverRule;
 
-  try {
-    return fn();
-  } finally {
+  // Motif state
+  const motifSnapshot = { ...motifState };
+  motifState.pageMotif =
+    variant.pageMotif === "constellation" ? "constellation" : "none";
+  motifState.footerBrand = variant.footerBrand ?? "My Journey Report";
+
+  // StyleSheet colour patches — these are the slots that were
+  // resolved at module-load and need to be re-pointed at the new
+  // palette values.
+  const styleSnapshot: Array<{ slot: string; props: StyleColorPatch }> = [];
+  const stylesAny = baseStyles as unknown as Record<string, Record<string, unknown>>;
+  for (const [slot, patch] of Object.entries(STYLE_COLOR_MAP)) {
+    const target = stylesAny[slot];
+    if (!target) continue;
+    const prior: StyleColorPatch = {};
+    for (const prop of Object.keys(patch) as Array<keyof StyleColorPatch>) {
+      prior[prop] = target[prop] as typeof prior[typeof prop];
+      const paletteKey = patch[prop];
+      if (paletteKey) {
+        target[prop] = (basePalette as unknown as Record<string, string>)[paletteKey];
+      }
+    }
+    styleSnapshot.push({ slot, props: prior });
+  }
+
+  return () => {
     for (const key of Object.keys(snapshot)) mut[key] = snapshot[key];
     for (const key of Object.keys(coverSnapshot)) coverMut[key] = coverSnapshot[key];
+    motifState.pageMotif = motifSnapshot.pageMotif;
+    motifState.footerBrand = motifSnapshot.footerBrand;
+    motifState.sectionAccentBar = motifSnapshot.sectionAccentBar;
+    for (const entry of styleSnapshot) {
+      const target = stylesAny[entry.slot];
+      if (!target) continue;
+      for (const prop of Object.keys(entry.props)) {
+        target[prop] = entry.props[prop as keyof StyleColorPatch];
+      }
+    }
+  };
+}
+
+/**
+ * Render a variant-styled report to a PDF buffer. Wrap the async
+ * renderToBuffer call so the palette mutation stays live through the
+ * entire traversal. Callers must use this — rendering
+ * `<VariantDocument>` directly with `renderToBuffer` will lose the
+ * variant styling on interior pages.
+ */
+export async function renderVariantBuffer(
+  vm: JourneyReportViewModel,
+  variant: Variant,
+): Promise<Buffer> {
+  const restore = applyVariantPalette(variant);
+  try {
+    const buf = await renderToBuffer(<VariantDocument vm={vm} variant={variant} />);
+    return buf as Buffer;
+  } finally {
+    restore();
   }
 }
 
@@ -179,54 +274,52 @@ export function VariantDocument({
   variant: Variant;
 }) {
   registerFontsOnce();
-  return withVariantPalette(variant, () => {
-    const { toc, pages, total } = planLayout(vm);
-    return (
-      <Document
-        title={`My Journey Report — ${variant.name}`}
-        author="Endeavrly"
-        subject="A personal career exploration summary"
-        creator="Endeavrly"
-        producer="Endeavrly"
-      >
-        <VariantCover variant={variant} vm={vm} />
-        <TocPage entries={toc} pageNumber={pages.tocPage} totalPages={total} />
-        <UnderstandPage
+  const { toc, pages, total } = planLayout(vm);
+  return (
+    <Document
+      title={`My Journey Report — ${variant.name}`}
+      author="Endeavrly"
+      subject="A personal career exploration summary"
+      creator="Endeavrly"
+      producer="Endeavrly"
+    >
+      <VariantCover variant={variant} vm={vm} />
+      <TocPage entries={toc} pageNumber={pages.tocPage} totalPages={total} />
+      <UnderstandPage
+        data={vm.understand}
+        career={vm.cover.careerTitle}
+        pageNumber={pages.understandRole}
+        totalPages={total}
+      />
+      {pages.understandPath !== null && (
+        <UnderstandPathPage
           data={vm.understand}
           career={vm.cover.careerTitle}
-          pageNumber={pages.understandRole}
+          pageNumber={pages.understandPath}
           totalPages={total}
         />
-        {pages.understandPath !== null && (
-          <UnderstandPathPage
-            data={vm.understand}
-            career={vm.cover.careerTitle}
-            pageNumber={pages.understandPath}
-            totalPages={total}
-          />
-        )}
-        {RoadmapPages({
-          data: vm.roadmap,
-          education: vm.education,
-          startingPageNumber: pages.roadmapStart,
-          totalPages: total,
-          itemsPerPage: ROADMAP_SINGLE_PAGE_CAP,
-        })}
-        {pages.routes !== null && (
-          <RoutesPage
-            routes={vm.routes}
-            career={vm.cover.careerTitle}
-            pageNumber={pages.routes}
-            totalPages={total}
-          />
-        )}
-        <NextStepsPage
-          steps={vm.nextSteps}
-          pageNumber={pages.nextSteps}
+      )}
+      {RoadmapPages({
+        data: vm.roadmap,
+        education: vm.education,
+        startingPageNumber: pages.roadmapStart,
+        totalPages: total,
+        itemsPerPage: ROADMAP_SINGLE_PAGE_CAP,
+      })}
+      {pages.routes !== null && (
+        <RoutesPage
+          routes={vm.routes}
+          career={vm.cover.careerTitle}
+          pageNumber={pages.routes}
           totalPages={total}
         />
-        <ClosingPage vm={vm} pageNumber={pages.closing} totalPages={total} />
-      </Document>
-    );
-  });
+      )}
+      <NextStepsPage
+        steps={vm.nextSteps}
+        pageNumber={pages.nextSteps}
+        totalPages={total}
+      />
+      <ClosingPage vm={vm} pageNumber={pages.closing} totalPages={total} />
+    </Document>
+  );
 }

@@ -20,7 +20,8 @@ export type CoverTreatment =
   | "kraft-catalogue" // kraft-brown bg with cross-hatch
   | "navy-gold" // deep navy + warm gold accent
   | "sage-stone" // muted sage green, warm grey
-  | "blob-watercolour"; // soft watercolour blob shapes
+  | "blob-watercolour" // soft watercolour blob shapes
+  | "whitepaper"; // navy→magenta radial gradient + constellation motif
 
 export interface VariantPalette {
   // Surface
@@ -62,7 +63,11 @@ export interface Variant {
   coverTitleWeight: 500 | 600;
   /** If true, pages other than the cover get a faint decorative motif
    *  (grid, hairlines, dots). Most variants keep pages clean. */
-  pageMotif?: "none" | "grid" | "dots" | "hairline-band";
+  pageMotif?: "none" | "grid" | "dots" | "hairline-band" | "constellation";
+  /** Label used in the footer of every page (replaces "My Journey Report").
+   *  Set this when the variant reads as a formal document format — e.g.
+   *  white paper, dossier. */
+  footerBrand?: string;
 }
 
 export const VARIANTS: Variant[] = [
@@ -376,6 +381,43 @@ export const VARIANTS: Variant[] = [
       coverText: "#F5F4EE",
       coverMuted: "#B4C0B0",
       coverRule: "#2E4634",
+    },
+  },
+
+  // 11. Whitepaper — Visme-inspired navy→magenta cover, constellation motif,
+  //     burgundy section titles on clean white interior pages. Reads like a
+  //     formal executive brief.
+  {
+    key: "11-whitepaper",
+    name: "Whitepaper",
+    description:
+      "Navy→magenta radial-gradient cover with a thin geometric title and a constellation motif. White interior pages with burgundy section titles and a 'WHITE PAPER' footer.",
+    cover: "whitepaper",
+    coverTitleWeight: 500,
+    pageMotif: "constellation",
+    footerBrand: "WHITE PAPER",
+    palette: {
+      pageBg: "#FFFFFF",
+      surface: "#FFFFFF",
+      surfaceAlt: "#FAF3F6",
+      surfaceDeep: "#1B0F3A",
+      // Burgundy ink — reads as a styled magenta without becoming a
+      // scream. Section titles + sub-heads pick this up automatically.
+      ink: "#A51A58",
+      body: "#2A2433",
+      muted: "#5B4E66",
+      subtle: "#7C6E88",
+      faint: "#B2A7BD",
+      hairline: "#E6DDE6",
+      hairlineSoft: "#F1EBF2",
+      divider: "#D4C7D4",
+      accent: "#B91B5A",
+      accentSoft: "#FBE7EF",
+      coverBg: "#1B0F3A",
+      coverAccent: "#E11D74",
+      coverText: "#F8FAFC",
+      coverMuted: "#C4B5D6",
+      coverRule: "#3A2765",
     },
   },
 ];

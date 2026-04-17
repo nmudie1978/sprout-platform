@@ -10,6 +10,8 @@ import {
   JourneyReportDocument,
   type MapperInput,
 } from "@/lib/reports/journey";
+import { renderVariantBuffer } from "@/lib/reports/journey/variants/VariantDocument";
+import { VARIANTS } from "@/lib/reports/journey/variants/variants";
 import {
   getAllCareers,
   getSectorForCareer,
@@ -142,8 +144,13 @@ async function resolveMapperInput(userId: string): Promise<MapperInput | null> {
 /**
  * POST /api/reports/my-journey
  * Generates the premium My Journey PDF report.
+ *
+ * Supports an optional `?variant=<key>` query param to render one of
+ * the registered style variants (e.g. `whitepaper`, `11-whitepaper`).
+ * The variant key can be the short slug after the numeric prefix or the
+ * full key. Unknown variants fall back to the default editorial style.
  */
-export async function POST() {
+export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id || session.user.role !== "YOUTH") {
@@ -156,14 +163,25 @@ export async function POST() {
     }
 
     const vm = buildViewModel(input);
-    const pdfBuffer = await renderToBuffer(<JourneyReportDocument vm={vm} />);
+    const variantKey = new URL(req.url).searchParams.get("variant");
+    const variant = variantKey
+      ? VARIANTS.find(
+          (v) =>
+            v.key === variantKey ||
+            v.key.replace(/^\d+-/, "") === variantKey,
+        )
+      : null;
+    const pdfBuffer = variant
+      ? await renderVariantBuffer(vm, variant)
+      : ((await renderToBuffer(<JourneyReportDocument vm={vm} />)) as Buffer);
 
     const careerSlug = (vm.cover.careerTitle || "career")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "career";
     const datePart = new Date().toISOString().split("T")[0];
-    const filename = `my-journey-report-${careerSlug}-${datePart}.pdf`;
+    const variantSuffix = variant ? `-${variant.key.replace(/^\d+-/, "")}` : "";
+    const filename = `my-journey-report-${careerSlug}${variantSuffix}-${datePart}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,

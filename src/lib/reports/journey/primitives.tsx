@@ -1,6 +1,64 @@
 import React from "react";
 import { Page, Text, View, Svg, Line, Rect, Circle, Path } from "@react-pdf/renderer";
-import { palette, styles, type } from "./theme";
+import { motifState, palette, styles, type } from "./theme";
+
+/**
+ * Faint constellation of connected dots — the white-paper variant's
+ * recurring motif. Rendered in the top-right corner of every content
+ * page at low opacity so it never fights the body copy. The dot
+ * positions are hand-tuned into a rough polygonal network; @react-pdf
+ * doesn't support CSS `opacity` on SVG primitives uniformly, so we
+ * rely on explicit per-element fill-/stroke-opacity.
+ */
+function ConstellationMotif({ color = palette.accent }: { color?: string }) {
+  const lines: Array<[number, number, number, number]> = [
+    [12, 8, 36, 20],
+    [36, 20, 60, 6],
+    [60, 6, 78, 24],
+    [36, 20, 50, 44],
+    [50, 44, 78, 24],
+    [50, 44, 30, 56],
+    [30, 56, 12, 40],
+    [12, 40, 36, 20],
+    [50, 44, 72, 52],
+  ];
+  const dots: Array<[number, number]> = [
+    [12, 8],
+    [36, 20],
+    [60, 6],
+    [78, 24],
+    [50, 44],
+    [30, 56],
+    [12, 40],
+    [72, 52],
+  ];
+  return (
+    <Svg viewBox="0 0 90 64" style={{ width: 110, height: 78 }}>
+      {lines.map(([x1, y1, x2, y2], i) => (
+        <Line
+          key={`l-${i}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke={color}
+          strokeWidth={0.35}
+          strokeOpacity={0.55}
+        />
+      ))}
+      {dots.map(([cx, cy], i) => (
+        <Circle
+          key={`d-${i}`}
+          cx={cx}
+          cy={cy}
+          r={1}
+          fill={color}
+          fillOpacity={0.8}
+        />
+      ))}
+    </Svg>
+  );
+}
 
 /**
  * Reusable PDF primitives for the Journey Report — editorial edition.
@@ -49,8 +107,22 @@ export function PageFrame({
 }) {
   // Suppress unused lint without making the rename load-bearing.
   void _background;
+  const showConstellation = motifState.pageMotif === "constellation";
   return (
     <Page size="A4" style={styles.page}>
+      {showConstellation ? (
+        <View
+          fixed
+          style={{
+            position: "absolute",
+            top: 18,
+            right: 22,
+          }}
+        >
+          <ConstellationMotif color={palette.accent} />
+        </View>
+      ) : null}
+
       <View style={styles.pageHeader} fixed>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <BrandMark />
@@ -63,8 +135,19 @@ export function PageFrame({
 
       {children}
 
+      <View
+        fixed
+        style={{
+          position: "absolute",
+          bottom: 40,
+          left: 52,
+          right: 52,
+          height: 0.5,
+          backgroundColor: palette.hairline,
+        }}
+      />
       <View style={styles.pageFooter} fixed>
-        <Text style={styles.pageFooterText}>My Journey Report</Text>
+        <Text style={styles.pageFooterText}>{motifState.footerBrand}</Text>
         {typeof pageNumber === "number" && (
           <Text style={styles.pageFooterText}>
             {`${pageNumber}${typeof totalPages === "number" ? `  /  ${totalPages}` : ""}`}

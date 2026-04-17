@@ -153,6 +153,69 @@ export function VariantCover({ variant, vm }: { variant: Variant; vm: JourneyRep
     </View>
   );
 
+  // Constellation network — thin white lines connecting dots in a
+  // polygonal pattern. Sits in the upper-right of the whitepaper cover.
+  // Scaled larger than the page-interior version so it carries the
+  // cover's decorative weight.
+  const coverConstellation = (
+    <Svg
+      style={{
+        position: "absolute",
+        top: 40,
+        right: 40,
+        width: 320,
+        height: 240,
+      }}
+      viewBox="0 0 320 240"
+    >
+      {[
+        [40, 20, 110, 56],
+        [110, 56, 190, 22],
+        [190, 22, 272, 80],
+        [272, 80, 300, 140],
+        [110, 56, 160, 130],
+        [160, 130, 272, 80],
+        [160, 130, 82, 184],
+        [82, 184, 40, 110],
+        [40, 110, 110, 56],
+        [160, 130, 230, 200],
+        [230, 200, 300, 140],
+        [82, 184, 160, 130],
+      ].map(([x1, y1, x2, y2], i) => (
+        <Line
+          key={`cl-${i}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke="#FFFFFF"
+          strokeWidth={0.5}
+          strokeOpacity={0.55}
+        />
+      ))}
+      {[
+        [40, 20],
+        [110, 56],
+        [190, 22],
+        [272, 80],
+        [300, 140],
+        [160, 130],
+        [82, 184],
+        [40, 110],
+        [230, 200],
+      ].map(([cx, cy], i) => (
+        <Circle
+          key={`cd-${i}`}
+          cx={cx}
+          cy={cy}
+          r={2}
+          fill="#FFFFFF"
+          fillOpacity={0.92}
+        />
+      ))}
+    </Svg>
+  );
+
   // Decorative backgrounds — each treatment renders its own. The common
   // elements (brand / title / footer) float above as absolute-positioned
   // stacks keyed off the page edges.
@@ -316,6 +379,34 @@ export function VariantCover({ variant, vm }: { variant: Variant; vm: JourneyRep
         <Circle cx={PAGE_W * 0.5} cy={PAGE_H * 0.78} r={220} fill="#F59E0B" fillOpacity={0.07} />
       </Svg>
     ),
+    // Whitepaper — deep navy ground, magenta wash descending from the
+    // upper-left corner. @react-pdf's SVG supports linearGradient (not
+    // radial), so we simulate the radial blush by stacking two long
+    // diagonal linear gradients plus a subtle magenta circle for the
+    // corner hotspot. Keeps @react-pdf happy and renders identically in
+    // print PDFs + on-screen.
+    whitepaper: (
+      <Svg
+        style={{ position: "absolute", top: 0, left: 0, width: PAGE_W, height: PAGE_H }}
+      >
+        <Defs>
+          <LinearGradient id="wp-base" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0%" stopColor="#14094A" />
+            <Stop offset="100%" stopColor="#1B0F3A" />
+          </LinearGradient>
+          <LinearGradient id="wp-blush" x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0%" stopColor="#B91B5A" stopOpacity={0.85} />
+            <Stop offset="35%" stopColor="#7E1340" stopOpacity={0.45} />
+            <Stop offset="70%" stopColor="#1B0F3A" stopOpacity={0} />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={0} width={PAGE_W} height={PAGE_H} fill="url(#wp-base)" />
+        <Rect x={0} y={0} width={PAGE_W} height={PAGE_H} fill="url(#wp-blush)" />
+        {/* Corner hotspot — concentrates the magenta in the lower-left
+            edge the way the Visme reference does. */}
+        <Circle cx={-60} cy={PAGE_H * 0.72} r={280} fill="#C21B5F" fillOpacity={0.18} />
+      </Svg>
+    ),
   };
 
   return (
@@ -330,18 +421,101 @@ export function VariantCover({ variant, vm }: { variant: Variant; vm: JourneyRep
       }}
     >
       {backgroundsByTreatment[cover]}
+      {cover === "whitepaper" ? coverConstellation : null}
       <View>{brandRow}</View>
-      <View>
-        {eyebrow}
-        {title}
-        <View style={{ height: 20 }} />
-        <View
-          style={{ height: 0.75, width: 64, backgroundColor: pal.coverAccent }}
-        />
-        <View style={{ height: 20 }} />
-        {subtitle}
-      </View>
-      {footer}
+      {cover === "whitepaper" ? (
+        <View>
+          {/* Visme-style stack: title first, then the "WHITE PAPER"
+              eyebrow underneath. No mid-block rule — the quiet magenta
+              accent under the title does the separating work. */}
+          <Text
+            style={{
+              fontFamily: typeTokens.display.family,
+              fontWeight: 500,
+              fontSize: 34,
+              lineHeight: 1.12,
+              color: pal.coverText,
+              letterSpacing: -0.6,
+              marginBottom: 4,
+              maxWidth: 420,
+            }}
+          >
+            {meta.careerTitle ? "A considered path to" : "A considered look at"}
+          </Text>
+          <Text
+            style={{
+              fontFamily: typeTokens.display.family,
+              fontWeight: 500,
+              fontSize: 34,
+              lineHeight: 1.12,
+              color: pal.coverText,
+              letterSpacing: -0.6,
+              marginBottom: 22,
+              maxWidth: 440,
+            }}
+          >
+            {meta.careerTitle ? `${meta.careerTitle}.` : "where you're going."}
+          </Text>
+          <Text
+            style={{
+              fontFamily: typeTokens.bodyStrong.family,
+              fontWeight: typeTokens.bodyStrong.weight,
+              fontSize: 11,
+              color: pal.coverText,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+            }}
+          >
+            White Paper
+          </Text>
+        </View>
+      ) : (
+        <View>
+          {eyebrow}
+          {title}
+          <View style={{ height: 20 }} />
+          <View
+            style={{ height: 0.75, width: 64, backgroundColor: pal.coverAccent }}
+          />
+          <View style={{ height: 20 }} />
+          {subtitle}
+        </View>
+      )}
+      {cover === "whitepaper" ? (
+        <View>
+          <View
+            style={{
+              height: 0.5,
+              backgroundColor: pal.coverRule,
+              marginBottom: 18,
+            }}
+          />
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text
+              style={{
+                fontFamily: typeTokens.body.family,
+                fontSize: 9,
+                color: pal.coverMuted,
+                letterSpacing: 0.2,
+              }}
+            >
+              {meta.generatedDate}
+            </Text>
+            <Text
+              style={{
+                fontFamily: typeTokens.body.family,
+                fontSize: 9,
+                color: pal.coverMuted,
+                letterSpacing: 0.2,
+              }}
+            >
+              endeavrly.com
+            </Text>
+          </View>
+        </View>
+      ) : (
+        footer
+      )}
     </Page>
   );
 }

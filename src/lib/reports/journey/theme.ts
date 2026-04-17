@@ -1,6 +1,24 @@
 import { StyleSheet } from "@react-pdf/renderer";
 
 /**
+ * Mutable motif state. Variants that want a recurring decorative
+ * element on every content page (constellation, grid, dots) set this
+ * before render and clear it after. PageFrame reads `pageMotif` and
+ * picks the matching SVG overlay. Keeping this here (rather than
+ * threading a prop through every page component) avoids touching
+ * every page's signature just to carry a cosmetic flag.
+ */
+export const motifState: {
+  pageMotif: "none" | "constellation";
+  footerBrand: string;
+  sectionAccentBar: boolean;
+} = {
+  pageMotif: "none",
+  footerBrand: "My Journey Report",
+  sectionAccentBar: true,
+};
+
+/**
  * Design tokens for the Journey Report PDF — editorial edition.
  *
  * Priorities:

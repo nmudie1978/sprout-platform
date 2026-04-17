@@ -1,8 +1,7 @@
 import { describe, it } from "vitest";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { writeFileSync, mkdirSync } from "fs";
 import { buildViewModel, type MapperInput } from "../mapper";
-import { VariantDocument } from "../variants/VariantDocument";
+import { renderVariantBuffer } from "../variants/VariantDocument";
 import { VARIANTS } from "../variants/variants";
 
 /**
@@ -158,7 +157,7 @@ describe.skipIf(!shouldDump)("PDF variant dump", () => {
     const vm = buildViewModel(richInput());
     const index: Array<{ key: string; name: string; path: string; size: number }> = [];
     for (const variant of VARIANTS) {
-      const buf = await renderToBuffer(<VariantDocument vm={vm} variant={variant} />);
+      const buf = await renderVariantBuffer(vm, variant);
       const filePath = `/tmp/pdf-preview/variants/${variant.key}.pdf`;
       writeFileSync(filePath, buf);
       index.push({ key: variant.key, name: variant.name, path: filePath, size: buf.length });
