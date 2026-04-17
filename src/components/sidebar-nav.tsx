@@ -368,7 +368,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
   return (
     <div
       className={cn(
-        "hidden lg:block relative z-20 shrink-0 self-stretch transition-all duration-300 ease-out dark:bg-[hsl(var(--sidebar))]",
+        "hidden lg:block relative z-20 shrink-0 self-stretch transition-all duration-300 ease-out bg-[hsl(var(--sidebar))]",
+        "border-r-2 border-[hsl(var(--sidebar-border))] dark:border-r-0",
         collapsed ? "w-16" : "w-56"
       )}
     >

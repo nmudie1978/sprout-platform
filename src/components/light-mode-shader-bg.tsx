@@ -5,9 +5,9 @@
  * shader canvas behind the main content area. Only visible in
  * light mode; in dark mode the component renders nothing.
  *
- * Uses @paper-design/shaders-react MeshGradient with soft warm
- * tones (cream, blush, lavender, soft teal) at very low speed
- * so the effect feels calm, not distracting.
+ * M · Teal Mist palette — pale teal, warm cream, soft sage. Keeps
+ * the teal brand intact while giving the canvas a calm, blended
+ * glow instead of a flat fill.
  */
 
 import { MeshGradient } from "@paper-design/shaders-react";
@@ -28,25 +28,25 @@ export function LightModeShaderBackground() {
       className="fixed inset-0 z-0 pointer-events-none"
       aria-hidden
     >
-      {/* Primary layer — soft warm mesh */}
+      {/* Primary layer — Teal Mist blend */}
       <MeshGradient
         className="absolute inset-0 w-full h-full"
         colors={[
-          "#faf5ff",  // very light lavender
-          "#fce7f3",  // soft blush pink
-          "#fef3c7",  // warm cream
-          "#d1fae5",  // soft mint/teal
-          "#e0e7ff",  // soft periwinkle
+          "#c4ead6",  // pale teal
+          "#f0e5cc",  // warm cream
+          "#eaf3ef",  // near-white sage
+          "#d6e8dd",  // soft mint-sage
+          "#f6efe2",  // soft cream white
         ]}
         speed={0.15}
       />
-      {/* Secondary layer — subtle depth with very low opacity */}
+      {/* Secondary layer — subtle highlight depth */}
       <MeshGradient
         className="absolute inset-0 w-full h-full opacity-30"
         colors={[
           "#ffffff",
-          "#fbcfe8",  // pink
-          "#fde68a",  // warm yellow
+          "#d9ede2",  // misty teal
+          "#f5ecd4",  // butter cream
           "#ffffff",
         ]}
         speed={0.1}

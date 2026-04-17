@@ -191,33 +191,29 @@ function StatCard({
 function CompactStat({
   label,
   value,
-  icon: Icon,
-  iconColor = "text-muted-foreground/60",
   tooltip,
 }: {
   label: string;
   value: string;
-  icon: React.ComponentType<{ className?: string }>;
+  /** Retained for callsite compat — no longer rendered. Layout mirrors the theme preview: plain stacked label/value, left-aligned, no icon. */
+  icon?: React.ComponentType<{ className?: string }>;
   iconColor?: string;
   tooltip?: string;
 }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded-md border border-border/40 bg-background/20 px-2 py-1.5",
+        "rounded-md border border-border/40 bg-background/20 px-2 py-1.5",
         tooltip && "cursor-help",
       )}
       title={tooltip}
     >
-      <Icon className={cn("h-3.5 w-3.5 shrink-0", iconColor)} />
-      <div className="min-w-0 flex-1">
-        <p className="text-[8px] uppercase tracking-wider text-muted-foreground/50 leading-none">
-          {label}
-        </p>
-        <p className="text-[11px] font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
-          {value}
-        </p>
-      </div>
+      <p className="text-[8px] uppercase tracking-wider text-muted-foreground/50 leading-none font-semibold">
+        {label}
+      </p>
+      <p className="text-[11px] font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
+        {value}
+      </p>
     </div>
   );
 }

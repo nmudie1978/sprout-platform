@@ -4,39 +4,40 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens ─────────────────────────────────
-       Warm amber canvas with matching warm cream surfaces.
-       Cards/modals/popovers ARE warm (not white) so the whole app
-       feels cohesive — no white "holes" punched into the canvas. */
-    --background: 35 40% 92%;           /* pale cream fallback — shader paints on top */
-    --foreground: 260 20% 15%;
-    --card: 35 40% 92%;                 /* same as canvas — one uniform tone */
-    --card-foreground: 260 20% 15%;
-    --popover: 35 40% 92%;
-    --popover-foreground: 260 20% 15%;
-    --primary: 166 60% 32%;
+    /* ── Light mode theme tokens — I · Steel & Serious ───────────
+       Pale steel canvas, navy text, steel-blue brand. Quietly
+       confident and trust-signalling. No gradient — solid flat
+       canvas — swaps the teal brand for steel blue. Pure-white
+       cards sit on top. */
+    --background: 210 40% 98%;          /* near-white steel tint */
+    --foreground: 211 93% 13%;          /* deep navy */
+    --card: 0 0% 100%;                  /* pure white */
+    --card-foreground: 211 93% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 211 93% 13%;
+    --primary: 207 52% 31%;             /* steel-blue brand */
     --primary-foreground: 0 0% 100%;
-    --secondary: 270 12% 95%;
-    --secondary-foreground: 260 15% 18%;
-    --muted: 268 10% 94%;
-    --muted-foreground: 260 8% 40%;
-    --accent: 330 12% 95%;
-    --accent-foreground: 260 15% 20%;
+    --secondary: 210 25% 95%;
+    --secondary-foreground: 211 93% 16%;
+    --muted: 210 18% 95%;
+    --muted-foreground: 234 18% 35%;
+    --accent: 210 45% 95%;              /* pale steel accent */
+    --accent-foreground: 211 93% 18%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 268 12% 88%;
-    --input: 268 12% 88%;
-    --ring: 166 60% 32%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 207 52% 31%;
     --radius: 0.75rem;
-    --sidebar: 34 32% 88%;              /* latte — slightly darker than canvas for separation */
-    --sidebar-foreground: 220 20% 22%;
-    --sidebar-border: 34 25% 82%;       /* warm latte border */
-    /* Glow brand colours — teal, used by the Glow component in light mode */
-    --brand: 166 60% 45%;
-    --brand-foreground: 172 66% 60%;
-    --gradient-1: linear-gradient(135deg, hsl(166 72% 36%) 0%, hsl(168 76% 32%) 100%);
-    --gradient-2: linear-gradient(135deg, hsl(200 70% 45%) 0%, hsl(166 72% 36%) 100%);
-    --gradient-3: linear-gradient(135deg, hsl(166 72% 36% / 0.1) 0%, hsl(200 70% 45% / 0.1) 100%);
+    --sidebar: 210 25% 94%;             /* pale steel — sits between card and canvas */
+    --sidebar-foreground: 211 93% 18%;
+    --sidebar-border: 210 22% 74%;      /* steel divider between sidebar and canvas — kept deliberately prominent in light mode */
+    /* Glow brand — steel blue, used by the Glow component in light mode */
+    --brand: 207 52% 40%;
+    --brand-foreground: 207 52% 55%;
+    --gradient-1: linear-gradient(135deg, hsl(207 52% 31%) 0%, hsl(211 60% 24%) 100%);
+    --gradient-2: linear-gradient(135deg, hsl(207 60% 40%) 0%, hsl(207 52% 31%) 100%);
+    --gradient-3: linear-gradient(135deg, hsl(207 52% 31% / 0.1) 0%, hsl(211 60% 24% / 0.1) 100%);
   }
 
   .dark {
@@ -84,28 +85,126 @@
   }
 
   /* Light-mode only: make every `.bg-background` surface transparent
-     so the MeshGradient canvas shows through across the entire app
-     — body, page wrappers, list surfaces, everywhere. Dark mode is
-     untouched: `.bg-background` still resolves to hsl(var(--background))
-     via Tailwind because this rule only applies under `:root:not(.dark)`.
-     Alpha variants like `bg-background/60` use a different generated
-     class so they keep their intended translucency.
+     so the AmbientLightBackground gradient shows through across the
+     entire app — body, page wrappers, list surfaces, everywhere.
+     Dark mode is untouched: `.bg-background` still resolves to
+     hsl(var(--background)) via Tailwind because this rule only
+     applies under `:root:not(.dark)`. Alpha variants like
+     `bg-background/60` use a different generated class so they keep
+     their intended translucency.
 
-     Cards and popovers use frosted glass so content stays readable
-     on top of the shader. */
+     Cards and popovers are pure-white and fully opaque so they sit
+     crisply on top of the gradient (matches the X · Decent preview —
+     no frosted glass, no translucency). */
   :root:not(.dark) .bg-background {
     background-color: transparent;
   }
   :root:not(.dark) .bg-card {
-    background-color: hsla(35 40% 92% / 0.5);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background-color: hsl(var(--card));
   }
   :root:not(.dark) .bg-popover {
-    background-color: hsla(35 40% 92% / 0.75);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    background-color: hsl(var(--popover));
   }
+
+  /* ── Teal-utility remap (light mode only) ────────────────────
+     The app was built with teal hardcoded via Tailwind's
+     `text-teal-*`, `bg-teal-*`, `border-teal-*`, `ring-teal-*`
+     utilities — these compile to literal `rgb(20 184 166 / α)`
+     and bypass `--primary` entirely. To make palette swaps work,
+     we remap the common teal shades to `hsl(var(--primary))` in
+     light mode. Dark mode keeps stock teal (teal is intentional
+     on the dark canvas — don't touch).
+     Uses CSS color-mix for alpha variants so opacity carries. */
+  :root:not(.dark) .text-teal-400,
+  :root:not(.dark) .text-teal-500,
+  :root:not(.dark) .text-teal-600,
+  :root:not(.dark) .text-teal-700 {
+    color: hsl(var(--primary));
+  }
+  :root:not(.dark) .bg-teal-400,
+  :root:not(.dark) .bg-teal-500,
+  :root:not(.dark) .bg-teal-600 {
+    background-color: hsl(var(--primary));
+  }
+  :root:not(.dark) .border-teal-400,
+  :root:not(.dark) .border-teal-500,
+  :root:not(.dark) .border-teal-600 {
+    border-color: hsl(var(--primary));
+  }
+  :root:not(.dark) .ring-teal-400,
+  :root:not(.dark) .ring-teal-500 {
+    --tw-ring-color: hsl(var(--primary));
+  }
+  /* Alpha variants — Tailwind escapes `/` as `\/` in selectors.
+     Each rule preserves the opacity via color-mix. */
+  :root:not(.dark) .text-teal-500\/20,
+  :root:not(.dark) .text-teal-400\/20 { color: color-mix(in srgb, hsl(var(--primary)) 20%, transparent); }
+  :root:not(.dark) .text-teal-500\/30,
+  :root:not(.dark) .text-teal-400\/30 { color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
+  :root:not(.dark) .text-teal-500\/35 { color: color-mix(in srgb, hsl(var(--primary)) 35%, transparent); }
+  :root:not(.dark) .text-teal-500\/40,
+  :root:not(.dark) .text-teal-400\/40 { color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
+  :root:not(.dark) .text-teal-500\/45 { color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent); }
+  :root:not(.dark) .text-teal-500\/50,
+  :root:not(.dark) .text-teal-400\/50 { color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
+  :root:not(.dark) .text-teal-500\/55,
+  :root:not(.dark) .text-teal-400\/55 { color: color-mix(in srgb, hsl(var(--primary)) 55%, transparent); }
+  :root:not(.dark) .text-teal-500\/60,
+  :root:not(.dark) .text-teal-400\/60 { color: color-mix(in srgb, hsl(var(--primary)) 60%, transparent); }
+  :root:not(.dark) .text-teal-500\/65,
+  :root:not(.dark) .text-teal-400\/65 { color: color-mix(in srgb, hsl(var(--primary)) 65%, transparent); }
+  :root:not(.dark) .text-teal-500\/70,
+  :root:not(.dark) .text-teal-400\/70,
+  :root:not(.dark) .text-teal-600\/70 { color: color-mix(in srgb, hsl(var(--primary)) 70%, transparent); }
+  :root:not(.dark) .text-teal-500\/80,
+  :root:not(.dark) .text-teal-400\/80 { color: color-mix(in srgb, hsl(var(--primary)) 80%, transparent); }
+  :root:not(.dark) .text-teal-500\/90,
+  :root:not(.dark) .text-teal-400\/90,
+  :root:not(.dark) .text-teal-600\/90 { color: color-mix(in srgb, hsl(var(--primary)) 90%, transparent); }
+
+  :root:not(.dark) .bg-teal-500\/5,
+  :root:not(.dark) .bg-teal-400\/5 { background-color: color-mix(in srgb, hsl(var(--primary)) 5%, transparent); }
+  :root:not(.dark) .bg-teal-500\/10 { background-color: color-mix(in srgb, hsl(var(--primary)) 10%, transparent); }
+  :root:not(.dark) .bg-teal-500\/15 { background-color: color-mix(in srgb, hsl(var(--primary)) 15%, transparent); }
+  :root:not(.dark) .bg-teal-500\/20,
+  :root:not(.dark) .bg-teal-400\/20 { background-color: color-mix(in srgb, hsl(var(--primary)) 20%, transparent); }
+  :root:not(.dark) .bg-teal-500\/25 { background-color: color-mix(in srgb, hsl(var(--primary)) 25%, transparent); }
+  :root:not(.dark) .bg-teal-500\/30,
+  :root:not(.dark) .bg-teal-400\/30 { background-color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
+  :root:not(.dark) .bg-teal-500\/35 { background-color: color-mix(in srgb, hsl(var(--primary)) 35%, transparent); }
+  :root:not(.dark) .bg-teal-500\/40,
+  :root:not(.dark) .bg-teal-400\/40 { background-color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
+  :root:not(.dark) .bg-teal-500\/45 { background-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent); }
+  :root:not(.dark) .bg-teal-500\/50 { background-color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
+  :root:not(.dark) .bg-teal-500\/60,
+  :root:not(.dark) .bg-teal-600\/60 { background-color: color-mix(in srgb, hsl(var(--primary)) 60%, transparent); }
+  :root:not(.dark) .bg-teal-500\/65 { background-color: color-mix(in srgb, hsl(var(--primary)) 65%, transparent); }
+  :root:not(.dark) .bg-teal-500\/70,
+  :root:not(.dark) .bg-teal-400\/70 { background-color: color-mix(in srgb, hsl(var(--primary)) 70%, transparent); }
+  :root:not(.dark) .bg-teal-500\/80 { background-color: color-mix(in srgb, hsl(var(--primary)) 80%, transparent); }
+  :root:not(.dark) .bg-teal-500\/90 { background-color: color-mix(in srgb, hsl(var(--primary)) 90%, transparent); }
+
+  :root:not(.dark) .border-teal-500\/10 { border-color: color-mix(in srgb, hsl(var(--primary)) 10%, transparent); }
+  :root:not(.dark) .border-teal-500\/15 { border-color: color-mix(in srgb, hsl(var(--primary)) 15%, transparent); }
+  :root:not(.dark) .border-teal-500\/20,
+  :root:not(.dark) .border-teal-400\/20 { border-color: color-mix(in srgb, hsl(var(--primary)) 20%, transparent); }
+  :root:not(.dark) .border-teal-500\/25 { border-color: color-mix(in srgb, hsl(var(--primary)) 25%, transparent); }
+  :root:not(.dark) .border-teal-500\/30,
+  :root:not(.dark) .border-teal-400\/30 { border-color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
+  :root:not(.dark) .border-teal-500\/35 { border-color: color-mix(in srgb, hsl(var(--primary)) 35%, transparent); }
+  :root:not(.dark) .border-teal-500\/40 { border-color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
+  :root:not(.dark) .border-teal-500\/45 { border-color: color-mix(in srgb, hsl(var(--primary)) 45%, transparent); }
+  :root:not(.dark) .border-teal-500\/50,
+  :root:not(.dark) .border-teal-400\/60 { border-color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
+  :root:not(.dark) .border-teal-500\/60,
+  :root:not(.dark) .border-teal-400\/70 { border-color: color-mix(in srgb, hsl(var(--primary)) 60%, transparent); }
+
+  :root:not(.dark) .ring-teal-500\/15 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 15%, transparent); }
+  :root:not(.dark) .ring-teal-500\/20 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 20%, transparent); }
+  :root:not(.dark) .ring-teal-500\/25 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 25%, transparent); }
+  :root:not(.dark) .ring-teal-500\/30 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
+  :root:not(.dark) .ring-teal-500\/40 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
+  :root:not(.dark) .ring-teal-500\/50 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
 
   /* Consistent heading styles — mobile-first */
   h1 {
