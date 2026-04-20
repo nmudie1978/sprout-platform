@@ -216,7 +216,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.15 }}
         className="mb-2 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-blue-950/10 p-3 sm:p-6">
+        <div className="rounded-2xl border-2 border-blue-200/50 dark:border-blue-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-blue-950/10 p-3 sm:p-6">
           <div className="relative">
             <SectionHeader
               icon={Globe2}
@@ -291,7 +291,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.35 }}
         className="mb-3 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-amber-950/10 p-3 sm:p-4">
+        <div className="rounded-2xl border-2 border-amber-200/50 dark:border-amber-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-amber-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Sparkles}
             label={t("youthLens")}
@@ -331,7 +331,7 @@ export default function IndustryInsightsPage() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mb-3 scroll-mt-20"
       >
-        <div className="rounded-2xl border-2 border-teal-200/50 dark:border-teal-800/30 dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-teal-950/10 p-3 sm:p-4">
+        <div className="rounded-2xl border-2 border-teal-200/50 dark:border-teal-800/30 bg-card dark:bg-gradient-to-br dark:from-background dark:via-background dark:to-teal-950/10 p-3 sm:p-4">
           <SectionHeader
             icon={Layers}
             label="Explore"

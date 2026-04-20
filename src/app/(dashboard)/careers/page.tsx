@@ -265,8 +265,6 @@ function CareersPageContent() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 relative">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5 pointer-events-none dark:hidden" />
 
       <PageHeader
         title={t('careers.titlePrefix')}
@@ -284,9 +282,9 @@ function CareersPageContent() {
           { icon: Search, label: t('careers.stats.showing'), value: totalItems, color: "text-teal-500" },
           { icon: Layers, label: t('careers.stats.categories'), value: Object.keys(CAREER_PATHWAYS).length, color: "text-blue-500" },
         ].map((stat) => (
-          <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-card/80 border border-border/40 rounded-xl px-2 sm:px-3 py-1.5 shrink-0">
+          <div key={stat.label} className="flex items-center gap-1.5 sm:gap-2 bg-white/10 dark:bg-card/80 border border-white/20 dark:border-border/40 rounded-xl px-2 sm:px-3 py-1.5 shrink-0 backdrop-blur-sm">
             <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
-            <span className="text-[11px] sm:text-xs text-muted-foreground">{stat.label}</span>
+            <span className="text-[11px] sm:text-xs text-white/85 dark:text-muted-foreground">{stat.label}</span>
             <span className={`text-xs sm:text-sm font-semibold tabular-nums ${stat.color}`}>{stat.value}</span>
           </div>
         ))}
@@ -334,7 +332,7 @@ function CareersPageContent() {
       )}
 
       <div className="flex items-center justify-center gap-3 mb-3 mt-4">
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-white/80 dark:text-muted-foreground">
           {totalItems > PAGE_SIZE ? (
             <>
               Showing {((validCurrentPage - 1) * PAGE_SIZE) + 1}–{Math.min(validCurrentPage * PAGE_SIZE, totalItems)} of {totalItems} career{totalItems !== 1 ? "s" : ""}
@@ -369,7 +367,7 @@ function CareersPageContent() {
               right. Needs `grid` (not `inline-grid`) for mx-auto to take
               effect — inline-level elements ignore auto horizontal margin. */}
           {viewMode === "list" && (
-            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-b-0 rounded-t-md bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 w-fit mx-auto`}>
+            <div className={`grid ${LIST_GRID} items-center gap-x-4 px-3 py-1 border border-white/15 dark:border-border border-b-0 rounded-t-md bg-white/10 dark:bg-muted/30 backdrop-blur-sm text-[10px] font-semibold uppercase tracking-wider text-white/85 dark:text-muted-foreground/70 w-fit mx-auto`}>
               <span>Career</span>
               <span className="text-right">Salary</span>
               <span className="text-center">Growth</span>
@@ -383,7 +381,7 @@ function CareersPageContent() {
           <div
             className={
               viewMode === "list"
-                ? "border rounded-b-md overflow-hidden bg-background w-fit mx-auto"
+                ? "border border-white/15 dark:border-border rounded-b-md overflow-hidden bg-background w-fit mx-auto"
                 : viewMode === "small"
                 ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
                 : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"

@@ -379,6 +379,30 @@ export function VariantCover({ variant, vm }: { variant: Variant; vm: JourneyRep
         <Circle cx={PAGE_W * 0.5} cy={PAGE_H * 0.78} r={220} fill="#F59E0B" fillOpacity={0.07} />
       </Svg>
     ),
+    // Gradient Horizontal — simple left→right linear gradient between
+    // the palette's coverGradientFrom / coverGradientTo colours. Used
+    // by the Fresh Turboscent / Vine / Vasily variants. If the palette
+    // doesn't define gradient stops, fall back to coverBg / coverAccent
+    // so the treatment degrades gracefully.
+    "gradient-horizontal": (
+      <Svg
+        style={{ position: "absolute", top: 0, left: 0, width: PAGE_W, height: PAGE_H }}
+      >
+        <Defs>
+          <LinearGradient id="gh" x1="0" y1="0" x2="1" y2="0">
+            <Stop
+              offset="0%"
+              stopColor={pal.coverGradientFrom ?? pal.coverBg}
+            />
+            <Stop
+              offset="100%"
+              stopColor={pal.coverGradientTo ?? pal.coverAccent}
+            />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={0} width={PAGE_W} height={PAGE_H} fill="url(#gh)" />
+      </Svg>
+    ),
     // Whitepaper — deep navy ground, magenta wash descending from the
     // upper-left corner. @react-pdf's SVG supports linearGradient (not
     // radial), so we simulate the radial blush by stacking two long

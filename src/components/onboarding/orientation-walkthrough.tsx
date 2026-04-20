@@ -133,18 +133,18 @@ export function OrientationWalkthrough({
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) skip(); }}>
       <DialogContent
-        className="sm:max-w-md p-0 gap-0 border-border/50 bg-card overflow-hidden"
+        className="themed-walkthrough sm:max-w-md p-0 gap-0 border-border/50 bg-card overflow-hidden text-white dark:text-card-foreground"
       >
         {/* Progress bar */}
-        <div className="h-1 bg-muted/30 relative">
+        <div className="h-1 bg-white/20 dark:bg-muted/30 relative">
           <div
-            className="h-full bg-teal-500/60 transition-all duration-300"
+            className="h-full bg-teal-400 dark:bg-teal-500/60 transition-all duration-300"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
           {/* Narration progress — thin overlay showing audio position */}
           {narration.isPlaying && (
             <div
-              className="absolute bottom-0 left-0 h-full bg-teal-400/30 transition-all duration-200"
+              className="absolute bottom-0 left-0 h-full bg-teal-300/40 dark:bg-teal-400/30 transition-all duration-200"
               style={{
                 width: `${((step + narration.progress) / STEPS.length) * 100}%`,
               }}
@@ -174,12 +174,12 @@ export function OrientationWalkthrough({
               </div>
 
               {/* Title */}
-              <h2 className="text-lg font-semibold tracking-tight mb-2">
+              <h2 className="text-lg font-semibold tracking-tight mb-2 text-white dark:text-foreground">
                 {current.title}
               </h2>
 
               {/* Body */}
-              <p className="text-sm text-muted-foreground/80 leading-relaxed">
+              <p className="text-sm text-white/85 dark:text-muted-foreground/80 leading-relaxed">
                 {current.body}
               </p>
             </motion.div>
@@ -197,8 +197,8 @@ export function OrientationWalkthrough({
               className={cn(
                 "relative p-1 rounded-md transition-colors",
                 narration.isMuted
-                  ? "text-muted-foreground/40 hover:text-muted-foreground/70"
-                  : "text-teal-500 hover:text-teal-400"
+                  ? "text-white/50 hover:text-white/80 dark:text-muted-foreground/40 dark:hover:text-muted-foreground/70"
+                  : "text-teal-300 hover:text-teal-200 dark:text-teal-500 dark:hover:text-teal-400"
               )}
               title={narration.isMuted ? "Turn on narration" : "Mute narration"}
               aria-label={narration.isMuted ? "Turn on narration" : "Mute narration"}
@@ -219,10 +219,10 @@ export function OrientationWalkthrough({
                   className={cn(
                     "h-1 rounded-full transition-all duration-200",
                     i === step
-                      ? "w-4 bg-teal-500"
+                      ? "w-4 bg-teal-300 dark:bg-teal-500"
                       : i < step
-                      ? "w-1.5 bg-teal-500/40"
-                      : "w-1.5 bg-muted-foreground/20"
+                      ? "w-1.5 bg-teal-300/60 dark:bg-teal-500/40"
+                      : "w-1.5 bg-white/25 dark:bg-muted-foreground/20"
                   )}
                 />
               ))}
@@ -231,7 +231,7 @@ export function OrientationWalkthrough({
               <button
                 type="button"
                 onClick={skip}
-                className="text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                className="text-[11px] text-white/60 hover:text-white dark:text-muted-foreground/50 dark:hover:text-muted-foreground transition-colors"
               >
                 Skip
               </button>
@@ -245,7 +245,7 @@ export function OrientationWalkthrough({
                 variant="ghost"
                 size="sm"
                 onClick={back}
-                className="h-8 px-2.5 text-xs"
+                className="h-8 px-2.5 text-xs text-white/85 hover:text-white hover:bg-white/10 dark:text-inherit dark:hover:bg-accent"
               >
                 <ArrowLeft className="h-3.5 w-3.5 mr-1" />
                 Back

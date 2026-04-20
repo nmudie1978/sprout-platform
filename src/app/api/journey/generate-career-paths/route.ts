@@ -5,6 +5,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import type { CareerPathExample } from '@/lib/education/career-path-examples';
+import { logAndSwallow } from '@/lib/observability';
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
 
 let _openai: OpenAI | null | undefined;
 function getOpenAIClient(): OpenAI | null {
@@ -61,6 +63,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Monthly per-user ceiling. This endpoint has a global cache so
+    // most calls hit it for free; this quota only constrains genuinely
+    // new career strings from a single user.
+    const monthlyQuota = await checkRateLimitAsync(
+      `career-paths-month:${session.user.id}`,
+      RateLimits.AI_MONTHLY_CAREER_PATHS,
+    );
+    if (!monthlyQuota.success) {
+      const res = NextResponse.json(
+        { error: 'Monthly career-paths quota reached. The limit resets after the rolling 30-day window.' },
+        { status: 429 },
+      );
+      const headers = getRateLimitHeaders(monthlyQuota.limit, monthlyQuota.remaining, monthlyQuota.reset);
+      Object.entries(headers).forEach(([k, v]) => res.headers.set(k, v));
+      return res;
+    }
+
     const body = await req.json();
     const career = typeof body.career === 'string' ? body.career.trim() : '';
     if (career.length < 2 || career.length > 100) {
@@ -114,7 +133,7 @@ export async function POST(req: NextRequest) {
       where: { cacheKey },
       create: { cacheKey, data: JSON.parse(JSON.stringify({ examples })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
       update: { data: JSON.parse(JSON.stringify({ examples })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-    }).catch(() => {});
+    }).catch(logAndSwallow("careerPaths:cache:write"));
 
     return NextResponse.json({ examples, cached: false });
   } catch (error) {

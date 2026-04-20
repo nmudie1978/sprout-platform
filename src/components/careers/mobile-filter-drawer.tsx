@@ -35,14 +35,14 @@ export function MobileFilterDrawer({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay
           className={cn(
-            "fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm",
+            "fixed inset-0 z-[100] bg-black/50 dark:bg-background/80 backdrop-blur-sm",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
           )}
         />
         <DialogPrimitive.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[100] bg-background border-t rounded-t-xl shadow-lg",
+            "fixed inset-x-0 bottom-0 z-[100] bg-card text-card-foreground border-t rounded-t-xl shadow-lg",
             "max-h-[85vh] flex flex-col",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -92,7 +92,7 @@ export function MobileFilterDrawer({
           </div>
 
           {/* Footer with results count */}
-          <div className="border-t p-4 bg-background">
+          <div className="border-t p-4 bg-card">
             <Button onClick={onClose} className="w-full" size="sm">
               Show {resultCount} career{resultCount !== 1 ? "s" : ""}
             </Button>

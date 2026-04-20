@@ -1,17 +1,14 @@
-"use client";
-
-import { use } from "react";
 import { JobInvoice } from "@/components/job-invoice";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function InvoicePage({
+export default async function InvoicePage({
   params,
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const { jobId } = use(params);
+  const { jobId } = await params;
 
   return (
     <div className="container max-w-3xl py-6 space-y-6">

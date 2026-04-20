@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
@@ -159,10 +160,12 @@ export function HeroVideo({
 
         {/* Poster fallback */}
         {!isVisible && poster && (
-          <img
+          <Image
             src={poster}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 1024px"
+            className="object-cover"
             aria-hidden="true"
           />
         )}

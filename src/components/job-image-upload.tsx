@@ -251,6 +251,10 @@ export function JobImageUpload({
               key={item.id}
               className="relative aspect-square rounded-lg overflow-hidden border bg-muted"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element --
+                  Blob URL from URL.createObjectURL for the local file
+                  being uploaded. next/image can't optimize a blob: URL,
+                  so a raw <img> is the correct choice here. */}
               <img
                 src={item.preview}
                 alt="Uploading..."

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useId } from 'react';
+import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 
 interface MermaidRendererProps {
@@ -32,7 +33,7 @@ export function MermaidRenderer({ code, className }: MermaidRendererProps) {
         mermaid.initialize({
           startOnLoad: false,
           theme: 'base',
-          securityLevel: 'loose',
+          securityLevel: 'antiscript',
           gantt: {
             titleTopMargin: 15,
             barHeight: 24,
@@ -50,8 +51,16 @@ export function MermaidRenderer({ code, className }: MermaidRendererProps) {
         const id = `mermaid-${renderIdBase.replace(/:/g, '')}-${currentRender}`;
         const { svg: svgResult } = await mermaid.render(id, code);
 
+        // Defense in depth: mermaid is invoked with securityLevel:'antiscript',
+        // but the SVG source is ultimately AI-generated in some callers
+        // (e.g. /api/journey/generate-timeline). Sanitise with DOMPurify,
+        // preserving the SVG namespace so the diagram still renders.
+        const cleanSvg = DOMPurify.sanitize(svgResult, {
+          USE_PROFILES: { svg: true, svgFilters: true },
+        });
+
         if (!cancelled) {
-          setSvg(svgResult);
+          setSvg(cleanSvg);
           setLoading(false);
         }
       } catch (err) {

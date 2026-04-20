@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { recordLifeSkillEvent } from "@/lib/life-skills";
 import { z } from "zod";
+import { apiError } from "@/lib/api-error";
 
 const patchSchema = z.object({
   status: z.enum(["ACCEPTED", "REJECTED", "WITHDRAWN"]),
@@ -18,16 +19,16 @@ export async function PATCH(
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const { id } = await params;
     const parsed = patchSchema.safeParse(await req.json());
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Invalid input", details: parsed.error.flatten() },
-        { status: 400 },
-      );
+      return apiError("VALIDATION_FAILED", "Invalid input", {
+        request: req,
+        details: parsed.error.flatten(),
+      });
     }
     const { status } = parsed.data;
 
@@ -40,10 +41,7 @@ export async function PATCH(
     });
 
     if (!application) {
-      return NextResponse.json(
-        { error: "Application not found" },
-        { status: 404 }
-      );
+      return apiError("NOT_FOUND", "Application not found", { request: req });
     }
 
     // Per-role status authorisation:
@@ -60,7 +58,7 @@ export async function PATCH(
       application.youthId === session.user.id;
 
     if (!isEmployerOwner && !isYouthOwner) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      return apiError("FORBIDDEN", "You don't have permission to modify this application", { request: req });
     }
 
     if (isYouthOwner && status !== "WITHDRAWN") {

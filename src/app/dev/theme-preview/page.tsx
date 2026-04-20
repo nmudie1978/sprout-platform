@@ -688,6 +688,158 @@ const palettes: Palette[] = [
     canvasWash:
       "linear-gradient(120deg, hsl(209 27% 26%) 0%, hsl(201 72% 50%) 100%)",
   },
+  {
+    id: "sea-blue",
+    name: "II · Sea Blue",
+    blurb:
+      "Two-stop diagonal from steel blue (#2b5876) to muted purple (#4e4376). Dusk-leaning, premium, reads mature.",
+    vibe: "Dusk, considered, blue-to-violet",
+    background: "220 30% 40%",
+    card: "0 0% 100%",
+    sidebar: "220 22% 80%",
+    sidebarBorder: "220 16% 66%",
+    foreground: "228 32% 16%",
+    mutedForeground: "228 12% 38%",
+    border: "220 14% 72%",
+    primary: "204 47% 32%",
+    primaryForeground: "0 0% 100%",
+    accent: "220 40% 93%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(204 47% 32%) 0%, hsl(253 28% 36%) 100%)",
+  },
+  {
+    id: "afternoon",
+    name: "JJ · Afternoon",
+    blurb:
+      "Two-stop diagonal from deep navy (#000c40) to cool steel grey (#607d8b). Late-afternoon, overcast — steady, serious.",
+    vibe: "Overcast, focused, quietly formal",
+    background: "216 30% 30%",
+    card: "0 0% 100%",
+    sidebar: "216 18% 82%",
+    sidebarBorder: "216 14% 66%",
+    foreground: "229 50% 14%",
+    mutedForeground: "210 12% 38%",
+    border: "216 12% 72%",
+    primary: "229 58% 26%",
+    primaryForeground: "0 0% 100%",
+    accent: "216 30% 93%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(229 100% 13%) 0%, hsl(200 18% 46%) 100%)",
+  },
+  {
+    id: "blooze",
+    name: "KK · Blooze",
+    blurb:
+      "Three-stop symmetrical wash from muted sky (#6da6be) through deeper sky (#4b859e) back to muted sky. Calm, coastal, near-monochrome.",
+    vibe: "Coastal, calm, near-solid blue",
+    background: "198 38% 55%",
+    card: "0 0% 100%",
+    sidebar: "198 28% 86%",
+    sidebarBorder: "198 20% 72%",
+    foreground: "200 40% 16%",
+    mutedForeground: "200 14% 38%",
+    border: "198 16% 76%",
+    primary: "198 42% 42%",
+    primaryForeground: "0 0% 100%",
+    accent: "198 45% 94%",
+    canvasWash:
+      "linear-gradient(90deg, hsl(198 38% 59%) 0%, hsl(198 36% 46%) 50%, hsl(198 38% 59%) 100%)",
+  },
+  {
+    id: "compass",
+    name: "LL · Compass",
+    blurb:
+      "Two-stop diagonal from steel blue (#516b8b) to forest green (#056b3b). Distinctive blue→green shift — outdoorsy and directional.",
+    vibe: "Outdoorsy, directional, blue-to-forest",
+    background: "180 30% 32%",
+    card: "0 0% 100%",
+    sidebar: "213 20% 82%",
+    sidebarBorder: "213 15% 68%",
+    foreground: "213 32% 16%",
+    mutedForeground: "213 14% 38%",
+    border: "213 14% 72%",
+    primary: "152 72% 26%",
+    primaryForeground: "0 0% 100%",
+    accent: "152 28% 93%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(213 26% 43%) 0%, hsl(152 91% 22%) 100%)",
+  },
+  {
+    id: "visual-blue",
+    name: "MM · Visual Blue",
+    blurb:
+      "Two-stop diagonal from deep teal (#003d4d) to bright mint green (#00c996). High-contrast, energetic, wellness-adjacent.",
+    vibe: "Energetic, wellness, deep teal to mint",
+    background: "180 55% 30%",
+    card: "0 0% 100%",
+    sidebar: "170 22% 82%",
+    sidebarBorder: "170 18% 66%",
+    foreground: "193 50% 12%",
+    mutedForeground: "180 14% 38%",
+    border: "170 14% 72%",
+    primary: "165 78% 32%",
+    primaryForeground: "0 0% 100%",
+    accent: "165 40% 94%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(193 100% 15%) 0%, hsl(165 100% 39%) 100%)",
+  },
+  {
+    id: "anwar",
+    name: "NN · Anwar",
+    blurb:
+      "Two-stop diagonal from dark teal-grey (#334d50) to pale sand (#cbcaa5). Earthy, editorial — unique warm-cool contrast.",
+    vibe: "Editorial, earthy, teal-to-sand",
+    background: "90 25% 46%",
+    card: "0 0% 100%",
+    sidebar: "80 25% 86%",
+    sidebarBorder: "80 18% 72%",
+    foreground: "186 28% 18%",
+    mutedForeground: "186 10% 38%",
+    border: "80 16% 78%",
+    primary: "186 40% 28%",
+    primaryForeground: "0 0% 100%",
+    accent: "58 35% 94%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(186 22% 26%) 0%, hsl(58 27% 72%) 100%)",
+  },
+  {
+    id: "vasily",
+    name: "PP · Vasily",
+    blurb:
+      "Two-stop diagonal from mustard yellow (#e9d362) to charcoal (#333333). Warm-to-dark, editorial, unexpected.",
+    vibe: "Editorial, warm, grown-up — swaps teal for mustard",
+    background: "51 35% 62%",
+    card: "0 0% 100%",
+    sidebar: "51 30% 84%",
+    sidebarBorder: "51 22% 72%",
+    foreground: "0 0% 16%",
+    mutedForeground: "0 0% 40%",
+    border: "51 18% 76%",
+    primary: "0 0% 20%",
+    primaryForeground: "51 60% 90%",
+    accent: "51 55% 93%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(51 76% 65%) 0%, hsl(0 0% 20%) 100%)",
+  },
+  {
+    id: "royal-blue",
+    name: "OO · Royal Blue",
+    blurb:
+      "Two-stop diagonal from steel grey-blue (#536976) to deep navy (#292e49). Mature, dusk-leaning, quietly premium.",
+    vibe: "Mature, dusk, quietly premium",
+    background: "215 24% 30%",
+    card: "0 0% 100%",
+    sidebar: "215 18% 82%",
+    sidebarBorder: "215 14% 66%",
+    foreground: "231 36% 14%",
+    mutedForeground: "215 12% 38%",
+    border: "215 12% 72%",
+    primary: "225 32% 32%",
+    primaryForeground: "0 0% 100%",
+    accent: "215 30% 93%",
+    canvasWash:
+      "linear-gradient(120deg, hsl(202 17% 39%) 0%, hsl(231 28% 22%) 100%)",
+  },
 ];
 
 export default function ThemePreviewPage() {
@@ -758,7 +910,7 @@ export default function ThemePreviewPage() {
           Light-mode palette preview
         </h1>
         <p style={{ fontSize: 13, color: "#9ca3af", margin: "6px 0 0" }}>
-          {palettes.length} candidate palettes (A–Z + AA–HH) rendered as mock
+          {palettes.length} candidate palettes (A–Z + AA–PP) rendered as mock
           dashboards. Each column scopes its own tokens — nothing here touches
           dark mode or the real app.
         </p>

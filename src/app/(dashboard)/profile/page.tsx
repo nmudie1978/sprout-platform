@@ -81,7 +81,7 @@ function getDaysInMonth(month: string, year: string): number {
 
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -150,6 +150,28 @@ export default function ProfilePage() {
       lastUserIdRef.current = session.user.id;
     }
   }, [session?.user?.id]);
+
+  // Guardian-consent session refresh.
+  //
+  // When a guardian grants consent via the email link, the youth's
+  // DB record updates (guardianConsent=true) but their JWT still
+  // says false until the token refreshes. Middleware then blocks
+  // them from /dashboard even though consent IS granted. This
+  // effect detects the stale-session case (profile says granted,
+  // session says pending) and calls NextAuth's `update()` to
+  // refresh the JWT — which triggers the jwt() callback with
+  // trigger === "update", re-reading guardianConsent from the DB.
+  // After refresh the user can freely navigate the gated routes.
+  useEffect(() => {
+    const sessionConsent = session?.user?.youthProfile?.guardianConsent;
+    if (
+      session?.user?.role === "YOUTH" &&
+      profile?.guardianConsent === true &&
+      sessionConsent === false
+    ) {
+      updateSession();
+    }
+  }, [profile?.guardianConsent, session?.user?.role, session?.user?.youthProfile?.guardianConsent, updateSession]);
 
   // Fetch primary goal from goals API
   const { data: goalsData } = useQuery({
@@ -1052,6 +1074,15 @@ export default function ProfilePage() {
                           });
                           if (res.ok) {
                             toast({ title: "Email sent", description: `Re-sent to ${profile.guardianEmail}.` });
+                          } else if (res.status === 429) {
+                            // Daily cap of 3 resends/youth on the server.
+                            // Surface this distinctly so the user knows
+                            // the failure is a cooldown, not a bug.
+                            toast({
+                              title: "Already re-sent today",
+                              description: "You've re-sent this a few times today. Please wait 24 hours before trying again, or contact support.",
+                              variant: "destructive",
+                            });
                           } else {
                             toast({ title: "Couldn't send email", description: "Please try again.", variant: "destructive" });
                           }

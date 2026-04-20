@@ -305,6 +305,10 @@ export function useRoadmapSimulation(
 
   const resume = useCallback(() => {
     if (audioRef.current) {
+      // Intentional silent catch: browsers reject `.play()` that
+      // wasn't triggered by a user gesture (autoplay policy). The
+      // simulation state already tracks user intent via isPlaying,
+      // so a rejected promise is expected, not an error condition.
       audioRef.current.play().catch(() => {});
     }
     setState((s) => ({ ...s, isPaused: false }));

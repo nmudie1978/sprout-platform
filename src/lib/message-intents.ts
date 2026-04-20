@@ -36,10 +36,20 @@ export interface IntentTemplate {
 }
 
 /**
+ * User-selectable intents — everything except FREE_TEXT_LEGACY,
+ * which exists only for back-compat rendering of pre-migration rows.
+ */
+export type SelectableMessageIntent = Exclude<MessageIntent, "FREE_TEXT_LEGACY">;
+
+/**
  * LOCKED MESSAGE TEMPLATES
  * DO NOT modify without safety review.
+ *
+ * FREE_TEXT_LEGACY is deliberately absent — any attempt to call
+ * getIntentTemplate("FREE_TEXT_LEGACY") is a bug: that intent has
+ * no template (the raw `message` column holds the string).
  */
-export const MESSAGE_INTENT_TEMPLATES: Record<MessageIntent, IntentTemplate> = {
+export const MESSAGE_INTENT_TEMPLATES: Record<SelectableMessageIntent, IntentTemplate> = {
   [MessageIntent.ASK_ABOUT_JOB]: {
     intent: MessageIntent.ASK_ABOUT_JOB,
     label: "Ask About Job",
@@ -190,7 +200,13 @@ export function validateIntentVariables(
   variables: Record<string, string>,
   userAgeBracket?: AgeBracket | null
 ): MessageValidationResult {
-  const template = MESSAGE_INTENT_TEMPLATES[intent];
+  // FREE_TEXT_LEGACY has no template and is never user-selectable;
+  // reject early if a caller passes it (defensive — the frontend
+  // type system already excludes it).
+  if (intent === "FREE_TEXT_LEGACY") {
+    return { valid: false, errors: ["FREE_TEXT_LEGACY is not a submittable intent"] };
+  }
+  const template = MESSAGE_INTENT_TEMPLATES[intent as SelectableMessageIntent];
   if (!template) {
     return { valid: false, errors: ["Invalid message intent"] };
   }
@@ -261,7 +277,10 @@ export function renderIntentMessage(
   intent: MessageIntent,
   variables: Record<string, string>
 ): string {
-  const template = MESSAGE_INTENT_TEMPLATES[intent];
+  if (intent === "FREE_TEXT_LEGACY") {
+    throw new Error("FREE_TEXT_LEGACY has no template — display the raw `message` column instead");
+  }
+  const template = MESSAGE_INTENT_TEMPLATES[intent as SelectableMessageIntent];
   if (!template) {
     throw new Error(`Unknown intent: ${intent}`);
   }
@@ -289,7 +308,88 @@ export function getAllIntents(): IntentTemplate[] {
  * Get intent template by intent enum
  */
 export function getIntentTemplate(intent: MessageIntent): IntentTemplate | undefined {
-  return MESSAGE_INTENT_TEMPLATES[intent];
+  if (intent === "FREE_TEXT_LEGACY") return undefined;
+  return MESSAGE_INTENT_TEMPLATES[intent as SelectableMessageIntent];
+}
+
+// ============================================
+// APPLICATION MESSAGE DISPLAY (F10)
+// ============================================
+
+/**
+ * Shape returned by `getApplicationMessageDisplay`. Employer views
+ * that need to show an applicant's message (job-detail review,
+ * employer dashboard, hire-confirmation screens) should consume
+ * this shape rather than the raw columns — it handles legacy rows,
+ * empty applications, and the structured case uniformly.
+ */
+export interface ApplicationMessageDisplay {
+  /** Which row-variant this is. */
+  kind: "none" | "structured" | "legacy";
+  /** Human label to render above the text (e.g. "Confirm Availability"). Null for legacy + none. */
+  label: string | null;
+  /** The text to show to the employer. Null for `none`. */
+  text: string | null;
+  /** True when the application predates the intent system — render with a subtle "Legacy message" badge. */
+  isLegacy: boolean;
+}
+
+/**
+ * Build the display shape for an Application row. Accepts just the
+ * three columns we touch (messageIntent, messageVariables, message)
+ * so callers don't need to pass the whole row and can pluck from
+ * partial selects. Pure function — safe in server and client.
+ */
+export function getApplicationMessageDisplay(input: {
+  messageIntent: MessageIntent | null;
+  messageVariables: unknown;
+  message: string | null;
+}): ApplicationMessageDisplay {
+  // No message at all — youth skipped the intent picker.
+  if (!input.messageIntent && !input.message) {
+    return { kind: "none", label: null, text: null, isLegacy: false };
+  }
+
+  // Legacy free-text — render the raw string with a badge.
+  if (input.messageIntent === "FREE_TEXT_LEGACY") {
+    return {
+      kind: "legacy",
+      label: null,
+      text: input.message ?? "",
+      isLegacy: true,
+    };
+  }
+
+  // Structured — render the intent label + re-render from variables.
+  // We trust the pre-rendered `message` column as a fallback so
+  // display still works if the template text later changes behind
+  // us (the receiver always saw the original).
+  if (input.messageIntent) {
+    const template = getIntentTemplate(input.messageIntent);
+    const vars =
+      input.messageVariables && typeof input.messageVariables === "object"
+        ? (input.messageVariables as Record<string, string>)
+        : {};
+    const rendered =
+      template != null
+        ? renderIntentMessage(input.messageIntent, vars)
+        : input.message ?? "";
+    return {
+      kind: "structured",
+      label: template?.label ?? null,
+      text: rendered,
+      isLegacy: false,
+    };
+  }
+
+  // Fallback — message exists but intent is null (shouldn't happen
+  // post-migration but tolerate it).
+  return {
+    kind: "legacy",
+    label: null,
+    text: input.message ?? "",
+    isLegacy: true,
+  };
 }
 
 // ============================================

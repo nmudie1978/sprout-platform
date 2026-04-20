@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
+import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   ArrowRight,
   Compass,
@@ -40,6 +41,7 @@ import {
   Star,
 } from "lucide-react";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
+import { captureClientMutationError } from "@/lib/observability";
 import type { GoalsResponse } from "@/lib/goals/types";
 import { computeLensProgress, isJourneySnapshotWorthy, journeyStageLabel } from "@/lib/journey/lens-progress";
 import Link from "next/link";
@@ -135,7 +137,7 @@ function DashboardSection({
               <Icon className={cn("h-3.5 w-3.5", iconColor, tooltip && "cursor-help")} />
             </span>
           )}
-          <h3 className="text-xs font-bold uppercase tracking-wide text-foreground/80">
+          <h3 className="text-xs font-bold uppercase tracking-wide text-white">
             {title}
           </h3>
         </div>
@@ -203,12 +205,12 @@ function CompactStat({
   return (
     <div
       className={cn(
-        "rounded-md border border-border/40 bg-background/20 px-2 py-1.5",
+        "rounded-md border border-border/40 bg-card px-2 py-1.5",
         tooltip && "cursor-help",
       )}
       title={tooltip}
     >
-      <p className="text-[8px] uppercase tracking-wider text-muted-foreground/50 leading-none font-semibold">
+      <p className="text-[8px] uppercase tracking-wider text-muted-foreground/60 leading-none font-semibold">
         {label}
       </p>
       <p className="text-[11px] font-semibold text-foreground/85 leading-tight mt-0.5 truncate">
@@ -319,6 +321,13 @@ function LibraryCard({
               >
                 {item.thumbnail ? (
                   <div className="aspect-video bg-muted/30 relative overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element --
+                        Saved library items come from arbitrary external
+                        hosts (article/podcast CDNs, etc.) that aren't in
+                        next.config.js images.remotePatterns. A raw <img>
+                        is the safest option until the allowlist is
+                        widened or items are pre-proxied through our own
+                        CDN. */}
                     <img
                       src={item.thumbnail}
                       alt=""
@@ -451,20 +460,20 @@ function DidYouKnowCard() {
 
   return (
     <div className="mt-6 max-w-4xl mx-auto px-3 sm:px-6">
-      <div className="rounded-xl border border-amber-700/20 bg-amber-900/[0.06] px-5 py-4">
+      <div className="rounded-xl border border-amber-500/30 bg-amber-900/10 px-5 py-4">
         <div className="flex items-start gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600/60 mt-0.5 shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 mt-0.5 shrink-0">
             Did you know?
           </span>
           <a href={fact.href} className="flex-1 min-w-0 group">
-            <p className="text-xs text-foreground/70 leading-relaxed group-hover:text-foreground/90 transition-colors">
+            <p className="text-xs text-amber-100/90 leading-relaxed group-hover:text-amber-50 transition-colors">
               {fact.text}
             </p>
           </a>
-          <span className="text-[9px] text-muted-foreground/35 shrink-0 mt-0.5">{fact.source}</span>
+          <span className="text-[9px] text-amber-400/80 shrink-0 mt-0.5">{fact.source}</span>
           <button
             onClick={refresh}
-            className="p-1 rounded-md text-muted-foreground/30 hover:text-muted-foreground/60 transition-colors shrink-0"
+            className="p-1 rounded-md text-amber-400/70 hover:text-amber-200 transition-colors shrink-0"
             title="Show another fact"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
@@ -606,6 +615,8 @@ export default function DashboardPage() {
     if (res.ok) {
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
     } else {
+      // Intentional silent fallback: some responses are empty 204s;
+       // returning null lets downstream code treat "no data" uniformly.
       const data = await res.json().catch(() => null);
       toast.error(data?.error || 'Could not remove journey');
     }
@@ -827,8 +838,10 @@ export default function DashboardPage() {
           dismissedRef.current = true;
           setShowOnboardingWizard(false);
           if (!wasReplay) {
-            // First-run: mark onboarding done + route to Career Radar
-            fetch("/api/onboarding", { method: "PATCH" }).catch(() => {});
+            // First-run: mark onboarding done + route to Career Radar.
+            // If the PATCH fails, Sentry sees it — next time the user
+            // logs in, the onboarding will replay (not ideal but safe).
+            fetch("/api/onboarding", { method: "PATCH" }).catch(captureClientMutationError("dashboard:onboardingDone"));
             refetchOnboarding();
             window.location.href = "/careers/radar";
           }
@@ -839,11 +852,11 @@ export default function DashboardPage() {
         {/* ── Header ─────────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-4 sm:mb-5">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
               {isFirstLogin ? (
-                <>{t('greeting.welcome')}, <span className="text-foreground">{displayName}</span></>
+                <>{t('greeting.welcome')}, <span className="text-white">{displayName}</span></>
               ) : (
-                <><span className="text-muted-foreground/70 font-normal">{timeGreeting}</span>{' '}<span className="text-muted-foreground/70 font-normal">{displayName}</span></>
+                <><span className="text-white/90 font-normal">{timeGreeting}</span>{' '}<span className="text-white font-medium">{displayName}</span></>
               )}
             </h1>
             {/* Country flag — small, subtle. Only renders if we know
@@ -896,7 +909,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             )}
-            <span className="text-sm text-muted-foreground/60">
+            <span className="text-sm text-white/85">
               {dateStr}
             </span>
             {/* Guardian-consent signal — static dot with tooltip */}
@@ -1329,7 +1342,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── 5. Saved Careers + Small Jobs ─────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 items-stretch">
+        <div className={`grid grid-cols-1 ${SMALL_JOBS_ENABLED ? "sm:grid-cols-2" : ""} gap-4 mb-4 items-stretch`}>
           {/* Saved Careers */}
           <DashboardSection
             title={t('savedCareers.title')}
@@ -1413,7 +1426,9 @@ export default function DashboardPage() {
             )}
           </DashboardSection>
 
-          {/* Small Jobs — compact */}
+          {/* Small Jobs — compact. Hidden until the marketplace
+              re-opens; gated by NEXT_PUBLIC_SMALL_JOBS_ENABLED. */}
+          {SMALL_JOBS_ENABLED && (
           <DashboardSection
             title={t('smallJobs.title')}
             icon={Briefcase}
@@ -1451,6 +1466,7 @@ export default function DashboardPage() {
               )}
             </div>
           </DashboardSection>
+          )}
         </div>
 
       </div>

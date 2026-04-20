@@ -14,6 +14,7 @@ import {
 } from "@/lib/compliance";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { sanitizeText, sanitizeStringArray } from "@/lib/validation/sanitize";
+import { apiError } from "@/lib/api-error";
 import {
   applyAgePolicyToJob,
   logAgeEligibilityEvent,
@@ -252,15 +253,15 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized - No session" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     if (session.user.role !== "EMPLOYER") {
-      return NextResponse.json({ error: "Unauthorized - Not an employer" }, { status: 401 });
+      return apiError("FORBIDDEN", "Only employers can post jobs", { request: req });
     }
 
     if (!session.user.id) {
-      return NextResponse.json({ error: "Unauthorized - No user ID" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Invalid session", { request: req });
     }
 
     // Rate limit: 10 job postings per hour to prevent spam
@@ -270,25 +271,19 @@ export async function POST(req: NextRequest) {
     );
 
     if (!rateLimit.success) {
-      const response = NextResponse.json(
-        { error: "Too many job postings. Please try again later." },
-        { status: 429 }
-      );
-      const headers = getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
-      Object.entries(headers).forEach(([key, value]) => response.headers.set(key, value));
-      return response;
+      return apiError("RATE_LIMITED", "Too many job postings. Please try again later.", {
+        request: req,
+        headers: getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset),
+      });
     }
 
     // Safety gate: Check if employer can post jobs (verified + 18+)
     const safetyCheck = await canEmployerPostJobs(session.user.id);
     if (!safetyCheck.allowed) {
-      return NextResponse.json(
-        {
-          error: safetyCheck.reason || "Not authorized to post jobs",
-          code: safetyCheck.code,
-        },
-        { status: 403 }
-      );
+      return apiError("FORBIDDEN", safetyCheck.reason || "Not authorized to post jobs", {
+        request: req,
+        details: { code: safetyCheck.code },
+      });
     }
 
     const body = await req.json();

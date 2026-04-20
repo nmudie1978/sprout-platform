@@ -7,13 +7,14 @@ import { youthProfileSchema, profileVisibilitySchema, careerAspirationSchema } f
 import { slugify } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
 import { validateSignupAge, PLATFORM_MIN_AGE, PLATFORM_MAX_AGE } from "@/lib/safety/age";
+import { apiError } from "@/lib/api-error";
 
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const profile = await prisma.youthProfile.findUnique({
@@ -46,10 +47,7 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (error) {
     console.error("Failed to fetch profile:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch profile" },
-      { status: 500 }
-    );
+    return apiError("INTERNAL", "Failed to fetch profile", { request: req });
   }
 }
 
@@ -58,7 +56,7 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const body = await req.json();
@@ -70,10 +68,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (existingProfile) {
-      return NextResponse.json(
-        { error: "Profile already exists. Use PATCH to update." },
-        { status: 400 }
-      );
+      return apiError("CONFLICT", "Profile already exists. Use PATCH to update.", { request: req });
     }
 
     // Generate unique public profile slug
@@ -109,10 +104,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(profile, { status: 201 });
   } catch (error: any) {
     console.error("Failed to create profile:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to create profile" },
-      { status: 400 }
-    );
+    return apiError("VALIDATION_FAILED", error.message || "Failed to create profile", { request: req });
   }
 }
 
@@ -121,7 +113,7 @@ export async function PATCH(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const body = await req.json();
@@ -145,29 +137,20 @@ export async function PATCH(req: NextRequest) {
       if (dob) {
         // Validate it's a valid date
         if (isNaN(dob.getTime())) {
-          return NextResponse.json(
-            { error: "Invalid date format" },
-            { status: 400 }
-          );
+          return apiError("VALIDATION_FAILED", "Invalid date format", { request: req, details: { field: "dateOfBirth" } });
         }
 
         // Validate date is not in the future
         const today = new Date();
         if (dob > today) {
-          return NextResponse.json(
-            { error: "Date of birth cannot be in the future" },
-            { status: 400 }
-          );
+          return apiError("VALIDATION_FAILED", "Date of birth cannot be in the future", { request: req, details: { field: "dateOfBirth" } });
         }
 
         // CRITICAL: Use canonical age validation from safety/age module
         // Platform policy: ages 15-23 only (same as signup)
         const ageValidation = validateSignupAge(dob);
         if (!ageValidation.valid) {
-          return NextResponse.json(
-            { error: ageValidation.error },
-            { status: 400 }
-          );
+          return apiError("VALIDATION_FAILED", ageValidation.error || "Age not allowed", { request: req, details: { field: "dateOfBirth" } });
         }
       }
 
@@ -195,12 +178,8 @@ export async function PATCH(req: NextRequest) {
     // Handle availability status separately
     if ("availabilityStatus" in body) {
       if (!["AVAILABLE", "BUSY", "NOT_LOOKING"].includes(body.availabilityStatus)) {
-        return NextResponse.json(
-          { error: "Invalid availability status" },
-          { status: 400 }
-        );
+        return apiError("VALIDATION_FAILED", "Invalid availability status", { request: req, details: { field: "availabilityStatus" } });
       }
-
       const profile = await prisma.youthProfile.update({
         where: { userId: session.user.id },
         data: { availabilityStatus: body.availabilityStatus },
@@ -238,10 +217,10 @@ export async function PATCH(req: NextRequest) {
 
       // Allow null to clear preferences
       if (dp !== null && (typeof dp !== "object" || Array.isArray(dp))) {
-        return NextResponse.json(
-          { error: "discoveryPreferences must be an object or null" },
-          { status: 400 }
-        );
+        return apiError("VALIDATION_FAILED", "discoveryPreferences must be an object or null", {
+          request: req,
+          details: { field: "discoveryPreferences" },
+        });
       }
 
       // Light validation — strip unknown fields, cap array sizes
@@ -336,9 +315,6 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json(profile);
   } catch (error: any) {
     console.error("Failed to update profile:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to update profile" },
-      { status: 400 }
-    );
+    return apiError("VALIDATION_FAILED", error.message || "Failed to update profile", { request: req });
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ReactLenis } from "lenis/react";
 import { Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -66,10 +67,12 @@ function ReviewCard({ review, featured }: { review: Review; featured?: boolean }
         {review.text}
       </p>
       <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-border/20">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={review.image}
           alt=""
+          width={28}
+          height={28}
+          sizes="28px"
           className="h-7 w-7 rounded-full object-cover ring-1 ring-border/30"
         />
         <div>

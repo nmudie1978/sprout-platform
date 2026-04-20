@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { apiError } from '@/lib/api-error';
 
 /**
  * GET /api/dashboard/stats
@@ -14,7 +15,7 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== 'YOUTH') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in");
     }
 
     const userId = session.user.id;

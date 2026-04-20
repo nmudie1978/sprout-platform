@@ -62,7 +62,7 @@ export function PageHeader({
             <Icon className="h-4.5 w-4.5 sm:h-6 sm:w-6 text-primary" />
           </motion.div>
         )}
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white dark:text-foreground">
           {title}
           {gradientText && (
             <>
@@ -75,7 +75,7 @@ export function PageHeader({
         </h1>
       </div>
       {description && (
-        <p className={cn("text-xs sm:text-sm text-muted-foreground/70", centered && "text-center")}>
+        <p className={cn("text-xs sm:text-sm text-white/80 dark:text-muted-foreground/70", centered && "text-center")}>
           {description}
         </p>
       )}

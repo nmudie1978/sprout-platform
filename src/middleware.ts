@@ -24,6 +24,53 @@ const SENSITIVE_ROUTES = [
 ];
 
 /**
+ * Routes an under-18 youth without guardian consent is BLOCKED from.
+ * Matches the full authenticated surface — if consent is missing,
+ * redirect to /profile with a flag so the youth sees the "Guardian
+ * pending — Resend" UI and can't reach anything until consent lands.
+ *
+ * Excluded from the block (safe to browse while awaiting consent):
+ *   /profile itself (so they can see the pending-guardian card)
+ *   /auth/*            (sign-out, etc.)
+ *   /legal/*           (terms, privacy, safety, eligibility)
+ *   /guardian-consent/* (for the guardian's own grant flow via email link)
+ *   /not-eligible      (age-rejection page)
+ *   /api/auth/*        (NextAuth session endpoints)
+ *   /api/profile       (needed to render the pending card)
+ *   /api/guardian-consent (needed to resend the email)
+ *
+ * The block itself enforces CLAUDE.md §Safeguarding: "Adults must be
+ * verified before posting jobs" and the implicit reciprocal — minors
+ * must be guardian-approved before engaging with the platform.
+ * GDPR Art 8 requires guardian consent for under-16 processing.
+ */
+const GUARDIAN_GATED_PREFIXES = [
+  "/dashboard",
+  "/my-journey",
+  "/my-path",
+  "/careers",
+  "/jobs",
+  "/messages",
+  "/applications",
+  "/insights",
+  "/explore",
+  "/growth",
+  "/career-advisor",
+  "/career-events",
+  "/ask-a-pro",
+  "/shadows",
+  "/reviews",
+  "/feedback",
+  "/earnings",
+];
+
+function isGuardianGatedRoute(pathname: string): boolean {
+  return GUARDIAN_GATED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/"),
+  );
+}
+
+/**
  * Verify admin session token in middleware
  */
 async function verifyAdminToken(token: string): Promise<boolean> {
@@ -59,8 +106,58 @@ function isSensitiveRoute(pathname: string): boolean {
   );
 }
 
+/**
+ * Small-jobs surface that is currently disabled by the
+ * NEXT_PUBLIC_SMALL_JOBS_ENABLED flag. These paths still exist in code
+ * and in the database so the marketplace can be turned back on later,
+ * but stale links / bookmarks / deep links from emails should not land
+ * on dead UI. Redirect them to the dashboard with a small hint param
+ * so we can surface a "returning later" toast if desired.
+ */
+const SMALL_JOBS_DISABLED_PREFIXES = [
+  "/jobs",
+  "/applications",
+  "/messages",
+  "/employer",
+];
+
+// `/employer-paused` is the sign-posted landing page for existing
+// employer accounts while small-jobs is off. Must not itself be
+// caught by the `/employer` prefix above.
+const SMALL_JOBS_ALLOWLIST = ["/employer-paused"];
+
+function isSmallJobsPath(pathname: string): boolean {
+  if (
+    SMALL_JOBS_ALLOWLIST.some(
+      (p) => pathname === p || pathname.startsWith(p + "/"),
+    )
+  ) {
+    return false;
+  }
+  return SMALL_JOBS_DISABLED_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(p + "/"),
+  );
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // ============================================
+  // SMALL JOBS FEATURE GATE
+  // ============================================
+  // When disabled, bounce anyone landing on a small-jobs page back to
+  // the dashboard. The API routes under /api/jobs etc. are left live —
+  // other parts of the app may still read them internally (e.g. the
+  // admin moderation queue needs Conversation data), but no UI path
+  // exposes them to youth or employers.
+  if (
+    process.env.NEXT_PUBLIC_SMALL_JOBS_ENABLED !== "true" &&
+    isSmallJobsPath(pathname)
+  ) {
+    const redirect = new URL("/dashboard", request.url);
+    redirect.searchParams.set("smallJobsDisabled", "1");
+    return NextResponse.redirect(redirect);
+  }
 
   // ============================================
   // ADMIN ROUTE PROTECTION
@@ -141,6 +238,33 @@ export async function middleware(request: NextRequest) {
     });
 
     if (token) {
+      // ──────────────────────────────────────────────
+      // GUARDIAN-CONSENT GATE (CORE SAFETY INVARIANT)
+      // ──────────────────────────────────────────────
+      // Under-18 youth (ageBracket SIXTEEN_SEVENTEEN) without
+      // `guardianConsent === true` are blocked from every gated
+      // route and redirected to /profile where the Resend card
+      // lives. /profile is intentionally NOT in the gated list so
+      // they can see and action the pending state.
+      //
+      // The fields `ageBracket` and `guardianConsent` are populated
+      // on the JWT at sign-in and refreshed when the client calls
+      // NextAuth's `update()` helper — see src/lib/auth.ts jwt()
+      // callback. Stale data fails closed in the safe direction
+      // (consent just granted → temporary block, never accidental
+      // access). Under-16 is blocked at signup in /api/auth/signup,
+      // not here.
+      if (
+        token.role === "YOUTH" &&
+        token.ageBracket === "SIXTEEN_SEVENTEEN" &&
+        !token.guardianConsent &&
+        isGuardianGatedRoute(pathname)
+      ) {
+        const redirectUrl = new URL("/profile", request.url);
+        redirectUrl.searchParams.set("awaitingGuardian", "1");
+        return NextResponse.redirect(redirectUrl);
+      }
+
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set("x-pathname", pathname);
 

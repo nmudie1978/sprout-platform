@@ -3,10 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { applicationSchema } from "@/lib/validations/job";
+import { applicationSchema, APPLICATION_INTENTS } from "@/lib/validations/job";
 import { canYouthApplyToJobs } from "@/lib/safety";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { canApplyToJob, logAgeEligibilityEvent } from "@/lib/age-policy/utils";
+import { validateIntentVariables, renderIntentMessage } from "@/lib/message-intents";
+import { apiError } from "@/lib/api-error";
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,6 +48,30 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const validatedData = applicationSchema.parse(body);
+
+    // Intent + variable validation. The applicationSchema zod check
+    // already enforces `messageIntent` is one of APPLICATION_INTENTS
+    // (not FREE_TEXT_LEGACY, not post-hire intents), but we still
+    // need to run validateIntentVariables to enforce required fields,
+    // max length, and the dangerous-content (phone/email/URL) guard
+    // that message-intents.ts exports. Age bracket is pulled from
+    // session for the per-age error messaging.
+    let renderedMessage: string | null = null;
+    if (validatedData.messageIntent) {
+      const vars = validatedData.messageVariables ?? {};
+      const check = validateIntentVariables(
+        validatedData.messageIntent,
+        vars,
+        session.user.ageBracket ?? null,
+      );
+      if (!check.valid) {
+        return apiError("VALIDATION_FAILED", check.errors[0] ?? "Invalid message", {
+          request: req,
+          details: { errors: check.errors, field: "messageVariables" },
+        });
+      }
+      renderedMessage = check.renderedMessage ?? renderIntentMessage(validatedData.messageIntent, vars);
+    }
 
     // Age eligibility check - server-side enforcement
     const ageCheck = await canApplyToJob(session.user.id, validatedData.jobId);
@@ -109,9 +135,19 @@ export async function POST(req: NextRequest) {
 
     const application = await prisma.application.create({
       data: {
-        ...validatedData,
+        jobId: validatedData.jobId,
         youthId: session.user.id,
         status: "PENDING",
+        messageIntent: validatedData.messageIntent ?? null,
+        // Prisma Json input — cast via JSON round-trip to erase
+        // any prototype pollution from the client body before storage.
+        messageVariables: validatedData.messageVariables
+          ? JSON.parse(JSON.stringify(validatedData.messageVariables))
+          : null,
+        // `message` stores the pre-rendered text for display
+        // convenience. messageIntent + messageVariables are the
+        // structured source of truth; message is derived.
+        message: renderedMessage,
       },
     });
 

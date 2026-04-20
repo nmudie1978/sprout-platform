@@ -1,5 +1,3 @@
-"use client";
-
 import { JobCalendar } from "@/components/job-calendar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";

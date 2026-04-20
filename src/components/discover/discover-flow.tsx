@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Check, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { captureClientMutationError } from '@/lib/observability';
 import {
   type DiscoverProfile,
   DEFAULT_DISCOVER_PROFILE,
@@ -158,7 +159,7 @@ export function DiscoverFlow({ initialProfile, onComplete, onSaveProgress, onClo
 
     if (step < STEPS.length - 1) {
       setStep(step + 1);
-      await onSaveProgress(updated).catch(() => {});
+      await onSaveProgress(updated).catch(captureClientMutationError("discoverFlow:saveProgress"));
     } else {
       // Last step — show summary
       setShowSummary(true);

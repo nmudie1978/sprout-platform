@@ -72,6 +72,12 @@ export function CareerClipCard({
         )}
       >
         {clip.thumbnailUrl ? (
+          /* eslint-disable-next-line @next/next/no-img-element --
+             Career-clip thumbnails can come from TikTok CDN subdomains
+             (p16-sign.tiktokcdn-us.com, p19-sign.tiktokcdn.com, etc.)
+             which aren't in next.config.js images.remotePatterns.
+             A raw <img> avoids runtime host-validation errors until
+             the allowlist is extended. */
           <img
             src={clip.thumbnailUrl}
             alt={clip.title}

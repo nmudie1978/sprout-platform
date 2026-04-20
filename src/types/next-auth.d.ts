@@ -47,6 +47,13 @@ declare module "next-auth/jwt" {
     role?: UserRole; // Optional for OAuth users during initial sign-up
     email: string;
     accountStatus?: AccountStatus;
+    // Age + consent fields — surfaced so middleware (edge runtime,
+    // no DB access) can gate minor traffic without a round-trip.
+    // Populated on sign-in; stale until token refresh. Safe in the
+    // "consent just granted" direction (user sees temporary block,
+    // never accidental access). See src/middleware.ts guardian gate.
+    ageBracket?: AgeBracket | null;
+    guardianConsent?: boolean;
     // VIPPS OAuth fields
     isNewVippsUser?: boolean;
     vippsProfile?: VippsProfileData;

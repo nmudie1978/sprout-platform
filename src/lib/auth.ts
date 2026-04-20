@@ -182,6 +182,43 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.email = user.email;
+
+        // Populate guardian-gate fields at sign-in time. The
+        // middleware (edge runtime) can't hit the DB, so it reads
+        // these from the JWT. Fetching youthProfile only when the
+        // role looks like YOUTH to avoid a wasted query for adults.
+        if (user.role === "YOUTH" || !user.role) {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+              ageBracket: true,
+              youthProfile: { select: { guardianConsent: true } },
+            },
+          });
+          if (dbUser) {
+            token.ageBracket = dbUser.ageBracket;
+            token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
+          }
+        }
+      }
+
+      // On session update trigger (e.g. after guardian grants consent
+      // and the client calls next-auth's `update()` helper), refresh
+      // the guardian-gate fields without requiring a full sign-out.
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            ageBracket: true,
+            accountStatus: true,
+            youthProfile: { select: { guardianConsent: true } },
+          },
+        });
+        if (dbUser) {
+          token.ageBracket = dbUser.ageBracket;
+          token.accountStatus = dbUser.accountStatus;
+          token.guardianConsent = dbUser.youthProfile?.guardianConsent ?? false;
+        }
       }
 
       // Store VIPPS profile data for new users

@@ -17,6 +17,7 @@ import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   Tooltip,
   TooltipContent,
@@ -419,7 +420,9 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
-              <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications") || isActive("/messages")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on. Includes messages with employers." />
+              {SMALL_JOBS_ENABLED && (
+                <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications") || isActive("/messages")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on. Includes messages with employers." />
+              )}
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>
@@ -429,9 +432,11 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} tooltip="Ask questions about careers, education and next steps. Honest, calm, and tailored to you." />
             </NavSection>
 
-            <NavSection title="Small Jobs" collapsed={collapsed}>
-              <NavItem href="/jobs" icon={Search} label="Browse" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
-            </NavSection>
+            {SMALL_JOBS_ENABLED && (
+              <NavSection title="Small Jobs" collapsed={collapsed}>
+                <NavItem href="/jobs" icon={Search} label="Browse" active={isActive("/jobs")} collapsed={collapsed} tooltip="Find local small jobs you can take on safely — agreed externally, no in-app payments." />
+              </NavSection>
+            )}
 
             <NavSection title="Account" collapsed={collapsed}>
               <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your display name, bio, city, career goals, job availability and privacy settings — everything that makes up your profile." />
@@ -448,7 +453,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           </>
         )}
 
-        {userRole === "EMPLOYER" && (
+        {userRole === "EMPLOYER" && SMALL_JOBS_ENABLED && (
           <>
             <NavSection title="Manage" collapsed={collapsed}>
               <NavItem href="/employer/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/employer/dashboard")} collapsed={collapsed} />
@@ -467,6 +472,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         {userRole === "ADMIN" && (
           <>
             <NavSection title="Admin" collapsed={collapsed}>
+              <NavItem href="/admin/reports" icon={Shield} label="Moderation queue" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Community reports — review, pause, escalate, resolve. All actions logged to AuditLog." />
               <NavItem href="/admin/analytics" icon={BarChart3} label="Analytics" active={isActive("/admin/analytics")} collapsed={collapsed} />
               <NavItem href="/admin/feedback" icon={HelpCircle} label="Feedback" active={isActive("/admin/feedback")} collapsed={collapsed} tooltip="Pilot survey results — per-question stats, distributions, clarity topics, free-text responses, CSV export." />
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
@@ -480,7 +486,9 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             <NavSection title="Guardian" collapsed={collapsed}>
               <NavItem href="/guardian" icon={Shield} label="Guardian Dashboard" active={isActive("/guardian")} collapsed={collapsed} />
-              <NavItem href="/jobs" icon={Briefcase} label="Small Jobs" active={isActive("/jobs")} collapsed={collapsed} />
+              {SMALL_JOBS_ENABLED && (
+                <NavItem href="/jobs" icon={Briefcase} label="Small Jobs" active={isActive("/jobs")} collapsed={collapsed} />
+              )}
             </NavSection>
           </>
         )}

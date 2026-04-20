@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -301,9 +302,12 @@ export function ShadowRequestBuilder({
                       {/* Logo/Avatar */}
                       <div className="shrink-0">
                         {host.logo ? (
-                          <img
+                          <Image
                             src={host.logo}
                             alt={host.name}
+                            width={48}
+                            height={48}
+                            sizes="48px"
                             className="w-12 h-12 rounded-lg object-cover"
                           />
                         ) : (

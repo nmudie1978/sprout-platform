@@ -4,12 +4,30 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { supabase, JOB_IMAGES_BUCKET } from "@/lib/supabase";
+import { sanitizeText } from "@/lib/validation/sanitize";
+import { apiError } from "@/lib/api-error";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Viewer identity drives what PII we expose. The Prisma include
+    // set is built to always fetch the safe fields; PII fields
+    // (employer email/phone, applicant phone numbers, application
+    // list) are pruned from the response UNLESS the viewer is:
+    //   - the employer who posted this job
+    //   - an ADMIN
+    //
+    // Previously this route selected `email`, `phoneNumber`, and the
+    // full `applications` array unconditionally — any authenticated
+    // youth could harvest employer contact info via the jobs API.
+    // Direct violation of CLAUDE.md §Safeguarding "No Public Contact
+    // Information Displayed". See F-L1 in the 2026-04-20 audit.
+    const session = await getServerSession(authOptions);
+    const viewerId = session?.user?.id ?? null;
+    const viewerRole = session?.user?.role ?? null;
+
     const job = await prisma.microJob.findUnique({
       where: { id: params.id },
       include: {
@@ -76,16 +94,63 @@ export async function GET(
     });
 
     if (!job) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+      return apiError("NOT_FOUND", "Job not found", { request: req });
     }
 
-    return NextResponse.json(job);
+    const isOwner = viewerId != null && job.postedById === viewerId;
+    const isAdmin = viewerRole === "ADMIN";
+    const canSeePii = isOwner || isAdmin;
+
+    // Shape-safe projection. We copy the job object and strip fields
+    // that the viewer isn't allowed to see. Using a literal rebuild
+    // (not delete) so TS keeps the payload type clear.
+    const safeJob = {
+      ...job,
+      postedBy: {
+        ...job.postedBy,
+        // Youth never see the employer's email — the conversation
+        // thread (structured messages) is the only allowed channel.
+        email: canSeePii ? job.postedBy.email : null,
+        employerProfile: job.postedBy.employerProfile
+          ? {
+              ...job.postedBy.employerProfile,
+              phoneNumber: canSeePii ? job.postedBy.employerProfile.phoneNumber : null,
+            }
+          : null,
+      },
+      // Applications are a private operational list — only the
+      // employer who owns the job (and admins) see who applied,
+      // their contact info, and their badge activity. Return an
+      // empty array to keep the shape stable for consumers that
+      // depend on `.length`.
+      applications: canSeePii
+        ? job.applications.map((app) => ({
+            ...app,
+            youth: {
+              ...app.youth,
+              youthProfile: app.youth.youthProfile
+                ? {
+                    ...app.youth.youthProfile,
+                    // Even the owner doesn't get the applicant phone
+                    // until they accept the application — the phone
+                    // is for after-hire coordination. If a legitimate
+                    // use case needs it pre-accept, do that via a
+                    // separate authenticated lookup.
+                    phoneNumber:
+                      isAdmin || app.status === "ACCEPTED"
+                        ? app.youth.youthProfile.phoneNumber
+                        : null,
+                  }
+                : null,
+            },
+          }))
+        : [],
+    };
+
+    return NextResponse.json(safeJob);
   } catch (error) {
     console.error("Failed to fetch job:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch job" },
-      { status: 500 }
-    );
+    return apiError("INTERNAL", "Failed to fetch job", { request: req });
   }
 }
 
@@ -97,7 +162,7 @@ export async function PATCH(
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const body = await req.json();
@@ -114,7 +179,7 @@ export async function PATCH(
     });
 
     if (!job || job.postedById !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      return apiError("FORBIDDEN", "You don't have permission to edit this job", { request: req });
     }
 
     // Check if job has accepted applications (assigned to a youth worker)
@@ -140,9 +205,9 @@ export async function PATCH(
     const updateData: any = {};
 
     if (status !== undefined) updateData.status = status;
-    if (title !== undefined) updateData.title = title;
-    if (description !== undefined) updateData.description = description;
-    if (location !== undefined) updateData.location = location;
+    if (title !== undefined) updateData.title = sanitizeText(String(title));
+    if (description !== undefined) updateData.description = sanitizeText(String(description));
+    if (location !== undefined) updateData.location = sanitizeText(String(location));
     if (payAmount !== undefined) updateData.payAmount = payAmount;
     if (payType !== undefined) updateData.payType = payType;
     if (duration !== undefined) updateData.duration = duration;
@@ -174,7 +239,7 @@ export async function DELETE(
     const session = await getServerSession(authOptions);
 
     if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     // Verify job ownership, status, and get images
@@ -184,15 +249,15 @@ export async function DELETE(
     });
 
     if (!job || job.postedById !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      return apiError("FORBIDDEN", "You don't have permission to delete this job", { request: req });
     }
 
     // Only allow deletion of cancelled jobs
     if (job.status !== "CANCELLED") {
-      return NextResponse.json(
-        { error: "Only cancelled jobs can be deleted. Please cancel the job first." },
-        { status: 400 }
-      );
+      return apiError("CONFLICT", "Only cancelled jobs can be deleted. Please cancel the job first.", {
+        request: req,
+        status: 400,
+      });
     }
 
     // Delete images from Supabase Storage

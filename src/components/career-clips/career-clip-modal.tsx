@@ -133,6 +133,9 @@ export function CareerClipModal({
             // Fallback: Open externally button
             <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-6 text-center">
               {clip.thumbnailUrl ? (
+                /* eslint-disable-next-line @next/next/no-img-element --
+                   See career-clip-card.tsx — TikTok CDN hosts aren't
+                   in next.config.js images.remotePatterns. */
                 <img
                   src={clip.thumbnailUrl}
                   alt={clip.title}

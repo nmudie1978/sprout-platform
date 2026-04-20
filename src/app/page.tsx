@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
@@ -204,10 +205,14 @@ export default async function LandingPage() {
             {/* Right — hero illustration */}
             <FadeReveal delay={800} className="hidden lg:flex justify-center">
               <div className="relative">
-                <img
+                <Image
                   src="/images/hero-signpost.png"
                   alt="Young person facing a signpost with career direction signs"
-                  className="w-full max-w-md rounded-3xl border border-slate-950 bg-slate-950"
+                  width={448}
+                  height={448}
+                  priority
+                  sizes="(max-width: 1024px) 0px, 448px"
+                  className="w-full max-w-md rounded-3xl border border-slate-950 bg-slate-950 h-auto"
                   style={{ borderColor: '#020617' }}
                 />
                 {/* Blend edges into background */}

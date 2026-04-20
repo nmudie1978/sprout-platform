@@ -15,6 +15,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Play, Clock } from "lucide-react";
 import { motion } from "framer-motion";
@@ -63,12 +64,12 @@ export function VideoInsightCard({ video, onClick }: VideoInsightCardProps) {
       {/* Thumbnail area */}
       <div className="relative aspect-video bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
         {!imgError && video.thumbnailUrl && (
-          <img
+          <Image
             src={video.thumbnailUrl}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover"
             onError={() => setImgError(true)}
           />
         )}

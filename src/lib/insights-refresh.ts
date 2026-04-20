@@ -19,6 +19,7 @@
  */
 
 import { prisma } from "./prisma";
+import { logAndSwallow } from "./observability";
 import { InsightsModuleStatus, Prisma } from "@prisma/client";
 import {
   TIER1_SOURCES,
@@ -834,7 +835,7 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
         await prisma.industryInsightsModule.update({
           where: { id: module.id },
           data: { status: "ACTIVE" },
-        }).catch(() => {});
+        }).catch(logAndSwallow("insightsRefresh:restoreActive"));
       }
     }
   } catch (error) {

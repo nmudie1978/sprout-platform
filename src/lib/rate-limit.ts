@@ -48,11 +48,28 @@ function isRedisConfigured(): boolean {
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   redisConfigured = !!(url && token && url.length > 0 && token.length > 0);
 
+  // Hard-fail in production. In-memory rate limiting does NOT survive
+  // Vercel's multi-instance runtime — rate limits on signup, reports,
+  // AI endpoints etc. become bypassable at scale. If this assertion
+  // fires in production, stop the deploy and set the Redis env vars
+  // (RATE_LIMIT_ALLOW_IN_MEMORY=true is the explicit escape hatch for
+  // a one-off test deploy only). Previews/dev stay on in-memory.
   if (!redisConfigured && process.env.NODE_ENV === "production") {
+    const vercelEnv = process.env.VERCEL_ENV;
+    const isProdDeploy = vercelEnv === undefined || vercelEnv === "production";
+    const escapeHatch = process.env.RATE_LIMIT_ALLOW_IN_MEMORY === "true";
+
+    if (isProdDeploy && !escapeHatch) {
+      throw new Error(
+        "[Rate Limit] Redis is not configured in production. " +
+        "Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN, or set " +
+        "RATE_LIMIT_ALLOW_IN_MEMORY=true to acknowledge the risk."
+      );
+    }
+
     console.warn(
-      "[Rate Limit] WARNING: Redis not configured in production. " +
-      "Rate limiting will not work across multiple instances. " +
-      "Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN."
+      "[Rate Limit] WARNING: Redis not configured. In-memory limits " +
+      "do not work across instances — preview/dev only."
     );
   }
 
@@ -288,4 +305,14 @@ export const RateLimits = {
 
   // Timeline generation: 5 per hour (AI-generated career timelines)
   TIMELINE_GENERATION: { interval: 3600000, maxRequests: 5 },
+
+  // ─── Monthly per-user OpenAI quotas (cost control) ───────────────
+  // These sit on top of the short-window rate limits above. They cap
+  // total spend per user over a 30-day rolling window so a single
+  // account can't drain the monthly OpenAI budget. Numbers are
+  // deliberately generous for legitimate users — tune down if budget
+  // becomes tight.
+  AI_MONTHLY_TIMELINE: { interval: 30 * 24 * 3600_000, maxRequests: 20 },
+  AI_MONTHLY_NARRATE: { interval: 30 * 24 * 3600_000, maxRequests: 600 },
+  AI_MONTHLY_CAREER_PATHS: { interval: 30 * 24 * 3600_000, maxRequests: 10 },
 } as const;

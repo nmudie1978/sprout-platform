@@ -98,7 +98,7 @@ export function LifeSkillTipModal({ isOpen, onClose, tip }: LifeSkillTipModalPro
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed bottom-0 left-0 right-0 md:bottom-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 md:max-w-md w-full"
           >
-            <div className="bg-background rounded-t-3xl md:rounded-3xl border-t md:border shadow-xl">
+            <div className="bg-card text-card-foreground rounded-t-3xl md:rounded-3xl border-t md:border shadow-xl">
               {/* Handle bar for mobile */}
               <div className="flex justify-center pt-3 md:hidden">
                 <div className="w-12 h-1.5 bg-muted-foreground/30 rounded-full" />

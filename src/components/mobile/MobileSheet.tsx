@@ -106,7 +106,7 @@ export function MobileSheet({
             }
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className={cn(
-              "bg-background shadow-xl",
+              "bg-card text-card-foreground shadow-xl",
               showAsSheet ? [
                 "fixed z-[60] bottom-0 left-0 right-0",
                 "rounded-t-3xl border-t",

@@ -1,5 +1,3 @@
-"use client";
-
 import { SpendingChart } from "@/components/spending-chart";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";

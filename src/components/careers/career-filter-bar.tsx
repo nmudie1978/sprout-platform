@@ -78,7 +78,7 @@ function FilterDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border bg-background text-xs hover:bg-muted/80 transition-colors whitespace-nowrap overflow-hidden max-w-[180px]"
+        className="flex items-center gap-1.5 h-10 sm:h-8 px-3 sm:px-2.5 rounded-md border border-white/20 dark:border-border bg-white/15 dark:bg-background text-xs text-white dark:text-foreground hover:bg-white/25 dark:hover:bg-muted/80 transition-colors whitespace-nowrap overflow-hidden max-w-[180px]"
         title={typeof label === "string" ? label : undefined}
       >
         {label}
@@ -189,16 +189,16 @@ export function CareerFilterBar({
       : categoryConfig[filters.category]?.label || "Category";
 
   return (
-    <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-background/80 backdrop-blur-md border-b border-border/40 mb-4">
+    <div className="sticky top-0 z-40 -mx-3 px-3 sm:-mx-4 sm:px-4 py-2 bg-white/10 dark:bg-background/80 backdrop-blur-md border-b border-white/15 dark:border-border/40 mb-4">
       <div className="flex flex-wrap items-center justify-center gap-2">
         {/* Search */}
         <div className="relative w-full sm:flex-1 sm:w-auto sm:min-w-[160px] sm:max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-3.5 sm:w-3.5 text-white/70 dark:text-muted-foreground" />
           <Input
             placeholder="Search careers or skills..."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="h-10 sm:h-8 pl-8 sm:pl-7 text-sm sm:text-xs"
+            className="h-10 sm:h-8 pl-8 sm:pl-7 text-sm sm:text-xs bg-white/15 dark:bg-background border-white/20 dark:border-input text-white dark:text-foreground placeholder:text-white/60 dark:placeholder:text-muted-foreground"
           />
           {localSearch && (
             <button
@@ -248,7 +248,7 @@ export function CareerFilterBar({
         <select
           value={filters.growthFilter}
           onChange={(e) => onGrowthChange(e.target.value)}
-          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border border-white/20 dark:border-border bg-white/15 dark:bg-background text-xs text-white dark:text-foreground [&>option]:text-foreground"
           title="Growth reflects how fast demand for this career is expected to increase over the next 5–10 years"
         >
           {growthFilters.map((filter) => (
@@ -262,7 +262,7 @@ export function CareerFilterBar({
         <select
           value={filters.sector}
           onChange={(e) => onSectorChange(e.target.value as SectorFilter)}
-          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border border-white/20 dark:border-border bg-white/15 dark:bg-background text-xs text-white dark:text-foreground [&>option]:text-foreground"
           title="Filter by public or private sector"
         >
           <option value="all">All Sectors</option>
@@ -274,7 +274,7 @@ export function CareerFilterBar({
         <select
           value={filters.academicDemand}
           onChange={(e) => onAcademicDemandChange(e.target.value as AcademicDemandFilter)}
-          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border bg-background text-xs"
+          className="h-10 sm:h-8 px-2.5 sm:px-2 rounded-md border border-white/20 dark:border-border bg-white/15 dark:bg-background text-xs text-white dark:text-foreground [&>option]:text-foreground"
           title="Filter by academic demand level (Norwegian 1–6 grading)"
         >
           <option value="all">Any demand</option>
@@ -286,7 +286,7 @@ export function CareerFilterBar({
 
         {/* Salary */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-muted-foreground whitespace-nowrap">Salary</span>
+          <span className="text-[10px] text-white/80 dark:text-muted-foreground whitespace-nowrap">Salary</span>
           <div className="w-[120px]">
             <Slider
               value={[currentSalaryMin, currentSalaryMax]}

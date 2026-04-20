@@ -1,5 +1,3 @@
-"use client";
-
 import { FavoriteWorkersList } from "@/components/favorite-workers-list";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";

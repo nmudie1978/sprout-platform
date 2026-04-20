@@ -117,16 +117,19 @@ export default function PrivacyPolicyPage() {
               When you apply for a job or interact with another user, limited profile information (such as your first name, age bracket, and relevant skills) may be visible to that user. Full contact details are not shared unless you choose to provide them.
             </p>
 
-            <h3>6.2 Service Providers</h3>
-            <p>We share data with a limited number of trusted service providers who help us operate the Platform:</p>
+            <h3>6.2 Service Providers (Data Processors)</h3>
+            <p>We share data with a limited number of trusted service providers who help us operate the Platform. Each is bound by a data processing agreement (DPA) and processes data only on our instructions:</p>
             <ul>
-              <li><strong>Hosting:</strong> Vercel (application hosting, EU/US regions)</li>
-              <li><strong>Database:</strong> Supabase (PostgreSQL database hosting, EU region)</li>
-              <li><strong>Authentication:</strong> NextAuth.js (open-source, self-hosted authentication)</li>
-              <li><strong>Email:</strong> transactional email provider for account verification and notifications</li>
+              <li><strong>Hosting:</strong> Vercel Inc. — application hosting, EU/US regions. DPA in force; EU Standard Contractual Clauses apply to any US transfer.</li>
+              <li><strong>Database:</strong> Supabase Inc. — PostgreSQL database hosting, EU region (Frankfurt). DPA in force.</li>
+              <li><strong>Transactional email:</strong> Resend (Resend Inc.) — used for account verification, guardian-consent emails, and safety notifications. No marketing email.</li>
+              <li><strong>Error monitoring:</strong> Sentry (Functional Software Inc.) — captures anonymised error traces. Personal data is scrubbed at source.</li>
+              <li><strong>Product analytics:</strong> Vercel Analytics and Speed Insights — collects anonymised page views, device type and performance metrics. No cookies, no cross-site tracking, no behavioural profiling, and no personal data.</li>
+              <li><strong>Authentication:</strong> NextAuth.js — open-source, self-hosted; sessions are stored in our own database, not a third party.</li>
+              <li><strong>AI content generation (optional features):</strong> OpenAI — used only to generate personalised career roadmaps and narration when you request them. Prompts exclude direct identifiers (name, email).</li>
             </ul>
             <p>
-              All service providers are bound by data processing agreements and process data only on our instructions.
+              We do not use advertising, retargeting, social-media pixels, or behavioural-profiling processors.
             </p>
 
             <h3>6.3 Legal Requirements</h3>

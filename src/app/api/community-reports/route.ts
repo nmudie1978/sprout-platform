@@ -18,6 +18,8 @@ import {
   REPORT_REASONS,
 } from "@/lib/community-guardian";
 import { AuditAction, CommunityReportTargetType } from "@prisma/client";
+import { checkRateLimitAsync, getRateLimitHeaders } from "@/lib/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 // POST /api/community-reports - Create a new report
 export async function POST(req: NextRequest) {
@@ -26,6 +28,23 @@ export async function POST(req: NextRequest) {
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Cap reports at 5/hour per user. False-report flooding is a
+    // real attack vector — a bad actor can pin an honest user's
+    // account or tie up moderation by spamming reports. Duplicate
+    // guard (line ~123) prevents repeat reports of the same target,
+    // but without a per-user cap, an attacker can still flood with
+    // reports of *different* targets.
+    const rateLimit = await checkRateLimitAsync(
+      `community-report:${session.user.id}`,
+      { interval: 60 * 60 * 1000, maxRequests: 5 },
+    );
+    if (!rateLimit.success) {
+      return apiError("RATE_LIMITED", "You've submitted several reports recently. Please wait an hour before reporting again.", {
+        request: req,
+        headers: getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset),
+      });
     }
 
     const body = await req.json();

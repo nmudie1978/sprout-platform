@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowLeft,
   Eye,
@@ -453,9 +454,12 @@ export default function ShadowDetailPage({
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-full bg-muted">
                       {shadow.host.employerProfile?.companyLogo ? (
-                        <img
+                        <Image
                           src={shadow.host.employerProfile.companyLogo}
                           alt=""
+                          width={32}
+                          height={32}
+                          sizes="32px"
                           className="h-8 w-8 rounded-full object-cover"
                         />
                       ) : (

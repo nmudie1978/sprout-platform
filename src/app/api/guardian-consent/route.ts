@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { generateGuardianToken, logAuditAction, recordConsent } from "@/lib/safety";
 import { AuditAction, AccountStatus } from "@prisma/client";
 import { sendGuardianConsentEmail } from "@/lib/mail";
+import { checkRateLimitAsync, getRateLimitHeaders } from "@/lib/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 // POST /api/guardian-consent - Request guardian consent (by youth)
 export async function POST(req: NextRequest) {
@@ -13,21 +15,37 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
+    }
+
+    // Cap guardian-consent requests to 3 per day per youth. The email
+    // is already fire-and-forget via Resend, so without this a youth
+    // account could be used to flood a guardian inbox.
+    const rateLimit = await checkRateLimitAsync(
+      `guardian-consent:${session.user.id}`,
+      { interval: 24 * 60 * 60 * 1000, maxRequests: 3 },
+    );
+    if (!rateLimit.success) {
+      return apiError("RATE_LIMITED", "Guardian consent has already been requested multiple times today. Please wait 24 hours or contact support.", {
+        request: req,
+        headers: getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset),
+      });
     }
 
     const body = await req.json();
     const { guardianEmail } = body;
 
     if (!guardianEmail || !guardianEmail.includes("@")) {
-      return NextResponse.json(
-        { error: "Valid guardian email is required" },
-        { status: 400 }
-      );
+      return apiError("VALIDATION_FAILED", "Valid guardian email is required", { request: req, details: { field: "guardianEmail" } });
     }
 
-    // Generate unique token for guardian consent link
+    // Generate unique token for guardian consent link.
+    // Tokens expire after 14 days — balances "guardian checks email
+    // when convenient" against the risk of a stale token sitting
+    // in a forwarded inbox forever. The youth can always re-request
+    // (rate-limited to 3/day) which rotates the token.
     const guardianToken = generateGuardianToken();
+    const guardianTokenExpiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
     // Update youth profile with guardian email and token
     const updated = await prisma.youthProfile.update({
@@ -35,6 +53,7 @@ export async function POST(req: NextRequest) {
       data: {
         guardianEmail,
         guardianToken,
+        guardianTokenExpiresAt,
         guardianConsent: false, // Reset if they're re-requesting
         guardianConsentAt: null,
       },
@@ -94,10 +113,7 @@ export async function GET(req: NextRequest) {
     const token = searchParams.get("token");
 
     if (!token) {
-      return NextResponse.json(
-        { error: "Token is required" },
-        { status: 400 }
-      );
+      return apiError("VALIDATION_FAILED", "Token is required", { request: req, details: { field: "token" } });
     }
 
     // Find youth profile by guardian token
@@ -107,6 +123,7 @@ export async function GET(req: NextRequest) {
         displayName: true,
         guardianConsent: true,
         guardianConsentAt: true,
+        guardianTokenExpiresAt: true,
         user: {
           select: {
             email: true,
@@ -118,10 +135,21 @@ export async function GET(req: NextRequest) {
     });
 
     if (!youthProfile) {
-      return NextResponse.json(
-        { error: "Invalid or expired consent token" },
-        { status: 404 }
-      );
+      return apiError("INVALID_TOKEN", "Invalid or expired consent token", { request: req, status: 404 });
+    }
+
+    // Enforce token expiry. NULL expiresAt = pre-migration legacy
+    // token; we grandfather those so existing in-flight requests
+    // don't break the day the migration lands. All tokens issued
+    // after this code ships have a set expiresAt.
+    if (
+      youthProfile.guardianTokenExpiresAt &&
+      youthProfile.guardianTokenExpiresAt < new Date()
+    ) {
+      return apiError("TOKEN_EXPIRED", "This consent link has expired. Please ask the young person to re-send it from their profile.", {
+        request: req,
+        details: { expired: true },
+      });
     }
 
     // Calculate age for display
@@ -181,6 +209,7 @@ export async function PUT(req: NextRequest) {
         userId: true,
         displayName: true,
         guardianConsent: true,
+        guardianTokenExpiresAt: true,
       },
     });
 
@@ -188,6 +217,20 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json(
         { error: "Invalid or expired consent token" },
         { status: 404 }
+      );
+    }
+
+    // Expiry gate — see GET handler for grandfathering rationale.
+    if (
+      youthProfile.guardianTokenExpiresAt &&
+      youthProfile.guardianTokenExpiresAt < new Date()
+    ) {
+      return NextResponse.json(
+        {
+          error: "This consent link has expired. Please ask the young person to re-send it from their profile.",
+          expired: true,
+        },
+        { status: 410 }
       );
     }
 
@@ -204,8 +247,9 @@ export async function PUT(req: NextRequest) {
       data: {
         guardianConsent: true,
         guardianConsentAt: new Date(),
-        // Clear token after use (one-time use)
+        // Clear token + its expiry after use (one-time use)
         guardianToken: null,
+        guardianTokenExpiresAt: null,
       },
     });
 

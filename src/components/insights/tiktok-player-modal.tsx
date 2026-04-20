@@ -122,7 +122,7 @@ export function TikTokPlayerModal({
       />
 
       {/* Modal content - vertical layout for shorts */}
-      <div className="relative z-10 w-full max-w-sm mx-4 bg-background rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative z-10 w-full max-w-sm mx-4 bg-card text-card-foreground rounded-2xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b">
           <div className="flex items-center gap-2 min-w-0">

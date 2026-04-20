@@ -101,29 +101,32 @@ export async function GET(request: NextRequest) {
       _count: { id: true },
     });
 
-    // Run all time-series and remaining queries in parallel
+    // Run all time-series and remaining queries in parallel.
+    // Time-series per-day counts come from a `findMany` pulling just
+    // the `createdAt` column in the date range and bucketing in JS.
+    // For 7/14/30-day windows on youth-platform volumes this is a
+    // trivial dataset; swapping to groupBy-friendly Prisma removes
+    // the $queryRaw surface without a measurable perf hit, and the
+    // endpoint has a 5-min cache on top.
     const [
-      jobsPerDayRaw,
+      jobsInRange,
       topCategories,
       topLocationsRaw,
       totalApplications,
       newApplications,
       applicationsByStatus,
-      applicationsPerDayRaw,
+      applicationsInRange,
       totalMessages,
       newMessages,
-      messagesPerDayRaw,
+      messagesInRange,
       activeMessageSenders,
       activeApplicants,
     ] = await Promise.all([
-      // Jobs per day - single query with DATE_TRUNC instead of N sequential queries
-      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
-        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
-        FROM "MicroJob"
-        WHERE "createdAt" >= ${startDate}
-        GROUP BY DATE_TRUNC('day', "createdAt")
-        ORDER BY day ASC
-      `,
+      // Jobs in date range — bucketed in JS below
+      prisma.microJob.findMany({
+        where: { createdAt: { gte: startDate } },
+        select: { createdAt: true },
+      }),
 
       // Top 5 categories
       prisma.microJob.groupBy({
@@ -156,14 +159,11 @@ export async function GET(request: NextRequest) {
         _count: { id: true },
       }),
 
-      // Applications per day - single query
-      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
-        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
-        FROM "Application"
-        WHERE "createdAt" >= ${startDate}
-        GROUP BY DATE_TRUNC('day', "createdAt")
-        ORDER BY day ASC
-      `,
+      // Applications in date range — bucketed in JS below
+      prisma.application.findMany({
+        where: { createdAt: { gte: startDate } },
+        select: { createdAt: true },
+      }),
 
       // Total messages
       prisma.message.count(),
@@ -173,14 +173,11 @@ export async function GET(request: NextRequest) {
         where: { createdAt: { gte: startDate } },
       }),
 
-      // Messages per day - single query
-      prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
-        SELECT DATE_TRUNC('day', "createdAt") as day, COUNT(*)::bigint as count
-        FROM "Message"
-        WHERE "createdAt" >= ${startDate}
-        GROUP BY DATE_TRUNC('day', "createdAt")
-        ORDER BY day ASC
-      `,
+      // Messages in date range — bucketed in JS below
+      prisma.message.findMany({
+        where: { createdAt: { gte: startDate } },
+        select: { createdAt: true },
+      }),
 
       // Active message senders
       prisma.message.findMany({
@@ -197,18 +194,20 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
-    // Build day-indexed maps from raw query results for O(1) lookup
-    const buildDayMap = (rows: Array<{ day: Date; count: bigint }>) => {
+    // Bucket per-day counts from the raw createdAt timestamps.
+    // Matches the previous DATE_TRUNC('day', ...) behaviour in UTC.
+    const bucketByDay = (rows: Array<{ createdAt: Date }>) => {
       const map = new Map<string, number>();
       for (const row of rows) {
-        map.set(formatDate(new Date(row.day)), Number(row.count));
+        const d = formatDate(row.createdAt);
+        map.set(d, (map.get(d) ?? 0) + 1);
       }
       return map;
     };
 
-    const jobsDayMap = buildDayMap(jobsPerDayRaw);
-    const appsDayMap = buildDayMap(applicationsPerDayRaw);
-    const msgsDayMap = buildDayMap(messagesPerDayRaw);
+    const jobsDayMap = bucketByDay(jobsInRange);
+    const appsDayMap = bucketByDay(applicationsInRange);
+    const msgsDayMap = bucketByDay(messagesInRange);
 
     // Fill in all days (including zeros) for the time series
     const jobsPerDay: { date: string; count: number }[] = [];

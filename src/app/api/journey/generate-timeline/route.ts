@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
+import { logAndSwallow } from '@/lib/observability';
 import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/generate-fallback-timeline';
 import { enrichFirstRoleStep } from '@/lib/journey/enrich-first-role';
 import { buildPromptRules } from '@/lib/journey/roadmap-rules';
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
 
     // Parallel: fetch user age + cached timeline + education context
     // + foundation card data + rate limit check
-    const [userData, profile, rateLimit] = await Promise.all([
+    const [userData, profile, rateLimit, monthlyQuota] = await Promise.all([
       prisma.user.findUnique({
         where: { id: session.user.id },
         select: { dateOfBirth: true },
@@ -91,6 +92,9 @@ export async function POST(req: NextRequest) {
         select: { generatedTimeline: true, journeySummary: true, foundationCardData: true },
       }),
       checkRateLimitAsync(`timeline:${session.user.id}`, RateLimits.TIMELINE_GENERATION),
+      // Monthly cost ceiling — stops any single user from draining
+      // the OpenAI budget even if they spread calls across days.
+      checkRateLimitAsync(`timeline-month:${session.user.id}`, RateLimits.AI_MONTHLY_TIMELINE),
     ]);
 
     const userAge = userData?.dateOfBirth
@@ -177,13 +181,19 @@ export async function POST(req: NextRequest) {
           prisma.youthProfile.update({
             where: { userId: session.user.id },
             data: { generatedTimeline: JSON.parse(JSON.stringify({ career, generatedAt: new Date().toISOString(), journey: cachedJourney })) },
-          }).catch(() => {});
+          }).catch(logAndSwallow("timeline:perUserCache:hit"));
           return NextResponse.json({ journey: cachedJourney, cached: true });
         }
       }
     } catch { /* global cache miss */ }
 
-    // Rate limit
+    // Rate limit: monthly quota first (clearer message) then short-window
+    if (!monthlyQuota.success) {
+      return NextResponse.json(
+        { error: 'Monthly career-timeline quota reached. The limit resets after the rolling 30-day window.', ...getRateLimitHeaders(monthlyQuota.limit, monthlyQuota.remaining, monthlyQuota.reset) },
+        { status: 429 }
+      );
+    }
     if (!rateLimit.success) {
       return NextResponse.json(
         { error: 'Too many timeline generations. Please try again later.', ...getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset) },
@@ -283,12 +293,12 @@ export async function POST(req: NextRequest) {
     prisma.youthProfile.update({
       where: { userId: session.user.id },
       data: { generatedTimeline: cacheData },
-    }).catch(() => {});
+    }).catch(logAndSwallow("timeline:perUserCache:write"));
     prisma.videoCache.upsert({
       where: { cacheKey: globalCacheKey },
       create: { cacheKey: globalCacheKey, data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
       update: { data: JSON.parse(JSON.stringify({ journey })), expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) },
-    }).catch(() => {});
+    }).catch(logAndSwallow("timeline:globalCache:write"));
 
     return NextResponse.json({ journey, cached: false });
   } catch (error) {

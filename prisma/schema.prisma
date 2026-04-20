@@ -451,6 +451,7 @@ model YouthProfile {
   guardianConsent   Boolean   @default(false)
   guardianConsentAt DateTime? // When consent was given
   guardianToken     String?   @unique // Token for guardian consent link
+  guardianTokenExpiresAt DateTime? // Token expiry (14 days after issue; cleared after consent grant)
 
   // Phone verification
   phoneVerified   Boolean   @default(false)
@@ -613,14 +614,22 @@ model MicroJob {
 }
 
 model Application {
-  id           String            @id @default(cuid())
-  jobId        String
-  youthId      String
-  message      String            @db.Text
-  status       ApplicationStatus @default(PENDING)
-  displayOrder Int? // Custom display order for youth's applications view (lower = higher priority)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  id               String         @id @default(cuid())
+  jobId            String
+  youthId          String
+  // `message` is now nullable (applications can be submitted with no
+  // message) AND holds either (a) the pre-rendered text from the
+  // chosen intent/variables for display convenience, or (b) the
+  // verbatim legacy free-text string when messageIntent is
+  // FREE_TEXT_LEGACY. Never source of truth for new applications —
+  // messageIntent + messageVariables are the structured data.
+  message          String?        @db.Text
+  messageIntent    MessageIntent? // Structured intent — null when the applicant skipped adding a message
+  messageVariables Json? // Variable fill values for the chosen intent (e.g. { days: "Saturdays", time: "3pm" })
+  status           ApplicationStatus @default(PENDING)
+  displayOrder     Int? // Custom display order for youth's applications view (lower = higher priority)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 
   job   MicroJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
   youth User     @relation(fields: [youthId], references: [id], onDelete: Cascade)
@@ -1033,6 +1042,7 @@ enum MessageIntent {
   ASK_CLARIFICATION // "I have a quick question about the job: [your question]."
   CONFIRM_COMPLETION // "I've completed the job as agreed. Please let me know if anything else is needed."
   UNABLE_TO_PROCEED // "I'm no longer able to take this job. Thank you for understanding."
+  FREE_TEXT_LEGACY // Back-compat only: applications written before intent system. NEVER selectable by youth — receive-and-display only.
 }
 
 // Message templates for structured messaging (Phase 1 Safety)

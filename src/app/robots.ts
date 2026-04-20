@@ -7,6 +7,10 @@ import type { MetadataRoute } from "next";
  * authenticated surface, every API route, and every admin / employer /
  * dev / test path. Update this when adding a new public top-level
  * page so search engines can find it.
+ *
+ * Preview / non-production deploys: return a blanket Disallow so
+ * staging URLs (e.g. *.vercel.app preview deployments) never get
+ * indexed. Only VERCEL_ENV=production gets the full allow-list.
  */
 
 const PUBLIC_HOST =
@@ -14,6 +18,19 @@ const PUBLIC_HOST =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://endeavrly.no");
 
 export default function robots(): MetadataRoute.Robots {
+  // Non-production (preview / development on Vercel) — keep the staging
+  // domain out of every search index. Missing VERCEL_ENV means local
+  // `next dev`, where this endpoint is rarely hit; default to blocking
+  // there too so a misconfigured prod deploy never silently indexes.
+  const vercelEnv = process.env.VERCEL_ENV;
+  if (vercelEnv !== "production") {
+    return {
+      rules: [{ userAgent: "*", disallow: "/" }],
+      sitemap: `${PUBLIC_HOST}/sitemap.xml`,
+      host: PUBLIC_HOST,
+    };
+  }
+
   return {
     rules: [
       {

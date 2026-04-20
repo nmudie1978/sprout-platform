@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
+import { checkRateLimit, checkRateLimitAsync, getRateLimitHeaders, RateLimits } from '@/lib/rate-limit';
 import OpenAI from 'openai';
 
 let _openai: OpenAI | null | undefined;
@@ -43,7 +43,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Rate limit: 30 narrations per hour
+  // Rate limit: monthly quota first (cost ceiling — survives restarts
+  // when Redis is configured), then the short-window burst limit.
+  const monthlyQuota = await checkRateLimitAsync(
+    `sim-narrate-month:${session.user.id}`,
+    RateLimits.AI_MONTHLY_NARRATE,
+  );
+  if (!monthlyQuota.success) {
+    const res = NextResponse.json(
+      { error: 'Monthly narration quota reached. The limit resets after the rolling 30-day window.' },
+      { status: 429 },
+    );
+    const headers = getRateLimitHeaders(monthlyQuota.limit, monthlyQuota.remaining, monthlyQuota.reset);
+    Object.entries(headers).forEach(([k, v]) => res.headers.set(k, v));
+    return res;
+  }
+
   const rl = checkRateLimit(`sim-narrate:${session.user.id}`, {
     interval: 3600000,
     maxRequests: 30,

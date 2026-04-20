@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { CareerGoal, GoalSlot, GoalsResponse } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
+import { logAndSwallow } from "@/lib/observability";
 
 /**
  * Invalidate all caches that derive from the primary goal.
@@ -163,11 +164,13 @@ export function usePromoteGoal() {
       });
       syncGuidanceGoal(variables.currentSecondary.title);
       // Pre-generate the career roadmap for the new primary goal
+      // (fire-and-forget — if it fails the on-demand generate runs
+      // when the user opens Clarity)
       fetch("/api/journey/generate-timeline", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ career: variables.currentSecondary.title }),
-      }).catch(() => {});
+      }).catch(logAndSwallow("useGoals:pregenerateTimeline"));
       invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {

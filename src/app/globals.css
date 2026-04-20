@@ -4,40 +4,39 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — PP · Vasily ────────────────────
-       Two-stop diagonal from mustard yellow (#e9d362) to charcoal
-       (#333333). Warm-to-dark, editorial, unexpected. White cards
-       sit crisply on the mustard/charcoal gradient canvas; sidebar
-       is pale mustard for contrast; brand is charcoal. */
-    --background: 51 35% 62%;           /* fallback — .bg-background is transparent in light mode; the ambient gradient is the real canvas */
-    --foreground: 0 0% 16%;             /* near-black — reads on white cards */
-    --card: 0 0% 100%;                  /* pure white */
-    --card-foreground: 0 0% 16%;
+    /* ── Light mode theme tokens — DD · Purple Bliss ───────────────
+       Canvas: deep aubergine (#360033) → teal (#0b8793). Moody,
+       rich, keeps teal as the brand on one end. Cards are white,
+       sidebar is pale lavender, primary is teal. */
+    --background: 250 28% 36%;          /* fallback — .bg-background is transparent in light mode; the ambient gradient is the real canvas */
+    --foreground: 300 32% 12%;          /* near-black plum — reads on white cards and pale-lavender sidebar */
+    --card: 0 0% 100%;                  /* pure white — crisp on the moody aubergine/teal canvas */
+    --card-foreground: 300 32% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 16%;
-    --primary: 0 0% 20%;                /* charcoal brand — Vasily's dark end */
-    --primary-foreground: 51 60% 90%;   /* warm cream on charcoal */
-    --secondary: 51 35% 92%;
-    --secondary-foreground: 0 0% 18%;
-    --muted: 51 24% 90%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 51 55% 93%;               /* pale warm accent */
-    --accent-foreground: 0 0% 18%;
+    --popover-foreground: 300 32% 12%;
+    --primary: 186 70% 32%;             /* teal brand — the light end of the canvas gradient */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 280 20% 93%;
+    --secondary-foreground: 300 32% 14%;
+    --muted: 280 18% 92%;               /* pale lavender muted surface */
+    --muted-foreground: 300 28% 24%;    /* deep plum — reads clearly on pale-lavender sidebar + white cards + mid-canvas */
+    --accent: 186 45% 93%;              /* pale teal accent */
+    --accent-foreground: 186 70% 22%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 51 18% 76%;
-    --input: 51 18% 76%;
-    --ring: 0 0% 20%;
+    --border: 280 12% 70%;
+    --input: 280 12% 70%;
+    --ring: 186 70% 32%;
     --radius: 0.75rem;
-    --sidebar: 51 30% 84%;              /* pale mustard — sits between card and canvas */
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-border: 51 22% 72%;
-    /* Glow brand — charcoal, used by the Glow component in light mode */
-    --brand: 0 0% 20%;
-    --brand-foreground: 51 50% 40%;
-    --gradient-1: linear-gradient(120deg, hsl(51 76% 65%) 0%, hsl(0 0% 20%) 100%);
-    --gradient-2: linear-gradient(120deg, hsl(0 0% 20%) 0%, hsl(0 0% 20%) 100%);
-    --gradient-3: linear-gradient(120deg, hsl(51 76% 65% / 0.1) 0%, hsl(0 0% 20% / 0.1) 100%);
+    --sidebar: 280 16% 78%;             /* pale lavender — sits between card and canvas */
+    --sidebar-foreground: 300 32% 14%;
+    --sidebar-border: 280 14% 62%;
+    /* Glow brand — teal, used by the Glow component in light mode */
+    --brand: 186 70% 36%;
+    --brand-foreground: 186 65% 42%;
+    --gradient-1: linear-gradient(120deg, hsl(303 100% 11%) 0%, hsl(186 86% 31%) 100%);
+    --gradient-2: linear-gradient(120deg, hsl(186 70% 36%) 0%, hsl(186 70% 32%) 100%);
+    --gradient-3: linear-gradient(120deg, hsl(303 100% 11% / 0.1) 0%, hsl(186 86% 31% / 0.1) 100%);
   }
 
   .dark {
@@ -205,6 +204,16 @@
   :root:not(.dark) .ring-teal-500\/30 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
   :root:not(.dark) .ring-teal-500\/40 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
   :root:not(.dark) .ring-teal-500\/50 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
+
+  /* ── Themed walkthrough / onboarding dialog (light mode only) ─
+     Paints the DialogContent with the same aubergine→teal canvas
+     gradient the rest of the app uses, so the orientation
+     walkthrough blends with the theme instead of being a stark
+     white panel. Dark mode keeps the default dark-card fill. */
+  :root:not(.dark) .themed-walkthrough {
+    background-image: var(--gradient-1);
+    border-color: hsl(0 0% 100% / 0.15);
+  }
 
   /* ── Translucent-surface guard (light mode only) ─────────────
      The app was built with many panels/strips/cards using

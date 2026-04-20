@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MobileSheet, MobileSheetFooter } from "@/components/mobile/MobileSheet";
+import { logAndSwallow } from "@/lib/observability";
 import { ConfirmDialog, ConfirmDialogChoice } from "@/components/mobile/ConfirmDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -113,7 +114,7 @@ export function GoalSelectionSheet({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ career: variables.title }),
-        }).catch(() => {});
+        }).catch(logAndSwallow("goalSelection:pregenerateTimeline"));
       }
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
       queryClient.invalidateQueries({ queryKey: ["goals"] });

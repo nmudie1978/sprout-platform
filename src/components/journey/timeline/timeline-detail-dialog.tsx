@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
@@ -353,9 +354,13 @@ export function TimelineDetailDialog({
             if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
             return age;
           })
+          // Intentional silent fallback: age is optional, no DOB
+          // means we default the picker; no user-facing error needed.
           .catch(() => null);
 
         Promise.all([
+          // Intentional silent fallback: dialog renders with empty
+           // edu context on network hiccup; user can still edit + save.
           fetch('/api/journey/education-context').then(r => r.ok ? r.json() : null).catch(() => null),
           agePromise,
         ]).then(([d, age]) => {
@@ -420,7 +425,7 @@ export function TimelineDetailDialog({
     // Save education context for foundation
     if (isFoundation) {
       try {
-        await fetch('/api/journey/education-context', {
+        const res = await fetch('/api/journey/education-context', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -431,6 +436,15 @@ export function TimelineDetailDialog({
             currentSubjects: subjects,
           }),
         });
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          console.error('Foundation save failed', res.status, errText);
+          toast.error("Couldn't save your starting point", {
+            description: errText || 'Please try again in a moment.',
+          });
+          setSaving(false);
+          return;
+        }
         // Invalidate so the roadmap foundation node picks up the new data.
         // Also invalidate the personal career timeline — it's keyed on
         // education stage, so a stage change must trigger a refetch
@@ -438,7 +452,14 @@ export function TimelineDetailDialog({
         // Videregående" once the user marks themselves as University).
         queryClient.invalidateQueries({ queryKey: ['education-context'] });
         queryClient.invalidateQueries({ queryKey: ['personal-career-timeline'] });
-      } catch { /* silent */ }
+      } catch (e) {
+        console.error('Foundation save error', e);
+        toast.error("Couldn't save your starting point", {
+          description: 'Check your connection and try again.',
+        });
+        setSaving(false);
+        return;
+      }
     }
 
     setSaving(false);

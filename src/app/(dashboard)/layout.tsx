@@ -27,9 +27,22 @@ export default async function DashboardLayout({
   const headersList = headers();
   const pathname = headersList.get("x-pathname") || "";
 
-  // Only redirect employers if they're NOT already on an employer page
-  if (session.user.role === "EMPLOYER" && !pathname.startsWith("/employer")) {
+  // Only redirect employers if they're NOT already on an employer page.
+  // Skip the redirect when small-jobs is disabled — /employer/* is
+  // itself bounced to /dashboard by middleware in that mode, so the
+  // two would otherwise loop. Employers land on /employer-paused
+  // instead (handled below).
+  const smallJobsEnabled =
+    process.env.NEXT_PUBLIC_SMALL_JOBS_ENABLED === "true";
+  if (
+    smallJobsEnabled &&
+    session.user.role === "EMPLOYER" &&
+    !pathname.startsWith("/employer")
+  ) {
     redirect("/employer/dashboard");
+  }
+  if (!smallJobsEnabled && session.user.role === "EMPLOYER") {
+    redirect("/employer-paused");
   }
 
   // Run legal check, profile fetch, and preferences in parallel
@@ -97,27 +110,29 @@ export default async function DashboardLayout({
         <main className="flex-1 pb-16 lg:pb-0">{children}</main>
         <AiChatWidget />
 
-        {/* Footer with legal links — hidden on mobile */}
-        <footer className="hidden lg:block border-t py-4 mt-8 bg-muted/30">
+        {/* Footer with legal links — hidden on mobile.
+            Transparent in light mode so the canvas gradient shows
+            through continuously; dark mode keeps a subtle lift. */}
+        <footer className="hidden lg:block py-4 mt-8 border-t border-white/10">
           <div className="px-6">
-            <div className="flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
-              <Link href="/legal/terms" className="hover:text-foreground transition-colors">
+            <div className="flex flex-wrap justify-center gap-4 text-xs text-white/85">
+              <Link href="/legal/terms" className="hover:text-white transition-colors">
                 Terms
               </Link>
-              <Link href="/legal/privacy" className="hover:text-foreground transition-colors">
+              <Link href="/legal/privacy" className="hover:text-white transition-colors">
                 Privacy
               </Link>
-              <Link href="/legal/safety" className="hover:text-foreground transition-colors">
+              <Link href="/legal/safety" className="hover:text-white transition-colors">
                 Safety
               </Link>
-              <Link href="/legal/eligibility" className="hover:text-foreground transition-colors">
+              <Link href="/legal/eligibility" className="hover:text-white transition-colors">
                 Eligibility
               </Link>
-              <Link href="/legal/disclaimer" className="hover:text-foreground transition-colors">
+              <Link href="/legal/disclaimer" className="hover:text-white transition-colors">
                 Disclaimer
               </Link>
             </div>
-            <p className="text-center text-[10px] text-muted-foreground mt-2">
+            <p className="text-center text-[10px] text-white/70 mt-2">
               © {new Date().getFullYear()} Endeavrly. All rights reserved.
             </p>
           </div>

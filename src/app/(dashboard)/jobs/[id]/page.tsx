@@ -65,6 +65,13 @@ import {
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
+import {
+  MESSAGE_INTENT_TEMPLATES,
+  validateIntentVariables,
+  renderIntentMessage,
+  type SelectableMessageIntent,
+} from "@/lib/message-intents";
+import { APPLICATION_INTENTS } from "@/lib/validations/job";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";
 import { ReportModal } from "@/components/report-modal";
@@ -293,9 +300,13 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [applicationMessage, setApplicationMessage] = useState("");
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [showRecommendDialog, setShowRecommendDialog] = useState(false);
+  // Intent-based application message. Intent is optional — a youth
+  // may apply with nothing at all. When an intent is selected, its
+  // required variables are filled in via the picker below.
+  const [selectedIntent, setSelectedIntent] = useState<SelectableMessageIntent | null>(null);
+  const [intentVariables, setIntentVariables] = useState<Record<string, string>>({});
 
   const { data: job, isLoading } = useQuery({
     queryKey: ["job", params.id],
@@ -313,7 +324,13 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           jobId: params.id,
-          message: applicationMessage,
+          // Intent + variables are both optional. If the user picked
+          // an intent, we send structured data; if they skipped,
+          // we send jobId only and the application stores no message.
+          ...(selectedIntent && {
+            messageIntent: selectedIntent,
+            messageVariables: intentVariables,
+          }),
         }),
       });
 
@@ -332,7 +349,8 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
         description: "The job poster will review your application.",
       });
       setShowApplicationForm(false);
-      setApplicationMessage("");
+      setSelectedIntent(null);
+      setIntentVariables({});
       queryClient.invalidateQueries({ queryKey: ["job", params.id] });
       queryClient.invalidateQueries({ queryKey: ["my-applications"] });
     },
@@ -912,26 +930,77 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                   ) : showApplicationForm ? (
                     <div className="space-y-4 animate-fade-in">
                       <div>
-                        <Label htmlFor="message" className="text-base font-semibold">
-                          Your Application Message
+                        <Label className="text-base font-semibold">
+                          Add a message (optional)
                         </Label>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Tell the job poster why you're the perfect fit for this job
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Pick a template so the job poster knows what to expect. Skip to apply without a message.
                         </p>
-                        <Textarea
-                          id="message"
-                          placeholder="Hi! I'm interested in this opportunity because..."
-                          value={applicationMessage}
-                          onChange={(e) => setApplicationMessage(e.target.value)}
-                          className="min-h-[120px] rounded-xl border-2"
-                          rows={5}
-                        />
-                        <div className="flex justify-between mt-2 text-sm">
-                          <span className={applicationMessage.length < 10 ? "text-amber-500" : "text-muted-foreground"}>
-                            {applicationMessage.length < 10 ? "Minimum 10 characters" : "Looking good!"}
-                          </span>
-                          <span className="text-muted-foreground">{applicationMessage.length}/500</span>
+
+                        {/* Intent picker — three apply-context templates */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          {APPLICATION_INTENTS.map((intent) => {
+                            const t = MESSAGE_INTENT_TEMPLATES[intent];
+                            const isSelected = selectedIntent === intent;
+                            return (
+                              <button
+                                key={intent}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedIntent(isSelected ? null : intent);
+                                  setIntentVariables({});
+                                }}
+                                className={`text-left rounded-xl border-2 p-3 transition-colors ${
+                                  isSelected
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:border-primary/40 hover:bg-muted/30"
+                                }`}
+                              >
+                                <div className="text-sm font-semibold">{t.label}</div>
+                                <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                                  {t.description}
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
+
+                        {/* Variable fill-ins for the chosen intent */}
+                        {selectedIntent && MESSAGE_INTENT_TEMPLATES[selectedIntent].variables.length > 0 && (
+                          <div className="mt-4 space-y-3 rounded-xl border border-border/60 bg-muted/20 p-3">
+                            {MESSAGE_INTENT_TEMPLATES[selectedIntent].variables.map((v) => (
+                              <div key={v.name}>
+                                <Label htmlFor={`intent-var-${v.name}`} className="text-xs font-medium">
+                                  {v.label}
+                                  {v.required && <span className="text-red-500 ml-0.5">*</span>}
+                                </Label>
+                                <input
+                                  id={`intent-var-${v.name}`}
+                                  type="text"
+                                  placeholder={v.placeholder}
+                                  maxLength={v.maxLength}
+                                  value={intentVariables[v.name] ?? ""}
+                                  onChange={(e) =>
+                                    setIntentVariables((prev) => ({ ...prev, [v.name]: e.target.value }))
+                                  }
+                                  className="w-full mt-1 rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Preview — shows the youth what the employer sees */}
+                        {selectedIntent && (
+                          <div className="mt-3 rounded-lg bg-primary/5 border border-primary/20 p-3">
+                            <div className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-1">
+                              Preview
+                            </div>
+                            <div className="text-sm text-foreground/90 italic">
+                              "{renderIntentMessage(selectedIntent, intentVariables)}"
+                            </div>
+                          </div>
+                        )}
                       </div>
                       {/* Payment disclosure */}
                       <PaymentDisclosure variant="compact" />
@@ -939,15 +1008,16 @@ export default function JobDetailPage({ params }: { params: { id: string } }) {
                       <div className="flex gap-3">
                         <Button
                           onClick={() => applyMutation.mutate()}
-                          disabled={
-                            applicationMessage.length < 10 ||
-                            applicationMessage.length > 500 ||
-                            applyMutation.isPending
-                          }
+                          disabled={(() => {
+                            if (applyMutation.isPending) return true;
+                            if (!selectedIntent) return false; // Skip-with-no-message is allowed
+                            const check = validateIntentVariables(selectedIntent, intentVariables, session?.user.ageBracket ?? null);
+                            return !check.valid;
+                          })()}
                           className={`flex-1 h-12 rounded-xl bg-gradient-to-r ${colors.from} ${colors.to}`}
                         >
                           <Send className="mr-2 h-4 w-4" />
-                          {applyMutation.isPending ? "Submitting..." : "Submit Application"}
+                          {applyMutation.isPending ? "Submitting..." : selectedIntent ? "Submit with message" : "Submit without message"}
                         </Button>
                         <Button
                           variant="outline"

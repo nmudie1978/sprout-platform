@@ -17,9 +17,29 @@ import {
   PLATFORM_MAX_AGE,
 } from "@/lib/safety/age";
 import { sendGuardianConsentEmail } from "@/lib/mail";
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    // Per-IP rate limit — the user doesn't have an account yet, so IP is
+    // the only available identifier. STRICT (10/min) stops scripted
+    // account-creation spam. Accepts `x-forwarded-for` from Vercel.
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+    const rateLimit = await checkRateLimitAsync(`signup:${ip}`, RateLimits.STRICT);
+    if (!rateLimit.success) {
+      const response = NextResponse.json(
+        { error: "Too many signup attempts from this network. Please try again shortly." },
+        { status: 429 }
+      );
+      Object.entries(
+        getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset)
+      ).forEach(([k, v]) => response.headers.set(k, v));
+      return response;
+    }
+
     const { firstName, lastName, surname, email, password, role, ageBracket, dateOfBirth, guardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Validate legal acceptance
@@ -115,26 +135,37 @@ export async function POST(req: NextRequest) {
         initialAccountStatus = AccountStatus.ACTIVE;
       }
     } else if (role === "EMPLOYER") {
-      // Employers must be at least 18 years old
-      if (dateOfBirth) {
-        birthDate = new Date(dateOfBirth);
-        age = getAge(birthDate);
-
-        if (age === null) {
-          return NextResponse.json(
-            { error: "Invalid date of birth" },
-            { status: 400 }
-          );
-        }
-
-        if (age < MIN_EMPLOYER_AGE) {
-          return NextResponse.json(
-            { error: `Employers must be at least ${MIN_EMPLOYER_AGE} years old` },
-            { status: 400 }
-          );
-        }
+      // Employers MUST provide DOB and prove 18+. Previously DOB was
+      // optional, leaving `ageVerified=false` as the only gate — but
+      // that's an onboarding state, not a hard block on signup itself.
+      // Require a self-declared age here; EID verification (Vipps/BankID)
+      // is the stronger second gate before job posting.
+      if (!dateOfBirth) {
+        return NextResponse.json(
+          { error: "Date of birth is required to create an employer account." },
+          { status: 400 }
+        );
       }
-      // Employers need age verification before becoming ACTIVE
+
+      birthDate = new Date(dateOfBirth);
+      age = getAge(birthDate);
+
+      if (age === null || Number.isNaN(birthDate.getTime())) {
+        return NextResponse.json(
+          { error: "Invalid date of birth" },
+          { status: 400 }
+        );
+      }
+
+      if (age < MIN_EMPLOYER_AGE) {
+        return NextResponse.json(
+          { error: `Employers must be at least ${MIN_EMPLOYER_AGE} years old.` },
+          { status: 400 }
+        );
+      }
+
+      // Employers still need EID verification before becoming ACTIVE.
+      // Self-declared age is a floor, not a substitute.
       initialAccountStatus = AccountStatus.ONBOARDING;
     }
 

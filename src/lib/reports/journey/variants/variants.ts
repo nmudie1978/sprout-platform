@@ -21,7 +21,8 @@ export type CoverTreatment =
   | "navy-gold" // deep navy + warm gold accent
   | "sage-stone" // muted sage green, warm grey
   | "blob-watercolour" // soft watercolour blob shapes
-  | "whitepaper"; // navy→magenta radial gradient + constellation motif
+  | "whitepaper" // navy→magenta radial gradient + constellation motif
+  | "gradient-horizontal"; // left→right linear gradient, colors from palette
 
 export interface VariantPalette {
   // Surface
@@ -50,6 +51,11 @@ export interface VariantPalette {
   coverText: string;
   coverMuted: string;
   coverRule: string;
+
+  // Optional — only used by the `gradient-horizontal` cover treatment.
+  // Left-edge colour and right-edge colour of the cover gradient.
+  coverGradientFrom?: string;
+  coverGradientTo?: string;
 }
 
 export interface Variant {
@@ -418,6 +424,109 @@ export const VARIANTS: Variant[] = [
       coverText: "#F8FAFC",
       coverMuted: "#C4B5D6",
       coverRule: "#3A2765",
+    },
+  },
+
+  // 12. Fresh Turboscent — pale yellow-green → deep teal horizontal
+  //     gradient. Interior pages are cream with teal ink + subtle
+  //     yellow-green tinted surfaces.
+  {
+    key: "12-fresh-turboscent",
+    name: "Fresh Turboscent",
+    description:
+      "Pale yellow-green to deep teal horizontal gradient cover. Cream interior pages with deep teal ink and soft yellow-green surfaces.",
+    cover: "gradient-horizontal",
+    coverTitleWeight: 500,
+    palette: {
+      pageBg: "#FBFAF0",
+      surface: "#FFFFFF",
+      surfaceAlt: "#F1F4E3",
+      surfaceDeep: "#0E3F45",
+      ink: "#135058",
+      body: "#1F2A30",
+      muted: "#4B5B63",
+      subtle: "#6E7D83",
+      faint: "#A0ADAF",
+      hairline: "#D8E2DE",
+      hairlineSoft: "#E8EEEA",
+      divider: "#BECCC5",
+      accent: "#135058",
+      accentSoft: "#E3EAE2",
+      coverBg: "#F1F2B5",
+      coverAccent: "#135058",
+      coverText: "#0E3F45",
+      coverMuted: "#3A6B73",
+      coverRule: "#BFC790",
+      coverGradientFrom: "#F1F2B5",
+      coverGradientTo: "#135058",
+    },
+  },
+
+  // 13. Vine — emerald → near-black horizontal gradient. Interior pages
+  //     are crisp white with deep-emerald ink and a vibrant accent pop.
+  {
+    key: "13-vine",
+    name: "Vine",
+    description:
+      "Emerald green to near-black horizontal gradient cover. Crisp white interior pages with deep-emerald ink and a vibrant accent.",
+    cover: "gradient-horizontal",
+    coverTitleWeight: 500,
+    palette: {
+      pageBg: "#FDFEFC",
+      surface: "#FFFFFF",
+      surfaceAlt: "#ECF7F1",
+      surfaceDeep: "#001510",
+      ink: "#034E3F",
+      body: "#1B2925",
+      muted: "#4E5F58",
+      subtle: "#6F807A",
+      faint: "#A5B2AD",
+      hairline: "#DCE8E2",
+      hairlineSoft: "#ECF2EE",
+      divider: "#C2CFC8",
+      accent: "#00BF8F",
+      accentSoft: "#DBF0E6",
+      coverBg: "#00BF8F",
+      coverAccent: "#001510",
+      coverText: "#001510",
+      coverMuted: "#0A2520",
+      coverRule: "#007858",
+      coverGradientFrom: "#00BF8F",
+      coverGradientTo: "#001510",
+    },
+  },
+
+  // 14. Vasily — yellow-olive → charcoal horizontal gradient. Warm
+  //     cream interior pages with charcoal ink and burnt-gold accent.
+  {
+    key: "14-vasily",
+    name: "Vasily",
+    description:
+      "Yellow-olive to charcoal horizontal gradient cover. Warm cream interior pages with charcoal ink and a burnt-gold accent.",
+    cover: "gradient-horizontal",
+    coverTitleWeight: 500,
+    palette: {
+      pageBg: "#FAF8F2",
+      surface: "#FFFFFF",
+      surfaceAlt: "#F3EECF",
+      surfaceDeep: "#1F1C14",
+      ink: "#333333",
+      body: "#2A2620",
+      muted: "#58544C",
+      subtle: "#7A746B",
+      faint: "#AEA99C",
+      hairline: "#E3DCC2",
+      hairlineSoft: "#EFEAD3",
+      divider: "#D4CDB0",
+      accent: "#A68C18",
+      accentSoft: "#F6ECBD",
+      coverBg: "#E9D362",
+      coverAccent: "#333333",
+      coverText: "#1F1C14",
+      coverMuted: "#4E4A42",
+      coverRule: "#C2AE42",
+      coverGradientFrom: "#E9D362",
+      coverGradientTo: "#333333",
     },
   },
 ];

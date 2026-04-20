@@ -1246,7 +1246,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
 
   return (
     <>
-    <div className="rounded-2xl border bg-card overflow-hidden">
+    <div className="radar-scope rounded-2xl border bg-card overflow-hidden">
       {/* Primary Goal indicator — always visible when a goal is set */}
       {goalsData?.primaryGoal?.title && (
         <Link

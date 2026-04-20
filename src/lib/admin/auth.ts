@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
+import { isAdminTokenRevoked, revokeAdminToken } from "./token-denylist";
 
 const ADMIN_SESSION_COOKIE = "endeavrly_admin_session";
 const SESSION_EXPIRY_DAYS = 7;
@@ -111,6 +112,13 @@ export async function verifyAdminSession(token: string): Promise<AdminSession | 
     const secret = getSessionSecret();
     const { payload } = await jwtVerify(token, secret);
 
+    // Reject tokens that were revoked via logout. The denylist is a
+    // no-op when Redis isn't configured (dev/preview) — production
+    // is guarded by the rate-limit lib's hard-fail on missing Redis.
+    if (await isAdminTokenRevoked(token)) {
+      return null;
+    }
+
     return {
       username: payload.username as string,
       iat: payload.iat as number,
@@ -155,10 +163,29 @@ export async function getAdminSession(): Promise<AdminSession | null> {
 }
 
 /**
- * Clear admin session cookie
+ * Clear admin session cookie AND revoke the token server-side.
+ *
+ * Without the revocation step, a stolen cookie remains usable until
+ * `exp` (7 days). We verify the token (quietly — ignoring failures so
+ * logout is always idempotent), read its `exp`, and write it to the
+ * Redis denylist with a TTL that matches.
  */
 export async function clearAdminSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
+  const existing = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+
+  if (existing) {
+    try {
+      const secret = getSessionSecret();
+      const { payload } = await jwtVerify(existing, secret);
+      const exp = typeof payload.exp === "number" ? payload.exp : 0;
+      if (exp > 0) {
+        await revokeAdminToken(existing, exp);
+      }
+    } catch {
+      // Token was already invalid/expired — nothing to revoke.
+    }
+  }
 
   cookieStore.delete(ADMIN_SESSION_COOKIE);
 }

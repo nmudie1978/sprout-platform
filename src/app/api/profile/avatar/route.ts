@@ -4,23 +4,24 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getAvatarById } from "@/lib/avatars";
+import { apiError } from "@/lib/api-error";
 
 export async function PATCH(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
     const body = await req.json();
     const { avatarId } = body;
 
     if (typeof avatarId !== "string" || !avatarId.trim()) {
-      return NextResponse.json({ error: "Invalid avatarId" }, { status: 400 });
+      return apiError("VALIDATION_FAILED", "Invalid avatarId", { request: req, details: { field: "avatarId" } });
     }
 
     if (!getAvatarById(avatarId)) {
-      return NextResponse.json({ error: "Avatar not found in catalog" }, { status: 400 });
+      return apiError("NOT_FOUND", "Avatar not found in catalog", { request: req, status: 400 });
     }
 
     const userId = session.user.id;
@@ -51,10 +52,7 @@ export async function PATCH(req: NextRequest) {
     return response;
   } catch (error) {
     console.error("[AVATAR API] Save failed:", error);
-    return NextResponse.json(
-      { error: "Failed to save avatar" },
-      { status: 500 }
-    );
+    return apiError("INTERNAL", "Failed to save avatar", { request: req });
   }
 }
 
@@ -62,7 +60,7 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== "YOUTH") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return apiError("UNAUTHORIZED", "Please sign in");
     }
 
     const profile = await prisma.youthProfile.findUnique({
@@ -78,6 +76,6 @@ export async function GET() {
     return response;
   } catch (error) {
     console.error("[AVATAR API] Get failed:", error);
-    return NextResponse.json({ error: "Failed to fetch avatar" }, { status: 500 });
+    return apiError("INTERNAL", "Failed to fetch avatar");
   }
 }

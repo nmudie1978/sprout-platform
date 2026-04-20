@@ -8,6 +8,7 @@ import { Sparkles, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DiscoverFlow } from '@/components/discover/discover-flow';
+import { captureClientMutationError } from '@/lib/observability';
 import { type DiscoverProfile, DEFAULT_DISCOVER_PROFILE } from '@/lib/discover/types';
 
 export default function DiscoverPage() {
@@ -47,7 +48,7 @@ export default function DiscoverPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ discoverProfile: updated }),
-    }).catch(() => {});
+    }).catch(captureClientMutationError("discoverPage:saveProgress"));
   };
 
   const handleComplete = async (completed: DiscoverProfile) => {

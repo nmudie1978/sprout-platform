@@ -113,7 +113,7 @@ export function VideoPlayerModal({
       />
 
       {/* Modal content */}
-      <div className="relative z-10 w-full max-w-4xl mx-4 bg-background rounded-lg shadow-2xl overflow-hidden">
+      <div className="relative z-10 w-full max-w-4xl mx-4 bg-card text-card-foreground rounded-lg shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex-1 min-w-0 pr-4">

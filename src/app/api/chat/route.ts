@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
+import { logAndSwallow } from "@/lib/observability";
 import {
   retrieveRelevantCareerCards,
   retrieveRelevantHelpDocs,
@@ -157,7 +158,8 @@ export async function POST(req: NextRequest) {
       const fallbackResponse = getFallbackResponse(intent);
 
       // Log intent (non-blocking)
-      logIntent(session.user.id, intent, { triggered: "unsafe_content" }).catch(() => {});
+      logIntent(session.user.id, intent, { triggered: "unsafe_content" })
+        .catch(logAndSwallow("chat:logIntent:unsafe"));
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -171,7 +173,8 @@ export async function POST(req: NextRequest) {
       const fallbackResponse = getFallbackResponse(intent);
 
       // Log intent (non-blocking)
-      logIntent(session.user.id, intent, { triggered: "off_topic" }).catch(() => {});
+      logIntent(session.user.id, intent, { triggered: "off_topic" })
+        .catch(logAndSwallow("chat:logIntent:offTopic"));
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -293,7 +296,7 @@ Keep it natural — don't list their profile back to them.`;
         mode: "fallback",
         reason: "openai_not_configured",
         retrieved_careers: careerCards.length,
-      }).catch(() => {});
+      }).catch(logAndSwallow("chat:logIntent:fallback"));
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -351,7 +354,7 @@ Keep it natural — don't list their profile back to them.`;
       logIntent(session.user.id, intent, {
         triggered: "unsafe_response",
         reason: safetyCheck.reason,
-      }).catch(() => {});
+      }).catch(logAndSwallow("chat:logIntent:unsafeResponse"));
 
       return NextResponse.json({
         message: fallbackResponse,
@@ -403,7 +406,7 @@ Keep it natural — don't list their profile back to them.`;
       logIntent(session.user.id, intent, {
         triggered: "non_english_response",
         patterns: languageCheck.detectedPatterns,
-      }).catch(() => {});
+      }).catch(logAndSwallow("chat:logIntent:nonEnglish"));
     }
 
     // Log intent (anonymously) - don't await to avoid blocking the response
@@ -411,7 +414,7 @@ Keep it natural — don't list their profile back to them.`;
       retrieved_careers: careerCards.length,
       retrieved_docs: helpDocs.length,
       retrieved_qa: qaItems.length,
-    }).catch(() => {}); // Silently catch any logging errors
+    }).catch(logAndSwallow("chat:logIntent:success"));
 
     // Save messages to persistent history (non-blocking)
     saveMessages(session.user.id, message, assistantMessage, intent).catch((err) => {

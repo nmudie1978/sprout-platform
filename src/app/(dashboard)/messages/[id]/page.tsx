@@ -1,14 +1,11 @@
-"use client";
-
-import { use } from "react";
 import { ChatView } from "@/components/chat-view";
 
-export default function ConversationPage({
+export default async function ConversationPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
+  const { id } = await params;
 
   return (
     <div className="sm:container sm:max-w-2xl sm:py-6 sm:px-4">

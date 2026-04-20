@@ -53,7 +53,7 @@ export function PageContext({ pageKey, purpose, action }: PageContextProps) {
 
   return (
     <div className={cn(
-      "rounded-lg border border-teal-500/15 bg-teal-500/[0.03] px-4 py-3 mb-4 transition-all",
+      "rounded-lg border border-teal-500/15 bg-card dark:bg-teal-500/[0.03] px-4 py-3 mb-4 transition-all",
     )}>
       <div className="flex items-start gap-3">
         <Info className="h-3.5 w-3.5 text-teal-500/50 mt-0.5 shrink-0" />

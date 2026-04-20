@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { logAndSwallow } from '@/lib/observability';
 
 /**
  * GET /api/discover/reflections
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
         data: {
           journeySummary: JSON.parse(JSON.stringify({ ...goalSummary, discoverReflections })),
         },
-      }).catch(() => {}); // Non-blocking
+      }).catch(logAndSwallow("reflections:goalData:update"));
     }
 
     return NextResponse.json({ success: true });

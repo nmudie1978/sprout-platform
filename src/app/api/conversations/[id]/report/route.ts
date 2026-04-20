@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ConversationReportCategory } from "@prisma/client";
 import { logSafetyAction } from "@/lib/safety-messaging";
+import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 
 // Valid report categories
 const VALID_CATEGORIES = [
@@ -30,6 +31,21 @@ export async function POST(
 
     const { id: conversationId } = await params;
     const reporterId = session.user.id;
+
+    // Rate limit: stop a single user spamming the admin queue or
+    // griefing a conversation counterparty. STRICT (10/min) is generous
+    // for legitimate reporting and hard on abuse.
+    const rateLimit = await checkRateLimitAsync(`report:${reporterId}`, RateLimits.STRICT);
+    if (!rateLimit.success) {
+      const response = NextResponse.json(
+        { error: "Too many reports submitted. Please wait before trying again." },
+        { status: 429 }
+      );
+      Object.entries(
+        getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset)
+      ).forEach(([k, v]) => response.headers.set(k, v));
+      return response;
+    }
 
     const body = await req.json();
     const { reportedId, category, details } = body;

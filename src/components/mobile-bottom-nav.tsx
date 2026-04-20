@@ -56,6 +56,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SMALL_JOBS_ENABLED } from "@/lib/feature-flags";
 import {
   Sheet,
   SheetContent,
@@ -80,11 +81,16 @@ interface NavSection {
 
 // The fifth slot is always the More drawer trigger; the first four are
 // real navigation links so common destinations are one-tap away.
+// Fourth youth slot pivots with the small-jobs flag. With jobs on,
+// it's the Jobs tab (highest-frequency youth action). With jobs off,
+// it's the Career Radar (the next-most-active personal surface).
 const youthBarItems: NavItem[] = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/my-journey", label: "Journey", icon: Route, activePattern: /^\/my-journey/ },
   { href: "/careers", label: "Careers", icon: Compass, activePattern: /^\/careers(?!\/radar)/ },
-  { href: "/jobs", label: "Jobs", icon: Search, activePattern: /^\/jobs/ },
+  SMALL_JOBS_ENABLED
+    ? { href: "/jobs", label: "Jobs", icon: Search, activePattern: /^\/jobs/ }
+    : { href: "/careers/radar", label: "Radar", icon: Radar, activePattern: /^\/careers\/radar/ },
 ];
 
 const employerBarItems: NavItem[] = [
@@ -109,7 +115,9 @@ const youthDrawerSections: NavSection[] = [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/my-journey", label: "My Journey", icon: Route },
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
-      { href: "/applications", label: "My Small Jobs", icon: FileText },
+      ...(SMALL_JOBS_ENABLED
+        ? [{ href: "/applications", label: "My Small Jobs", icon: FileText }]
+        : []),
     ],
   },
   {
@@ -121,10 +129,12 @@ const youthDrawerSections: NavSection[] = [
       { href: "/career-advisor", label: "AI Advisor", icon: Bot },
     ],
   },
-  {
-    title: "Small Jobs",
-    items: [{ href: "/jobs", label: "Browse Jobs", icon: Search }],
-  },
+  ...(SMALL_JOBS_ENABLED
+    ? [{
+        title: "Small Jobs",
+        items: [{ href: "/jobs", label: "Browse Jobs", icon: Search }],
+      }]
+    : []),
   {
     title: "Account",
     items: [{ href: "/profile", label: "Profile", icon: User }],
@@ -163,7 +173,9 @@ const guardianDrawerSections: NavSection[] = [
     title: "Guardian",
     items: [
       { href: "/guardian", label: "Guardian Dashboard", icon: Shield },
-      { href: "/jobs", label: "Small Jobs", icon: Briefcase },
+      ...(SMALL_JOBS_ENABLED
+        ? [{ href: "/jobs", label: "Small Jobs", icon: Briefcase }]
+        : []),
       { href: "/profile", label: "Profile", icon: User },
     ],
   },
