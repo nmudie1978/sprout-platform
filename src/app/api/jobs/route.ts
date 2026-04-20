@@ -13,12 +13,14 @@ import {
   type JobInput,
 } from "@/lib/compliance";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
+import { sanitizeText, sanitizeStringArray } from "@/lib/validation/sanitize";
 import {
   applyAgePolicyToJob,
   logAgeEligibilityEvent,
   buildAgeEligibilityFilter,
   getUserAge,
 } from "@/lib/age-policy/utils";
+import { PLATFORM_MIN_AGE } from "@/lib/safety/age";
 
 export async function GET(req: NextRequest) {
   try {
@@ -68,14 +70,18 @@ export async function GET(req: NextRequest) {
     let userAge: number | null = null;
 
     if (session?.user?.role === "YOUTH" && session.user.id) {
-      // Get the user's actual age from database
+      // Get the user's actual age from database. If DOB is null
+      // (cleared post-signup or never set), fall back to the minimum
+      // platform age so the filter is RESTRICTIVE, not open. A 17yo
+      // with missing DOB sees fewer jobs (as if they were 15); they
+      // never see jobs they're legally ineligible for. This is the
+      // T3 fix for the "age filters fail open when DOB is null" audit
+      // finding — the principle is fail-closed, not fail-open.
       userAge = await getUserAge(session.user.id);
+      const effectiveAge = userAge ?? PLATFORM_MIN_AGE;
 
-      if (userAge !== null) {
-        // Apply age eligibility filter based on minimumAge
-        const ageFilter = buildAgeEligibilityFilter(userAge, includeIneligible);
-        Object.assign(where, ageFilter);
-      }
+      const ageFilter = buildAgeEligibilityFilter(effectiveAge, includeIneligible);
+      Object.assign(where, ageFilter);
     }
 
     // Include full applications data if employer is fetching their own jobs
@@ -288,17 +294,25 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = jobSchema.parse(body);
 
+    // Sanitise employer-submitted free-text before anything downstream
+    // sees or persists it. stripHtmlTags + null-byte removal — defence in
+    // depth on top of React's auto-escaping.
+    const safeTitle = sanitizeText(validatedData.title);
+    const safeDescription = sanitizeText(validatedData.description || "");
+    const safeLocation = validatedData.location ? sanitizeText(validatedData.location) : validatedData.location;
+    const safeRequiredTraits = sanitizeStringArray(validatedData.requiredTraits);
+
     // Build JobInput for compliance validation
     const jobInput: JobInput = {
-      title: validatedData.title,
+      title: safeTitle,
       category: validatedData.category,
-      description: validatedData.description || "",
+      description: safeDescription,
       payAmount: validatedData.payAmount,
       payType: validatedData.payType,
       duration: validatedData.duration ?? undefined,
       startTime: validatedData.startDate ?? validatedData.dateTime ?? undefined,
       endTime: validatedData.endDate ?? undefined,
-      location: validatedData.location ?? undefined,
+      location: safeLocation ?? undefined,
       isSchoolDay: body.isSchoolDay,
       isSchoolHoliday: body.isSchoolHoliday,
       requiresWorkingAlone: body.requiresWorkingAlone,
@@ -359,12 +373,12 @@ export async function POST(req: NextRequest) {
 
     const job = await prisma.microJob.create({
       data: {
-        title: validatedData.title,
+        title: safeTitle,
         category: validatedData.category,
-        description: validatedData.description,
+        description: safeDescription,
         payType: validatedData.payType,
         payAmount: validatedData.payAmount,
-        location: validatedData.location,
+        location: safeLocation,
         latitude,
         longitude,
         startDate: validatedData.startDate ? new Date(validatedData.startDate) : null,
@@ -372,7 +386,7 @@ export async function POST(req: NextRequest) {
         dateTime: validatedData.dateTime ? new Date(validatedData.dateTime) : null,
         duration: validatedData.duration,
         applicationDeadline: validatedData.applicationDeadline ? new Date(validatedData.applicationDeadline) : null,
-        requiredTraits: validatedData.requiredTraits,
+        requiredTraits: safeRequiredTraits,
         images: validatedData.images,
         status: "POSTED",
         postedById: session.user.id,

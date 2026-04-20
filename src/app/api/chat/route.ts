@@ -282,11 +282,10 @@ Keep it natural — don't list their profile back to them.`;
     const openai = getOpenAIClient();
     if (!openai) {
       // OpenAI is not configured - use smart fallback
-      console.log("[Chat API] OpenAI not configured, using fallback. Key check:", {
-        hasKey: !!process.env.OPENAI_API_KEY,
-        keyLength: process.env.OPENAI_API_KEY?.length || 0,
-        startsWithSk: process.env.OPENAI_API_KEY?.startsWith("sk-") || false,
-      });
+      // OpenAI API key absent or misconfigured — fallback mode
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[Chat API] OpenAI not configured — using fallback.");
+      }
       const fallbackResponse = getSmartFallbackResponse(message, intent);
 
       // Log that we're using fallback mode
@@ -308,7 +307,7 @@ Keep it natural — don't list their profile back to them.`;
     }
 
     // Call OpenAI with optional Life Skills tool
-    console.log("[Chat API] Calling OpenAI with intent:", intent, "message:", message.substring(0, 50));
+    // T3: removed console.log that shipped user message content to server logs (PII risk)
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Fast and affordable
       messages,
@@ -318,7 +317,7 @@ Keep it natural — don't list their profile back to them.`;
     }, { timeout: 25_000 });
 
     let assistantMessage = completion.choices[0]?.message?.content || "";
-    console.log("[Chat API] OpenAI response received, length:", assistantMessage.length);
+    // T3: removed verbose response-length log
     let lifeSkillRecommended: { cardKey: string; reason: string } | null = null;
 
     // Handle tool calls if any (Life Skills recommendation)
@@ -387,7 +386,7 @@ Keep it natural — don't list their profile back to them.`;
           const recheck = detectNonEnglishResponse(regeneratedMessage);
           if (!recheck.isNonEnglish) {
             assistantMessage = regeneratedMessage;
-            console.log("[Chat API] Successfully regenerated response in English");
+            // T3: removed verbose regeneration log
           } else {
             // Still not English - use smart fallback (don't expose to user)
             console.warn("[Chat API] Regeneration still not in English, using fallback");
@@ -449,7 +448,7 @@ Keep it natural — don't list their profile back to them.`;
     });
 
     // Use smart fallback - we have message and intent from early parsing
-    console.log("[Chat API] Using fallback due to error");
+    // T3: removed verbose fallback log
     const fallbackMessage = getSmartFallbackResponse(message, intent);
 
     return NextResponse.json({

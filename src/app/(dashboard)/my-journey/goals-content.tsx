@@ -735,6 +735,9 @@ export default function GoalsPageContent() {
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
       queryClient.invalidateQueries({ queryKey: ["education-context"] });
+      // T3: profile + completion depend on goal state
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
       setEditingSlot(null);
       setPrimaryEditForm(null);
       setSecondaryEditForm(null);
@@ -938,10 +941,13 @@ export default function GoalsPageContent() {
         secondaryGoal={secondaryGoal}
         onSuccess={() => {
           queryClient.invalidateQueries({ queryKey: ["goals"] });
-          queryClient.invalidateQueries({ queryKey: ["goals"] });
           queryClient.invalidateQueries({ queryKey: ["journey-state"] });
           queryClient.invalidateQueries({ queryKey: ["goal-data"] });
           queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
+          // T3: goal change can affect profile-derived UI (dashboard
+          // career badge, profile-completion %). Invalidate both.
+          queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+          queryClient.invalidateQueries({ queryKey: ["profile-completion"] });
         }}
       />
 

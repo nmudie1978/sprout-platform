@@ -400,6 +400,21 @@ export async function canSendMessage(
     };
   }
 
+  // Check account suspension — suspended users must not be able to
+  // continue messaging, especially adults who were suspended for
+  // safeguarding reasons (they may still have open threads with minors).
+  const sender =
+    conversation.participant1Id === senderId
+      ? conversation.participant1
+      : conversation.participant2;
+  if (sender?.accountStatus === "SUSPENDED" || sender?.accountStatus === "BANNED") {
+    return {
+      allowed: false,
+      reason: "Your account has been suspended. You cannot send messages.",
+      code: "ACCOUNT_SUSPENDED",
+    };
+  }
+
   // Check for blocks
   const block = await prisma.userBlock.findFirst({
     where: {

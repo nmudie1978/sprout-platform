@@ -5,6 +5,17 @@ import { seedExecutiveCareers } from './seed-executive-careers';
 import { seedJobCategories } from './seed-job-categories';
 import { seedCareerEvents } from './seed-career-events';
 
+// ── PRODUCTION GUARD ──────────────────────────────────────────────
+// Seed data contains real developer names, emails, and locations
+// (nickymudie@hotmail.com, "Nicky's Services", Stavanger). Prevent
+// accidental execution against production databases. T3 audit item.
+if (process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production') {
+  throw new Error(
+    'SEED ABORTED — cannot run seed data against production. ' +
+    'If you really intend to seed production, set SEED_ALLOW_PROD=1.',
+  );
+}
+
 // Use direct connection for seeding (not pooled connection)
 process.env.DATABASE_URL = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
