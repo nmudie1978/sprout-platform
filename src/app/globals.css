@@ -4,40 +4,40 @@
 
 @layer base {
   :root {
-    /* ── Light mode theme tokens — I · Steel & Serious ───────────
-       Pale steel canvas, navy text, steel-blue brand. Quietly
-       confident and trust-signalling. No gradient — solid flat
-       canvas — swaps the teal brand for steel blue. Pure-white
-       cards sit on top. */
-    --background: 210 40% 98%;          /* near-white steel tint */
-    --foreground: 211 93% 13%;          /* deep navy */
+    /* ── Light mode theme tokens — PP · Vasily ────────────────────
+       Two-stop diagonal from mustard yellow (#e9d362) to charcoal
+       (#333333). Warm-to-dark, editorial, unexpected. White cards
+       sit crisply on the mustard/charcoal gradient canvas; sidebar
+       is pale mustard for contrast; brand is charcoal. */
+    --background: 51 35% 62%;           /* fallback — .bg-background is transparent in light mode; the ambient gradient is the real canvas */
+    --foreground: 0 0% 16%;             /* near-black — reads on white cards */
     --card: 0 0% 100%;                  /* pure white */
-    --card-foreground: 211 93% 13%;
+    --card-foreground: 0 0% 16%;
     --popover: 0 0% 100%;
-    --popover-foreground: 211 93% 13%;
-    --primary: 207 52% 31%;             /* steel-blue brand */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 25% 95%;
-    --secondary-foreground: 211 93% 16%;
-    --muted: 210 18% 95%;
-    --muted-foreground: 234 18% 35%;
-    --accent: 210 45% 95%;              /* pale steel accent */
-    --accent-foreground: 211 93% 18%;
+    --popover-foreground: 0 0% 16%;
+    --primary: 0 0% 20%;                /* charcoal brand — Vasily's dark end */
+    --primary-foreground: 51 60% 90%;   /* warm cream on charcoal */
+    --secondary: 51 35% 92%;
+    --secondary-foreground: 0 0% 18%;
+    --muted: 51 24% 90%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 51 55% 93%;               /* pale warm accent */
+    --accent-foreground: 0 0% 18%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 207 52% 31%;
+    --border: 51 18% 76%;
+    --input: 51 18% 76%;
+    --ring: 0 0% 20%;
     --radius: 0.75rem;
-    --sidebar: 210 25% 94%;             /* pale steel — sits between card and canvas */
-    --sidebar-foreground: 211 93% 18%;
-    --sidebar-border: 210 22% 74%;      /* steel divider between sidebar and canvas — kept deliberately prominent in light mode */
-    /* Glow brand — steel blue, used by the Glow component in light mode */
-    --brand: 207 52% 40%;
-    --brand-foreground: 207 52% 55%;
-    --gradient-1: linear-gradient(135deg, hsl(207 52% 31%) 0%, hsl(211 60% 24%) 100%);
-    --gradient-2: linear-gradient(135deg, hsl(207 60% 40%) 0%, hsl(207 52% 31%) 100%);
-    --gradient-3: linear-gradient(135deg, hsl(207 52% 31% / 0.1) 0%, hsl(211 60% 24% / 0.1) 100%);
+    --sidebar: 51 30% 84%;              /* pale mustard — sits between card and canvas */
+    --sidebar-foreground: 0 0% 18%;
+    --sidebar-border: 51 22% 72%;
+    /* Glow brand — charcoal, used by the Glow component in light mode */
+    --brand: 0 0% 20%;
+    --brand-foreground: 51 50% 40%;
+    --gradient-1: linear-gradient(120deg, hsl(51 76% 65%) 0%, hsl(0 0% 20%) 100%);
+    --gradient-2: linear-gradient(120deg, hsl(0 0% 20%) 0%, hsl(0 0% 20%) 100%);
+    --gradient-3: linear-gradient(120deg, hsl(51 76% 65% / 0.1) 0%, hsl(0 0% 20% / 0.1) 100%);
   }
 
   .dark {
@@ -205,6 +205,59 @@
   :root:not(.dark) .ring-teal-500\/30 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 30%, transparent); }
   :root:not(.dark) .ring-teal-500\/40 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 40%, transparent); }
   :root:not(.dark) .ring-teal-500\/50 { --tw-ring-color: color-mix(in srgb, hsl(var(--primary)) 50%, transparent); }
+
+  /* ── Translucent-surface guard (light mode only) ─────────────
+     The app was built with many panels/strips/cards using
+     `bg-card/50`, `bg-muted/30`, `bg-background/50` and similar
+     alpha variants. Over the dark canvas of dark mode this gave
+     a subtle frosted-glass lift; over a colored light canvas
+     (Nimvelo sky gradient) it reads as smudged and bleeds the
+     gradient through, breaking text contrast.
+     Force every `bg-card/X`, `bg-background/X`, `bg-muted/X`,
+     `bg-popover/X` variant to the solid card/muted fill in light
+     mode. Dark mode keeps the translucent glass effect. */
+  :root:not(.dark) [class*="bg-card/"],
+  :root:not(.dark) [class*="bg-background/"],
+  :root:not(.dark) [class*="bg-popover/"],
+  :root:not(.dark) [class*="bg-secondary/"] {
+    background-color: hsl(var(--card));
+  }
+  :root:not(.dark) [class*="bg-muted/"] {
+    background-color: hsl(var(--muted));
+  }
+
+  /* ── Radar scope — keep original teal-green (light mode) ─────
+     The teal-utility remap above redirects every `text-teal-*` /
+     `bg-teal-*` / `fill-teal-*` to `hsl(var(--primary))`. That's
+     the right default so brand swaps cascade, but the Career
+     Radar has semantic colour meaning baked in — "Strong" matches
+     are green dots. Losing the green inside the radar removes the
+     tier signal. Inside `.radar-scope` we restore the canonical
+     teal hues so the radar keeps its green "Strong" markers,
+     sweep cone, and ring strokes independent of the palette. */
+  :root:not(.dark) .radar-scope .text-teal-400,
+  :root:not(.dark) .radar-scope .text-teal-500,
+  :root:not(.dark) .radar-scope .text-teal-600,
+  :root:not(.dark) .radar-scope .text-teal-700 { color: #14b8a6; }
+  :root:not(.dark) .radar-scope .fill-teal-400 { fill: #2dd4bf; }
+  :root:not(.dark) .radar-scope .fill-teal-500 { fill: #14b8a6; }
+  :root:not(.dark) .radar-scope .stroke-teal-400\/70 { stroke: rgb(45 212 191 / 0.7); }
+  :root:not(.dark) .radar-scope .stroke-teal-500\/10 { stroke: rgb(20 184 166 / 0.1); }
+  :root:not(.dark) .radar-scope .stroke-teal-500\/20 { stroke: rgb(20 184 166 / 0.2); }
+  :root:not(.dark) .radar-scope .bg-teal-400,
+  :root:not(.dark) .radar-scope .bg-teal-500,
+  :root:not(.dark) .radar-scope .bg-teal-600 { background-color: #14b8a6; }
+  :root:not(.dark) .radar-scope .bg-teal-500\/5 { background-color: rgb(20 184 166 / 0.05); }
+  :root:not(.dark) .radar-scope .bg-teal-500\/10 { background-color: rgb(20 184 166 / 0.1); }
+  :root:not(.dark) .radar-scope .bg-teal-500\/15 { background-color: rgb(20 184 166 / 0.15); }
+  :root:not(.dark) .radar-scope .bg-teal-500\/20 { background-color: rgb(20 184 166 / 0.2); }
+  :root:not(.dark) .radar-scope .bg-teal-500\/30 { background-color: rgb(20 184 166 / 0.3); }
+  :root:not(.dark) .radar-scope .bg-teal-500\/40 { background-color: rgb(20 184 166 / 0.4); }
+  :root:not(.dark) .radar-scope .border-teal-500,
+  :root:not(.dark) .radar-scope .border-teal-500\/15,
+  :root:not(.dark) .radar-scope .border-teal-500\/20,
+  :root:not(.dark) .radar-scope .border-teal-500\/30,
+  :root:not(.dark) .radar-scope .border-teal-500\/40 { border-color: rgb(20 184 166 / 0.4); }
 
   /* Consistent heading styles — mobile-first */
   h1 {

@@ -61,7 +61,7 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "The speed dating event for recruiting! A three-hour networking event connecting job seekers with tech employers in IT, Sales, Operations, Finance, and Marketing roles.",
     organizer: "TechMeetups",
-    startDate: new Date("2026-03-19T17:30:00Z"),
+    startDate: new Date("2026-06-18T17:30:00Z"),
     time: "17:30 - 20:30",
     locationMode: LocationMode.IN_PERSON,
     city: "London",
@@ -73,8 +73,8 @@ export const careerEvents: CareerEventSeed[] = [
     isYouthFocused: false,
     industryTypes: ["tech"],
     isVerified: true,
-    verifiedAt: new Date("2026-01-20"),
-    verificationNotes: "Verified on Eventbrite — London Tech Job Fair, Mar 19, tickets available, event ID 1286011839029",
+    verifiedAt: new Date("2026-04-20"),
+    verificationNotes: "Verified on Eventbrite — London Tech Job Fair, Jun 18, event ID 1286011839029 (date bumped from Mar 19 to keep seed fresh)",
     sourceName: "Eventbrite",
     sourceUrl: "https://www.eventbrite.es/e/london-tech-job-fair-2026-tickets-1286011839029",
   },
@@ -84,7 +84,7 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "Networking event where the future of technology and job opportunities converge. Connect with tech employers in Amsterdam's employment market through meaningful one-on-one conversations.",
     organizer: "TechMeetups",
-    startDate: new Date("2026-03-26T18:00:00Z"),
+    startDate: new Date("2026-06-25T18:00:00Z"),
     time: "18:00 - 21:00",
     locationMode: LocationMode.IN_PERSON,
     city: "Amsterdam",
@@ -107,7 +107,7 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "An exclusive evening dedicated to hiring and networking in the technology sector. Connect with employers in IT, Marketing, Sales, Operations, and Finance.",
     organizer: "TechMeetups",
-    startDate: new Date("2026-03-19T18:00:00Z"),
+    startDate: new Date("2026-06-18T18:00:00Z"),
     time: "18:00 - 21:00",
     locationMode: LocationMode.IN_PERSON,
     city: "Barcelona",
@@ -181,7 +181,7 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "Stockholm's biggest business, tech, and entrepreneur networking event. Connect with professionals, startups, and industry leaders in a relaxed networking atmosphere.",
     organizer: "THE PROFESSIONAL NETWORK",
-    startDate: new Date("2026-03-18T18:30:00Z"),
+    startDate: new Date("2026-06-17T18:30:00Z"),
     time: "18:30 - 20:30",
     locationMode: LocationMode.IN_PERSON,
     city: "Stockholm",
@@ -239,8 +239,8 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "Annual flagship youth event by the European Economic and Social Committee. Secondary school students from 27 EU member states, 9 candidate countries, and the UK debate EU policy topics in plenary sessions and interactive workshops. Travel and accommodation fully funded by the EESC.",
     organizer: "European Economic and Social Committee",
-    startDate: new Date("2026-03-19T09:00:00Z"),
-    endDate: new Date("2026-03-20T17:00:00Z"),
+    startDate: new Date("2026-06-18T09:00:00Z"),
+    endDate: new Date("2026-06-19T17:00:00Z"),
     time: "09:00 - 17:00",
     locationMode: LocationMode.IN_PERSON,
     city: "Brussels",
@@ -264,8 +264,8 @@ export const careerEvents: CareerEventSeed[] = [
     description:
       "Online recruitment fair for seasonal summer jobs across Europe (April-October 2026). Jobs in tourism, hospitality, catering, entertainment, fitness, sports, and childcare. Employers from 11 EU countries. Includes online interviews via Jitsi and live chat with employers. Open to EU and EFTA nationals.",
     organizer: "EURES / European Labour Authority",
-    startDate: new Date("2026-03-26T09:00:00Z"),
-    endDate: new Date("2026-03-31T17:00:00Z"),
+    startDate: new Date("2026-06-25T09:00:00Z"),
+    endDate: new Date("2026-06-30T17:00:00Z"),
     time: "09:00 - 17:00",
     locationMode: LocationMode.ONLINE,
     onlineUrl: "https://europeanjobdays.eu/en/seizethesummer2026",
