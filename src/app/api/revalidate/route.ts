@@ -64,7 +64,10 @@ export async function POST(req: NextRequest) {
       invalidateFactsCache();
       revalidatePath("/api/insights/facts");
       revalidatePath("/insights");
-      revalidateTag(CONTENT_TAGS.FACTS);
+      // Next 16 requires a profile arg. "default" re-uses the site's
+      // default cache-life profile — same behaviour as Next 14's
+      // single-arg revalidateTag(tag) on-demand revalidation.
+      revalidateTag(CONTENT_TAGS.FACTS, "default");
       revalidated.push("/api/insights/facts", "/insights");
       tagsRevalidated.push(CONTENT_TAGS.FACTS);
       console.log("[Revalidate] Did You Know facts cache cleared and paths revalidated");
@@ -81,7 +84,7 @@ export async function POST(req: NextRequest) {
     if (target in REFRESH_TARGETS) {
       const tags = REFRESH_TARGETS[target as RefreshTarget];
       for (const tag of tags) {
-        revalidateTag(tag);
+        revalidateTag(tag, "default");
         tagsRevalidated.push(tag);
       }
 
@@ -106,7 +109,7 @@ export async function POST(req: NextRequest) {
       // Revalidate all content tags
       for (const tag of ALL_CONTENT_TAGS) {
         if (!tagsRevalidated.includes(tag)) {
-          revalidateTag(tag);
+          revalidateTag(tag, "default");
           tagsRevalidated.push(tag);
         }
       }

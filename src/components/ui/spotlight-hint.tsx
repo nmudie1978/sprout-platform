@@ -31,7 +31,7 @@ export function SpotlightHint({
   targetSelector,
 }: SpotlightHintProps) {
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!visible) return;

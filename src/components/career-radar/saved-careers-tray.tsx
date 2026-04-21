@@ -31,8 +31,8 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
   const { curiosities, removeCuriosity } = useCuriositySaves();
   const [open, setOpen] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Close on ESC
   useEffect(() => {

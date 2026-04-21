@@ -95,5 +95,8 @@ export async function GET(request: Request) {
   }
 }
 
-/** ISR: revalidate via tag */
-export const revalidate = REVALIDATE_INTERVALS.INSIGHTS_POOL;
+// ISR revalidation. Next 16 requires segment config exports to be
+// statically-analyzable literals — an imported constant fails the
+// analyzer. Keep this value in sync with REVALIDATE_INTERVALS.INSIGHTS_POOL
+// in src/lib/content-refresh/constants.ts (currently 5 * 60 = 300 seconds).
+export const revalidate = 300;

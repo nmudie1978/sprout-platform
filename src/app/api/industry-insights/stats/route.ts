@@ -47,8 +47,11 @@ export async function GET(request: Request) {
   return response;
 }
 
-/** ISR: revalidate via tag */
-export const revalidate = REVALIDATE_INTERVALS.STATS;
+// ISR revalidation. Next 16 requires segment config exports to be
+// statically-analyzable literals. Keep in sync with
+// REVALIDATE_INTERVALS.STATS in src/lib/content-refresh/constants.ts
+// (currently 60 * 60 = 3600 seconds).
+export const revalidate = 3600;
 
 /** @see https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config */
 export const fetchCache = "default-cache";

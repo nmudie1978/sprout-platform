@@ -13,10 +13,8 @@ const createAnswerSchema = z.object({
 });
 
 // POST /api/questions/[id]/answer - Submit an answer (admin or approved professional)
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -88,10 +86,8 @@ export async function POST(
 }
 
 // GET /api/questions/[id]/answer - Get answers for a question
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const questionId = params.id;
 

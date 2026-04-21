@@ -3,10 +3,8 @@ import { getCareerDetails, hasDetailedContent } from "@/lib/career-typical-days"
 import { getCareerById, getCategoryForCareer } from "@/lib/career-pathways";
 import { getCareerProgression } from "@/lib/career-progressions";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const careerId = params.id;
 
   if (!careerId) {

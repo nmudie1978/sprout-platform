@@ -19,10 +19,8 @@ import {
 import { AuditAction, CommunityReportStatus } from "@prisma/client";
 
 // GET /api/community-reports/[id] - Get a specific report
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -120,10 +118,8 @@ export async function GET(
 }
 
 // PATCH /api/community-reports/[id] - Update a report
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 

@@ -19,11 +19,12 @@ async function getPublicProfile(slug: string) {
   return response.json();
 }
 
-export default async function PublicProfilePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function PublicProfilePage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   const profile = await getPublicProfile(params.slug);
 
   if (!profile) {

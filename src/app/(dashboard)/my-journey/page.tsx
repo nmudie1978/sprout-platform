@@ -2659,12 +2659,14 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
             </div>
           )}
 
-          {/* Teaser — coming soon */}
-          <RealPathsTeaser careerTags={career ? [career.id] : []} />
-
-          {careerStories.length === 0 && contributedPaths.length === 0 && (
-            <p className="text-xs text-muted-foreground/40 py-4 text-center">No real career paths available for this career yet.</p>
-          )}
+          {/* Invite a contribution — prominent when empty for this career,
+              softer when we already have content. Contributions go through
+              /contribute which is already wired to an admin review queue. */}
+          <ContributeRealPathCard
+            careerId={career?.id ?? null}
+            careerTitle={goalTitle}
+            hasExistingContent={careerStories.length > 0 || contributedPaths.length > 0}
+          />
         </div>
         )}
       </SectionCard>
@@ -2680,31 +2682,63 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
   );
 }
 
-function RealPathsTeaser({ careerTags }: { careerTags: string[] }) {
-  const [count, setCount] = useState<number | null>(null);
+/**
+ * Invite a real-world path contribution for the active career.
+ *
+ * Two modes:
+ *  - Empty (no stories, no contributed paths for this career): prominent,
+ *    explains what a path is, points at /contribute.
+ *  - Has content (stories or paths exist): softer, a quiet "know someone
+ *    else whose path could help?" footer.
+ *
+ * Replaces the older "Coming Soon" teaser — contributions are already
+ * live via /contribute and the admin review queue at /admin/career-stories.
+ */
+function ContributeRealPathCard({
+  careerId,
+  careerTitle,
+  hasExistingContent,
+}: {
+  careerId: string | null;
+  careerTitle: string | null;
+  hasExistingContent: boolean;
+}) {
+  const contributeHref = careerId
+    ? `/contribute?career=${encodeURIComponent(careerId)}`
+    : "/contribute";
 
-  useEffect(() => {
-    fetch("/api/career-paths?all=1")
-      .then((r) => r.json())
-      .then((data) => setCount(data.count ?? 0))
-      .catch(() => setCount(0));
-  }, []);
+  if (hasExistingContent) {
+    return (
+      <p className="pt-2 text-[11px] text-muted-foreground/55 text-center border-t border-border/20">
+        Know someone whose path to{" "}
+        <span className="text-foreground/70">{careerTitle || "this career"}</span>{" "}
+        could help? <a href={contributeHref} className="text-primary/80 hover:text-primary transition-colors underline-offset-2 hover:underline">Share a career path</a>
+      </p>
+    );
+  }
 
   return (
-    <div className="mt-6 rounded-xl border border-border/40 bg-card/30 p-4 opacity-70">
+    <div className="mt-4 rounded-xl border border-border/40 bg-card/40 p-4">
       <div className="flex items-center gap-2 mb-1.5">
-        <Users className="h-4 w-4 text-muted-foreground/50" />
-        <h3 className="text-sm font-semibold text-foreground/70">Real Career Paths</h3>
-        <span className="text-[9px] font-medium text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">Coming Soon</span>
+        <Users className="h-4 w-4 text-primary/70" />
+        <h3 className="text-sm font-semibold text-foreground/85">
+          No real paths for {careerTitle || "this career"} yet
+        </h3>
       </div>
-      <p className="text-xs text-muted-foreground/50 leading-relaxed max-w-md">
-        See how real people got to where you&apos;re heading &mdash; their actual timelines, pivots, and advice. No two paths are the same.
+      <p className="text-xs text-muted-foreground/75 leading-relaxed max-w-md">
+        Endeavrly is built on real stories from people who&rsquo;ve walked a path &mdash;
+        not AI-generated examples. If you know a{" "}
+        <span className="text-foreground/80">{careerTitle || "professional"}</span>{" "}
+        whose route could help a young person, they can share their timeline in a
+        few minutes. All contributions are reviewed by a human before appearing here.
       </p>
-      {count !== null && count > 0 && (
-        <p className="text-[10px] text-muted-foreground/30 mt-2">
-          {count} {count === 1 ? 'path' : 'paths'} shared so far
-        </p>
-      )}
+      <a
+        href={contributeHref}
+        className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+      >
+        Share a career path
+        <span aria-hidden>→</span>
+      </a>
     </div>
   );
 }

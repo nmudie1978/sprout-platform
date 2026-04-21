@@ -25,7 +25,7 @@ import {
 export function useInsightUpdates() {
   const [toastQueue, setToastQueue] = useState<InsightUpdate[]>([]);
   const [activeToast, setActiveToast] = useState<InsightUpdate | null>(null);
-  const dismissTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch updates (poll every 5 minutes while on the page)
   const { data } = useQuery<{ updates: InsightUpdate[] }>({

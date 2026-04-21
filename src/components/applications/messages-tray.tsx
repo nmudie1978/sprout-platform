@@ -56,8 +56,8 @@ interface MessagesTrayProps {
 export function MessagesTray({ topOffsetPx = 0, className }: MessagesTrayProps) {
   const [open, setOpen] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const leaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data: conversations, isLoading } = useQuery<Conversation[]>({
     queryKey: ["conversations"],

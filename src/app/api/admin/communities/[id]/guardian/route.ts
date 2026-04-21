@@ -19,10 +19,8 @@ import { logAuditAction } from "@/lib/safety";
 import { AuditAction } from "@prisma/client";
 
 // GET /api/admin/communities/[id]/guardian - Get current guardian
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -58,10 +56,8 @@ export async function GET(
 }
 
 // POST /api/admin/communities/[id]/guardian - Assign a guardian
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -104,10 +100,8 @@ export async function POST(
 }
 
 // DELETE /api/admin/communities/[id]/guardian - Remove guardian
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 

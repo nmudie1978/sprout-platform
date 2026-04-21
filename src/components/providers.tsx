@@ -16,7 +16,7 @@ import type { Session } from "next-auth";
  */
 function CacheCleaner({ queryClient }: { queryClient: QueryClient }) {
   const { data: session } = useSession();
-  const prevUserRef = useRef<string | undefined>();
+  const prevUserRef = useRef<string | undefined | null>(null);
 
   useEffect(() => {
     const currentUser = session?.user?.id;

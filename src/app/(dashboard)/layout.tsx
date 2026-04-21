@@ -24,7 +24,7 @@ export default async function DashboardLayout({
   }
 
   // Get current pathname to avoid redirect loops
-  const headersList = headers();
+  const headersList = await headers();
   const pathname = headersList.get("x-pathname") || "";
 
   // Only redirect employers if they're NOT already on an employer page.

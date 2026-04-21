@@ -472,7 +472,8 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
         {userRole === "ADMIN" && (
           <>
             <NavSection title="Admin" collapsed={collapsed}>
-              <NavItem href="/admin/reports" icon={Shield} label="Moderation queue" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Community reports — review, pause, escalate, resolve. All actions logged to AuditLog." />
+              <NavItem href="/admin/reports" icon={Shield} label="Community reports" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Community reports on jobs and users — review, pause, escalate, resolve. All actions logged to AuditLog." />
+              <NavItem href="/admin/conversation-reports" icon={MessageSquare} label="Conversation reports" active={isActive("/admin/conversation-reports")} collapsed={collapsed} tooltip="Safety reports on private conversations — grooming, harassment, off-platform attempts. Conversation auto-freezes on filing." />
               <NavItem href="/admin/analytics" icon={BarChart3} label="Analytics" active={isActive("/admin/analytics")} collapsed={collapsed} />
               <NavItem href="/admin/feedback" icon={HelpCircle} label="Feedback" active={isActive("/admin/feedback")} collapsed={collapsed} tooltip="Pilot survey results — per-question stats, distributions, clarity topics, free-text responses, CSV export." />
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />

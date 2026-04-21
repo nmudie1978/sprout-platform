@@ -149,8 +149,8 @@ export function DiscoveryNudge({
   const [nudge, setNudge] = useState<NudgeContent | null>(null);
   const [visible, setVisible] = useState(false);
   const [fading, setFading] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
-  const fadeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dismissedRef = useRef(false);
 
   const hasPrefs = useMemo(() => {

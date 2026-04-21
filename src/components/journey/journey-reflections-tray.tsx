@@ -57,8 +57,8 @@ export function JourneyReflectionsTray({
   const [lens, setLens] = useState<ReflectionLens>(activeLens);
   const [savedTick, setSavedTick] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  const savedTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const savedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // When the parent flips between Discover/Understand/Clarity, follow
   // along — so opening the tray immediately after switching tabs lands

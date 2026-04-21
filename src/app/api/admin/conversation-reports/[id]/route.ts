@@ -119,10 +119,7 @@ export async function PATCH(
       await logAuditAction({
         userId: report.reportedId,
         actorId: adminId,
-        action:
-          body.status === "RESOLVED" || body.status === "DISMISSED"
-            ? AuditAction.REPORT_RESOLVED
-            : AuditAction.REPORT_REVIEWED,
+        action: AuditAction.CONTENT_MODERATED,
         metadata: {
           reportId: id,
           reportType: "CONVERSATION",

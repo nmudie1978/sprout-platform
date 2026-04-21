@@ -24,10 +24,11 @@ const ROLE_OPTIONS: { value: "" | FeedbackRole; label: string }[] = [
 ];
 
 interface PageProps {
-  searchParams: { role?: string };
+  searchParams: Promise<{ role?: string }>;
 }
 
-export default async function AdminFeedbackPage({ searchParams }: PageProps) {
+export default async function AdminFeedbackPage(props: PageProps) {
+  const searchParams = await props.searchParams;
   const session = await getServerSession(authOptions);
   if (!session?.user || session.user.role !== "ADMIN") {
     redirect("/dashboard");

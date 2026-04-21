@@ -3,10 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { calculateSkillLevels, getTopSkills } from "@/lib/skills-mapping";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   try {
     const profile = await prisma.youthProfile.findUnique({
       where: { publicProfileSlug: params.slug },

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { LandingNavAuthClient } from "@/components/landing/landing-nav-auth-client";
 import { Button } from "@/components/ui/button";
 import {
   Star,
@@ -15,22 +15,6 @@ import {
 import { HeroVideo } from "@/components/hero-video";
 import { RetroGrid } from "@/components/ui/retro-grid";
 import { ShineBorder } from "@/components/ui/shine-border";
-
-const LandingNavAuth = dynamic(
-  () =>
-    import("@/components/landing/landing-nav").then(
-      (mod) => mod.LandingNavAuth
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className="h-9 w-20 bg-slate-800/50 rounded-lg animate-pulse hidden sm:block" />
-        <div className="h-10 w-24 bg-emerald-600/30 rounded-lg animate-pulse" />
-      </div>
-    ),
-  }
-);
 
 // ============================================
 // SECTION DATA
@@ -150,7 +134,7 @@ export default function LandingPageV3() {
                 </div>
               }
             >
-              <LandingNavAuth />
+              <LandingNavAuthClient />
             </Suspense>
           </div>
         </div>

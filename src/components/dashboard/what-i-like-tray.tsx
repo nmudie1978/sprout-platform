@@ -32,7 +32,7 @@ export function WhatILikeTray({ topOffsetPx = 0, className }: WhatILikeTrayProps
   const { data } = useDiscoverRecommendations(true);
   const [open, setOpen] = useState(false);
   const trayRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hasProfile = !!data?.hasProfile && !!data.summary;
 

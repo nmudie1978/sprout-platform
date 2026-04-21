@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -295,7 +295,8 @@ function InfoCard({
   return content;
 }
 
-export default function JobDetailPage({ params }: { params: { id: string } }) {
+export default function JobDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const { data: session } = useSession();
   const { toast } = useToast();
   const router = useRouter();

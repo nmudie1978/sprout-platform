@@ -53,8 +53,8 @@ export function useSubtleHint({
   persistence = "permanent",
 }: UseSubtleHintOptions) {
   const [visible, setVisible] = useState(false);
-  const showTimer = useRef<ReturnType<typeof setTimeout>>();
-  const hideTimer = useRef<ReturnType<typeof setTimeout>>();
+  const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dismissed = useRef(false);
 
   // Reset interaction timer on any user activity

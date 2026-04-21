@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { LandingNavAuthClient } from "@/components/landing/landing-nav-auth-client";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,31 +10,15 @@ import {
   Sparkles,
   Check,
   Compass,
-  Briefcase,
   BookOpen,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 import { HeroVideo } from "@/components/hero-video";
 import { RetroGrid } from "@/components/ui/retro-grid";
 import { ShineBorder } from "@/components/ui/shine-border";
 import { WordRevealLine, FadeReveal } from "@/components/landing/hero-word-reveal";
 import { LanguageToggle } from "@/components/language-toggle";
-
-const LandingNavAuth = dynamic(
-  () =>
-    import("@/components/landing/landing-nav").then(
-      (mod) => mod.LandingNavAuth
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center gap-2 sm:gap-4">
-        <div className="h-9 w-20 bg-slate-800/50 rounded-lg animate-pulse hidden sm:block" />
-        <div className="h-10 w-24 bg-emerald-600/30 rounded-lg animate-pulse" />
-      </div>
-    ),
-  }
-);
 
 // ============================================
 // SECTION DATA
@@ -68,17 +52,17 @@ const FEATURES = [
     accentText: "text-blue-400",
   },
   {
-    title: "Try small experiences",
+    title: "Real stories, not algorithms",
     description:
-      "Safe, verified opportunities to try things and build real understanding.",
-    icon: Briefcase,
+      "Real career timelines from real people \u2014 not AI-generated examples or motivational fluff.",
+    icon: Users,
     accentBg: "bg-amber-500/15",
     accentText: "text-amber-400",
   },
   {
     title: "Safety by default",
     description:
-      "Verified adults, structured messaging, no payments, no public profiles.",
+      "No public profiles, no tracking, no targeted advertising. Guardian consent built in for under-18s.",
     icon: ShieldCheck,
     accentBg: "bg-teal-500/15",
     accentText: "text-teal-400",
@@ -141,7 +125,7 @@ export default async function LandingPage() {
                 </div>
               }
             >
-              <LandingNavAuth />
+              <LandingNavAuthClient />
             </Suspense>
           </div>
         </div>
@@ -477,7 +461,7 @@ export default async function LandingPage() {
       <section className="border-t border-slate-800/60">
         <div className="mx-auto max-w-4xl px-5 py-14 sm:py-16">
           <div className="flex flex-wrap justify-center gap-3">
-            {["No ads", "No tracking", "No payments", "No public profiles", "Safety by design"].map(
+            {["No ads", "No tracking", "No public profiles", "Safety by design"].map(
               (label) => (
                 <span
                   key={label}
@@ -487,6 +471,86 @@ export default async function LandingPage() {
                 </span>
               )
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SECTION 5b — HONEST COMPARISON */}
+      {/* "Why not utdanning.no" — the obvious question for any         */}
+      {/* Norwegian parent or careers counsellor. Answered calmly and   */}
+      {/* factually, not as a knock on a free public resource we        */}
+      {/* actually integrate with.                                       */}
+      {/* ============================================ */}
+      <section className="border-t border-slate-800/60">
+        <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600 mb-4 text-center">
+            An honest question
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white text-center mb-10">
+            Why not just use utdanning.no?
+          </h2>
+          <div className="space-y-5 text-[15px] leading-relaxed text-neutral-400">
+            <p>
+              <span className="text-white">You should.</span>{" "}
+              utdanning.no is free, government-backed, and more comprehensive
+              than Endeavrly will ever be. It&rsquo;s the best single source
+              for Norwegian programme data. We pull from it directly.
+            </p>
+            <p>
+              What utdanning.no is not designed to do is walk a 16-year-old
+              through <em>how it feels</em> to pick a direction. It&rsquo;s
+              a catalogue. It expects you to already know what you&rsquo;re
+              looking for.
+            </p>
+            <p>
+              Endeavrly is the other half: a calm, paced space to{" "}
+              <span className="text-white">Discover &middot; Understand &middot; Clarity</span>{" "}
+              &mdash; with real voice-guided narration of what a career
+              actually looks like, real timelines from real Norwegians
+              who&rsquo;ve walked the path, and private reflection prompts
+              that don&rsquo;t end up in an algorithm. Then you go to
+              utdanning.no with the right question.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SECTION 5c — BUILT BY (provenance)             */}
+      {/* Pre-launch, solo-built. Saying so openly is more                */}
+      {/* trust-building than fake testimonials.                          */}
+      {/* ============================================ */}
+      <section className="border-t border-slate-800/60">
+        <div className="mx-auto max-w-3xl px-5 py-20 sm:py-24">
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-600 mb-4 text-center">
+            Built by
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white text-center mb-10">
+            A solo builder, not a startup
+          </h2>
+          <div className="space-y-5 text-[15px] leading-relaxed text-neutral-400">
+            <p>
+              Endeavrly is being built by one person &mdash; a Scottish
+              father of three boys, 25 years in telecoms, no funding and
+              no users yet. This is an MVP in active development, not a
+              shipped product.
+            </p>
+            <p>
+              No pilot schools yet. No testimonials from real teenagers yet.
+              No claims of outcomes we can&rsquo;t back up. Those come once
+              the guardrails are finished and the first cohort has actually
+              used it. We&rsquo;d rather tell you the truth than manufacture
+              proof.
+            </p>
+            <p>
+              If you&rsquo;re a parent, teacher, careers counsellor or young
+              person who&rsquo;d like to shape what Endeavrly becomes,{" "}
+              <Link href="/feedback" className="text-emerald-400 hover:text-emerald-300 transition-colors">
+                get in touch
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>
