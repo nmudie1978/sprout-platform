@@ -23,6 +23,18 @@ import { getCertificationPath } from '@/lib/education';
 
 export type EducationStage = 'school' | 'college' | 'university' | 'other';
 
+/**
+ * How the CAREER gets entered in Norway. Independent of the user's
+ * current stage. Drives which ladder shape the generator emits.
+ *
+ *   vocational  — yrkesfag / fagbrev. ~20 at qualification.
+ *   university  — studieforberedende + bachelor/master. ~22 at graduation.
+ *   mixed       — several equally valid routes; default to university
+ *                 shape and document the vocational alternative.
+ *   on-the-job  — no formal qualification expected at entry.
+ */
+export type CareerRoute = 'vocational' | 'university' | 'mixed' | 'on-the-job';
+
 function id(): string {
   return `fb-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -102,10 +114,22 @@ export function generateFallbackTimeline(
   educationStage?: EducationStage,
   foundationComplete = false,
   expectedCompletion?: string,
+  careerRoute: CareerRoute = 'university',
 ): Journey {
   const currentYear = new Date().getFullYear();
   const a = Math.max(userAge, 16);
   const stage: EducationStage = educationStage ?? 'school';
+
+  // If the user is still in upper secondary and the career is a
+  // vocational one (hairdresser, beauty therapist, electrician, chef,
+  // etc.), the ladder looks completely different from a university
+  // career. The Norwegian "2+2" model puts apprenticeship at 18-19
+  // and fagbrev at ~20 — a lifetime ahead of the university ladder's
+  // graduation-at-22. Branch the school stage on careerRoute so the
+  // right shape is produced.
+  const useVocationalSchoolLadder =
+    stage === 'school' &&
+    (careerRoute === 'vocational' || careerRoute === 'mixed');
 
   // Try to extract a 4-digit year from the user's expected-completion
   // string ("June 2027", "2027", "Spring 2027" all work). If we have one,
@@ -123,7 +147,116 @@ export function generateFallbackTimeline(
   // "you are here = today" rather than pretending there's a gap.
   let items: JourneyItem[];
 
-  if (stage === 'school') {
+  if (useVocationalSchoolLadder) {
+    // Norwegian yrkesfag / fagbrev (2+2) ladder for a student still in
+    // upper secondary who wants a vocational career. Ages line up:
+    //   16 — Vg1 vocational foundation
+    //   17 — Vg2 specialisation
+    //   18 — start 2-year apprenticeship (læretid)
+    //   20 — sit fagprøve → fagbrev → qualified
+    //   20-21 — first real role
+    //   25+ — senior / own business
+    const qualAge = Math.max(a + 4, 20); // age at fagbrev
+    const seniorAge = qualAge + 5;
+    items = [
+      {
+        id: id(),
+        stage: 'foundation' as JourneyStage,
+        title: 'Complete Vg1 (yrkesfag)',
+        subtitle: 'Vocational foundation year',
+        startAge: a,
+        endAge: a + 1,
+        isMilestone: false,
+        icon: 'GraduationCap',
+        description: `Start the vocational (yrkesfag) track at upper secondary. Vg1 gives you the broad foundation you'll specialise from in Vg2 — hands-on projects, workplace-relevant subjects, and the basics a ${career} needs.`,
+        microActions: [
+          'Apply via vigo.no to the relevant Vg1 programme',
+          'Keep attendance and practical-assessment marks up',
+          'Research which Vg2 specialism is closest to your career',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'education' as JourneyStage,
+        title: 'Complete Vg2 (specialisation)',
+        subtitle: 'Career-specific year',
+        startAge: a + 1,
+        endAge: a + 2,
+        isMilestone: false,
+        icon: 'Wrench',
+        description: `Vg2 narrows to the specific skills a ${career} uses day-to-day. At the end of this year you apply for læretid (apprenticeship) — shortlist workplaces early, it's competitive.`,
+        microActions: [
+          'Shortlist 5-10 potential lærebedrifter',
+          'Attend Yrkesmessen or open days',
+          'Build a simple CV / portfolio for apprenticeship applications',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
+        title: 'Start apprenticeship (læretid)',
+        subtitle: '2-year paid apprenticeship',
+        startAge: a + 2,
+        endAge: a + 4,
+        isMilestone: true,
+        icon: 'Briefcase',
+        description: `Two years of paid, on-the-job training at a godkjent lærebedrift. This is where the craft actually lands — you'll work under experienced ${career}s, build speed and confidence, and be paid a rising apprentice wage.`,
+        microActions: [
+          'Sign the lærekontrakt with your chosen employer',
+          'Keep a running log of tasks and hours (needed for fagprøve)',
+          'Learn from senior colleagues — ask for feedback early',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'certification' as JourneyStage,
+        title: 'Earn fagbrev',
+        subtitle: 'Norwegian trade certificate',
+        startAge: qualAge,
+        endAge: qualAge,
+        isMilestone: true,
+        icon: 'Award',
+        description: `Sit the fagprøve — a practical exam at the end of læretid. Pass and you're a certified ${career} with a state-recognised fagbrev. From here you can work anywhere in Norway, start your own business, or continue to fagskole for a higher specialist qualification.`,
+        microActions: [
+          'Prepare a portfolio of your apprenticeship work',
+          'Review the assessment criteria with your instructor',
+          'Register for the fagprøve via your county authority',
+        ],
+      },
+      {
+        id: id(),
+        stage: 'experience' as JourneyStage,
+        title: 'Accept your first qualified role',
+        subtitle: 'First full-pay position',
+        startAge: qualAge,
+        endAge: qualAge + 3,
+        isMilestone: false,
+        icon: 'Briefcase',
+        description: `With your fagbrev, you can take a full-pay role as a ${career}. Many apprentices stay at their lærebedrift; others move to a salon/clinic/workshop that fits the style of work they want to do.`,
+        microActions: [
+          'Explore whether to stay at your læreplass or move',
+          'Negotiate pay — fagbrev holders earn significantly more than apprentices',
+          'Build a client book / reputation in your local area',
+        ],
+      },
+      ...buildCertificationItems(career, qualAge + 2, qualAge + 4),
+      {
+        id: id(),
+        stage: 'career' as JourneyStage,
+        title: 'Senior / own business',
+        subtitle: 'Established professional',
+        startAge: seniorAge,
+        isMilestone: true,
+        icon: 'Target',
+        description: `With 5+ years of qualified experience, the ${career} path typically branches: take a senior/training role at a larger employer, or set up your own salon/clinic/workshop. Many do both over a career.`,
+        microActions: [
+          'Decide whether employed or self-employed fits you',
+          'If self-employed: Brønnøysund registration, liability insurance, bookings software',
+          'Mentor apprentices to reinforce your own skills',
+        ],
+      },
+    ];
+  } else if (stage === 'school') {
     items = [
       {
         id: id(),

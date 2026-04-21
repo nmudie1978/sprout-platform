@@ -31,6 +31,27 @@ export type PeopleIntensity = "high" | "medium" | "low";
  *  (LinkedIn, utdanning.no, Samordna opptak, Coursera) are misleading. */
 export type SpecialistPathType = "space" | "military" | "police" | "firefighter" | "elite-sport";
 
+/**
+ * How a young person actually gets into this career in Norway.
+ *
+ *   - "vocational"   — yrkesfag / fagbrev path. Vg1+Vg2 at 16-17, 2 years
+ *                      apprenticeship, qualified at ~20. Hairdresser,
+ *                      electrician, chef, beauty therapist, etc.
+ *   - "university"   — academic path. Videregående (studieforberedende)
+ *                      then bachelor's / master's / profesjonsstudium.
+ *                      Doctor, nurse, psychologist, engineer, etc.
+ *   - "mixed"        — several equally valid routes. E.g. optometrist
+ *                      (bachelor's OR vocational); photographer (degree
+ *                      OR self-taught). Generator defaults to university
+ *                      but documents the vocational alternative.
+ *   - "on-the-job"   — no formal qualification expected at entry.
+ *                      Shop assistant, delivery driver, etc.
+ *
+ * When absent, inferEducationRoute() falls back to scanning the
+ * freeform educationPath string for keywords.
+ */
+export type EducationRoute = "vocational" | "university" | "mixed" | "on-the-job";
+
 export interface Career {
   id: string;
   title: string;
@@ -38,6 +59,14 @@ export interface Career {
   description: string;
   avgSalary: string;
   educationPath: string;
+  /**
+   * Structured override for which education route best matches this
+   * career in Norway. Drives the roadmap generator's shape (vocational
+   * careers start at Vg1, qualify via fagbrev around age 20, university
+   * careers go via videregående → bachelor's, etc.). If absent, the
+   * generator infers from educationPath text.
+   */
+  educationRoute?: EducationRoute;
   keySkills: string[];
   dailyTasks: string[];
   growthOutlook: "high" | "medium" | "stable";
@@ -61,6 +90,42 @@ export interface Career {
   lastVerifiedAt?: string;
   /** Public source URL backing the salary / growth figures. */
   sourceUrl?: string;
+}
+
+/**
+ * Infer the Norwegian education route a youth would take into a
+ * career. Prefers the explicit `educationRoute` field when present;
+ * otherwise scans the freeform `educationPath` string for signals.
+ *
+ * The generator uses the return value to pick the correct timeline
+ * shape (vocational careers qualify at ~20 via fagbrev; university
+ * careers graduate at ~22 via bachelor's; etc.).
+ *
+ * When signals conflict (e.g. "Bachelor's in Optometry OR vocational
+ * training") the result is "mixed" — the generator still defaults to
+ * the university shape but treats the vocational step as an
+ * alternative worth surfacing.
+ */
+export function inferEducationRoute(career: Career): EducationRoute {
+  if (career.educationRoute) return career.educationRoute;
+
+  const path = career.educationPath.toLowerCase();
+
+  const hasUniversity =
+    /\b(bachelor|master|phd|doctorate|mba|degree|profesjonsstudium)\b/i.test(path);
+  const hasVocational =
+    /\b(vocational|fagbrev|apprenticeship|yrkesfag|l[æa]retid|fagskole|trade)\b/i.test(path);
+  const hasOnTheJob = /\bon[- ]the[- ]job\b/i.test(path);
+
+  if (hasUniversity && hasVocational) return "mixed";
+  if (hasVocational) return "vocational";
+  if (hasUniversity) return "university";
+  if (hasOnTheJob) return "on-the-job";
+
+  // No strong signal — default to university because the majority of
+  // careers in the catalogue are degree-based. The generator still
+  // respects the user's current educationStage context.
+  return "university";
 }
 
 export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {

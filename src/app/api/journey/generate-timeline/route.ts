@@ -10,6 +10,7 @@ import { generateFallbackTimeline, type EducationStage } from '@/lib/journey/gen
 import { enrichFirstRoleStep } from '@/lib/journey/enrich-first-role';
 import { buildPromptRules } from '@/lib/journey/roadmap-rules';
 import type { Journey } from '@/lib/journey/career-journey-types';
+import { getAllCareers, inferEducationRoute, type EducationRoute } from '@/lib/career-pathways';
 
 // ============================================
 // OPENAI CLIENT (singleton)
@@ -149,7 +150,7 @@ export async function POST(req: NextRequest) {
     // foundation completion, expected finish year AND version. The
     // version stamp invalidates old cached timelines when roadmap
     // rules change (currently v2 = no-university-before-18).
-    const ROADMAP_CACHE_VERSION = 'v3';
+    const ROADMAP_CACHE_VERSION = 'v4';
     if (profile?.generatedTimeline) {
       const cached = profile.generatedTimeline as { version?: string; career?: string; stage?: string; complete?: string; finish?: string; journey?: Journey };
       if (
@@ -170,7 +171,7 @@ export async function POST(req: NextRequest) {
     // (e.g. v2 = no-university-before-18 enforcement). Bump on rule changes
     // that alter timeline shape in ways the client sanitiser cannot fix
     // retroactively.
-    const globalCacheKey = `timeline:v2:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
+    const globalCacheKey = `timeline:v4:${career.toLowerCase().trim()}:age${userAge}:stage${stageKey}:${completeKey}:finish${finishYearKey}`;
     try {
       const globalCached = await prisma.videoCache.findUnique({ where: { cacheKey: globalCacheKey } });
       if (globalCached && globalCached.expiresAt > new Date()) {
@@ -201,6 +202,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Look up the career in the catalogue so we can pick the correct
+    // roadmap SHAPE (vocational vs university). The title the user
+    // supplied may be a variant (e.g. "beauty therapist" vs the
+    // catalogue's "Beauty Therapist / Hudpleier"); match by
+    // case-insensitive title prefix.
+    const careerRoute: EducationRoute = (() => {
+      const needle = career.toLowerCase();
+      const match = getAllCareers().find(
+        (c) => c.title.toLowerCase() === needle ||
+               c.title.toLowerCase().startsWith(needle) ||
+               needle.startsWith(c.title.toLowerCase()) ||
+               c.id.toLowerCase() === needle.replace(/\s+/g, '-'),
+      );
+      return match ? inferEducationRoute(match) : 'university';
+    })();
+
     // Generate timeline via AI (synchronous — Vercel kills function after response)
     let journey: Journey;
     const openai = getOpenAIClient();
@@ -214,6 +231,21 @@ export async function POST(req: NextRequest) {
         ? ' The user is ALREADY in vocational/college (fagskole) training — DO NOT include "Complete Videregående". Start at their current programme. Use vocational language (fagbrev, apprenticeship) rather than degree language.'
         : educationStage === 'other'
           ? ' The user is NOT currently in formal education (gap year, self-taught, working, or undeclared). DO NOT include school or university completion steps. Start the timeline at the experience phase — entry-level work, portfolio building, and any qualifications they\'ll pick up along the way.'
+          : '';
+
+    // Career-route instruction — tells the AI whether this career is
+    // a vocational (fagbrev) path or a university (degree) path. The
+    // system prompt defaults to the university shape because most of
+    // the catalogue is degree-based; this override flips it for
+    // trades, crafts, beauty, hospitality, etc. Without this the AI
+    // defaults every career to "Videregående → Bachelor's → first
+    // role at 22", which is badly wrong for ~30% of Norwegian careers.
+    const routeInstruction = careerRoute === 'vocational'
+      ? ` This career is a VOCATIONAL (yrkesfag / fagbrev) path in Norway. DO NOT include a bachelor's or master's degree. The correct shape is: Vg1 at age ${Math.max(userAge, 16)}, Vg2 specialisation at 17, 2-year apprenticeship (læretid) starting at 18, fagprøve + fagbrev at ~20, first qualified role at 20-21, senior/own business at ~25. Total roadmap ~9 years from 16 to ~25, not 11+ years.`
+      : careerRoute === 'mixed'
+        ? ' This career has BOTH a vocational (fagbrev) AND a university (degree) route in Norway. Default to the degree route in the main timeline, but include one step describing the vocational alternative ("Some people take the fagbrev route instead — ~2 years shorter, enters the workforce at ~20 rather than 22").'
+        : careerRoute === 'on-the-job'
+          ? ' This career does NOT require a specific formal qualification in Norway. DO NOT force Videregående completion as a blocker. Include a short "Finish school" step for context, then move quickly to entry-level work and any certifications picked up along the way.'
           : '';
 
     // Foundation-complete instruction — tells the AI the user has
@@ -235,7 +267,7 @@ export async function POST(req: NextRequest) {
           model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${expectedCompletion ? ` The user expects to finish their current education stage in ${expectedCompletion} — anchor the first post-foundation step to start in the SAME year (e.g. they finish school in summer 2027 and begin university in autumn 2027, same age).` : ''}${stageInstruction}${completeInstruction}` },
+            { role: 'user', content: `Career: ${career}. Age: ${userAge}. Start year: ${new Date().getFullYear()}.${expectedCompletion ? ` The user expects to finish their current education stage in ${expectedCompletion} — anchor the first post-foundation step to start in the SAME year (e.g. they finish school in summer 2027 and begin university in autumn 2027, same age).` : ''}${routeInstruction}${stageInstruction}${completeInstruction}` },
           ],
           temperature: 0.7,
           max_tokens: 1200,
@@ -280,7 +312,7 @@ export async function POST(req: NextRequest) {
         journey = enrichFirstRoleStep(journey);
       } catch (aiError) {
         console.error('[Timeline] OpenAI failed, using fallback:', aiError);
-        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);
+        journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion, careerRoute);
       }
     } else {
       journey = generateFallbackTimeline(career, userAge, educationStage, foundationComplete, expectedCompletion);

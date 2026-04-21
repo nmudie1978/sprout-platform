@@ -57,6 +57,8 @@ import { getToolInfo } from '@/lib/education/tool-links';
 import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, getCompetitivenessLabel } from '@/lib/education/academic-readiness';
 import { EducationBrowser } from '@/components/education-browser';
 import { FundingSection } from '@/components/education-browser/funding-section';
+import { CareerMythBuster } from '@/components/journey/career-myth-buster';
+import { DaySimulationCard } from '@/components/journey/day-simulation';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 
@@ -635,6 +637,21 @@ function DiscoverTab({
             )}
           </div>}
         </SectionCard>
+
+        {/* Interactive Day Simulation */}
+        {dDetails?.typicalDay?.dailyTasks && dDetails.typicalDay.dailyTasks.length >= 4 && (
+          <SectionCard>
+            <div className="p-3">
+              <DaySimulationCard
+                careerId={career?.id ?? ''}
+                careerTitle={goalTitle ?? ''}
+                dailyTasks={dDetails.typicalDay.dailyTasks}
+                tools={dDetails.typicalDay.tools ?? []}
+                workSetting={dDetails.typicalDay.environment?.includes('office') ? 'office' : dDetails.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
+              />
+            </div>
+          </SectionCard>
+        )}
 
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
@@ -1497,6 +1514,7 @@ function UnderstandTab({
                         is universal), with career-specific scholarships
                         highlighted when available. */}
                     <FundingSection careerId={career?.id ?? null} />
+                    <CareerMythBuster careerId={career?.id ?? null} />
                   </TabsContent>
                 </Tabs>
               </div>

@@ -492,25 +492,28 @@ export default async function LandingPage() {
           </h2>
           <div className="space-y-5 text-[15px] leading-relaxed text-neutral-400">
             <p>
-              <span className="text-white">You should.</span>{" "}
-              utdanning.no is free, government-backed, and more comprehensive
-              than Endeavrly will ever be. It&rsquo;s the best single source
-              for Norwegian programme data. We pull from it directly.
+              utdanning.no will tell you every Norwegian education programme
+              in detail. It&rsquo;s free, authoritative, and genuinely brilliant
+              at what it does. Our programme data comes straight from there.
             </p>
             <p>
-              What utdanning.no is not designed to do is walk a 16-year-old
-              through <em>how it feels</em> to pick a direction. It&rsquo;s
-              a catalogue. It expects you to already know what you&rsquo;re
-              looking for.
+              What it won&rsquo;t tell you is{" "}
+              <em>whether you want to do it</em>. That&rsquo;s not a failure
+              &mdash; it&rsquo;s just not what a catalogue is for. It expects
+              you to arrive with your question already formed.
             </p>
             <p>
-              Endeavrly is the other half: a calm, paced space to{" "}
+              Endeavrly is what comes before the catalogue. A calm, paced walk
+              through three stages &mdash;{" "}
               <span className="text-white">Discover &middot; Understand &middot; Clarity</span>{" "}
-              &mdash; with real voice-guided narration of what a career
-              actually looks like, real timelines from real Norwegians
-              who&rsquo;ve walked the path, and private reflection prompts
-              that don&rsquo;t end up in an algorithm. Then you go to
-              utdanning.no with the right question.
+              &mdash; with voice-guided narration of what a day in the role
+              actually feels like, real timelines from Norwegians who&rsquo;ve
+              been there, and private reflection prompts that don&rsquo;t feed
+              an algorithm.
+            </p>
+            <p>
+              Then, when you know what you&rsquo;re looking for, utdanning.no
+              is a click away.
             </p>
           </div>
         </div>

@@ -29,9 +29,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Career } from "@/lib/career-pathways";
-import { getAllCareers as getAllCareersForCluster } from "@/lib/career-pathways";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
-import { CareerClusterMap } from "@/components/discovery/career-cluster-map";
 import { createEmptyGoal } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -425,23 +423,6 @@ export function CareerDetailSheet({
                           )}
                         </Button>
                       )}
-
-                      {/* ── Related Careers (cluster map) ──────── */}
-                      <div className="border-t border-border/30 pt-4 -mx-1">
-                        <CareerClusterMap
-                          careerId={career.id}
-                          limit={6}
-                          onSelectCareer={(id) => {
-                            // Look up the full career object and open it
-                            // in this same detail sheet via the existing
-                            // CustomEvent the radar page listens for.
-                            const found = getAllCareersForCluster().find((c) => c.id === id);
-                            if (found) {
-                              window.dispatchEvent(new CustomEvent("open-career-detail", { detail: found }));
-                            }
-                          }}
-                        />
-                      </div>
 
                       {/* Add to compare shortlist — the radar listener shows toast feedback */}
                       <Button
