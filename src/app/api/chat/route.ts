@@ -193,28 +193,19 @@ export async function POST(req: NextRequest) {
       discoveryPreferences: unknown;
       foundationCardData: unknown;
     } | null = null;
-    let savedCareerTitles: string[] = [];
     try {
-      const [profile, savedCareers] = await Promise.all([
-        prisma.youthProfile.findUnique({
-          where: { userId: session.user.id },
-          select: {
-            careerAspiration: true,
-            journeySummary: true,
-            discoveryPreferences: true,
-            foundationCardData: true,
-          },
-        }),
-        // Saved/curiosity-saved careers — gives the coach awareness of
-        // what the user has bookmarked for later exploration.
-        prisma.savedItem.findMany({
-          where: { profileId: session.user.id, type: "CAREER", deletedAt: null },
-          select: { itemId: true },
-          take: 15,
-        }),
-      ]);
-      userProfile = profile;
-      savedCareerTitles = savedCareers.map((s) => s.itemId);
+      userProfile = await prisma.youthProfile.findUnique({
+        where: { userId: session.user.id },
+        select: {
+          careerAspiration: true,
+          journeySummary: true,
+          discoveryPreferences: true,
+          foundationCardData: true,
+        },
+      });
+      // Note: saved careers live in localStorage (useCuriositySaves),
+      // not in the DB. To pass them to the coach, the client would
+      // need to include them in the chat request body — future enhancement.
     } catch (profileError) {
       console.error("Profile fetch error (continuing without personalization):", profileError);
     }
@@ -264,9 +255,6 @@ export async function POST(req: NextRequest) {
     // say in chat. Enables pattern challenges ("You've saved 4 creative
     // careers — have you considered the business side?").
     let explorationContext = "";
-    if (savedCareerTitles.length > 0) {
-      explorationContext += `\n\nSAVED CAREERS (the user bookmarked these for later): ${savedCareerTitles.join(', ')}.`;
-    }
     const radarPrefs = userProfile?.discoveryPreferences as Record<string, unknown> | null;
     if (radarPrefs) {
       const subjects = (radarPrefs.subjects as string[]) ?? [];
