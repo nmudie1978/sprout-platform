@@ -53,6 +53,7 @@ import {
   Quote,
   ChevronDown,
   Radar,
+  Zap,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -430,6 +431,7 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/career-events" icon={Calendar} label="Youth Events" active={isActive("/career-events")} collapsed={collapsed} tooltip="Workshops, open days and meet-ups for young people exploring careers." />
               <NavItem href="/insights" icon={BarChart3} label="Industry Insights" active={isActive("/insights")} collapsed={collapsed} tooltip="What's actually happening in different industries — hiring, pay, and outlook." />
               <NavItem href="/career-advisor" icon={Bot} label="AI Advisor" active={isActive("/career-advisor")} collapsed={collapsed} tooltip="Ask questions about careers, education and next steps. Honest, calm, and tailored to you." />
+              <NavItem href="/ai-tracker" icon={Zap} label="AI & Careers" active={isActive("/ai-tracker")} collapsed={collapsed} tooltip="How AI is reshaping careers — emerging roles, skills gaining value, and what it means for your choices." />
             </NavSection>
 
             {SMALL_JOBS_ENABLED && (
