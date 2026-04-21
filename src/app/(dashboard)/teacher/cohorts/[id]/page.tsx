@@ -131,7 +131,7 @@ export default async function CohortDetailPage({
             </h3>
             <ol className="space-y-2">
               {topCareers.map((c, i) => {
-                const slug = c.primaryGoal as string;
+                const slug = c.goalId as string;
                 return (
                   <li
                     key={slug}
