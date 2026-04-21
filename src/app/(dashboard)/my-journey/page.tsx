@@ -638,20 +638,28 @@ function DiscoverTab({
           </div>}
         </SectionCard>
 
-        {/* Interactive Day Simulation */}
-        {dDetails?.typicalDay?.dailyTasks && dDetails.typicalDay.dailyTasks.length >= 4 && (
-          <SectionCard>
-            <div className="p-3">
-              <DaySimulationCard
-                careerId={career?.id ?? ''}
-                careerTitle={goalTitle ?? ''}
-                dailyTasks={dDetails.typicalDay.dailyTasks}
-                tools={dDetails.typicalDay.tools ?? []}
-                workSetting={dDetails.typicalDay.environment?.includes('office') ? 'office' : dDetails.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
-              />
-            </div>
-          </SectionCard>
-        )}
+        {/* Interactive Day Simulation — built from morning/midday/afternoon tasks */}
+        {dDetails?.typicalDay && (() => {
+          const allTasks = [
+            ...(dDetails.typicalDay.morning ?? []),
+            ...(dDetails.typicalDay.midday ?? []),
+            ...(dDetails.typicalDay.afternoon ?? []),
+          ];
+          if (allTasks.length < 4) return null;
+          return (
+            <SectionCard>
+              <div className="p-3">
+                <DaySimulationCard
+                  careerId={career?.id ?? ''}
+                  careerTitle={goalTitle ?? ''}
+                  dailyTasks={allTasks}
+                  tools={dDetails.typicalDay.tools ?? []}
+                  workSetting={dDetails.typicalDay.environment?.includes('office') ? 'office' : dDetails.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
+                />
+              </div>
+            </SectionCard>
+          );
+        })()}
 
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
