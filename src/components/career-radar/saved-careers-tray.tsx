@@ -168,11 +168,14 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
             </div>
           ) : (
             curiosities.map((c) => (
-              <button
+              <div
                 key={c.careerId}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleOpen(c.careerId)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOpen(c.careerId); } }}
                 className={cn(
-                  "w-full text-left rounded-lg px-3 py-2.5",
+                  "w-full text-left rounded-lg px-3 py-2.5 cursor-pointer",
                   "border border-border/70 bg-background/50 shadow-sm",
                   "hover:bg-muted/40 hover:border-pink-500/45 hover:shadow-md",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500/40",
@@ -200,7 +203,7 @@ export function SavedCareersTray({ topOffsetPx = 80, className }: SavedCareersTr
                     <Trash2 className="h-3 w-3" />
                   </button>
                 </div>
-              </button>
+              </div>
             ))
           )}
         </div>
