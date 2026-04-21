@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRLSContext } from "@/lib/prisma";
 import { logAuditAction } from "@/lib/safety";
 import {
   deriveCommunityFromJob,
@@ -231,14 +231,21 @@ export async function GET(req: NextRequest) {
 
     // If requesting own reports
     if (myReports) {
-      const reports = await prisma.communityReport.findMany({
-        where: { reporterUserId: session.user.id },
-        include: {
-          community: { select: { name: true } },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 50,
-      });
+      // L4 phase-1 RLS wrap. Once phase 2 forces RLS, the
+      // community_report_self_read policy restricts reads to rows
+      // where reporterUserId or assignedGuardianUserId matches the
+      // session context, so a query that drops the explicit
+      // reporterUserId filter still can't leak other users' reports.
+      const reports = await withRLSContext(session.user.id, (tx) =>
+        tx.communityReport.findMany({
+          where: { reporterUserId: session.user.id },
+          include: {
+            community: { select: { name: true } },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 50,
+        }),
+      );
 
       return NextResponse.json(reports);
     }

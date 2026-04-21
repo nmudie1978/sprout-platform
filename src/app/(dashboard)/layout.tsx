@@ -45,6 +45,27 @@ export default async function DashboardLayout({
     redirect("/employer-paused");
   }
 
+  // Teacher role keeps to its own surface: /teacher/*, /profile, and
+  // /feedback. Landing anywhere else (dashboard, my-journey, careers)
+  // bounces them to the teacher home. They don't have a Journey or
+  // career recommendations — those are youth-only experiences.
+  const teacherAllowedPrefixes = ["/teacher", "/profile", "/feedback", "/info", "/legal"];
+  if (
+    session.user.role === "TEACHER" &&
+    !teacherAllowedPrefixes.some((p) => pathname === p || pathname.startsWith(p + "/"))
+  ) {
+    redirect("/teacher/dashboard");
+  }
+
+  // Conversely: youth and admins should not be able to reach
+  // /teacher/* surfaces directly.
+  if (
+    pathname.startsWith("/teacher") &&
+    session.user.role !== "TEACHER"
+  ) {
+    redirect("/dashboard");
+  }
+
   // Run legal check, profile fetch, and preferences in parallel
   const [legalAcceptance, profileData] = await Promise.all([
     prisma.legalAcceptance.findUnique({

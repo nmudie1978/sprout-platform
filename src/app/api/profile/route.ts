@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRLSContext } from "@/lib/prisma";
 import { youthProfileSchema, profileVisibilitySchema, careerAspirationSchema } from "@/lib/validations/profile";
 import { slugify } from "@/lib/utils";
 import { AccountStatus } from "@prisma/client";
@@ -17,21 +17,28 @@ export async function GET(req: NextRequest) {
       return apiError("UNAUTHORIZED", "Please sign in", { request: req });
     }
 
-    const profile = await prisma.youthProfile.findUnique({
-      where: { userId: session.user.id },
-      include: {
-        user: {
-          select: {
-            email: true,
-            ageBracket: true,
-            location: true,
-            doNotDisturb: true,
-            dateOfBirth: true,
-            authProvider: true,
+    // L4 phase-1 RLS wrap. Once phase 2 forces RLS, the
+    // youth_profile_self_read policy restricts the YouthProfile
+    // row to the userId matching the session context — so any
+    // future code path that drops the `where: { userId }` still
+    // can't return another user's profile.
+    const profile = await withRLSContext(session.user.id, (tx) =>
+      tx.youthProfile.findUnique({
+        where: { userId: session.user.id },
+        include: {
+          user: {
+            select: {
+              email: true,
+              ageBracket: true,
+              location: true,
+              doNotDisturb: true,
+              dateOfBirth: true,
+              authProvider: true,
+            },
           },
         },
-      },
-    });
+      }),
+    );
 
     // Strip PII fields that should never travel to the client browser.
     // The fields exist in the DB for backend use (guardian flow, admin

@@ -18,6 +18,7 @@ import {
 } from "@/lib/safety/age";
 import { sendGuardianConsentEmail } from "@/lib/mail";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { isSchoolEmail } from "@/lib/education/school-domains";
 
 export async function POST(req: NextRequest) {
   try {
@@ -134,6 +135,48 @@ export async function POST(req: NextRequest) {
       } else {
         initialAccountStatus = AccountStatus.ACTIVE;
       }
+    } else if (role === "TEACHER") {
+      // Teachers must be 18+ and use a recognised school domain.
+      // The domain check is a signup-time filter — it's not a
+      // substitute for human review. /admin can still suspend a
+      // teacher account at any time.
+      if (!isSchoolEmail(email)) {
+        return NextResponse.json(
+          {
+            error:
+              "Teacher accounts require a school email address (e.g. *.skole.no, *.vgs.no, *.fylkeskommune.no, .edu). If your school isn't on the list, contact support.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!dateOfBirth) {
+        return NextResponse.json(
+          { error: "Date of birth is required to create a teacher account." },
+          { status: 400 }
+        );
+      }
+
+      birthDate = new Date(dateOfBirth);
+      age = getAge(birthDate);
+
+      if (age === null || Number.isNaN(birthDate.getTime())) {
+        return NextResponse.json(
+          { error: "Invalid date of birth" },
+          { status: 400 }
+        );
+      }
+
+      if (age < 18) {
+        return NextResponse.json(
+          { error: "Teachers must be at least 18 years old." },
+          { status: 400 }
+        );
+      }
+
+      // Teachers are ACTIVE on creation — they're not trusted with
+      // youth PII (aggregated cohort data only), so no EID step.
+      initialAccountStatus = AccountStatus.ACTIVE;
     } else if (role === "EMPLOYER") {
       // Employers MUST provide DOB and prove 18+. Previously DOB was
       // optional, leaving `ageVerified=false` as the only gate — but

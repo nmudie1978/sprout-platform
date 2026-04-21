@@ -20,6 +20,10 @@ enum UserRole {
   EMPLOYER
   ADMIN
   COMMUNITY_GUARDIAN
+  // Teacher / careers counsellor. Creates a Cohort, shares a join code
+  // with a class. Sees aggregated cohort progress only — never any
+  // individual student's content (reflections, notes, journey detail).
+  TEACHER
 }
 
 // Authentication provider used for sign-up/login
@@ -326,6 +330,11 @@ model User {
 
   // Saved jobs (bookmarks — separate from Application)
   savedJobs SavedJob[]
+
+  // School mode — a TEACHER owns Cohorts; a YOUTH has CohortMemberships.
+  // Never combined: role gating at the API layer.
+  taughtCohorts    Cohort[]           @relation("TeacherCohorts")
+  cohortMemberships CohortMembership[] @relation("YouthCohortMemberships")
 
   @@index([email])
   @@index([role])
@@ -3129,4 +3138,50 @@ model CareerPathContribution {
 
   @@index([status])
   @@index([careerTags])
+}
+
+// ============================================
+// SCHOOL MODE
+// Cohort = a class a teacher has spun up. Students join via code.
+// Teacher only ever sees aggregated stats (count, top careers,
+// roadmap-generated %). Per-student content is never exposed —
+// that's the whole point of structured safeguarding here.
+// ============================================
+
+model Cohort {
+  id           String    @id @default(cuid())
+  // 6-char human-shareable code. Uppercase alphanumeric, confusable
+  // chars (0, O, 1, I, L) excluded. Indexed + unique so teachers can
+  // quickly look up their own cohort by code and youth can join.
+  code         String    @unique
+  teacherId    String
+  name         String    @db.VarChar(120)
+  // Optional career focus — "this class is exploring psychology".
+  // Plain-text for MVP; can FK into Career later.
+  careerFocus  String?   @db.VarChar(80)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  // Soft delete so old memberships don't orphan on archive.
+  deletedAt    DateTime?
+
+  teacher      User               @relation("TeacherCohorts", fields: [teacherId], references: [id], onDelete: Cascade)
+  memberships  CohortMembership[]
+
+  @@index([teacherId])
+  @@index([code])
+  @@index([deletedAt])
+}
+
+model CohortMembership {
+  id        String   @id @default(cuid())
+  cohortId  String
+  youthId   String
+  joinedAt  DateTime @default(now())
+
+  cohort Cohort @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  youth  User   @relation("YouthCohortMemberships", fields: [youthId], references: [id], onDelete: Cascade)
+
+  @@unique([cohortId, youthId])
+  @@index([cohortId])
+  @@index([youthId])
 }

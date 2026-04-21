@@ -28,25 +28,27 @@ function SignUpForm() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const isEmployer = searchParams.get("role") === "employer";
+  const isTeacher = searchParams.get("role") === "teacher";
+  const isAdultSignup = isEmployer || isTeacher;
 
   // ── Step state ────────────────────────────────────────────────────
-  // Employers skip the DOB step entirely — they don't have an age gate
-  // (the under-18-must-register-a-guardian / 15-23-only rules are for
-  // youth workers). They'll verify 18+ separately before they can post.
+  // Adults (employers, teachers) skip the DOB-age-gate step because
+  // the 15–23 eligibility logic only applies to youth workers. They
+  // still have to prove 18+ later (employer: EID; teacher: DOB in
+  // the details step).
   type Step = "dob" | "details";
-  const [step, setStep] = useState<Step>(isEmployer ? "details" : "dob");
+  const [step, setStep] = useState<Step>(isAdultSignup ? "details" : "dob");
 
   // If the user lands on /auth/signup as a youth, enters an over-23 DOB,
-  // and clicks the "sign up as a job poster" link, Next.js soft-navigates
-  // to /auth/signup?role=employer. The component re-renders but useState
-  // is preserved, so step would still be "dob" and the user would stay
-  // stuck on the age gate. Flip to the details step as soon as we see
-  // the employer flag so the flow actually advances.
+  // and clicks the "sign up as a job poster / teacher" link, Next.js
+  // soft-navigates. The component re-renders but useState is preserved,
+  // so step would still be "dob" and the user would stay stuck. Flip
+  // to the details step as soon as we see the adult flag.
   useEffect(() => {
-    if (isEmployer) {
+    if (isAdultSignup) {
       setStep("details");
     }
-  }, [isEmployer]);
+  }, [isAdultSignup]);
 
   // ── Form state ────────────────────────────────────────────────────
   const [firstName, setFirstName] = useState("");
@@ -58,8 +60,8 @@ function SignUpForm() {
   const [acceptedAll, setAcceptedAll] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Employer flow uses a different role; we ignore most of this if so.
-  const role = isEmployer ? "EMPLOYER" : "YOUTH";
+  // Role picked by URL query (?role=employer|teacher); default youth.
+  const role = isEmployer ? "EMPLOYER" : isTeacher ? "TEACHER" : "YOUTH";
 
   // ── Age computation ───────────────────────────────────────────────
   const calculateAgeInfo = (dob: string) => {
@@ -107,6 +109,20 @@ function SignUpForm() {
           throw new Error("We need a parent or guardian email so they can confirm.");
         }
       }
+      if (role === "TEACHER" || role === "EMPLOYER") {
+        if (!dateOfBirth) {
+          throw new Error("Please enter your date of birth.");
+        }
+        if (ageInfo.age === null || ageInfo.age < 18) {
+          throw new Error("You must be 18 or older.");
+        }
+      }
+
+      // Adults (teacher, employer) send their DOB too so the API can
+      // enforce the 18+ floor server-side. Youth signup shape is
+      // unchanged.
+      const sendDob =
+        role === "YOUTH" || role === "EMPLOYER" || role === "TEACHER";
 
       const response = await fetch("/api/auth/signup", {
         method: "POST",
@@ -118,7 +134,7 @@ function SignUpForm() {
           email,
           password,
           role,
-          dateOfBirth: role === "YOUTH" ? dateOfBirth : undefined,
+          dateOfBirth: sendDob ? dateOfBirth : undefined,
           ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
           guardianEmail: role === "YOUTH" && isUnder18 ? guardianEmail.trim() : undefined,
           acceptedTerms: acceptedAll,
@@ -211,14 +227,21 @@ function SignUpForm() {
                     )}
                     {isOver23 && (
                       <p className="text-xs text-rose-500 leading-relaxed">
-                        Endeavrly is for 15&ndash;23 year olds. If you&rsquo;re posting jobs,{" "}
+                        Endeavrly is for 15&ndash;23 year olds. If you&rsquo;re a{" "}
+                        <Link
+                          href="/auth/signup?role=teacher"
+                          className="text-teal-500 hover:underline"
+                        >
+                          teacher
+                        </Link>
+                        {" "}or{" "}
                         <Link
                           href="/auth/signup?role=employer"
                           className="text-teal-500 hover:underline"
                         >
-                          sign up as a job poster
+                          job poster
                         </Link>
-                        .
+                        , sign up via those links instead.
                       </p>
                     )}
                     {isEligible && !isUnder18 && (
@@ -284,14 +307,18 @@ function SignUpForm() {
 
               <div>
                 <h1 className="text-xl font-bold tracking-tight">
-                  {isEmployer
+                  {isTeacher
+                    ? "Create your teacher account"
+                    : isEmployer
                     ? "Create your job poster account"
                     : isUnder18
                     ? "Almost there"
                     : "Let's get you set up"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {isEmployer
+                  {isTeacher
+                    ? "Teacher accounts use a school email (e.g. *.skole.no, *.vgs.no, *.edu). You'll get a class code to share with your students."
+                    : isEmployer
                     ? "Just a few details. You'll verify you're 18+ before posting your first job."
                     : isUnder18
                     ? "Just a few details and a parent email so we can let them know."
@@ -367,6 +394,26 @@ function SignUpForm() {
                   className="h-11"
                 />
               </div>
+
+              {isAdultSignup && (
+                <div className="space-y-2">
+                  <Label htmlFor="adultDob" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Date of birth
+                  </Label>
+                  <Input
+                    id="adultDob"
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    max={new Date().toISOString().split("T")[0]}
+                    required
+                    className="h-11"
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    You must be 18 or older. We don&apos;t share this.
+                  </p>
+                </div>
+              )}
 
               {isUnder18 && (
                 <div className="space-y-2 p-3 rounded-lg bg-teal-500/[0.04] border border-teal-500/20">

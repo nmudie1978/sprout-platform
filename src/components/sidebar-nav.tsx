@@ -483,6 +483,19 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           </>
         )}
 
+        {userRole === "TEACHER" && (
+          <>
+            <NavSection title="Teach" collapsed={collapsed}>
+              <NavItem href="/teacher/dashboard" icon={LayoutDashboard} label="My classes" active={isActive("/teacher/dashboard") || isActive("/teacher/cohorts")} collapsed={collapsed} tooltip="Create classes, share join codes, and see aggregated progress. Per-student content stays private to the student." />
+            </NavSection>
+
+            <NavSection title="Account" collapsed={collapsed}>
+              <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} />
+              <NavItem href="/feedback" icon={HelpCircle} label="Feedback" active={isActive("/feedback")} collapsed={collapsed} />
+            </NavSection>
+          </>
+        )}
+
         {userRole === "COMMUNITY_GUARDIAN" && (
           <>
             <NavSection title="Guardian" collapsed={collapsed}>

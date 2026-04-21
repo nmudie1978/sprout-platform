@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRLSContext } from "@/lib/prisma";
 import { applicationSchema, APPLICATION_INTENTS } from "@/lib/validations/job";
 import { canYouthApplyToJobs } from "@/lib/safety";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
@@ -205,62 +205,70 @@ export async function GET(req: NextRequest) {
       whereClause.status = status.toUpperCase();
     }
 
-    // Run count and data queries in parallel for efficiency
-    const [applications, totalCount, statusCounts] = await Promise.all([
-      // Main data query - optimized field selection
-      prisma.application.findMany({
-        where: whereClause,
-        select: {
-          id: true,
-          status: true,
-          displayOrder: true,
-          createdAt: true,
-          // Only include needed job fields
-          job: {
+    // L4 phase-1 RLS wrap. All three reads run inside a single
+    // transaction with `app.current_user_id` set — once phase 2
+    // flips RLS enforcement on, a policy on Application.youthId
+    // blocks cross-user data exposure even if a future refactor
+    // drops the app-layer `youthId: session.user.id` filter.
+    const [applications, totalCount, statusCounts] = await withRLSContext(
+      session.user.id,
+      (tx) =>
+        Promise.all([
+          // Main data query - optimized field selection
+          tx.application.findMany({
+            where: whereClause,
             select: {
               id: true,
-              title: true,
-              payAmount: true,
-              payType: true,
-              location: true,
-              startDate: true,
-              dateTime: true,
               status: true,
-              category: true,
-              postedBy: {
+              displayOrder: true,
+              createdAt: true,
+              // Only include needed job fields
+              job: {
                 select: {
-                  employerProfile: {
+                  id: true,
+                  title: true,
+                  payAmount: true,
+                  payType: true,
+                  location: true,
+                  startDate: true,
+                  dateTime: true,
+                  status: true,
+                  category: true,
+                  postedBy: {
                     select: {
-                      companyName: true,
-                      verified: true,
+                      employerProfile: {
+                        select: {
+                          companyName: true,
+                          verified: true,
+                        },
+                      },
                     },
                   },
                 },
               },
             },
-          },
-        },
-        orderBy: [
-          { displayOrder: { sort: "asc", nulls: "last" } },
-          { createdAt: "desc" },
-        ],
-        take: limit,
-        ...(cursor && {
-          skip: 1, // Skip the cursor
-          cursor: { id: cursor },
-        }),
-      }),
-      // Total count query
-      prisma.application.count({
-        where: { youthId: session.user.id },
-      }),
-      // Status counts in a single aggregated query
-      prisma.application.groupBy({
-        by: ["status"],
-        where: { youthId: session.user.id },
-        _count: { status: true },
-      }),
-    ]);
+            orderBy: [
+              { displayOrder: { sort: "asc", nulls: "last" } },
+              { createdAt: "desc" },
+            ],
+            take: limit,
+            ...(cursor && {
+              skip: 1, // Skip the cursor
+              cursor: { id: cursor },
+            }),
+          }),
+          // Total count query
+          tx.application.count({
+            where: { youthId: session.user.id },
+          }),
+          // Status counts in a single aggregated query
+          tx.application.groupBy({
+            by: ["status"],
+            where: { youthId: session.user.id },
+            _count: { status: true },
+          }),
+        ]),
+    );
 
     // Build status counts map
     const counts = statusCounts.reduce(
