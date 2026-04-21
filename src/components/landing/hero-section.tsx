@@ -8,7 +8,10 @@ import { Star, ArrowRight } from "lucide-react";
  * Update these values to easily swap the hero image without layout changes
  */
 const HERO_IMAGE = {
-  src: "/images/hero-youth-explorer.png",
+  // Served as WebP (159 KB) — 93% smaller than the original PNG
+  // source. next/image still re-encodes to AVIF at the Vercel edge
+  // when the browser advertises support for it.
+  src: "/images/hero-youth-explorer.webp",
   alt: "Young person with backpack standing at a crossroads, looking toward a bright horizon filled with career opportunity icons - signposts pointing to different paths, floating symbols of ideas, goals, and growth, representing youth exploring their future with confidence and guidance",
   // Aspect ratio helps maintain proportions during load
   width: 800,

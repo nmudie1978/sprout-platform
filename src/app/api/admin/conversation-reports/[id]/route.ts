@@ -20,6 +20,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ConversationReportStatus, AuditAction } from "@prisma/client";
 import { logAuditAction } from "@/lib/safety";
+import { apiError } from "@/lib/api-error";
 
 type ActionBody =
   | { action: "claim" }
@@ -32,13 +33,13 @@ export async function PATCH(
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "ADMIN") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Admin session required", { request: req });
   }
 
   const { id } = await params;
   const body = (await req.json().catch(() => null)) as ActionBody | null;
   if (!body || !("action" in body)) {
-    return NextResponse.json({ error: "Missing action" }, { status: 400 });
+    return apiError("BAD_REQUEST", "Missing action", { request: req });
   }
 
   const report = await prisma.conversationReport.findUnique({
@@ -46,7 +47,7 @@ export async function PATCH(
     select: { id: true, status: true, reportedId: true, conversationId: true },
   });
   if (!report) {
-    return NextResponse.json({ error: "Report not found" }, { status: 404 });
+    return apiError("NOT_FOUND", "Report not found", { request: req });
   }
 
   const adminId = session.user.id;
@@ -77,10 +78,16 @@ export async function PATCH(
     if (body.action === "addNote") {
       const note = String(body.note ?? "").trim();
       if (!note) {
-        return NextResponse.json({ error: "Note is empty" }, { status: 400 });
+        return apiError("VALIDATION_FAILED", "Note is empty", {
+          request: req,
+          details: { field: "note" },
+        });
       }
       if (note.length > 2000) {
-        return NextResponse.json({ error: "Note must be under 2000 characters" }, { status: 400 });
+        return apiError("PAYLOAD_TOO_LARGE", "Note must be under 2000 characters", {
+          request: req,
+          details: { field: "note", max: 2000 },
+        });
       }
       const updated = await prisma.conversationReport.update({
         where: { id },
@@ -105,7 +112,10 @@ export async function PATCH(
         "DISMISSED",
       ];
       if (!validStatuses.includes(body.status)) {
-        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+        return apiError("VALIDATION_FAILED", "Invalid status", {
+          request: req,
+          details: { field: "status", allowed: validStatuses },
+        });
       }
       const updated = await prisma.conversationReport.update({
         where: { id },
@@ -132,9 +142,9 @@ export async function PATCH(
       return NextResponse.json({ ok: true, report: updated });
     }
 
-    return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+    return apiError("BAD_REQUEST", "Unknown action", { request: req });
   } catch (err) {
     console.error("[admin/conversation-reports] action failed:", err);
-    return NextResponse.json({ error: "Action failed" }, { status: 500 });
+    return apiError("INTERNAL", "Action failed", { request: req });
   }
 }

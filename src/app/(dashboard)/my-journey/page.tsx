@@ -56,6 +56,7 @@ import {
 import { getToolInfo } from '@/lib/education/tool-links';
 import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, getCompetitivenessLabel } from '@/lib/education/academic-readiness';
 import { EducationBrowser } from '@/components/education-browser';
+import { FundingSection } from '@/components/education-browser/funding-section';
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 
@@ -1481,7 +1482,7 @@ function UnderstandTab({
                     })()}
                   </TabsContent>
 
-                  <TabsContent value="study-path" className="mt-5">
+                  <TabsContent value="study-path" className="mt-5 space-y-6">
                     {hasStudyPath ? (
                       <EducationBrowser careerTitle={goalTitle} careerId={career?.id ?? null} />
                     ) : (
@@ -1492,6 +1493,10 @@ function UnderstandTab({
                         </p>
                       </div>
                     )}
+                    {/* Funding & Scholarships — always shown (Lånekassen
+                        is universal), with career-specific scholarships
+                        highlighted when available. */}
+                    <FundingSection careerId={career?.id ?? null} />
                   </TabsContent>
                 </Tabs>
               </div>

@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { apiError } from "@/lib/api-error";
 
 export async function GET(
   _req: NextRequest,
@@ -21,7 +22,7 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "TEACHER") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Teacher session required");
   }
 
   const { id } = await params;
@@ -40,11 +41,11 @@ export async function GET(
   });
 
   if (!cohort || cohort.deletedAt) {
-    return NextResponse.json({ error: "Cohort not found" }, { status: 404 });
+    return apiError("NOT_FOUND", "Cohort not found");
   }
   if (cohort.teacherId !== session.user.id) {
     // Don't leak existence to other teachers.
-    return NextResponse.json({ error: "Cohort not found" }, { status: 404 });
+    return apiError("NOT_FOUND", "Cohort not found");
   }
 
   // Aggregate stats — groupBy / distinct counts only, so no per-student
@@ -108,7 +109,7 @@ export async function DELETE(
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "TEACHER") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Teacher session required");
   }
   const { id } = await params;
 
@@ -117,7 +118,7 @@ export async function DELETE(
     select: { teacherId: true, deletedAt: true },
   });
   if (!cohort || cohort.deletedAt || cohort.teacherId !== session.user.id) {
-    return NextResponse.json({ error: "Cohort not found" }, { status: 404 });
+    return apiError("NOT_FOUND", "Cohort not found");
   }
 
   await prisma.cohort.update({

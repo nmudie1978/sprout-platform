@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import * as Sentry from "@sentry/nextjs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCcw, Home } from "lucide-react";
@@ -28,11 +29,12 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Error Boundary caught error:", error, errorInfo);
-
-    // In production, send to error tracking service (e.g., Sentry)
-    // if (process.env.NODE_ENV === "production") {
-    //   Sentry.captureException(error, { extra: errorInfo });
-    // }
+    // No-op when no DSN is configured (sentry.client.config.ts guards
+    // on NEXT_PUBLIC_SENTRY_DSN), so this is safe in all environments.
+    Sentry.captureException(error, {
+      tags: { source: "react-error-boundary" },
+      extra: { componentStack: errorInfo.componentStack },
+    });
   }
 
   render() {

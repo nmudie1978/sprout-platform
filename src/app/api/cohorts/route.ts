@@ -12,30 +12,36 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRLSContext } from "@/lib/prisma";
 import { generateCohortCode } from "@/lib/cohort/code";
 import { sanitizeText } from "@/lib/validation/sanitize";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { apiError } from "@/lib/api-error";
 
 // GET /api/cohorts — list the teacher's own cohorts (active only).
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "TEACHER") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Teacher session required");
   }
 
-  const cohorts = await prisma.cohort.findMany({
-    where: { teacherId: session.user.id, deletedAt: null },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      code: true,
-      name: true,
-      careerFocus: true,
-      createdAt: true,
-      _count: { select: { memberships: true } },
-    },
-  });
+  // Defense in depth: explicit where on teacherId stays in place, and
+  // withRLSContext sets the session variable that the Cohort RLS
+  // policy reads. If either safety net fails, the other still holds.
+  const cohorts = await withRLSContext(session.user.id, (tx) =>
+    tx.cohort.findMany({
+      where: { teacherId: session.user.id, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        careerFocus: true,
+        createdAt: true,
+        _count: { select: { memberships: true } },
+      },
+    })
+  );
 
   return NextResponse.json({
     cohorts: cohorts.map((c) => ({
@@ -53,7 +59,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "TEACHER") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Teacher session required", { request: req });
   }
 
   // Small rate limit so a single teacher can't spawn hundreds of cohorts.
@@ -62,19 +68,19 @@ export async function POST(req: NextRequest) {
     RateLimits.STRICT,
   );
   if (!rl.success) {
-    const res = NextResponse.json(
-      { error: "You're creating cohorts too quickly. Please wait a moment." },
-      { status: 429 },
+    return apiError(
+      "RATE_LIMITED",
+      "You're creating cohorts too quickly. Please wait a moment.",
+      {
+        request: req,
+        headers: getRateLimitHeaders(rl.limit, rl.remaining, rl.reset),
+      },
     );
-    Object.entries(
-      getRateLimitHeaders(rl.limit, rl.remaining, rl.reset),
-    ).forEach(([k, v]) => res.headers.set(k, v));
-    return res;
   }
 
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object") {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return apiError("BAD_REQUEST", "Invalid request body", { request: req });
   }
 
   const name = sanitizeText(String(body.name ?? "")).slice(0, 120);
@@ -83,10 +89,10 @@ export async function POST(req: NextRequest) {
     : null;
 
   if (name.length < 2) {
-    return NextResponse.json(
-      { error: "Cohort name must be at least 2 characters" },
-      { status: 400 },
-    );
+    return apiError("VALIDATION_FAILED", "Cohort name must be at least 2 characters", {
+      request: req,
+      details: { field: "name" },
+    });
   }
 
   // Collision-retry loop. With 32^6 ≈ 1B codes, conflicts are
@@ -96,21 +102,23 @@ export async function POST(req: NextRequest) {
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
     const code = generateCohortCode();
     try {
-      const cohort = await prisma.cohort.create({
-        data: {
-          code,
-          teacherId: session.user.id,
-          name,
-          careerFocus,
-        },
-        select: {
-          id: true,
-          code: true,
-          name: true,
-          careerFocus: true,
-          createdAt: true,
-        },
-      });
+      const cohort = await withRLSContext(session.user.id, (tx) =>
+        tx.cohort.create({
+          data: {
+            code,
+            teacherId: session.user.id,
+            name,
+            careerFocus,
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            careerFocus: true,
+            createdAt: true,
+          },
+        })
+      );
       return NextResponse.json({ cohort }, { status: 201 });
     } catch (err: unknown) {
       // P2002 = unique-constraint violation (code). Retry with a new
@@ -120,12 +128,13 @@ export async function POST(req: NextRequest) {
         continue;
       }
       console.error("[cohorts] create failed:", err);
-      return NextResponse.json({ error: "Failed to create cohort" }, { status: 500 });
+      return apiError("DB_ERROR", "Failed to create cohort", { request: req });
     }
   }
 
-  return NextResponse.json(
-    { error: "Could not allocate a unique cohort code — please try again." },
-    { status: 500 },
+  return apiError(
+    "INTERNAL",
+    "Could not allocate a unique cohort code — please try again.",
+    { request: req },
   );
 }

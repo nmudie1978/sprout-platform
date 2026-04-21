@@ -183,13 +183,38 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Fetch user's profile to get career aspiration for personalization (optional)
-    let userProfile: { careerAspiration: string | null; journeySummary: unknown } | null = null;
+    // Fetch user's profile + exploration state for coach personalisation.
+    // The richer the context, the more Socratic and relevant the coach
+    // can be — referencing careers the user has explored, their radar
+    // preferences, and their education stage.
+    let userProfile: {
+      careerAspiration: string | null;
+      journeySummary: unknown;
+      discoveryPreferences: unknown;
+      foundationCardData: unknown;
+    } | null = null;
+    let savedCareerTitles: string[] = [];
     try {
-      userProfile = await prisma.youthProfile.findUnique({
-        where: { userId: session.user.id },
-        select: { careerAspiration: true, journeySummary: true },
-      });
+      const [profile, savedCareers] = await Promise.all([
+        prisma.youthProfile.findUnique({
+          where: { userId: session.user.id },
+          select: {
+            careerAspiration: true,
+            journeySummary: true,
+            discoveryPreferences: true,
+            foundationCardData: true,
+          },
+        }),
+        // Saved/curiosity-saved careers — gives the coach awareness of
+        // what the user has bookmarked for later exploration.
+        prisma.savedItem.findMany({
+          where: { profileId: session.user.id, type: "CAREER", deletedAt: null },
+          select: { itemId: true },
+          take: 15,
+        }),
+      ]);
+      userProfile = profile;
+      savedCareerTitles = savedCareers.map((s) => s.itemId);
     } catch (profileError) {
       console.error("Profile fetch error (continuing without personalization):", profileError);
     }
@@ -234,6 +259,33 @@ export async function POST(req: NextRequest) {
     // Build messages for OpenAI with personalization based on career aspiration
     const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration);
 
+    // Exploration state context — gives the Socratic coach awareness of
+    // what the user has been doing on the platform, not just what they
+    // say in chat. Enables pattern challenges ("You've saved 4 creative
+    // careers — have you considered the business side?").
+    let explorationContext = "";
+    if (savedCareerTitles.length > 0) {
+      explorationContext += `\n\nSAVED CAREERS (the user bookmarked these for later): ${savedCareerTitles.join(', ')}.`;
+    }
+    const radarPrefs = userProfile?.discoveryPreferences as Record<string, unknown> | null;
+    if (radarPrefs) {
+      const subjects = (radarPrefs.subjects as string[]) ?? [];
+      const workStyles = (radarPrefs.workStyles as string[]) ?? [];
+      const peoplePref = radarPrefs.peoplePref as string | undefined;
+      if (subjects.length > 0 || workStyles.length > 0) {
+        explorationContext += `\n\nRADAR PREFERENCES (from their career quiz): subjects=${subjects.join(', ') || 'none'}, workStyles=${workStyles.join(', ') || 'none'}, peoplePref=${peoplePref || 'not set'}.`;
+      }
+    }
+    const foundation = userProfile?.foundationCardData as Record<string, unknown> | null;
+    if (foundation) {
+      const stage = foundation.educationStage as string | undefined;
+      const track = foundation.studyTrack as string | undefined;
+      const finishYear = foundation.expectedCompletion as string | undefined;
+      if (stage) {
+        explorationContext += `\n\nFOUNDATION (where the user is now): stage=${stage}${track ? `, track=${track}` : ''}${finishYear ? `, finishes=${finishYear}` : ''}.`;
+      }
+    }
+
     // Inject Discover profile context if available
     let discoverContext = "";
     const journeySummary = userProfile?.journeySummary as Record<string, unknown> | null;
@@ -255,7 +307,7 @@ Keep it natural — don't list their profile back to them.`;
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
-        content: systemPrompt + (context ? `\n\n${context}` : "") + discoverContext + historyContext,
+        content: systemPrompt + (context ? `\n\n${context}` : "") + explorationContext + discoverContext + historyContext,
       },
     ];
 

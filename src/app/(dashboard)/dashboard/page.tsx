@@ -594,12 +594,18 @@ export default function DashboardPage() {
       return response.json();
     },
     enabled: session?.user.role === "YOUTH",
-    // Always refetch when the dashboard mounts or regains focus — otherwise
-    // journey progress made elsewhere (e.g. /my-journey, career details) is
-    // invisible here until the cache expires.
-    staleTime: 0,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    // Fresh-enough for the dashboard view. Previously this had
+    // staleTime: 0 + refetchOnMount: "always" + refetchOnWindowFocus:
+    // true — that combination hammered the API every tab switch.
+    // Cross-page mutations that actually change the explored-goals
+    // set (remove journey, switch goal) already invalidate this key
+    // explicitly via queryClient.invalidateQueries, so a 2-minute
+    // stale window doesn't hide real updates — it only suppresses
+    // the spurious refetches on passive tab switches. Default
+    // refetchOnMount (true) means mount triggers a refetch only
+    // when data is stale, which is what we want.
+    staleTime: 2 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const queryClient = useQueryClient();
@@ -638,14 +644,15 @@ export default function DashboardPage() {
     onSuccess: (_data, goalTitle) => {
       syncGuidanceGoal(goalTitle);
       queryClient.removeQueries({ queryKey: ["personal-career-timeline"] });
+      // Invalidate only the keys that actually depend on which goal
+      // is primary. education-context is per-user, profile is derived
+      // from goals already, and dashboard-stats aggregates job/journey
+      // counts that don't change when a goal slot is reassigned.
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       queryClient.invalidateQueries({ queryKey: ["explored-goals"] });
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
-      queryClient.invalidateQueries({ queryKey: ["education-context"] });
       queryClient.invalidateQueries({ queryKey: ["career-insights"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
       toast.success(`${goalTitle} set as your Primary Goal`, {
         description: t('switchGoal.toastDescription'),
         duration: 8000,

@@ -734,7 +734,9 @@ export default function GoalsPageContent() {
       queryClient.invalidateQueries({ queryKey: ["journey-state"] });
       queryClient.invalidateQueries({ queryKey: ["goal-data"] });
       queryClient.invalidateQueries({ queryKey: ["discover-reflections"] });
-      queryClient.invalidateQueries({ queryKey: ["education-context"] });
+      // education-context is per-user (school / track / finish-year),
+      // not per-goal. A goal switch doesn't change it. Dropped from
+      // the cascade to stop an unnecessary refetch.
       // T3: profile + completion depend on goal state
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
       queryClient.invalidateQueries({ queryKey: ["profile-completion"] });

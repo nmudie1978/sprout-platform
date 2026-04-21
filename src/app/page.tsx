@@ -190,7 +190,7 @@ export default async function LandingPage() {
             <FadeReveal delay={800} className="hidden lg:flex justify-center">
               <div className="relative">
                 <Image
-                  src="/images/hero-signpost.png"
+                  src="/images/hero-signpost.webp"
                   alt="Young person facing a signpost with career direction signs"
                   width={448}
                   height={448}

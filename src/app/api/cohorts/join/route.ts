@@ -15,14 +15,16 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRLSContext } from "@/lib/prisma";
 import { isValidCohortCode, normaliseCohortCode } from "@/lib/cohort/code";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
+import { apiError } from "@/lib/api-error";
+import { logAndSwallow } from "@/lib/observability";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "YOUTH") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Youth session required", { request: req });
   }
 
   // Brute-force protection on cohort codes. STRICT is 10/min — plenty
@@ -32,26 +34,27 @@ export async function POST(req: NextRequest) {
     RateLimits.STRICT,
   );
   if (!rl.success) {
-    const res = NextResponse.json(
-      { error: "Too many attempts. Please wait a minute and try again." },
-      { status: 429 },
+    return apiError(
+      "RATE_LIMITED",
+      "Too many attempts. Please wait a minute and try again.",
+      {
+        request: req,
+        headers: getRateLimitHeaders(rl.limit, rl.remaining, rl.reset),
+      },
     );
-    Object.entries(
-      getRateLimitHeaders(rl.limit, rl.remaining, rl.reset),
-    ).forEach(([k, v]) => res.headers.set(k, v));
-    return res;
   }
 
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object") {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return apiError("BAD_REQUEST", "Invalid request body", { request: req });
   }
 
   const code = normaliseCohortCode(String(body.code ?? ""));
   if (!isValidCohortCode(code)) {
-    return NextResponse.json(
-      { error: "That code doesn't look right — please check and try again." },
-      { status: 400 },
+    return apiError(
+      "VALIDATION_FAILED",
+      "That code doesn't look right — please check and try again.",
+      { request: req, details: { field: "code" } },
     );
   }
 
@@ -61,31 +64,38 @@ export async function POST(req: NextRequest) {
   });
 
   if (!cohort || cohort.deletedAt) {
-    return NextResponse.json(
-      { error: "We couldn't find that class. Ask your teacher to confirm the code." },
-      { status: 404 },
+    return apiError(
+      "NOT_FOUND",
+      "We couldn't find that class. Ask your teacher to confirm the code.",
+      { request: req },
     );
   }
 
   // Upsert-style: idempotent join. If the student is already a
-  // member, return success silently.
+  // member, return success silently. withRLSContext so the
+  // CohortMembership RLS policy (youthId = current_app_user_id)
+  // enforces that the youth can only write a row for themselves —
+  // even if the POST body were to somehow reach Prisma with a
+  // different youthId, the DB would reject it.
   try {
-    await prisma.cohortMembership.upsert({
-      where: {
-        cohortId_youthId: {
+    await withRLSContext(session.user.id, (tx) =>
+      tx.cohortMembership.upsert({
+        where: {
+          cohortId_youthId: {
+            cohortId: cohort.id,
+            youthId: session.user.id,
+          },
+        },
+        create: {
           cohortId: cohort.id,
           youthId: session.user.id,
         },
-      },
-      create: {
-        cohortId: cohort.id,
-        youthId: session.user.id,
-      },
-      update: {}, // no-op
-    });
+        update: {}, // no-op
+      })
+    );
   } catch (err) {
-    console.error("[cohorts/join] upsert failed:", err);
-    return NextResponse.json({ error: "Failed to join class" }, { status: 500 });
+    logAndSwallow("cohorts:join:upsert")(err);
+    return apiError("DB_ERROR", "Failed to join class", { request: req });
   }
 
   return NextResponse.json({
@@ -99,17 +109,22 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "YOUTH") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Youth session required", { request: req });
   }
   const body = await req.json().catch(() => null);
   const cohortId = body && typeof body.cohortId === "string" ? body.cohortId : null;
   if (!cohortId) {
-    return NextResponse.json({ error: "cohortId required" }, { status: 400 });
+    return apiError("BAD_REQUEST", "cohortId required", {
+      request: req,
+      details: { field: "cohortId" },
+    });
   }
 
-  await prisma.cohortMembership.deleteMany({
-    where: { cohortId, youthId: session.user.id },
-  });
+  await withRLSContext(session.user.id, (tx) =>
+    tx.cohortMembership.deleteMany({
+      where: { cohortId, youthId: session.user.id },
+    })
+  );
 
   return NextResponse.json({ ok: true });
 }
@@ -118,18 +133,20 @@ export async function DELETE(req: NextRequest) {
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "YOUTH") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("UNAUTHORIZED", "Youth session required");
   }
-  const memberships = await prisma.cohortMembership.findMany({
-    where: { youthId: session.user.id, cohort: { deletedAt: null } },
-    select: {
-      joinedAt: true,
-      cohort: {
-        select: { id: true, name: true, code: true, careerFocus: true },
+  const memberships = await withRLSContext(session.user.id, (tx) =>
+    tx.cohortMembership.findMany({
+      where: { youthId: session.user.id, cohort: { deletedAt: null } },
+      select: {
+        joinedAt: true,
+        cohort: {
+          select: { id: true, name: true, code: true, careerFocus: true },
+        },
       },
-    },
-    orderBy: { joinedAt: "desc" },
-  });
+      orderBy: { joinedAt: "desc" },
+    })
+  );
 
   return NextResponse.json({
     memberships: memberships.map((m) => ({

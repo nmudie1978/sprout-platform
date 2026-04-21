@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { logAndSwallow } from '@/lib/observability';
 
 /**
  * GET /api/youtube-search/career-videos?career=Physiotherapist
@@ -211,7 +212,7 @@ export async function GET(req: NextRequest) {
       where: { cacheKey },
       create: { cacheKey, data: response as any, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
       update: { data: response as any, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-    }).catch(() => { /* non-blocking */ });
+    }).catch(logAndSwallow('careerVideos:cache:write'));
   }
 
   return NextResponse.json(response, {

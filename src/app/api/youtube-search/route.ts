@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { logAndSwallow } from '@/lib/observability';
 
 /**
  * GET /api/youtube-search?q=day+in+the+life+Doctor
@@ -151,7 +152,7 @@ export async function GET(req: NextRequest) {
       where: { cacheKey },
       create: { cacheKey, data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
       update: { data: cachePayload, expiresAt: new Date(Date.now() + ttlMs) },
-    }).catch(() => { /* non-blocking */ });
+    }).catch(logAndSwallow('youtubeSearch:cache:write'));
 
     return NextResponse.json(result, {
       headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' },

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import OpenAI from 'openai';
 import type { RealityCheckResult, RealityVideo, RealityVideoType } from '@/lib/career-reality-types';
+import { logAndSwallow } from '@/lib/observability';
 
 /**
  * GET /api/career-reality?career=Network+Engineer
@@ -416,7 +417,7 @@ export async function GET(req: NextRequest) {
     where: { cacheKey },
     create: { cacheKey, data: response as any, expiresAt: new Date(Date.now() + ttl) },
     update: { data: response as any, expiresAt: new Date(Date.now() + ttl) },
-  }).catch(() => { /* non-blocking */ });
+  }).catch(logAndSwallow('careerReality:cache:write'));
 
   // Shorter edge cache when videos are missing so retries happen sooner
   const edgeTtl = videos.length > 0 ? 86400 : 300;

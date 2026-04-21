@@ -620,6 +620,10 @@ model MicroJob {
   @@index([standardTemplateId])
   @@index([minimumAge]) // Age safety: filter by minAge
   @@index([riskCategory]) // Age safety: filter by risk
+  // Composite for the youth-facing jobs list which always filters by
+  // status=POSTED and minimumAge <= userAge. Puts the age range query
+  // on the trailing column so Postgres can use a single index scan.
+  @@index([status, minimumAge])
 }
 
 model Application {
@@ -3170,6 +3174,11 @@ model Cohort {
   @@index([teacherId])
   @@index([code])
   @@index([deletedAt])
+  // Compound for the teacher dashboard's "my active cohorts" query —
+  // filters by teacherId AND deletedAt IS NULL, ordered by createdAt.
+  // Single-column indexes above force a scan + filter; this covers
+  // both predicates in one B-tree lookup.
+  @@index([teacherId, deletedAt])
 }
 
 model CohortMembership {
@@ -3184,4 +3193,7 @@ model CohortMembership {
   @@unique([cohortId, youthId])
   @@index([cohortId])
   @@index([youthId])
+  // Compound for the youth's "list my classes" query, which filters
+  // by youthId and orders by joinedAt DESC.
+  @@index([youthId, joinedAt])
 }

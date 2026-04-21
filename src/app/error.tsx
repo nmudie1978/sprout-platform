@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Home, RefreshCcw } from "lucide-react";
@@ -14,7 +15,13 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log error to error reporting service (e.g., Sentry)
+    // Send to Sentry in addition to console. The Sentry.init guard in
+    // sentry.client.config.ts means this is a no-op when no DSN is
+    // configured (local dev, preview deploys without SENTRY_DSN set).
+    Sentry.captureException(error, {
+      tags: { source: "app-error-boundary" },
+      extra: { digest: error.digest },
+    });
     console.error("Global error:", error);
   }, [error]);
 
