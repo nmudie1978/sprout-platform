@@ -15,8 +15,9 @@
 -- is kept for display convenience (stores the rendered text) but is
 -- no longer source of truth.
 
--- Step 1: Add the legacy enum value.
-ALTER TYPE "MessageIntent" ADD VALUE IF NOT EXISTS 'FREE_TEXT_LEGACY';
+-- Step 1 (enum value) is in the previous migration
+-- (20260420000001_add_free_text_legacy_enum) so the new value is
+-- committed and usable by the time this migration runs.
 
 -- Step 2: Add the new nullable columns.
 ALTER TABLE "Application" ADD COLUMN "messageIntent" "MessageIntent";
