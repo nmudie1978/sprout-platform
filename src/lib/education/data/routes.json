@@ -100,6 +100,39 @@
       "estimatedYears": 8
     },
     {
+      "id": "software-developer--bootcamp",
+      "careerId": "software-developer",
+      "name": "Bootcamp / self-taught route",
+      "shortName": "Bootcamp",
+      "summary": "Skip the degree — learn to code through an intensive bootcamp (3-6 months), build a portfolio, and enter the industry directly. Many Norwegian companies hire based on skills, not credentials.",
+      "tags": ["self-taught", "fast"],
+      "isDefault": false,
+      "countryCode": "NO",
+      "estimatedYears": 2
+    },
+    {
+      "id": "teacher--ppu-lateral",
+      "careerId": "teacher",
+      "name": "Lateral entry via PPU (any bachelor → teacher)",
+      "shortName": "Via PPU",
+      "summary": "Already have a bachelor in anything? The 1-year PPU (Praktisk-pedagogisk utdanning) gives you a teaching credential. One of the most common entry routes for subject teachers in upper secondary.",
+      "tags": ["lateral-entry", "fast"],
+      "isDefault": false,
+      "countryCode": "NO",
+      "estimatedYears": 4
+    },
+    {
+      "id": "designer--self-taught",
+      "careerId": "designer",
+      "name": "Self-taught + portfolio route",
+      "shortName": "Self-taught",
+      "summary": "Build a portfolio through personal projects, freelance work, and online courses. Many Norwegian design studios hire based on portfolio quality, not degree prestige.",
+      "tags": ["self-taught"],
+      "isDefault": false,
+      "countryCode": null,
+      "estimatedYears": 2
+    },
+    {
       "id": "doctor--standard",
       "careerId": "doctor",
       "name": "Standard route",

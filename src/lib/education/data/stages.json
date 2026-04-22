@@ -269,6 +269,94 @@
       "outcome": "Senior PM at a global consulting firm, based in Oslo"
     },
     {
+      "id": "software-developer--bootcamp--learn",
+      "routeId": "software-developer--bootcamp",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Coding bootcamp (3-6 months)",
+      "durationYears": 0.5,
+      "description": "Intensive full-time bootcamp covering web development fundamentals: HTML/CSS, JavaScript, React, Node.js, databases. Norwegian options include Kodehode, Salt, and Academy. International options include Le Wagon and Noroff.",
+      "programmeIds": [],
+      "outcome": "Portfolio-ready junior developer skills"
+    },
+    {
+      "id": "software-developer--bootcamp--portfolio",
+      "routeId": "software-developer--bootcamp",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "Build portfolio + open-source contributions",
+      "durationYears": 0.5,
+      "description": "Spend 3-6 months building real projects: a personal website, 2-3 portfolio apps, and contributing to open-source. This IS your CV — Norwegian tech companies review GitHub profiles alongside (or instead of) formal credentials.",
+      "programmeIds": [],
+      "outcome": "3-5 portfolio projects demonstrating real skills"
+    },
+    {
+      "id": "software-developer--bootcamp--first-role",
+      "routeId": "software-developer--bootcamp",
+      "orderIndex": 2,
+      "kind": "experience",
+      "title": "Junior developer role",
+      "durationYears": 1,
+      "description": "Apply for junior developer positions at startups, agencies, or consultancies. Bekk, Bouvet, and smaller companies are often bootcamp-friendly. Expect to learn more in your first 6 months on the job than in the entire bootcamp.",
+      "programmeIds": [],
+      "outcome": "Professional developer with production experience"
+    },
+    {
+      "id": "teacher--ppu-lateral--bachelor",
+      "routeId": "teacher--ppu-lateral",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Any bachelor degree (3 years)",
+      "durationYears": 3,
+      "description": "A bachelor in your subject area — history, maths, science, English, music, anything. The PPU route doesn't require an education degree; it accepts any relevant bachelor as the foundation.",
+      "programmeIds": [],
+      "outcome": "Bachelor degree in a school-relevant subject"
+    },
+    {
+      "id": "teacher--ppu-lateral--ppu",
+      "routeId": "teacher--ppu-lateral",
+      "orderIndex": 1,
+      "kind": "education",
+      "title": "PPU — Praktisk-pedagogisk utdanning (1 year)",
+      "durationYears": 1,
+      "description": "The 1-year postgraduate teaching credential. Combines pedagogical theory with supervised teaching practice in a real school. Available at most Norwegian universities. This is the certification that makes you a qualified teacher.",
+      "programmeIds": [],
+      "outcome": "Qualified teacher (adjunkt level) for upper secondary"
+    },
+    {
+      "id": "designer--self-taught--learn",
+      "routeId": "designer--self-taught",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Online courses + self-directed learning",
+      "durationYears": 0.5,
+      "description": "Learn design fundamentals through platforms like Coursera (Google UX Design Certificate), Figma tutorials, YouTube channels (The Futur, Flux Academy). Focus on one discipline first: UI design, graphic design, or product design.",
+      "programmeIds": [],
+      "outcome": "Design fundamentals + tool proficiency (Figma, Adobe)"
+    },
+    {
+      "id": "designer--self-taught--portfolio",
+      "routeId": "designer--self-taught",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "Freelance + portfolio building",
+      "durationYears": 1,
+      "description": "Take on small freelance projects (local businesses, friends' startups, non-profits) to build a real portfolio. Quality over quantity — 5 well-documented case studies beat 50 dribbble shots.",
+      "programmeIds": [],
+      "outcome": "Professional portfolio with real client work"
+    },
+    {
+      "id": "designer--self-taught--junior",
+      "routeId": "designer--self-taught",
+      "orderIndex": 2,
+      "kind": "experience",
+      "title": "Junior designer role",
+      "durationYears": 1,
+      "description": "Apply to agencies, in-house teams, or consultancies. Norwegian companies like Bekk, Eggs Design, and Idean hire based on portfolio and culture fit. A strong portfolio can outweigh a missing degree.",
+      "programmeIds": [],
+      "outcome": "Professional designer with team experience"
+    },
+    {
       "id": "doctor--standard--education",
       "routeId": "doctor--standard",
       "orderIndex": 0,

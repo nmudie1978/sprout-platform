@@ -292,12 +292,12 @@ export default function WhitePaperPage() {
         <SectionHeader number="Executive Summary" title="What it is" />
         <div className="space-y-4 text-foreground/85 leading-relaxed">
           <p>
-            A career discovery and first-job platform built specifically for
-            young people aged <strong>15 to 23</strong>. It helps students
-            understand who they are, explore careers that genuinely fit them,
-            find meaningful early work, and build a realistic roadmap toward a
-            fulfilling adult life — without exposing them to the risks of
-            general-purpose social and freelance platforms.
+            A career exploration platform built specifically for young people
+            aged <strong>15 to 23</strong>. It helps students understand who
+            they are, explore careers that genuinely fit them, discover real
+            education pathways and employers, and build a realistic roadmap
+            toward a fulfilling career — without exposing them to the risks
+            of general-purpose social platforms.
           </p>
           <p>
             Three non-negotiable commitments shape the product:{" "}
@@ -310,10 +310,12 @@ export default function WhitePaperPage() {
             maximise engagement for its own sake.
           </p>
           <p>
-            Under the hood: a transparent rules-based matching engine,
-            age-aware readiness modelling, and a calm, guided narrative
-            experience that walks the student through their own future in a
-            single session — not across years of forced engagement.
+            Under the hood: a multi-dimensional matching engine, multi-route
+            career pathways (showing that there&apos;s always more than one way
+            in), real Norwegian employer data, salary progression curves,
+            application deadline awareness, a Socratic AI career coach, and
+            a calm guided narrative that walks the student through their own
+            future — not across years of forced engagement.
           </p>
         </div>
       </section>
@@ -443,9 +445,9 @@ export default function WhitePaperPage() {
               "Discovery preferences — a lightweight quiz capturing subjects enjoyed, preferred work style, people preference, and free-form interests. Saved to profile, persists across sessions.",
               "The radar visualisation — each career is a dot; closer to centre means a stronger match.",
               "Matches Report — a scrollable, filterable list of matched careers.",
-              "Compare — select 2–3 careers and view side-by-side how they feel, daily tasks, reality checks, and required study paths.",
-              "Saved Comparisons edge tray — a progressive-disclosure side panel that stores every comparison for quick recall.",
-              "Preference Coach Tip — a gentle inline nudge when the preference profile is thin.",
+              "Compare — select 2–3 careers and view side-by-side.",
+              "Multi-route career pathways — each career shows multiple entry routes (university, bootcamp, lateral entry, via abroad) with named real-person examples, not just the elite linear path.",
+              "Top Norwegian employers per career — with favicons, industry tags, and direct career-page links.",
             ]}
           />
         </ModuleCard>
@@ -466,9 +468,10 @@ export default function WhitePaperPage() {
                 Discover
               </h4>
               <p className="text-xs text-foreground/75 leading-relaxed">
-                Calm, content-first introduction: day in the life, salary,
-                growth, key skills. No input required. Confirms: "Have you
-                explored this role?"
+                Calm, content-first introduction: day-in-the-life video,
+                salary with full progression popup, growth outlook, key
+                skills, qualification path. Interactive salary chart shows
+                junior → senior trajectory.
               </p>
             </div>
             <div className="rounded-lg border border-border/40 p-3 bg-background/40">
@@ -476,9 +479,11 @@ export default function WhitePaperPage() {
                 Understand
               </h4>
               <p className="text-xs text-foreground/75 leading-relaxed">
-                Deeper look: role reality, entry requirements, real education
-                programmes, courses, industry outlook, tools of the trade,
-                interview prep.
+                What you&apos;ll do (tasks + tools), the reality (honest
+                challenges), a typical day (morning/midday/afternoon),
+                common misconceptions (myth buster), top Norwegian employers,
+                education pathway (school readiness + study path + certifications),
+                and funding &amp; scholarships.
               </p>
             </div>
             <div className="rounded-lg border border-border/40 p-3 bg-background/40">
@@ -486,18 +491,23 @@ export default function WhitePaperPage() {
                 Clarity
               </h4>
               <p className="text-xs text-foreground/75 leading-relaxed">
-                Personal roadmap, voice-guided simulation, momentum actions,
-                real career path contributions from professionals.
+                Personal roadmap with voice narration, confidence tracker,
+                matched opportunities (internships + graduate programmes),
+                application deadlines, pivot preview (&quot;what if I change
+                my mind?&quot;), momentum actions, and shareable journey
+                summary.
               </p>
             </div>
           </div>
           <p className="mt-3">
-            <strong>Clarity</strong> is where the product's heart lives. An
-            age-anchored timeline from today through to a senior role, rendered
-            in three visual styles (Zigzag, Rail, Steps), with a voice-narrated
-            journey simulation that walks the student through their own future
-            step-by-step in a single session. The roadmap respects the rule
-            that school finishes before university begins.
+            <strong>Clarity</strong> is where the product&apos;s heart lives. An
+            age-anchored timeline from today through to a senior role, with a
+            voice-narrated journey simulation, a confidence tracker, real
+            internship/graduate programme opportunities matched to the career,
+            deadline awareness for key application dates, and a &quot;what if
+            I change my mind?&quot; pivot preview showing what transfers
+            between careers. The roadmap respects the rule that school finishes
+            before university begins.
           </p>
         </ModuleCard>
 
@@ -507,11 +517,15 @@ export default function WhitePaperPage() {
           tagline="Can I ask a specific question?"
         >
           <p>
-            A goal-aware chatbot that answers career questions based on the
-            student's current goal and preferences. Keeps conversation history.
-            Guarded by safety guardrails appropriate for minors: no medical,
-            legal, or financial advice; defers to human professionals for
-            serious concerns.
+            A Socratic career coach — not just a Q&amp;A bot. Asks follow-up
+            questions before giving answers, challenges pattern homogeneity
+            (&quot;You&apos;ve saved 4 creative careers — have you considered
+            the business side?&quot;), and has awareness of the student&apos;s
+            radar preferences, education stage, and exploration history
+            without them repeating themselves. Keeps persistent conversation
+            history. Guarded by safety guardrails: no medical, legal, or
+            financial advice; defers to human professionals for serious
+            concerns.
           </p>
         </ModuleCard>
 

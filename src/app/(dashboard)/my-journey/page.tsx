@@ -64,6 +64,7 @@ import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
 import { PivotPreview } from '@/components/journey/pivot-preview';
 import { ShareJourney } from '@/components/journey/share-journey';
 import { OpportunityMatches } from '@/components/journey/opportunity-matches';
+import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -2772,6 +2773,15 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </div>
         )}
       </SectionCard>
+
+      {/* ── Confidence Tracker ── */}
+      {career && goalTitle && (
+        <SectionCard>
+          <div className="p-4 sm:p-5">
+            <ConfidenceTracker careerId={career.id} careerTitle={goalTitle} />
+          </div>
+        </SectionCard>
+      )}
 
       {/* ── Opportunities ── */}
       <SectionCard>
