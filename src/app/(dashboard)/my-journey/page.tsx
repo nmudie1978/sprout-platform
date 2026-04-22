@@ -58,6 +58,7 @@ import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, g
 import { EducationBrowser } from '@/components/education-browser';
 import { FundingSection } from '@/components/education-browser/funding-section';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
+import { TopEmployers } from '@/components/journey/top-employers';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -1218,6 +1219,16 @@ function UnderstandTab({
           <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
         )}
 
+      </SectionCard>
+
+      {/* ── Top Employers ── */}
+      <SectionCard>
+        <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-employers')} onToggle={() => uToggle('u-employers')} />
+        {!uCollapsed('u-employers') && (
+          <div className="p-4 sm:p-5">
+            <TopEmployers careerId={career?.id ?? null} />
+          </div>
+        )}
       </SectionCard>
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs

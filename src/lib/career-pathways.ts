@@ -914,6 +914,43 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
       sector: "private",
     },
     {
+      id: "driving-instructor",
+      title: "Driving Instructor",
+      emoji: "🚗",
+      description: "Teach learner drivers the skills, theory, and road sense to pass the Norwegian driving test and become safe drivers for life.",
+      avgSalary: "450,000 - 700,000 kr/year",
+      // Post-secondary vocational: 2-year Trafikklærer programme at
+      // fagskole level (Nord universitet runs the accredited route;
+      // several private fagskoler also offer it). Hard entry gates
+      // that a 15-year-old needs to know up front: age 21 minimum,
+      // 2+ years holding a class B licence, clean driving record.
+      educationPath:
+        "Videregående → age 21+ with 2+ years class B licence → 2-year Trafikklærer (fagskole) → kjøreskolelærerbevis from Statens vegvesen",
+      // Tagged "mixed" rather than "vocational" so the generator
+      // doesn't produce the 2+2 fagbrev ladder (wrong for this path).
+      // Timing lands at ~22 qualification — closer to reality than
+      // the default university shape.
+      educationRoute: "mixed",
+      keySkills: [
+        "patience",
+        "clear communication",
+        "calm under pressure",
+        "road safety knowledge",
+        "assessment",
+      ],
+      dailyTasks: [
+        "Give practical driving lessons",
+        "Teach road theory (trafikalt grunnkurs, mørkekjøring, sikkerhetskurs)",
+        "Assess when a learner is ready for the driving test",
+        "Maintain student progress logs",
+        "Handle bookings and payments (if self-employed)",
+      ],
+      growthOutlook: "stable",
+      sector: "mixed",
+      lastVerifiedAt: "2026-04-22",
+      sourceUrl: "https://www.utdanning.no/yrker/beskrivelse/trafikklaerer",
+    },
+    {
       id: "childcare-assistant",
       title: "Childcare Assistant",
       emoji: "👶",
