@@ -2794,7 +2794,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           <ShareJourney
             career={career}
             goalTitle={goalTitle}
-            momentumActions={actions.map((a) => ({ title: a.title ?? '', status: a.status ?? '' }))}
+            momentumActions={actions.map((a) => ({ title: a.text, status: a.status ?? (a.done ? 'done' : 'not_started') }))}
             foundation={eduCtxData?.educationContext as { educationStage?: string; studyTrack?: string; expectedCompletion?: string } | null}
           />
         </div>
