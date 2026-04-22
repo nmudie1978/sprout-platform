@@ -670,40 +670,39 @@ function PathwayFallbackView({
               {schools.length} institution{schools.length !== 1 ? 's' : ''}
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-3">
-            {schools.map((school) => {
+          <div className="border-t border-border/20">
+            {schools.map((school, idx) => {
               const searchQuery = programmeName ? `${school} ${programmeName}` : school;
               const url = `https://utdanning.no/sok?q=${encodeURIComponent(searchQuery)}`;
-              // Match school name against known institutions to get country flag
               const lowerSchool = school.toLowerCase();
               const matchedInst = getAllInstitutions().find(
                 (inst) => inst.name.toLowerCase() === lowerSchool || inst.shortName.toLowerCase() === lowerSchool
               );
               const flag = matchedInst ? COUNTRY_FLAGS[matchedInst.country] : '🇳🇴';
+              const city = matchedInst?.city ?? '';
               return (
                 <a
                   key={school}
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-xl border border-border/40 bg-card/60 p-3.5 hover:border-teal-500/30 transition-colors group"
+                  className={cn(
+                    'grid grid-cols-[auto_1fr_auto_auto_auto] items-center gap-x-3 px-4 py-2.5 text-[11px] hover:bg-muted/20 transition-colors',
+                    idx > 0 && 'border-t border-border/15',
+                  )}
                 >
-                  <div className="flex items-start gap-2 mb-2">
-                    {flag && <span className="text-sm shrink-0 mt-0.5">{flag}</span>}
-                    <h4 className="text-[13px] font-semibold text-foreground/90 leading-snug line-clamp-2 group-hover:text-teal-300 transition-colors">
-                      {school}
-                    </h4>
-                  </div>
-                  {programmeName && (
-                    <p className="text-[11px] text-muted-foreground/70 mb-1 truncate">
-                      {programmeName}
-                    </p>
-                  )}
-                  {programmeDuration && (
-                    <p className="text-[10px] text-muted-foreground/65">{programmeDuration}</p>
-                  )}
-                  <span className="mt-2 inline-flex items-center gap-1 text-[10px] text-teal-400 group-hover:underline">
-                    Visit school page →
+                  {/* Flag */}
+                  <span className="text-sm shrink-0">{flag}</span>
+                  {/* Institution */}
+                  <span className="font-medium text-foreground/85 truncate">{school}</span>
+                  {/* City */}
+                  <span className="text-muted-foreground/60 text-[10px] hidden sm:block">{city}</span>
+                  {/* Duration */}
+                  <span className="text-muted-foreground/60 text-[10px]">{programmeDuration}</span>
+                  {/* Link */}
+                  <span className="text-primary/80 text-[10px] font-medium flex items-center gap-0.5">
+                    Visit page
+                    <ChevronRight className="h-3 w-3" />
                   </span>
                 </a>
               );
