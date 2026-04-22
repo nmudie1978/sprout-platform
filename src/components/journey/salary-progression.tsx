@@ -226,7 +226,7 @@ export function SalaryChart({
               stackId="range"
               barSize={barHeight}
               radius={[4, 4, 4, 4]}
-              fill="hsl(166, 40%, 35%)"
+              fill="hsl(30, 80%, 50%)"
               fillOpacity={0.15}
             >
               {chartData.map((_, i) => (
