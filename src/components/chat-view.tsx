@@ -55,7 +55,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Avatar } from "@/components/avatar";
 import { useIsMobile } from "@/hooks/use-media-query";
-import { MessageIntentSheet } from "@/components/messages/MessageIntentSheet";
 import { PaymentDisclosure } from "@/components/payment-disclosure";
 
 // ============================================
@@ -171,19 +170,8 @@ export function ChatView({ conversationId }: { conversationId: string }) {
     refetchIntervalInBackground: false,
   });
 
-  // Fetch available message intents
-  const { data: intentsData } = useQuery<{ intents: MessageIntentData[] }>({
-    queryKey: ["messageIntents"],
-    queryFn: async () => {
-      const response = await fetch("/api/message-intents");
-      if (!response.ok) return { intents: [] };
-      return response.json();
-    },
-    enabled: !!conversation,
-    staleTime: 3600000, // 1 hour - intents are static
-  });
-
-  const intents = intentsData?.intents || [];
+  // Messaging intents removed
+  const intents: never[] = [];
 
   // Send message mutation
   const sendMutation = useMutation({
@@ -760,14 +748,7 @@ export function ChatView({ conversationId }: { conversationId: string }) {
         </DialogContent>
       </Dialog>
 
-      {/* Mobile Intent Sheet */}
-      <MessageIntentSheet
-        open={showIntentSheet}
-        onClose={() => setShowIntentSheet(false)}
-        intents={intents}
-        onSend={handleMobileSheetSend}
-        isPending={sendMutation.isPending}
-      />
+      {/* Messaging intent sheet removed */}
     </Card>
   );
 }

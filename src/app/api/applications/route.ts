@@ -7,7 +7,6 @@ import { applicationSchema, APPLICATION_INTENTS } from "@/lib/validations/job";
 import { canYouthApplyToJobs } from "@/lib/safety";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { canApplyToJob, logAgeEligibilityEvent } from "@/lib/age-policy/utils";
-import { validateIntentVariables, renderIntentMessage } from "@/lib/message-intents";
 import { apiError } from "@/lib/api-error";
 
 export async function POST(req: NextRequest) {
@@ -49,29 +48,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = applicationSchema.parse(body);
 
-    // Intent + variable validation. The applicationSchema zod check
-    // already enforces `messageIntent` is one of APPLICATION_INTENTS
-    // (not FREE_TEXT_LEGACY, not post-hire intents), but we still
-    // need to run validateIntentVariables to enforce required fields,
-    // max length, and the dangerous-content (phone/email/URL) guard
-    // that message-intents.ts exports. Age bracket is pulled from
-    // session for the per-age error messaging.
-    let renderedMessage: string | null = null;
-    if (validatedData.messageIntent) {
-      const vars = validatedData.messageVariables ?? {};
-      const check = validateIntentVariables(
-        validatedData.messageIntent,
-        vars,
-        session.user.ageBracket ?? null,
-      );
-      if (!check.valid) {
-        return apiError("VALIDATION_FAILED", check.errors[0] ?? "Invalid message", {
-          request: req,
-          details: { errors: check.errors, field: "messageVariables" },
-        });
-      }
-      renderedMessage = check.renderedMessage ?? renderIntentMessage(validatedData.messageIntent, vars);
-    }
+    // Messaging removed — application message is now plain text only.
+    const renderedMessage: string | null = validatedData.message ?? null;
 
     // Age eligibility check - server-side enforcement
     const ageCheck = await canApplyToJob(session.user.id, validatedData.jobId);

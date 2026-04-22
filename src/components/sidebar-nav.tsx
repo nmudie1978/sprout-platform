@@ -422,7 +422,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
               {SMALL_JOBS_ENABLED && (
-                <NavItem href="/applications" icon={FileText} label="My Small Jobs" active={isActive("/applications") || isActive("/messages")} collapsed={collapsed} badge={pendingCount || undefined} personal tooltip="Jobs you've applied for, shortlisted, or are working on. Includes messages with employers." />
               )}
             </NavSection>
 
@@ -460,7 +459,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/employer/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/employer/dashboard")} collapsed={collapsed} />
               <NavItem href="/employer/post-job" icon={PlusCircle} label="Post Job" active={isActive("/employer/post-job")} collapsed={collapsed} />
               <NavItem href="/employer/talent" icon={Compass} label="Browse Talent" active={isActive("/employer/talent")} collapsed={collapsed} />
-              <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} collapsed={collapsed} />
             </NavSection>
 
             <NavSection title="Account" collapsed={collapsed}>
@@ -474,7 +472,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           <>
             <NavSection title="Admin" collapsed={collapsed}>
               <NavItem href="/admin/reports" icon={Shield} label="Community reports" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Community reports on jobs and users — review, pause, escalate, resolve. All actions logged to AuditLog." />
-              <NavItem href="/admin/conversation-reports" icon={MessageSquare} label="Conversation reports" active={isActive("/admin/conversation-reports")} collapsed={collapsed} tooltip="Safety reports on private conversations — grooming, harassment, off-platform attempts. Conversation auto-freezes on filing." />
               <NavItem href="/admin/analytics" icon={BarChart3} label="Analytics" active={isActive("/admin/analytics")} collapsed={collapsed} />
               <NavItem href="/admin/feedback" icon={HelpCircle} label="Feedback" active={isActive("/admin/feedback")} collapsed={collapsed} tooltip="Pilot survey results — per-question stats, distributions, clarity topics, free-text responses, CSV export." />
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />

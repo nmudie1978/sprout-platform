@@ -90,6 +90,20 @@ export interface Career {
   lastVerifiedAt?: string;
   /** Public source URL backing the salary / growth figures. */
   sourceUrl?: string;
+  /**
+   * Finer-grained entry route for grade-aware ranking and the
+   * `excludeUniversity` filter. Additive — absent = unknown, and the
+   * existing `educationRoute` field keeps its 4-value contract for the
+   * timeline generator. Populate opportunistically; unannotated careers
+   * just skip the grade ranking and stay in their existing Match % sort.
+   */
+  entryRoute?: EntryRoute;
+  /**
+   * Typical grade band of successful applicants. Drives the "aligned
+   * vs stretch" label in Career Radar once the user sets a gradeRange
+   * preference. Never used to hide careers — see grade-match.ts.
+   */
+  gradeBand?: GradeBand;
 }
 
 /**
@@ -8714,6 +8728,67 @@ export interface DiscoveryPreferences {
   workStyles?: string[]; // hands-on, desk, outdoors, mixed, creative
   peoplePref?: string;   // with-people, mixed, mostly-alone
   interests?: string[];  // Free-form interest tags
+  /**
+   * Realistic grade range (Norwegian VGS 1-6 scale) the youth expects to
+   * land in. Used to re-rank careers as "grade-aligned" vs "stretch" —
+   * NEVER to hide careers from view. Undefined = no filter (show all).
+   *
+   * Stored as a range, not a point, so the user isn't forced to commit
+   * to an exact number. See src/lib/career-pathways/grade-match.ts for
+   * the overlap semantics used during ranking.
+   */
+  gradeRange?: { low: number; high: number };
+  /**
+   * Explicit opt-out of university routes. When true, bachelor / master
+   * / profesjonsstudium careers are filtered OUT (not just re-ranked) —
+   * this is the user's stated choice, not a judgment by the platform.
+   * Apprenticeships, fagbrev, fagskole and direct-entry roles are
+   * unaffected.
+   */
+  excludeUniversity?: boolean;
+}
+
+/**
+ * Finer-grained entry route than EducationRoute (which stays 4-value
+ * for the timeline generator). Drives the `excludeUniversity` filter
+ * and future grade-alignment ranking.
+ */
+export type EntryRoute =
+  | "apprenticeship"    // Direct into a trade; fagbrev via læretid
+  | "fagbrev"           // Vocational cert via videregående (2+2)
+  | "fagskole"          // 1-2 year technical/vocational college (post-VGS)
+  | "bachelor"          // 3-year university bachelor
+  | "master"            // 5-year integrated, or 3+2
+  | "profesjonsstudium" // 5-6 year professional programme (medicine, law, psychology)
+  | "direct-entry"      // No formal qualification required
+  | "military-academy"; // Forsvaret + dedicated academies
+
+/** Entry routes that count as "university" for the excludeUniversity filter. */
+export const UNIVERSITY_ROUTES: ReadonlySet<EntryRoute> = new Set([
+  "bachelor",
+  "master",
+  "profesjonsstudium",
+]);
+
+/**
+ * Typical grade band for successful applicants, on the VGS 1-6 scale.
+ * Not a hard gate — used for "aligned vs stretch" ranking, never to
+ * hide careers from view.
+ */
+export interface GradeBand {
+  /** Lowest typical successful grade (1-6). */
+  floor: number;
+  /** Competitive grade for desirable placements (1-6). */
+  ceiling: number;
+  /**
+   * Optional per-subject minimum grade — e.g. { "math": 4, "chemistry": 4 }
+   * for medicine. Subject IDs match SUBJECTS in discovery-quiz-dialog.
+   */
+  subjectRequirements?: Record<string, number>;
+  /**
+   * Human-readable qualifier. Derived if absent.
+   */
+  competitiveness?: "accessible" | "competitive" | "highly-competitive";
 }
 
 // Category-level defaults for the work setting most careers in that

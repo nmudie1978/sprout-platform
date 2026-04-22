@@ -65,12 +65,8 @@ import {
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
-import {
-  MESSAGE_INTENT_TEMPLATES,
-  validateIntentVariables,
-  renderIntentMessage,
-  type SelectableMessageIntent,
-} from "@/lib/message-intents";
+// Messaging removed — intent templates no longer used
+type SelectableMessageIntent = string;
 import { APPLICATION_INTENTS } from "@/lib/validations/job";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";

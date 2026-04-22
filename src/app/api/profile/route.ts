@@ -230,7 +230,23 @@ export async function PATCH(req: NextRequest) {
         });
       }
 
-      // Light validation — strip unknown fields, cap array sizes
+      // Light validation — strip unknown fields, cap array sizes.
+      // gradeRange is quantised + clamped; anything out of 1-6 or low>high
+      // is silently dropped rather than erroring (the quiz UI only sends
+      // valid values, but defence-in-depth for direct API callers).
+      const gradeRangeRaw = dp?.gradeRange as { low?: unknown; high?: unknown } | undefined;
+      let gradeRange: { low: number; high: number } | undefined;
+      if (gradeRangeRaw && typeof gradeRangeRaw === "object") {
+        const low = Number(gradeRangeRaw.low);
+        const high = Number(gradeRangeRaw.high);
+        if (
+          Number.isFinite(low) &&
+          Number.isFinite(high) &&
+          low >= 1 && high <= 6 && low <= high
+        ) {
+          gradeRange = { low: Math.round(low), high: Math.round(high) };
+        }
+      }
       const sanitized = dp
         ? {
             subjects: Array.isArray(dp.subjects) ? dp.subjects.slice(0, 20).map(String) : [],
@@ -238,6 +254,8 @@ export async function PATCH(req: NextRequest) {
             workStyles: Array.isArray(dp.workStyles) ? dp.workStyles.slice(0, 10).map(String) : [],
             peoplePref: typeof dp.peoplePref === "string" ? dp.peoplePref.slice(0, 50) : undefined,
             interests: Array.isArray(dp.interests) ? dp.interests.slice(0, 30).map(String) : [],
+            gradeRange,
+            excludeUniversity: dp.excludeUniversity === true,
           }
         : null;
 

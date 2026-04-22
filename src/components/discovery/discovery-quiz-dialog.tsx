@@ -106,6 +106,13 @@ export function DiscoveryQuizDialog({
   const [workStyles, setWorkStyles] = useState<string[]>([]);
   const [peoplePref, setPeoplePref] = useState<string | undefined>(undefined);
   const [interests, setInterests] = useState<string[]>([]);
+  /**
+   * Grade range state. `null` = user hasn't set a range yet (no filter
+   * applied). Both values default to 3-4 when the user clicks "Set a
+   * range" — a sane midpoint that matches the most common VGS bell curve.
+   */
+  const [gradeRange, setGradeRange] = useState<{ low: number; high: number } | null>(null);
+  const [excludeUniversity, setExcludeUniversity] = useState(false);
 
   // Sync from initialValue whenever the dialog re-opens
   useEffect(() => {
@@ -115,6 +122,8 @@ export function DiscoveryQuizDialog({
       setWorkStyles(initialValue?.workStyles || []);
       setPeoplePref(initialValue?.peoplePref);
       setInterests(initialValue?.interests || []);
+      setGradeRange(initialValue?.gradeRange ?? null);
+      setExcludeUniversity(!!initialValue?.excludeUniversity);
     }
   }, [open, initialValue]);
 
@@ -159,6 +168,10 @@ export function DiscoveryQuizDialog({
         workStyles,
         peoplePref,
         interests,
+        // Send null/false explicitly so the server can clear them —
+        // otherwise a user who turns the range off won't be able to.
+        gradeRange: gradeRange ?? undefined,
+        excludeUniversity: excludeUniversity || undefined,
       };
       const response = await fetch("/api/profile", {
         method: "PATCH",
@@ -270,6 +283,83 @@ export function DiscoveryQuizDialog({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Grade range + university toggle.
+              Deliberately phrased as a range not a point so the user
+              doesn't feel judged by a single number. The range doesn't
+              hide any career — it just re-ranks the Radar so the
+              most realistic paths surface first. */}
+          <div>
+            <Label className="text-xs font-semibold">Your grade range (optional)</Label>
+            <p className="text-[10px] text-muted-foreground mb-1.5">
+              What grade range do you expect to land in? Norwegian VGS scale 1–6. Tells the Radar which paths look realistic — never hides anything.
+            </p>
+
+            {!gradeRange ? (
+              <button
+                type="button"
+                onClick={() => setGradeRange({ low: 3, high: 4 })}
+                className="rounded-full border border-dashed border-border/50 px-3 py-1 text-[11px] text-muted-foreground/80 hover:text-foreground hover:border-teal-500/40 transition-colors"
+              >
+                + Set a range
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <GradeSelect
+                    value={gradeRange.low}
+                    onChange={(v) =>
+                      setGradeRange({
+                        low: v,
+                        high: Math.max(v, gradeRange.high),
+                      })
+                    }
+                    label="From"
+                  />
+                  <span className="text-muted-foreground text-xs">to</span>
+                  <GradeSelect
+                    value={gradeRange.high}
+                    onChange={(v) =>
+                      setGradeRange({
+                        low: Math.min(v, gradeRange.low),
+                        high: v,
+                      })
+                    }
+                    label="To"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setGradeRange(null)}
+                    className="ml-auto text-[10px] text-muted-foreground/60 hover:text-muted-foreground/90 transition-colors"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <p className="text-[10px] text-muted-foreground/70 italic">
+                  {gradeRange.low === gradeRange.high
+                    ? `Showing ${gradeRange.low}-aligned paths first.`
+                    : `Showing grades ${gradeRange.low}–${gradeRange.high} paths first. Stretch paths still visible below.`}
+                </p>
+              </div>
+            )}
+
+            <label className="mt-3 flex items-center gap-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={excludeUniversity}
+                onChange={(e) => setExcludeUniversity(e.target.checked)}
+                className="h-3.5 w-3.5 rounded border-border/50 accent-teal-500"
+              />
+              <span className="text-[11px] text-muted-foreground/80 group-hover:text-foreground transition-colors">
+                I&apos;d rather not go to university
+              </span>
+            </label>
+            {excludeUniversity && (
+              <p className="text-[10px] text-muted-foreground/60 italic mt-1 pl-5.5">
+                Bachelor / master / profesjonsstudium paths will be hidden. Fagbrev, fagskole, apprenticeships and direct-entry roles still show.
+              </p>
+            )}
           </div>
 
           {/* Interests / activities */}
@@ -491,5 +581,38 @@ function InterestMultiSelect({
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * GradeSelect — minimal native <select> for a 1-6 VGS grade. Using
+ * native rather than a custom slider so mobile keyboards handle it
+ * for free and accessibility is correct out of the box.
+ */
+function GradeSelect({
+  value,
+  onChange,
+  label,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  label: string;
+}) {
+  return (
+    <label className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <span className="sr-only">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="rounded-md border border-border/40 bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-teal-500/50"
+        aria-label={`Grade ${label}`}
+      >
+        {[1, 2, 3, 4, 5, 6].map((g) => (
+          <option key={g} value={g}>
+            {g}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

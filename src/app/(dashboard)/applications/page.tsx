@@ -23,7 +23,6 @@ import {
 import Link from "next/link";
 import { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { toast } from "sonner";
-import { MessagesTray } from "@/components/applications/messages-tray";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 
 const categoryEmojis: Record<string, string> = {
@@ -484,7 +483,6 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Right-edge slide-out: message threads scoped to small jobs. */}
-      <MessagesTray />
     </div>
   );
 }
