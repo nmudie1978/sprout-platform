@@ -512,10 +512,9 @@ export default async function LandingPage() {
               Endeavrly is what comes before the catalogue. A calm, paced walk
               through three stages &mdash;{" "}
               <span className="text-white">Discover &middot; Understand &middot; Clarity</span>{" "}
-              &mdash; with voice-guided narration of what a day in the role
-              actually feels like, real timelines from Norwegians who&rsquo;ve
-              been there, and private reflection prompts that don&rsquo;t feed
-              an algorithm.
+              &mdash; with a voice-narrated career roadmap you can play through,
+              real timelines from Norwegians who&rsquo;ve walked the path,
+              and private reflection prompts that don&rsquo;t feed an algorithm.
             </p>
             <p>
               Then, when you know what you&rsquo;re looking for, utdanning.no
