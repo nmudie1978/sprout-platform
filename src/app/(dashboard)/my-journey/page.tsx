@@ -669,7 +669,7 @@ function DiscoverTab({
                       <button
                         type="button"
                         onClick={() => setShowSalaryPopup(true)}
-                        className="text-[9px] text-primary/70 hover:text-primary font-medium mt-1.5 flex items-center gap-0.5 transition-colors"
+                        className="text-[9px] text-amber-400/70 hover:text-amber-300 font-medium mt-1.5 flex items-center gap-0.5 transition-colors w-full justify-center"
                       >
                         See full progression →
                       </button>
