@@ -488,12 +488,15 @@ function DiscoverTab({
   goalTitle,
   onContinue,
   onConfirmChange,
+  onGoToUnderstand,
 }: {
   career: Career | null;
   goalTitle: string | null;
   onContinue: () => void;
   /** Notifies the page so the Understand tab unlocks immediately. */
   onConfirmChange?: (confirmed: boolean) => void;
+  /** Navigate to Understand tab (for "See full progression" link). */
+  onGoToUnderstand?: () => void;
 }) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
@@ -658,7 +661,18 @@ function DiscoverTab({
                 const sectorAccent = sector === 'public' ? 'text-blue-400' : sector === 'private' ? 'text-violet-400' : 'text-muted-foreground/50';
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">
-                    <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
+                    <div>
+                      <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
+                      {onGoToUnderstand && (
+                        <button
+                          type="button"
+                          onClick={onGoToUnderstand}
+                          className="text-[9px] text-primary/70 hover:text-primary font-medium mt-1.5 flex items-center gap-0.5 transition-colors"
+                        >
+                          See full progression →
+                        </button>
+                      )}
+                    </div>
                     <StatCard
                       label="Growth"
                       value={career.growthOutlook === 'high' ? 'High Demand' : career.growthOutlook === 'medium' ? 'Growing' : 'Stable'}
@@ -764,7 +778,10 @@ function DiscoverTab({
                         normal desktop widths. justify-center pairs
                         with the centred title above. flex-wrap remains
                         as a graceful fallback on narrow viewports. */}
-                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide pb-0.5">
+                    <div
+                      className="flex items-center gap-1 overflow-x-auto pb-1 -mx-1 px-1"
+                      style={{ scrollbarWidth: 'thin' }}
+                    >
                       {steps.map((s, i) => (
                         <div key={i} className="contents">
                           {i > 0 && <span className="text-[10px] text-muted-foreground/30 shrink-0">→</span>}
@@ -772,7 +789,7 @@ function DiscoverTab({
                             title={s.tip}
                             className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors whitespace-nowrap"
                           >
-                            <span className="max-w-[180px] truncate">{s.label}</span>
+                            <span>{s.label}</span>
                           </span>
                         </div>
                       ))}
@@ -3467,6 +3484,7 @@ export default function MyJourneyPage() {
                 goalTitle={goalTitle}
                 onContinue={() => goToTab('understand')}
                 onConfirmChange={setDiscoverConfirmedState}
+                onGoToUnderstand={() => goToTab('understand')}
               />
             )}
             {activeTab === 'understand' && (
