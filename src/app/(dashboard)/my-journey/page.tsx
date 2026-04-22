@@ -459,14 +459,23 @@ function LoadingSkeleton() {
 
 // ─── Section collapse helper ─────────────────────────────────────────────────
 
-/** Manages collapse state for multiple sections, persisted in localStorage. */
-function useSectionCollapse(keys: string[]) {
+/** Manages collapse state for multiple sections, persisted in localStorage.
+ *  `defaultCollapsed` lists keys that start collapsed unless the user has
+ *  explicitly opened them (localStorage stores '0' for open). */
+function useSectionCollapse(keys: string[], defaultCollapsed: string[] = []) {
   const [state, setState] = useState<Record<string, boolean>>({});
   useEffect(() => {
     try {
+      const defaults = new Set(defaultCollapsed);
       const loaded: Record<string, boolean> = {};
       for (const k of keys) {
-        loaded[k] = window.localStorage.getItem(`section-${k}`) === '1';
+        const stored = window.localStorage.getItem(`section-${k}`);
+        if (stored !== null) {
+          loaded[k] = stored === '1';
+        } else {
+          // No user preference yet — use default
+          loaded[k] = defaults.has(k);
+        }
       }
       setState(loaded);
     } catch { /* ignore */ }
@@ -687,10 +696,14 @@ function DiscoverTab({
                   </div>
                 );
               })()}
-              {/* What You Need — compact horizontal chain for Discover.
-                  Each step is one small pill with full detail in its
-                  native tooltip. Keeps the card tight and scannable. */}
+              {/* How You Qualify removed — lives in Understand's Education
+                  Pathway → School Readiness tab. Discover stays light. */}
               {(() => {
+                // Placeholder to preserve the IIFE structure for the
+                // section card. Returns null — no qualification chain
+                // rendered in Discover.
+                return null;
+                /* eslint-disable no-unreachable */
                 const reqs = getCareerRequirements(career.id) || getCareerRequirements(career.title);
                 if (!reqs) {
                   return (
@@ -853,21 +866,13 @@ function DiscoverTab({
           )}
         </div>
 
-        {/* Reality teaser — always visible */}
-        <div className="rounded-xl border border-border/30 bg-card/50 p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle className="h-3.5 w-3.5 text-rose-400" />
-            <span className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider">Good to know</span>
-          </div>
-          {dDetails?.realityCheck ? (
-            <p className="text-xs text-foreground/70 leading-relaxed">{dDetails.realityCheck}</p>
-          ) : (
-            <p className="text-xs text-muted-foreground/40">No specific notes for this career yet.</p>
-          )}
-        </div>
-
-        {/* Academic expectations — early signal about school readiness */}
+        {/* "Good to Know" and "School Readiness" removed from Discover —
+            these live in Understand's "The Reality" and "Education Pathway
+            → School Readiness" sections respectively. */}
         {(() => {
+          // Placeholder — keeps the grid layout even.
+          return null;
+          /* eslint-disable no-unreachable */
           const ap = getAcademicProfile(career);
           const dc = getDemandColors(ap.demand);
           return (
@@ -982,7 +987,10 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-opportunities', 'u-education-pathway', 'u-notes']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(
+    ['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-opportunities', 'u-education-pathway', 'u-notes'],
+    ['u-myths', 'u-opportunities'], // collapsed by default — supplementary sections
+  );
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -1227,15 +1235,6 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── What if I Change My Mind? (moved from Clarity — decision support, not action) ── */}
-      {career && goalTitle && (
-        <SectionCard>
-          <div className="p-4 sm:p-5">
-            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
-          </div>
-        </SectionCard>
-      )}
-
       {/* ── Where People Work ── */}
       <SectionCard>
         <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
@@ -1246,7 +1245,7 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── Opportunities (moved from Clarity — market info, not personal action) ── */}
+      {/* ── Opportunities ── */}
       <SectionCard>
         <SectionHeader icon={Briefcase} title="Opportunities" tooltip="Internships, traineeships, and graduate programmes at Norwegian companies for this career." collapsed={uCollapsed('u-opportunities')} onToggle={() => uToggle('u-opportunities')} />
         {!uCollapsed('u-opportunities') && (
@@ -1255,6 +1254,15 @@ function UnderstandTab({
           </div>
         )}
       </SectionCard>
+
+      {/* ── What if I Change My Mind? — after full picture, before study path ── */}
+      {career && goalTitle && (
+        <SectionCard>
+          <div className="p-4 sm:p-5">
+            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
+          </div>
+        </SectionCard>
+      )}
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
           inside a single card. The two sections used to live as two
@@ -2793,7 +2801,14 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         )}
       </SectionCard>
 
-      {/* ── Confidence Tracker ── */}
+      {/* ── Key Dates ── */}
+      <SectionCard>
+        <div className="p-4 sm:p-5">
+          <DeadlineAwareness careerId={career?.id ?? null} />
+        </div>
+      </SectionCard>
+
+      {/* ── Confidence Tracker (after dates — user absorbs roadmap + deadlines, then reflects) ── */}
       {career && goalTitle && (
         <SectionCard>
           <div className="p-4 sm:p-5">
@@ -2801,15 +2816,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           </div>
         </SectionCard>
       )}
-
-      {/* Opportunities + Pivot Preview moved to Understand tab */}
-
-      {/* ── Key Dates ── */}
-      <SectionCard>
-        <div className="p-4 sm:p-5">
-          <DeadlineAwareness careerId={career?.id ?? null} />
-        </div>
-      </SectionCard>
 
       {/* ── Share Journey ── */}
       {goalTitle && (
