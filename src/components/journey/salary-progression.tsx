@@ -75,8 +75,11 @@ function SalaryTooltip({ active, payload }: any) {
 // ── Custom bar label ───────────────────────────────────────────────
 
 function BarLabel(props: any) {
-  const { x, y, width, height, value } = props;
-  if (!value) return null;
+  const { x, y, width, height, value, payload } = props;
+  if (!payload) return null;
+  // Show "avg · up to max" at the end of the stacked bar
+  const avg = payload.avg;
+  const max = payload.max;
   return (
     <text
       x={x + width + 6}
@@ -86,7 +89,10 @@ function BarLabel(props: any) {
       fontWeight={600}
       dominantBaseline="central"
     >
-      {formatSalary(value)}
+      {formatSalary(avg)}
+      <tspan fill="hsl(260, 60%, 70%)" fontWeight={400}>
+        {' '}→ {formatSalary(max)}
+      </tspan>
     </text>
   );
 }
@@ -132,14 +138,13 @@ export function SalaryChart({
   medianK = null,
   note,
 }: SalaryChartProps) {
-  // Sort ascending by avg + compute stacked range values
+  // Sort ascending by avg + compute extension beyond avg
   const chartData = useMemo(() => {
     const sorted = [...data].sort((a, b) => a.avg - b.avg);
     return sorted.map((d) => ({
       ...d,
-      // For the stacked range bar: base starts at min, range extends to max
-      _rangeBase: d.min,
-      _rangeSpan: d.max - d.min,
+      // Extension = how far max goes beyond avg (stacked on top of avg bar)
+      _extension: d.max - d.avg,
     }));
   }, [data]);
 
@@ -220,41 +225,26 @@ export function SalaryChart({
               />
             )}
 
-            {/* Range bar (min → max): background band */}
-            <Bar
-              dataKey="_rangeSpan"
-              stackId="range"
-              barSize={barHeight}
-              radius={[4, 4, 4, 4]}
-              fill="hsl(260, 60%, 60%)"
-              fillOpacity={0.2}
-            >
-              {chartData.map((_, i) => (
-                <Cell key={i} />
-              ))}
-            </Bar>
-
-            {/* Invisible base to offset the range bar to start at min */}
-            <Bar
-              dataKey="_rangeBase"
-              stackId="range"
-              barSize={barHeight}
-              fill="transparent"
-            />
-
-            {/* Average bar: solid teal overlay */}
+            {/* Average bar (solid teal) + market-range extension
+                stacked on top. The extension shows how much higher
+                than average the top earners at this level make. */}
             <Bar
               dataKey="avg"
-              barSize={barHeight - 6}
-              radius={[4, 4, 4, 4]}
+              stackId="salary"
+              barSize={barHeight}
+              radius={[4, 0, 0, 4]}
               fill="hsl(166, 72%, 45%)"
               fillOpacity={0.85}
+            />
+            <Bar
+              dataKey="_extension"
+              stackId="salary"
+              barSize={barHeight}
+              radius={[0, 4, 4, 0]}
+              fill="hsl(260, 60%, 60%)"
+              fillOpacity={0.35}
               label={<BarLabel />}
-            >
-              {chartData.map((_, i) => (
-                <Cell key={i} />
-              ))}
-            </Bar>
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -272,7 +262,7 @@ export function SalaryChart({
           <span className="h-2 w-4 rounded-sm bg-[hsl(260,60%,60%)] opacity-20 border border-[hsl(260,60%,60%)]/30" />
           Market range
           <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
-            Typical salary spread (min to max) for this level in Norway
+            How much more than average the top earners at this level make
           </span>
         </span>
         {medianK && (
