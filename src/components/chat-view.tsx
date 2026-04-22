@@ -170,8 +170,9 @@ export function ChatView({ conversationId }: { conversationId: string }) {
     refetchIntervalInBackground: false,
   });
 
-  // Messaging intents removed
-  const intents: never[] = [];
+  // Messaging intents removed. Typed as the full MessageIntentData
+  // shape so the remaining JSX compiles against an empty array.
+  const intents: MessageIntentData[] = [];
 
   // Send message mutation
   const sendMutation = useMutation({

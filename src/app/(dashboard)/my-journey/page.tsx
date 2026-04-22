@@ -699,122 +699,10 @@ function DiscoverTab({
                 );
               })()}
               {/* How You Qualify removed — lives in Understand's Education
-                  Pathway → School Readiness tab. Discover stays light. */}
-              {(() => {
-                // Placeholder to preserve the IIFE structure for the
-                // section card. Returns null — no qualification chain
-                // rendered in Discover.
-                return null;
-                /* eslint-disable no-unreachable */
-                const reqs = getCareerRequirements(career.id) || getCareerRequirements(career.title);
-                if (!reqs) {
-                  return (
-                    <div className="w-full max-w-md rounded-lg border border-border/20 bg-muted/5 p-3">
-                      <div className="flex items-center justify-center gap-2 mb-1.5">
-                        <GraduationCap className="h-3.5 w-3.5 text-emerald-400/60" />
-                        <span className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider">Education Path</span>
-                      </div>
-                      <p className="text-xs text-foreground/80">{career.educationPath}</p>
-                    </div>
-                  );
-                }
-                // Merge specialisation note into the last pill's tooltip
-                const specNote = reqs.specialisationNote ? `\n\n${reqs.specialisationNote}` : '';
-
-                // Parse the free-text `minimumGrade` field into a structured
-                // shape. A grade pill is only inserted into the path chain
-                // when the career has a real cutoff — vocational / entry-
-                // accessible careers have no numeric cutoff in the source
-                // data and the pill stays hidden rather than faking one.
-                const grade = parseGradeRequirement(reqs.schoolSubjects.minimumGrade);
-                const gradeLabel = formatGradeLabel(grade);
-                const gradeTip = formatGradeTooltip(grade);
-
-                // Abbreviate the school-subjects label as "First +N" when
-                // there's more than one required subject, so the pill
-                // chain fits on a single row at typical desktop widths.
-                // The full list stays in the tooltip below, so no info
-                // is lost — just compressed.
-                const reqSubjects = reqs.schoolSubjects.required;
-                const schoolSubjectsLabel =
-                  reqSubjects.length > 0
-                    ? `Key subject: ${reqSubjects[0]}${reqSubjects.length > 1 ? ` +${reqSubjects.length - 1}` : ''}`
-                    : 'No specific subjects';
-
-                // Some careers (e.g. chef) now store a full arrow-chain
-                // in `programme` / `immediate` — that belongs in the
-                // tooltip, not the pill. Strip to the final outcome so
-                // each pill shows one concept, matching the compact
-                // overview we had before the dataset got richer.
-                const finalSegment = (s: string) =>
-                  s.includes('→') ? (s.split('→').pop() || s).trim() : s;
-                // Duration "4 years total (2 school + 2 apprenticeship)"
-                // → "4 years" for the pill; full form stays in tooltip.
-                const shortDuration = reqs.universityPath.duration
-                  .replace(/\s*\(.*\)\s*$/, '')
-                  .replace(/\s+total\s*$/i, '')
-                  .trim();
-                const programmeLabel = `${finalSegment(reqs.universityPath.programme)} · ${shortDuration}`;
-                const programmeTip = `${reqs.universityPath.programme} (${reqs.universityPath.duration}). e.g. ${reqs.universityPath.examples.join(', ')}. Apply via ${reqs.universityPath.applicationRoute}`;
-
-                type PathStep = { label: string; tip: string };
-                const steps: PathStep[] = [
-                  { label: schoolSubjectsLabel, tip: `Key subjects: ${reqSubjects.join(', ')}${reqs.schoolSubjects.recommended.length ? `. Also useful: ${reqs.schoolSubjects.recommended.join(', ')}` : ''}` },
-                  ...(grade.hasCutoff && grade.gradeMin !== null && grade.gradeMax !== null
-                    ? [{ label: `Typical grades: ${grade.gradeMin}–${grade.gradeMax}`, tip: gradeTip || 'Typical grade requirement for this path' }]
-                    : []),
-                  { label: programmeLabel, tip: programmeTip },
-                  { label: finalSegment(reqs.entryLevelRequirements.title), tip: reqs.entryLevelRequirements.description },
-                  { label: finalSegment(reqs.qualifiesFor.immediate), tip: `First role: ${reqs.qualifiesFor.immediate}. With experience: ${reqs.qualifiesFor.withExperience}` },
-                ];
-                return (
-                  <div className="w-full rounded-lg border border-border/20 bg-muted/5 px-3 py-2.5">
-                    <div className="flex flex-col items-center gap-0.5 mb-2">
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-[10px] font-medium text-emerald-400/60 uppercase tracking-wider text-center">
-                          How you qualify (Norway)
-                          {career.entryLevel && <span className="ml-1.5 normal-case tracking-normal text-muted-foreground/40">· No degree required</span>}
-                        </p>
-                        <TooltipProvider delayDuration={150}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="h-3 w-3 text-muted-foreground/35 hover:text-muted-foreground/60 transition-colors cursor-help shrink-0" />
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[280px] text-[11px] leading-snug">
-                              In Norway, admission is based on grades and subjects through a centralised system (Samordna opptak). This shows the typical path from school to your first role.
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-[9px] text-muted-foreground/35">Aligned with centralised admissions (Samordna opptak)</p>
-                    </div>
-                    {/* Tight horizontal chain. gap-1 + px-1.5 save
-                        ~30px over the previous gap-1.5 + px-2 values,
-                        which combined with the abbreviated school-
-                        subjects label lets typical Discover careers
-                        (4-5 pills + arrows) fit on a single row at
-                        normal desktop widths. justify-center pairs
-                        with the centred title above. flex-wrap remains
-                        as a graceful fallback on narrow viewports. */}
-                    <div
-                      className="flex items-center gap-1 overflow-x-auto pb-1 -mx-1 px-1"
-                      style={{ scrollbarWidth: 'thin' }}
-                    >
-                      {steps.map((s, i) => (
-                        <div key={i} className="contents">
-                          {i > 0 && <span className="text-[10px] text-muted-foreground/30 shrink-0">→</span>}
-                          <span
-                            title={s.tip}
-                            className="inline-flex items-center gap-1 shrink-0 rounded-md border border-border/15 bg-muted/10 px-1.5 py-0.5 text-[10px] text-foreground/70 hover:bg-muted/20 transition-colors whitespace-nowrap"
-                          >
-                            <span>{s.label}</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
+                  Pathway → School Readiness tab. The old ~110-line
+                  per-career requirements chain is preserved in git
+                  history (pre-2026-04-22) if it needs to be resurrected
+                  for a different surface. */}
             </div>}
           </SectionCard>
         </div>
@@ -870,28 +758,8 @@ function DiscoverTab({
 
         {/* "Good to Know" and "School Readiness" removed from Discover —
             these live in Understand's "The Reality" and "Education Pathway
-            → School Readiness" sections respectively. */}
-        {(() => {
-          // Placeholder — keeps the grid layout even.
-          return null;
-          /* eslint-disable no-unreachable */
-          const ap = getAcademicProfile(career);
-          const dc = getDemandColors(ap.demand);
-          return (
-            <div className="rounded-xl border border-border/30 bg-card/50 p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <GraduationCap className={`h-3.5 w-3.5 ${dc.text}`} />
-                <span className={`text-[10px] font-semibold uppercase tracking-wider ${dc.text}`}>School readiness</span>
-              </div>
-              <p className="text-xs text-foreground/70 leading-relaxed">{ap.discoverHint}</p>
-              {ap.grade.hasCutoff && ap.grade.gradeMin !== null && (
-                <p className="text-[10px] text-muted-foreground/50 mt-1.5">
-                  Typical grades: {ap.grade.gradeMin}–{ap.grade.gradeMax} on the Norwegian 1–6 scale
-                </p>
-              )}
-            </div>
-          );
-        })()}
+            → School Readiness" sections respectively. The pre-2026-04-22
+            dead IIFE was removed; pull from git history if needed. */}
       </div>
 
       {/* Self-confirmation — drives the dashboard's Discover progress

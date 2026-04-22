@@ -28,7 +28,9 @@ export async function GET(req: NextRequest) {
     const links = await prisma.workerGuardianLink.findMany({
       where: {
         guardianId: session.user.id,
-        status: "VERIFIED",
+        // Enum has PENDING | ACTIVE | REVOKED — ACTIVE is the
+        // equivalent of the old "VERIFIED" state.
+        status: "ACTIVE",
       },
       select: {
         workerId: true,
@@ -56,7 +58,7 @@ export async function GET(req: NextRequest) {
         user: {
           select: {
             journeyGoalData: {
-              where: { slot: "PRIMARY" },
+              where: { isActive: true },
               select: {
                 goalTitle: true,
                 journeySummary: true,

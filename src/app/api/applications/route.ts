@@ -48,8 +48,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = applicationSchema.parse(body);
 
-    // Messaging removed — application message is now plain text only.
-    const renderedMessage: string | null = validatedData.message ?? null;
+    // Messaging removed — applications no longer carry a text message.
+    // New rows write null; historical rows keep their value via the
+    // F10 soft-migration (FREE_TEXT_LEGACY intent).
+    const renderedMessage: string | null = null;
 
     // Age eligibility check - server-side enforcement
     const ageCheck = await canApplyToJob(session.user.id, validatedData.jobId);
