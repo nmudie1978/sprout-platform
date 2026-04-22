@@ -58,7 +58,7 @@ import { getAcademicProfile, getDemandLabel, getDemandColors, getPathwayLabel, g
 import { EducationBrowser } from '@/components/education-browser';
 import { FundingSection } from '@/components/education-browser/funding-section';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
-import { DaySimulationCard } from '@/components/journey/day-simulation';
+// Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
@@ -1218,28 +1218,6 @@ function UnderstandTab({
           <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
         )}
 
-        {/* Interactive Day Simulation — embedded as a sub-section
-            of "A Typical Day" so the user reads the static timeline
-            then can optionally "experience it" interactively. */}
-        {!uCollapsed('u-day') && details?.typicalDay && (() => {
-          const allTasks = [
-            ...(details.typicalDay.morning ?? []),
-            ...(details.typicalDay.midday ?? []),
-            ...(details.typicalDay.afternoon ?? []),
-          ];
-          if (allTasks.length < 4) return null;
-          return (
-            <div className="px-4 sm:px-5 pb-4">
-              <DaySimulationCard
-                careerId={career?.id ?? ''}
-                careerTitle={goalTitle ?? ''}
-                dailyTasks={allTasks}
-                tools={details.typicalDay.tools ?? []}
-                workSetting={details.typicalDay.environment?.includes('office') ? 'office' : details.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
-              />
-            </div>
-          );
-        })()}
       </SectionCard>
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
