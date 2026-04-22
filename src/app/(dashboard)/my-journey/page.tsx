@@ -499,6 +499,7 @@ function DiscoverTab({
   onGoToUnderstand?: () => void;
 }) {
   const [roadmapFullscreen, setRoadmapFullscreen] = useState(false);
+  const [showSalaryPopup, setShowSalaryPopup] = useState(false);
   const { data: ytData } = useYouTubeVideo(goalTitle);
   const { data: discoverDetails } = useCareerDetails(career?.id ?? null);
   // Video carousel state. The YouTube search returns up to 5 Day-in-the-
@@ -662,16 +663,16 @@ function DiscoverTab({
                 return (
                   <div className="grid grid-cols-2 gap-3 w-full max-w-md">
                     <div>
-                      <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Varies by experience, location, and employer.`} />
-                      {onGoToUnderstand && (
-                        <button
-                          type="button"
-                          onClick={onGoToUnderstand}
-                          className="text-[9px] text-primary/70 hover:text-primary font-medium mt-1.5 flex items-center gap-0.5 transition-colors"
-                        >
-                          See full progression →
-                        </button>
-                      )}
+                      <button type="button" onClick={() => setShowSalaryPopup(true)} className="w-full text-left">
+                        <StatCard label="Annual Salary" value={formatSalaryShort(career.avgSalary)} icon={DollarSign} accent="text-emerald-400" tooltip={`Typical annual gross salary in Norway: ${career.avgSalary.replace('/year', '')}. Tap to see full progression.`} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowSalaryPopup(true)}
+                        className="text-[9px] text-primary/70 hover:text-primary font-medium mt-1.5 flex items-center gap-0.5 transition-colors"
+                      >
+                        See full progression →
+                      </button>
                     </div>
                     <StatCard
                       label="Growth"
@@ -911,6 +912,24 @@ function DiscoverTab({
           Understand <ArrowRight className="h-4 w-4" />
         </button>
       </div>
+
+      {/* Salary Progression popup */}
+      {showSalaryPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setShowSalaryPopup(false)}>
+          <div
+            className="bg-card border border-border/40 rounded-xl max-w-2xl w-full p-5 shadow-xl max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-foreground/90">Salary Progression</h3>
+              <button type="button" onClick={() => setShowSalaryPopup(false)} className="p-1 hover:bg-muted/40 rounded transition-colors">
+                <X className="h-4 w-4 text-muted-foreground/60" />
+              </button>
+            </div>
+            <SalaryProgressionChart careerId={career?.id ?? null} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1206,59 +1225,12 @@ function UnderstandTab({
         )}
       </SectionCard>
 
-      {/* ── Salary & Employers (tabbed) ── */}
+      {/* ── Where People Work ── */}
       <SectionCard>
-        <SectionHeader icon={DollarSign} title="Salary & Employers" tooltip="How salary grows from entry-level to senior — and which Norwegian companies hire for this role." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+        <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
         {!uCollapsed('u-salary') && (
-          <div className="p-4">
-            <Tabs defaultValue="salary" className="w-full">
-              <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none mb-4">
-                <TabsTrigger
-                  value="salary"
-                  className="
-                    relative rounded-none border-0 bg-transparent
-                    px-4 py-3 text-sm font-semibold
-                    text-muted-foreground/65 hover:text-foreground/85 transition-colors
-                    data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
-                    data-[state=active]:shadow-none
-                    after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                    after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
-                    data-[state=active]:after:scale-x-100
-                  "
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4" />
-                    Salary Progression
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="employers"
-                  className="
-                    relative rounded-none border-0 bg-transparent
-                    px-4 py-3 text-sm font-semibold
-                    text-muted-foreground/65 hover:text-foreground/85 transition-colors
-                    data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
-                    data-[state=active]:shadow-none
-                    after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                    after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
-                    data-[state=active]:after:scale-x-100
-                  "
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    Where People Work
-                  </span>
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="salary">
-                <SalaryProgressionChart careerId={career?.id ?? null} />
-              </TabsContent>
-
-              <TabsContent value="employers">
-                <TopEmployers careerId={career?.id ?? null} />
-              </TabsContent>
-            </Tabs>
+          <div className="p-4 sm:p-5">
+            <TopEmployers careerId={career?.id ?? null} />
           </div>
         )}
       </SectionCard>
