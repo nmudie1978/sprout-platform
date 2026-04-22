@@ -60,6 +60,32 @@
       "estimatedYears": 6
     },
     {
+      "id": "robotics-engineer--lab-to-industry",
+      "careerId": "robotics-engineer",
+      "name": "Kari L. — Lab assistant → autonomous vehicles (Oslo)",
+      "shortName": "Kari's path",
+      "summary": "Started with a part-time hardware role during studies, moved through a university research lab, then into industry robotics — from USVs to autonomous ferries in Oslo.",
+      "tags": [
+        "common"
+      ],
+      "isDefault": true,
+      "countryCode": "NO",
+      "estimatedYears": 7
+    },
+    {
+      "id": "robotics-engineer--research-track",
+      "careerId": "robotics-engineer",
+      "name": "Erik M. — Research-heavy route via NTNU (Trondheim → Oslo)",
+      "shortName": "Erik's path",
+      "summary": "Took the academic route: bachelor + master at NTNU in cybernetics, then a PhD stint before joining a defence-tech company. More research-oriented, longer path, but deep technical expertise.",
+      "tags": [
+        "elite"
+      ],
+      "isDefault": false,
+      "countryCode": "NO",
+      "estimatedYears": 9
+    },
+    {
       "id": "doctor--standard",
       "careerId": "doctor",
       "name": "Standard route",

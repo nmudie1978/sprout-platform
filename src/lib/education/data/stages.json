@@ -146,6 +146,85 @@
       "outcome": "Project manager role across many industries"
     },
     {
+      "id": "robotics-engineer--lab-to-industry--degree",
+      "routeId": "robotics-engineer--lab-to-industry",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Bachelor in Computer Science or Engineering",
+      "durationYears": 3,
+      "description": "Studied computer science at OsloMet. During the degree, took a part-time hardware test role at a tech company (reMarkable) — hands-on experience with physical products from year one.",
+      "programmeIds": [],
+      "outcome": "BSc + practical hardware experience before graduation"
+    },
+    {
+      "id": "robotics-engineer--lab-to-industry--lab",
+      "routeId": "robotics-engineer--lab-to-industry",
+      "orderIndex": 1,
+      "kind": "experience",
+      "title": "University lab assistant (OceanLab — autonomous vessels)",
+      "durationYears": 0.6,
+      "description": "Maintained and operated an unmanned surface vehicle (USV) at the university's ocean robotics lab. First real exposure to autonomous systems, sensor integration, and ROS.",
+      "programmeIds": [],
+      "outcome": "Practical robotics + C++ + autonomous systems experience"
+    },
+    {
+      "id": "robotics-engineer--lab-to-industry--junior",
+      "routeId": "robotics-engineer--lab-to-industry",
+      "orderIndex": 2,
+      "kind": "experience",
+      "title": "AI & Robotics Engineer (first industry role)",
+      "durationYears": 1,
+      "description": "Joined a company building data architecture for autonomous systems. Combined AI and robotics skills in a real product team. Rapid learning curve — moved from junior to confident contributor in under a year.",
+      "programmeIds": [],
+      "outcome": "Industry-level robotics + AI + data architecture skills"
+    },
+    {
+      "id": "robotics-engineer--lab-to-industry--senior",
+      "routeId": "robotics-engineer--lab-to-industry",
+      "orderIndex": 3,
+      "kind": "experience",
+      "title": "Senior Robotics Engineer → autonomous ferries (HYKE)",
+      "durationYears": 2,
+      "description": "Promoted to senior, then moved to HYKE / Hydrolift Smart City Ferries — working on autonomous electric ferries for Oslo's waterways. Leading robotics integration for real-world urban transport.",
+      "programmeIds": [],
+      "outcome": "Senior robotics role in cutting-edge Norwegian autonomous transport"
+    },
+    {
+      "id": "robotics-engineer--research-track--degree",
+      "routeId": "robotics-engineer--research-track",
+      "orderIndex": 0,
+      "kind": "education",
+      "title": "Bachelor + Master in Cybernetics / Robotics at NTNU",
+      "durationYears": 5,
+      "description": "5-year sivilingeniør at NTNU in cybernetics and robotics. Master thesis on autonomous navigation using SLAM and computer vision. Deep theoretical foundation in control systems, signal processing, and embedded programming.",
+      "programmeIds": [
+        "no-ntnu-sivilingeni-r"
+      ],
+      "outcome": "MSc Cybernetics / Robotics (sivilingeniør) from NTNU"
+    },
+    {
+      "id": "robotics-engineer--research-track--phd",
+      "routeId": "robotics-engineer--research-track",
+      "orderIndex": 1,
+      "kind": "education",
+      "title": "PhD in Autonomous Systems (2 years before leaving)",
+      "durationYears": 2,
+      "description": "Started a PhD on multi-robot coordination at NTNU. Published 3 papers but decided industry was more appealing than academia after 2 years. Left without completing — the research experience still opened industry doors.",
+      "programmeIds": [],
+      "outcome": "Deep research expertise + publications + industry credibility"
+    },
+    {
+      "id": "robotics-engineer--research-track--industry",
+      "routeId": "robotics-engineer--research-track",
+      "orderIndex": 2,
+      "kind": "experience",
+      "title": "Robotics Engineer at Kongsberg Defence & Aerospace",
+      "durationYears": 2,
+      "description": "Joined Kongsberg's autonomous systems division in Oslo. Works on unmanned underwater vehicles (UUVs) and autonomous navigation for defence applications. Research background was the differentiator in hiring.",
+      "programmeIds": [],
+      "outcome": "Senior robotics role in Norway's defence-tech sector"
+    },
+    {
       "id": "doctor--standard--education",
       "routeId": "doctor--standard",
       "orderIndex": 0,
