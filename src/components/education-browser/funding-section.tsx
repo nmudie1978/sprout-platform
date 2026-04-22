@@ -8,8 +8,8 @@
  * accent), then universal Lånekassen cards.
  */
 
-import { useMemo, useRef } from 'react';
-import { Banknote, ExternalLink, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
+import { Banknote, ExternalLink, Sparkles, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getFundingForCareer, type FundingSource } from '@/lib/education/funding';
 
@@ -59,6 +59,8 @@ export function FundingSection({ careerId }: FundingSectionProps) {
   ], [funding]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const [expanded, setExpanded] = useState(false);
+
   if (all.length === 0) return null;
 
   const scroll = (dir: 'left' | 'right') => {
@@ -68,8 +70,12 @@ export function FundingSection({ careerId }: FundingSectionProps) {
 
   return (
     <div className="space-y-2">
-      {/* Header row */}
-      <div className="flex items-center justify-between">
+      {/* Header row — clickable to expand/collapse */}
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between group"
+      >
         <div className="flex items-center gap-2">
           <Banknote className="h-3.5 w-3.5 text-emerald-400" />
           <h3 className="text-[12px] font-semibold text-foreground/85">
@@ -82,29 +88,39 @@ export function FundingSection({ careerId }: FundingSectionProps) {
             </span>
           )}
         </div>
-        {/* Scroll arrows (hidden when everything fits) */}
-        {all.length > 2 && (
-          <div className="flex items-center gap-1">
-            <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll left">
-              <ChevronLeft className="h-3.5 w-3.5" />
-            </button>
-            <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll right">
-              <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          </div>
+        {expanded ? (
+          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground/40" />
+        ) : (
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/40" />
         )}
-      </div>
+      </button>
 
       {/* Horizontal scroll */}
-      <div
-        ref={scrollRef}
-        className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1"
-        style={{ scrollbarWidth: 'none' }}
-      >
-        {all.map(({ source, highlight }) => (
-          <CompactCard key={source.id} source={source} highlight={highlight} />
-        ))}
-      </div>
+      {expanded && (
+        <div className="flex items-center justify-end gap-1 -mb-1">
+          {all.length > 2 && (
+            <>
+              <button type="button" onClick={() => scroll('left')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll left">
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
+              <button type="button" onClick={() => scroll('right')} className="p-1 rounded hover:bg-muted/40 text-muted-foreground/50 hover:text-foreground transition-colors" aria-label="Scroll right">
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </>
+          )}
+        </div>
+      )}
+      {expanded && (
+        <div
+          ref={scrollRef}
+          className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {all.map(({ source, highlight }) => (
+            <CompactCard key={source.id} source={source} highlight={highlight} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

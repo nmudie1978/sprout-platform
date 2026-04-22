@@ -966,7 +966,7 @@ function UnderstandTab({
         }}
       >
         <p className="text-sm text-foreground/70 leading-[1.8]">
-          Here&apos;s what being a <span className="font-semibold text-foreground/90">{goalTitle}</span> actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
+          Here&apos;s what being a <span className="font-semibold text-foreground/90">{goalTitle}</span>{' '}actually involves — the real responsibilities, a typical working day, and the education and training you&apos;ll need to get there.
         </p>
       </div>
 
