@@ -65,8 +65,20 @@ import {
 } from "@/components/ui/tooltip";
 import { ConfirmPaymentButton } from "@/components/confirm-payment-button";
 import { RecommendFriendDialog } from "@/components/recommend-friend-dialog";
-// Messaging removed — intent templates no longer used
+// Messaging / intent templates were removed along with the Small Jobs
+// messaging pipeline. This page's apply-form JSX is still present but
+// unreachable at runtime (the /jobs/* surface is gated off by the
+// SMALL_JOBS_ENABLED flag + middleware). These local stubs keep the
+// file compiling until the dead apply-form JSX is fully retired.
+// DO NOT add new uses — these intentionally return empty data.
 type SelectableMessageIntent = string;
+const MESSAGE_INTENT_TEMPLATES: Record<string, { label: string; description: string; variables: { name: string; label: string; placeholder?: string; maxLength?: number; required?: boolean }[] }> = {};
+const renderIntentMessage = (_intent: string, _vars: Record<string, string>): string => "";
+const validateIntentVariables = (
+  _intent: string,
+  _vars: Record<string, string>,
+  _ageBracket: string | null | undefined,
+): { valid: boolean; errors: string[] } => ({ valid: true, errors: [] });
 import { APPLICATION_INTENTS } from "@/lib/validations/job";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";

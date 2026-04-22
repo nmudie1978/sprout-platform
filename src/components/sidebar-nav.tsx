@@ -421,8 +421,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} personal tooltip="Your home base — recent activity, suggested next moves, and a quick view of your journey." />
               <NavItem href="/my-journey" icon={Route} label="My Journey" active={isActive("/my-journey")} statusDot={hasActiveJourney} collapsed={collapsed} personal tooltip="Your guided path: Discover. Understand. Clarity." />
               <NavItem href="/careers/radar" icon={Radar} label="My Career Radar" active={isActive("/careers/radar")} collapsed={collapsed} personal tooltip="Personalised career match based on what you like, your strengths, and how you want to work." />
-              {SMALL_JOBS_ENABLED && (
-              )}
             </NavSection>
 
             <NavSection title="Explore" collapsed={collapsed}>

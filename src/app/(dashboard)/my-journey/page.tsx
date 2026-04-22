@@ -30,6 +30,7 @@ import {
   Heart, Wrench, Check, CheckCircle2, Clock, MapPin, Award, Users,
   DollarSign, BarChart3, Layers, AlertCircle, Plus, Trash2, Tag, Video, Zap, Info,
   Building2, Shield, Loader2, Download, FileText, ListChecks, CheckCircle,
+  ArrowRightLeft,
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -308,7 +309,8 @@ function FullscreenRoadmap({ goalTitle, onClose }: { goalTitle: string; onClose:
 
 // ─── Shared UI components ────────────────────────────────────────────────────
 
-function SectionCard({ children, className, style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
+function SectionCard({ children, className, style, accent }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; accent?: 'teal' | 'amber' | 'blue' }) {
+  const accentBorder = accent === 'teal' ? 'border-l-[3px] border-l-teal-500/60' : accent === 'amber' ? 'border-l-[3px] border-l-amber-500/60' : accent === 'blue' ? 'border-l-[3px] border-l-blue-500/60' : '';
   // Border thickness: 1px → 1.2px (+20%). The default Tailwind `border`
   // class is 1px; `border-[1.2px]` bumps it to the exact 20% increase
   // requested — renders cleanly on hidpi displays as a touch bolder.
@@ -319,7 +321,7 @@ function SectionCard({ children, className, style }: { children: React.ReactNode
   // The drop-shadow layer (rgba(0,0,0,0.2)) is unchanged — that's a
   // structural shadow, not part of the glow.
   return (
-    <div className={cn('rounded-xl border-[1.2px] border-border/60 bg-card/50 overflow-hidden', className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.096), 0 0 40px rgba(139,92,246,0.048)', ...style }}>
+    <div className={cn('rounded-xl border-[1.2px] border-border/60 bg-card/50 overflow-hidden', accentBorder, className)} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.2), 0 0 20px rgba(139,92,246,0.096), 0 0 40px rgba(139,92,246,0.048)', ...style }}>
       {children}
     </div>
   );
@@ -1029,7 +1031,7 @@ function UnderstandTab({
             in a single surface reduces section count on the Understand
             tab. Tabs follow the same styling as Education Pathway
             (full-width, teal underline) for visual consistency. */}
-        <SectionCard>
+        <SectionCard accent="teal">
           <SectionHeader
             icon={Briefcase}
             title="What You'll Do"
@@ -1089,7 +1091,7 @@ function UnderstandTab({
         </SectionCard>
 
         {/* Right: The Reality — dynamic reality check */}
-        <SectionCard>
+        <SectionCard accent="amber">
           <SectionHeader icon={Eye} title="The Reality" tooltip="An honest look at what this career is really like — the challenges, trade-offs, and what makes someone a good fit." collapsed={uCollapsed('u-reality')} onToggle={() => uToggle('u-reality')} />
           {!uCollapsed('u-reality') && <div className="p-4 space-y-3">
             {realityLoading ? (
@@ -1167,7 +1169,7 @@ function UnderstandTab({
           it contextualises. */}
 
       {/* ── MIDDLE: A Typical Day — horizontal timeline ── */}
-      <SectionCard>
+      <SectionCard accent="blue">
         <SectionHeader icon={Clock} title="A Typical Day" tooltip="What a real working day looks like in this role — morning, midday, and afternoon — so you can picture yourself in it." collapsed={uCollapsed('u-day')} onToggle={() => uToggle('u-day')} />
         {uCollapsed('u-day') ? null : detailsLoading ? <div className="p-4"><LoadingSkeleton /></div> : details && details.typicalDay.morning.length > 0 ? (
           <div className="p-4 sm:p-5">
@@ -1225,15 +1227,59 @@ function UnderstandTab({
 
       </SectionCard>
 
-      {/* ── Common Misconceptions (standalone) ── */}
-      <SectionCard>
-        <SectionHeader icon={Shield} title="Common Misconceptions" tooltip="What most people get wrong about this career — and the evidence-based reality." collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
-        {!uCollapsed('u-myths') && (
-          <div className="p-4 sm:p-5">
-            <CareerMythBuster careerId={career?.id ?? null} />
-          </div>
-        )}
-      </SectionCard>
+      {/* ── Supplementary strip — horizontal carousel of compact cards.
+          Replaces 3 separate collapsible sections with one scroll strip
+          to reduce vertical noise. Each card opens as a popup. ── */}
+      {(() => {
+        const [openSupp, setOpenSupp] = useState<'myths' | 'opportunities' | 'pivot' | null>(null);
+        const suppItems = [
+          { id: 'myths' as const, icon: Shield, title: 'Common Misconceptions', teaser: 'What most people get wrong about this career' },
+          { id: 'opportunities' as const, icon: Briefcase, title: 'Opportunities', teaser: 'Internships, traineeships & graduate programmes' },
+          ...(career && goalTitle ? [{ id: 'pivot' as const, icon: ArrowRightLeft, title: 'What if I Change My Mind?', teaser: 'What transfers if you switch careers' }] : []),
+        ];
+        return (
+          <>
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1" style={{ scrollbarWidth: 'none' }}>
+              {suppItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setOpenSupp(item.id)}
+                    className="flex items-start gap-2.5 min-w-[200px] max-w-[240px] shrink-0 rounded-lg border border-border/30 bg-card/40 px-3 py-2.5 text-left hover:border-border/50 hover:bg-card/60 transition-colors"
+                  >
+                    <Icon className="h-4 w-4 text-muted-foreground/50 shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-medium text-foreground/85 leading-snug">{item.title}</p>
+                      <p className="text-[9px] text-muted-foreground/50 mt-0.5 leading-relaxed">{item.teaser}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Popup for supplementary content */}
+            {openSupp && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setOpenSupp(null)}>
+                <div className="bg-card border border-border/40 rounded-xl max-w-2xl w-full p-5 shadow-xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-foreground/90">
+                      {suppItems.find((s) => s.id === openSupp)?.title}
+                    </h3>
+                    <button type="button" onClick={() => setOpenSupp(null)} className="p-1 hover:bg-muted/40 rounded transition-colors">
+                      <X className="h-4 w-4 text-muted-foreground/60" />
+                    </button>
+                  </div>
+                  {openSupp === 'myths' && <CareerMythBuster careerId={career?.id ?? null} />}
+                  {openSupp === 'opportunities' && <OpportunityMatches careerId={career?.id ?? null} />}
+                  {openSupp === 'pivot' && career && goalTitle && <PivotPreview careerId={career.id} careerTitle={goalTitle} />}
+                </div>
+              </div>
+            )}
+          </>
+        );
+      })()}
 
       {/* ── Where People Work ── */}
       <SectionCard>
@@ -1244,25 +1290,6 @@ function UnderstandTab({
           </div>
         )}
       </SectionCard>
-
-      {/* ── Opportunities ── */}
-      <SectionCard>
-        <SectionHeader icon={Briefcase} title="Opportunities" tooltip="Internships, traineeships, and graduate programmes at Norwegian companies for this career." collapsed={uCollapsed('u-opportunities')} onToggle={() => uToggle('u-opportunities')} />
-        {!uCollapsed('u-opportunities') && (
-          <div className="p-4 sm:p-5">
-            <OpportunityMatches careerId={career?.id ?? null} />
-          </div>
-        )}
-      </SectionCard>
-
-      {/* ── What if I Change My Mind? — after full picture, before study path ── */}
-      {career && goalTitle && (
-        <SectionCard>
-          <div className="p-4 sm:p-5">
-            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
-          </div>
-        </SectionCard>
-      )}
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
           inside a single card. The two sections used to live as two
@@ -1635,28 +1662,26 @@ function UnderstandTab({
           tasks + tools used) are read together and having them on one
           surface cuts the section count on Understand. */}
 
-      {/* Self-confirmation — drives the dashboard's Understand progress
-          AND the tab lock. The Understand tab is read-only deep-dive
-          content, so a deliberate YES is the cleanest completion signal
-          we can capture, and it's also the only thing that unlocks Clarity. */}
-      <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
-
-      {/* Next — gated on the confirmation above. Clicking without
-          confirming is a no-op (disabled). */}
-      <div className="flex justify-end pt-2">
-        <button
-          onClick={onContinue}
-          disabled={!isUnderstandConfirmed(goalTitle)}
-          className={cn(
-            'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-            isUnderstandConfirmed(goalTitle)
-              ? 'text-muted-foreground/60 hover:text-foreground hover:bg-muted/30'
-              : 'text-muted-foreground/25 cursor-not-allowed',
-          )}
-          title={isUnderstandConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
-        >
-          Clarity <ArrowRight className="h-4 w-4" />
-        </button>
+      {/* Sticky confirmation footer — appears at the bottom of the
+          viewport so the user doesn't have to scroll all the way down
+          to find it. Combines the confirm question + continue button. */}
+      <div className="sticky bottom-0 z-20 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-t border-border/30 mt-6">
+        <div className="flex items-center justify-between gap-4 max-w-3xl mx-auto">
+          <UnderstandConfirmCard careerTitle={goalTitle} onChange={onConfirmChange} />
+          <button
+            onClick={onContinue}
+            disabled={!isUnderstandConfirmed(goalTitle)}
+            className={cn(
+              'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0',
+              isUnderstandConfirmed(goalTitle)
+                ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                : 'text-muted-foreground/25 cursor-not-allowed bg-muted/20',
+            )}
+            title={isUnderstandConfirmed(goalTitle) ? undefined : 'Answer the question above first'}
+          >
+            Clarity <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
