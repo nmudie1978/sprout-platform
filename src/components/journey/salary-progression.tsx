@@ -226,8 +226,8 @@ export function SalaryChart({
               stackId="range"
               barSize={barHeight}
               radius={[4, 4, 4, 4]}
-              fill="hsl(30, 80%, 50%)"
-              fillOpacity={0.15}
+              fill="hsl(260, 60%, 60%)"
+              fillOpacity={0.2}
             >
               {chartData.map((_, i) => (
                 <Cell key={i} />
@@ -261,18 +261,27 @@ export function SalaryChart({
 
       {/* Legend */}
       <div className="flex items-center gap-4 text-[9px] text-muted-foreground/50">
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 group relative cursor-default">
           <span className="h-2 w-4 rounded-sm bg-[hsl(166,72%,45%)] opacity-85" />
           Average
+          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+            Mid-point between min and max for this level
+          </span>
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2 w-4 rounded-sm bg-[hsl(166,40%,35%)] opacity-15 border border-[hsl(166,40%,35%)]/30" />
+        <span className="flex items-center gap-1.5 group relative cursor-default">
+          <span className="h-2 w-4 rounded-sm bg-[hsl(260,60%,60%)] opacity-20 border border-[hsl(260,60%,60%)]/30" />
           Market range
+          <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+            Typical salary spread (min to max) for this level in Norway
+          </span>
         </span>
         {medianK && (
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 group relative cursor-default">
             <span className="h-px w-4 border-t border-dashed border-[hsl(215,10%,40%)]" />
             National median
+            <span className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-[hsl(220,20%,14%)] border border-[hsl(220,15%,25%)] rounded px-2 py-1 text-[9px] text-foreground/80 whitespace-nowrap shadow-lg z-10">
+              Norway&apos;s median salary across all professions (~{formatSalary(medianK)} kr/year)
+            </span>
           </span>
         )}
       </div>
