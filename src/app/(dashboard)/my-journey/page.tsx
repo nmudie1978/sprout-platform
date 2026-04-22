@@ -639,28 +639,7 @@ function DiscoverTab({
           </div>}
         </SectionCard>
 
-        {/* Interactive Day Simulation — built from morning/midday/afternoon tasks */}
-        {dDetails?.typicalDay && (() => {
-          const allTasks = [
-            ...(dDetails.typicalDay.morning ?? []),
-            ...(dDetails.typicalDay.midday ?? []),
-            ...(dDetails.typicalDay.afternoon ?? []),
-          ];
-          if (allTasks.length < 4) return null;
-          return (
-            <SectionCard>
-              <div className="p-3">
-                <DaySimulationCard
-                  careerId={career?.id ?? ''}
-                  careerTitle={goalTitle ?? ''}
-                  dailyTasks={allTasks}
-                  tools={dDetails.typicalDay.tools ?? []}
-                  workSetting={dDetails.typicalDay.environment?.includes('office') ? 'office' : dDetails.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
-                />
-              </div>
-            </SectionCard>
-          );
-        })()}
+        {/* Day Simulation moved to Understand tab → "A Typical Day" section */}
 
         {/* Overview stats — 3 cols */}
         <div className="lg:col-span-3 space-y-4">
@@ -1238,6 +1217,29 @@ function UnderstandTab({
         ) : (
           <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
         )}
+
+        {/* Interactive Day Simulation — embedded as a sub-section
+            of "A Typical Day" so the user reads the static timeline
+            then can optionally "experience it" interactively. */}
+        {!uCollapsed('u-day') && details?.typicalDay && (() => {
+          const allTasks = [
+            ...(details.typicalDay.morning ?? []),
+            ...(details.typicalDay.midday ?? []),
+            ...(details.typicalDay.afternoon ?? []),
+          ];
+          if (allTasks.length < 4) return null;
+          return (
+            <div className="px-4 sm:px-5 pb-4">
+              <DaySimulationCard
+                careerId={career?.id ?? ''}
+                careerTitle={goalTitle ?? ''}
+                dailyTasks={allTasks}
+                tools={details.typicalDay.tools ?? []}
+                workSetting={details.typicalDay.environment?.includes('office') ? 'office' : details.typicalDay.environment?.includes('outdoor') ? 'field' : 'office'}
+              />
+            </div>
+          );
+        })()}
       </SectionCard>
 
       {/* ── Education Pathway — School Readiness + Study Path as tabs
