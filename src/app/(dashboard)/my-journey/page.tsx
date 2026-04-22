@@ -1245,6 +1245,8 @@ function UnderstandTab({
           nordicProgs.length > 0 ||
           !!reqs?.universityPath?.programme;
 
+        const certPath = career ? getCertificationPath(career.id, goalTitle || career.title) : null;
+
         return (
           <SectionCard>
             <SectionHeader
@@ -1262,7 +1264,7 @@ function UnderstandTab({
                       clear active state (teal underline + solid
                       background) so they read as a primary navigation
                       control rather than a small pill filter. */}
-                  <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none">
+                  <TabsList className={cn("grid w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none", certPath ? "grid-cols-3" : "grid-cols-2")}>
                     <TabsTrigger
                       value="readiness"
                       className="
@@ -1299,6 +1301,26 @@ function UnderstandTab({
                         Study Path
                       </span>
                     </TabsTrigger>
+                    {certPath && (
+                      <TabsTrigger
+                        value="certifications"
+                        className="
+                          relative rounded-none border-0 bg-transparent
+                          px-4 py-3.5 text-sm font-semibold
+                          text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                          data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                          data-[state=active]:shadow-none
+                          after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                          after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                          data-[state=active]:after:scale-x-100
+                        "
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          <Award className="h-4 w-4" />
+                          Certifications
+                        </span>
+                      </TabsTrigger>
+                    )}
                   </TabsList>
 
                   <TabsContent value="readiness" className="mt-6">
@@ -1505,6 +1527,59 @@ function UnderstandTab({
                     <FundingSection careerId={career?.id ?? null} />
                     <CareerMythBuster careerId={career?.id ?? null} />
                   </TabsContent>
+
+                  {/* ── Certifications tab ─────────────────────────── */}
+                  {certPath && (
+                    <TabsContent value="certifications" className="mt-5 space-y-4">
+                      <p className="text-[11px] text-muted-foreground/75 leading-relaxed">
+                        {certPath.summary}
+                      </p>
+
+                      {certPath.recommendedDegrees && certPath.recommendedDegrees.length > 0 && (
+                        <div className="space-y-1.5">
+                          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+                            Recommended degree background
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {certPath.recommendedDegrees.map((d: string) => (
+                              <span key={d} className="inline-flex items-center rounded-full border border-border/30 bg-muted/30 px-2.5 py-1 text-[10px] text-foreground/70">
+                                {d}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="rounded-lg border border-border/30 bg-card/40 overflow-hidden">
+                        <div className="px-4 py-2.5 border-b border-border/20 bg-muted/[0.04]">
+                          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                            Industry certifications
+                          </p>
+                        </div>
+                        {certPath.certifications.map((cert: { name: string; provider: string; duration: string; cost: string; url: string; recognised: string }, idx: number) => (
+                          <a
+                            key={cert.name}
+                            href={cert.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                              'block px-4 py-3 hover:bg-muted/20 transition-colors',
+                              idx > 0 && 'border-t border-border/15',
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <p className="text-[12px] font-medium text-foreground/90 leading-snug">{cert.name}</p>
+                                <p className="text-[10px] text-muted-foreground/60 mt-0.5">{cert.provider} · {cert.duration}</p>
+                              </div>
+                              <span className="text-[10px] text-emerald-400/80 font-medium shrink-0">{cert.cost}</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground/55 mt-1">{cert.recognised}</p>
+                          </a>
+                        ))}
+                      </div>
+                    </TabsContent>
+                  )}
                 </Tabs>
               </div>
             )}
