@@ -29,38 +29,57 @@ export function TopEmployers({ careerId }: TopEmployersProps) {
       </div>
 
       <div className="rounded-lg border border-border/30 bg-card/40 overflow-hidden">
-        {employers.map((emp, idx) => (
-          <div
-            key={emp.name}
-            className={cn(
-              'flex items-center gap-3 px-3.5 py-2.5',
-              idx > 0 && 'border-t border-border/15',
-            )}
-          >
-            {/* Name + industry */}
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-medium text-foreground/85 truncate">
-                {emp.name}
-              </p>
-              <p className="text-[10px] text-muted-foreground/55 truncate">
-                {emp.industry} · {emp.size} in Norway
-              </p>
-            </div>
+        {employers.map((emp, idx) => {
+          // Use Google's favicon service for company logos
+          const domain = emp.careersUrl
+            ? new URL(emp.careersUrl).hostname.replace('www.', '')
+            : null;
+          return (
+            <div
+              key={emp.name}
+              className={cn(
+                'flex items-center gap-3 px-3.5 py-2.5',
+                idx > 0 && 'border-t border-border/15',
+              )}
+            >
+              {/* Company icon */}
+              {domain ? (
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${domain}&sz=32`}
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="rounded shrink-0"
+                />
+              ) : (
+                <Building2 className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+              )}
 
-            {/* Careers link */}
-            {emp.careersUrl && (
-              <a
-                href={emp.careersUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-[10px] text-primary/70 hover:text-primary font-medium shrink-0 transition-colors"
-              >
-                Careers
-                <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-            )}
-          </div>
-        ))}
+              {/* Name + industry */}
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-medium text-foreground/85 truncate">
+                  {emp.name}
+                </p>
+                <p className="text-[10px] text-muted-foreground/55 truncate">
+                  {emp.industry} · {emp.size} in Norway
+                </p>
+              </div>
+
+              {/* Careers link */}
+              {emp.careersUrl && (
+                <a
+                  href={emp.careersUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[10px] text-primary/70 hover:text-primary font-medium shrink-0 transition-colors"
+                >
+                  Careers
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
