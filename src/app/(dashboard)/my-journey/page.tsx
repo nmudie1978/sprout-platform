@@ -59,7 +59,7 @@ import { EducationBrowser } from '@/components/education-browser';
 import { FundingSection } from '@/components/education-browser/funding-section';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { DaySimulationCard } from '@/components/journey/day-simulation';
-import { AIImpactSection } from '@/components/journey/ai-impact-section';
+// AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
 import { setUnderstandConfirmed, isUnderstandConfirmed, setDiscoverConfirmed, isDiscoverConfirmed, markClarityActive } from '@/lib/journey/lens-progress';
 
@@ -1524,7 +1524,6 @@ function UnderstandTab({
                         highlighted when available. */}
                     <FundingSection careerId={career?.id ?? null} />
                     <CareerMythBuster careerId={career?.id ?? null} />
-                    <AIImpactSection careerId={career?.id ?? null} />
                   </TabsContent>
                 </Tabs>
               </div>
