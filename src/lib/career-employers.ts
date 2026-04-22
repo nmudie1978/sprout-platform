@@ -104,12 +104,39 @@ const CAREER_EMPLOYERS: Record<string, Employer[]> = {
   ],
 };
 
+// Aliases for careers that share the same employer pool.
+// Multiple PM variants (it-project-manager, telco-project-manager)
+// all pull from the same top-employer list.
+const CAREER_ID_ALIASES: Record<string, string> = {
+  'it-project-manager': 'project-manager',
+  'telco-project-manager': 'project-manager',
+  'localization-project-manager': 'project-manager',
+  'mobile-developer': 'software-developer',
+  'web-developer': 'software-developer',
+  'frontend-developer': 'software-developer',
+  'backend-developer': 'software-developer',
+  'fullstack-developer': 'software-developer',
+  'qa-engineer': 'software-developer',
+  'devops-engineer': 'software-developer',
+  'cybersecurity-analyst': 'software-developer',
+  'ai-engineer': 'software-developer',
+  'civil-engineer': 'engineer',
+  'mechanical-engineer': 'engineer',
+  'robotics-engineer': 'engineer',
+  'it-engineer': 'engineer',
+  'dentist': 'doctor',
+  'physiotherapist': 'nurse',
+  'social-worker': 'psychologist',
+};
+
 /**
- * Get top employers for a career. Returns empty array for careers
- * without curated data.
+ * Get top employers for a career. Falls back to aliased career if
+ * the exact ID has no data. Returns empty array if nothing matches.
  */
 export function getTopEmployers(careerId: string): Employer[] {
-  return CAREER_EMPLOYERS[careerId] ?? [];
+  return CAREER_EMPLOYERS[careerId]
+    ?? CAREER_EMPLOYERS[CAREER_ID_ALIASES[careerId] ?? '']
+    ?? [];
 }
 
 /**
