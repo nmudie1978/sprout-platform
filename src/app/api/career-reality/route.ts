@@ -104,6 +104,12 @@ const REJECT_PATTERNS = [
   /\br\/\w+/i, /\breddit\b/i, /\bstories\b/i, /\bask reddit\b/i,
   /\bvs\.?\b/i, /\bversus\b/i, /\bor\b.*\bwhich\b/i, /\bshould you become\b/i,
   /\bsalary\b.*\b\d{4}\b/i, /\bhow much\b.*\bmake\b/i, /\bsalary breakdown\b/i,
+  // Personal/emotional content that doesn't help the user understand the career
+  /\bimposter\b/i, /\bimpostor\b/i, /\banxiety\b/i, /\bdepression\b/i, /\bmental health\b/i,
+  /\bcrying\b/i, /\bbreakdown\b/i, /\bpanic\b/i, /\btherapy\b/i, /\btrauma\b/i,
+  /\bgrind\b.*\bculture\b/i, /\bhustle\b.*\bculture\b/i, /\btoxic\b.*\bboss\b/i,
+  /\bgot fired\b/i, /\blaid off\b/i, /\blayoff\b/i,
+  /\bmotivation\b/i, /\bmindset\b/i, /\bmanifest/i, /\baffirmation/i,
 ];
 
 // Scoring tiers — heavier = more "reality" focused
