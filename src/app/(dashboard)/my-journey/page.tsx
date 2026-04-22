@@ -944,7 +944,7 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-salary', 'u-employers', 'u-education-pathway', 'u-notes']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -986,104 +986,58 @@ function UnderstandTab({
         <SectionCard>
           <SectionHeader
             icon={Briefcase}
-            title="Day-to-Day Work"
-            tooltip="The core responsibilities, daily tasks, and tools that define this role."
+            title="What You'll Do"
+            tooltip="The core responsibilities and daily tasks that define this role."
             collapsed={uCollapsed('u-tasks')}
             onToggle={() => uToggle('u-tasks')}
           />
           {!uCollapsed('u-tasks') && (
-            <div className="p-4">
-              <Tabs defaultValue="tasks" className="w-full">
-                <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none mb-4">
-                  <TabsTrigger
-                    value="tasks"
-                    className="
-                      relative rounded-none border-0 bg-transparent
-                      px-4 py-3 text-sm font-semibold
-                      text-muted-foreground/65 hover:text-foreground/85 transition-colors
-                      data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
-                      data-[state=active]:shadow-none
-                      after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                      after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
-                      data-[state=active]:after:scale-x-100
-                    "
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <Briefcase className="h-4 w-4" />
-                      What You'll Do
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="tools"
-                    className="
-                      relative rounded-none border-0 bg-transparent
-                      px-4 py-3 text-sm font-semibold
-                      text-muted-foreground/65 hover:text-foreground/85 transition-colors
-                      data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
-                      data-[state=active]:shadow-none
-                      after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
-                      after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
-                      data-[state=active]:after:scale-x-100
-                    "
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <Wrench className="h-4 w-4" />
-                      Tools of the Trade
-                    </span>
-                  </TabsTrigger>
-                </TabsList>
+            <div className="p-4 space-y-4">
+              {/* Tasks */}
+              {details && details.whatYouActuallyDo.length > 0 ? (
+                <div className="space-y-1.5">
+                  {details.whatYouActuallyDo.map((task, i) => (
+                    <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
+                      <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
+                      </div>
+                      <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : detailsLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
+              )}
 
-                <TabsContent value="tasks">
-                  {details && details.whatYouActuallyDo.length > 0 ? (
-                    <div className="space-y-1.5">
-                      {details.whatYouActuallyDo.map((task, i) => (
-                        <div key={i} className="flex items-start gap-2.5 rounded-lg border border-border/15 bg-background/20 px-3 py-2">
-                          <div className="h-5 w-5 rounded-md bg-teal-500/10 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-[9px] font-bold text-teal-400">{i + 1}</span>
-                          </div>
-                          <span className="text-xs text-foreground/70 leading-relaxed">{task}</span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : detailsLoading ? (
-                    <LoadingSkeleton />
-                  ) : (
-                    <p className="text-xs text-muted-foreground/40">Details not available for this career yet.</p>
-                  )}
-                </TabsContent>
-
-                <TabsContent value="tools">
-                  {details?.typicalDay.tools?.length ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {details.typicalDay.tools.map((tool, i) => {
-                        const info = getToolInfo(tool);
-                        return (
-                          <a
-                            key={i}
-                            href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            title={info?.description || tool}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-border/30 bg-background/40 px-2.5 py-1 text-[11px] text-foreground/75 hover:text-foreground hover:border-border/50 transition-colors"
-                          >
-                            <span>{tool}</span>
-                            <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40" />
-                          </a>
-                        );
-                      })}
-                    </div>
-                  ) : detailsLoading ? (
-                    <LoadingSkeleton />
-                  ) : (
-                    <div className="rounded-lg border border-dashed border-border/40 bg-muted/10 p-4 text-center">
-                      <p className="text-sm font-medium text-foreground/80">No specialist tools</p>
-                      <p className="text-xs text-muted-foreground/70 mt-1 leading-relaxed">
-                        This role depends on skills, judgement, and presence — not on specific software or equipment.
-                      </p>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
+              {/* Tools — compact sub-section */}
+              {details?.typicalDay.tools?.length ? (
+                <div className="pt-2 border-t border-border/20">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/50 mb-2 flex items-center gap-1.5">
+                    <Wrench className="h-3 w-3" />
+                    Tools used
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {details.typicalDay.tools.map((tool, i) => {
+                      const info = getToolInfo(tool);
+                      return (
+                        <a
+                          key={i}
+                          href={info?.url || `https://www.google.com/search?q=${encodeURIComponent(tool)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={info?.description || tool}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-border/30 bg-background/40 px-2.5 py-1 text-[11px] text-foreground/75 hover:text-foreground hover:border-border/50 transition-colors"
+                        >
+                          <span>{tool}</span>
+                          <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/40" />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </div>
           )}
         </SectionCard>
@@ -1225,22 +1179,69 @@ function UnderstandTab({
 
       </SectionCard>
 
-      {/* ── Salary Progression ── */}
+      {/* ── Common Misconceptions (standalone) ── */}
       <SectionCard>
-        <SectionHeader icon={TrendingUp} title="Salary Progression" tooltip="How salary grows from entry-level to senior roles in this career — average with market ceiling." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
-        {!uCollapsed('u-salary') && (
+        <SectionHeader icon={Shield} title="Common Misconceptions" tooltip="What most people get wrong about this career — and the evidence-based reality." collapsed={uCollapsed('u-myths')} onToggle={() => uToggle('u-myths')} />
+        {!uCollapsed('u-myths') && (
           <div className="p-4 sm:p-5">
-            <SalaryProgressionChart careerId={career?.id ?? null} />
+            <CareerMythBuster careerId={career?.id ?? null} />
           </div>
         )}
       </SectionCard>
 
-      {/* ── Top Employers ── */}
+      {/* ── Salary & Employers (tabbed) ── */}
       <SectionCard>
-        <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-employers')} onToggle={() => uToggle('u-employers')} />
-        {!uCollapsed('u-employers') && (
-          <div className="p-4 sm:p-5">
-            <TopEmployers careerId={career?.id ?? null} />
+        <SectionHeader icon={DollarSign} title="Salary & Employers" tooltip="How salary grows from entry-level to senior — and which Norwegian companies hire for this role." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+        {!uCollapsed('u-salary') && (
+          <div className="p-4">
+            <Tabs defaultValue="salary" className="w-full">
+              <TabsList className="grid grid-cols-2 w-full h-auto p-0 bg-transparent gap-0 border-b border-border/40 rounded-none mb-4">
+                <TabsTrigger
+                  value="salary"
+                  className="
+                    relative rounded-none border-0 bg-transparent
+                    px-4 py-3 text-sm font-semibold
+                    text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                    data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                    data-[state=active]:shadow-none
+                    after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                    after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                    data-[state=active]:after:scale-x-100
+                  "
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    Salary Progression
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="employers"
+                  className="
+                    relative rounded-none border-0 bg-transparent
+                    px-4 py-3 text-sm font-semibold
+                    text-muted-foreground/65 hover:text-foreground/85 transition-colors
+                    data-[state=active]:bg-muted/20 data-[state=active]:text-foreground
+                    data-[state=active]:shadow-none
+                    after:content-[''] after:absolute after:left-0 after:right-0 after:-bottom-px after:h-0.5
+                    after:bg-teal-400 after:scale-x-0 after:transition-transform after:duration-200
+                    data-[state=active]:after:scale-x-100
+                  "
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    Where People Work
+                  </span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="salary">
+                <SalaryProgressionChart careerId={career?.id ?? null} />
+              </TabsContent>
+
+              <TabsContent value="employers">
+                <TopEmployers careerId={career?.id ?? null} />
+              </TabsContent>
+            </Tabs>
           </div>
         )}
       </SectionCard>
@@ -1550,7 +1551,6 @@ function UnderstandTab({
                         is universal), with career-specific scholarships
                         highlighted when available. */}
                     <FundingSection careerId={career?.id ?? null} />
-                    <CareerMythBuster careerId={career?.id ?? null} />
                   </TabsContent>
 
                   {/* ── Certifications tab ─────────────────────────── */}
