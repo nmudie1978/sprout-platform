@@ -424,28 +424,34 @@ export default async function LandingPage() {
             Built differently
           </p>
 
-          <div className="space-y-12 sm:space-y-14">
+          <div className="space-y-6 sm:space-y-8">
             {CONTRASTS.map((item, i) => (
               <div
                 key={i}
-                className="grid sm:grid-cols-2 gap-4 sm:gap-12 max-w-3xl mx-auto"
+                className="grid sm:grid-cols-2 gap-0 max-w-3xl mx-auto rounded-xl overflow-hidden border border-slate-800/50"
               >
-                {/* "Not this" side */}
-                <div className="sm:text-right">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-700 mb-2">
-                    Not this
-                  </p>
-                  <p className="text-base text-neutral-500 line-through decoration-neutral-700/60 leading-relaxed">
+                {/* "Not this" side — muted, struck through */}
+                <div className="bg-red-950/20 border-b sm:border-b-0 sm:border-r border-slate-800/40 px-6 py-5">
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <span className="h-5 w-5 rounded-full bg-red-500/15 flex items-center justify-center text-red-400 text-[10px] font-bold">✕</span>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-red-400/60">
+                      Not this
+                    </p>
+                  </div>
+                  <p className="text-[15px] text-neutral-500 line-through decoration-red-400/30 decoration-1 leading-relaxed">
                     {item.not}
                   </p>
                 </div>
 
-                {/* "This instead" side */}
-                <div>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-emerald-500/60 mb-2">
-                    This instead
-                  </p>
-                  <p className="text-base text-neutral-300 leading-relaxed">
+                {/* "This instead" side — bright, confident */}
+                <div className="bg-emerald-950/15 px-6 py-5">
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <span className="h-5 w-5 rounded-full bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-[10px] font-bold">✓</span>
+                    <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-emerald-400/70">
+                      This instead
+                    </p>
+                  </div>
+                  <p className="text-[15px] text-neutral-200 leading-relaxed font-medium">
                     {item.instead}
                   </p>
                 </div>
