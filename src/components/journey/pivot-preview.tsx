@@ -34,13 +34,13 @@ function computePivots(careerId: string): PivotOption[] {
   if (!cluster) return [];
 
   const sourceReqs = getCareerRequirements(careerId);
-  const sourceSubjects = sourceReqs?.keySubjects ?? [];
-  const sourcePath = sourceReqs?.universityPath?.programme ?? '';
+  const sourceSubjects = sourceReqs?.schoolSubjects?.required ?? [];
+  const sourcePath = sourceReqs?.universityPath?.programme ?? '' ?? '';
 
   return cluster.related.slice(0, 4).map((r) => {
     const targetReqs = getCareerRequirements(r.career.id);
-    const targetSubjects = targetReqs?.keySubjects ?? [];
-    const targetPath = targetReqs?.universityPath?.programme ?? '';
+    const targetSubjects = targetReqs?.schoolSubjects?.required ?? [];
+    const targetPath = targetReqs?.universityPath?.programme ?? '' ?? '';
 
     const transfers: string[] = [];
     const doesNotTransfer: string[] = [];
