@@ -59,6 +59,10 @@ import { EducationBrowser } from '@/components/education-browser';
 import { FundingSection } from '@/components/education-browser/funding-section';
 import { CareerMythBuster } from '@/components/journey/career-myth-buster';
 import { TopEmployers } from '@/components/journey/top-employers';
+import { SalaryProgressionChart } from '@/components/journey/salary-progression';
+import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
+import { PivotPreview } from '@/components/journey/pivot-preview';
+import { ShareJourney } from '@/components/journey/share-journey';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -1219,6 +1223,13 @@ function UnderstandTab({
           <div className="p-4"><p className="text-xs text-muted-foreground/40">Daily schedule details not available for this career yet.</p></div>
         )}
 
+      </SectionCard>
+
+      {/* ── Salary Progression ── */}
+      <SectionCard>
+        <div className="p-4 sm:p-5">
+          <SalaryProgressionChart careerId={career?.id ?? null} />
+        </div>
       </SectionCard>
 
       {/* ── Top Employers ── */}
@@ -2768,6 +2779,34 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </div>
         )}
       </SectionCard>
+
+      {/* ── Key Dates ── */}
+      <SectionCard>
+        <div className="p-4 sm:p-5">
+          <DeadlineAwareness careerId={career?.id ?? null} />
+        </div>
+      </SectionCard>
+
+      {/* ── Pivot Preview ── */}
+      {career && goalTitle && (
+        <SectionCard>
+          <div className="p-4 sm:p-5">
+            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
+          </div>
+        </SectionCard>
+      )}
+
+      {/* ── Share Journey ── */}
+      {goalTitle && (
+        <div className="flex justify-center py-2">
+          <ShareJourney
+            career={career}
+            goalTitle={goalTitle}
+            momentumActions={actions.map((a) => ({ title: a.title, status: a.status }))}
+            foundation={eduCtxData?.educationContext as { educationStage?: string; studyTrack?: string; expectedCompletion?: string } | null}
+          />
+        </div>
+      )}
 
       {/* ── Clarity completion — auto-derived from foundation + momentum ── */}
       <ClarityCompletionCard

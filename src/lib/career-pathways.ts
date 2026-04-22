@@ -1086,13 +1086,36 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
     {
       id: "it-project-manager",
       title: "IT Project Manager",
-      emoji: "📋",
-      description: "Lead technology projects from planning to delivery, coordinating teams, budgets, and timelines.",
-      avgSalary: "600,000 - 950,000 kr/year",
-      educationPath: "Bachelor's in IT or Business + PMP/PRINCE2 certification",
-      keySkills: ["project planning", "stakeholder management", "risk management", "communication", "agile methodologies"],
-      dailyTasks: ["Plan project milestones", "Coordinate dev teams", "Manage budgets", "Report to stakeholders", "Mitigate risks"],
+      emoji: "💻",
+      description:
+        "Lead technology projects from discovery to launch — new products, system migrations, platform integrations. Translate between developers, designers, product managers, and business stakeholders. Most teams run agile, so you'll live in sprints, Jira, and demo reviews.",
+      avgSalary: "780,000 - 1,250,000 kr/year",
+      // Norwegian path: typically Bachelor/Master in IT, Informatics,
+      // or Business; several years as a developer, analyst, or Scrum
+      // Master before the PM role lands. Scrum Master / PSM
+      // certification is almost table-stakes in Norway; PMP / PRINCE2
+      // matter more in larger enterprises and public-sector projects.
+      educationPath:
+        "Bachelor's or Master's in IT, Informatics or Business + 3-5 years developer/analyst experience + Scrum Master (PSM) or PMP/PRINCE2 certification",
+      educationRoute: "university",
+      keySkills: [
+        "project planning",
+        "stakeholder management",
+        "risk management",
+        "agile methodologies",
+        "technical fluency",
+      ],
+      dailyTasks: [
+        "Facilitate sprint ceremonies (planning, stand-up, retro)",
+        "Coordinate dev, design and product teams",
+        "Manage budgets and vendor contracts",
+        "Report progress to stakeholders",
+        "Unblock the team on risks and dependencies",
+      ],
       growthOutlook: "high",
+      sector: "mixed",
+      lastVerifiedAt: "2026-04-22",
+      sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
     },
     {
       id: "cio",
@@ -2037,11 +2060,12 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   BUSINESS_MANAGEMENT: [
     {
       id: "project-manager",
-      title: "Project Manager",
+      title: "Project Manager (generalist)",
       emoji: "📋",
-      description: "Plan, execute, and deliver projects on time and within budget across various industries.",
+      description:
+        "Plan, execute and deliver projects on time and within budget. Project management is a cross-sector role — the day-to-day work and path in differs a lot between IT, construction, and finance. Look at the sector-specific variants (IT Project Manager, Construction Project Manager, Finance Project Manager) if you already have an industry in mind.",
       avgSalary: "770,000 - 1,185,000 kr/year",
-      educationPath: "Bachelor's in Business + PMP or PRINCE2 certification",
+      educationPath: "Bachelor's in Business + PMP or PRINCE2 certification (sector-specific paths vary — see related roles)",
       keySkills: ["leadership", "organisation", "communication", "risk management", "stakeholder management"],
       dailyTasks: ["Plan projects", "Coordinate teams", "Track progress", "Manage budgets", "Report to stakeholders"],
       growthOutlook: "high",
@@ -3016,6 +3040,40 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   // FINANCE, BANKING & INSURANCE
   // ========================================
   FINANCE_BANKING: [
+    {
+      id: "finance-project-manager",
+      title: "Finance Project Manager",
+      emoji: "💼",
+      description:
+        "Lead cross-functional projects inside banks, insurers, or asset managers — regulatory rollouts (e.g. PSD3, MiFID, AML), product launches, systems migrations, audit remediation. Heavy focus on compliance deadlines and aligning IT, legal, and business teams in a regulated environment.",
+      avgSalary: "850,000 - 1,400,000 kr/year",
+      // Norwegian path: typically Bachelor/Master in Finance,
+      // Economics, or Business (NHH, BI, UiO), a few years as an
+      // analyst or consultant, then lateral move into PM. PMP /
+      // PRINCE2 standard; finance sector often wants Six Sigma or
+      // specific risk / compliance certifications on top.
+      educationPath:
+        "Bachelor's or Master's in Finance, Economics or Business + 3-6 years analyst/consultant experience + PMP or PRINCE2 (finance-sector certs like Six Sigma, FRM, or Sertifisert Risk Manager often expected)",
+      educationRoute: "university",
+      keySkills: [
+        "regulatory awareness",
+        "stakeholder management",
+        "financial literacy",
+        "risk management",
+        "structured communication",
+      ],
+      dailyTasks: [
+        "Track regulatory deadlines (e.g. PSD3, AML, MiFID)",
+        "Coordinate IT, legal, compliance and business teams",
+        "Manage vendor and consultant engagements",
+        "Prepare steering-committee reports",
+        "Own change-management for go-lives",
+      ],
+      growthOutlook: "high",
+      sector: "private",
+      lastVerifiedAt: "2026-04-22",
+      sourceUrl: "https://www.ssb.no/en/statbank/table/11418",
+    },
     {
       id: "accountant",
       title: "Accountant",
@@ -7790,6 +7848,39 @@ export const CAREER_PATHWAYS: Record<CareerCategory, Career[]> = {
   // CONSTRUCTION & TRADES
   // ========================================
   CONSTRUCTION_TRADES: [
+    {
+      id: "construction-project-manager",
+      title: "Construction Project Manager",
+      emoji: "🏗️",
+      description:
+        "Run construction projects end-to-end — from planning and procurement to site coordination, safety, and handover. Work closely with architects, engineers, contractors and clients to bring buildings in on time, on budget, and compliant with Norwegian building regulations.",
+      avgSalary: "750,000 - 1,300,000 kr/year",
+      // Norwegian path: typically Bachelor/Master in byggingeniør
+      // (civil engineering) or byggeledelse (construction management),
+      // then 5-10 years of site experience before full PM responsibility.
+      // Many also rise from bas / foreman roles after fagbrev.
+      educationPath:
+        "Bachelor's or Master's in Civil Engineering (byggingeniør) or Construction Management + 5-10 years site experience + HMS-kort + byggeleder courses",
+      educationRoute: "mixed",
+      keySkills: [
+        "site coordination",
+        "HMS / safety compliance",
+        "contractor management",
+        "scheduling & budgeting",
+        "reading technical drawings",
+      ],
+      dailyTasks: [
+        "Run daily site meetings (byggemøter)",
+        "Coordinate contractors, engineers and subcontractors",
+        "Enforce HMS / byggherreforskriften compliance",
+        "Track progress against programme and budget",
+        "Liaise with the client (byggherre) and architect",
+      ],
+      growthOutlook: "high",
+      sector: "mixed",
+      lastVerifiedAt: "2026-04-22",
+      sourceUrl: "https://www.utdanning.no/yrker/beskrivelse/byggingenior",
+    },
     {
       id: "carpenter",
       title: "Carpenter",
