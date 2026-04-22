@@ -944,7 +944,7 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-employers', 'u-education-pathway', 'u-notes']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-salary', 'u-employers', 'u-education-pathway', 'u-notes']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -1227,9 +1227,12 @@ function UnderstandTab({
 
       {/* ── Salary Progression ── */}
       <SectionCard>
-        <div className="p-4 sm:p-5">
-          <SalaryProgressionChart careerId={career?.id ?? null} />
-        </div>
+        <SectionHeader icon={TrendingUp} title="Salary Progression" tooltip="How salary grows from entry-level to senior roles in this career — average with market ceiling." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
+        {!uCollapsed('u-salary') && (
+          <div className="p-4 sm:p-5">
+            <SalaryProgressionChart careerId={career?.id ?? null} />
+          </div>
+        )}
       </SectionCard>
 
       {/* ── Top Employers ── */}
