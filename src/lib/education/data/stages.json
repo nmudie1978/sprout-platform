@@ -225,6 +225,50 @@
       "outcome": "Senior robotics role in Norway's defence-tech sector"
     },
     {
+      "id": "project-manager--via-abroad--bachelor",
+      "routeId": "project-manager--via-abroad",
+      "orderIndex": 0,
+      "kind": "abroad-leg",
+      "title": "BSc in Human Resource Management (Kingston University, UK)",
+      "durationYears": 3,
+      "description": "Studied HR management in the UK — not a 'traditional' PM degree, but understanding people, organisations, and business operations turned out to be the perfect foundation for a PM career.",
+      "programmeIds": [],
+      "outcome": "BSc (Hons) + CIPD accreditation"
+    },
+    {
+      "id": "project-manager--via-abroad--master",
+      "routeId": "project-manager--via-abroad",
+      "orderIndex": 1,
+      "kind": "abroad-leg",
+      "title": "MSc in International Business with Project Management (Kingston University, UK)",
+      "durationYears": 1,
+      "description": "Specialised master's combining international business strategy with formal project management methodology. The PM component provided the framework; the international focus made the move to Norway natural.",
+      "programmeIds": [],
+      "outcome": "MSc + formal PM methodology training"
+    },
+    {
+      "id": "project-manager--via-abroad--junior",
+      "routeId": "project-manager--via-abroad",
+      "orderIndex": 2,
+      "kind": "experience",
+      "title": "Junior Project Manager → Project Manager at Atea Norge",
+      "durationYears": 3.5,
+      "description": "Moved to Norway and joined Atea (Norway's largest IT infrastructure company). Started as junior PM, promoted to PM within 2 years. Managed IT infrastructure and digital transformation projects for Norwegian public and private sector clients.",
+      "programmeIds": [],
+      "outcome": "Full PM ownership on Norwegian enterprise projects"
+    },
+    {
+      "id": "project-manager--via-abroad--senior",
+      "routeId": "project-manager--via-abroad",
+      "orderIndex": 3,
+      "kind": "experience",
+      "title": "Senior Engineer Project Manager → Capgemini",
+      "durationYears": 2,
+      "description": "Moved to Sopra Steria as Senior Engineer Project Manager, then to Capgemini — two of Norway's largest IT consulting firms. International background + Norwegian enterprise experience = strong market position.",
+      "programmeIds": [],
+      "outcome": "Senior PM at a global consulting firm, based in Oslo"
+    },
+    {
       "id": "doctor--standard--education",
       "routeId": "doctor--standard",
       "orderIndex": 0,

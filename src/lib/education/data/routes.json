@@ -86,6 +86,20 @@
       "estimatedYears": 9
     },
     {
+      "id": "project-manager--via-abroad",
+      "careerId": "project-manager",
+      "name": "Megan F. — UK degree → Norwegian IT consulting (Oslo)",
+      "shortName": "Megan's path",
+      "summary": "Bachelor in HR + MSc in International Business with Project Management at Kingston University (UK), then moved to Norway and built a PM career through Atea, Sopra Steria, and Capgemini — proving that a non-Norwegian degree + international perspective is a strong entry point.",
+      "tags": [
+        "via-abroad",
+        "common"
+      ],
+      "isDefault": false,
+      "countryCode": null,
+      "estimatedYears": 8
+    },
+    {
       "id": "doctor--standard",
       "careerId": "doctor",
       "name": "Standard route",
