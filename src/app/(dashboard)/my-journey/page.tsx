@@ -982,7 +982,7 @@ function UnderstandTab({
   // All hooks must be called before any early return
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-education-pathway', 'u-notes']);
+  const { isCollapsed: uCollapsed, toggle: uToggle } = useSectionCollapse(['u-tasks', 'u-reality', 'u-day', 'u-myths', 'u-salary', 'u-opportunities', 'u-education-pathway', 'u-notes']);
 
   if (!career || !goalTitle) {
     return <EmptyState icon={Globe} message="Set a career goal in Discover first" />;
@@ -1227,12 +1227,31 @@ function UnderstandTab({
         )}
       </SectionCard>
 
+      {/* ── What if I Change My Mind? (moved from Clarity — decision support, not action) ── */}
+      {career && goalTitle && (
+        <SectionCard>
+          <div className="p-4 sm:p-5">
+            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
+          </div>
+        </SectionCard>
+      )}
+
       {/* ── Where People Work ── */}
       <SectionCard>
         <SectionHeader icon={Building2} title="Where People Work" tooltip="Norwegian companies where this role is most common — with links to their careers pages." collapsed={uCollapsed('u-salary')} onToggle={() => uToggle('u-salary')} />
         {!uCollapsed('u-salary') && (
           <div className="p-4 sm:p-5">
             <TopEmployers careerId={career?.id ?? null} />
+          </div>
+        )}
+      </SectionCard>
+
+      {/* ── Opportunities (moved from Clarity — market info, not personal action) ── */}
+      <SectionCard>
+        <SectionHeader icon={Briefcase} title="Opportunities" tooltip="Internships, traineeships, and graduate programmes at Norwegian companies for this career." collapsed={uCollapsed('u-opportunities')} onToggle={() => uToggle('u-opportunities')} />
+        {!uCollapsed('u-opportunities') && (
+          <div className="p-4 sm:p-5">
+            <OpportunityMatches careerId={career?.id ?? null} />
           </div>
         )}
       </SectionCard>
@@ -2783,12 +2802,7 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
         </SectionCard>
       )}
 
-      {/* ── Opportunities ── */}
-      <SectionCard>
-        <div className="p-4 sm:p-5">
-          <OpportunityMatches careerId={career?.id ?? null} />
-        </div>
-      </SectionCard>
+      {/* Opportunities + Pivot Preview moved to Understand tab */}
 
       {/* ── Key Dates ── */}
       <SectionCard>
@@ -2796,15 +2810,6 @@ function ClarityTab({ goalTitle, career }: { goalTitle: string | null; career: C
           <DeadlineAwareness careerId={career?.id ?? null} />
         </div>
       </SectionCard>
-
-      {/* ── Pivot Preview ── */}
-      {career && goalTitle && (
-        <SectionCard>
-          <div className="p-4 sm:p-5">
-            <PivotPreview careerId={career.id} careerTitle={goalTitle} />
-          </div>
-        </SectionCard>
-      )}
 
       {/* ── Share Journey ── */}
       {goalTitle && (

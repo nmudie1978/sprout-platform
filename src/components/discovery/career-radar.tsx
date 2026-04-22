@@ -15,6 +15,7 @@ import {
   type DiscoveryPreferences,
 } from "@/lib/career-pathways";
 import { Sparkles, Settings2, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Star, HelpCircle, X, MousePointerClick, Layers, Target, Plus, Check, Route, ArrowRight, Filter } from "lucide-react";
+import { getMatchResultForCareer } from "@/lib/matching";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -1917,6 +1918,7 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
                                       Top
                                     </span>
                                   )}
+                                  <GradeStatusBadge careerId={d.career.id} />
                                 </div>
                               </td>
                               <td className="hidden sm:table-cell px-3 py-1 align-middle text-foreground/70 whitespace-nowrap">
@@ -2136,5 +2138,37 @@ function CompareVault({
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * GradeStatusBadge — compact inline badge shown next to a career
+ * title when the user has set a gradeRange preference and the
+ * career carries a gradeBand. Teal for "aligned" (positive signal),
+ * amber for "stretch" (gap of 1 with a coaching hint), muted-red
+ * for "reach" (gap of 2+ — still visible, honest framing).
+ * Renders nothing when the status is "aligned" (default positive
+ * signal doesn't need a badge — the Match % already encodes it)
+ * or "unknown" (no grade data).
+ */
+function GradeStatusBadge({ careerId }: { careerId: string }) {
+  const result = getMatchResultForCareer(careerId);
+  if (!result || !result.gradeStatus) return null;
+  if (result.gradeStatus === "aligned" || result.gradeStatus === "unknown") {
+    return null;
+  }
+  const isStretch = result.gradeStatus === "stretch";
+  return (
+    <span
+      className={cn(
+        "text-[9px] font-semibold uppercase tracking-wide shrink-0 px-1.5 py-0.5 rounded",
+        isStretch
+          ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+          : "bg-rose-500/15 text-rose-600 dark:text-rose-400",
+      )}
+      title={result.gradeHint || (isStretch ? "A stretch vs your current grade range." : "A reach career — typical applicants have higher grades.")}
+    >
+      {isStretch ? "Stretch" : "Reach"}
+    </span>
   );
 }

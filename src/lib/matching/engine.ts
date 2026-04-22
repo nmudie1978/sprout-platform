@@ -53,6 +53,11 @@ import {
   getSubjectCareerBoosts,
   getInterestCareerBoosts,
 } from "@/lib/career-pathways";
+import {
+  matchCareerToGradeRange,
+  shouldExcludeByRoute,
+  gradeMatchScoreAdjustment,
+} from "@/lib/career-pathways/grade-match";
 
 // ══════════════════════════════════════════════════════════════════
 // 1. BUILD CAREER PROFILE
@@ -364,6 +369,7 @@ export function scoreCareer(
   return {
     career,
     matchPercent,
+    baseMatchPercent: matchPercent,
     dimensions,
     reasons,
     tier: matchPercent >= 65 ? "strong" : matchPercent >= 45 ? "good" : "discovery",
@@ -708,16 +714,45 @@ export function rankCareers(
   // Build user profile once
   const userProfile = buildUserProfile(prefs);
 
-  // Score every career
+  // Hard filter: the user has explicitly opted out of university
+  // routes. Applied before scoring so we don't waste compute on
+  // rows we'll drop. Un-annotated careers (no entryRoute) pass
+  // through — we don't hide anything we don't have data for.
+  const candidates = prefs.excludeUniversity
+    ? allCareers.filter((c) => !shouldExcludeByRoute(c, prefs))
+    : allCareers;
+
+  // Score every candidate
   const results: MatchResult[] = [];
-  for (const career of allCareers) {
+  for (const career of candidates) {
     const careerProfile = buildCareerProfile(career);
     const result = scoreCareer(userProfile, careerProfile);
+
+    // Grade-range adjustment. Applied as a sort-order nudge only:
+    // the `baseMatchPercent` stays unchanged so the scoreFloor
+    // filter below still respects how well the career matched on
+    // subjects/interests/style — a reach career with a strong
+    // base match stays visible, it just sinks below aligned peers.
+    if (prefs.gradeRange) {
+      const careerForBand = candidates.find((c) => c.id === career.id);
+      if (careerForBand) {
+        const match = matchCareerToGradeRange(careerForBand, prefs.gradeRange);
+        if (match.status !== "unknown") {
+          result.gradeStatus = match.status;
+          result.gradeHint = match.coachingHint;
+          const adj = gradeMatchScoreAdjustment(match.status);
+          // Clamp to [0, 100] on the displayed percentage.
+          result.matchPercent = Math.max(0, Math.min(100, result.matchPercent + adj));
+        }
+      }
+    }
+
     results.push(result);
   }
 
-  // Filter by floor
-  const passing = results.filter((r) => r.matchPercent >= C.scoreFloor);
+  // Filter by floor using the BASE score (pre-grade-adjustment) so a
+  // grade-penalised career with strong signal still surfaces.
+  const passing = results.filter((r) => r.baseMatchPercent >= C.scoreFloor);
 
   if (passing.length === 0) return [];
 
