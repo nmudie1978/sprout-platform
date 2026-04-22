@@ -1,59 +1,49 @@
 'use client';
 
 /**
- * Salary Progression — horizontal step chart showing
+ * Salary Progression — smooth curve chart showing
  * junior → mid → senior → lead salary trajectory.
+ * Uses recharts AreaChart for the curve + range band.
  */
 
 import { useMemo } from 'react';
 import { TrendingUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { getSalaryProgression, type SalaryStep } from '@/lib/salary-progression';
+import { getSalaryProgression } from '@/lib/salary-progression';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from 'recharts';
 
 interface SalaryProgressionProps {
   careerId: string | null;
 }
 
 function formatK(k: number): string {
-  return k >= 1000 ? `${(k / 1000).toFixed(1)}M` : `${k}k`;
-}
-
-function StepBar({ step, maxK, index, total }: { step: SalaryStep; maxK: number; index: number; total: number }) {
-  const midK = (step.minK + step.maxK) / 2;
-  const pct = Math.round((midK / maxK) * 100);
-  const colors = [
-    'bg-teal-500/60',
-    'bg-teal-500/70',
-    'bg-teal-500/80',
-    'bg-teal-500/90',
-  ];
-
-  return (
-    <div className="flex-1 min-w-0">
-      {/* Bar */}
-      <div className="h-8 bg-muted/20 rounded-md overflow-hidden relative">
-        <div
-          className={cn('h-full rounded-md transition-all duration-500', colors[index] ?? 'bg-teal-500/80')}
-          style={{ width: `${Math.max(pct, 20)}%` }}
-        />
-        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-foreground/80">
-          {formatK(step.minK)} – {formatK(step.maxK)}
-        </span>
-      </div>
-
-      {/* Label */}
-      <p className="text-[10px] font-medium text-foreground/75 mt-1.5 truncate">{step.label}</p>
-      <p className="text-[9px] text-muted-foreground/50">{step.years} yrs</p>
-    </div>
-  );
+  if (k >= 1000) return `${(k / 1000).toFixed(1)}M`;
+  return `${k}k`;
 }
 
 export function SalaryProgressionChart({ careerId }: SalaryProgressionProps) {
   const data = useMemo(() => (careerId ? getSalaryProgression(careerId) : null), [careerId]);
 
-  if (!data) return null;
+  const chartData = useMemo(() => {
+    if (!data) return [];
+    return data.steps.map((step) => ({
+      name: step.label,
+      years: step.years,
+      min: step.minK,
+      max: step.maxK,
+      mid: Math.round((step.minK + step.maxK) / 2),
+    }));
+  }, [data]);
 
-  const globalMax = Math.max(...data.steps.map((s) => s.maxK));
+  if (!data || chartData.length === 0) return null;
 
   return (
     <div className="space-y-3">
@@ -67,18 +57,102 @@ export function SalaryProgressionChart({ careerId }: SalaryProgressionProps) {
         </span>
       </div>
 
-      {/* Steps */}
-      <div className="flex gap-2">
-        {data.steps.map((step, i) => (
-          <StepBar key={step.label} step={step} maxK={globalMax} index={i} total={data.steps.length} />
+      <div className="h-[200px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+            <defs>
+              <linearGradient id="salaryGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="hsl(166, 72%, 50%)" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="hsl(166, 72%, 50%)" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 20%)" vertical={false} />
+            <XAxis
+              dataKey="name"
+              tick={{ fontSize: 9, fill: 'hsl(215, 10%, 55%)' }}
+              tickLine={false}
+              axisLine={false}
+              interval={0}
+              angle={0}
+              textAnchor="middle"
+              height={40}
+            />
+            <YAxis
+              tick={{ fontSize: 9, fill: 'hsl(215, 10%, 55%)' }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(v: number) => formatK(v)}
+              domain={['dataMin - 50', 'dataMax + 100']}
+              width={45}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'hsl(220, 20%, 14%)',
+                border: '1px solid hsl(220, 15%, 25%)',
+                borderRadius: '8px',
+                fontSize: '11px',
+                padding: '8px 12px',
+              }}
+              labelStyle={{ color: 'hsl(0, 0%, 90%)', fontWeight: 600, marginBottom: 4 }}
+              formatter={(value: number, name: string) => {
+                const label = name === 'min' ? 'Min' : name === 'max' ? 'Max' : 'Mid';
+                return [`${formatK(value)} kr`, label];
+              }}
+            />
+            {/* National median reference line */}
+            <ReferenceLine
+              y={data.nationalMedianK}
+              stroke="hsl(215, 10%, 45%)"
+              strokeDasharray="4 4"
+              strokeWidth={1}
+              label={{
+                value: `Median ${formatK(data.nationalMedianK)}`,
+                position: 'right',
+                fontSize: 9,
+                fill: 'hsl(215, 10%, 50%)',
+              }}
+            />
+            {/* Range band (min to max) */}
+            <Area
+              type="monotone"
+              dataKey="max"
+              stroke="none"
+              fill="url(#salaryGradient)"
+              fillOpacity={1}
+            />
+            <Area
+              type="monotone"
+              dataKey="min"
+              stroke="none"
+              fill="hsl(220, 20%, 12%)"
+              fillOpacity={1}
+            />
+            {/* Mid-point curve */}
+            <Area
+              type="monotone"
+              dataKey="mid"
+              stroke="hsl(166, 72%, 50%)"
+              strokeWidth={2}
+              fill="none"
+              dot={{ r: 4, fill: 'hsl(166, 72%, 50%)', stroke: 'hsl(220, 20%, 12%)', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: 'hsl(166, 72%, 50%)' }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Legend labels */}
+      <div className="flex justify-between px-1">
+        {chartData.map((d) => (
+          <div key={d.name} className="text-center flex-1">
+            <p className="text-[9px] text-muted-foreground/50">{d.years} yrs</p>
+          </div>
         ))}
       </div>
 
-      {/* Median reference */}
-      <p className="text-[9px] text-muted-foreground/50">
-        National median salary: ~{data.nationalMedianK}k kr/year
-        {data.note && <> · {data.note}</>}
-      </p>
+      {data.note && (
+        <p className="text-[9px] text-muted-foreground/45 italic">{data.note}</p>
+      )}
     </div>
   );
 }
