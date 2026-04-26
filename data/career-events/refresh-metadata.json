@@ -1,43 +1,40 @@
 {
-  "lastRefreshISO": "2026-02-11T00:00:00.000Z",
-  "totalFetched": 12,
-  "totalNormalized": 12,
-  "totalVerified": 12,
-  "totalFailed": 0,
+  "lastRefreshISO": "2026-04-26T04:53:40.546Z",
+  "totalFetched": 20,
+  "totalNormalized": 20,
+  "totalVerified": 18,
+  "totalFailed": 2,
   "duplicatesRemoved": 0,
-  "youthRelevantKept": 12,
-  "removedPastEvents": 0,
-  "removedNonYouthEvents": 0,
   "providerStats": [
     {
       "provider": "tautdanning",
-      "fetched": 3,
-      "normalized": 3,
-      "verified": 3,
-      "failed": 0,
+      "fetched": 11,
+      "normalized": 11,
+      "verified": 9,
+      "failed": 2,
       "errors": []
     },
     {
       "provider": "oslomet",
-      "fetched": 4,
-      "normalized": 4,
-      "verified": 4,
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
       "failed": 0,
       "errors": []
     },
     {
       "provider": "bi-karrieredagene",
-      "fetched": 1,
-      "normalized": 1,
-      "verified": 1,
+      "fetched": 0,
+      "normalized": 0,
+      "verified": 0,
       "failed": 0,
       "errors": []
     },
     {
       "provider": "eures",
-      "fetched": 4,
-      "normalized": 4,
-      "verified": 4,
+      "fetched": 9,
+      "normalized": 9,
+      "verified": 9,
       "failed": 0,
       "errors": []
     }
@@ -46,34 +43,34 @@
     {
       "provider": "tautdanning",
       "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "lastRun": "2026-04-26T04:52:29.305Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 3
+      "lastSuccess": "2026-04-26T04:52:53.746Z",
+      "eventsFound": 11
     },
     {
       "provider": "oslomet",
-      "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "status": "degraded",
+      "lastRun": "2026-04-26T04:52:54.433Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 4
+      "lastSuccess": "2026-04-26T04:53:13.364Z",
+      "eventsFound": 0
     },
     {
       "provider": "bi-karrieredagene",
-      "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "status": "degraded",
+      "lastRun": "2026-04-26T04:53:14.009Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 1
+      "lastSuccess": "2026-04-26T04:53:15.712Z",
+      "eventsFound": 0
     },
     {
       "provider": "eures",
       "status": "healthy",
-      "lastRun": "2026-02-11T00:00:00.000Z",
+      "lastRun": "2026-04-26T04:53:16.239Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-02-11T00:00:00.000Z",
-      "eventsFound": 4
+      "lastSuccess": "2026-04-26T04:53:37.865Z",
+      "eventsFound": 9
     }
   ]
 }

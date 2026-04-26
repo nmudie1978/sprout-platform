@@ -20,8 +20,8 @@
   "https://europeanjobdays.eu/en/who-are-you": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.566Z"
+    "checkedAtISO": "2026-04-26T04:53:39.768Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:40.318Z"
   },
   "https://www.tautdanning.no/studentfairs/alesund/": {
     "status": 200,
@@ -32,19 +32,49 @@
   "https://www.tautdanning.no/studentfairs/tromso/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.956Z"
+    "checkedAtISO": "2026-04-26T04:53:39.680Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:40.393Z"
   },
   "https://www.tautdanning.no/studentfairs/transport-services/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.970Z"
+    "checkedAtISO": "2026-04-26T04:53:39.768Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:40.543Z"
   },
   "https://www.tautdanning.no/studentfairs/oslo/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.984Z"
+    "checkedAtISO": "2026-04-26T04:53:39.764Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:40.545Z"
+  },
+  "https://www.tautdanning.no/studentfairs/kristiansand/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-26T04:53:38.544Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:39.663Z"
+  },
+  "https://www.tautdanning.no/studentfairs/sandefjord/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-26T04:53:38.544Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:39.680Z"
+  },
+  "https://www.tautdanning.no/studentfairs/stavanger/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-26T04:53:38.544Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:39.763Z"
+  },
+  "https://www.tautdanning.no/studentfairs/bergen/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-26T04:53:38.544Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:39.768Z"
+  },
+  "https://www.tautdanning.no/studentfairs/trondheim/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-26T04:53:39.664Z",
+    "ttlExpiresAtISO": "2026-04-27T04:53:40.404Z"
   }
 }

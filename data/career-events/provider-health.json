@@ -3,35 +3,35 @@
     "tautdanning": {
       "provider": "tautdanning",
       "status": "healthy",
-      "lastRun": "2026-01-22T22:24:57.317Z",
+      "lastRun": "2026-04-26T04:52:29.305Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-01-22T22:25:08.997Z",
-      "eventsFound": 5
+      "lastSuccess": "2026-04-26T04:52:53.746Z",
+      "eventsFound": 11
     },
     "oslomet": {
       "provider": "oslomet",
       "status": "degraded",
-      "lastRun": "2026-01-22T22:25:09.622Z",
+      "lastRun": "2026-04-26T04:52:54.433Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-01-22T22:25:18.471Z",
+      "lastSuccess": "2026-04-26T04:53:13.364Z",
       "eventsFound": 0
     },
     "bi-karrieredagene": {
       "provider": "bi-karrieredagene",
       "status": "degraded",
-      "lastRun": "2026-01-22T22:25:19.015Z",
+      "lastRun": "2026-04-26T04:53:14.009Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-01-22T22:25:19.693Z",
+      "lastSuccess": "2026-04-26T04:53:15.712Z",
       "eventsFound": 0
     },
     "eures": {
       "provider": "eures",
       "status": "healthy",
-      "lastRun": "2026-01-22T22:25:20.263Z",
+      "lastRun": "2026-04-26T04:53:16.239Z",
       "consecutiveFailures": 0,
-      "lastSuccess": "2026-01-22T22:25:26.563Z",
-      "eventsFound": 5
+      "lastSuccess": "2026-04-26T04:53:37.865Z",
+      "eventsFound": 9
     }
   },
-  "lastUpdated": "2026-01-22T22:25:27.330Z"
+  "lastUpdated": "2026-04-26T04:53:38.542Z"
 }
