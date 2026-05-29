@@ -41,7 +41,18 @@ export async function POST(req: NextRequest) {
       return response;
     }
 
-    const { firstName, lastName, surname, email, password, role, ageBracket, dateOfBirth, guardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, guardianEmail: rawGuardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
+
+    // Normalise emails: trim + lowercase so the account is stored in a
+    // canonical form. Without this, signing up as "Foo@Bar.com" and later
+    // signing in as "foo@bar.com" would fail the lookup and lock the user
+    // out. The sign-in path (src/lib/auth.ts) normalises the same way.
+    const email =
+      typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : rawEmail;
+    const guardianEmail =
+      typeof rawGuardianEmail === "string"
+        ? rawGuardianEmail.trim().toLowerCase()
+        : rawGuardianEmail;
 
     // Validate legal acceptance
     if (!acceptedTerms || !acceptedPrivacy) {
