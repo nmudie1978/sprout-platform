@@ -419,11 +419,21 @@ function SubjectMultiSelect({
 
   return (
     <div className="relative">
-      {/* Trigger */}
-      <button
-        type="button"
+      {/* Trigger — a <div role="button"> rather than a real <button> because
+          the selected-subject chips inside it each contain an X <button>, and
+          HTML forbids a button nested in a button (causes a hydration error).
+          role/tabIndex/onKeyDown keep it keyboard-operable. */}
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-teal-500/40 transition-colors"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(!open);
+          }
+        }}
+        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-teal-500/40 transition-colors cursor-pointer"
       >
         {selected.length === 0 ? (
           <span className="text-xs text-muted-foreground/60">Select subjects…</span>
@@ -459,7 +469,7 @@ function SubjectMultiSelect({
           </div>
         )}
         <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
-      </button>
+      </div>
 
       {/* Dropdown */}
       {open && (
@@ -519,11 +529,21 @@ function InterestMultiSelect({
 
   return (
     <div className="relative">
-      {/* Trigger */}
-      <button
-        type="button"
+      {/* Trigger — a <div role="button"> rather than a real <button> because
+          the selected chips inside it each contain an X <button>, and HTML
+          forbids a button nested in a button (causes a hydration error).
+          role/tabIndex/onKeyDown keep it keyboard-operable. */}
+      <div
+        role="button"
+        tabIndex={0}
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-violet-500/40 transition-colors"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(!open);
+          }
+        }}
+        className="w-full flex items-center justify-between gap-2 rounded-lg border border-border/40 bg-muted/10 px-3 py-2 text-left hover:border-violet-500/40 transition-colors cursor-pointer"
       >
         {selected.length === 0 ? (
           <span className="text-xs text-muted-foreground/60">Select activities you enjoy…</span>
@@ -554,7 +574,7 @@ function InterestMultiSelect({
           </div>
         )}
         <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground/50 shrink-0 transition-transform', open && 'rotate-180')} />
-      </button>
+      </div>
 
       {/* Dropdown */}
       {open && (
