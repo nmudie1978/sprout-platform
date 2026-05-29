@@ -74,8 +74,13 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
+        // Normalise email so login matches regardless of how the user
+        // typed it (case / surrounding spaces). Accounts are stored
+        // lowercased at signup — see /api/auth/signup.
+        const email = credentials.email.trim().toLowerCase();
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user || !user.password) {

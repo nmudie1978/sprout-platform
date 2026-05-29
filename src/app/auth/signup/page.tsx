@@ -91,12 +91,19 @@ function SignUpForm() {
     e.preventDefault();
     setLoading(true);
 
+    // Normalise email once, up front — trim + lowercase so the account is
+    // created and later logged into in a consistent form.
+    const normalisedEmail = email.trim().toLowerCase();
+
     try {
       if (!acceptedAll) {
         throw new Error("Please accept the Terms and Privacy Policy to continue.");
       }
       if (!firstName.trim()) {
         throw new Error("Tell us your first name.");
+      }
+      if (!normalisedEmail || !normalisedEmail.includes("@")) {
+        throw new Error("Please enter a valid email address.");
       }
       if (password.length < 8) {
         throw new Error("Password needs to be at least 8 characters.");
@@ -131,12 +138,12 @@ function SignUpForm() {
           firstName: firstName.trim(),
           surname: surname.trim(),
           lastName: surname.trim() || firstName.trim(),
-          email,
+          email: normalisedEmail,
           password,
           role,
           dateOfBirth: sendDob ? dateOfBirth : undefined,
           ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
-          guardianEmail: role === "YOUTH" && isUnder18 ? guardianEmail.trim() : undefined,
+          guardianEmail: role === "YOUTH" && isUnder18 ? guardianEmail.trim().toLowerCase() : undefined,
           acceptedTerms: acceptedAll,
           acceptedPrivacy: acceptedAll,
         }),
@@ -149,7 +156,7 @@ function SignUpForm() {
 
       // Auto-login immediately
       const signInResult = await signIn("credentials", {
-        email,
+        email: normalisedEmail,
         password,
         redirect: false,
       });
