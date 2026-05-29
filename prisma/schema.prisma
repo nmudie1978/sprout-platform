@@ -19,7 +19,6 @@ enum UserRole {
   YOUTH
   EMPLOYER
   ADMIN
-  COMMUNITY_GUARDIAN
   // Teacher / careers counsellor. Creates a Cohort, shares a join code
   // with a class. Sees aggregated cohort progress only — never any
   // individual student's content (reflections, notes, journey detail).
@@ -265,10 +264,10 @@ model User {
   // Job Templates
   jobTemplates JobTemplate[]
 
-  // Community Guardian system
-  guardianAssignments CommunityGuardian[] @relation("GuardianUser")
-  communityReports    CommunityReport[]   @relation("CommunityReporter")
-  assignedReports     CommunityReport[]   @relation("AssignedGuardian")
+  // Content/user reports (admin moderation)
+  communityReports CommunityReport[] @relation("CommunityReporter")
+  // Reports this admin has claimed for review.
+  assignedReports  CommunityReport[] @relation("AssignedGuardian")
 
   // Safety messaging (Phase 1)
   blocksMade                  UserBlock[]          @relation("BlocksMade")
@@ -307,8 +306,6 @@ model User {
   learningProgress UserLearningProgress[]
 
   // Parent/Guardian visibility layer
-  guardianProfile GuardianProfile? // If this user is a guardian
-  guardianLinks   WorkerGuardianLink[] @relation("WorkerGuardianLinks") // Youth's linked guardians
 
   // Interview Prep
   generatedQuestionSets GeneratedQuestionSet[]
@@ -1375,34 +1372,13 @@ model Community {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  guardians CommunityGuardian[]
-  reports   CommunityReport[]
-  jobs      MicroJob[]
+  reports CommunityReport[]
+  jobs    MicroJob[]
 
   @@index([name])
   @@index([isActive])
 }
 
-// CommunityGuardian - assigns a user as guardian for a community
-// A community may have 0 or 1 active guardian (for MVP)
-model CommunityGuardian {
-  id             String    @id @default(cuid())
-  communityId    String
-  guardianUserId String
-  isActive       Boolean   @default(true)
-  assignedAt     DateTime  @default(now())
-  deactivatedAt  DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  guardian  User      @relation("GuardianUser", fields: [guardianUserId], references: [id], onDelete: Cascade)
-
-  @@unique([communityId, guardianUserId])
-  @@index([guardianUserId])
-  @@index([communityId])
-  @@index([isActive])
-}
 
 // CommunityReport - reports submitted for community guardian review
 // Reports work even if no guardian exists (visible to admins)
@@ -2254,55 +2230,8 @@ model UserLearningProgress {
 // PARENT/GUARDIAN VISIBILITY LAYER
 // ============================================
 
-model GuardianProfile {
-  id           String               @id @default(uuid())
-  userId       String               @unique
-  fullName     String
-  relationship GuardianRelationship
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
 
-  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workerLinks WorkerGuardianLink[]
 
-  @@index([userId])
-}
-
-model WorkerGuardianLink {
-  id              String             @id @default(uuid())
-  workerId        String
-  guardianId      String? // Optional for invite-based flow (set when claimed)
-  status          GuardianLinkStatus @default(PENDING)
-  inviteCode      String?            @unique
-  inviteExpiresAt DateTime?
-  consentGivenAt  DateTime?
-  revokedAt       DateTime?
-  visibilityScope Json               @default("{\"canSeeApplications\":true,\"canSeeSavedJobs\":true,\"canSeeMessagesMeta\":true,\"canSeeMessageContent\":false,\"canSeeProfileBasics\":true}")
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-
-  worker   User             @relation("WorkerGuardianLinks", fields: [workerId], references: [id], onDelete: Cascade)
-  guardian GuardianProfile? @relation(fields: [guardianId], references: [id], onDelete: Cascade)
-
-  @@unique([workerId, guardianId])
-  @@index([workerId])
-  @@index([guardianId])
-  @@index([status])
-  @@index([inviteCode])
-}
-
-model GuardianActivitySnapshot {
-  id            String   @id @default(uuid())
-  workerId      String
-  guardianId    String
-  summaryJson   Json
-  lastUpdatedAt DateTime @default(now())
-  createdAt     DateTime @default(now())
-
-  @@unique([workerId, guardianId])
-  @@index([workerId])
-  @@index([guardianId])
-}
 
 // ============================================
 // AGE ELIGIBILITY POLICY SYSTEM
@@ -3113,25 +3042,27 @@ model CareerPathContribution {
   id String @id @default(cuid())
 
   // Contributor (anonymised in display)
-  displayName String  // e.g. "Nicky M." — shown to youth
+  displayName  String // e.g. "Nicky M." — shown to youth
   currentTitle String // e.g. "Programme Manager"
   country      String // e.g. "Norway", "Hungary" — makes paths globally relevant
   city         String? // optional, e.g. "Oslo"
 
-  // Timeline — the core value: ordered career steps
-  steps Json // Array of { age: number, label: string } e.g. [{ age: 18, label: "Entry-level IT support" }, ...]
+  // The story — prose prompts the contributor answers
+  howIGotHere     String // narrative of the path
+  whatIStudied    String // education / training (or none)
+  firstSalary     String // free-text so contributors can give context (e.g. "£18k", "minimum wage", "unpaid internship")
+  hardestPart     String // hardest part of the journey
+  adviceToSeventeen String // what they'd tell their 17-year-old self
+  realityOfJob    String // what the job is actually like day-to-day
 
   // Tagging — links path to careers in the platform
   careerTags String[] // e.g. ["it-project-manager", "programme-manager"]
 
-  // Context
-  didAttendUniversity Boolean @default(false)
-  yearsOfExperience   Int?
-  headline            String? // e.g. "School → IT → Telco → Programme Management — no degree"
-  advice              String? // One sentence of advice for young people
+  // Optional 45s selfie video — stub for now, populated later
+  videoUrl String?
 
   // Moderation
-  status    PathContributionStatus @default(PENDING)
+  status     PathContributionStatus @default(PENDING)
   reviewedAt DateTime?
   reviewedBy String?
 

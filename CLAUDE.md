@@ -1,22 +1,29 @@
-# CLAUDE.md — Endeavrly (Youth Community Jobs & Career Platform)
+# CLAUDE.md — Endeavrly (Youth Career Exploration & Direction Platform)
 
 <project_context>
-Endeavrly is a youth-first (ages 15–23) small jobs and career development platform.
-It is safety-by-design, privacy-first, and does NOT include in-app payments.
-It emphasizes skill development, responsibility signals, and structured growth — not gamification.
+Endeavrly is a youth-first (ages 15–23) career development platform.
+
+It helps young people explore careers, understand realistic pathways,
+and build clarity about their future.
+
+It is safety-by-design, privacy-first, calm in tone, and built to reduce
+confusion — not increase it.
+
+It is NOT a jobs marketplace, does NOT support job posters, and does NOT
+include in-app payments.
 </project_context>
 
 
 <core_principles>
 
 1. Youth Safety First
-   - No direct free-text communication between minors and adults.
-   - Structured messaging only.
-   - Report & moderation system must always be present.
+   - No risky social mechanics.
+   - No open communication systems by default.
+   - Structured interactions only where necessary.
+   - Report & moderation systems remain available.
 
 2. No In-App Payments
    - Platform does not process payments.
-   - Jobs are agreed externally.
    - Do not introduce Stripe or payment logic.
 
 3. Privacy by Design (GDPR MVP)
@@ -26,24 +33,24 @@ It emphasizes skill development, responsibility signals, and structured growth �
    - No dark patterns.
 
 4. Trust Signals ≠ Social Scoring
-   - Responsibility Graph is internal.
-   - No public rating leaderboard.
-   - No popularity metrics.
+   - No follower metrics.
+   - No popularity systems.
+   - No public comparison loops.
 
 5. Journey First
-   - The core UX is the Journey (Discover → Understand → Act).
-   - Dashboard must reinforce journey progression.
-   - Jobs are part of growth, not the only focus.
+   - Core UX is My Journey (Discover → Understand → Clarity).
+   - Dashboard reinforces direction and momentum.
+   - Career exploration is primary focus.
 
 </core_principles>
 
 
 <project_structure>
 
-/app (Next.js 14 App Router)
+/app
   /dashboard
-  /jobs
   /journey
+  /careers
   /profile
   /admin
 
@@ -51,7 +58,6 @@ It emphasizes skill development, responsibility signals, and structured growth �
   /auth
   /db
   /policies
-  /safeguarding
   /validation
 
 /prisma
@@ -60,7 +66,7 @@ It emphasizes skill development, responsibility signals, and structured growth �
 /components
   ui/
   journey/
-  jobs/
+  careers/
 
 </project_structure>
 
@@ -76,8 +82,8 @@ Stack:
 Rules:
 - All data access via Prisma.
 - All server logic inside Server Actions or API routes.
-- Use RLS (Row Level Security) via Supabase where appropriate.
-- No business logic in UI components.
+- Use RLS where appropriate.
+- No business logic inside UI components.
 
 </architecture_constraints>
 
@@ -85,378 +91,224 @@ Rules:
 <data_model_rules>
 
 Core Entities:
-- User (youth | adult | admin)
-- Guardian (optional, for minors)
-- Job
-- JobApplication
+- User
+- Guardian (optional for minors)
 - JourneyState
-- Skill
-- ResponsibilitySignal (internal only)
+- CareerPreference
+- Reflection
+- SavedCareer
 - Report
-- MessageThread (structured only)
 
 Mandatory:
-- UUID primary keys.
-- created_at / updated_at on all tables.
-- Soft delete where appropriate.
-- Age validation on signup.
-- Guardian flag for under-18.
+- UUID primary keys
+- created_at / updated_at timestamps
+- Soft delete where appropriate
+- Age validation on signup
+- Guardian flag for under-18 users if required
 
 Never store:
-- Excessive personal details.
-- Sensitive profiling categories.
+- Excessive personal data
+- Sensitive profiling categories
+- Unnecessary behavioral tracking
 
 </data_model_rules>
 
 
 <safeguarding_rules>
 
-1. Structured Messaging Only
-   - Predefined prompts.
-   - No arbitrary text exchange if youth < 18.
-   - Adults must be verified before posting jobs.
-
-2. Reporting System
-   - Every job and profile must have "Report" option.
+1. Reporting System
+   - Profiles/content should support reporting.
    - Reports create admin review entries.
 
-3. Admin Moderation
-   - Admin panel must allow:
+2. Admin Moderation
+   - Admin panel should support:
      - Suspend user
-     - Remove job
-     - Flag inappropriate behavior
+     - Remove unsafe content
+     - Flag inappropriate behaviour
 
-4. No Public Contact Information Displayed
-   - Emails and phone numbers hidden by default.
+3. No Public Personal Contact Display
+   - Hide emails / phone numbers by default.
+
+4. No Youth Comparison Systems
+   - No leaderboards
+   - No public status rankings
 
 </safeguarding_rules>
 
 
 <journey_logic>
 
-# My Journey — Tabs-as-Content, Confirmation-Gated
+My Journey is the emotional core of Endeavrly.
 
-## Overview
+Three-tab progression:
 
-My Journey has three tabs — **Discover**, **Understand**, **Clarity** —
-presented as a linear progression. The student must answer the
-YES confirmation at the bottom of Discover before Understand unlocks,
-and the YES confirmation at the bottom of Understand before Clarity
-unlocks. This forces them to deliberately consider each stage before
-moving on, and gives the product a controllable completion signal for
-each section.
+1. Discover
+- What the career is
+- Lifestyle / salary / overview
+- Spark curiosity
 
-This is the ONLY gating in My Journey. It is a single-predicate gate
-per tab (the localStorage flag set by the confirmation card), not a
-state machine. Do NOT reintroduce any of the following:
+2. Understand
+- Education routes
+- Realistic expectations
+- Skills needed
+- Entry paths
+- Deeper truth
 
-  - A multi-step "complete N actions to unlock" ladder
-  - An orchestrator / state-machine engine
-  - DB-backed journey-state columns
-  - The `JourneyOrchestrator`, `state-machine.ts`,
-    `/api/journey` GET/PATCH, `/api/journey/complete`,
-    `/api/journey/skip`, `/api/journey/advance-to-understand`,
-    `journeyState` / `journeyCompletedSteps` / `journeySkippedSteps`
-    columns on `YouthProfile`, or the `currentLens` step-completion
-    machine — all removed. New code must not import from
-    `src/lib/journey/orchestrator.ts` or
-    `src/lib/journey/state-machine.ts`.
+3. Clarity
+- Personal roadmap
+- Suggested next steps
+- Confidence-building momentum
+- Reflection and direction
 
-Real progression inside Clarity still happens via the roadmap's per-step
-progress cycling — that local sequential-unlock behaviour is unchanged.
+Hard Rules:
 
-## How the tab gating works
+- Keep Journey calm, structured, and meaningful.
+- Never over-gamify progression.
+- Never turn it into a checklist factory.
+- Never add noisy productivity mechanics.
+- Journey exists for clarity, not addiction.
 
-Each tab has a confirmation card at the bottom:
-  - Discover → "Have you explored what this role is about?" (YES / Not yet)
-  - Understand → "Did you understand the role in more detail?" (YES / Not yet)
+North Star Question:
 
-Clicking YES stores a per-career flag via
-`setDiscoverConfirmed` / `setUnderstandConfirmed` in
-`src/lib/journey/lens-progress.ts`. The parent
-`src/app/(dashboard)/my-journey/page.tsx` mirrors both flags into
-React state and uses them to:
-
-  1. Disable the locked tab button (greyed-out, lock icon, native
-     tooltip explaining why it's locked).
-  2. Block programmatic jumps via a `goToTab` guard — so stale URL
-     hashes, `onContinue` callbacks, and the dashboard's "jump to
-     Clarity" deep links can't bypass the gate.
-  3. Auto-rewind the user if they're sitting on a tab that becomes
-     locked (e.g. they click "Not yet" on the previous tab's card).
-
-Confirmations are keyed per-career slug, so switching primary goals
-resets the gate for the new career. This is intentional — the user
-must consider each new career on its own.
-
-## What each tab contains
-
-### 1. Discover — Explore the career
-Calm, content-first introduction. A Day in the Life video, salary,
-growth outlook, key skills, role context. Passive — no required input.
-Designed to spark curiosity.
-
-### 2. Understand — Know the role
-Deeper structured view. Role reality, education paths, key skills,
-courses & certifications, entry requirements, industry outlook. Real
-Norwegian programmes via `getNorwayProgrammes` and certifications via
-`getCertificationPath`. Optional personal notes.
-
-### 3. Clarity — Build your roadmap
-The action surface. Composed of:
-
-  a. **Foundation Card** — diagnostic of the user's starting point
-     (school, track, finish year, current subjects, alignment status
-     with the chosen career: Aligned / Partially aligned / Needs
-     attention, plus one suggested action). Editable in place.
-
-  b. **Personal Roadmap** — age-anchored timeline from today to a
-     senior role. Branches on the user's education stage (school /
-     college / university / other) and finish year. Three render
-     styles (Zigzag / Rail / Steps). Per-step progress
-     (not_started / in_progress / done) with sequential gating
-     INSIDE the roadmap (each step unlocks when the previous is
-     done — this gating is local to the roadmap, NOT the old
-     lens machine). "You are here" marker derived from progress.
-
-  c. **Momentum** — suggested next moves (LinkedIn people in
-     similar roles, utdanning.no university courses for the chosen
-     career, with the Norwegian programme name auto-filled). The
-     user's own action list with status + delete. Suggestions
-     disappear once added and reappear on delete.
-
-  d. **Reference Content** — Real Career Paths (alternative routes
-     from real people), Tools of the Trade, Real Voices videos
-     (career-reality API, country-filtered to remove non-Norway
-     content).
-
-## Career Radar is NOT a journey stage
-
-Career Radar collects `discoveryPreferences` (subjects, work style,
-people preference, interests). These power:
-  - Match % on /careers
-  - Recommended for you cards
-  - Personalised sorting
-
-`discoveryPreferences` is editable from BOTH the Radar and from
-/profile (Career Preferences section). It is profile data, not
-journey state. Editing in either surface invalidates
-`['my-profile', 'profile-completion', 'discover-recommendations',
-'career-recommendations']` so the Match column refreshes immediately.
-
-## Hard rules
-
-- Tab navigation IS gated — but only by the single confirmation card
-  at the bottom of each tab (Discover → Understand, Understand → Clarity).
-  No multi-step gates, no completion ladders, no DB journey state, no
-  orchestrator. The gate is one boolean per tab, stored in
-  localStorage, mirrored into React state via the parent page so the
-  tab bar re-renders the moment the user clicks YES / Not yet.
-- Never reintroduce `JourneyOrchestrator`, `createOrchestrator`,
-  `JOURNEY_STATES`, `JOURNEY_STATE_DEFINITIONS`, `JourneyStateId`,
-  `canTransition`, `calculateLensProgress`, `determineCurrentState`,
-  or step-list arrays whose entries each represent a "completion gate".
-- Do not write to `YouthProfile.journeyState`,
-  `journeyCompletedSteps`, or `journeySkippedSteps`. These columns
-  are legacy and being dropped. `journeySummary` is also legacy —
-  read it only as a fallback for already-stored data, never write.
-- The roadmap's per-step progress lives in `roadmap-card-data`
-  (localStorage, per goal) and the sequential-unlock helper
-  `isStepUnlocked` / `enforceProgressChain` in
-  `src/components/journey/timeline/`. This is the only progression
-  machine in the app.
-- The dashboard surfaces roadmap progress for the active goal via
-  `markClarityActive` / lightweight per-goal signals — not via
-  `computeLensProgress` over the legacy state machine.
-
-### Voice-Guided Roadmap Simulation
-
-The Clarity tab's roadmap has a "Play Journey" mode that narrates the
-user's career path step-by-step using OpenAI TTS. When playing:
-
-  - The roadmap enters read-only mode (no progress cycling)
-  - Each step is highlighted in turn, others dimmed (opacity
-    transitions over 500ms)
-  - Audio narration is generated per-segment via POST
-    /api/simulation/narrate
-  - User controls: play/pause, skip forward/back, exit
-  - Pre-fetches the next segment while the current one plays
-
-The narration script is built client-side from Journey + Foundation
-data (no extra AI call for the text). Only the TTS conversion hits
-the API (~$0.001 per full playthrough). Simulation state lives
-entirely in React state (no localStorage, no DB writes).
-
-Hard rules:
-  - Simulation never writes to roadmap-card-data or progress state
-  - Simulation is additive — the static roadmap remains functional
-  - TTS rate limit: 30 requests/hour per user
-  - No autoplay — user must explicitly click "Play Journey"
-
-### Product Philosophy
-
-- The roadmap is a **guided simulation experience**, not a checklist
-- Users understand their path in one session through narration and
-  visual focus — they don't need to return for 10 years to "complete"
-  steps
-- The product is about **clarity and exploration**, not task execution
-- Prefer guided experiences over static UI
-- Prefer simulation over instruction
-- Prefer storytelling over documentation
-- Reduce cognitive load — avoid enterprise UX patterns
-
-### Anti-Patterns (STRICTLY FORBIDDEN)
-
-- Designing the roadmap primarily as a task completion system
-- "Mark as done" as the primary roadmap interaction
-- Roadmaps that feel like project management tools
-- Static, unguided interfaces that dump data without context
-- Features that don't help the user understand their future better
-
-### Feature Standard
-
-Every new feature must answer:
-  "Does this help the user understand their future better?"
-If not, it should not exist.
-
-## Summary
-
-Three tabs, single-predicate confirmation gating. The student cannot
-jump between Discover / Understand / Clarity without answering the YES
-confirmation at the bottom of each content tab — this forces
-deliberate consideration of each stage and gives us a clean per-tab
-completion signal. Clarity is the simulation + exploration surface — the
-user plays through their roadmap narration, explores real
-opportunities, and builds momentum with concrete next moves. The
-voice-guided simulation is the primary experience; the static roadmap
-supports it.
+"Does this help the user understand their future better?"
 
 </journey_logic>
 
 
+<career_discovery_logic>
+
+Career exploration is a major product surface.
+
+Includes:
+
+- Browse careers
+- Search careers
+- Compare careers
+- Save careers
+- Career Radar preference matching
+- Recommended careers
+- Industry insights
+- Real stories / real voices
+
+Hard Rules:
+
+- Make exploration feel exciting but calm.
+- No endless cluttered feeds.
+- No low-quality recommendation spam.
+- Accuracy and trust matter.
+
+</career_discovery_logic>
+
+
+<removed_features_strict>
+
+The Small Jobs / Jobs Marketplace feature has been intentionally removed.
+
+STRICTLY DO NOT REINTRODUCE:
+
+- /jobs routes
+- Job posters
+- Job applications
+- Employer accounts
+- Shift listings
+- Gig marketplace logic
+- Worker matching systems
+- Bidding systems
+- Earnings dashboards
+- Payment workflows
+- Recruiter features
+- Job chat systems
+- Job responsibility signals tied to gigs
+
+If legacy code exists, treat it as deprecated unless explicitly requested.
+
+Endeavrly is now a career exploration and clarity platform, not a job marketplace.
+
+</removed_features_strict>
+
+
 <ui_principles>
 
-- Calm, modern, youth-friendly.
-- No aggressive gamification.
-- No dopamine-driven notification spam.
-- Soft colors (avoid harsh neon).
-- Clear safety messaging.
-- English-only interface (MVP).
+- Calm
+- Modern
+- Youth-friendly
+- Premium feel
+- Clear hierarchy
+- Soft visual language
+- Strong mobile UX
+
+Avoid:
+
+- Harsh neon
+- Busy dashboards
+- Cheap gamification
+- Corporate HR feel
+- School admin portal feel
 
 </ui_principles>
 
 
 <standards_and_conventions>
 
-TypeScript strict mode ON.
-ESLint + Prettier required.
+TypeScript strict mode ON  
+ESLint + Prettier required
 
 Branch naming:
+
 - feat/<description>
 - fix/<description>
 - refactor/<description>
 
 PR Requirements:
-- Must pass lint.
-- Must pass typecheck.
-- Must not introduce payment logic.
-- Must not introduce open chat for minors.
+
+- Must pass lint
+- Must pass typecheck
+- Must not introduce payment logic
+- Must not reintroduce jobs marketplace features
+- Must preserve Journey UX quality
 
 </standards_and_conventions>
-
-
-<common_commands>
-
-Install:
-  npm install
-
-Dev:
-  npm run dev
-
-Build:
-  npm run build
-
-Lint:
-  npm run lint
-
-Typecheck:
-  npm run typecheck
-
-Prisma migrate:
-  npx prisma migrate dev
-
-Seed:
-  npm run seed
-
-</common_commands>
 
 
 <critical_notes>
 
 1. This is NOT:
-   - A gig economy clone.
-   - A freelancer bidding platform.
-   - A social media app.
 
-2. Do not:
-   - Add public follower counts.
-   - Add likes-based ranking.
-   - Add engagement metrics for youth comparison.
-   - Re-introduce the "Work tips" toggle or "Saved Tips" / Life Skills
-     section anywhere in /profile. These were removed and should stay
-     removed — do not import LifeSkillsSettings or SavedLifeSkills into
-     the profile page under any circumstances.
+- A gig economy clone
+- A freelancer marketplace
+- A job board
+- A social media app
 
-3. Any new feature must pass:
-   - Safety check
-   - Privacy check
-   - Journey alignment check
+2. Do not add:
 
-4. If unsure whether something violates safeguarding — choose safety.
+- Likes
+- Followers
+- Public rankings
+- Viral loops
+- Spam notifications
+- Youth comparison metrics
+
+3. Every new feature must pass:
+
+- Safety check
+- Privacy check
+- Journey alignment check
+- Real usefulness check
+
+4. If unsure, choose calmness, trust, and simplicity.
 
 </critical_notes>
 
 
-<examples>
-
-Example structured message prompt:
-
-{
-  "type": "APPLICATION_CONFIRMATION",
-  "options": [
-    "I confirm I am available.",
-    "I would like to ask about schedule."
-  ]
-}
-
-Example responsibility signal (internal):
-
-{
-  "job_completed": true,
-  "on_time": true,
-  "communication_clear": true
-}
-
-Example Journey state:
-
-{
-  "user_id": "uuid",
-  "state": "UNDERSTAND",
-  "last_transition": "2026-01-10"
-}
-
-</examples>
-
-
 <maintenance_guidelines>
 
-- Update when safeguarding rules evolve.
-- Keep under 300 lines.
-- Prefer adding CLAUDE.md inside:
+- Update when product direction changes.
+- Keep concise and practical.
+- Prefer feature-level CLAUDE.md files inside:
   /journey
-  /jobs
+  /careers
   /admin
 
 Closest CLAUDE.md overrides higher-level guidance.
-</maintenance_guidelines>
 
+</maintenance_guidelines>

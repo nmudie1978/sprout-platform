@@ -23,50 +23,40 @@ const SENSITIVE_ROUTES = [
   "/api/messages",
 ];
 
-/**
- * Routes an under-18 youth without guardian consent is BLOCKED from.
- * Matches the full authenticated surface — if consent is missing,
- * redirect to /profile with a flag so the youth sees the "Guardian
- * pending — Resend" UI and can't reach anything until consent lands.
- *
- * Excluded from the block (safe to browse while awaiting consent):
- *   /profile itself (so they can see the pending-guardian card)
- *   /auth/*            (sign-out, etc.)
- *   /legal/*           (terms, privacy, safety, eligibility)
- *   /guardian-consent/* (for the guardian's own grant flow via email link)
- *   /not-eligible      (age-rejection page)
- *   /api/auth/*        (NextAuth session endpoints)
- *   /api/profile       (needed to render the pending card)
- *   /api/guardian-consent (needed to resend the email)
- *
- * The block itself enforces CLAUDE.md §Safeguarding: "Adults must be
- * verified before posting jobs" and the implicit reciprocal — minors
- * must be guardian-approved before engaging with the platform.
- * GDPR Art 8 requires guardian consent for under-16 processing.
- */
-const GUARDIAN_GATED_PREFIXES = [
-  "/dashboard",
-  "/my-journey",
-  "/my-path",
-  "/careers",
-  "/jobs",
-  "/messages",
-  "/applications",
-  "/insights",
-  "/explore",
-  "/growth",
-  "/career-advisor",
-  "/career-events",
-  "/ask-a-pro",
-  "/shadows",
-  "/reviews",
-  "/feedback",
-  "/earnings",
+// ── Softened guardian-consent gate (GDPR Art 8) ──────────────────────
+//
+// Under-18 youth (ageBracket SIXTEEN_SEVENTEEN) who don't yet have
+// guardian consent can BROWSE and read the whole platform freely — the
+// point is exploration. What they can't do until a guardian confirms is
+// WRITE personal data: save reflections, set career preferences, store
+// quiz results, etc. This list covers the API routes that persist a
+// minor's personal data; the gate only fires on mutating methods
+// (POST/PUT/PATCH/DELETE), so GET reads are always allowed.
+//
+// This is intentionally narrower than the old gate, which blocked the
+// entire authenticated surface. The canonical legal block (under-16 at
+// signup) lives in /api/auth/signup; this is the in-app data-write layer.
+const CONSENT_WRITE_GATED_API_PREFIXES = [
+  "/api/journey",
+  "/api/discover",
+  "/api/careers/swipe",
+  "/api/careers/saved",
+  "/api/goals",
+  "/api/profile/career-goals",
+  "/api/profile/skills",
+  "/api/insights/saved",
+  "/api/insights/progress",
+  "/api/insights/interactions",
+  "/api/insights/newsletter",
+  "/api/life-skills",
+  "/api/interview-prep",
 ];
 
-function isGuardianGatedRoute(pathname: string): boolean {
-  return GUARDIAN_GATED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/"),
+const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+function isConsentWriteGatedApi(pathname: string): boolean {
+  return CONSENT_WRITE_GATED_API_PREFIXES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
   );
 }
 
@@ -239,30 +229,28 @@ export async function middleware(request: NextRequest) {
 
     if (token) {
       // ──────────────────────────────────────────────
-      // GUARDIAN-CONSENT GATE (CORE SAFETY INVARIANT)
+      // SOFTENED GUARDIAN-CONSENT GATE (GDPR Art 8)
       // ──────────────────────────────────────────────
-      // Under-18 youth (ageBracket SIXTEEN_SEVENTEEN) without
-      // `guardianConsent === true` are blocked from every gated
-      // route and redirected to /profile where the Resend card
-      // lives. /profile is intentionally NOT in the gated list so
-      // they can see and action the pending state.
-      //
-      // The fields `ageBracket` and `guardianConsent` are populated
-      // on the JWT at sign-in and refreshed when the client calls
-      // NextAuth's `update()` helper — see src/lib/auth.ts jwt()
-      // callback. Stale data fails closed in the safe direction
-      // (consent just granted → temporary block, never accidental
-      // access). Under-16 is blocked at signup in /api/auth/signup,
-      // not here.
+      // 16-17 youth without guardian consent may browse freely but can't
+      // persist personal data until a guardian confirms. We block only
+      // mutating calls to the data-write API routes; everything else
+      // (all reads, every page) is allowed. The fields are read from the
+      // JWT — see src/lib/auth.ts jwt() callback, refreshed via update().
       if (
         token.role === "YOUTH" &&
         token.ageBracket === "SIXTEEN_SEVENTEEN" &&
         !token.guardianConsent &&
-        isGuardianGatedRoute(pathname)
+        MUTATING_METHODS.has(request.method) &&
+        isConsentWriteGatedApi(pathname)
       ) {
-        const redirectUrl = new URL("/profile", request.url);
-        redirectUrl.searchParams.set("awaitingGuardian", "1");
-        return NextResponse.redirect(redirectUrl);
+        return NextResponse.json(
+          {
+            error:
+              "A parent or guardian needs to confirm your account before you can save this. You can keep exploring in the meantime.",
+            code: "GUARDIAN_CONSENT_REQUIRED",
+          },
+          { status: 403 }
+        );
       }
 
       const requestHeaders = new Headers(request.headers);

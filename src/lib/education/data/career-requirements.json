@@ -8169,37 +8169,37 @@
     "flight-attendant": {
       "schoolSubjects": {
         "required": [
-          "English",
-          "Mathematics",
-          "Social Studies"
+          "Norwegian",
+          "English"
         ],
         "recommended": [
           "Foreign Languages",
-          "Health and Physical Education"
+          "Physical Education",
+          "Social Studies"
         ],
-        "minimumGrade": "Solid pass in core subjects, no specific grade requirement"
+        "minimumGrade": "Completed videregående (any programme). No specific grade requirement — service experience, language skills and a clean record matter more."
       },
       "universityPath": {
-        "programme": "Airline and Airport Management",
-        "duration": "3 years",
+        "programme": "No degree required — airlines train cabin crew in-house. Optional adjacent path: Bachelor i Reiselivsledelse (Tourism Management) for management-track ambitions.",
+        "duration": "3 years (optional)",
         "type": "bachelor",
         "examples": [
-          "UiO",
           "Høyskolen Kristiania",
-          "Södertörns högskola"
+          "OsloMet",
+          "Universitetet i Stavanger"
         ],
-        "applicationRoute": "Samordna opptak (Norway), antagning.se (Sweden)",
-        "competitiveness": "Moderately competitive, as many applicants seek this career."
+        "applicationRoute": "Direct airline application (SAS, Norwegian, Widerøe, Flyr) for cabin crew itself. Samordna opptak only for the optional bachelor in Reiselivsledelse.",
+        "competitiveness": "Cabin-crew intake is moderately competitive — airlines typically receive 10-30 applicants per place. A service, hospitality or tourism background is the strongest differentiator; no academic grades are required."
       },
       "entryLevelRequirements": {
-        "title": "Flight Attendant Trainee",
-        "description": "Complete training to learn safety and service protocols.",
-        "whatYouNeed": "Completion of an airline training program and good language skills."
+        "title": "Flight Attendant (Kabinpersonale)",
+        "description": "Complete the airline's 4-8 week paid cabin-crew training, covering safety and emergency procedures, first aid, firefighting, service standards, and aircraft-type-specific drills.",
+        "whatYouNeed": "Minimum age 18-20 (airline-dependent), completed videregående, fluent Norwegian + English, valid 50m swim test, clean criminal/health record, ability to reach overhead compartments (~160cm+)."
       },
       "qualifiesFor": {
-        "immediate": "Flight Attendant",
-        "withExperience": "Senior Flight Attendant",
-        "seniorPath": "Cabin Crew Manager"
+        "immediate": "Flight Attendant (short-haul or long-haul)",
+        "withExperience": "Purser / Senior Cabin Crew",
+        "seniorPath": "Cabin Crew Manager or Cabin Crew Instructor"
       },
       "specialisationNote": null
     },

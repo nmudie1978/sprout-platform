@@ -1,3 +1,156 @@
+
+
+Fix the attachments section
+Get haircut
+Collect suit
+Contact nui
+
+
+ so to see PONR process working what steps must i perform and using what personas?   keep it short                                                                                                            
+
+⏺ 1. Log in as Vinith Rajan (Lead BA) — go to a request in UNDER_BA_ASSESSMENT, open BA workspace, add an Epic, toggle "Epic Finalised" → request hits EPIC_FINALISED, baseline snapshot created
+  2. Switch to Nick Mudie (PM) — open that same request → you'll see PONR badge, "Baseline Committed" banner, Change Requests tab. Click "Request Change" → fill in form → PCR created
+  3. Switch to Vinith Rajan (BA) — open the PCR detail page → click "Begin Assessment" → "Send for Approval"
+  4. Switch to Patrick Decool (Product Lead) — open the PCR → click "Approve"
+  5. Back as Nick Mudie — request's Change Requests tab now shows "Baseline + 1 approved change". Edit button is gone (read-only).
+
+
+
+
+
+┌─────────────────────────────────────────────────────────────────┐
+  │  BSS / Sales channels  (CRM, self-care, dealer portal, API)      │
+  └──────────────────────────┬───────────────────────────────────────┘
+                             │
+                             │  TMF622  Product Ordering
+                             ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Qvantel COM  (Customer Order Management)                        │
+  │  • validates order against Catalog                               │
+  │  • decomposes Product Order ──► Service Order(s)                 │
+  │      using Catalog mappings:  CFS ──► RFS ──► RS                 │
+  └──────────────────────────┬───────────────────────────────────────┘
+                             │
+                             │  TMF641  Service Ordering
+                             ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Qvantel SOM  (Service Order Management / Orchestrator)          │
+  │  • workflow / decomposition / fallout handling                   │
+  │  • invokes domain adapters per RFS                               │
+  └──────────────────────────┬───────────────────────────────────────┘
+                             │
+                             │  TMF640 Service Activation  /  REST  /  NETCONF NBI
+                             ▼
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Nokia Altiplano  (Access Domain Controller)                     │
+  └──────────────────────────┬───────────────────────────────────────┘
+                             │  NETCONF/YANG  +  gNMI
+                             ▼
+                      Nokia 7360 ISAM FX (OLT)
+                             │  OMCI (ITU-T G.988)
+                             ▼
+                      Nokia 7368 ONT (CPE)
+
+
+
+
+
+
+
+
+
+
+
+- technical authority. (Authority). Before it reaches a BA  (architect).... Enough knowledge on the technical architecture. 
+
+To say "this is the way to do it" 
+" This is how we´ve done it for other products" 
+
+Some of the BAs (level of maturity)
+
+
+Functional leads:  not being done.... 
+
+
+
+An "ART intake" status — did the ART accept this Epic into a PI? Which PI?
+
+
+Adopt Nokia for 
+
+
+
+— NORC as cross-domain service orchestrator (subject to FlowOne statement)
+
+- UIV as federated graph inventory (subject to CRUD ownership matrix)
+- NAC as assurance platform (sub ject to operationalised closed loop)
+- NSP as IP / MPLS + optical + microwave controller
+- Altiplano only on a Nokia-dominant OLT estate
+- MantaRay for RAN, with multi-vendor scope commercially capped
+
+NAC ↔ NORC ↔ UIV is workflow glue, not declarative intent. SI must operationalise. 
+
+
+
+1.5.3.2 Discovery and Reconciliation
+Vendor will utilize the E2ESO UIV module to do the discovery & reconciliation engine for IPMPLS logical resources (VLAN and VRF).
+-	Discover the logical resources from the IP network.
+-	Reconcile the logical resource with the granite data for the scoped services (limited to VLAN and VRF logical resources).
+
+
+1.5.6	Dependencies
+o	The customer will provide necessary information to implement the new services and guarantee the readiness and technical feasibility.
+o	Vendor documentation, new services payloads and all required documents to make a successful integration.
+o	Granite to expose APIs for design and assign actions,
+o	EAI to do API translation (from XML to TMF 641) and routes legacy services to legacy eOC
+ 
+
+o	The As-Is workflows must be available before kick-off. MNO to avail solution architect knowing the existing SOMs implementation. No reverse engineering will be done by Vendor team
+o	Cisco NSO to expose the discovery APIs
+o	Granite to export IP/MPLS services along with underlying resources (through API, file dump, sql query…)
+o	Granite to share APIs for pushing configuration for services and resources update
+o	MNO to provide WFMS/FSM API documentation
+o	IPAM to share the APIs for IP management
+
+
+
+
+
+A note up front:  I've worked from the SoW you sent me — that's all I have. I haven't yet seen a role spec, the SI's proposed delivery team shape or MNO team shape, or any pre-sales work that's already been done on this RFP, and I haven't had a conversation about my own scope of accountability within whatever architecture function the SI is putting in place.
+                                                                                                                                                                                                            
+So the figures and assessments below represent my honest read of what the programme implies in aggregate. They're not numbers I'd attach to my name as personal deliverables without a wider conversation about role, team / programme structure, and any existing commercial commitments to MNO.
+
+My summary: — 32 products, all B2B (WBU "new services" + EBU "migration of existing automated services" per SoW phrasing), decomposing into ~7 categories (or archetypes).  
+
+Realistically this is an 18–22 month programme end-to-end, with the SoW's 36-week envelope landing the first ~10–12 of 32 products and the remainder needing a 2nd phase of approx 12–16 months further.  As you know I have been part of a similar transformation programme for several years and am familiar with the level-of-effort needed, including the client-side commitment in terms of SME´s, etc.
+
+My personal engagement on this programme is assumed to be the full programme duration (18–22 months) at varying intensity, not a defined work package that completes early and then stops (but again I haven't seen the job spec).
+ 
+
+Foundation deliverables, weeks 0–12 (~3 months):
+                                                                                                                                                                                                               
+  - RDD (Requirementss Definition Document) — contractual scope and solution definition..
+  - HLD / Reference Architecture — solution, integration, information, deployment                                                                                                                              
+  - NFR Document — committed acceptance criteria (perf / throughput related mostly=)
+  - ICD drafts — system-to-system interfaces, version-pinned                                                                                                                                               
+  - Information model scope — SID alignment. (What systems own which fields / data)                                                                                                                                             
+  - Catalog Design Principles doc - (discussing cfs re-use, etc)
+  - Security architecture — initial framing  (network segmentation, secrets mgnt, api auth, etc)
+
+Then for duration of the programme (varying intensity by stage):
+                                                                                                                                                                                                               
+  - Archetype design and review sign-offs across the 7 archetypes (DIA, E-Line, multipoint L2, L3VPN,etc)
+  - Per-product LLD reviews on a rolling cadence as products move through the pipeline                                                                                                                         
+  - ICD sign-off chairing — drafts to signed, version-pinned      
+  - ADR (Architectural Decision Record) authorship for contentious decisions                                                                                                                                   
+  - Cross-team / cross-vendor alignment — Nokia PS, Cisco PS, MNO architecture, MNO BU leads
+  - Migration architecture sign-offs and per-wave go-live readiness gates                                                                                                                                      
+  - Exit / handover architecture — ADR library, KT plan
+
+
+I would be eager to see a job description if you could provide one and even better a discussion around the wider programme scope / team.
+
+
 # Career Pathway Data Model — Design Doc
 
 **Status:** DRAFT — awaiting sign-off from product (Nicky) before implementation.
@@ -243,6 +396,13 @@ Currently in `programmes.json` (43 careers). I propose splitting them by treatme
 - `kindergarten-teacher`, `special-needs-teacher`
 
 That's ~24 + ~15 = ~39-40 careers in scope for the multi-route treatment. The other ~700 careers in `career-pathways.ts` stay on `PathwayFallbackView`.
+
+Risks to the programme based on SoW:    
+
+-> No ITSM/CMDB mentioned as in scope for E2E architecture
+-> Client is owning the SIT testing
+-> FTTT alone is a huge product which will require months of design/analysis/implementation and E2E testing alone.  I would even argue that it should be treated as a separate workstream
+-> training
 
 ## 10. Open questions (need your call before Phase 2 begins)
 

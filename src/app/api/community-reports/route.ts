@@ -1,8 +1,13 @@
 export const dynamic = "force-dynamic";
 /**
- * Community Reports API
- * POST - Create a new report
- * GET - Get reports (for admins or guardians)
+ * Content / user reports API.
+ * POST - File a report (any authenticated user)
+ * GET  - List reports (admins only; or `?my=true` for the caller's own)
+ *
+ * The community-guardian moderation layer was removed with the jobs
+ * marketplace. Reports are now reviewed by admins. Reports are still
+ * associated with a "Platform" Community row so existing review tooling
+ * and the CommunityReport schema keep working unchanged.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -10,13 +15,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma, withRLSContext } from "@/lib/prisma";
 import { logAuditAction } from "@/lib/safety";
-import {
-  deriveCommunityFromJob,
-  isAdmin,
-  isGuardianForCommunity,
-  getMyGuardianAssignment,
-  REPORT_REASONS,
-} from "@/lib/community-guardian";
+import { isAdmin, REPORT_REASONS } from "@/lib/community-guardian";
 import { AuditAction, CommunityReportTargetType } from "@prisma/client";
 import { checkRateLimitAsync, getRateLimitHeaders } from "@/lib/rate-limit";
 import { apiError } from "@/lib/api-error";
@@ -30,12 +29,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Cap reports at 5/hour per user. False-report flooding is a
-    // real attack vector — a bad actor can pin an honest user's
-    // account or tie up moderation by spamming reports. Duplicate
-    // guard (line ~123) prevents repeat reports of the same target,
-    // but without a per-user cap, an attacker can still flood with
-    // reports of *different* targets.
+    // Cap reports at 5/hour per user. False-report flooding is a real
+    // attack vector — a bad actor can pin an honest user's account or tie
+    // up moderation by spamming reports of different targets.
     const rateLimit = await checkRateLimitAsync(
       `community-report:${session.user.id}`,
       { interval: 60 * 60 * 1000, maxRequests: 5 },
@@ -50,10 +46,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { targetType, targetId, reason, details } = body;
 
-    // Validate target type
-    if (!["JOB_POST", "USER"].includes(targetType)) {
+    // Validate target type. JOB_POST is retained in the enum for legacy
+    // rows but new reports target users/content only.
+    if (!["USER", "JOB_POST"].includes(targetType)) {
       return NextResponse.json(
-        { error: "Invalid target type. Must be JOB_POST or USER" },
+        { error: "Invalid target type" },
         { status: 400 }
       );
     }
@@ -66,90 +63,47 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Derive community from target (server-side, don't trust client)
-    let communityId: string | null = null;
-
-    if (targetType === "JOB_POST") {
-      // Check job exists
-      const job = await prisma.microJob.findUnique({
-        where: { id: targetId },
-        select: { id: true, communityId: true, location: true },
-      });
-
-      if (!job) {
-        return NextResponse.json({ error: "Job not found" }, { status: 404 });
-      }
-
-      communityId = await deriveCommunityFromJob(targetId);
-    } else if (targetType === "USER") {
-      // Check user exists
+    // Verify the reported user exists (the supported target).
+    if (targetType === "USER") {
       const user = await prisma.user.findUnique({
         where: { id: targetId },
         select: { id: true },
       });
-
       if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
       }
-
-      // For user reports, try to find a community through their jobs
-      const userJob = await prisma.microJob.findFirst({
-        where: { postedById: targetId },
-        select: { communityId: true },
-      });
-      communityId = userJob?.communityId || null;
-
-      // Or through their applications
-      if (!communityId) {
-        const userApplication = await prisma.application.findFirst({
-          where: { youthId: targetId },
-          include: { job: { select: { communityId: true } } },
-        });
-        communityId = userApplication?.job.communityId || null;
+      if (targetId === session.user.id) {
+        return NextResponse.json(
+          { error: "You cannot report yourself" },
+          { status: 400 }
+        );
       }
     }
 
-    // If no community found, create a "platform-wide" report
-    // These go directly to admins
-    if (!communityId) {
-      // Find or create a default "Platform" community for uncategorized reports
-      let defaultCommunity = await prisma.community.findFirst({
-        where: { name: "Platform" },
+    // All reports route to the platform-wide review queue. The per-job
+    // community routing was part of the removed marketplace.
+    let platformCommunity = await prisma.community.findFirst({
+      where: { name: "Platform" },
+    });
+    if (!platformCommunity) {
+      platformCommunity = await prisma.community.create({
+        data: {
+          name: "Platform",
+          description: "Platform-wide reports for admin review",
+          isActive: true,
+        },
       });
-
-      if (!defaultCommunity) {
-        defaultCommunity = await prisma.community.create({
-          data: {
-            name: "Platform",
-            description: "Platform-wide reports (no specific community)",
-            isActive: true,
-          },
-        });
-      }
-
-      communityId = defaultCommunity.id;
     }
 
-    // Prevent self-reporting
-    if (targetType === "USER" && targetId === session.user.id) {
-      return NextResponse.json(
-        { error: "You cannot report yourself" },
-        { status: 400 }
-      );
-    }
-
-    // Check for duplicate reports (same reporter, same target, within 24h)
+    // Prevent duplicate reports of the same target within 24h.
     const existingReport = await prisma.communityReport.findFirst({
       where: {
         reporterUserId: session.user.id,
         targetType: targetType as CommunityReportTargetType,
-        targetId: targetId,
-        createdAt: {
-          gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        },
+        targetId,
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
       },
     });
-
     if (existingReport) {
       return NextResponse.json(
         { error: "You have already reported this recently" },
@@ -157,10 +111,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create the report
     const report = await prisma.communityReport.create({
       data: {
-        communityId,
+        communityId: platformCommunity.id,
         reporterUserId: session.user.id,
         targetType: targetType as CommunityReportTargetType,
         targetId,
@@ -170,7 +123,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Log the action
     await logAuditAction({
       userId: session.user.id,
       action: AuditAction.COMMUNITY_REPORT_CREATED,
@@ -179,32 +131,27 @@ export async function POST(req: NextRequest) {
       metadata: { reason, reportId: report.id },
     });
 
-    // Notify the guardian (if one exists for this community)
-    const guardianAssignment = await prisma.communityGuardian.findFirst({
-      where: {
-        communityId,
-        isActive: true,
-      },
+    // Notify admins so the report is actioned.
+    const admins = await prisma.user.findMany({
+      where: { role: "ADMIN" },
+      select: { id: true },
     });
-
-    if (guardianAssignment) {
-      await prisma.notification.create({
-        data: {
-          userId: guardianAssignment.guardianUserId,
-          type: "COMMUNITY_REPORT_RECEIVED",
-          title: "New Community Report",
-          message: `A new ${targetType === "JOB_POST" ? "job post" : "user"} report has been submitted.`,
-          link: "/guardian",
-        },
-      });
-    }
+    await Promise.all(
+      admins.map((admin) =>
+        prisma.notification.create({
+          data: {
+            userId: admin.id,
+            type: "COMMUNITY_REPORT_RECEIVED",
+            title: "New Report",
+            message: `A new ${targetType === "USER" ? "user" : "content"} report has been submitted.`,
+            link: `/admin/reports/${report.id}`,
+          },
+        })
+      )
+    );
 
     return NextResponse.json(
-      {
-        message: "Report submitted successfully",
-        reportId: report.id,
-        hasGuardian: !!guardianAssignment,
-      },
+      { message: "Report submitted successfully", reportId: report.id },
       { status: 201 }
     );
   } catch (error) {
@@ -216,7 +163,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/community-reports - Get reports (for admins or guardians)
+// GET /api/community-reports - List reports (admins only; or ?my=true)
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -229,46 +176,29 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get("status");
     const myReports = searchParams.get("my") === "true";
 
-    // If requesting own reports
+    // The caller's own reports.
     if (myReports) {
-      // L4 phase-1 RLS wrap. Once phase 2 forces RLS, the
-      // community_report_self_read policy restricts reads to rows
-      // where reporterUserId or assignedGuardianUserId matches the
-      // session context, so a query that drops the explicit
-      // reporterUserId filter still can't leak other users' reports.
       const reports = await withRLSContext(session.user.id, (tx) =>
         tx.communityReport.findMany({
           where: { reporterUserId: session.user.id },
-          include: {
-            community: { select: { name: true } },
-          },
+          include: { community: { select: { name: true } } },
           orderBy: { createdAt: "desc" },
           take: 50,
         }),
       );
-
       return NextResponse.json(reports);
     }
 
-    // Check if user is admin or guardian
+    // Otherwise admin-only. The community-guardian role was removed.
     const isAdminUser = await isAdmin(session.user.id);
-    const guardianAssignment = await getMyGuardianAssignment(session.user.id);
-
-    if (!isAdminUser && !guardianAssignment.isGuardian) {
+    if (!isAdminUser) {
       return NextResponse.json(
         { error: "Not authorized to view reports" },
         { status: 403 }
       );
     }
 
-    const where: any = {};
-
-    // Guardians can only see reports for their community
-    if (!isAdminUser && guardianAssignment.communityId) {
-      where.communityId = guardianAssignment.communityId;
-    }
-
-    // Filter by status if provided
+    const where: Record<string, unknown> = {};
     if (status) {
       where.status = status;
     }
@@ -284,17 +214,8 @@ export async function GET(req: NextRequest) {
             employerProfile: { select: { companyName: true } },
           },
         },
-        assignedGuardian: {
-          select: {
-            id: true,
-            youthProfile: { select: { displayName: true } },
-          },
-        },
       },
-      orderBy: [
-        { status: "asc" }, // OPEN first
-        { createdAt: "desc" },
-      ],
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
       take: 100,
     });
 

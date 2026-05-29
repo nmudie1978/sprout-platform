@@ -424,7 +424,7 @@ export default function WhitePaperPage() {
               "Career Snapshot — salary range, growth outlook, sector, and pension context at a glance.",
               "Who Am I — a gentle self-portrait generated from discovery preferences.",
               "My Explored Journeys — history of every career seriously considered, switchable without losing context.",
-              "Saved Careers and Small Jobs — quick access to bookmarks and applications.",
+              "Saved Careers — quick access to bookmarked career profiles.",
               "Discovery Nudge — a sparse, gentle suggestion that surfaces once per 20–30 minute session.",
               "Did You Know — rotating research-backed facts about the job market.",
             ]}

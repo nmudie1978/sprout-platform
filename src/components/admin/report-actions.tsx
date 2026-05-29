@@ -70,26 +70,26 @@ export function ReportActions({ reportId, currentStatus, targetType, targetAlrea
       )}
 
       <div className="flex flex-wrap gap-2">
-        {!targetAlreadyPaused && (
+        {targetType === "USER" && !targetAlreadyPaused && (
           <Button
             size="sm"
             variant="outline"
             disabled={pending || busyAction !== null || isTerminal}
             onClick={() =>
               runAction(
-                "pauseTarget",
+                "pauseUser",
                 { reason: `Paused via moderation queue (admin)` },
-                targetType === "JOB_POST" ? "Job post paused" : "User paused",
+                "User paused",
               )
             }
             className="border-amber-500/40 text-amber-700 dark:text-amber-300 hover:bg-amber-500/10"
           >
-            {busyAction === "pauseTarget" ? (
+            {busyAction === "pauseUser" ? (
               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
             ) : (
               <Pause className="h-3.5 w-3.5 mr-1.5" />
             )}
-            Pause {targetType === "JOB_POST" ? "job" : "user"}
+            Pause user
           </Button>
         )}
 

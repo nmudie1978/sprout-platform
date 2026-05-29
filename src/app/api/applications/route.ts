@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma, withRLSContext } from "@/lib/prisma";
 import { applicationSchema, APPLICATION_INTENTS } from "@/lib/validations/job";
-import { canYouthApplyToJobs } from "@/lib/safety";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { canApplyToJob, logAgeEligibilityEvent } from "@/lib/age-policy/utils";
 import { apiError } from "@/lib/api-error";
@@ -31,18 +30,6 @@ export async function POST(req: NextRequest) {
       const headers = getRateLimitHeaders(rateLimit.limit, rateLimit.remaining, rateLimit.reset);
       Object.entries(headers).forEach(([key, value]) => response.headers.set(key, value));
       return response;
-    }
-
-    // Safety gate: Check if youth can apply to jobs (guardian consent if under 18)
-    const safetyCheck = await canYouthApplyToJobs(session.user.id);
-    if (!safetyCheck.allowed) {
-      return NextResponse.json(
-        {
-          error: safetyCheck.reason || "Not authorized to apply",
-          code: safetyCheck.code,
-        },
-        { status: 403 }
-      );
     }
 
     const body = await req.json();

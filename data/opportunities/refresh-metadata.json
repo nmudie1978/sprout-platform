@@ -1,0 +1,31 @@
+{
+  "lastRefreshISO": "2026-04-23T11:47:30.704Z",
+  "cadence": "mixed",
+  "totalFetched": 3,
+  "totalNormalized": 3,
+  "totalVerified": 3,
+  "totalFailed": 0,
+  "totalExpired": 0,
+  "duplicatesRemoved": 0,
+  "providerStats": [
+    {
+      "provider": "nav-jobs",
+      "fetched": 3,
+      "normalized": 3,
+      "verified": 3,
+      "failed": 0,
+      "expired": 0,
+      "errors": []
+    }
+  ],
+  "providerHealth": [
+    {
+      "provider": "nav-jobs",
+      "status": "healthy",
+      "lastRun": "2026-04-23T11:47:25.674Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-04-23T11:47:30.223Z",
+      "itemsFound": 3
+    }
+  ]
+}

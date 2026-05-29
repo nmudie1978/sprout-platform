@@ -611,10 +611,6 @@
       "baseCareerId": "healthcare-worker",
       "specialisationNote": "Personal trainers help clients improve their health and fitness, which aligns with the broader goals of healthcare workers in promoting well-being."
     },
-    "flight-attendant": {
-      "baseCareerId": "airline-pilot",
-      "specialisationNote": "Both flight attendants and airline pilots work in the aviation industry, focusing on passenger safety and comfort during flights."
-    },
     "flight-engineer-space": {
       "baseCareerId": "mechanical-engineer",
       "specialisationNote": "A Flight Engineer (Space) requires knowledge of systems and mechanics, similar to a Mechanical Engineer who designs and maintains machinery."
@@ -3060,6 +3056,48 @@
       "duration": "12-18 months"
     },
     {
+      "id": "no-vgs-salg-service-reiseliv",
+      "careerId": "flight-attendant",
+      "institutionId": "vgs-no",
+      "programme": "Vg1 Salg, service og reiseliv → Vg2 Reiseliv",
+      "englishName": "Sales, Service & Tourism (Year 1) → Tourism (Year 2)",
+      "url": "https://www.vilbli.no/nb/nb/no/salg-service-og-reiseliv/program/v.ssr",
+      "type": "fagbrev",
+      "duration": "2 years school + 2 years apprenticeship",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "free",
+      "entryRequirements": "Completed lower secondary (10. trinn)",
+      "careerOutcome": "Fagbrev i reiselivsfaget — service/tourism background that strengthens applications to airline cabin crew programmes"
+    },
+    {
+      "id": "no-naa-kabinpersonalkurs",
+      "careerId": "flight-attendant",
+      "institutionId": "nordic-aviation-academy",
+      "programme": "Kabinpersonalkurs",
+      "englishName": "Cabin Crew Prep Course",
+      "url": "https://nordicaviationacademy.no",
+      "type": "vocational",
+      "duration": "1-3 weeks",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "paid (private)",
+      "entryRequirements": "18+, completed videregående, fluent Norwegian + English, swim test",
+      "careerOutcome": "Prep for airline cabin-crew interviews and assessment days — not a licence; final training is still run by the hiring airline"
+    },
+    {
+      "id": "no-kristiania-reiselivsledelse",
+      "careerId": "flight-attendant",
+      "institutionId": "kristiania",
+      "programme": "Bachelor i Reiselivsledelse",
+      "englishName": "Bachelor in Tourism Management",
+      "url": "https://www.kristiania.no/studier/bachelor/reiselivsledelse/",
+      "type": "bachelor",
+      "duration": "3 years",
+      "languageOfInstruction": "Norwegian",
+      "tuitionFee": "paid (private)",
+      "entryRequirements": "Generell studiekompetanse via Samordna opptak",
+      "careerOutcome": "Optional degree path for those aiming at cabin-crew management / purser roles — not required for entry-level cabin crew"
+    },
+    {
       "id": "no-etterstad-rm-kos",
       "careerId": "chef",
       "institutionId": "etterstad",
@@ -4048,6 +4086,12 @@
       "Military pilot training via Luftforsvaret (Norwegian Air Force)",
       "Modular route: PPL → CPL → IR → ATPL theory — cheaper but takes longer"
     ],
+    "flight-attendant": [
+      "Apply directly to airlines (SAS, Norwegian, Widerøe, Flyr) — they run their own 4-8 week paid cabin crew training for successful applicants",
+      "Build a service/hospitality track record first — Hurtigruten, hotels, restaurants, tourism or retail all count; airlines weigh customer-service experience heavily",
+      "Vg2 Salg, service og reiseliv + fagbrev reiselivsfaget — a vocational route that gives you a tourism apprenticeship and makes you a stronger applicant",
+      "Short private cabin-crew prep course (1-3 weeks) to practise safety drills and assessment-day interviews before you apply"
+    ],
     "helicopter-pilot": [
       "Military helicopter pilot training via Forsvaret",
       "Train abroad (USA, South Africa) — typically cheaper, then convert licence to EASA"
@@ -4073,6 +4117,7 @@
     "police-officer": "In Norway, becoming a police officer requires a 3-year bachelor's degree at Politihøgskolen (Police University College). Entry is extremely competitive — typically 3,000+ applicants for ~700 places. You must pass physical tests, background checks, and be a Norwegian citizen.",
     "firefighter": "Norwegian firefighters train at Norges brannskole (Norwegian Fire Academy) in Tjeldsund, Nordland. The programme is 1 year. Many candidates have a technical fagbrev or relevant work experience before applying. You must pass demanding physical tests.",
     "airline-pilot": "Becoming an airline pilot in Norway requires an ATPL (Airline Transport Pilot Licence). You can train through an integrated flight school programme (18-24 months) or via a modular route. Norwegian airlines typically require 1,500+ flight hours.",
+    "flight-attendant": "In Norway, cabin crew is a direct-hire path — airlines like SAS, Norwegian, Widerøe and Flyr run their own 4-8 week paid training for successful applicants. There is no required university degree. Baseline requirements are age 18-20+ (airline-dependent), completed videregående, fluent Norwegian + English, a 50m swim test, and a clean criminal/health check. A service, hospitality or tourism background is the strongest preparation — Vg2 Salg, service og reiseliv gives a useful foundation, but real customer-service work experience matters more than any specific course.",
     "helicopter-pilot": "Helicopter pilots in Norway typically train for a CPL-H (Commercial Pilot Licence — Helicopter). Offshore helicopter operations (North Sea) require additional training including HUET (Helicopter Underwater Escape Training).",
     "chef": "In Norway, becoming a chef is primarily a fagbrev path: Vg1 Restaurant- og matfag → Vg2 Kokk- og servitørfag (2 years at videregående) → 2 years apprenticeship in a working kitchen → fagprøve. The Nordics generally favour apprenticeships and real kitchen experience over elite culinary academies — Sweden's Grythyttan and Denmark's Hotel- og Restaurantskolen are the strongest formal options for an international career."
   }

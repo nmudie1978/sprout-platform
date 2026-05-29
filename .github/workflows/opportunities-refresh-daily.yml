@@ -1,0 +1,75 @@
+name: Refresh live opportunities (daily)
+
+# Runs every day at 05:00 UTC (07:00 Oslo in summer / 06:00 in winter),
+# or on manual trigger. Pulls job / apprenticeship postings from NAV
+# Arbeidsplassen (and later, more daily-cadence providers), dedupes,
+# re-verifies application URLs, prunes expired listings, and opens a
+# PR with the updated data/opportunities/verified-opportunities.json.
+#
+# Job postings churn on a days-to-weeks timescale — a weekly cadence
+# would let half of them expire before the refresh ran. Daily is the
+# minimum that keeps the listings relevant.
+#
+# For production use a registered NAV consumer token in the
+# NAV_PAM_PUBLIC_TOKEN secret. Without it the script falls back to
+# the public rotating token, which is rate-limited and unsuitable
+# for regular automated runs.
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Refresh live opportunities (daily cadence)
+        env:
+          NAV_PAM_PUBLIC_TOKEN: ${{ secrets.NAV_PAM_PUBLIC_TOKEN }}
+        run: npm run opportunities:refresh -- --cadence=daily
+
+      # Open a PR with any changes
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: refresh live opportunities (daily)'
+          body: |
+            Automated daily refresh of
+            `data/opportunities/verified-opportunities.json`.
+
+            Runs the configured daily-cadence opportunity providers
+            (currently `nav-jobs`) through the ETL pipeline:
+            fetch → merge-with-existing → prune-expired → dedupe →
+            URL-verify → save.
+
+            **Review checklist:**
+            - If total items dropped > 30% vs the previous run, check
+              `data/opportunities/provider-health.json` — a scraper
+              likely broke.
+            - If a provider went from N items → 0, inspect the
+              provider file in `src/lib/opportunities/providers/`.
+            - Spot-check 1–2 random items: click the `applicationUrl`
+              and confirm it loads.
+            - If `NAV_PAM_PUBLIC_TOKEN` is missing as a repo secret,
+              the script falls back to the public rotating token and
+              logs a warning — consider registering a consumer via
+              `nav.team.arbeidsplassen@nav.no`.
+          branch: chore/refresh-opportunities-daily
+          commit-message: 'chore: refresh live opportunities (daily)'
+          labels: automated, data, opportunities
+          delete-branch: true

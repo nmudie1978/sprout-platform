@@ -83,7 +83,6 @@ import { APPLICATION_INTENTS } from "@/lib/validations/job";
 import { JobRecommendations } from "@/components/job-recommendations";
 import { DeleteJobButton } from "@/components/delete-job-button";
 import { ReportModal } from "@/components/report-modal";
-import { CommunityGuardedBadge, PausedBadge } from "@/components/guardian-badge";
 import { UserBadgesDisplay } from "@/components/user-badges-display";
 import { StickyActionBar, StickyActionBarSpacer } from "@/components/sticky-action-bar";
 import { PaymentDisclosure } from "@/components/payment-disclosure";
@@ -491,13 +490,6 @@ export default function JobDetailPage(props: { params: Promise<{ id: string }> }
                   <Badge className={`bg-gradient-to-r ${statusConfig.bg} text-white border-0`}>
                     {statusConfig.label}
                   </Badge>
-                  {job.isPaused && <PausedBadge reason={job.pausedReason} />}
-                  {job.community && (
-                    <CommunityGuardedBadge
-                      communityName={job.community.name}
-                      guardianName={job.community.guardian?.displayName}
-                    />
-                  )}
                   <div className="ml-auto">
                     <CopyJobId jobId={job.id} />
                   </div>

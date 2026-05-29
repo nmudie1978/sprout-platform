@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { JoinClassCard } from "@/components/youth/join-class-card";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
-import { Copy, Eye, EyeOff, Shield, CheckCircle2, Clock, XCircle, Trash2, AlertTriangle, Target, Moon, MessageCircleOff, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, Bot } from "lucide-react";
+import { Copy, Eye, EyeOff, Shield, Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, Bot } from "lucide-react";
 import { DiscoveryQuizDialog } from "@/components/discovery/discovery-quiz-dialog";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
@@ -82,7 +82,7 @@ function getDaysInMonth(month: string, year: string): number {
 
 
 export default function ProfilePage() {
-  const { data: session, update: updateSession } = useSession();
+  const { data: session } = useSession();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -103,9 +103,6 @@ export default function ProfilePage() {
   const [dobDay, setDobDay] = useState("");
   const [dobMonth, setDobMonth] = useState("");
   const [dobYear, setDobYear] = useState("");
-
-  // Guardian email re-send state
-  const [resendingGuardianEmail, setResendingGuardianEmail] = useState(false);
 
   // Goal sheet state
   const [showGoalSheet, setShowGoalSheet] = useState(false);
@@ -151,28 +148,6 @@ export default function ProfilePage() {
       lastUserIdRef.current = session.user.id;
     }
   }, [session?.user?.id]);
-
-  // Guardian-consent session refresh.
-  //
-  // When a guardian grants consent via the email link, the youth's
-  // DB record updates (guardianConsent=true) but their JWT still
-  // says false until the token refreshes. Middleware then blocks
-  // them from /dashboard even though consent IS granted. This
-  // effect detects the stale-session case (profile says granted,
-  // session says pending) and calls NextAuth's `update()` to
-  // refresh the JWT — which triggers the jwt() callback with
-  // trigger === "update", re-reading guardianConsent from the DB.
-  // After refresh the user can freely navigate the gated routes.
-  useEffect(() => {
-    const sessionConsent = session?.user?.youthProfile?.guardianConsent;
-    if (
-      session?.user?.role === "YOUTH" &&
-      profile?.guardianConsent === true &&
-      sessionConsent === false
-    ) {
-      updateSession();
-    }
-  }, [profile?.guardianConsent, session?.user?.role, session?.user?.youthProfile?.guardianConsent, updateSession]);
 
   // Fetch primary goal from goals API
   const { data: goalsData } = useQuery({
@@ -277,7 +252,7 @@ export default function ProfilePage() {
         title: data.profileVisibility ? "Profile is now public" : "Profile is now private",
         description: data.profileVisibility
           ? "Job posters can view your profile link"
-          : "Your profile is hidden from job posters",
+          : "Your profile is private",
       });
       queryClient.invalidateQueries({ queryKey: ["my-profile"] });
     },
@@ -285,73 +260,6 @@ export default function ProfilePage() {
       toast({
         title: "Error",
         description: "Failed to update visibility",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateAvailabilityMutation = useMutation({
-    mutationFn: async (status: "AVAILABLE" | "BUSY" | "NOT_LOOKING") => {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ availabilityStatus: status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update availability");
-      }
-
-      return response.json();
-    },
-    onSuccess: (data) => {
-      const statusLabels: Record<string, string> = {
-        AVAILABLE: "Available for Work",
-        BUSY: "Busy Right Now",
-        NOT_LOOKING: "Not Looking",
-      };
-      toast({
-        title: "Status updated!",
-        description: `You're now marked as: ${statusLabels[data.availabilityStatus] || data.availabilityStatus}`,
-      });
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update availability status",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const toggleDoNotDisturbMutation = useMutation({
-    mutationFn: async (doNotDisturb: boolean) => {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ doNotDisturb }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update Do Not Disturb");
-      }
-
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: data.doNotDisturb ? "Do Not Disturb enabled" : "Do Not Disturb disabled",
-        description: data.doNotDisturb
-          ? "Others cannot start new conversations with you"
-          : "Others can now message you",
-      });
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update Do Not Disturb setting",
         variant: "destructive",
       });
     },
@@ -663,7 +571,7 @@ export default function ProfilePage() {
                 My <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">Profile</span>
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base truncate">
-                Set your career direction, showcase your skills, and stand out to job posters
+                Set your career direction, showcase your skills, and build your profile
               </p>
             </div>
           </div>
@@ -890,7 +798,7 @@ export default function ProfilePage() {
                       <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[240px] text-[11px] p-3">
-                      Your name, location, and about section help job posters understand who you are. Only what you fill in is visible.
+                      Your name, location, and about section make up your profile. Only what you fill in is visible.
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -997,7 +905,7 @@ export default function ProfilePage() {
                 <Label htmlFor="bio" className="text-xs font-medium text-muted-foreground/70">About Me</Label>
                 <Textarea
                   id="bio"
-                  placeholder="Tell job posters a bit about yourself..."
+                  placeholder="Tell us a bit about yourself..."
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={2}
@@ -1060,57 +968,6 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* Guardian pending notice */}
-              {session?.user.role === "YOUTH" && session.user.ageBracket === "SIXTEEN_SEVENTEEN" && profile && !profile.guardianConsent && profile.guardianEmail && (
-                <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 px-3 py-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-500">
-                      <Clock className="h-3 w-3" />
-                      Guardian pending
-                    </span>
-                    <button
-                      type="button"
-                      disabled={resendingGuardianEmail}
-                      onClick={async () => {
-                        if (!profile.guardianEmail) return;
-                        setResendingGuardianEmail(true);
-                        try {
-                          const res = await fetch("/api/guardian-consent", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ guardianEmail: profile.guardianEmail }),
-                          });
-                          if (res.ok) {
-                            toast({ title: "Email sent", description: `Re-sent to ${profile.guardianEmail}.` });
-                          } else if (res.status === 429) {
-                            // Daily cap of 3 resends/youth on the server.
-                            // Surface this distinctly so the user knows
-                            // the failure is a cooldown, not a bug.
-                            toast({
-                              title: "Already re-sent today",
-                              description: "You've re-sent this a few times today. Please wait 24 hours before trying again, or contact support.",
-                              variant: "destructive",
-                            });
-                          } else {
-                            toast({ title: "Couldn't send email", description: "Please try again.", variant: "destructive" });
-                          }
-                        } catch {
-                          toast({ title: "Couldn't send email", description: "Please try again.", variant: "destructive" });
-                        } finally {
-                          setResendingGuardianEmail(false);
-                        }
-                      }}
-                      className="text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:underline disabled:opacity-50"
-                    >
-                      {resendingGuardianEmail ? "Sending\u2026" : "Resend"}
-                    </button>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground/50 mt-1">
-                    Sent to {profile.guardianEmail}
-                  </p>
-                </div>
-              )}
-
               <Button
                 onClick={() => saveProfileMutation.mutate()}
                 disabled={!formData.displayName || !formData.city || saveProfileMutation.isPending}
@@ -1125,58 +982,6 @@ export default function ProfilePage() {
 
         {/* Sidebar */}
         <div className="space-y-6 relative z-10">
-          {/* Work Availability — compact */}
-          {profile && (
-            <Card className="border shadow-sm relative z-10">
-              <CardContent className="p-3 space-y-1.5">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Job Availability</p>
-                {(["AVAILABLE", "BUSY", "NOT_LOOKING"] as const).map((status) => {
-                  const isActive = profile.availabilityStatus === status;
-                  const config = {
-                    AVAILABLE: {
-                      icon: CheckCircle2, label: "Available",
-                      active: "border-green-500 bg-green-500/10",
-                      hover: "border-border hover:border-green-500/50",
-                      iconActive: "text-green-500",
-                      dot: "bg-green-500",
-                    },
-                    BUSY: {
-                      icon: Clock, label: "Busy",
-                      active: "border-yellow-500 bg-yellow-500/10",
-                      hover: "border-border hover:border-yellow-500/50",
-                      iconActive: "text-yellow-500",
-                      dot: "bg-yellow-500",
-                    },
-                    NOT_LOOKING: {
-                      icon: XCircle, label: "Not Looking",
-                      active: "border-red-500 bg-red-500/10",
-                      hover: "border-border hover:border-red-500/50",
-                      iconActive: "text-red-500",
-                      dot: "bg-red-500",
-                    },
-                  }[status];
-                  const Icon = config.icon;
-                  return (
-                    <button
-                      key={status}
-                      type="button"
-                      onClick={() => updateAvailabilityMutation.mutate(status)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg border text-left transition-all cursor-pointer text-xs ${
-                        isActive ? config.active : config.hover
-                      }`}
-                    >
-                      <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? config.iconActive : "text-muted-foreground"}`} />
-                      <span className={`font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}>{config.label}</span>
-                      {isActive && (
-                        <div className={`ml-auto h-2 w-2 rounded-full ${config.dot} animate-pulse`} />
-                      )}
-                    </button>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          )}
-
           {/* Privacy Controls */}
           {profile && (
             <Card className="border-2 shadow-lg hover-lift relative z-10">
@@ -1194,7 +999,7 @@ export default function ProfilePage() {
                     </Label>
                     <p className="text-xs text-muted-foreground">
                       {profile.profileVisibility
-                        ? "Job posters can view your profile"
+                        ? "Your profile is visible"
                         : "Your profile is private"}
                     </p>
                   </div>
@@ -1214,7 +1019,7 @@ export default function ProfilePage() {
                       Profile is Public
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Share this link with job posters:
+                      Share this link:
                     </p>
                     <div className="mt-2 flex items-center gap-2">
                       <code className="flex-1 truncate rounded bg-background px-2 py-1 text-xs">
@@ -1236,46 +1041,10 @@ export default function ProfilePage() {
                       Profile is Private
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Turn on visibility to share your profile with job posters
+                      Turn on visibility to share your profile
                     </p>
                   </div>
                 )}
-
-                {/* Do Not Disturb Toggle */}
-                <div className="border-t pt-4 mt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <Label htmlFor="doNotDisturb" className="cursor-pointer flex items-center gap-2">
-                        <MessageCircleOff className="h-4 w-4 text-muted-foreground" />
-                        Do Not Disturb
-                      </Label>
-                      <p className="text-xs text-muted-foreground">
-                        {profile.user?.doNotDisturb
-                          ? "Others cannot start new conversations"
-                          : "Others can message you"}
-                      </p>
-                    </div>
-                    <Switch
-                      id="doNotDisturb"
-                      checked={profile.user?.doNotDisturb || false}
-                      onCheckedChange={(checked) =>
-                        toggleDoNotDisturbMutation.mutate(checked)
-                      }
-                    />
-                  </div>
-
-                  {profile.user?.doNotDisturb && (
-                    <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3 mt-3">
-                      <div className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
-                        <Moon className="h-4 w-4" />
-                        Do Not Disturb is On
-                      </div>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        You won't appear in user searches and others can't start new conversations with you. Existing conversations will still work.
-                      </p>
-                    </div>
-                  )}
-                </div>
 
                 {/* AI Assistant Toggle */}
                 <div className="border-t pt-4 mt-4">

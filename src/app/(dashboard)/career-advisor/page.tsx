@@ -114,7 +114,7 @@ function getGoalSpecificQuestions(goal: string) {
   return [
     `What does a day in the life of a ${goal} look like?`,
     `What salary can I expect as a ${goal} in Norway?`,
-    `What small jobs can help me build skills for becoming a ${goal}?`,
+    `What skills should I build to prepare for becoming a ${goal}?`,
     `What challenges do ${goal}s typically face?`,
     `Are there apprenticeships available for ${goal}s?`,
     `What companies hire ${goal}s in Norway?`,

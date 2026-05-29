@@ -2,16 +2,11 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { Star, ArrowRight, MapPin, GraduationCap, Filter, ChevronDown } from "lucide-react";
+import { Star, ArrowRight, MapPin, Filter, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getAllCareers, getCategoryForCareer, type CareerCategory } from "@/lib/career-pathways";
+import { getAllCareers, getCategoryForCareer } from "@/lib/career-pathways";
 
 // ── Types ─────────────────────────────────────────────────────────
-
-interface PathStep {
-  age: number;
-  label: string;
-}
 
 interface CareerPath {
   id: string;
@@ -19,12 +14,14 @@ interface CareerPath {
   currentTitle: string;
   country: string;
   city: string | null;
-  steps: PathStep[];
+  howIGotHere: string;
+  whatIStudied: string;
+  firstSalary: string;
+  hardestPart: string;
+  adviceToSeventeen: string;
+  realityOfJob: string;
   careerTags: string[];
-  didAttendUniversity: boolean;
-  yearsOfExperience: number | null;
-  headline: string | null;
-  advice: string | null;
+  videoUrl: string | null;
   createdAt: string;
 }
 
@@ -51,6 +48,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 // ── Helpers ───────────────────────────────────────────────────────
+
+function Section({ label, body }: { label: string; body: string }) {
+  return (
+    <div>
+      <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-xs text-foreground/80 whitespace-pre-line leading-relaxed">{body}</p>
+    </div>
+  );
+}
 
 function getCareerInfo(careerTag: string) {
   const allCareers = getAllCareers();
@@ -206,7 +212,6 @@ export default function ParentsPathsPage() {
               const pathCategories = getCategoriesForPath(path);
               const careerInfos = path.careerTags.map(getCareerInfo);
               const isExpanded = expandedId === path.id;
-              const sortedSteps = [...(path.steps as PathStep[])].sort((a, b) => a.age - b.age);
 
               return (
                 <div
@@ -234,16 +239,13 @@ export default function ParentsPathsPage() {
                           <MapPin className="h-2.5 w-2.5" />
                           {path.country}
                         </div>
-                        {!path.didAttendUniversity && (
-                          <span className="text-[9px] text-amber-500/70 bg-amber-500/10 px-1.5 py-0.5 rounded-full">No university</span>
-                        )}
                       </div>
                     </div>
 
-                    {/* Headline */}
-                    {path.headline && (
-                      <p className="text-xs italic text-muted-foreground/70 mb-2">&ldquo;{path.headline}&rdquo;</p>
-                    )}
+                    {/* Teaser — first lines of "how I got here" */}
+                    <p className="text-xs text-muted-foreground/80 line-clamp-2 mb-2">
+                      {path.howIGotHere}
+                    </p>
 
                     {/* Category + career tags */}
                     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -267,43 +269,30 @@ export default function ParentsPathsPage() {
 
                   {/* Expanded content */}
                   {isExpanded && (
-                    <div className="px-5 pb-5 border-t border-border/30 pt-4">
-                      {/* Timeline */}
-                      <div className="space-y-2 mb-4">
-                        {sortedSteps.map((step, i) => (
-                          <div key={i} className="flex items-center gap-3 text-xs">
-                            <span className="text-muted-foreground/50 w-6 text-right tabular-nums font-medium">{step.age}</span>
-                            <span className="h-2 w-2 rounded-full bg-primary/40 shrink-0" />
-                            <span className="text-foreground/80">{step.label}</span>
-                          </div>
-                        ))}
+                    <div className="px-5 pb-5 border-t border-border/30 pt-4 space-y-4">
+                      <Section label="How I got here" body={path.howIGotHere} />
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <Section label="What I studied" body={path.whatIStudied} />
+                        <Section label="My first salary" body={path.firstSalary} />
+                      </div>
+                      <Section label="The hardest part" body={path.hardestPart} />
+                      <Section label="The reality of my job" body={path.realityOfJob} />
+
+                      {/* Advice — set apart */}
+                      <div className="rounded-lg bg-primary/[0.06] border border-primary/15 p-3">
+                        <p className="text-[10px] text-primary/70 uppercase tracking-wider mb-1">
+                          What I&apos;d tell my 17-year-old self
+                        </p>
+                        <p className="text-xs text-foreground/80 italic whitespace-pre-line">
+                          &ldquo;{path.adviceToSeventeen}&rdquo;
+                        </p>
                       </div>
 
-                      {/* Meta row */}
-                      <div className="flex items-center gap-4 text-[10px] text-muted-foreground/40 mb-3">
-                        {path.yearsOfExperience && (
-                          <span>{path.yearsOfExperience} years experience</span>
-                        )}
-                        {path.didAttendUniversity && (
-                          <span className="flex items-center gap-1">
-                            <GraduationCap className="h-2.5 w-2.5" />
-                            University
-                          </span>
-                        )}
-                        {path.city && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-2.5 w-2.5" />
-                            {path.city}, {path.country}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Advice */}
-                      {path.advice && (
-                        <div className="rounded-lg bg-muted/20 border border-border/30 p-3">
-                          <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-1">Advice</p>
-                          <p className="text-xs text-foreground/70 italic">&ldquo;{path.advice}&rdquo;</p>
-                        </div>
+                      {path.city && (
+                        <p className="text-[10px] text-muted-foreground/40 flex items-center gap-1">
+                          <MapPin className="h-2.5 w-2.5" />
+                          {path.city}, {path.country}
+                        </p>
                       )}
                     </div>
                   )}

@@ -6,18 +6,16 @@ import {
   ArrowLeft,
   ArrowRight,
   Plus,
-  Trash2,
   Check,
   Loader2,
-  MapPin,
-  Briefcase,
-  GraduationCap,
   Heart,
   Search,
   X,
+  Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { searchCareers, type Career } from "@/lib/career-pathways";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -25,22 +23,18 @@ import Link from "next/link";
 
 // ── Types ─────────────────────────────────────────────────────────
 
-interface PathStep {
-  age: number;
-  label: string;
-}
-
 interface FormData {
   displayName: string;
   currentTitle: string;
   country: string;
   city: string;
-  steps: PathStep[];
+  howIGotHere: string;
+  whatIStudied: string;
+  firstSalary: string;
+  hardestPart: string;
+  adviceToSeventeen: string;
+  realityOfJob: string;
   careerTags: { id: string; title: string }[];
-  didAttendUniversity: boolean;
-  yearsOfExperience: string;
-  headline: string;
-  advice: string;
   submittedByEmail: string;
 }
 
@@ -49,21 +43,25 @@ const INITIAL_FORM: FormData = {
   currentTitle: "",
   country: "",
   city: "",
-  steps: [{ age: 16, label: "" }],
+  howIGotHere: "",
+  whatIStudied: "",
+  firstSalary: "",
+  hardestPart: "",
+  adviceToSeventeen: "",
+  realityOfJob: "",
   careerTags: [],
-  didAttendUniversity: false,
-  yearsOfExperience: "",
-  headline: "",
-  advice: "",
   submittedByEmail: "",
 };
 
 const STEP_TITLES = [
   "About you",
-  "Your career timeline",
-  "Link to careers",
-  "Final details",
+  "Your story",
+  "The honest truth",
+  "Link & finish",
 ];
+
+// Minimum chars required to advance the prose-prompt step
+const MIN_PROSE = 10;
 
 // ── Career Search ─────────────────────────────────────────────────
 
@@ -138,6 +136,38 @@ function CareerSearch({
   );
 }
 
+// ── Prose prompt block ────────────────────────────────────────────
+
+function PromptBlock({
+  label,
+  hint,
+  placeholder,
+  value,
+  onChange,
+  rows = 4,
+}: {
+  label: string;
+  hint?: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  rows?: number;
+}) {
+  return (
+    <div>
+      <label className="text-sm font-medium mb-1 block">{label}</label>
+      {hint && <p className="text-[11px] text-muted-foreground/60 mb-1.5">{hint}</p>}
+      <Textarea
+        rows={rows}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="resize-none"
+      />
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────
 
 export default function ContributePage() {
@@ -154,35 +184,24 @@ export default function ContributePage() {
     [],
   );
 
-  const addStep = () => {
-    const lastAge = form.steps[form.steps.length - 1]?.age ?? 16;
-    update("steps", [...form.steps, { age: Math.min(lastAge + 3, 65), label: "" }]);
-  };
-
-  const removeStep = (index: number) => {
-    if (form.steps.length <= 1) return;
-    update(
-      "steps",
-      form.steps.filter((_, i) => i !== index),
-    );
-  };
-
-  const updateStep = (index: number, field: keyof PathStep, value: string | number) => {
-    const updated = [...form.steps];
-    updated[index] = { ...updated[index], [field]: value };
-    update("steps", updated);
-  };
-
   const canProceed = (): boolean => {
     switch (step) {
       case 0:
         return !!(form.displayName.trim() && form.currentTitle.trim() && form.country.trim());
       case 1:
-        return form.steps.length >= 2 && form.steps.every((s) => s.label.trim());
+        return (
+          form.howIGotHere.trim().length >= MIN_PROSE &&
+          form.whatIStudied.trim().length >= 2 &&
+          form.firstSalary.trim().length >= 2
+        );
       case 2:
-        return form.careerTags.length >= 1;
+        return (
+          form.hardestPart.trim().length >= MIN_PROSE &&
+          form.adviceToSeventeen.trim().length >= MIN_PROSE &&
+          form.realityOfJob.trim().length >= MIN_PROSE
+        );
       case 3:
-        return true;
+        return form.careerTags.length >= 1;
       default:
         return false;
     }
@@ -200,12 +219,13 @@ export default function ContributePage() {
           currentTitle: form.currentTitle,
           country: form.country,
           city: form.city || undefined,
-          steps: form.steps.sort((a, b) => a.age - b.age),
+          howIGotHere: form.howIGotHere,
+          whatIStudied: form.whatIStudied,
+          firstSalary: form.firstSalary,
+          hardestPart: form.hardestPart,
+          adviceToSeventeen: form.adviceToSeventeen,
+          realityOfJob: form.realityOfJob,
           careerTags: form.careerTags.map((t) => t.id),
-          didAttendUniversity: form.didAttendUniversity,
-          yearsOfExperience: form.yearsOfExperience ? Number(form.yearsOfExperience) : undefined,
-          headline: form.headline || undefined,
-          advice: form.advice || undefined,
           submittedByEmail: form.submittedByEmail || undefined,
         }),
       });
@@ -237,7 +257,7 @@ export default function ContributePage() {
             </div>
             <h1 className="text-2xl font-bold mb-2">Thank you</h1>
             <p className="text-muted-foreground mb-1">
-              Your career path has been submitted for review.
+              Your career story has been submitted for review.
             </p>
             <p className="text-sm text-muted-foreground/70">
               Once approved, young people exploring similar careers will see your
@@ -246,9 +266,10 @@ export default function ContributePage() {
             </p>
           </div>
 
-          {/* Summary of what was submitted */}
           <div className="rounded-xl border bg-card/50 p-4 mb-6">
-            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-3">What you submitted</p>
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-3">
+              What you submitted
+            </p>
             <div className="flex items-center gap-2 mb-3">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
                 {form.displayName.charAt(0).toUpperCase() || "?"}
@@ -256,27 +277,13 @@ export default function ContributePage() {
               <div>
                 <p className="text-sm font-medium">{form.displayName}</p>
                 <p className="text-[10px] text-muted-foreground">
-                  {form.currentTitle} &middot; {form.country}{form.didAttendUniversity ? "" : " · No university"}
+                  {form.currentTitle} &middot; {form.country}
                 </p>
               </div>
             </div>
-            {form.headline && (
-              <p className="text-xs italic text-muted-foreground/70 mb-2">&ldquo;{form.headline}&rdquo;</p>
-            )}
-            <div className="space-y-1 mb-2">
-              {form.steps.sort((a, b) => a.age - b.age).map((s, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs">
-                  <span className="text-muted-foreground/50 w-6 text-right tabular-nums">{s.age}</span>
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-                  <span className="text-foreground/70">{s.label}</span>
-                </div>
-              ))}
-            </div>
-            {form.advice && (
-              <p className="text-[10px] text-muted-foreground/60 mt-2">
-                Advice: &ldquo;{form.advice}&rdquo;
-              </p>
-            )}
+            <p className="text-xs text-foreground/70 line-clamp-3">
+              {form.howIGotHere}
+            </p>
           </div>
 
           <div className="flex gap-3 justify-center">
@@ -313,7 +320,7 @@ export default function ContributePage() {
             Share Your Career Path
           </h1>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            Your real journey helps young people see that careers rarely follow
+            Your real story helps young people see that careers rarely follow
             a straight line. Every path contributed makes the picture clearer.
           </p>
         </div>
@@ -378,7 +385,7 @@ export default function ContributePage() {
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1.5 block">
-                    Current job title
+                    Current role
                   </label>
                   <Input
                     placeholder="e.g. Programme Manager"
@@ -408,185 +415,116 @@ export default function ContributePage() {
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 flex items-center gap-2">
-                    <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                    Did you attend university?
-                  </label>
-                  <div className="flex gap-2">
-                    {[
-                      { value: true, label: "Yes" },
-                      { value: false, label: "No" },
-                    ].map((opt) => (
-                      <button
-                        key={String(opt.value)}
-                        type="button"
-                        onClick={() => update("didAttendUniversity", opt.value)}
-                        className={cn(
-                          "flex-1 px-3 py-2 rounded-lg border text-sm transition-colors",
-                          form.didAttendUniversity === opt.value
-                            ? "border-primary bg-primary/10 text-primary font-medium"
-                            : "border-border hover:bg-muted/50",
-                        )}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
 
-            {/* Step 1: Timeline */}
+            {/* Step 1: Your story */}
             {step === 1 && (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-sm font-medium mb-1">Your career timeline</h2>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Add each major step — from leaving school to where you are
-                    now. Include job changes, education, moves abroad, career
-                    switches — everything that shaped your path.
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  {form.steps.map((s, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <div className="flex flex-col items-center pt-2">
-                        <div className="h-3 w-3 rounded-full border-2 border-primary bg-background" />
-                        {i < form.steps.length - 1 && (
-                          <div className="w-px flex-1 bg-border mt-1" />
-                        )}
-                      </div>
-                      <div className="flex-1 flex gap-2">
-                        <div className="w-16 shrink-0">
-                          <label className="text-[10px] text-muted-foreground">
-                            Age
-                          </label>
-                          <Input
-                            type="number"
-                            min={14}
-                            max={70}
-                            value={s.age}
-                            onChange={(e) =>
-                              updateStep(i, "age", parseInt(e.target.value) || 16)
-                            }
-                            className="h-9 text-center"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <label className="text-[10px] text-muted-foreground">
-                            What happened
-                          </label>
-                          <Input
-                            placeholder="e.g. Started as IT support at local company"
-                            value={s.label}
-                            onChange={(e) =>
-                              updateStep(i, "label", e.target.value)
-                            }
-                            className="h-9"
-                          />
-                        </div>
-                        {form.steps.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeStep(i)}
-                            className="mt-4 p-1.5 text-muted-foreground/40 hover:text-destructive transition-colors"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addStep}
-                  className="w-full"
-                >
-                  <Plus className="h-3.5 w-3.5 mr-1.5" />
-                  Add step
-                </Button>
-              </div>
-            )}
-
-            {/* Step 2: Career tags */}
-            {step === 2 && (
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-sm font-medium mb-1">
-                    Which careers does your path relate to?
-                  </h2>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Search for the careers your experience is most relevant to.
-                    Your path will appear when young people explore these careers.
-                  </p>
-                </div>
-                <CareerSearch
-                  selected={form.careerTags}
-                  onAdd={(career) =>
-                    update("careerTags", [
-                      ...form.careerTags,
-                      { id: career.id, title: career.title },
-                    ])
-                  }
-                  onRemove={(id) =>
-                    update(
-                      "careerTags",
-                      form.careerTags.filter((t) => t.id !== id),
-                    )
-                  }
+              <div className="space-y-5">
+                <PromptBlock
+                  label="How I got here"
+                  hint="The honest path from school to your current role — sideways moves, gaps and all."
+                  placeholder="e.g. Left school at 18 with no real plan. Took an admin job, got bored, taught myself SQL on weekends. Two years later jumped to a junior analyst role at a small consultancy..."
+                  value={form.howIGotHere}
+                  onChange={(v) => update("howIGotHere", v)}
+                  rows={6}
+                />
+                <PromptBlock
+                  label="What I studied"
+                  hint="School, university, courses, self-taught — or none of the above."
+                  placeholder='e.g. "Two A-levels, no degree. Did a free Google certificate at 22." or "BSc Economics, then a part-time bootcamp."'
+                  value={form.whatIStudied}
+                  onChange={(v) => update("whatIStudied", v)}
+                  rows={3}
+                />
+                <PromptBlock
+                  label="My first salary"
+                  hint="A real number is most useful, but ranges or context are fine too."
+                  placeholder='e.g. "£18,000 in 2008", "Minimum wage", "Unpaid internship for 6 months"'
+                  value={form.firstSalary}
+                  onChange={(v) => update("firstSalary", v)}
+                  rows={2}
                 />
               </div>
             )}
 
-            {/* Step 3: Final details */}
+            {/* Step 2: The honest truth */}
+            {step === 2 && (
+              <div className="space-y-5">
+                <PromptBlock
+                  label="The hardest part of the journey"
+                  hint="The bit you'd never see on a LinkedIn profile."
+                  placeholder="e.g. Spent two years feeling like everyone around me knew what they were doing and I was faking it. Got made redundant once. Almost quit twice..."
+                  value={form.hardestPart}
+                  onChange={(v) => update("hardestPart", v)}
+                  rows={5}
+                />
+                <PromptBlock
+                  label="What I'd tell my 17-year-old self"
+                  hint="The single thing you wish someone had told you back then."
+                  placeholder="e.g. Stop trying to pick the perfect path. The first job is just a starting point — not a verdict on the rest of your life..."
+                  value={form.adviceToSeventeen}
+                  onChange={(v) => update("adviceToSeventeen", v)}
+                  rows={4}
+                />
+                <PromptBlock
+                  label="The reality of my job"
+                  hint="What an actual day looks like — including the boring bits."
+                  placeholder="e.g. Maybe 30% real work, 40% meetings, 20% chasing people for answers, 10% writing the same status update three different ways..."
+                  value={form.realityOfJob}
+                  onChange={(v) => update("realityOfJob", v)}
+                  rows={5}
+                />
+              </div>
+            )}
+
+            {/* Step 3: Link & finish */}
             {step === 3 && (
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">
-                    Headline{" "}
-                    <span className="text-muted-foreground/50">(optional)</span>
-                  </label>
-                  <Input
-                    placeholder='e.g. "School to Programme Manager — no degree, three countries"'
-                    value={form.headline}
-                    onChange={(e) => update("headline", e.target.value)}
-                  />
-                  <p className="text-[10px] text-muted-foreground/60 mt-1">
-                    A one-liner summarising your journey
+                  <h2 className="text-sm font-medium mb-1">
+                    Which careers does your path relate to?
+                  </h2>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Search for the careers your experience is most relevant to.
+                    Your story will appear when young people explore these careers.
                   </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">
-                    One piece of advice for a young person{" "}
-                    <span className="text-muted-foreground/50">(optional)</span>
-                  </label>
-                  <Input
-                    placeholder='e.g. "Say yes to sideways moves — they teach you more than promotions"'
-                    value={form.advice}
-                    onChange={(e) => update("advice", e.target.value)}
+                  <CareerSearch
+                    selected={form.careerTags}
+                    onAdd={(career) =>
+                      update("careerTags", [
+                        ...form.careerTags,
+                        { id: career.id, title: career.title },
+                      ])
+                    }
+                    onRemove={(id) =>
+                      update(
+                        "careerTags",
+                        form.careerTags.filter((t) => t.id !== id),
+                      )
+                    }
                   />
                 </div>
-                <div>
-                  <label className="text-sm font-medium mb-1.5 block">
-                    Years of experience
-                    <span className="text-muted-foreground/50"> (optional)</span>
-                  </label>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={50}
-                    placeholder="e.g. 20"
-                    value={form.yearsOfExperience}
-                    onChange={(e) => update("yearsOfExperience", e.target.value)}
-                    className="w-24"
-                  />
+
+                {/* Video stub */}
+                <div className="rounded-lg border border-dashed border-border/60 bg-muted/20 px-4 py-5">
+                  <div className="flex items-start gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
+                      <Video className="h-4 w-4 text-muted-foreground/60" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground/80">
+                        Optional 45-second selfie video
+                      </p>
+                      <p className="text-[11px] text-muted-foreground/70 mt-0.5">
+                        Coming soon — you'll be able to record a short clip
+                        introducing yourself and your path. For now, your written
+                        story is enough.
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
                 <div>
                   <label className="text-sm font-medium mb-1.5 block">
                     Your email{" "}
@@ -601,7 +539,7 @@ export default function ContributePage() {
                 </div>
 
                 {/* Preview */}
-                <div className="rounded-xl border bg-card/50 p-4 mt-4">
+                <div className="rounded-xl border bg-card/50 p-4 mt-2">
                   <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider mb-2">
                     Preview
                   </p>
@@ -613,31 +551,15 @@ export default function ContributePage() {
                       <p className="text-sm font-medium">{form.displayName || "—"}</p>
                       <p className="text-[10px] text-muted-foreground">
                         {form.currentTitle || "—"} · {form.country || "—"}
-                        {!form.didAttendUniversity && " · No university"}
                       </p>
                     </div>
                   </div>
-                  {form.headline && (
-                    <p className="text-xs text-foreground/80 italic mb-2">
-                      &ldquo;{form.headline}&rdquo;
-                    </p>
-                  )}
-                  <div className="space-y-1.5">
-                    {form.steps
-                      .sort((a, b) => a.age - b.age)
-                      .map((s, i) => (
-                        <div key={i} className="flex items-center gap-2 text-xs">
-                          <span className="text-muted-foreground w-8 text-right shrink-0 tabular-nums">
-                            {s.age}
-                          </span>
-                          <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                          <span className="text-foreground/80">{s.label || "—"}</span>
-                        </div>
-                      ))}
-                  </div>
-                  {form.advice && (
-                    <p className="text-[10px] text-muted-foreground mt-3 border-t pt-2">
-                      Advice: &ldquo;{form.advice}&rdquo;
+                  <p className="text-xs text-foreground/80 line-clamp-3 mb-2">
+                    {form.howIGotHere || "Your story will appear here."}
+                  </p>
+                  {form.adviceToSeventeen && (
+                    <p className="text-[10px] text-primary/70 italic border-t pt-2 mt-2">
+                      &ldquo;{form.adviceToSeventeen}&rdquo;
                     </p>
                   )}
                 </div>
@@ -676,7 +598,7 @@ export default function ContributePage() {
             <Button
               size="sm"
               onClick={handleSubmit}
-              disabled={submitting}
+              disabled={submitting || !canProceed()}
             >
               {submitting ? (
                 <>
