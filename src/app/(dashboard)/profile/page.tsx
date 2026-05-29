@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { JoinClassCard } from "@/components/youth/join-class-card";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Copy, Eye, EyeOff, Shield, Trash2, AlertTriangle, Target, AlertCircle, User, ExternalLink, MessageSquare, Info, Sparkles, Compass, Bot } from "lucide-react";
@@ -576,13 +575,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </motion.div>
-
-      {/* Join a class — shown near the top because joining usually
-          happens once, early on, after a teacher hands out the code.
-          Self-contained component; fetches membership independently. */}
-      <div className="mb-6">
-        <JoinClassCard />
-      </div>
 
       {/* Profile Completion Status */}
       {profile && (() => {
