@@ -30,7 +30,7 @@ import { Avatar } from "@/components/avatar";
 import Image from "next/image";
 
 interface UserAvatarMenuProps {
-  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN";
+  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "TEACHER";
   userName?: string;
   userProfilePic?: string | null;
 }
@@ -48,7 +48,7 @@ export function UserAvatarMenu({
     YOUTH: "Youth",
     EMPLOYER: "Job Poster",
     ADMIN: "Admin",
-    COMMUNITY_GUARDIAN: "Guardian",
+    TEACHER: "Teacher",
   };
 
   const navigateTo = (path: string) => {

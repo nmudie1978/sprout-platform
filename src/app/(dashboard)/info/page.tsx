@@ -107,8 +107,8 @@ export default function InfoPage() {
         {[
           { icon: Compass, color: "text-teal-500", title: "See what's actually out there", desc: "Hundreds of roles with honest details about pay, qualifications, and growth." },
           { icon: BarChart3, color: "text-blue-500", title: "Understand the job market — early", desc: "Global insights from OECD, ILO, and WEF in a format that makes sense at 16." },
-          { icon: Briefcase, color: "text-amber-500", title: "Try real work", desc: "Small local jobs that teach you about yourself — what you enjoy and what drains you." },
-          { icon: Target, color: "text-emerald-500", title: "Earn independence", desc: "Skills like reliability, communication, and initiative — tracked over time." },
+          { icon: Briefcase, color: "text-amber-500", title: "Explore real careers", desc: "Discover what people actually do, what they earn, and how they got there." },
+          { icon: Target, color: "text-emerald-500", title: "Build your roadmap", desc: "A personalised plan from where you are now to where you want to be." },
           { icon: Route, color: "text-teal-500", title: "A journey, not a decision", desc: "No rankings, no leaderboards. Your progress is personal and private." },
           { icon: Shield, color: "text-rose-500", title: "Safe by design", desc: "Verified adults, structured messaging, no payments, no public profiles." },
         ].map((s) => (

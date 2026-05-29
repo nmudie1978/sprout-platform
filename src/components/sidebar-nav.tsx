@@ -39,14 +39,12 @@ import {
   Wallet,
   Shield,
   Building2,
-  PlusCircle,
   ChevronLeft,
   ChevronRight,
   Sun,
   Moon,
   LogOut,
   Route,
-  Settings,
   Search,
   FileText,
   Calendar,
@@ -59,7 +57,7 @@ import {
 // ── Types ────────────────────────────────────────────────────────────
 
 interface SidebarNavProps {
-  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "COMMUNITY_GUARDIAN" | "TEACHER";
+  userRole: "YOUTH" | "EMPLOYER" | "ADMIN" | "TEACHER";
   userName?: string;
   userEmail?: string;
   userProfilePic?: string | null;
@@ -319,20 +317,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
     setMounted(true);
   }, []);
 
-  // Check guardian status
-  const { data: guardianInfo } = useQuery({
-    queryKey: ["my-guardian-status"],
-    queryFn: async () => {
-      const response = await fetch("/api/guardian");
-      if (!response.ok) return null;
-      return response.json();
-    },
-    staleTime: 10 * 60 * 1000,
-    gcTime: 15 * 60 * 1000,
-  });
-
-  const isGuardian = guardianInfo?.isGuardian || guardianInfo?.isAdmin;
-
   // Pending applications count
   const { data: applicationsData } = useQuery({
     queryKey: ["my-applications"],
@@ -438,9 +422,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
 
             <NavSection title="Account" collapsed={collapsed}>
               <NavItem href="/profile" icon={User} label="Profile" active={isActive("/profile")} collapsed={collapsed} tooltip="Your display name, bio, city, career goals, job availability and privacy settings — everything that makes up your profile." />
-              {isGuardian && (
-                <NavItem href="/guardian" icon={Shield} label="Guardian" active={isActive("/guardian")} collapsed={collapsed} tooltip="Guardian dashboard — review and approve activity for the youth in your care." />
-              )}
             </NavSection>
 
             <NavSection title="Endeavrly" collapsed={collapsed}>
@@ -451,25 +432,10 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           </>
         )}
 
-        {userRole === "EMPLOYER" && SMALL_JOBS_ENABLED && (
-          <>
-            <NavSection title="Manage" collapsed={collapsed}>
-              <NavItem href="/employer/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/employer/dashboard")} collapsed={collapsed} />
-              <NavItem href="/employer/post-job" icon={PlusCircle} label="Post Job" active={isActive("/employer/post-job")} collapsed={collapsed} />
-              <NavItem href="/employer/talent" icon={Compass} label="Browse Talent" active={isActive("/employer/talent")} collapsed={collapsed} />
-            </NavSection>
-
-            <NavSection title="Account" collapsed={collapsed}>
-              <NavItem href="/employer/settings" icon={Settings} label="Settings" active={isActive("/employer/settings")} collapsed={collapsed} />
-              <NavItem href="/feedback" icon={HelpCircle} label="Support" active={isActive("/feedback")} collapsed={collapsed} />
-            </NavSection>
-          </>
-        )}
-
         {userRole === "ADMIN" && (
           <>
             <NavSection title="Admin" collapsed={collapsed}>
-              <NavItem href="/admin/reports" icon={Shield} label="Community reports" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Community reports on jobs and users — review, pause, escalate, resolve. All actions logged to AuditLog." />
+              <NavItem href="/admin/reports" icon={Shield} label="Reports" active={isActive("/admin/reports")} collapsed={collapsed} tooltip="Content and user reports — review, pause, escalate, resolve. All actions logged to AuditLog." />
               <NavItem href="/admin/analytics" icon={BarChart3} label="Analytics" active={isActive("/admin/analytics")} collapsed={collapsed} />
               <NavItem href="/admin/feedback" icon={HelpCircle} label="Feedback" active={isActive("/admin/feedback")} collapsed={collapsed} tooltip="Pilot survey results — per-question stats, distributions, clarity topics, free-text responses, CSV export." />
               <NavItem href="/dashboard" icon={LayoutDashboard} label="Dashboard" active={isActive("/dashboard")} collapsed={collapsed} />
@@ -492,16 +458,6 @@ export function SidebarNav({ userRole, userName, userEmail, userProfilePic }: Si
           </>
         )}
 
-        {userRole === "COMMUNITY_GUARDIAN" && (
-          <>
-            <NavSection title="Guardian" collapsed={collapsed}>
-              <NavItem href="/guardian" icon={Shield} label="Guardian Dashboard" active={isActive("/guardian")} collapsed={collapsed} />
-              {SMALL_JOBS_ENABLED && (
-                <NavItem href="/jobs" icon={Briefcase} label="Small Jobs" active={isActive("/jobs")} collapsed={collapsed} />
-              )}
-            </NavSection>
-          </>
-        )}
         </TooltipProvider>
       </nav>
 

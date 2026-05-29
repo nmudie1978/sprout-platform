@@ -44,7 +44,7 @@ const JOURNEY_STAGES: JourneyStage[] = [
   {
     id: "earn",
     label: "Earn",
-    description: "Complete small jobs to build experience",
+    description: "Explore careers and build your profile",
     isActive: false,
     isCompleted: true,
   },
@@ -224,9 +224,9 @@ function NextBestActionCard({
     if (!hasCompletedJobs) {
       return {
         id: "first-job",
-        title: "Apply for your first small job",
-        description: "Start earning and building real experience with a local job.",
-        href: "/jobs",
+        title: "Set your first career goal",
+        description: "Pick a career that interests you and start your journey.",
+        href: "/careers",
         icon: Briefcase,
         priority: "high",
       };

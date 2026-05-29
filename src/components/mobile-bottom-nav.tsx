@@ -17,7 +17,6 @@
  *   drawer surfaces everything the sidebar youth section has.
  * - EMPLOYER — bar shows Home / Post / Messages / Settings / More.
  *   The More drawer surfaces Browse Talent, Support.
- * - COMMUNITY_GUARDIAN — bar shows Guardian / Jobs / Profile / More.
  *
  * Touch targets are minimum 44x44 per WCAG. The drawer scrolls
  * internally so it remains usable on small viewports (360–430 px).
@@ -100,12 +99,6 @@ const employerBarItems: NavItem[] = [
   { href: "/employer/talent", label: "Talent", icon: Users, activePattern: /^\/employer\/talent/ },
 ];
 
-const guardianBarItems: NavItem[] = [
-  { href: "/guardian", label: "Guardian", icon: Shield },
-  { href: "/jobs", label: "Jobs", icon: Briefcase, activePattern: /^\/jobs/ },
-  { href: "/profile", label: "Profile", icon: User, activePattern: /^\/profile/ },
-];
-
 // ── More drawer — full section tree, mirrored from sidebar-nav ──────
 
 const youthDrawerSections: NavSection[] = [
@@ -164,26 +157,6 @@ const employerDrawerSections: NavSection[] = [
     items: [
       { href: "/employer/settings", label: "Settings", icon: Settings },
       { href: "/feedback", label: "Support", icon: HelpCircle },
-    ],
-  },
-];
-
-const guardianDrawerSections: NavSection[] = [
-  {
-    title: "Guardian",
-    items: [
-      { href: "/guardian", label: "Guardian Dashboard", icon: Shield },
-      ...(SMALL_JOBS_ENABLED
-        ? [{ href: "/jobs", label: "Small Jobs", icon: Briefcase }]
-        : []),
-      { href: "/profile", label: "Profile", icon: User },
-    ],
-  },
-  {
-    title: "Endeavrly",
-    items: [
-      { href: "/info", label: "About", icon: Info },
-      { href: "/feedback", label: "Feedback", icon: HelpCircle },
     ],
   },
 ];
@@ -317,20 +290,14 @@ export function MobileBottomNav() {
 
   const role = session.user.role;
   const barItems: NavItem[] =
-    role === "EMPLOYER"
-      ? employerBarItems
-      : role === "COMMUNITY_GUARDIAN"
-        ? guardianBarItems
-        : youthBarItems;
+    role === "EMPLOYER" ? employerBarItems : youthBarItems;
 
   const drawerSections: NavSection[] =
     role === "EMPLOYER"
       ? employerDrawerSections
-      : role === "COMMUNITY_GUARDIAN"
-        ? guardianDrawerSections
-        : role === "ADMIN"
-          ? adminDrawerSections
-          : youthDrawerSections;
+      : role === "ADMIN"
+        ? adminDrawerSections
+        : youthDrawerSections;
 
   const isActive = (item: NavItem) => {
     if (item.activePattern) {

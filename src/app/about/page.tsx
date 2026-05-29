@@ -226,16 +226,15 @@ export default function AboutPage() {
             <div className="flex items-center gap-2 mb-3">
               <Briefcase className="h-5 w-5 text-amber-500" />
               <h2 className="text-xl font-semibold text-foreground">
-                Try real work and learn what you like
+                Explore real careers in depth
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Do you like working with your hands? Solving problems for people? Being outdoors?
-              You won&apos;t know until you try. Endeavrly connects young people with small, local
-              jobs — mowing lawns, helping with tech, pet sitting, event setup, cleaning. These aren&apos;t
-              career-defining roles. They&apos;re experiments. Each one teaches you something about
-              yourself: what you enjoy, what drains you, whether you&apos;re reliable, how you handle
-              responsibility. That self-knowledge is worth more than any career quiz.
+              What does a day actually look like? What do people earn? How do you get there?
+              Endeavrly gives you honest, detailed career profiles — salary, education routes,
+              real voices, industry outlook — so you can make informed decisions instead of guessing.
+              Each career you explore teaches you something about yourself: what excites you,
+              what fits your strengths, and what you want your future to look like.
             </p>
           </section>
 
@@ -243,15 +242,14 @@ export default function AboutPage() {
             <div className="flex items-center gap-2 mb-3">
               <Target className="h-5 w-5 text-emerald-500" />
               <h2 className="text-xl font-semibold text-foreground">
-                Earn independence, not just money
+                Build your roadmap, step by step
               </h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              A first job isn&apos;t really about the pay. It&apos;s about showing up on time,
-              communicating with someone who&apos;s counting on you, and proving to yourself that you
-              can do it. Endeavrly tracks the skills you build along the way — reliability,
-              communication, initiative — and helps you see your own growth over time. The money is
-              a bonus. The confidence is the real reward.
+              Once you find a career that interests you, Endeavrly builds a personalised roadmap
+              from where you are now to where you want to be — the education, the milestones, the
+              opportunities. You can track your confidence, discover deadlines, and explore real
+              programmes. The clarity is the real reward.
             </p>
           </section>
 

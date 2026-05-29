@@ -73,6 +73,12 @@ export interface Stage {
   prerequisites?: string;
   /** Optional: what completing this stage gets you, e.g. "Authorisation as klinisk psykolog". */
   outcome?: string;
+  /** ISO date (YYYY-MM-DD) the stage was last verified against its source.
+   *  Populated by sync importers; absent for hand-edited stages until a
+   *  verification pass touches them. */
+  lastVerifiedAt?: string;
+  /** Provenance string, e.g. "utdanning.no" / "manual" / "qa-agent:gpt-4o-mini". */
+  verificationSource?: string;
 }
 
 /**
@@ -99,6 +105,10 @@ export interface Route {
   estimatedYears: number;
   /** Optional editorial note (e.g. competition stats, why this route exists). */
   notes?: string;
+  /** ISO date (YYYY-MM-DD) the route was last verified end-to-end. */
+  lastVerifiedAt?: string;
+  /** Provenance string. */
+  verificationSource?: string;
   /** Ordered list of stages. Source of truth for the stages JSON file is the separate stages.json,
    *  but consumers will typically receive the assembled Route with stages already attached. */
   stages: Stage[];

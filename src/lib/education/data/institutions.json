@@ -429,6 +429,31 @@
       ]
     },
     {
+      "id": "kristiania",
+      "name": "Høyskolen Kristiania",
+      "shortName": "KRISTIANIA",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://www.kristiania.no",
+      "applicationVia": "Samordna opptak",
+      "careerIds": [
+        "flight-attendant",
+        "hotel-manager"
+      ]
+    },
+    {
+      "id": "nordic-aviation-academy",
+      "name": "Nordic Aviation Academy",
+      "shortName": "NAA",
+      "country": "NO",
+      "city": "Oslo",
+      "url": "https://nordicaviationacademy.no",
+      "applicationVia": "Direct application",
+      "careerIds": [
+        "flight-attendant"
+      ]
+    },
+    {
       "id": "oulu",
       "name": "Oulun yliopisto",
       "shortName": "OULU",
@@ -648,7 +673,8 @@
         "industrial-mechanic",
         "auto-mechanic",
         "hairdresser",
-        "boilermaker"
+        "boilermaker",
+        "flight-attendant"
       ]
     }
   ]

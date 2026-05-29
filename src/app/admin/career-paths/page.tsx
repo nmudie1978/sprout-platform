@@ -11,18 +11,11 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  MapPin,
-  GraduationCap,
   ChevronDown,
   ChevronUp,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface PathStep {
-  age: number;
-  label: string;
-}
 
 interface CareerPath {
   id: string;
@@ -30,16 +23,27 @@ interface CareerPath {
   currentTitle: string;
   country: string;
   city: string | null;
-  steps: PathStep[];
+  howIGotHere: string;
+  whatIStudied: string;
+  firstSalary: string;
+  hardestPart: string;
+  adviceToSeventeen: string;
+  realityOfJob: string;
   careerTags: string[];
-  didAttendUniversity: boolean;
-  yearsOfExperience: number | null;
-  headline: string | null;
-  advice: string | null;
+  videoUrl: string | null;
   submittedByEmail: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED";
   createdAt: string;
   reviewedAt: string | null;
+}
+
+function AdminSection({ label, body }: { label: string; body: string }) {
+  return (
+    <div>
+      <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">{label}</p>
+      <p className="text-sm text-slate-300 whitespace-pre-line leading-relaxed">{body}</p>
+    </div>
+  );
 }
 
 const STATUS_TABS = [
@@ -171,7 +175,6 @@ export default function AdminCareerPathsPage() {
           <div className="space-y-3">
             {paths.map((path) => {
               const isExpanded = expandedId === path.id;
-              const sortedSteps = [...(path.steps as PathStep[])].sort((a, b) => a.age - b.age);
               const isUpdating = updating === path.id;
 
               return (
@@ -194,9 +197,7 @@ export default function AdminCareerPathsPage() {
                             {path.currentTitle} &middot; {path.country}
                             {path.city ? `, ${path.city}` : ""}
                           </p>
-                          {path.headline && (
-                            <p className="text-xs italic text-slate-500 mt-1 ml-9">&ldquo;{path.headline}&rdquo;</p>
-                          )}
+                          <p className="text-xs text-slate-500 mt-1 ml-9 line-clamp-2">{path.howIGotHere}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <span className="text-[10px] text-slate-500">
@@ -217,40 +218,28 @@ export default function AdminCareerPathsPage() {
                             {tag}
                           </Badge>
                         ))}
-                        {!path.didAttendUniversity && (
-                          <Badge variant="secondary" className="bg-amber-500/10 text-amber-400 text-[10px]">
-                            No university
-                          </Badge>
-                        )}
-                        {path.yearsOfExperience && (
-                          <Badge variant="secondary" className="bg-slate-700 text-slate-400 text-[10px]">
-                            {path.yearsOfExperience}y exp
-                          </Badge>
-                        )}
                       </div>
                     </button>
                   </CardHeader>
 
                   {isExpanded && (
-                    <CardContent className="pt-2 border-t border-slate-700 mt-2">
-                      {/* Timeline */}
-                      <div className="space-y-2 mb-4">
-                        {sortedSteps.map((step, i) => (
-                          <div key={i} className="flex items-center gap-3 text-sm">
-                            <span className="text-slate-500 w-7 text-right tabular-nums font-medium">{step.age}</span>
-                            <span className="h-2 w-2 rounded-full bg-primary/50 shrink-0" />
-                            <span className="text-slate-300">{step.label}</span>
-                          </div>
-                        ))}
+                    <CardContent className="pt-2 border-t border-slate-700 mt-2 space-y-4">
+                      <AdminSection label="How I got here" body={path.howIGotHere} />
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <AdminSection label="What I studied" body={path.whatIStudied} />
+                        <AdminSection label="First salary" body={path.firstSalary} />
                       </div>
+                      <AdminSection label="Hardest part" body={path.hardestPart} />
+                      <AdminSection label="Reality of the job" body={path.realityOfJob} />
 
-                      {/* Advice */}
-                      {path.advice && (
-                        <div className="rounded-lg bg-slate-700/30 p-3 mb-4">
-                          <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Advice</p>
-                          <p className="text-sm text-slate-300 italic">&ldquo;{path.advice}&rdquo;</p>
-                        </div>
-                      )}
+                      <div className="rounded-lg bg-primary/10 border border-primary/20 p-3">
+                        <p className="text-[10px] text-primary/70 uppercase tracking-wider mb-1">
+                          Advice to 17-year-old self
+                        </p>
+                        <p className="text-sm text-slate-300 italic whitespace-pre-line">
+                          &ldquo;{path.adviceToSeventeen}&rdquo;
+                        </p>
+                      </div>
 
                       {/* Email */}
                       {path.submittedByEmail && (

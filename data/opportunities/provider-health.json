@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "nav-jobs": {
+      "provider": "nav-jobs",
+      "status": "healthy",
+      "lastRun": "2026-04-23T11:47:25.674Z",
+      "consecutiveFailures": 0,
+      "lastSuccess": "2026-04-23T11:47:30.223Z",
+      "itemsFound": 3
+    }
+  },
+  "lastUpdated": "2026-04-23T11:47:30.703Z"
+}

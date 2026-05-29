@@ -310,8 +310,8 @@ export default function GuardianConsentPage() {
               },
               {
                 icon: Shield,
-                title: "Apply for small local jobs (only after your confirmation)",
-                body: "Babysitting, dog walking, tech help &mdash; from verified job posters in their area. No money flows through Endeavrly itself.",
+                title: "Build a personalised career roadmap",
+                body: "A step-by-step plan from where they are now to where they want to be &mdash; education routes, milestones, and real opportunities.",
               },
             ].map((item, i) => (
               <li

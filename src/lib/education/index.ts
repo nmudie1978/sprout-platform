@@ -70,6 +70,14 @@ export interface Programme {
   tuitionFee?: string;
   entryRequirements?: string;
   careerOutcome?: string;
+  /** ISO date (YYYY-MM-DD) the record was last verified against its
+   *  source — populated by sync importers (e.g. Norway sync) and
+   *  manual reviews. Absent for hand-curated records that haven't been
+   *  through a verification pass yet; treated as "Curated" in the UI. */
+  lastVerifiedAt?: string;
+  /** Where the verification came from. "utdanning.no" / "uhr.no" /
+   *  "manual" / "scrape:<host>" — used for the freshness tooltip. */
+  verificationSource?: string;
 }
 
 /** Denormalised shape combining programme + institution fields. */

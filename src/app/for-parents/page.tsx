@@ -98,9 +98,9 @@ export default function ForParentsPage() {
           <div className="space-y-4">
             {[
               { step: 1, title: "Tell us about yourself", desc: "A display name, your current role, and your country. That's it." },
-              { step: 2, title: "Add your career timeline", desc: "The key milestones — age, role, what happened. As many or as few as you like." },
-              { step: 3, title: "Link it to careers", desc: "Which careers does your path relate to? Search and tag them so the right young people see it." },
-              { step: 4, title: "Add a headline and advice", desc: "One sentence that sums up your path, and one piece of advice for someone starting out." },
+              { step: 2, title: "Share your story", desc: "How you got here, what you studied, your first salary — in your own words." },
+              { step: 3, title: "The honest truth", desc: "The hardest part of the journey, the reality of your job, and what you'd tell your 17-year-old self." },
+              { step: 4, title: "Link it to careers", desc: "Tag the careers your path relates to so the right young people see it." },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-4">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">

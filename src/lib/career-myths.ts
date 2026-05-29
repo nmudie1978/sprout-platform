@@ -14,7 +14,7 @@ export interface CareerMyth {
   reality: string;
 }
 
-const CAREER_MYTHS: Record<string, CareerMyth[]> = {
+export const CAREER_MYTHS: Record<string, CareerMyth[]> = {
   doctor: [
     { claim: "You need straight A's to get into medical school.", reality: "The average admitted GPA at UiO medicine is high but not perfect — many accepted students took a gap year or used a 23/5 quota (age + experience). It's competitive, but not impossible." },
     { claim: "Doctors work 80-hour weeks their whole career.", reality: "Junior doctors (LIS1) work demanding shifts, but senior doctors in Norway typically work 37.5-hour weeks with generous leave. Work-life balance improves significantly after specialisation." },

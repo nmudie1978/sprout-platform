@@ -51,32 +51,29 @@ export function DeadlineAwareness({ careerId }: DeadlineAwarenessProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {deadlines.map((d) => {
           const colors = urgencyColor(d.monthIndex);
           return (
             <div
               key={d.title}
-              className={cn('rounded-lg border px-3 py-2.5', colors)}
+              className={cn('rounded-lg border px-2.5 py-2 text-center', colors)}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-medium leading-snug truncate">
-                    {d.title}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                    {d.when} · {urgencyLabel(d.monthIndex)}
-                  </p>
-                </div>
-                {d.url && (
-                  <a href={d.url} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                    <ExternalLink className="h-3 w-3 text-muted-foreground/40 hover:text-primary transition-colors" />
-                  </a>
-                )}
-              </div>
-              <p className="text-[9px] text-muted-foreground/55 mt-1.5 leading-relaxed line-clamp-2">
-                {d.description}
+              <p className="text-[10px] font-medium leading-snug line-clamp-1">
+                {d.title}
               </p>
+              <p className="text-[9px] text-muted-foreground/60 mt-0.5">
+                {d.when}
+              </p>
+              <p className="text-[8px] font-medium mt-1">
+                {urgencyLabel(d.monthIndex)}
+              </p>
+              {d.url && (
+                <a href={d.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-[8px] text-muted-foreground/40 hover:text-primary transition-colors mt-1">
+                  <ExternalLink className="h-2.5 w-2.5" />
+                  <span>Details</span>
+                </a>
+              )}
             </div>
           );
         })}

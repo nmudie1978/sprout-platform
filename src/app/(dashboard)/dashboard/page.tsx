@@ -10,7 +10,7 @@ import { toast } from "sonner";
  * 2. My Journey card (circular progress, stage, progress bar)
  * 3. Career Snapshot (left) + Previously Explored Journeys (right)
  * 4. My Library (left) + Saved Careers (right)
- * 5. My Small Jobs (dedicated section)
+ * 5. Saved Careers
  * 6. Industry Insights Ticker
  */
 
@@ -1241,7 +1241,7 @@ export default function DashboardPage() {
                       <tr className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 bg-muted/20">
                         <th className="px-2.5 py-1.5">Career</th>
                         <th className="px-2 py-1.5 w-16 text-center">Stage</th>
-                        <th className="px-2 py-1.5 w-14 text-center">Status</th>
+                        <th className="px-2 py-1.5 w-20 text-center">Confidence</th>
                         <th className="px-2 py-1.5 w-8"></th>
                       </tr>
                     </thead>
@@ -1284,7 +1284,21 @@ export default function DashboardPage() {
                               <span className={cn("inline-flex items-center justify-center h-5 w-5 rounded-md text-[9px] font-bold cursor-help", stageColor)} title={stageTooltip}>{stageLetter}</span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className="text-[8px] text-muted-foreground/40">Saved</span>
+                              {(() => {
+                                const CONF_LABELS = ['Not sure', 'Curious', 'Interested', 'Confident', 'Committed'];
+                                const CONF_COLORS = ['text-red-400', 'text-amber-400', 'text-yellow-400', 'text-emerald-400', 'text-teal-400'];
+                                try {
+                                  const raw = window.localStorage.getItem(`confidence-tracker-${career?.id ?? ''}`);
+                                  if (raw) {
+                                    const entries = JSON.parse(raw) as { score: number }[];
+                                    const last = entries[entries.length - 1];
+                                    if (last?.score >= 1 && last.score <= 5) {
+                                      return <span className={cn('text-[8px] font-medium', CONF_COLORS[last.score - 1])}>{CONF_LABELS[last.score - 1]}</span>;
+                                    }
+                                  }
+                                } catch { /* ignore */ }
+                                return <span className="text-[8px] text-muted-foreground/30">—</span>;
+                              })()}
                             </td>
                             <td className="px-2 py-1.5">
                               {!isCurrentGoal && (
@@ -1348,7 +1362,7 @@ export default function DashboardPage() {
           </DashboardSection>
         </div>
 
-        {/* ── 5. Saved Careers + Small Jobs ─────────────────────── */}
+        {/* ── 5. Saved Careers ─────────────────────── */}
         <div className={`grid grid-cols-1 ${SMALL_JOBS_ENABLED ? "sm:grid-cols-2" : ""} gap-4 mb-4 items-stretch`}>
           {/* Saved Careers */}
           <DashboardSection

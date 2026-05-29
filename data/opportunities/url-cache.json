@@ -1,0 +1,32 @@
+{
+  "https://iframe.coop.no/coop-ost-stillinger/?rmpage=apply&rmjob=3203&ref=nav.no&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-23T11:47:18.794Z",
+    "ttlExpiresAtISO": "2026-04-23T23:47:18.863Z"
+  },
+  "https://jobs.mojob.io/45658/?utm_id=32775&utm_campaign=32775&utm_medium=job_share&utm_source=nav&utm_term=Pedagogisk+leder&utm_content=45658": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-23T11:47:18.794Z",
+    "ttlExpiresAtISO": "2026-04-23T23:47:19.268Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5117209510&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-23T11:47:18.794Z",
+    "ttlExpiresAtISO": "2026-04-23T23:47:19.391Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5117669120&language=nn&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-23T11:47:18.794Z",
+    "ttlExpiresAtISO": "2026-04-23T23:47:19.438Z"
+  },
+  "https://candidate.webcruiter.com/cv?advertid=5115279518&language=nb&link_source_id=17&utm_medium=talentech_publishing&utm_source=nav": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-04-23T11:47:18.794Z",
+    "ttlExpiresAtISO": "2026-04-23T23:47:19.512Z"
+  }
+}
