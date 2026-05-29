@@ -607,12 +607,15 @@ function DiscoverTab({
           'strong': 'Growing demand — good prospects.',
           'very-strong': 'High demand — opportunities are abundant.',
         };
-        const pathwayHint: Record<typeof ap.pathwayType, string> = {
+        const pathwayHint: Record<string, string> = {
           'vocational': 'Vocational training (fagbrev / apprenticeship).',
           'bachelor': 'Bachelor\'s degree (3 years).',
           'master': 'Master\'s degree (5 years).',
           'doctorate': 'Doctorate or professional degree.',
-          'experience-based': 'Experience-based — no formal degree required.',
+          'professional-degree': 'Integrated 5–6 year degree (e.g. medicine, law, psychology).',
+          'mixed': 'Several viable routes.',
+          'entry-level': 'Entry-level — often no specific degree required.',
+          'licence-based': 'Licence or certification-based route.',
         };
         const compHint: Record<typeof ap.competitiveness, string> = {
           'low': 'Low barrier — most applicants are accepted.',
