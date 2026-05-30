@@ -256,7 +256,7 @@ export async function POST(req: NextRequest) {
     // all-or-nothing semantics — no half-created accounts, and far less
     // connection pressure than 3+ sequential round-trips (which was causing
     // intermittent 500s on cold serverless invocations).
-    const newUser = await prisma.$transaction(async (tx) => {
+    const newUser = await withDbRetry(() => prisma.$transaction(async (tx) => {
       const createdUser = await tx.user.create({
         data: {
           email,
@@ -302,7 +302,7 @@ export async function POST(req: NextRequest) {
       });
 
       return createdUser;
-    });
+    }));
 
     // Best-effort, post-commit side effects. The account already exists, so
     // none of these should fail the request — logAuditAction swallows its
@@ -350,9 +350,19 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Signup error:", error);
+    // Surface the Prisma error code (safe — codes like P1001/P2024 carry no
+    // sensitive data) so transient DB-connection failures are diagnosable in
+    // prod instead of hiding behind a generic message.
+    const code = (error as { code?: string })?.code;
+    const transient = isTransientDbError(error);
     return NextResponse.json(
-      { error: "Failed to create account" },
-      { status: 500 }
+      {
+        error: transient
+          ? "We couldn't reach the database just now. Please try again in a moment."
+          : "Failed to create account",
+        ...(code ? { code } : {}),
+      },
+      { status: transient ? 503 : 500 }
     );
   }
 }
