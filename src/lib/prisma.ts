@@ -11,7 +11,14 @@ const globalForPrisma = globalThis as unknown as {
 // construction behind a Proxy so property access at runtime triggers init
 // with a real URL, while build-time module imports stay side-effect-free.
 function createClient(): PrismaClient {
-  const databaseUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+  // Runtime queries should use the POOLED connection (DATABASE_URL →
+  // Supabase PgBouncer on :6543). The direct connection (DIRECT_URL,
+  // :5432) is reserved for `prisma migrate deploy` via the schema's
+  // `directUrl`. Preferring DIRECT_URL here forced every serverless query
+  // onto the direct connection, exhausting its small limit and causing
+  // intermittent connection 500s on cold invocations. Fall back to
+  // DIRECT_URL only if DATABASE_URL is somehow absent.
+  const databaseUrl = process.env.DATABASE_URL || process.env.DIRECT_URL;
   return new PrismaClient({
     // Only pass the datasources override when we actually have a URL —
     // otherwise Prisma throws at ctor time. When absent, Prisma falls back
