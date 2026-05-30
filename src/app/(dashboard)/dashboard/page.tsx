@@ -66,6 +66,7 @@ import { GoalSelectionSheet } from "@/components/goals/GoalSelectionSheet";
 import { useSubtleHint } from "@/hooks/use-subtle-hint";
 import { SpotlightHint } from "@/components/ui/spotlight-hint";
 import { DiscoveryNudge } from "@/components/discovery/discovery-nudge";
+import { CareerTwinCta } from "@/components/career-twin/career-twin-cta";
 
 /** Sanitise user-provided URLs — only allow http/https to prevent javascript: XSS */
 function safeHref(url: string): string {
@@ -1190,6 +1191,9 @@ export default function DashboardPage() {
         {/* Who Am I lives at the bottom of the dashboard — see below
             DidYouKnowCard. Kept there so the top of the page stays
             focused on the active journey and today's actions. */}
+
+        {/* ── Career Twin CTA — "Meet Future You" (only if an active career resolves) ── */}
+        <CareerTwinCta variant="dashboard" className="mb-4" />
 
         {/* ── Discovery Nudge — sparse, preference-based suggestion ── */}
         {discoveryPrefs && (

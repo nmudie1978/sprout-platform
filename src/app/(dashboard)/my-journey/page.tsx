@@ -66,6 +66,7 @@ import { DeadlineAwareness } from '@/components/journey/deadline-awareness';
 import { ShareJourney } from '@/components/journey/share-journey';
 import { OpportunityMatches } from '@/components/journey/opportunity-matches';
 import { ConfidenceTracker } from '@/components/journey/confidence-tracker';
+import { CareerTwinCta } from '@/components/career-twin/career-twin-cta';
 // Day simulation removed per user request
 // AI Impact section removed per user request
 import type { Journey } from '@/lib/journey/career-journey-types';
@@ -3343,6 +3344,10 @@ export default function MyJourneyPage() {
             <button onClick={() => setGoalSheetOpen(true)} className="p-1 rounded-md text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted/50 transition-colors" title="Change Primary Goal">
               <Pencil className="h-3.5 w-3.5" />
             </button>
+          </div>
+          {/* Career Twin entry — "Ask Future Me" (renders only with an active career) */}
+          <div className="mt-3">
+            <CareerTwinCta variant="journey" />
           </div>
         </div>
 
