@@ -125,29 +125,6 @@ export const careerEvents: CareerEventSeed[] = [
     sourceUrl: "https://www.eventbrite.es/e/barcelona-tech-job-fair-feria-de-empleo-de-tecnologia-de-barcelona-2026-tickets-1848431872489",
   },
   {
-    title: "Lisbon Tech Job Fair 2026",
-    type: CareerEventType.JOBFAIR,
-    description:
-      "Update your resume and get ready for interviews at companies hiring now in technology, finance, operations, marketing, or sales in Lisbon!",
-    organizer: "TechMeetups",
-    startDate: new Date("2026-04-30T18:00:00Z"),
-    time: "18:00 - 21:00",
-    locationMode: LocationMode.IN_PERSON,
-    city: "Lisbon",
-    country: "Portugal",
-    venue: "Dom Pedro Lisboa Hotel, 24 Avenida Engenheiro Duarte Pacheco",
-    lat: 38.7223,
-    lng: -9.1393,
-    registrationUrl: "https://www.eventbrite.es/e/lisbon-tech-job-fair-feira-de-empregos-de-tecnologia-de-lisboa-2026-tickets-1972567570704",
-    isYouthFocused: false,
-    industryTypes: ["tech"],
-    isVerified: true,
-    verifiedAt: new Date("2026-01-20"),
-    verificationNotes: "Verified on Eventbrite — Lisbon Tech Job Fair, Apr 30, tickets available, event ID 1972567570704",
-    sourceName: "Eventbrite",
-    sourceUrl: "https://www.eventbrite.es/e/lisbon-tech-job-fair-feira-de-empregos-de-tecnologia-de-lisboa-2026-tickets-1972567570704",
-  },
-  {
     title: "Dublin Tech Job Fair 2026",
     type: CareerEventType.JOBFAIR,
     description:
@@ -277,31 +254,6 @@ export const careerEvents: CareerEventSeed[] = [
     verificationNotes: "Verified on European Job Days — registration open, 31 employers, 14 jobs listed",
     sourceName: "EURES European Job Days",
     sourceUrl: "https://europeanjobdays.eu/en/seizethesummer2026",
-  },
-  {
-    title: "High North Young Entrepreneur 2026",
-    type: CareerEventType.MEETUP,
-    description:
-      "Pitch competition for young entrepreneurs in Northern Norway, held during the High North Dialogue conference. Three finalists pitch their business ideas to conference participants. Prize pool of 70,000 NOK. Application deadline: 15 March 2026.",
-    organizer: "High North Dialogue / Nord University",
-    startDate: new Date("2026-04-22T09:00:00Z"),
-    endDate: new Date("2026-04-23T17:00:00Z"),
-    time: "09:00 - 17:00",
-    locationMode: LocationMode.IN_PERSON,
-    city: "Bodø",
-    region: "Nordland",
-    country: "Norway",
-    venue: "Nord University, Bodø",
-    lat: 67.2804,
-    lng: 14.4049,
-    registrationUrl: "https://www.highnorthdialogue.no/awards/high-north-young-entrepreneur/",
-    isYouthFocused: true,
-    industryTypes: ["tech", "creative"],
-    isVerified: true,
-    verifiedAt: new Date("2026-02-14"),
-    verificationNotes: "Verified on highnorthdialogue.no — established since 2018, deadline Mar 15",
-    sourceName: "High North Dialogue",
-    sourceUrl: "https://www.highnorthdialogue.no/awards/high-north-young-entrepreneur/",
   },
   {
     title: "Oslo Tech Show 2026",
@@ -452,36 +404,6 @@ export const careerEvents: CareerEventSeed[] = [
     verificationNotes: "Verified on charm.se — Feb 17-18 confirmed, registration open, annual since 1979",
     sourceName: "CHARM",
     sourceUrl: "https://charm.se/",
-  },
-
-  // ================================================
-  // VERIFIED EU YOUTH EVENTS
-  // Source: European Youth Portal, European Parliament
-  // ================================================
-  {
-    title: "European Youth Week 2026",
-    type: CareerEventType.CONFERENCE,
-    description:
-      "EU-wide youth engagement week dedicated to Solidarity and Fairness. Kick-off at the European Parliament in Brussels with 1,000+ young people. Includes discussions with policymakers, networking, and an exhibition celebrating 30 years of volunteering in Europe. Activities held across all EU member states.",
-    organizer: "European Commission / European Parliament",
-    startDate: new Date("2026-04-24T09:00:00Z"),
-    endDate: new Date("2026-05-01T18:00:00Z"),
-    time: "09:00 - 18:00",
-    locationMode: LocationMode.HYBRID,
-    city: "Brussels",
-    country: "Belgium",
-    venue: "European Parliament, Brussels",
-    lat: 50.8384,
-    lng: 4.3734,
-    registrationUrl: "https://youth.europa.eu/youthweek_en",
-    spots: 1000,
-    isYouthFocused: true,
-    industryTypes: [],
-    isVerified: true,
-    verifiedAt: new Date("2026-02-14"),
-    verificationNotes: "Verified on youth.europa.eu — Apr 24 – May 1 confirmed, theme: Solidarity and Fairness",
-    sourceName: "European Youth Portal",
-    sourceUrl: "https://youth.europa.eu/youthweek_en",
   },
 
   // ================================================
