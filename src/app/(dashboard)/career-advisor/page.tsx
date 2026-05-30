@@ -37,6 +37,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CareerTwinView } from "@/components/career-twin/career-twin-view";
 
 interface Message {
   id: string;
@@ -134,7 +136,10 @@ export default function CareerAdvisorPage() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const goalParam = searchParams.get("goal");
+  const careerParam = searchParams.get("career");
+  const tabParam = searchParams.get("tab");
 
+  const [activeTab, setActiveTab] = useState(tabParam === "twin" ? "twin" : "advisor");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -396,8 +401,18 @@ export default function CareerAdvisorPage() {
         icon={Bot}
       />
 
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="advisor">Career Advisor</TabsTrigger>
+          <TabsTrigger value="twin">
+            <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+            Career Twin
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="advisor" className="mt-6">
       {/* Chat Container */}
-      <Card className="border-2 mt-8 overflow-hidden">
+      <Card className="border-2 overflow-hidden">
         {/* Chat Header */}
         <div className="bg-gradient-to-r from-primary/10 to-teal-500/10 border-b px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -674,6 +689,12 @@ export default function CareerAdvisorPage() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="twin" className="mt-6">
+          <CareerTwinView initialCareerId={careerParam} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

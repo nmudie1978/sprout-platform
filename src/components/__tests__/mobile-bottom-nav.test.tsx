@@ -54,7 +54,12 @@ const REQUIRED_EMPLOYER_ROUTES = [
   '/feedback',
 ];
 
-const REQUIRED_GUARDIAN_ROUTES = ['/guardian', '/jobs', '/profile'];
+// NOTE: The COMMUNITY_GUARDIAN role and its `/guardian` route were
+// intentionally removed in "Strip jobs-era guardian machinery"
+// (1861776) — such users were promoted to ADMIN. The previous
+// REQUIRED_GUARDIAN_ROUTES check was left stale by that change and has
+// been dropped here. /jobs and /profile remain covered by
+// REQUIRED_YOUTH_ROUTES above.
 
 describe('MobileBottomNav route coverage (Issue 5 — positive tests)', () => {
   it.each(REQUIRED_YOUTH_ROUTES)(
@@ -75,14 +80,6 @@ describe('MobileBottomNav route coverage (Issue 5 — positive tests)', () => {
 
   it.each(REQUIRED_EMPLOYER_ROUTES)(
     'exposes employer route %s somewhere in mobile nav',
-    (route) => {
-      const exactMatch = new RegExp(`["']${route.replace(/[/]/g, '\\/')}["']`);
-      expect(exactMatch.test(NAV_SOURCE)).toBe(true);
-    },
-  );
-
-  it.each(REQUIRED_GUARDIAN_ROUTES)(
-    'exposes guardian route %s somewhere in mobile nav',
     (route) => {
       const exactMatch = new RegExp(`["']${route.replace(/[/]/g, '\\/')}["']`);
       expect(exactMatch.test(NAV_SOURCE)).toBe(true);
