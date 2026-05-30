@@ -238,88 +238,95 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role,
-        fullName,
-        ageBracket: ageBracket || null,
-        dateOfBirth: birthDate,
-        accountStatus: initialAccountStatus,
-      },
-    });
+    // Under-18 youth supply a guardian email at signup so the consent flow
+    // can kick off immediately. Compute these before the transaction so we
+    // can reuse them for the post-commit email.
+    const needsGuardianConsent = role === "YOUTH" && age !== null && age < 18;
+    const guardianToken = needsGuardianConsent ? generateGuardianToken() : null;
+    const trimmedGuardianEmail =
+      needsGuardianConsent && typeof guardianEmail === "string"
+        ? guardianEmail.trim()
+        : null;
+    const acceptanceTimestamp = new Date();
+    const ipAddress = req.headers.get("x-forwarded-for") || undefined;
+    const userAgent = req.headers.get("user-agent") || undefined;
 
-    // Create role-specific profiles
-    if (role === "YOUTH") {
-      // Under-18 users supply a guardian email at signup so the consent
-      // flow can kick off immediately. Generate a token now so the parent
-      // can be emailed without an extra round-trip.
-      const needsGuardianConsent = age !== null && age < 18;
-      const guardianToken = needsGuardianConsent ? generateGuardianToken() : null;
-      const trimmedGuardianEmail =
-        needsGuardianConsent && typeof guardianEmail === "string"
-          ? guardianEmail.trim()
-          : null;
-
-      await prisma.youthProfile.create({
+    // Create the account atomically. Wrapping the user + profile + legal
+    // acceptance in ONE transaction means a single pooled connection and
+    // all-or-nothing semantics — no half-created accounts, and far less
+    // connection pressure than 3+ sequential round-trips (which was causing
+    // intermittent 500s on cold serverless invocations).
+    const newUser = await prisma.$transaction(async (tx) => {
+      const createdUser = await tx.user.create({
         data: {
-          userId: newUser.id,
-          displayName: trimmedFirst,
-          surname: trimmedSurname || null,
-          guardianConsent: !needsGuardianConsent,
-          guardianEmail: trimmedGuardianEmail,
-          guardianToken: guardianToken,
+          email,
+          password: hashedPassword,
+          role,
+          fullName,
+          ageBracket: ageBracket || null,
+          dateOfBirth: birthDate,
+          accountStatus: initialAccountStatus,
         },
       });
 
-      // Log the consent request and fire off the guardian email via Resend.
-      // The audit log is the source of truth — if mail fails (e.g. Resend
-      // outage) the youth account still exists and the email can be re-
-      // triggered later from the profile page.
-      if (needsGuardianConsent && trimmedGuardianEmail && guardianToken) {
-        await logAuditAction({
-          userId: newUser.id,
-          action: AuditAction.GUARDIAN_CONSENT_REQUESTED,
-          metadata: { guardianEmail: trimmedGuardianEmail, atSignup: true },
-          ipAddress: req.headers.get("x-forwarded-for") || undefined,
-          userAgent: req.headers.get("user-agent") || undefined,
+      if (role === "YOUTH") {
+        await tx.youthProfile.create({
+          data: {
+            userId: createdUser.id,
+            displayName: trimmedFirst,
+            surname: trimmedSurname || null,
+            guardianConsent: !needsGuardianConsent,
+            guardianEmail: trimmedGuardianEmail,
+            guardianToken: guardianToken,
+          },
         });
-
-        // Fire-and-forget — don't block signup if Resend is slow or
-        // misconfigured. Errors are logged inside sendMail().
-        sendGuardianConsentEmail({
-          guardianEmail: trimmedGuardianEmail,
-          youthDisplayName: `${trimmedFirst} ${trimmedSurname}`.trim(),
-          youthFirstName: trimmedFirst,
-          consentToken: guardianToken,
-        }).catch((err) => {
-          console.error("[signup] Guardian email send failed:", err);
+      } else if (role === "EMPLOYER") {
+        await tx.employerProfile.create({
+          data: {
+            userId: createdUser.id,
+            companyName: email.split("@")[0], // Default company name from email
+          },
         });
       }
-    } else if (role === "EMPLOYER") {
-      await prisma.employerProfile.create({
+
+      await tx.legalAcceptance.create({
         data: {
-          userId: newUser.id,
-          companyName: email.split("@")[0], // Default company name from email
+          userId: createdUser.id,
+          acceptedTermsAt: acceptanceTimestamp,
+          acceptedPrivacyAt: acceptanceTimestamp,
+          termsVersion: "v1",
+          privacyVersion: "v1",
+          ipAddress,
+          userAgent,
         },
       });
-    }
 
-    // Create legal acceptance record
-    const acceptanceTimestamp = new Date();
-    await prisma.legalAcceptance.create({
-      data: {
-        userId: newUser.id,
-        acceptedTermsAt: acceptanceTimestamp,
-        acceptedPrivacyAt: acceptanceTimestamp,
-        termsVersion: "v1",
-        privacyVersion: "v1",
-        ipAddress: req.headers.get("x-forwarded-for") || undefined,
-        userAgent: req.headers.get("user-agent") || undefined,
-      },
+      return createdUser;
     });
+
+    // Best-effort, post-commit side effects. The account already exists, so
+    // none of these should fail the request — logAuditAction swallows its
+    // own errors, and the email is fire-and-forget.
+    if (needsGuardianConsent && trimmedGuardianEmail && guardianToken) {
+      await logAuditAction({
+        userId: newUser.id,
+        action: AuditAction.GUARDIAN_CONSENT_REQUESTED,
+        metadata: { guardianEmail: trimmedGuardianEmail, atSignup: true },
+        ipAddress,
+        userAgent,
+      });
+
+      // Fire-and-forget — don't block signup if Resend is slow or
+      // misconfigured. Errors are logged inside sendMail().
+      sendGuardianConsentEmail({
+        guardianEmail: trimmedGuardianEmail,
+        youthDisplayName: `${trimmedFirst} ${trimmedSurname}`.trim(),
+        youthFirstName: trimmedFirst,
+        consentToken: guardianToken,
+      }).catch((err) => {
+        console.error("[signup] Guardian email send failed:", err);
+      });
+    }
 
     // Log account creation
     await logAuditAction({
@@ -330,8 +337,8 @@ export async function POST(req: NextRequest) {
         age,
         accountStatus: initialAccountStatus,
       },
-      ipAddress: req.headers.get("x-forwarded-for") || undefined,
-      userAgent: req.headers.get("user-agent") || undefined,
+      ipAddress,
+      userAgent,
     });
 
     // Return success with account status info
