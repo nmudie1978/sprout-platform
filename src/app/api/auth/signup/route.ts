@@ -20,6 +20,35 @@ import { sendGuardianConsentEmail } from "@/lib/mail";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
 
+// Transient DB/connection errors worth a quick retry on serverless cold
+// starts (can't-reach-db, connection closed, pool timeout, too many
+// connections). Until prod DATABASE_URL points at the Supabase pooler, the
+// first request to a cold function can fail to acquire a connection; one
+// retry turns the user-visible 500 into a success.
+const TRANSIENT_DB_CODES = new Set(["P1000", "P1001", "P1002", "P1008", "P1017", "P2024"]);
+
+function isTransientDbError(err: unknown): boolean {
+  const code = (err as { code?: string })?.code;
+  if (code && TRANSIENT_DB_CODES.has(code)) return true;
+  const msg = (err as { message?: string })?.message?.toLowerCase() ?? "";
+  return (
+    msg.includes("can't reach database") ||
+    msg.includes("connection") ||
+    msg.includes("timed out") ||
+    msg.includes("too many")
+  );
+}
+
+async function withDbRetry<T>(fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (!isTransientDbError(err)) throw err;
+    await new Promise((r) => setTimeout(r, 250));
+    return fn();
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Per-IP rate limit — the user doesn't have an account yet, so IP is
