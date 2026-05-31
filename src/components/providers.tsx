@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { SonnerToasterProvider } from "@/components/ui/sonner";
 import { LifeSkillsProvider } from "@/components/life-skills-provider";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import type { Session } from "next-auth";
@@ -70,7 +69,6 @@ export function Providers({ children, session }: { children: React.ReactNode; se
             <MobileBottomNav />
           </LifeSkillsProvider>
           <Toaster />
-          <SonnerToasterProvider />
         </QueryClientProvider>
       </SessionProvider>
     </ThemeProvider>
