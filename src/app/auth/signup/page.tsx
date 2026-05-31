@@ -10,18 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Loader2, ArrowLeft, ArrowRight, ShieldCheck, Heart } from "lucide-react";
+import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 /**
  * Sign-up — DOB-first stepped flow.
  *
- * Step 1: ask for date of birth ONLY. The age determines which path the
- * user takes. Under-15 hits a calm rejection. 16-17 sees a friendly note
- * about needing a parent. 18+ goes straight to the basic form.
+ * Step 1: ask for date of birth ONLY, to enforce the 15–23 eligibility
+ * floor. Under-15 and over-23 hit a calm rejection; everyone 15–23
+ * continues the same way (no guardian step — age is a roadmap signal,
+ * not a gate; see CLAUDE.md <age_policy>).
  *
  * Step 2: collect the rest of the details (email, password, first name,
- * parent email if under 18, terms). Auto-login on success and route to
- * the dashboard where onboarding picks up.
+ * terms). Auto-login on success and route to the dashboard where
+ * onboarding picks up.
  */
 function SignUpForm() {
   const router = useRouter();
@@ -55,7 +56,6 @@ function SignUpForm() {
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [guardianEmail, setGuardianEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [acceptedAll, setAcceptedAll] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -80,7 +80,6 @@ function SignUpForm() {
   };
 
   const ageInfo = calculateAgeInfo(dateOfBirth);
-  const isUnder18 = ageInfo.age !== null && ageInfo.age < 18;
   const isUnder15 = ageInfo.age !== null && ageInfo.age < 15;
   const isOver23 = ageInfo.age !== null && ageInfo.age > 23;
   const isEligible =
@@ -112,9 +111,6 @@ function SignUpForm() {
         if (!isEligible) {
           throw new Error("Endeavrly is for ages 15–23.");
         }
-        if (isUnder18 && !guardianEmail.trim()) {
-          throw new Error("We need a parent or guardian email so they can confirm.");
-        }
       }
       if (role === "TEACHER" || role === "EMPLOYER") {
         if (!dateOfBirth) {
@@ -143,7 +139,6 @@ function SignUpForm() {
           role,
           dateOfBirth: sendDob ? dateOfBirth : undefined,
           ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
-          guardianEmail: role === "YOUTH" && isUnder18 ? guardianEmail.trim().toLowerCase() : undefined,
           acceptedTerms: acceptedAll,
           acceptedPrivacy: acceptedAll,
         }),
@@ -172,9 +167,7 @@ function SignUpForm() {
 
       toast({
         title: "Welcome to Endeavrly",
-        description: isUnder18
-          ? "We've notified your parent. You can start exploring now."
-          : "Let's get you set up.",
+        description: "Let's get you set up.",
       });
 
       router.push("/dashboard");
@@ -251,18 +244,10 @@ function SignUpForm() {
                         , sign up via those links instead.
                       </p>
                     )}
-                    {isEligible && !isUnder18 && (
+                    {isEligible && (
                       <p className="text-xs text-teal-500 leading-relaxed">
                         Perfect &mdash; you&rsquo;re {ageInfo.age}. You&rsquo;re all set to continue.
                       </p>
-                    )}
-                    {isEligible && isUnder18 && (
-                      <div className="flex items-start gap-2 p-3 rounded-lg bg-teal-500/[0.06] border border-teal-500/20 mt-1">
-                        <ShieldCheck className="h-4 w-4 text-teal-500 mt-0.5 shrink-0" />
-                        <p className="text-xs text-foreground/80 leading-relaxed">
-                          You&rsquo;re {ageInfo.age}. Because you&rsquo;re under 18, we&rsquo;ll need to send a quick note to a parent or guardian. Nothing complicated &mdash; they just tap a link to confirm.
-                        </p>
-                      </div>
                     )}
                   </div>
                 )}
@@ -318,8 +303,6 @@ function SignUpForm() {
                     ? "Create your teacher account"
                     : isEmployer
                     ? "Create your job poster account"
-                    : isUnder18
-                    ? "Almost there"
                     : "Let's get you set up"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-0.5">
@@ -327,8 +310,6 @@ function SignUpForm() {
                     ? "Teacher accounts use a school email (e.g. *.skole.no, *.vgs.no, *.edu). You'll get a class code to share with your students."
                     : isEmployer
                     ? "Just a few details. You'll verify you're 18+ before posting your first job."
-                    : isUnder18
-                    ? "Just a few details and a parent email so we can let them know."
                     : "Just a few details and you're in."}
                 </p>
               </div>
@@ -418,31 +399,6 @@ function SignUpForm() {
                   />
                   <p className="text-[11px] text-muted-foreground">
                     You must be 18 or older. We don&apos;t share this.
-                  </p>
-                </div>
-              )}
-
-              {isUnder18 && (
-                <div className="space-y-2 p-3 rounded-lg bg-teal-500/[0.04] border border-teal-500/20">
-                  <Label
-                    htmlFor="guardianEmail"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300"
-                  >
-                    <Heart className="h-3 w-3" />
-                    Parent or guardian email
-                  </Label>
-                  <Input
-                    id="guardianEmail"
-                    type="email"
-                    inputMode="email"
-                    placeholder="parent@email.com"
-                    value={guardianEmail}
-                    onChange={(e) => setGuardianEmail(e.target.value)}
-                    required
-                    className="h-11 bg-background"
-                  />
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    We&rsquo;ll send them a link to confirm. You can start exploring straight away &mdash; some things will unlock once they confirm.
                   </p>
                 </div>
               )}

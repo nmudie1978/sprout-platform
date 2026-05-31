@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AccountStatus, AuditAction } from "@prisma/client";
 import {
-  generateGuardianToken,
   logAuditAction,
   MIN_EMPLOYER_AGE,
   validateAgeBracket,
@@ -16,7 +15,6 @@ import {
   PLATFORM_MIN_AGE,
   PLATFORM_MAX_AGE,
 } from "@/lib/safety/age";
-import { sendGuardianConsentEmail } from "@/lib/mail";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
 
@@ -70,7 +68,7 @@ export async function POST(req: NextRequest) {
       return response;
     }
 
-    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, guardianEmail: rawGuardianEmail, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Normalise emails: trim + lowercase so the account is stored in a
     // canonical form. Without this, signing up as "Foo@Bar.com" and later
@@ -78,10 +76,6 @@ export async function POST(req: NextRequest) {
     // out. The sign-in path (src/lib/auth.ts) normalises the same way.
     const email =
       typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : rawEmail;
-    const guardianEmail =
-      typeof rawGuardianEmail === "string"
-        ? rawGuardianEmail.trim().toLowerCase()
-        : rawGuardianEmail;
 
     // Validate legal acceptance
     if (!acceptedTerms || !acceptedPrivacy) {
@@ -168,13 +162,11 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Youth under 18 need guardian consent before becoming ACTIVE
-      // Youth 18-20 can be ACTIVE immediately
-      if (age < 18) {
-        initialAccountStatus = AccountStatus.PENDING_VERIFICATION;
-      } else {
-        initialAccountStatus = AccountStatus.ACTIVE;
-      }
+      // All youth (15–23) are ACTIVE on creation. Age personalises the
+      // Clarity roadmap; it is NOT an in-app gate, and there is no
+      // guardian-consent barrier to using the product. See CLAUDE.md
+      // <age_policy>. The only age check is the 15–23 floor above.
+      initialAccountStatus = AccountStatus.ACTIVE;
     } else if (role === "TEACHER") {
       // Teachers must be 18+ and use a recognised school domain.
       // The domain check is a signup-time filter — it's not a
@@ -267,15 +259,6 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Under-18 youth supply a guardian email at signup so the consent flow
-    // can kick off immediately. Compute these before the transaction so we
-    // can reuse them for the post-commit email.
-    const needsGuardianConsent = role === "YOUTH" && age !== null && age < 18;
-    const guardianToken = needsGuardianConsent ? generateGuardianToken() : null;
-    const trimmedGuardianEmail =
-      needsGuardianConsent && typeof guardianEmail === "string"
-        ? guardianEmail.trim()
-        : null;
     const acceptanceTimestamp = new Date();
     const ipAddress = req.headers.get("x-forwarded-for") || undefined;
     const userAgent = req.headers.get("user-agent") || undefined;
@@ -304,9 +287,9 @@ export async function POST(req: NextRequest) {
             userId: createdUser.id,
             displayName: trimmedFirst,
             surname: trimmedSurname || null,
-            guardianConsent: !needsGuardianConsent,
-            guardianEmail: trimmedGuardianEmail,
-            guardianToken: guardianToken,
+            // No guardian-consent barrier: every youth account is good to
+            // go on creation. See CLAUDE.md <age_policy>.
+            guardianConsent: true,
           },
         });
       } else if (role === "EMPLOYER") {
@@ -333,30 +316,6 @@ export async function POST(req: NextRequest) {
       return createdUser;
     }));
 
-    // Best-effort, post-commit side effects. The account already exists, so
-    // none of these should fail the request — logAuditAction swallows its
-    // own errors, and the email is fire-and-forget.
-    if (needsGuardianConsent && trimmedGuardianEmail && guardianToken) {
-      await logAuditAction({
-        userId: newUser.id,
-        action: AuditAction.GUARDIAN_CONSENT_REQUESTED,
-        metadata: { guardianEmail: trimmedGuardianEmail, atSignup: true },
-        ipAddress,
-        userAgent,
-      });
-
-      // Fire-and-forget — don't block signup if Resend is slow or
-      // misconfigured. Errors are logged inside sendMail().
-      sendGuardianConsentEmail({
-        guardianEmail: trimmedGuardianEmail,
-        youthDisplayName: `${trimmedFirst} ${trimmedSurname}`.trim(),
-        youthFirstName: trimmedFirst,
-        consentToken: guardianToken,
-      }).catch((err) => {
-        console.error("[signup] Guardian email send failed:", err);
-      });
-    }
-
     // Log account creation
     await logAuditAction({
       userId: newUser.id,
@@ -374,7 +333,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       accountStatus: initialAccountStatus,
-      requiresGuardianConsent: role === "YOUTH" && age !== null && age < 18,
+      requiresGuardianConsent: false,
       requiresAgeVerification: role === "EMPLOYER",
     });
   } catch (error) {
