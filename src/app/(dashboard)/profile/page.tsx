@@ -943,23 +943,6 @@ export default function ProfilePage() {
               {/* Discovery Interests has moved to the top of the page,
                   next to Career Direction. */}
 
-              {/* Guardian Email — only for 16-17 */}
-              {session.user.ageBracket === "SIXTEEN_SEVENTEEN" && (
-                <div>
-                  <Label htmlFor="guardianEmail" className="text-xs font-medium text-muted-foreground/70">Guardian Email</Label>
-                  <Input
-                    id="guardianEmail"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="parent@example.com"
-                    value={formData.guardianEmail}
-                    onChange={(e) => setFormData({ ...formData, guardianEmail: e.target.value })}
-                    className="h-8 mt-1 text-sm"
-                  />
-                </div>
-              )}
-
               <Button
                 onClick={() => saveProfileMutation.mutate()}
                 disabled={!formData.displayName || !formData.city || saveProfileMutation.isPending}
