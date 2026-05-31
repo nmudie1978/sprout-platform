@@ -837,7 +837,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-[100vh] text-foreground dark:bg-background">
-      {/* Guided orientation walkthrough — explains the platform, lands on Career Radar */}
+      {/* Guided orientation walkthrough — explains the platform. The user
+          stays on the dashboard after finishing or cancelling it. */}
       <OrientationWalkthrough
         open={showOnboardingWizard}
         onComplete={() => {
