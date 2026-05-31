@@ -1,50 +1,44 @@
 {
-  "https://oslotechshow.com/": {
+  "https://www.tautdanning.no/studentfairs/trondheim/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T20:14:36.063Z",
-    "ttlExpiresAtISO": "2026-01-23T20:14:36.172Z"
+    "checkedAtISO": "2026-05-31T06:09:55.931Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:56.418Z"
   },
-  "https://www.oiw.no/": {
+  "https://www.tautdanning.no/studentfairs/kristiansund/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T20:14:36.063Z",
-    "ttlExpiresAtISO": "2026-01-23T20:14:36.353Z"
-  },
-  "https://ndcoslo.com/": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-01-22T20:14:36.063Z",
-    "ttlExpiresAtISO": "2026-01-23T20:14:36.440Z"
-  },
-  "https://europeanjobdays.eu/en/who-are-you": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.566Z"
-  },
-  "https://www.tautdanning.no/studentfairs/alesund/": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.948Z"
-  },
-  "https://www.tautdanning.no/studentfairs/tromso/": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.956Z"
-  },
-  "https://www.tautdanning.no/studentfairs/transport-services/": {
-    "status": 200,
-    "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.970Z"
+    "checkedAtISO": "2026-05-31T06:09:55.928Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:56.420Z"
   },
   "https://www.tautdanning.no/studentfairs/oslo/": {
     "status": 200,
     "ok": true,
-    "checkedAtISO": "2026-01-22T21:54:42.525Z",
-    "ttlExpiresAtISO": "2026-01-23T21:54:42.984Z"
+    "checkedAtISO": "2026-05-31T06:09:55.950Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:56.644Z"
+  },
+  "https://www.tautdanning.no/studentfairs/transport-services/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-05-31T06:09:55.950Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:56.664Z"
+  },
+  "https://www.tautdanning.no/studentfairs/tromso/": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-05-31T06:09:55.950Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:56.674Z"
+  },
+  "https://www.tautdanning.no/studentfairs/check-list-for-exhibitors/#": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-05-31T06:09:56.418Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:57.163Z"
+  },
+  "https://europeanjobdays.eu/en/who-are-you": {
+    "status": 200,
+    "ok": true,
+    "checkedAtISO": "2026-05-31T06:09:57.164Z",
+    "ttlExpiresAtISO": "2026-06-01T06:09:57.695Z"
   }
 }
