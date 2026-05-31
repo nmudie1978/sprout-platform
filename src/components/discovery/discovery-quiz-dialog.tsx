@@ -215,8 +215,10 @@ export function DiscoveryQuizDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Subjects — dropdown multi-select */}
-          <div>
+          {/* Subjects + Things you enjoy — side by side */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Subjects — dropdown multi-select */}
+            <div>
             <Label className="text-xs font-semibold">Subjects you enjoy</Label>
             <p className="text-[10px] text-muted-foreground mb-1.5">
               Select the subjects you like most. Pick 3–5 for the sharpest results.
@@ -239,6 +241,20 @@ export function DiscoveryQuizDialog({
                 );
               }}
             />
+            </div>
+
+            {/* Interests / activities */}
+            <div>
+              <Label className="text-xs font-semibold">Things you enjoy</Label>
+              <p className="text-[10px] text-muted-foreground mb-1.5">
+                What do you like doing outside of school? Pick any that fit.
+              </p>
+              <InterestMultiSelect
+                items={INTERESTS}
+                selected={interests}
+                onToggle={(id) => toggle(interests, setInterests, id)}
+              />
+            </div>
           </div>
 
           {/* Work styles — compact inline */}
@@ -285,66 +301,9 @@ export function DiscoveryQuizDialog({
             </div>
           </div>
 
-          {/* Grade range + university toggle.
-              Deliberately phrased as a range not a point so the user
-              doesn't feel judged by a single number. The range doesn't
-              hide any career — it just re-ranks the Radar so the
-              most realistic paths surface first. */}
+          {/* University preference */}
           <div>
-            <Label className="text-xs font-semibold">Your grade range (optional)</Label>
-            <p className="text-[10px] text-muted-foreground mb-1.5">
-              What grade range do you expect to land in? Norwegian VGS scale 1–6. Tells the Radar which paths look realistic — never hides anything.
-            </p>
-
-            {!gradeRange ? (
-              <button
-                type="button"
-                onClick={() => setGradeRange({ low: 3, high: 4 })}
-                className="rounded-full border border-dashed border-border/50 px-3 py-1 text-[11px] text-muted-foreground/80 hover:text-foreground hover:border-teal-500/40 transition-colors"
-              >
-                + Set a range
-              </button>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <GradeSelect
-                    value={gradeRange.low}
-                    onChange={(v) =>
-                      setGradeRange({
-                        low: v,
-                        high: Math.max(v, gradeRange.high),
-                      })
-                    }
-                    label="From"
-                  />
-                  <span className="text-muted-foreground text-xs">to</span>
-                  <GradeSelect
-                    value={gradeRange.high}
-                    onChange={(v) =>
-                      setGradeRange({
-                        low: Math.min(v, gradeRange.low),
-                        high: v,
-                      })
-                    }
-                    label="To"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setGradeRange(null)}
-                    className="ml-auto text-[10px] text-muted-foreground/60 hover:text-muted-foreground/90 transition-colors"
-                  >
-                    Clear
-                  </button>
-                </div>
-                <p className="text-[10px] text-muted-foreground/70 italic">
-                  {gradeRange.low === gradeRange.high
-                    ? `Showing ${gradeRange.low}-aligned paths first.`
-                    : `Showing grades ${gradeRange.low}–${gradeRange.high} paths first. Stretch paths still visible below.`}
-                </p>
-              </div>
-            )}
-
-            <label className="mt-3 flex items-center gap-2 cursor-pointer group">
+            <label className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={excludeUniversity}
@@ -362,18 +321,6 @@ export function DiscoveryQuizDialog({
             )}
           </div>
 
-          {/* Interests / activities */}
-          <div>
-            <Label className="text-xs font-semibold">Things you enjoy</Label>
-            <p className="text-[10px] text-muted-foreground mb-1.5">
-              What do you like doing outside of school? Pick any that fit.
-            </p>
-            <InterestMultiSelect
-              items={INTERESTS}
-              selected={interests}
-              onToggle={(id) => toggle(interests, setInterests, id)}
-            />
-          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
@@ -604,35 +551,3 @@ function InterestMultiSelect({
   );
 }
 
-/**
- * GradeSelect — minimal native <select> for a 1-6 VGS grade. Using
- * native rather than a custom slider so mobile keyboards handle it
- * for free and accessibility is correct out of the box.
- */
-function GradeSelect({
-  value,
-  onChange,
-  label,
-}: {
-  value: number;
-  onChange: (v: number) => void;
-  label: string;
-}) {
-  return (
-    <label className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
-      <span className="sr-only">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="rounded-md border border-border/40 bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-teal-500/50"
-        aria-label={`Grade ${label}`}
-      >
-        {[1, 2, 3, 4, 5, 6].map((g) => (
-          <option key={g} value={g}>
-            {g}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}

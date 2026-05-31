@@ -132,9 +132,9 @@ export default function CareerRadarPage() {
 }
 
 /**
- * GradeRangePill — subtle indicator showing the active grade-range +
- * excludeUniversity filters, with a Change link that opens the quiz.
- * Renders nothing when no filters are set, so first-time users don't
+ * GradeRangePill — subtle indicator showing the active
+ * excludeUniversity filter, with a Change link that opens the quiz.
+ * Renders nothing when the filter isn't set, so first-time users don't
  * see an empty-state pill that doesn't explain itself. First-time
  * discovery of the filter happens through the quiz dialog entrypoint
  * ("Tell us what you like"), not through this pill.
@@ -146,24 +146,12 @@ function GradeRangePill({
   preferences: DiscoveryPreferences | null;
   onChange: () => void;
 }) {
-  const range = preferences?.gradeRange;
   const excludeUni = preferences?.excludeUniversity;
-  if (!range && !excludeUni) return null;
-
-  const rangeLabel = range
-    ? range.low === range.high
-      ? `Grade ${range.low}-aligned`
-      : `Grades ${range.low}–${range.high}`
-    : null;
+  if (!excludeUni) return null;
 
   return (
     <div className="mb-3 flex items-center gap-2 flex-wrap text-[11px]">
       <span className="text-muted-foreground/60">Adjusted for:</span>
-      {rangeLabel && (
-        <span className="inline-flex items-center gap-1 rounded-full border border-teal-500/30 bg-teal-500/10 px-2 py-0.5 text-teal-700 dark:text-teal-300 font-medium">
-          {rangeLabel}
-        </span>
-      )}
       {excludeUni && (
         <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-700 dark:text-amber-300 font-medium">
           No university
