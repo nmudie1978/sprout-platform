@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
+import { withDbRetry } from "@/lib/db-retry";
 
 /** Slugify a goal title for use as goalId */
 function slugifyGoal(title: string): string {
@@ -135,7 +136,14 @@ export async function PUT(request: Request) {
     };
 
     if (slot === "primary" && goal) {
-      const updatedProfile = await prisma.$transaction(async (tx) => {
+      // Retry + generous timeout: in prod this runs over the Supabase
+      // transaction pooler, where a 6-query interactive transaction can
+      // exceed Prisma's default 5s timeout or hit a transient pool error.
+      // This is the only goal path using an interactive transaction, which
+      // is why "Set as Primary Goal" could silently 500 while secondary
+      // (a plain upsert) worked.
+      const updatedProfile = await withDbRetry(() =>
+        prisma.$transaction(async (tx) => {
         const currentProfile = await tx.youthProfile.findUnique({
           where: { userId: session.user.id },
           select: {
@@ -242,7 +250,8 @@ export async function PUT(request: Request) {
             ...journeyUpdate,
           },
         });
-      });
+        }, { maxWait: 10_000, timeout: 20_000 })
+      );
 
       return NextResponse.json({
         success: true,
