@@ -1,4 +1,4 @@
-import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download, Users, ArrowRight, FileText } from "lucide-react";
+import { Star, ExternalLink, Compass, BarChart3, Briefcase, Route, Target, Shield, Download, Users, ArrowRight, FileText, MessageCircleHeart } from "lucide-react";
 import Link from "next/link";
 import { getAboutPageStats, type ResearchStatWithYear } from "@/lib/researchEvidence";
 
@@ -235,6 +235,24 @@ export default function AboutPage() {
               real voices, industry outlook — so you can make informed decisions instead of guessing.
               Each career you explore teaches you something about yourself: what excites you,
               what fits your strengths, and what you want your future to look like.
+            </p>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-2 mb-3">
+              <MessageCircleHeart className="h-5 w-5 text-violet-500" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Talk to your Career Twin
+              </h2>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
+              What if you could ask someone already doing the job? Career Twin lets you have a real
+              conversation with one possible future version of yourself — someone who took the path
+              into a career you&apos;re exploring. Ask them to walk you through a normal day, how they got
+              there from where you are now, or simply whether it was worth it. They&apos;re warm and honest
+              about both the good parts and the genuinely hard ones — and they&apos;ll always remind you this
+              is one possible future, not a fixed prediction. It&apos;s a calm way to feel your way into a
+              decision before you ever have to make it.
             </p>
           </section>
 

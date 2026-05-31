@@ -13,6 +13,7 @@ import {
   BookOpen,
   ShieldCheck,
   Users,
+  MessageCircleHeart,
 } from "lucide-react";
 import { HeroVideo } from "@/components/hero-video";
 import { RetroGrid } from "@/components/ui/retro-grid";
@@ -60,9 +61,17 @@ const FEATURES = [
     accentText: "text-amber-400",
   },
   {
+    title: "Meet your Career Twin",
+    description:
+      "Talk to one possible future version of yourself \u2014 already living a career you're curious about. Ask what a normal day feels like, how they got there, or whether it was worth it. Honest about the good and the hard, and always clear it's one possible future, not a prediction.",
+    icon: MessageCircleHeart,
+    accentBg: "bg-violet-500/15",
+    accentText: "text-violet-400",
+  },
+  {
     title: "Safety by default",
     description:
-      "No public profiles, no tracking, no targeted advertising. Guardian consent built in for under-18s.",
+      "No public profiles, no tracking, and no targeted advertising \u2014 ever. Your exploration stays private to you.",
     icon: ShieldCheck,
     accentBg: "bg-teal-500/15",
     accentText: "text-teal-400",
