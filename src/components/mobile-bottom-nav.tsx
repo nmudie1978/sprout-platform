@@ -109,8 +109,8 @@ export const youthDrawerSections: NavSection[] = [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/my-journey", label: "My Journey", icon: Route },
       { href: "/careers/radar", label: "My Career Radar", icon: Radar },
-      { href: "/career-advisor", label: "AI Advisor", icon: Bot },
       { href: "/library", label: "My Library", icon: Library },
+      { href: "/career-advisor", label: "AI Advisor", icon: Bot },
       ...(SMALL_JOBS_ENABLED
         ? [{ href: "/applications", label: "My Small Jobs", icon: FileText }]
         : []),
