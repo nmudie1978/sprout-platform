@@ -189,6 +189,7 @@ export async function POST(req: NextRequest) {
     // preferences, and their education stage.
     let userProfile: {
       careerAspiration: string | null;
+      country: string | null;
       journeySummary: unknown;
       discoveryPreferences: unknown;
       foundationCardData: unknown;
@@ -198,6 +199,7 @@ export async function POST(req: NextRequest) {
         where: { userId: session.user.id },
         select: {
           careerAspiration: true,
+          country: true,
           journeySummary: true,
           discoveryPreferences: true,
           foundationCardData: true,
@@ -248,7 +250,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Build messages for OpenAI with personalization based on career aspiration
-    const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration);
+    const systemPrompt = getSystemPrompt(intent, userProfile?.careerAspiration, userProfile?.country);
 
     // Exploration state context — gives the Socratic coach awareness of
     // what the user has been doing on the platform, not just what they

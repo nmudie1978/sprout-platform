@@ -13,6 +13,7 @@
  * Sections are clearly labelled so the contract is easy to assert in tests.
  */
 import type { BuildPromptInput } from "./types";
+import { getCountryContext } from "@/lib/country-context";
 
 /** Hard rules that apply to EVERY Career Twin response, regardless of mode. */
 export const CAREER_TWIN_SAFETY_RULES = [
@@ -66,7 +67,12 @@ export function buildCareerTwinSystemPrompt(input: BuildPromptInput): string {
   // ── User context ────────────────────────────────────────────────────
   const ctx: string[] = [];
   if (age != null) ctx.push(`The user is around ${age} years old — pitch your language to that age.`);
-  if (country) ctx.push(`They are based in ${country}; keep examples relevant to there where you can.`);
+  if (country) {
+    const cc = getCountryContext(country);
+    ctx.push(
+      `They are based in ${country}; keep examples local — use ${cc.currency} for pay and reference the ${country} education system (${cc.language} terms where natural).`,
+    );
+  }
   if (profile?.preferredLanguage) ctx.push(`Preferred language signal: ${profile.preferredLanguage} (still reply in English).`);
   if (interests.length > 0) ctx.push(`Things they've shown interest in: ${interests.slice(0, 6).join(", ")}.`);
   if (subjects.length > 0) ctx.push(`School subjects on their radar: ${subjects.slice(0, 6).join(", ")}.`);
