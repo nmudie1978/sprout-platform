@@ -46,6 +46,9 @@ const RENDERERS = {
 export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, readOnly = false, onSimulationReady }: PersonalCareerTimelineProps) {
   const [selectedItem, setSelectedItem] = useState<JourneyItem | null>(null);
   const [saveVersion, setSaveVersion] = useState(0);
+  // Report dialog open state — declared with the other top-level hooks so it
+  // is never called after one of this component's early returns below.
+  const [reportOpen, setReportOpen] = useState(false);
   const { style, setStyle } = useTimelineStyle();
   // "Show years" toggle — persists across sessions via localStorage so
   // users who prefer calendar-year stamps on every step don't have to
@@ -481,8 +484,6 @@ export function PersonalCareerTimeline({ primaryGoalTitle, overrideJourney, read
     : eduStages.some((i) => i.title.toLowerCase().includes('apprentice'))
       ? 'Apprenticeship'
       : 'Education';
-
-  const [reportOpen, setReportOpen] = useState(false);
 
   return (
     <div>

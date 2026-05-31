@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatSkillName } from "@/lib/skills-mapping";
 import { MapPin, Star, Award, Calendar, Shield } from "lucide-react";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Avatar } from "@/components/avatar";
 import { ProfileReportButton } from "@/components/profile-report-button";
 
@@ -238,9 +239,9 @@ export default async function PublicProfilePage(
           <div className="text-center text-sm text-muted-foreground">
             <p>
               This is a public profile on{" "}
-              <a href="/" className="text-primary hover:underline">
+              <Link href="/" className="text-primary hover:underline">
                 Endeavrly
-              </a>
+              </Link>
             </p>
           </div>
           {profile.userId && (
