@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { getToken } from "next-auth/jwt";
+import { isConsentWriteGatedApi, MUTATING_METHODS } from "@/lib/auth/consent-gate";
 
 const ADMIN_SESSION_COOKIE = "endeavrly_admin_session";
 
@@ -23,42 +24,10 @@ const SENSITIVE_ROUTES = [
   "/api/messages",
 ];
 
-// ── Softened guardian-consent gate (GDPR Art 8) ──────────────────────
-//
-// Under-18 youth (ageBracket SIXTEEN_SEVENTEEN) who don't yet have
-// guardian consent can BROWSE and read the whole platform freely — the
-// point is exploration. What they can't do until a guardian confirms is
-// WRITE personal data: save reflections, set career preferences, store
-// quiz results, etc. This list covers the API routes that persist a
-// minor's personal data; the gate only fires on mutating methods
-// (POST/PUT/PATCH/DELETE), so GET reads are always allowed.
-//
-// This is intentionally narrower than the old gate, which blocked the
-// entire authenticated surface. The canonical legal block (under-16 at
-// signup) lives in /api/auth/signup; this is the in-app data-write layer.
-const CONSENT_WRITE_GATED_API_PREFIXES = [
-  "/api/journey",
-  "/api/discover",
-  "/api/careers/swipe",
-  "/api/careers/saved",
-  "/api/goals",
-  "/api/profile/career-goals",
-  "/api/profile/skills",
-  "/api/insights/saved",
-  "/api/insights/progress",
-  "/api/insights/interactions",
-  "/api/insights/newsletter",
-  "/api/life-skills",
-  "/api/interview-prep",
-];
-
-const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
-
-function isConsentWriteGatedApi(pathname: string): boolean {
-  return CONSENT_WRITE_GATED_API_PREFIXES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
-}
+// Guardian-consent write-gate (GDPR Art 8) lives in
+// `@/lib/auth/consent-gate` so it can be unit-tested in isolation. Note:
+// `/api/goals` is intentionally NOT gated — setting a Primary/Secondary
+// Goal is core exploration, available to everyone at any age.
 
 /**
  * Verify admin session token in middleware
