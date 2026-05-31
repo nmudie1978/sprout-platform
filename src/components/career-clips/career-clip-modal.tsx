@@ -68,22 +68,11 @@ export function CareerClipModal({
     setEmbedError(false);
   }, [clip?.id]);
 
-  if (!clip) return null;
-
-  const isYouTube = clip.platform === "YOUTUBE_SHORTS";
-  const embedUrl = isYouTube ? getYouTubeEmbedUrl(clip.url) : null;
+  // Derived embed state — computed null-safely so the hooks below can run
+  // unconditionally (hooks must not sit after an early return).
+  const isYouTube = clip?.platform === "YOUTUBE_SHORTS";
+  const embedUrl = isYouTube && clip ? getYouTubeEmbedUrl(clip.url) : null;
   const canEmbed = isYouTube && embedUrl && !embedError;
-
-  // Build the journey continuation URL
-  const buildStageUrl = clip.careerSlug
-    ? `/my-journey/build?career=${clip.careerSlug}`
-    : "/my-journey/build";
-
-  // Handler for opening external link
-  const handleOpenExternal = () => {
-    // Open in new tab (validated URL is guaranteed to work)
-    window.open(clip.url, "_blank", "noopener,noreferrer");
-  };
 
   // Handle embed load timeout
   useEffect(() => {
@@ -97,6 +86,19 @@ export function CareerClipModal({
       return () => clearTimeout(timeout);
     }
   }, [canEmbed, embedLoaded]);
+
+  if (!clip) return null;
+
+  // Build the journey continuation URL
+  const buildStageUrl = clip.careerSlug
+    ? `/my-journey/build?career=${clip.careerSlug}`
+    : "/my-journey/build";
+
+  // Handler for opening external link
+  const handleOpenExternal = () => {
+    // Open in new tab (validated URL is guaranteed to work)
+    window.open(clip.url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

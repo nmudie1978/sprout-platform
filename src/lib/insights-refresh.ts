@@ -746,21 +746,21 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
 
     result.modulesChecked = uniqueModules.length;
 
-    for (const module of uniqueModules) {
+    for (const mod of uniqueModules) {
       try {
         // Mark as checking
         await prisma.industryInsightsModule.update({
-          where: { id: module.id },
+          where: { id: mod.id },
           data: { status: "REGENERATING" },
         });
 
         // Fetch latest data from provider
-        const latestData = await provider.getLatest(module.key);
+        const latestData = await provider.getLatest(mod.key);
 
         if (!latestData) {
           // Provider returned no data - keep existing, mark verified
           await prisma.industryInsightsModule.update({
-            where: { id: module.id },
+            where: { id: mod.id },
             data: {
               status: "ACTIVE",
               lastVerifiedAt: now,
@@ -768,7 +768,7 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
           });
           result.modulesVerified++;
           result.details.push({
-            key: module.key,
+            key: mod.key,
             action: "verified",
             reason: "Provider returned no new data",
           });
@@ -776,14 +776,14 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
         }
 
         // Calculate delta
-        const currentData = module.contentJson as Record<string, unknown>;
-        const threshold = module.changeThreshold as Record<string, number>;
-        const delta = calculateDelta(module.key, currentData, latestData.dataJson, threshold);
+        const currentData = mod.contentJson as Record<string, unknown>;
+        const threshold = mod.changeThreshold as Record<string, number>;
+        const delta = calculateDelta(mod.key, currentData, latestData.dataJson, threshold);
 
         if (!delta.hasSignificantChange) {
           // No significant change - just update verification timestamp
           await prisma.industryInsightsModule.update({
-            where: { id: module.id },
+            where: { id: mod.id },
             data: {
               status: "ACTIVE",
               lastVerifiedAt: now,
@@ -791,7 +791,7 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
           });
           result.modulesVerified++;
           result.details.push({
-            key: module.key,
+            key: mod.key,
             action: "verified",
             reason: `No significant changes: ${JSON.stringify(delta.changeDetails)}`,
           });
@@ -800,10 +800,10 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
           validateSourceBeforeSave(latestData.sourceMeta);
 
           // Significant change - regenerate
-          const newSummary = generateModuleSummary(module.key, latestData.dataJson);
+          const newSummary = generateModuleSummary(mod.key, latestData.dataJson);
 
           await prisma.industryInsightsModule.update({
-            where: { id: module.id },
+            where: { id: mod.id },
             data: {
               status: "ACTIVE",
               contentJson: latestData.dataJson as Prisma.InputJsonValue,
@@ -811,12 +811,12 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
               sourceMeta: latestData.sourceMeta as Prisma.InputJsonValue,
               lastGeneratedAt: now,
               lastVerifiedAt: now,
-              version: module.version + 1,
+              version: mod.version + 1,
             },
           });
           result.modulesRegenerated++;
           result.details.push({
-            key: module.key,
+            key: mod.key,
             action: "regenerated",
             reason: `Changes detected: ${JSON.stringify(delta.changeDetails)}`,
           });
@@ -824,16 +824,16 @@ export async function verifyAndRefreshIndustryInsights(): Promise<RefreshResult>
       } catch (moduleError) {
         // Module-level error - keep existing, log error
         const errorMessage = moduleError instanceof Error ? moduleError.message : "Unknown error";
-        result.errors.push(`${module.key}: ${errorMessage}`);
+        result.errors.push(`${mod.key}: ${errorMessage}`);
         result.details.push({
-          key: module.key,
+          key: mod.key,
           action: "error",
           reason: errorMessage,
         });
 
         // Restore to ACTIVE status (don't leave in REGENERATING)
         await prisma.industryInsightsModule.update({
-          where: { id: module.id },
+          where: { id: mod.id },
           data: { status: "ACTIVE" },
         }).catch(logAndSwallow("insightsRefresh:restoreActive"));
       }
