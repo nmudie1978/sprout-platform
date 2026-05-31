@@ -1,0 +1,398 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "change": "cambiar",
+    "yes": "Sí",
+    "set": "Establecer",
+    "delete": "Eliminar",
+    "error": "Error",
+    "showOriginal": "Mostrar original",
+    "translateToNorwegian": "Traducir al noruego",
+    "translating": "Traduciendo…",
+    "noResults": "No se han encontrado resultados",
+    "previousPage": "Página anterior",
+    "nextPage": "Página siguiente"
+  },
+  "nav": {
+    "dashboard": "Inicio",
+    "jobs": "Pequeños trabajos",
+    "insights": "Análisis del sector",
+    "myJourney": "Mi recorrido",
+    "explore": "Explorar carreras",
+    "feedback": "Comentarios",
+    "about": "Acerca de"
+  },
+  "greeting": {
+    "morning": "Buenos días",
+    "afternoon": "Buenas tardes",
+    "evening": "Buenas noches",
+    "welcome": "Bienvenido/a"
+  },
+  "dashboard": {
+    "pageContext": "Un resumen de tus recorridos, tu actividad y el contenido que has guardado.",
+    "replayWalkthrough": "Repetir el tutorial de la app",
+    "guardianPending": "Esperando la confirmación de tu tutor — toca para reenviar o cambiar",
+    "profileComplete": "Perfil completo",
+    "profilePercent": "Perfil {pct}% completo",
+    "startHint": "Empieza aquí"
+  },
+  "journey": {
+    "title": "Mi recorrido",
+    "cardTitle": "Mi recorrido",
+    "cardTitleWithGoal": "Mi recorrido para ser",
+    "chooseGoalPrompt": "Elige un objetivo principal para empezar",
+    "completeIndicator": "Recorrido completado",
+    "progressTooltip": "Tu recorrido sigue tu progreso por Descubrir, Entender y Claridad — para ayudarte a ver el panorama completo de una carrera.",
+    "hint": "Este es tu camino",
+    "discover": {
+      "label": "Descubrir",
+      "subtitle": "Explora la carrera",
+      "description": "Hazte una idea general: qué es, quién la ejerce, el rango salarial y si merece un vistazo más de cerca.",
+      "tooltip": "Hazte una idea de la carrera — cómo es un día típico, el salario, las perspectivas de crecimiento y las habilidades clave.",
+      "confirmQuestion": "¿Has explorado en qué consiste este rol?",
+      "confirmYes": "Sí",
+      "confirmNotYet": "Sí",
+      "videoSection": "Un día en la vida",
+      "overviewSection": "Visión general de la carrera",
+      "annualSalary": "Salario anual",
+      "growth": "Crecimiento",
+      "sector": "Sector",
+      "pension": "Pensión"
+    },
+    "understand": {
+      "label": "Entender",
+      "subtitle": "La realidad, la formación y las habilidades",
+      "description": "Profundiza en el día a día, las cualificaciones y las partes difíciles.",
+      "tooltip": "Profundiza en lo que realmente implica el rol — itinerarios formativos reales, requisitos de acceso, cursos y datos honestos.",
+      "lockedTooltip": "Responde la confirmación al final de Descubrir para desbloquear Entender",
+      "confirmQuestion": "¿Has entendido el rol con más detalle?",
+      "confirmYes": "Sí",
+      "confirmNotYet": "Sí",
+      "tasksSection": "Lo que harás de verdad",
+      "tasksTooltip": "Las responsabilidades y tareas diarias que definen este rol — en qué dedicarías realmente tu tiempo.",
+      "realitySection": "La realidad",
+      "realityTooltip": "Una mirada honesta a cómo es de verdad esta carrera — los retos, los sacrificios y qué hace que alguien encaje bien.",
+      "typicalDaySection": "Un día típico",
+      "typicalDayTooltip": "Cómo es una jornada real en este rol — mañana, mediodía y tarde — para que te imagines en él.",
+      "schoolReadiness": "Preparación escolar",
+      "studyPath": "Itinerario de estudios",
+      "studyPathTooltip": "Universidades, centros y escuelas de formación profesional reales que llevan a esta carrera — filtrados por tu ubicación y tus asignaturas.",
+      "careerPresence": "Presencia y herramientas de la carrera",
+      "careerPresenceTooltip": "Lo disponible que está esta carrera en tu país y en países cercanos, y las herramientas que usan los profesionales cada día."
+    },
+    "clarity": {
+      "label": "Claridad",
+      "subtitle": "Ve tu recorrido completo",
+      "description": "Ve la cronología completa, los hitos y lo que hace falta para llegar.",
+      "tooltip": "Esta sección lo reúne todo — te muestra el recorrido completo, la cronología y lo que hace falta para conseguirlo.",
+      "lockedTooltip": "Responde la confirmación al final de Entender para desbloquear Claridad",
+      "addMomentumStep": "Añade esto como uno de tus pasos de impulso",
+      "deleteStep": "Eliminar paso",
+      "addStepPlaceholder": "Añade un paso…",
+      "addFirstStepPlaceholder": "Añade tu primer paso…"
+    },
+    "notes": {
+      "title": "Tus notas",
+      "placeholder": "Añade una nota..."
+    },
+    "fromField": {
+      "title": "Caminos reales de personas reales",
+      "sectionTitle": "Desde el terreno",
+      "tooltip": "Cronologías profesionales reales aportadas por familias y profesionales — que muestran que hay más de una forma de llegar."
+    },
+    "empty": {
+      "description": "Elige un objetivo principal — la carrera que quieras explorar a fondo primero. Te acompañaremos de la curiosidad a un plan real, paso a paso. Puedes cambiarlo cuando quieras.",
+      "choosePrimary": "Elige tu objetivo principal",
+      "exploreRadar": "O explora primero carreras en el Radar de Carreras"
+    }
+  },
+  "careers": {
+    "titlePrefix": "Explorar",
+    "titleGradient": "Carreras",
+    "description": "Descubre cómo son de verdad los distintos trabajos antes de decidir nada",
+    "infoTooltip": "Explora carreras por categoría, busca por nombre o filtra por salario, crecimiento y más. Haz clic en cualquier carrera para ver un desglose completo, con un día típico, itinerarios formativos e información salarial.",
+    "stats": {
+      "careers": "Carreras",
+      "showing": "Mostrando",
+      "categories": "Categorías"
+    },
+    "table": {
+      "career": "Carrera",
+      "salary": "Salario",
+      "growth": "Crecimiento",
+      "sector": "Sector",
+      "path": "Camino",
+      "demand": "Demanda",
+      "match": "Afinidad",
+      "learnMore": "Saber más"
+    },
+    "personalised": "Personalizado",
+    "empty": {
+      "title": "No se han encontrado carreras",
+      "description": "Prueba a ajustar tu búsqueda o tus filtros",
+      "clearFilters": "Borrar filtros"
+    },
+    "recommended": {
+      "title": "Recomendadas para ti",
+      "subtitle": "Según tu objetivo principal"
+    },
+    "loading": "Cargando carreras...",
+    "pagination": {
+      "showing": "Mostrando {start}–{end} de {total}",
+      "total": "{total} carreras"
+    }
+  },
+  "radar": {
+    "titlePrefix": "Mi",
+    "titleGradient": "Radar de Carreras",
+    "description": "Carreras emparejadas con tus intereses, tu forma de trabajar y tus fortalezas. Cuanto más cerca del centro esté un punto, mayor es la afinidad. Toca cualquier punto para explorar esa carrera en detalle.",
+    "loading": "Cargando tu radar…",
+    "notYouth": "Inicia sesión con una cuenta de joven para usar el Radar de Carreras.",
+    "hint": "Toca una carrera para explorarla"
+  },
+  "careerSnapshot": {
+    "title": "Resumen de la carrera",
+    "tooltip": "Datos clave de la carrera que has elegido — salario, crecimiento, sector y pensión.",
+    "salary": "Salario",
+    "growth": "Crecimiento",
+    "sector": "Sector",
+    "pension": "Pensión",
+    "emptyState": "Elige un objetivo principal para ver la información de la carrera"
+  },
+  "exploredJourneys": {
+    "title": "Recorridos explorados anteriormente",
+    "tooltip": "Cada recorrido que empiezas se guarda aquí. Cambia entre ellos cuando quieras.",
+    "emptyState": "Aún no hay recorridos.",
+    "career": "Carrera",
+    "stage": "Etapa",
+    "status": "Estado",
+    "primaryGoal": "Objetivo principal",
+    "saved": "Guardado"
+  },
+  "savedCareers": {
+    "title": "Carreras guardadas",
+    "tooltip": "Todas las carreras que has guardado — ya sea desde Explorar Carreras o desde tu Radar de Carreras — reunidas en un solo lugar. Sin duplicados.",
+    "emptyState": "Aún no has guardado ninguna carrera."
+  },
+  "smallJobs": {
+    "title": "Mis pequeños trabajos",
+    "tooltip": "Pequeños trabajos del mundo real a los que te has presentado. Cada uno te da experiencia, responsabilidad y confianza.",
+    "applied": "Presentado",
+    "waiting": "En espera",
+    "accepted": "Aceptado",
+    "done": "Hecho"
+  },
+  "library": {
+    "title": "Mi biblioteca",
+    "tooltip": "Artículos, vídeos y recursos que has guardado desde Análisis del sector.",
+    "emptyState": "Tu biblioteca está vacía.",
+    "listView": "Vista de lista",
+    "gridView": "Vista de cuadrícula"
+  },
+  "switchGoal": {
+    "title": "¿Cambiar el objetivo principal a {goalTitle}?",
+    "description": "Tu progreso actual se guardará. Puedes volver a cambiarlo cuando quieras.",
+    "whatHappens": "Qué ocurre:",
+    "journeySaved": "Tu recorrido de {currentGoal} se guarda",
+    "canReload": "Puedes recuperarlo desde Recorridos explorados anteriormente en tu inicio",
+    "dataPreserved": "Se conservan todos los datos — itinerario, base y preferencias",
+    "confirm": "Cambiar objetivo principal",
+    "toastDescription": "Tu recorrido anterior se ha guardado en Recorridos explorados anteriormente y puedes recuperarlo cuando quieras. Ve a Mi recorrido para empezar a explorar tu nuevo objetivo principal.",
+    "goToJourney": "Ir a Mi recorrido"
+  },
+  "dyk": {
+    "header": "¿Sabías que?",
+    "nextFact": "Mostrar otro dato"
+  },
+  "firstLogin": {
+    "cardTitle": "¿Eres nuevo/a? Echa un vistazo rápido",
+    "cardDescription": "Un breve tutorial que te muestra qué hace cada parte de la plataforma — dura unos 30 segundos.",
+    "startWalkthrough": "Enséñame la plataforma"
+  },
+  "profile": {
+    "title": "Perfil",
+    "youthOnly": "Solo los usuarios jóvenes pueden acceder a los perfiles.",
+    "loading": "Cargando perfil...",
+    "firstName": "Nombre",
+    "surname": "Apellidos",
+    "age": "Edad",
+    "yearsOld": "años",
+    "born": "Fecha de nacimiento",
+    "dobNote": "Fecha de nacimiento · establecida al registrarte",
+    "dobNotSet": "Fecha de nacimiento sin establecer",
+    "bio": "Sobre mí",
+    "bioPlaceholder": "Cuéntales algo sobre ti a quienes publican trabajos...",
+    "phone": "Teléfono",
+    "city": "Ciudad",
+    "guardianEmail": "Correo del tutor",
+    "saveButton": "Guardar perfil",
+    "savingButton": "Guardando...",
+    "savedToast": "¡Perfil guardado!",
+    "savedToastDesc": "Tu perfil se ha actualizado correctamente.",
+    "careerDirection": "Dirección profesional",
+    "primaryGoal": "Objetivo principal",
+    "secondaryGoal": "Objetivo secundario",
+    "noGoalSet": "Aún no has fijado un objetivo profesional",
+    "noBackupGoal": "Sin objetivo de reserva",
+    "availability": {
+      "title": "Disponibilidad para trabajar",
+      "available": "Disponible",
+      "busy": "Ocupado/a",
+      "notLooking": "No busco"
+    },
+    "privacy": {
+      "visibility": "Visibilidad del perfil",
+      "visibilityPublic": "Quienes publican trabajos pueden ver tu perfil",
+      "visibilityPrivate": "Tu perfil es privado",
+      "dnd": "No molestar",
+      "dndEnabled": "Otros no pueden iniciar conversaciones nuevas",
+      "dndDisabled": "Otros pueden escribirte"
+    },
+    "deleteAccount": "Eliminar la cuenta permanentemente",
+    "deleting": "Eliminando..."
+  },
+  "landing": {
+    "hero": {
+      "ageRange": "Para jóvenes de 15 a 23 años",
+      "title": "Tu futuro es tuyo para explorarlo.",
+      "problem": "Pero ahora mismo, el mundo laboral es casi invisible. Nombres de trabajos que no entiendes. Cualificaciones que no logras imaginar. Consejos profesionales que suenan todos igual. Nadie te muestra cómo son de verdad estos caminos — ni si encajarían con la persona en la que te estás convirtiendo.",
+      "solution": "Endeavrly te da lo que faltaba. Carreras reales. Información honesta. Un espacio para reflexionar sobre quién eres y probar cosas por ti mismo/a — para que, cuando elijas una dirección, sea la tuya. Sin tests. Sin presión. Solo claridad.",
+      "cta": "Explora Endeavrly"
+    },
+    "framework": {
+      "title": "Tres miradas. Un recorrido.",
+      "subtitle": "Cada paso se apoya en el anterior. La curiosidad se convierte en claridad, y la claridad en dirección — a tu ritmo y en tus términos."
+    },
+    "timeline": {
+      "label": "Tu cronología",
+      "title": "Tu recorrido, a tu ritmo.",
+      "subtitle": "Cada persona crece de forma distinta. Ve tu progreso como algo que se despliega con calma, no como una carrera."
+    },
+    "contrast": {
+      "notThis": "Esto no",
+      "thisInstead": "Esto en su lugar",
+      "not1": "Un test profesional que te dice qué ser.",
+      "instead1": "Un espacio para descubrirlo por ti mismo/a — mediante experiencias reales y reflexión honesta.",
+      "not2": "Una app motivacional que te llena de hype.",
+      "instead2": "Información clara sobre cómo son de verdad los distintos caminos.",
+      "not3": "Una plataforma que rastrea, puntúa o clasifica tu futuro.",
+      "instead3": "Un lugar privado para explorar, probar cosas y crecer al ritmo que te resulte adecuado."
+    },
+    "trust": {
+      "noAds": "Sin anuncios",
+      "noTracking": "Sin rastreo",
+      "noPayments": "Sin pagos",
+      "noPublicProfiles": "Sin perfiles públicos",
+      "safetyByDesign": "Seguridad por diseño"
+    },
+    "cta": {
+      "title": "Empieza.",
+      "subtitle": "Gratis. Sin tarjeta de crédito. Sin compromisos.",
+      "button": "Regístrate gratis"
+    }
+  },
+  "footer": {
+    "research": "Investigación",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "safety": "Seguridad",
+    "eligibility": "Requisitos",
+    "disclaimer": "Aviso legal",
+    "copyright": "© {year} Endeavrly. Ayudando a los jóvenes a desarrollar habilidades para la vida y ganar confianza."
+  },
+  "signup": {
+    "firstName": "Nombre",
+    "surname": "Apellidos",
+    "email": "Tu correo electrónico",
+    "password": "Contraseña",
+    "guardianEmail": "Correo del padre, madre o tutor",
+    "createAccount": "Crear cuenta",
+    "creating": "Creando tu cuenta…",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "signIn": "Inicia sesión",
+    "acceptTerms": "Acepto los Términos y la Política de Privacidad"
+  },
+  "insights": {
+    "pageTitle": "Análisis del",
+    "pageTitleGradient": "sector",
+    "pageDescription": "Datos reales sobre carreras, sectores y el mercado laboral",
+    "trustLine": "Tendencias y análisis profesionales desglosados para tu grupo de edad — desde patrones globales hasta lo que te importa ahora mismo.",
+    "verifiedSources": "Datos de la OCDE, la OIT, el WEF y más · Actualizados trimestralmente",
+    "showContextHints": "Mostrar pistas de contexto",
+    "globalLens": "Mirada global",
+    "globalTitle": "Panorama global de sectores y carreras",
+    "globalSubtitle": "Macrotendencias que dan forma al empleo en todo el mundo — basadas en datos, no específicas para jóvenes",
+    "jobMarketStats": "Estadísticas del mercado laboral",
+    "jobMarketStatsDesc": "Datos clave de la investigación global sobre empleo",
+    "youthLens": "Mirada juvenil",
+    "youthTitle": "Qué significa para ti (15–23)",
+    "youthSubtitle": "Cómo se conecta el panorama global con tus decisiones — cercano, accionable y con los pies en la tierra",
+    "aboutData": "Sobre los datos",
+    "aboutDataDesc": "Todos los análisis proceden de fuentes de primer nivel y se revisan trimestralmente. El contenido se resume para mayor claridad.",
+    "refreshed": "Actualizado en el 1.er trimestre de 2025",
+    "verified": "Verificado"
+  },
+  "userMenu": {
+    "account": "Cuenta",
+    "profile": "Perfil",
+    "settings": "Ajustes",
+    "tools": "Herramientas",
+    "aiCareerAdvisor": "Asesor de carrera con IA",
+    "safety": "Seguridad",
+    "healthSafety": "Salud y seguridad",
+    "reportConcern": "Informar de un problema",
+    "aboutEndeavrly": "Acerca de Endeavrly",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro",
+    "logOut": "Cerrar sesión",
+    "language": "Idioma",
+    "english": "English",
+    "norwegian": "Norsk"
+  },
+  "careerTwin": {
+    "title": "Gemelo de Carrera",
+    "subtitle": "Habla con una posible versión futura de ti mismo/a en esta carrera.",
+    "disclaimer": "Esto es una simulación para ayudarte a explorar posibilidades. No es una predicción.",
+    "realityCheck": "Dato realista",
+    "tabAdvisor": "Asesor de carrera",
+    "tabTwin": "Gemelo de Carrera",
+    "loading": "Despertando a tu yo del futuro…",
+    "emptyTitle": "Elige primero una carrera",
+    "emptyBody": "Elige una carrera para que tu Gemelo de Carrera sepa qué futuro simular.",
+    "exploreCareers": "Explorar carreras",
+    "useRadar": "Usar el Radar de Carreras",
+    "generalNote": "Lo mantendré general porque todavía no sé mucho sobre tus intereses.",
+    "modesLabel": "¿De qué quieres hablar?",
+    "suggested": "Prueba a preguntar:",
+    "inputPlaceholder": "Pregúntale lo que quieras a tu yo del futuro…",
+    "send": "Enviar",
+    "thinking": "Pensando…",
+    "saveToLibrary": "Guardar en Mi biblioteca",
+    "saved": "Guardado",
+    "addNextStep": "Añadir a Mi recorrido",
+    "added": "Añadido",
+    "confirmAddTitle": "¿Añadir esto a Mi recorrido?",
+    "confirmAddBody": "Lo añadiremos como un próximo paso en tu recorrido. No se añade nada sin tu visto bueno.",
+    "confirmAdd": "Añadir próximo paso",
+    "cancel": "Cancelar",
+    "noActiveGoal": "Elige primero un objetivo de recorrido para que tu Gemelo de Carrera pueda añadirle pasos.",
+    "meetFutureYou": "Conoce a tu yo del futuro",
+    "meetFutureYouBody": "Pregúntale a tu Gemelo de Carrera cómo podría sentirse este camino.",
+    "askFutureMe": "Pregunta a mi yo del futuro",
+    "talkToFutureSelfAs": "Habla con tu yo del futuro como {career}",
+    "setPrimaryGoal": "Fijar como objetivo principal",
+    "primaryGoalActive": "Tu objetivo principal",
+    "changeGoal": "Cambiar objetivo",
+    "setGoalTitle": "¿Fijar esto como tu objetivo principal?",
+    "setGoalBody": "Haremos que {career} sea tu objetivo principal en Mi recorrido. Puedes cambiarlo o personalizarlo cuando quieras.",
+    "setGoalReplace": "Esto sustituye tu objetivo principal actual: {current}.",
+    "confirmSetGoal": "Fijar como objetivo principal",
+    "goalSetToast": "¡Fijado como objetivo principal!",
+    "goalSetToastBody": "Míralo y personalízalo en Mi recorrido.",
+    "goalSetError": "No se ha podido fijar tu objetivo",
+    "goalSetErrorBody": "Inténtalo de nuevo en un momento."
+  }
+}

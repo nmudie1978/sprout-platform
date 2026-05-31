@@ -17,6 +17,7 @@ import {
   Languages,
 } from "lucide-react";
 import { useLocaleSwitch } from "@/hooks/use-locale-switch";
+import { locales, LOCALE_META } from "@/i18n/config";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +43,7 @@ export function UserAvatarMenu({
 }: UserAvatarMenuProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { currentLocale, toggleLocale, isPending: isLocalePending } = useLocaleSwitch();
+  const { currentLocale, cycleLocale, isPending: isLocalePending } = useLocaleSwitch();
 
   const roleLabels = {
     YOUTH: "Youth",
@@ -171,10 +172,10 @@ export function UserAvatarMenu({
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </DropdownMenuItem>
 
-        {/* Language toggle */}
-        <DropdownMenuItem onClick={toggleLocale} disabled={isLocalePending} className="cursor-pointer">
+        {/* Language switcher — cycles through the configured locales */}
+        <DropdownMenuItem onClick={cycleLocale} disabled={isLocalePending} className="cursor-pointer">
           <Languages className="mr-2 h-4 w-4" />
-          {currentLocale === "en-GB" ? "Norsk" : "English"}
+          {LOCALE_META[locales[(locales.indexOf(currentLocale) + 1) % locales.length]].label}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

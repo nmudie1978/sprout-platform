@@ -3,16 +3,16 @@
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import type { Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
 
 export function useLocaleSwitch() {
   const currentLocale = useLocale() as Locale;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const toggleLocale = () => {
-    const next: Locale = currentLocale === "en-GB" ? "nb-NO" : "en-GB";
-
+  /** Switch to a specific locale (no-op if already active). */
+  const setLocale = (next: Locale) => {
+    if (next === currentLocale) return;
     startTransition(async () => {
       try {
         const res = await fetch("/api/locale", {
@@ -30,5 +30,11 @@ export function useLocaleSwitch() {
     });
   };
 
-  return { currentLocale, toggleLocale, isPending } as const;
+  /** Advance to the next locale in the configured order (for single-button menus). */
+  const cycleLocale = () => {
+    const idx = locales.indexOf(currentLocale);
+    setLocale(locales[(idx + 1) % locales.length]);
+  };
+
+  return { currentLocale, setLocale, cycleLocale, isPending } as const;
 }
