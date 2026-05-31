@@ -4,7 +4,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import { AccountStatus, AuditAction, UserRole } from "@prisma/client";
+import { AccountStatus, AuditAction } from "@prisma/client";
 
 // Age thresholds
 // SAFETY INVARIANT: Platform is for ages 15-23. Under-15 is HARD BLOCKED.
@@ -34,63 +34,6 @@ export function calculateAge(dateOfBirth: Date): number {
  */
 export function isMinor(dateOfBirth: Date): boolean {
   return calculateAge(dateOfBirth) < ADULT_AGE;
-}
-
-/**
- * Check if a youth user requires guardian consent
- * Returns true if user is under 18 and hasn't received consent
- */
-export async function requiresGuardianConsent(userId: string): Promise<{
-  required: boolean;
-  hasConsent: boolean;
-  age: number | null;
-}> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      dateOfBirth: true,
-      youthAgeBand: true,
-      youthProfile: {
-        select: {
-          guardianConsent: true,
-          guardianConsentAt: true,
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    return { required: true, hasConsent: false, age: null };
-  }
-
-  const hasConsent = user.youthProfile?.guardianConsent ?? false;
-
-  // If dateOfBirth is available, use it to determine age
-  if (user.dateOfBirth) {
-    const age = calculateAge(user.dateOfBirth);
-    const isUnder18 = age < ADULT_AGE;
-
-    return {
-      required: isUnder18,
-      hasConsent,
-      age,
-    };
-  }
-
-  // Fallback to youthAgeBand if dateOfBirth is not set
-  // EIGHTEEN_TWENTY = 18-20 years old, no guardian consent needed
-  // SIXTEEN_SEVENTEEN or UNDER_SIXTEEN = under 18, guardian consent required
-  if (user.youthAgeBand === "EIGHTEEN_TWENTY") {
-    return { required: false, hasConsent, age: null };
-  }
-
-  // For UNDER_SIXTEEN, SIXTEEN_SEVENTEEN, or unknown age band
-  const isUnder18AgeBand = user.youthAgeBand === "UNDER_SIXTEEN" || user.youthAgeBand === "SIXTEEN_SEVENTEEN";
-  return {
-    required: isUnder18AgeBand,
-    hasConsent,
-    age: null
-  };
 }
 
 /**
@@ -214,140 +157,6 @@ export interface SafetyGateResult {
 }
 
 /**
- * Check if an adult user is verified via BankID
- * CRITICAL: Adults MUST verify before contacting youth
- */
-export async function isAdultVerified(userId: string): Promise<{
-  verified: boolean;
-  provider: string | null;
-  verifiedAt: Date | null;
-  reason?: string;
-}> {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      isVerifiedAdult: true,
-      verificationProvider: true,
-      verifiedAt: true,
-      role: true,
-    },
-  });
-
-  if (!user) {
-    return {
-      verified: false,
-      provider: null,
-      verifiedAt: null,
-      reason: "User not found",
-    };
-  }
-
-  // Youth users don't need adult verification
-  if (user.role === "YOUTH") {
-    return {
-      verified: true, // Youth don't need this check
-      provider: null,
-      verifiedAt: null,
-    };
-  }
-
-  return {
-    verified: user.isVerifiedAdult,
-    provider: user.verificationProvider,
-    verifiedAt: user.verifiedAt,
-    reason: user.isVerifiedAdult ? undefined : "BankID verification required to contact youth workers",
-  };
-}
-
-/**
- * Check if user can contact another user
- * CRITICAL SAFETY CHECK:
- * - Adults MUST have BankID verification to contact youth
- * - Blocked users cannot contact each other
- * - Frozen conversations cannot have new messages
- */
-export async function canUserContactUser(
-  senderId: string,
-  senderRole: UserRole,
-  recipientId: string
-): Promise<SafetyGateResult> {
-  // Check if sender's account is active
-  const accountCheck = await isAccountActive(senderId);
-  if (!accountCheck.active) {
-    return {
-      allowed: false,
-      reason: accountCheck.reason,
-      code: "ACCOUNT_INACTIVE",
-    };
-  }
-
-  // Get recipient info
-  const recipient = await prisma.user.findUnique({
-    where: { id: recipientId },
-    select: {
-      role: true,
-      dateOfBirth: true,
-    },
-  });
-
-  if (!recipient) {
-    return {
-      allowed: false,
-      reason: "Recipient not found",
-      code: "ACCOUNT_INACTIVE",
-    };
-  }
-
-  // Check if sender is blocked by recipient
-  const isBlocked = await prisma.userBlock.findUnique({
-    where: {
-      blockerId_blockedId: {
-        blockerId: recipientId,
-        blockedId: senderId,
-      },
-    },
-  });
-
-  if (isBlocked) {
-    return {
-      allowed: false,
-      reason: "You cannot contact this user",
-      code: "USER_BLOCKED",
-    };
-  }
-
-  // CRITICAL: If sender is adult (EMPLOYER/ADMIN) and recipient is YOUTH
-  // Sender MUST have BankID verification
-  const senderIsAdult = senderRole === "EMPLOYER" || senderRole === "ADMIN";
-  const recipientIsYouth = recipient.role === "YOUTH";
-
-  if (senderIsAdult && recipientIsYouth) {
-    const adultCheck = await isAdultVerified(senderId);
-    if (!adultCheck.verified) {
-      return {
-        allowed: false,
-        reason: "BankID verification is required to contact youth workers. This protects young people on our platform.",
-        code: "BANKID_REQUIRED",
-      };
-    }
-  }
-
-  // If sender is youth and needs guardian consent
-  if (senderRole === "YOUTH") {
-    const consentCheck = await requiresGuardianConsent(senderId);
-    if (consentCheck.required && !consentCheck.hasConsent) {
-      return {
-        allowed: false,
-        reason: "Guardian consent is required to send messages",
-        code: "GUARDIAN_CONSENT_REQUIRED",
-      };
-    }
-  }
-
-  return { allowed: true };
-}
-
-/**
  * Check if an employer can post jobs
  * Requirements:
  * - Account is ACTIVE
@@ -380,38 +189,6 @@ export async function canEmployerPostJobs(userId: string): Promise<SafetyGateRes
       reason: "You must be 18 or older to post jobs",
       code: "EMPLOYER_NOT_VERIFIED",
     };
-  }
-
-  return { allowed: true };
-}
-
-/**
- * Check if a user can send messages
- * Requirements:
- * - Account is ACTIVE
- * - For youth: guardian consent if under 18
- */
-export async function canUserSendMessages(userId: string, role: UserRole): Promise<SafetyGateResult> {
-  // Check account status
-  const accountCheck = await isAccountActive(userId);
-  if (!accountCheck.active) {
-    return {
-      allowed: false,
-      reason: accountCheck.reason,
-      code: "ACCOUNT_INACTIVE",
-    };
-  }
-
-  // For youth: check guardian consent
-  if (role === UserRole.YOUTH) {
-    const consentCheck = await requiresGuardianConsent(userId);
-    if (consentCheck.required && !consentCheck.hasConsent) {
-      return {
-        allowed: false,
-        reason: "Guardian consent is required to send messages",
-        code: "GUARDIAN_CONSENT_REQUIRED",
-      };
-    }
   }
 
   return { allowed: true };
