@@ -33,3 +33,78 @@ export function filterAnsweredReflections(reflections: ReflectionData[]): Reflec
     (r) => !r.skipped && !!r.response && r.response.trim().length > 0
   );
 }
+
+// ── Device-local My Journey reflections ──────────────────────────────────
+// The JourneyReflectionsTray persists reflections to localStorage (not the
+// server), so My Library reads them straight from the device — same pattern
+// as the Saved/Compared tabs.
+
+export type ReflectionLens = "discover" | "understand" | "clarity";
+
+export interface LocalReflectionEntry {
+  /** Stable key for React lists: `${careerSlug}:${lens}`. */
+  id: string;
+  careerSlug: string;
+  lens: ReflectionLens;
+  lensLabel: string;
+  text: string;
+  updatedAt: string | null;
+}
+
+/** Must match STORAGE_PREFIX in src/hooks/use-journey-reflections.ts. */
+const JOURNEY_REFLECTIONS_PREFIX = "endeavrly-journey-reflections";
+
+const LENS_ORDER: readonly ReflectionLens[] = ["discover", "understand", "clarity"] as const;
+const LENS_LABEL: Record<ReflectionLens, string> = {
+  discover: "Discover",
+  understand: "Understand",
+  clarity: "Clarity",
+};
+
+/**
+ * Read the user's My Journey reflections from device storage (where the
+ * JourneyReflectionsTray writes them) and flatten to one entry per
+ * non-empty lens, newest first. Pure — takes a Storage-like object so it
+ * can be unit-tested without a DOM.
+ */
+export function readLocalJourneyReflections(
+  userId: string,
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+): LocalReflectionEntry[] {
+  if (!userId) return [];
+  const prefix = `${JOURNEY_REFLECTIONS_PREFIX}:${userId}:`;
+  const entries: LocalReflectionEntry[] = [];
+
+  for (let i = 0; i < storage.length; i++) {
+    const key = storage.key(i);
+    if (!key || !key.startsWith(prefix)) continue;
+    const careerSlug = key.slice(prefix.length);
+    if (!careerSlug) continue;
+
+    let parsed: Record<string, unknown>;
+    try {
+      const raw = storage.getItem(key);
+      if (!raw) continue;
+      parsed = JSON.parse(raw) as Record<string, unknown>;
+    } catch {
+      continue;
+    }
+
+    const updatedAt = typeof parsed.updatedAt === "string" ? parsed.updatedAt : null;
+    for (const lens of LENS_ORDER) {
+      const value = parsed[lens];
+      if (typeof value !== "string" || value.trim().length === 0) continue;
+      entries.push({
+        id: `${careerSlug}:${lens}`,
+        careerSlug,
+        lens,
+        lensLabel: LENS_LABEL[lens],
+        text: value,
+        updatedAt,
+      });
+    }
+  }
+
+  // Newest first; entries without a timestamp sort last.
+  return entries.sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""));
+}

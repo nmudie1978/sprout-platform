@@ -6,17 +6,17 @@
  * A calm, tabbed home for everything a user has saved or written:
  *  - Saved careers   — hearted "curiosities" (localStorage, device-local)
  *  - Compared        — saved career comparisons (localStorage, device-local)
- *  - Reflections     — answered Journey reflections (server)
+ *  - Reflections     — My Journey reflections (localStorage, device-local)
  *
  * This is the "See all →" destination behind the dashboard preview cards.
  * Tab state lives in `?tab=` so the dashboard can deep-link to a section.
- * Two of the three tabs read localStorage, so the page is a client component
+ * All three tabs read localStorage, so the page is a client component
  * behind a `mounted` guard to avoid hydration mismatch.
  */
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCuriositySaves } from "@/hooks/use-curiosity-saves";
@@ -27,11 +27,11 @@ import {
 import { getAllCareers, type Career } from "@/lib/career-pathways";
 import {
   resolveLibraryTab,
-  filterAnsweredReflections,
+  readLocalJourneyReflections,
   LIBRARY_TABS,
   type LibraryTab,
+  type LocalReflectionEntry,
 } from "@/lib/library/tabs";
-import type { ReflectionData } from "@/lib/journey/reflections-service";
 
 export default function LibraryPage() {
   const searchParams = useSearchParams();
@@ -172,37 +172,52 @@ function ComparedTab() {
 }
 
 function ReflectionsTab() {
-  const { data, isLoading } = useQuery<{ reflections: ReflectionData[] }>({
-    queryKey: ["library-reflections"],
-    queryFn: async () => {
-      const res = await fetch(
-        "/api/journey/reflections?includeSkipped=false&limit=100"
-      );
-      if (!res.ok) return { reflections: [] };
-      return res.json();
-    },
-    staleTime: 60 * 1000,
-  });
-  if (isLoading) return <EmptyState>Loading…</EmptyState>;
-  const answered = filterAnsweredReflections(data?.reflections ?? []);
-  if (answered.length === 0) {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const [entries, setEntries] = useState<LocalReflectionEntry[]>([]);
+
+  // Reflections are written to localStorage by the JourneyReflectionsTray,
+  // so read them straight from this device (same as Saved/Compared).
+  useEffect(() => {
+    if (!userId || typeof window === "undefined") {
+      setEntries([]);
+      return;
+    }
+    setEntries(readLocalJourneyReflections(userId, window.localStorage));
+  }, [userId]);
+
+  if (entries.length === 0) {
     return (
       <EmptyState>
-        No reflections yet — they appear here as you move through My Journey.
+        No reflections yet — write one on My Journey (Discover, Understand or
+        Clarity) and it&apos;ll appear here.
       </EmptyState>
     );
   }
+
+  const careers = getAllCareers();
+  const careerFor = (slug: string): { label: string; emoji: string } => {
+    const c: Career | undefined = careers.find((x) => x.id === slug);
+    return c ? { label: c.title, emoji: c.emoji ?? "📝" } : { label: slug, emoji: "📝" };
+  };
+
   return (
     <ul className="space-y-3">
-      {answered.map((r) => (
-        <li
-          key={r.id}
-          className="rounded-lg border border-border/60 bg-muted/10 px-4 py-3"
-        >
-          <p className="text-xs text-muted-foreground/70 mb-1">{r.prompt}</p>
-          <p className="text-sm whitespace-pre-wrap">{r.response}</p>
-        </li>
-      ))}
+      {entries.map((e) => {
+        const career = careerFor(e.careerSlug);
+        return (
+          <li
+            key={e.id}
+            className="rounded-lg border border-border/60 bg-muted/10 px-4 py-3"
+          >
+            <p className="text-xs text-muted-foreground/70 mb-1">
+              <span className="mr-1">{career.emoji}</span>
+              {career.label} · {e.lensLabel}
+            </p>
+            <p className="text-sm whitespace-pre-wrap">{e.text}</p>
+          </li>
+        );
+      })}
     </ul>
   );
 }
