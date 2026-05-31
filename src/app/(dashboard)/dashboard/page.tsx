@@ -846,12 +846,13 @@ export default function DashboardPage() {
           dismissedRef.current = true;
           setShowOnboardingWizard(false);
           if (!wasReplay) {
-            // First-run: mark onboarding done + route to Career Radar.
-            // If the PATCH fails, Sentry sees it — next time the user
-            // logs in, the onboarding will replay (not ideal but safe).
+            // First-run: mark onboarding done so it doesn't replay. The user
+            // stays on the dashboard whether they finish or cancel the
+            // walkthrough — we deliberately do NOT redirect anywhere (no jump
+            // to Career Radar). If the PATCH fails, Sentry sees it and the
+            // walkthrough will replay next login (safe).
             fetch("/api/onboarding", { method: "PATCH" }).catch(captureClientMutationError("dashboard:onboardingDone"));
             refetchOnboarding();
-            window.location.href = "/careers/radar";
           }
         }}
       />
