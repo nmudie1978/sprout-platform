@@ -385,6 +385,7 @@
     "talkToFutureSelfAs": "Talk to your future self as a {career}",
     "setPrimaryGoal": "Set as Primary Goal",
     "primaryGoalActive": "Your Primary Goal",
+    "changeGoal": "Change goal",
     "setGoalTitle": "Set this as your Primary Goal?",
     "setGoalBody": "We'll make {career} your Primary Goal on My Journey. You can change or customise it any time.",
     "setGoalReplace": "This replaces your current Primary Goal: {current}.",

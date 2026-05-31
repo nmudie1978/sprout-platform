@@ -385,6 +385,7 @@
     "talkToFutureSelfAs": "Snakk med ditt framtidige jeg som {career}",
     "setPrimaryGoal": "Sett som hovedmål",
     "primaryGoalActive": "Hovedmålet ditt",
+    "changeGoal": "Bytt mål",
     "setGoalTitle": "Sette dette som hovedmålet ditt?",
     "setGoalBody": "Vi gjør {career} til hovedmålet ditt på Min reise. Du kan endre eller tilpasse det når som helst.",
     "setGoalReplace": "Dette erstatter ditt nåværende hovedmål: {current}.",
