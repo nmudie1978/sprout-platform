@@ -1073,7 +1073,7 @@ export default function DashboardPage() {
                         onClick={(e) => e.stopPropagation()}
                         className="text-teal-500 hover:text-teal-400 transition-colors animate-pulse motion-reduce:animate-none"
                       >
-                        {t('journey.chooseGoalPrompt')} &rarr;
+                        {t('journey.chooseGoalPrompt')}
                       </Link>
                     </>
                   )}
