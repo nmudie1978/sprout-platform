@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 interface ExportOption {
   type: string;
@@ -77,10 +77,10 @@ export default function ExportPage() {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
 
-      toast.success("Export downloaded successfully");
+      toast({ title: "Export downloaded successfully", variant: "success" });
     } catch (error) {
       console.error("Export error:", error);
-      toast.error("Failed to export data");
+      toast({ title: "Failed to export data", variant: "destructive" });
     } finally {
       setDownloading(null);
     }

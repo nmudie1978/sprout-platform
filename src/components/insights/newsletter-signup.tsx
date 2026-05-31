@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, CheckCircle2, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 export function NewsletterSignup() {
   const { data: session } = useSession();
@@ -27,12 +27,12 @@ export function NewsletterSignup() {
 
       if (response.ok) {
         setIsSubscribed(true);
-        toast.success("Subscribed!");
+        toast({ title: "Subscribed!", variant: "success" });
       } else {
-        toast.error("Could not subscribe. Try again.");
+        toast({ title: "Could not subscribe. Try again.", variant: "destructive" });
       }
     } catch {
-      toast.error("Something went wrong.");
+      toast({ title: "Something went wrong.", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }

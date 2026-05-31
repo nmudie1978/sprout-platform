@@ -27,7 +27,7 @@ import {
   BookmarkCheck,
   Sparkles,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import type { Career } from "@/lib/career-pathways";
 import type { CareerGoal, GoalSlot } from "@/lib/goals/types";
 import { createEmptyGoal } from "@/lib/goals/types";
@@ -203,10 +203,11 @@ export function CareerDetailSheet({
     onSuccess: ({ slot }) => {
       setAddedAs(slot);
       setShowSwapModal(false);
-      toast.success(
-        slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
-        { description: "View and customise your goals on the Goals page." }
-      );
+      toast({
+        title: slot === "primary" ? "Set as Primary Goal!" : "Set as Secondary Goal!",
+        description: "View and customise your goals on the Goals page.",
+        variant: "success",
+      });
       // Sync guidance dismissals when primary goal changes
       if (slot === "primary") {
         const title = career?.title ?? null;
@@ -223,8 +224,10 @@ export function CareerDetailSheet({
       queryClient.invalidateQueries({ queryKey: ["education-context"] });
     },
     onError: () => {
-      toast.error("Failed to set goal", {
+      toast({
+        title: "Failed to set goal",
         description: "Please try again later.",
+        variant: "destructive",
       });
     },
   });
@@ -296,10 +299,10 @@ export function CareerDetailSheet({
                     onClick={() => {
                       if (isCuriositySaved(career.id)) {
                         removeCuriosity(career.id);
-                        toast("Removed from curiosities");
+                        toast({ title: "Removed from curiosities" });
                       } else {
                         saveCuriosity(career.id, career.title, career.emoji);
-                        toast("Saved to curiosities", { description: "Find it in My Journey → Library" });
+                        toast({ title: "Saved to curiosities", description: "Find it in My Journey → Library" });
                       }
                     }}
                     className="p-1.5 rounded-md hover:bg-muted transition-colors flex-shrink-0"

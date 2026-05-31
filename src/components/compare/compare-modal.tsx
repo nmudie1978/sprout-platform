@@ -22,7 +22,7 @@ import {
 import { getValueSignals } from '@/lib/compare/value-signals';
 import { getAcademicProfile, getPathwayLabel } from '@/lib/education/academic-readiness';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from "@/hooks/use-toast";
 
 interface CompareModalProps {
   open: boolean;
@@ -53,11 +53,13 @@ export function CompareModal({ open, careers, preferences, onClose, onRemove }: 
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('Comparison downloaded', {
+      toast({
+        title: 'Comparison downloaded',
         description: 'Open the file in your browser to view, save as PDF, or share.',
+        variant: "success",
       });
     } catch (e) {
-      toast.error('Could not download — try again');
+      toast({ title: 'Could not download — try again', variant: "destructive" });
     }
   };
 

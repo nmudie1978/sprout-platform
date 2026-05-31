@@ -7,7 +7,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import type { DiscoveryPreferences } from "@/lib/career-pathways";
 
 /**
@@ -123,7 +123,7 @@ export function RadarOnboardingWizard({ open, onComplete }: RadarOnboardingWizar
       onComplete();
     },
     onError: () => {
-      toast.error("Couldn't save — please try again.");
+      toast({ title: "Couldn't save — please try again.", variant: "destructive" });
     },
   });
 

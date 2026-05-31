@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { RefreshCcw, Loader2, Calendar, Clock } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 interface RepostJobButtonProps {
   jobId: string;
@@ -44,11 +44,11 @@ export function RepostJobButton({ jobId, jobTitle }: RepostJobButtonProps) {
     },
     onSuccess: (data) => {
       setIsOpen(false);
-      toast.success("Job reposted successfully!");
+      toast({ title: "Job reposted successfully!", variant: "success" });
       router.push(`/jobs/${data.id}`);
     },
     onError: () => {
-      toast.error("Failed to repost job");
+      toast({ title: "Failed to repost job", variant: "destructive" });
     },
   });
 

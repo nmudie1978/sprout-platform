@@ -13,7 +13,7 @@
 import { useState, useCallback } from "react";
 import { Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "endeavrly-broken-link-reports";
 const REPORT_THRESHOLD = 2;
@@ -90,9 +90,9 @@ export function ReportBrokenLink({ url, className }: ReportBrokenLinkProps) {
       setReported(true);
 
       if (reports[url].count >= REPORT_THRESHOLD) {
-        toast.success("Link hidden — thanks for reporting.");
+        toast({ title: "Link hidden — thanks for reporting.", variant: "success" });
       } else {
-        toast.success("Thanks — we'll check this link.");
+        toast({ title: "Thanks — we'll check this link.", variant: "success" });
       }
     },
     [url, reported]

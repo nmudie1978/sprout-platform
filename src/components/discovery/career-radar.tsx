@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCompareShortlist } from "@/hooks/use-compare-shortlist";
 import { CompareModal } from "@/components/compare/compare-modal";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { SavedComparisonsTray } from "@/components/career-radar/saved-comparisons-tray";
 import { SavedCareersTray } from "@/components/career-radar/saved-careers-tray";
 
@@ -1071,17 +1071,15 @@ export function CareerRadar({ preferences, onEditPreferences }: CareerRadarProps
       const career = (e as CustomEvent<Career>).detail;
       if (!career) return;
       if (compareShortlist.isInShortlist(career.id)) {
-        toast.info(`${career.title} is already in your shortlist`);
+        toast({ title: `${career.title} is already in your shortlist` });
         return;
       }
       if (compareShortlist.shortlist.length >= compareShortlist.max) {
-        toast.info(`You can compare up to ${compareShortlist.max} at a time`, {
-          description: 'Remove one to add another.',
-        });
+        toast({ title: `You can compare up to ${compareShortlist.max} at a time`, description: 'Remove one to add another.' });
         return;
       }
       compareShortlist.toggle(career);
-      toast.success(`${career.title} added to shortlist`);
+      toast({ title: `${career.title} added to shortlist`, variant: "success" });
     };
     window.addEventListener("add-career-to-compare", handler);
     return () => window.removeEventListener("add-career-to-compare", handler);

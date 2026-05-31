@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import type { CareerGoal, GoalSlot, GoalsResponse } from "@/lib/goals/types";
 import { syncGuidanceGoal } from "@/lib/guidance/rules";
 import { logAndSwallow } from "@/lib/observability";
@@ -94,16 +94,17 @@ export function useClearGoal() {
       return res.json();
     },
     onSuccess: (_data, slot) => {
-      toast.success(
-        slot === "both" ? "Both goals cleared" : `${slot === "primary" ? "Primary" : "Secondary"} goal cleared`
-      );
+      toast({
+        title: slot === "both" ? "Both goals cleared" : `${slot === "primary" ? "Primary" : "Secondary"} goal cleared`,
+        variant: "success",
+      });
       if (slot === "primary" || slot === "both") {
         syncGuidanceGoal(null);
       }
       invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {
-      toast.error("Failed to clear goal");
+      toast({ title: "Failed to clear goal", variant: "destructive" });
     },
   });
 }
@@ -159,8 +160,10 @@ export function usePromoteGoal() {
       return res2.json();
     },
     onSuccess: (_data, variables) => {
-      toast.success("Goals swapped!", {
+      toast({
+        title: "Goals swapped!",
         description: "Your secondary goal is now primary.",
+        variant: "success",
       });
       syncGuidanceGoal(variables.currentSecondary.title);
       // Pre-generate the career roadmap for the new primary goal
@@ -174,7 +177,7 @@ export function usePromoteGoal() {
       invalidateGoalDependentCaches(queryClient);
     },
     onError: () => {
-      toast.error("Failed to swap goals");
+      toast({ title: "Failed to swap goals", variant: "destructive" });
     },
   });
 }

@@ -10,7 +10,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ export function CreateCohortButton({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Class needs a name.");
+      toast({ title: "Class needs a name.", variant: "destructive" });
       return;
     }
     setSubmitting(true);
@@ -54,16 +54,16 @@ export function CreateCohortButton({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        toast.error(data.error || "Failed to create class");
+        toast({ title: data.error || "Failed to create class", variant: "destructive" });
         return;
       }
-      toast.success(`Class created — code ${data.cohort.code}`);
+      toast({ title: `Class created — code ${data.cohort.code}`, variant: "success" });
       setOpen(false);
       setName("");
       setCareerFocus("");
       startTransition(() => router.push(`/teacher/cohorts/${data.cohort.id}`));
     } catch {
-      toast.error("Network error. Please try again.");
+      toast({ title: "Network error. Please try again.", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }

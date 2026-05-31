@@ -26,7 +26,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 const categoryOptions = [
   { value: "BABYSITTING", label: "Babysitting", emoji: "👶" },
@@ -97,18 +97,18 @@ export default function QuickHirePage({
       return response.json();
     },
     onSuccess: (data) => {
-      toast.success("Job created and assigned!");
+      toast({ title: "Job created and assigned!", variant: "success" });
       router.push(`/jobs/${data.jobId}`);
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      toast({ title: error.message, variant: "destructive" });
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.description || !formData.category || !formData.payAmount) {
-      toast.error("Please fill in all required fields");
+      toast({ title: "Please fill in all required fields", variant: "destructive" });
       return;
     }
     hireMutation.mutate();

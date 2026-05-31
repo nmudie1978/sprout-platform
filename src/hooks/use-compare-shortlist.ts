@@ -9,7 +9,7 @@
  */
 
 import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import type { Career } from '@/lib/career-pathways';
 
 const MAX_COMPARE = 3;
@@ -30,7 +30,8 @@ export function useCompareShortlist() {
           return prev.filter((c) => c.id !== career.id);
         }
         if (prev.length >= MAX_COMPARE) {
-          toast.info(`You can compare up to ${MAX_COMPARE} at a time`, {
+          toast({
+            title: `You can compare up to ${MAX_COMPARE} at a time`,
             description: 'Remove one to add another.',
           });
           return prev;

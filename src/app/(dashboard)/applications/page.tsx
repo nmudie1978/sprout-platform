@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useMemo, useCallback, memo, useEffect } from "react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 
 const categoryEmojis: Record<string, string> = {
@@ -371,7 +371,7 @@ export default function ApplicationsPage() {
                   a.click();
                   URL.revokeObjectURL(url);
                 } catch {
-                  toast.error('Failed to download earnings');
+                  toast({ title: 'Failed to download earnings', variant: "destructive" });
                 }
               }}
             >

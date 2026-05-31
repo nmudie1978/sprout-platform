@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Copy, Check } from "lucide-react";
 
 /**
@@ -22,10 +22,10 @@ export function CohortCodeShare({
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      toast.success("Code copied");
+      toast({ title: "Code copied", variant: "success" });
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("Couldn't copy — long-press to copy manually.");
+      toast({ title: "Couldn't copy — long-press to copy manually.", variant: "destructive" });
     }
   };
 

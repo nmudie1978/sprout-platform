@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
@@ -439,8 +439,10 @@ export function TimelineDetailDialog({
         if (!res.ok) {
           const errText = await res.text().catch(() => '');
           console.error('Foundation save failed', res.status, errText);
-          toast.error("Couldn't save your starting point", {
+          toast({
+            title: "Couldn't save your starting point",
             description: errText || 'Please try again in a moment.',
+            variant: "destructive",
           });
           setSaving(false);
           return;
@@ -454,8 +456,10 @@ export function TimelineDetailDialog({
         queryClient.invalidateQueries({ queryKey: ['personal-career-timeline'] });
       } catch (e) {
         console.error('Foundation save error', e);
-        toast.error("Couldn't save your starting point", {
+        toast({
+          title: "Couldn't save your starting point",
           description: 'Check your connection and try again.',
+          variant: "destructive",
         });
         setSaving(false);
         return;
