@@ -9,7 +9,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { SUPPORTED_COUNTRIES, DEFAULT_COUNTRY } from "@/lib/countries";
 import { Sparkles, Loader2, ArrowLeft, ArrowRight } from "lucide-react";
 
 /**
@@ -57,6 +65,7 @@ function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [country, setCountry] = useState(DEFAULT_COUNTRY);
   const [acceptedAll, setAcceptedAll] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -139,6 +148,7 @@ function SignUpForm() {
           role,
           dateOfBirth: sendDob ? dateOfBirth : undefined,
           ageBracket: role === "YOUTH" ? ageInfo.bracket : null,
+          country: role === "YOUTH" ? country : undefined,
           acceptedTerms: acceptedAll,
           acceptedPrivacy: acceptedAll,
         }),
@@ -399,6 +409,29 @@ function SignUpForm() {
                   />
                   <p className="text-[11px] text-muted-foreground">
                     You must be 18 or older. We don&apos;t share this.
+                  </p>
+                </div>
+              )}
+
+              {!isAdultSignup && (
+                <div className="space-y-2">
+                  <Label htmlFor="country" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Where are you based?
+                  </Label>
+                  <Select value={country} onValueChange={setCountry}>
+                    <SelectTrigger id="country" className="h-11">
+                      <SelectValue placeholder="Select your country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SUPPORTED_COUNTRIES.map((c) => (
+                        <SelectItem key={c.code} value={c.name}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[11px] text-muted-foreground">
+                    Helps us show you the right education routes and pathways for your country.
                   </p>
                 </div>
               )}

@@ -17,6 +17,7 @@ import {
 } from "@/lib/safety/age";
 import { checkRateLimitAsync, getRateLimitHeaders, RateLimits } from "@/lib/rate-limit";
 import { isSchoolEmail } from "@/lib/education/school-domains";
+import { normaliseCountry } from "@/lib/countries";
 
 // Transient DB/connection errors worth a quick retry on serverless cold
 // starts (can't-reach-db, connection closed, pool timeout, too many
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
       return response;
     }
 
-    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, acceptedTerms, acceptedPrivacy } = await req.json();
+    const { firstName, lastName, surname, email: rawEmail, password, role, ageBracket, dateOfBirth, country: rawCountry, acceptedTerms, acceptedPrivacy } = await req.json();
 
     // Normalise emails: trim + lowercase so the account is stored in a
     // canonical form. Without this, signing up as "Foo@Bar.com" and later
@@ -287,6 +288,9 @@ export async function POST(req: NextRequest) {
             userId: createdUser.id,
             displayName: trimmedFirst,
             surname: trimmedSurname || null,
+            // Country picked at signup (foundation for per-country
+            // tailoring; falls back to Norway). See src/lib/countries.ts.
+            country: normaliseCountry(rawCountry),
             // No guardian-consent barrier: every youth account is good to
             // go on creation. See CLAUDE.md <age_policy>.
             guardianConsent: true,
