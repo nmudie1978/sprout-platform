@@ -382,6 +382,16 @@
     "meetFutureYou": "Møt Framtidige Deg",
     "meetFutureYouBody": "Spør karrieretvillingen din hvordan denne veien kan føles.",
     "askFutureMe": "Spør Framtidige Meg",
-    "talkToFutureSelfAs": "Snakk med ditt framtidige jeg som {career}"
+    "talkToFutureSelfAs": "Snakk med ditt framtidige jeg som {career}",
+    "setPrimaryGoal": "Sett som hovedmål",
+    "primaryGoalActive": "Hovedmålet ditt",
+    "setGoalTitle": "Sette dette som hovedmålet ditt?",
+    "setGoalBody": "Vi gjør {career} til hovedmålet ditt på Min reise. Du kan endre eller tilpasse det når som helst.",
+    "setGoalReplace": "Dette erstatter ditt nåværende hovedmål: {current}.",
+    "confirmSetGoal": "Sett som hovedmål",
+    "goalSetToast": "Satt som hovedmål!",
+    "goalSetToastBody": "Se og tilpass det på Min reise.",
+    "goalSetError": "Kunne ikke sette målet ditt",
+    "goalSetErrorBody": "Prøv igjen om et øyeblikk."
   }
 }
